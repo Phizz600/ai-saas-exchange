@@ -25,12 +25,24 @@ export default {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "#1E293B",
+          DEFAULT: "#3E92CC",
           foreground: "#FFFFFF",
         },
         secondary: {
-          DEFAULT: "#FFB800",
-          foreground: "#1E293B",
+          DEFAULT: "#2A628F",
+          foreground: "#FFFFFF",
+        },
+        accent: {
+          DEFAULT: "#13293D",
+          foreground: "#FFFFFF",
+        },
+        accent2: {
+          DEFAULT: "#16324F",
+          foreground: "#FFFFFF",
+        },
+        accent3: {
+          DEFAULT: "#18435A",
+          foreground: "#FFFFFF",
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
@@ -39,10 +51,6 @@ export default {
         muted: {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))",
-        },
-        accent: {
-          DEFAULT: "#FFB800",
-          foreground: "#1E293B",
         },
         card: {
           DEFAULT: "rgba(255, 255, 255, 0.9)",
@@ -63,10 +71,15 @@ export default {
           "0%": { transform: "translateX(-100%)" },
           "100%": { transform: "translateX(0)" },
         },
+        float: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-10px)" },
+        },
       },
       animation: {
         "fade-in": "fade-in 0.5s ease-out",
         "slide-in": "slide-in 0.5s ease-out",
+        float: "float 3s ease-in-out infinite",
       },
     },
   },

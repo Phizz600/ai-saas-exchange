@@ -4,9 +4,9 @@ import { Stats } from "@/components/Stats";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-accent">
       <Navbar />
-      <main className="pt-16">
+      <main>
         <Hero />
         <Stats />
       </main>
