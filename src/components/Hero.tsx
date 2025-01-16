@@ -3,17 +3,11 @@ import { Input } from "@/components/ui/input";
 import { ArrowRight } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 export const Hero = () => {
-  const [email, setEmail] = useState("");
   const [newsletterEmail, setNewsletterEmail] = useState("");
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Waitlist email submitted:", email);
-    toast.success("Thanks for joining the waitlist!");
-    setEmail("");
-  };
+  const navigate = useNavigate();
 
   const handleNewsletterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,23 +45,14 @@ export const Hero = () => {
 
           {/* CTA Section */}
           <div className="flex flex-col gap-6 items-center">
-            {/* Waitlist Form */}
-            <form onSubmit={handleSubmit} className="w-full max-w-md transform hover:scale-105 transition-transform duration-300">
-              <div className="flex flex-col sm:flex-row gap-4 p-2 bg-white rounded-lg shadow-2xl">
-                <Input
-                  type="email"
-                  placeholder="Enter your email"
-                  className="flex-grow border-gray-200"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-                <Button type="submit" className="bg-primary hover:bg-primary/90 text-white px-8 shadow-lg">
-                  Join Waitlist
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </div>
-            </form>
+            {/* Marketplace Button */}
+            <Button
+              onClick={() => navigate('/auth')}
+              className="bg-primary hover:bg-primary/90 text-white px-12 py-6 text-lg shadow-2xl transform hover:scale-105 transition-all duration-300"
+            >
+              Marketplace
+              <ArrowRight className="ml-2 h-6 w-6" />
+            </Button>
 
             {/* Newsletter Form */}
             <form onSubmit={handleNewsletterSubmit} className="w-full max-w-md transform hover:scale-105 transition-transform duration-300">
