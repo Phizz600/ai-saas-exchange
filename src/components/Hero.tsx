@@ -13,7 +13,7 @@ export const Hero = () => {
   const handleNewsletterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Newsletter email submitted:", newsletterEmail);
-    toast.success("Successfully subscribed to newsletter!");
+    toast.success("Successfully joined the waitlist!");
     setNewsletterEmail("");
   };
 
@@ -92,7 +92,7 @@ export const Hero = () => {
             transition={{ delay: 0.4 }}
             className="text-xl text-gray-200 mb-12 max-w-2xl mx-auto"
           >
-            Connect with investors, participate in bid-based auctions, and grow your AI business. Get AI-powered valuations and exclusive access to premium deals.
+            Connect with top-tier investors, pitch your AI business or idea, and participate in timed, bid-based auctions. Unlock exclusive access to premium deals and accelerate the growth of your AI company.
           </motion.p>
 
           {/* CTA Section */}
@@ -115,23 +115,30 @@ export const Hero = () => {
             <form onSubmit={handleNewsletterSubmit} className="w-full max-w-md">
               <motion.div
                 whileHover={{ scale: 1.02 }}
-                className="flex flex-col sm:flex-row gap-4 p-2 bg-white/10 backdrop-blur-md rounded-lg border border-white/10 shadow-[0_0_30px_rgba(255,255,255,0.1)]"
+                className="flex flex-col gap-4"
               >
-                <div className="relative flex-grow">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  <Input
-                    type="email"
-                    placeholder="Subscribe to newsletter"
-                    className="pl-10 bg-white/5 border-gray-500/30 text-white placeholder:text-gray-400"
-                    value={newsletterEmail}
-                    onChange={(e) => setNewsletterEmail(e.target.value)}
-                    required
-                  />
+                <div className="flex flex-col sm:flex-row gap-4 p-2 bg-white/10 backdrop-blur-md rounded-lg border border-white/10 shadow-[0_0_30px_rgba(255,255,255,0.1)]">
+                  <div className="relative flex-grow">
+                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <Input
+                      type="email"
+                      placeholder="Join the Early Bird Waitlist"
+                      className="pl-10 bg-white/5 border-gray-500/30 text-white placeholder:text-gray-400"
+                      value={newsletterEmail}
+                      onChange={(e) => setNewsletterEmail(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <Button type="submit" className="bg-[#0EA5E9] hover:bg-[#0EA5E9]/80 text-white px-8 shadow-lg">
+                    Subscribe
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
                 </div>
-                <Button type="submit" className="bg-[#0EA5E9] hover:bg-[#0EA5E9]/80 text-white px-8 shadow-lg">
-                  Subscribe
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
+                <p className="text-sm text-gray-300 px-2">
+                  Be one of the first 1,000 AI builders to join our waitlist and receive a{' '}
+                  <span className="text-[#D946EF] font-semibold">free AI-powered valuation</span> plus{' '}
+                  <span className="text-[#0EA5E9] font-semibold">$100 in listing fees waived</span> when we go live.
+                </p>
               </motion.div>
             </form>
           </div>

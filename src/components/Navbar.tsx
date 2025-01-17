@@ -10,8 +10,8 @@ export const Navbar = () => {
       className="fixed top-0 w-full backdrop-blur-md z-50 border-b border-white/10"
     >
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <Link to="/" className="text-xl font-semibold text-white">
-          AISaaS Market
+        <Link to="/" className="font-exo text-xl font-semibold bg-gradient-to-r from-[#D946EF] via-[#8B5CF6] to-[#0EA5E9] text-transparent bg-clip-text">
+          AI Exchange
         </Link>
         <div className="flex items-center gap-4">
           <Link to="/marketplace">
