@@ -1,6 +1,6 @@
 import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
-import { Stats } from "@/components/Stats";
+import { Footer } from "@/components/Footer";
 
 const Index = () => {
   return (
@@ -8,8 +8,8 @@ const Index = () => {
       <Navbar />
       <main>
         <Hero />
-        <Stats />
       </main>
+      <Footer />
     </div>
   );
 };
