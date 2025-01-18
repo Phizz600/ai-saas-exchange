@@ -12,7 +12,7 @@ import {
 import { ProductCard } from "@/components/ProductCard";
 import { motion } from "framer-motion";
 
-// Updated mock data
+// Updated mock data with correct Achievement types
 const mockProducts = [
   {
     id: 1,
@@ -29,8 +29,8 @@ const mockProducts = [
       name: "John Doe",
       avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=John",
       achievements: [
-        { type: "TopBidder", label: "Top Bidder" },
-        { type: "DealmakerOfMonth", label: "Dealmaker of the Month" }
+        { type: "TopBidder" as const, label: "Top Bidder" },
+        { type: "DealmakerOfMonth" as const, label: "Dealmaker of the Month" }
       ]
     }
   },
@@ -49,8 +49,8 @@ const mockProducts = [
       name: "Jane Smith",
       avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jane",
       achievements: [
-        { type: "FirstTimeBuyer", label: "First-Time Buyer" },
-        { type: "SuccessfulAcquisition", label: "Successful Acquisition" }
+        { type: "FirstTimeBuyer" as const, label: "First-Time Buyer" },
+        { type: "SuccessfulAcquisition" as const, label: "Successful Acquisition" }
       ]
     }
   },
