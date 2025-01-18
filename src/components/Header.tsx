@@ -13,7 +13,7 @@ export const Header = () => {
             <div className="flex items-center gap-8">
               <Link to="/" className="flex items-center space-x-2">
                 <span className="text-purple-400">&lt;/&gt;</span>
-                <span className="text-2xl font-bold bg-gradient-to-r from-[#9b87f5] via-[#7E69AB] to-[#0EA5E9] text-transparent bg-clip-text">
+                <span className="text-2xl font-bold bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-transparent bg-clip-text">
                   AI Exchange Club
                 </span>
               </Link>
