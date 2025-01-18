@@ -7,8 +7,9 @@ import { ProductCardActions } from "./marketplace/product-card/ProductCardAction
 import { RelatedProducts } from "./marketplace/product-card/RelatedProducts";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Eye } from "lucide-react";
+import { Eye, Shield, AlertCircle } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface ProductCardProps {
   product: {
@@ -91,6 +92,23 @@ export function ProductCard({ product }: ProductCardProps) {
                   )}
                 </div>
               </div>
+
+              <Alert className="bg-blue-50 border-blue-200">
+                <Shield className="h-4 w-4 text-blue-600" />
+                <AlertDescription className="text-blue-800">
+                  This transaction is protected by our Secure Purchase Program. 
+                  Payment is held in escrow until both parties confirm the transfer is complete.
+                </AlertDescription>
+              </Alert>
+
+              <Alert className="bg-amber-50 border-amber-200">
+                <AlertCircle className="h-4 w-4 text-amber-600" />
+                <AlertDescription className="text-amber-800">
+                  Always communicate and complete transactions through our platform 
+                  for your security. Report suspicious behavior immediately.
+                </AlertDescription>
+              </Alert>
+
               <RelatedProducts 
                 currentProductCategory={product.category}
                 currentProductId={product.id}
