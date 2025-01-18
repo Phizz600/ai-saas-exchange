@@ -56,9 +56,9 @@ export const LiveChatButton = () => {
       <Button
         onClick={() => setIsOpen(!isOpen)}
         size="icon"
-        className="w-14 h-14 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_25px_rgb(0,0,0,0.25)] bg-gradient-to-r from-[#D946EF] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 transition-all duration-300"
+        className="w-16 h-16 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_25px_rgb(0,0,0,0.25)] bg-gradient-to-r from-[#D946EF] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 transition-all duration-300"
       >
-        <MessageCircle className="h-6 w-6" />
+        <MessageCircle className="h-8 w-8" />
       </Button>
     </div>
   );
