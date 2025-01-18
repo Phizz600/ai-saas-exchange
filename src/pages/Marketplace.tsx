@@ -12,7 +12,7 @@ import {
 import { ProductCard } from "@/components/ProductCard";
 import { motion } from "framer-motion";
 
-// Temporary mock data
+// Updated mock data
 const mockProducts = [
   {
     id: 1,
@@ -24,6 +24,15 @@ const mockProducts = [
     monthlyRevenue: 5000,
     image: "https://placehold.co/600x400",
     timeLeft: "2d 5h",
+    seller: {
+      id: 1,
+      name: "John Doe",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=John",
+      achievements: [
+        { type: "TopBidder", label: "Top Bidder" },
+        { type: "DealmakerOfMonth", label: "Dealmaker of the Month" }
+      ]
+    }
   },
   {
     id: 2,
@@ -35,6 +44,15 @@ const mockProducts = [
     monthlyRevenue: 0,
     image: "https://placehold.co/600x400",
     timeLeft: "5d 12h",
+    seller: {
+      id: 2,
+      name: "Jane Smith",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jane",
+      achievements: [
+        { type: "FirstTimeBuyer", label: "First-Time Buyer" },
+        { type: "SuccessfulAcquisition", label: "Successful Acquisition" }
+      ]
+    }
   },
 ];
 

@@ -1,4 +1,4 @@
-import { Heart, Clock } from "lucide-react";
+import { Heart, Clock, Trophy, Award, BadgeCheck, BadgeDollarSign } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,6 +9,25 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+
+interface Achievement {
+  type: "FirstTimeBuyer" | "SuccessfulAcquisition" | "TopBidder" | "DealmakerOfMonth";
+  label: string;
+}
+
+interface Seller {
+  id: number;
+  name: string;
+  avatar: string;
+  achievements: Achievement[];
+}
 
 interface ProductCardProps {
   product: {
@@ -21,8 +40,22 @@ interface ProductCardProps {
     monthlyRevenue: number;
     image: string;
     timeLeft: string;
+    seller: Seller;
   };
 }
+
+const getAchievementIcon = (type: Achievement["type"]) => {
+  switch (type) {
+    case "FirstTimeBuyer":
+      return <Award className="h-4 w-4" />;
+    case "SuccessfulAcquisition":
+      return <Trophy className="h-4 w-4" />;
+    case "TopBidder":
+      return <BadgeCheck className="h-4 w-4" />;
+    case "DealmakerOfMonth":
+      return <BadgeDollarSign className="h-4 w-4" />;
+  }
+};
 
 export function ProductCard({ product }: ProductCardProps) {
   return (
@@ -50,6 +83,43 @@ export function ProductCard({ product }: ProductCardProps) {
             <Clock className="h-4 w-4 mr-1" />
             {product.timeLeft}
           </div>
+          <HoverCard>
+            <HoverCardTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute top-2 left-2 p-1"
+              >
+                <Avatar className="h-8 w-8 border-2 border-white">
+                  <AvatarImage src={product.seller.avatar} alt={product.seller.name} />
+                  <AvatarFallback>{product.seller.name.charAt(0)}</AvatarFallback>
+                </Avatar>
+              </Button>
+            </HoverCardTrigger>
+            <HoverCardContent className="w-80">
+              <div className="flex justify-between space-x-4">
+                <Avatar className="h-12 w-12">
+                  <AvatarImage src={product.seller.avatar} />
+                  <AvatarFallback>{product.seller.name.charAt(0)}</AvatarFallback>
+                </Avatar>
+                <div className="space-y-1">
+                  <h4 className="text-sm font-semibold">{product.seller.name}</h4>
+                  <div className="flex flex-wrap gap-1">
+                    {product.seller.achievements.map((achievement, index) => (
+                      <Badge
+                        key={index}
+                        variant="secondary"
+                        className="flex items-center gap-1 text-xs"
+                      >
+                        {getAchievementIcon(achievement.type)}
+                        {achievement.label}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </HoverCardContent>
+          </HoverCard>
         </div>
         <CardHeader>
           <div className="flex justify-between items-start">
