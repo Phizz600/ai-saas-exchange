@@ -1,4 +1,4 @@
-import { Youtube, Instagram, Beehive } from "lucide-react";
+import { Youtube, Instagram, Rss } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 
@@ -17,7 +17,7 @@ export const Footer = () => {
   const socialLinks = [
     { icon: Youtube, href: "#", label: "YouTube" },
     { icon: Instagram, href: "#", label: "Instagram" },
-    { icon: Beehive, href: "#", label: "Beehiiv" },
+    { icon: Rss, href: "#", label: "Beehiiv" },
   ];
 
   return (
