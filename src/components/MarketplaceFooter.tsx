@@ -17,7 +17,7 @@ export const MarketplaceFooter = () => {
   };
 
   return (
-    <footer className="w-full bg-gradient-to-r from-accent2 via-accent to-accent3 mt-24 py-16 text-white">
+    <footer className="w-screen bg-gradient-to-r from-accent2 via-accent to-accent3 mt-24 py-16 text-white relative left-[50%] right-[50%] ml-[-50vw] mr-[-50vw]">
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="col-span-1 md:col-span-2">
@@ -68,11 +68,11 @@ export const MarketplaceFooter = () => {
               © 2024 AI Exchange Club. All rights reserved.
             </p>
             <div className="flex gap-6">
+              <a href="https://youtube.com" className="text-white/60 hover:text-white">YouTube</a>
+              <a href="https://instagram.com" className="text-white/60 hover:text-white">Instagram</a>
               <a href="https://twitter.com" className="text-white/60 hover:text-white">Twitter</a>
               <a href="https://linkedin.com" className="text-white/60 hover:text-white">LinkedIn</a>
               <a href="https://github.com" className="text-white/60 hover:text-white">GitHub</a>
-              <a href="https://youtube.com" className="text-white/60 hover:text-white">YouTube</a>
-              <a href="https://instagram.com" className="text-white/60 hover:text-white">Instagram</a>
             </div>
           </div>
         </div>
