@@ -84,10 +84,14 @@ export const SearchFilters = ({
             <SelectTrigger className="w-[140px] bg-gray-50/50 border-gray-200/50">
               <SelectValue placeholder="Industry" />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Industries</SelectItem>
+            <SelectContent className="bg-white border shadow-lg">
+              <SelectItem value="all" className="hover:bg-gray-50">All Industries</SelectItem>
               {industries.map((industry) => (
-                <SelectItem key={industry} value={industry.toLowerCase()}>
+                <SelectItem 
+                  key={industry} 
+                  value={industry.toLowerCase()}
+                  className="hover:bg-gray-50"
+                >
                   {industry}
                 </SelectItem>
               ))}
@@ -98,10 +102,14 @@ export const SearchFilters = ({
             <SelectTrigger className="w-[140px] bg-gray-50/50 border-gray-200/50">
               <SelectValue placeholder="Stage" />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Stages</SelectItem>
+            <SelectContent className="bg-white border shadow-lg">
+              <SelectItem value="all" className="hover:bg-gray-50">All Stages</SelectItem>
               {stages.map((stage) => (
-                <SelectItem key={stage} value={stage.toLowerCase()}>
+                <SelectItem 
+                  key={stage} 
+                  value={stage.toLowerCase()}
+                  className="hover:bg-gray-50"
+                >
                   {stage}
                 </SelectItem>
               ))}
@@ -112,10 +120,14 @@ export const SearchFilters = ({
             <SelectTrigger className="w-[140px] bg-gray-50/50 border-gray-200/50">
               <SelectValue placeholder="Price Range" />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Prices</SelectItem>
+            <SelectContent className="bg-white border shadow-lg">
+              <SelectItem value="all" className="hover:bg-gray-50">All Prices</SelectItem>
               {priceRanges.map((range) => (
-                <SelectItem key={range} value={range.toLowerCase()}>
+                <SelectItem 
+                  key={range} 
+                  value={range.toLowerCase()}
+                  className="hover:bg-gray-50"
+                >
                   {range}
                 </SelectItem>
               ))}
@@ -126,9 +138,13 @@ export const SearchFilters = ({
             <SelectTrigger className="w-[140px] bg-gray-50/50 border-gray-200/50">
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-white border shadow-lg">
               {sortOptions.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
+                <SelectItem 
+                  key={option.value} 
+                  value={option.value}
+                  className="hover:bg-gray-50"
+                >
                   {option.label}
                 </SelectItem>
               ))}
