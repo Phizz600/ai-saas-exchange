@@ -1,8 +1,14 @@
+import { useState } from "react";
 import { Accordion } from "@/components/ui/accordion";
 import { FAQItem } from "@/components/marketplace/FAQItem";
 import { faqData } from "@/data/faqData";
+import { Button } from "@/components/ui/button";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 export const MarketplaceFAQ = () => {
+  const [showAll, setShowAll] = useState(false);
+  const displayedFAQs = showAll ? faqData : faqData.slice(0, 3);
+
   return (
     <div className="w-full max-w-7xl mx-auto px-4 md:px-8 py-16 bg-gradient-to-b from-white to-gray-50">
       <div className="max-w-4xl mx-auto">
@@ -14,10 +20,30 @@ export const MarketplaceFAQ = () => {
         </p>
         
         <Accordion type="single" collapsible className="w-full space-y-6">
-          {faqData.map((faq) => (
+          {displayedFAQs.map((faq) => (
             <FAQItem key={faq.id} item={faq} />
           ))}
         </Accordion>
+
+        {faqData.length > 3 && (
+          <div className="mt-8 text-center">
+            <Button
+              variant="outline"
+              onClick={() => setShowAll(!showAll)}
+              className="gap-2"
+            >
+              {showAll ? (
+                <>
+                  Show Less <ChevronUp className="h-4 w-4" />
+                </>
+              ) : (
+                <>
+                  Load More <ChevronDown className="h-4 w-4" />
+                </>
+              )}
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );
