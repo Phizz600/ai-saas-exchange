@@ -7,6 +7,7 @@ import { ProductCardActions } from "./marketplace/product-card/ProductCardAction
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Eye } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ProductCardProps {
   product: {
@@ -33,6 +34,7 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   const [isFavorited, setIsFavorited] = useState(false);
+  const isMobile = useIsMobile();
 
   const toggleFavorite = () => {
     setIsFavorited(!isFavorited);
@@ -42,34 +44,48 @@ export function ProductCard({ product }: ProductCardProps) {
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      whileHover={{ y: -5 }}
+      whileHover={!isMobile ? { y: -5 } : undefined}
       transition={{ duration: 0.2 }}
-      className="group"
+      className="group touch-manipulation"
     >
       <Card className="overflow-hidden bg-gradient-to-b from-white to-gray-50/50 backdrop-blur-xl border-gray-100/50 shadow-lg">
         <Dialog>
           <DialogTrigger asChild>
-            <Button variant="ghost" className="absolute top-2 right-14 z-10 p-2 bg-white/10 backdrop-blur-md hover:bg-white/20">
+            <Button 
+              variant="ghost" 
+              className="absolute top-2 right-14 z-10 p-2 bg-white/10 backdrop-blur-md hover:bg-white/20"
+              style={{ 
+                WebkitTapHighlightColor: 'transparent',
+                touchAction: 'manipulation'
+              }}
+            >
               <Eye className="h-4 w-4" />
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="max-w-2xl mx-4 sm:mx-auto">
             <div className="grid gap-4">
               <div className="aspect-video overflow-hidden rounded-lg">
-                <img src={product.image} alt={product.title} className="object-cover w-full h-full" />
+                <img 
+                  src={product.image} 
+                  alt={product.title} 
+                  className="object-cover w-full h-full"
+                  loading="lazy"
+                />
               </div>
               <div>
-                <h2 className="text-2xl font-bold">{product.title}</h2>
+                <h2 className="text-xl sm:text-2xl font-bold">{product.title}</h2>
                 <p className="text-gray-600 mt-2">{product.description}</p>
                 <div className="mt-4 grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-sm text-gray-500">Price</p>
-                    <p className="text-2xl font-bold">${product.price.toLocaleString()}</p>
+                    <p className="text-xl sm:text-2xl font-bold">${product.price.toLocaleString()}</p>
                   </div>
                   {product.stage === "Revenue" && (
                     <div>
                       <p className="text-sm text-gray-500">Monthly Revenue</p>
-                      <p className="text-2xl font-bold text-green-600">${product.monthlyRevenue.toLocaleString()}</p>
+                      <p className="text-xl sm:text-2xl font-bold text-green-600">
+                        ${product.monthlyRevenue.toLocaleString()}
+                      </p>
                     </div>
                   )}
                 </div>

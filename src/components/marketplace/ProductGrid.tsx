@@ -31,7 +31,7 @@ interface ProductGridProps {
 export const ProductGrid = ({ products, isLoading = false }: ProductGridProps) => {
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 py-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 py-4 sm:py-8 px-2 sm:px-0">
         {Array.from({ length: 6 }).map((_, index) => (
           <ProductCardSkeleton key={index} />
         ))}
@@ -41,7 +41,7 @@ export const ProductGrid = ({ products, isLoading = false }: ProductGridProps) =
 
   if (products.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-12 text-center">
+      <div className="flex flex-col items-center justify-center py-8 sm:py-12 text-center px-4">
         <div className="bg-gray-50 rounded-full p-4 mb-4">
           <Search className="h-8 w-8 text-gray-400" />
         </div>
@@ -54,7 +54,7 @@ export const ProductGrid = ({ products, isLoading = false }: ProductGridProps) =
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 py-8">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 py-4 sm:py-8 px-2 sm:px-0">
       {products.map((product) => (
         <ProductCard key={product.id} product={product} />
       ))}
