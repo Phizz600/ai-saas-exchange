@@ -2,15 +2,11 @@ import { Search, SlidersHorizontal, X, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
+import { useDebounce } from "use-debounce";
+import { useEffect, useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
 
 interface SearchFiltersProps {
   searchQuery: string;
@@ -69,6 +65,14 @@ export const SearchFilters = ({
   setSortBy,
   isLoading = false,
 }: SearchFiltersProps) => {
+  const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
+  const [debouncedSearchQuery] = useDebounce(localSearchQuery, 300);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    setSearchQuery(debouncedSearchQuery);
+  }, [debouncedSearchQuery, setSearchQuery]);
+
   const hasActiveFilters = searchQuery || industryFilter !== 'all' || stageFilter !== 'all' || priceFilter !== 'all' || timeFilter !== 'all';
 
   const clearAllFilters = () => {
@@ -124,8 +128,11 @@ export const SearchFilters = ({
           <div className="relative flex-grow">
             <Input
               placeholder="Search AI products..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              value={localSearchQuery}
+              onChange={(e) => {
+                setLocalSearchQuery(e.target.value);
+                console.log('Search input changed:', e.target.value);
+              }}
               className="pl-10 bg-gray-50/50 border-gray-200/50 focus:border-primary/50 focus:ring-primary/50"
               disabled={isLoading}
             />
