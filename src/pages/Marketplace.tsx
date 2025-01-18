@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, Plus } from "lucide-react";
+import { Search, Plus, ArrowUpDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,6 +9,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { ProductCard } from "@/components/ProductCard";
 import { motion } from "framer-motion";
 import { FeaturedCompaniesSlideshow } from "@/components/FeaturedCompaniesSlideshow";
@@ -189,19 +195,52 @@ const mockProducts = [
   }
 ];
 
+type SortOption = "relevant" | "price_asc" | "price_desc" | "recent";
+
+const sortOptions: { value: SortOption; label: string }[] = [
+  { value: "relevant", label: "Most Relevant" },
+  { value: "price_asc", label: "Lowest Price" },
+  { value: "price_desc", label: "Highest Price" },
+  { value: "recent", label: "Most Recent" },
+];
+
 export default function Marketplace() {
   const [searchQuery, setSearchQuery] = useState("");
   const [industryFilter, setIndustryFilter] = useState("all");
   const [stageFilter, setStageFilter] = useState("all");
   const [priceFilter, setPriceFilter] = useState("all");
   const [timeFilter, setTimeFilter] = useState("all");
+  const [sortBy, setSortBy] = useState<SortOption>("relevant");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
+  // Sort products based on selected option
+  const getSortedProducts = () => {
+    let sorted = [...mockProducts];
+    switch (sortBy) {
+      case "price_asc":
+        return sorted.sort((a, b) => a.price - b.price);
+      case "price_desc":
+        return sorted.sort((a, b) => b.price - a.price);
+      case "recent":
+        return sorted.sort((a, b) => {
+          // Convert timeLeft to comparable values (assuming format "Xd Yh")
+          const getHours = (time: string) => {
+            const [days, hours] = time.split(" ");
+            return parseInt(days) * 24 + parseInt(hours);
+          };
+          return getHours(b.timeLeft) - getHours(a.timeLeft);
+        });
+      default:
+        return sorted; // Most relevant (default order)
+    }
+  };
+
+  const sortedProducts = getSortedProducts();
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = mockProducts.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(mockProducts.length / itemsPerPage);
+  const currentItems = sortedProducts.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(sortedProducts.length / itemsPerPage);
 
   return (
     <div className="min-h-screen bg-white pt-24 px-4 md:px-8">
@@ -223,7 +262,7 @@ export default function Marketplace() {
       <FeaturedCompaniesSlideshow />
 
       <div className="bg-white shadow-lg rounded-lg p-6 mb-8 border border-gray-100">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
           <div className="relative">
             <Input
               placeholder="Search products..."
@@ -233,6 +272,7 @@ export default function Marketplace() {
             />
             <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
           </div>
+          
           <Select value={industryFilter} onValueChange={setIndustryFilter}>
             <SelectTrigger className="bg-[#f3f3f3]">
               <SelectValue placeholder="Industry" />
@@ -246,6 +286,7 @@ export default function Marketplace() {
               ))}
             </SelectContent>
           </Select>
+          
           <Select value={stageFilter} onValueChange={setStageFilter}>
             <SelectTrigger className="bg-[#f3f3f3]">
               <SelectValue placeholder="Stage" />
@@ -259,6 +300,7 @@ export default function Marketplace() {
               ))}
             </SelectContent>
           </Select>
+          
           <Select value={priceFilter} onValueChange={setPriceFilter}>
             <SelectTrigger className="bg-[#f3f3f3]">
               <SelectValue placeholder="Price Range" />
@@ -272,6 +314,7 @@ export default function Marketplace() {
               ))}
             </SelectContent>
           </Select>
+          
           <Select value={timeFilter} onValueChange={setTimeFilter}>
             <SelectTrigger className="bg-[#f3f3f3]">
               <SelectValue placeholder="Time Left" />
@@ -282,6 +325,19 @@ export default function Marketplace() {
               <SelectItem value="1-3-days">1-3 Days</SelectItem>
               <SelectItem value="3-7-days">3-7 Days</SelectItem>
               <SelectItem value="7-plus-days">7+ Days</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Select value={sortBy} onValueChange={(value: SortOption) => setSortBy(value)}>
+            <SelectTrigger className="bg-[#f3f3f3]">
+              <SelectValue placeholder="Sort by" />
+            </SelectTrigger>
+            <SelectContent className="bg-white border-gray-200">
+              {sortOptions.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
