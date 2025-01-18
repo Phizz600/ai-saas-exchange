@@ -47,6 +47,7 @@ export const useMarketplaceProducts = ({
   return {
     currentItems,
     totalPages,
-    isLoading: false, // Added isLoading property
+    isLoading: false,
+    error: null as Error | null, // Add error property with proper typing
   };
 };
