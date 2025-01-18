@@ -1,13 +1,14 @@
-import { Heart, Bookmark } from "lucide-react";
+import { Heart, Bookmark, Clock, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Clock, Eye } from "lucide-react";
 import { SellerHoverCard } from "./SellerHoverCard";
 
 interface ProductCardImageProps {
   image: string;
   title: string;
   timeLeft: string;
+  isFavorited: boolean;
+  onFavoriteClick: () => void;
   seller: {
     name: string;
     avatar: string;
@@ -18,7 +19,14 @@ interface ProductCardImageProps {
   };
 }
 
-export function ProductCardImage({ image, title, timeLeft, seller }: ProductCardImageProps) {
+export function ProductCardImage({ 
+  image, 
+  title, 
+  timeLeft, 
+  seller,
+  isFavorited,
+  onFavoriteClick 
+}: ProductCardImageProps) {
   return (
     <div className="relative aspect-video overflow-hidden">
       <img
@@ -38,9 +46,12 @@ export function ProductCardImage({ image, title, timeLeft, seller }: ProductCard
         <Button
           variant="ghost"
           size="icon"
-          className="bg-white/10 backdrop-blur-md hover:bg-white/20 text-white"
+          className={`bg-white/10 backdrop-blur-md hover:bg-white/20 text-white ${
+            isFavorited ? "text-red-500" : ""
+          }`}
+          onClick={onFavoriteClick}
         >
-          <Heart className="h-5 w-5" />
+          <Heart className={`h-5 w-5 ${isFavorited ? "fill-current" : ""}`} />
         </Button>
       </div>
       <div className="absolute bottom-2 right-2 flex gap-2">

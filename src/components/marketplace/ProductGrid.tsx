@@ -1,5 +1,6 @@
 import { ProductCard } from "@/components/ProductCard";
-import { Loader2, Search } from "lucide-react"; // Added Search import
+import { ProductCardSkeleton } from "./product-card/ProductCardSkeleton";
+import { Search } from "lucide-react";
 
 interface Product {
   id: number;
@@ -30,9 +31,10 @@ interface ProductGridProps {
 export const ProductGrid = ({ products, isLoading = false }: ProductGridProps) => {
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center py-12">
-        <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
-        <p className="text-gray-600">Loading products...</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 py-8">
+        {Array.from({ length: 6 }).map((_, index) => (
+          <ProductCardSkeleton key={index} />
+        ))}
       </div>
     );
   }
