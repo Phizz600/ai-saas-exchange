@@ -19,11 +19,11 @@ const mockProducts = [
     title: "AI Content Generator",
     description: "Generate high-quality content using advanced AI models",
     price: 25000,
-    category: "Content",
+    category: "Content Generation",
     stage: "Revenue",
     monthlyRevenue: 5000,
     image: "https://placehold.co/600x400",
-    timeLeft: "2d 5h", // Added for auction
+    timeLeft: "2d 5h",
   },
   {
     id: 2,
@@ -34,7 +34,7 @@ const mockProducts = [
     stage: "MVP",
     monthlyRevenue: 0,
     image: "https://placehold.co/600x400",
-    timeLeft: "5d 12h", // Added for auction
+    timeLeft: "5d 12h",
   },
 ];
 
@@ -54,6 +54,16 @@ const industries = [
   "Productivity",
   "Sales",
   "Security",
+  "Computer Vision",
+  "Natural Language Processing",
+  "Robotics",
+  "IoT",
+  "Blockchain",
+  "DevOps",
+  "Business Intelligence",
+  "API Services",
+  "Cloud Computing",
+  "Cybersecurity",
 ];
 
 const stages = [
@@ -89,7 +99,11 @@ export default function Marketplace() {
       >
         {/* Header with List Product Button */}
         <div className="flex justify-between items-center mb-12">
-          <img src="/logo.png" alt="AI Exchange Club" className="h-12" />
+          <div className="flex flex-col items-center">
+            <span className="font-exo text-3xl font-semibold bg-gradient-to-r from-[#D946EF] via-[#8B5CF6] to-[#0EA5E9] text-transparent bg-clip-text">
+              AI Exchange Club
+            </span>
+          </div>
           <Button 
             className="bg-[#0EA4E9] hover:bg-[#0EA4E9]/90 text-white font-semibold"
             onClick={() => console.log("List Product clicked")}
@@ -112,10 +126,10 @@ export default function Marketplace() {
               <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
             </div>
             <Select value={industryFilter} onValueChange={setIndustryFilter}>
-              <SelectTrigger>
+              <SelectTrigger className="bg-[#f3f3f3]">
                 <SelectValue placeholder="Industry" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-white border-gray-200">
                 <SelectItem value="all">All Industries</SelectItem>
                 {industries.map((industry) => (
                   <SelectItem key={industry} value={industry.toLowerCase()}>
@@ -125,10 +139,10 @@ export default function Marketplace() {
               </SelectContent>
             </Select>
             <Select value={stageFilter} onValueChange={setStageFilter}>
-              <SelectTrigger>
+              <SelectTrigger className="bg-[#f3f3f3]">
                 <SelectValue placeholder="Stage" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-white border-gray-200">
                 <SelectItem value="all">All Stages</SelectItem>
                 {stages.map((stage) => (
                   <SelectItem key={stage} value={stage.toLowerCase()}>
@@ -138,10 +152,10 @@ export default function Marketplace() {
               </SelectContent>
             </Select>
             <Select value={priceFilter} onValueChange={setPriceFilter}>
-              <SelectTrigger>
+              <SelectTrigger className="bg-[#f3f3f3]">
                 <SelectValue placeholder="Price Range" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-white border-gray-200">
                 <SelectItem value="all">All Prices</SelectItem>
                 {priceRanges.map((range) => (
                   <SelectItem key={range} value={range.toLowerCase()}>
@@ -151,10 +165,10 @@ export default function Marketplace() {
               </SelectContent>
             </Select>
             <Select value={timeFilter} onValueChange={setTimeFilter}>
-              <SelectTrigger>
+              <SelectTrigger className="bg-[#f3f3f3]">
                 <SelectValue placeholder="Time Left" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-white border-gray-200">
                 <SelectItem value="all">All Auctions</SelectItem>
                 <SelectItem value="ending-soon">Ending Soon (24h)</SelectItem>
                 <SelectItem value="1-3-days">1-3 Days</SelectItem>

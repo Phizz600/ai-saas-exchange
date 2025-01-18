@@ -55,9 +55,14 @@ export function ProductCard({ product }: ProductCardProps) {
           <div className="flex justify-between items-start">
             <div>
               <CardTitle className="text-xl text-gray-900">{product.title}</CardTitle>
-              <CardDescription className="text-gray-500">
-                {product.category}
-              </CardDescription>
+              <div className="flex gap-2 items-center mt-1">
+                <CardDescription className="text-gray-500">
+                  {product.category}
+                </CardDescription>
+                <span className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800">
+                  {product.stage}
+                </span>
+              </div>
             </div>
             <div className="text-right">
               <div className="text-lg font-bold text-gray-900">
