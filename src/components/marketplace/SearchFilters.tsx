@@ -48,6 +48,7 @@ const sortOptions = [
   { value: "price_asc", label: "Lowest Price" },
   { value: "price_desc", label: "Highest Price" },
   { value: "recent", label: "Most Recent" },
+  { value: "popular", label: "Most Popular" },
 ];
 
 export const SearchFilters = ({

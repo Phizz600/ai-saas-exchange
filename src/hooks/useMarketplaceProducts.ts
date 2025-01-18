@@ -32,6 +32,9 @@ export const useMarketplaceProducts = ({
           };
           return getHours(b.timeLeft) - getHours(a.timeLeft);
         });
+      case "popular":
+        // Simulated popularity based on monthly revenue
+        return sorted.sort((a, b) => b.monthlyRevenue - a.monthlyRevenue);
       default:
         return sorted;
     }
@@ -44,10 +47,20 @@ export const useMarketplaceProducts = ({
   const currentItems = sortedProducts.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(sortedProducts.length / itemsPerPage);
 
+  // Get categories overview
+  const categoriesOverview = useMemo(() => {
+    const categories = mockProducts.reduce((acc, product) => {
+      acc[product.category] = (acc[product.category] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+    return Object.entries(categories).map(([name, count]) => ({ name, count }));
+  }, []);
+
   return {
     currentItems,
     totalPages,
     isLoading: false,
-    error: null as Error | null, // Add error property with proper typing
+    error: null as Error | null,
+    categoriesOverview,
   };
 };
