@@ -66,10 +66,10 @@ export const FeaturedCompaniesSlideshow = () => {
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="hidden md:flex absolute left-4 top-1/2">
+        <CarouselPrevious className="hidden md:flex absolute -left-4 top-1/2 bg-white">
           <ArrowLeft className="h-4 w-4" />
         </CarouselPrevious>
-        <CarouselNext className="hidden md:flex absolute right-4 top-1/2">
+        <CarouselNext className="hidden md:flex absolute -right-4 top-1/2 bg-white">
           <ArrowRight className="h-4 w-4" />
         </CarouselNext>
       </Carousel>
