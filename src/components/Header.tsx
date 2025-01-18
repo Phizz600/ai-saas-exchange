@@ -11,8 +11,11 @@ export const Header = () => {
         <div className="container mx-auto px-4">
           <div className="h-16 flex items-center justify-between">
             <div className="flex items-center gap-8">
-              <Link to="/" className="text-2xl font-bold">
-                AI Exchange Club
+              <Link to="/" className="flex items-center space-x-2">
+                <span className="text-purple-400">&lt;/&gt;</span>
+                <span className="text-2xl font-bold bg-gradient-to-r from-[#9b87f5] via-[#7E69AB] to-[#0EA5E9] text-transparent bg-clip-text">
+                  AI Exchange Club
+                </span>
               </Link>
               <NavigationMenu>
                 <NavigationMenuList>
@@ -89,9 +92,6 @@ export const Header = () => {
             <div className="flex gap-4">
               <Button variant="outline" className="h-8">
                 Get a Free Valuation
-              </Button>
-              <Button className="bg-blue-600 hover:bg-blue-700 h-8">
-                Sell Now
               </Button>
             </div>
           </div>
