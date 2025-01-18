@@ -1,6 +1,4 @@
 import { useState } from "react";
-import { Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { SearchFilters } from "@/components/marketplace/SearchFilters";
 import { ProductGrid } from "@/components/marketplace/ProductGrid";
 import { MarketplacePagination } from "@/components/marketplace/MarketplacePagination";
@@ -191,16 +189,6 @@ export default function Marketplace() {
     <div className="min-h-screen bg-white">
       <Header />
       <div className="pt-40 px-4 md:px-8">
-        <div className="flex justify-between items-center mb-12">
-          <Button
-            className="bg-[#0EA4E9] hover:bg-[#0EA4E9]/90 text-white font-semibold"
-            onClick={() => console.log("List Product clicked")}
-          >
-            <Plus className="mr-2" />
-            Sell Your AI SaaS
-          </Button>
-        </div>
-
         <FeaturedCompaniesSlideshow />
 
         <SearchFilters
