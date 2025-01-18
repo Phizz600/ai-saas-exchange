@@ -13,6 +13,7 @@ import { ProductCard } from "@/components/ProductCard";
 import { motion } from "framer-motion";
 import { FeaturedCompaniesSlideshow } from "@/components/FeaturedCompaniesSlideshow";
 import { MarketplaceFooter } from "@/components/MarketplaceFooter";
+import { MarketplaceFAQ } from "@/components/MarketplaceFAQ";
 import {
   Pagination,
   PaginationContent,
@@ -217,7 +218,7 @@ export default function Marketplace() {
           List Your AI SaaS
         </Button>
       </div>
-
+      
       <FeaturedCompaniesSlideshow />
 
       <div className="bg-white shadow-lg rounded-lg p-6 mb-8 border border-gray-100">
@@ -320,6 +321,8 @@ export default function Marketplace() {
         </Pagination>
       </div>
 
+      <MarketplaceFAQ />
+      
       <MarketplaceFooter />
     </div>
   );
