@@ -63,14 +63,14 @@ export function SellerHoverCard({ seller }: SellerHoverCardProps) {
         side="right" 
         align="start" 
         sideOffset={10}
-        className="w-80 bg-card shadow-lg border border-gray-200/50 backdrop-blur-xl z-50"
+        className="w-64 bg-card shadow-lg border border-gray-200/50 backdrop-blur-xl"
       >
-        <div className="flex justify-between space-x-4">
-          <Avatar className="h-12 w-12">
+        <div className="flex space-x-3">
+          <Avatar className="h-10 w-10">
             <AvatarImage src={seller.avatar} />
             <AvatarFallback>{seller.name.charAt(0)}</AvatarFallback>
           </Avatar>
-          <div className="space-y-1 flex-1">
+          <div className="space-y-1">
             <h4 className="text-sm font-semibold">{seller.name}</h4>
             <div className="flex flex-wrap gap-1">
               {seller.achievements.map((achievement, index) => (
