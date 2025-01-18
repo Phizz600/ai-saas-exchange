@@ -216,7 +216,7 @@ export default function Marketplace() {
           onClick={() => console.log("List Product clicked")}
         >
           <Plus className="mr-2" />
-          List Your AI SaaS
+          Sell Your AI SaaS
         </Button>
       </div>
       
