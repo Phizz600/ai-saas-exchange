@@ -45,20 +45,25 @@ export function SellerHoverCard({ seller }: SellerHoverCardProps) {
           </Avatar>
         </Button>
       </HoverCardTrigger>
-      <HoverCardContent className="w-80 bg-white/90 backdrop-blur-xl border-gray-200/50">
+      <HoverCardContent 
+        side="right" 
+        align="start" 
+        sideOffset={10}
+        className="w-80 bg-card shadow-lg border border-gray-200/50 backdrop-blur-xl z-50"
+      >
         <div className="flex justify-between space-x-4">
           <Avatar className="h-12 w-12">
             <AvatarImage src={seller.avatar} />
             <AvatarFallback>{seller.name.charAt(0)}</AvatarFallback>
           </Avatar>
-          <div className="space-y-1">
+          <div className="space-y-1 flex-1">
             <h4 className="text-sm font-semibold">{seller.name}</h4>
             <div className="flex flex-wrap gap-1">
               {seller.achievements.map((achievement, index) => (
                 <Badge
                   key={index}
                   variant="secondary"
-                  className="flex items-center gap-1 text-xs bg-gray-100/80"
+                  className="flex items-center gap-1 text-xs bg-accent/10 hover:bg-accent/20"
                 >
                   {getAchievementIcon(achievement.type)}
                   {achievement.label}
