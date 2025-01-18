@@ -8,7 +8,7 @@ export const Navbar = () => {
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex flex-col items-center">
             <span className="text-purple-400 text-2xl mb-1">&lt;/&gt;</span>
-            <span className="text-3xl font-bold bg-gradient-to-r from-[#b975f5] via-[#8b5cf6] to-[#3b82f6] text-transparent bg-clip-text">
+            <span className="text-3xl font-bold bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-transparent bg-clip-text">
               AI Exchange Club
             </span>
           </Link>
