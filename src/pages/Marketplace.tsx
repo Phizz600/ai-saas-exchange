@@ -1,59 +1,13 @@
 import { useState } from "react";
-import { Search, Plus, ArrowUpDown } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { ProductCard } from "@/components/ProductCard";
-import { motion } from "framer-motion";
+import { SearchFilters } from "@/components/marketplace/SearchFilters";
+import { ProductGrid } from "@/components/marketplace/ProductGrid";
+import { MarketplacePagination } from "@/components/marketplace/MarketplacePagination";
 import { FeaturedCompaniesSlideshow } from "@/components/FeaturedCompaniesSlideshow";
 import { MarketplaceFooter } from "@/components/MarketplaceFooter";
 import { MarketplaceFAQ } from "@/components/MarketplaceFAQ";
 import { LiveChatButton } from "@/components/LiveChatButton";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
-
-const industries = [
-  "Content Generation",
-  "Customer Service",
-  "Image Generation",
-  "Development Tools",
-  "Audio Processing",
-  "Finance",
-  "Video Processing"
-];
-
-const stages = [
-  "MVP",
-  "Revenue",
-  "Pre-Revenue",
-  "Beta"
-];
-
-const priceRanges = [
-  "$0 - $10,000",
-  "$10,000 - $25,000",
-  "$25,000 - $50,000",
-  "$50,000+"
-];
 
 const mockProducts = [
   {
@@ -195,22 +149,13 @@ const mockProducts = [
   }
 ];
 
-type SortOption = "relevant" | "price_asc" | "price_desc" | "recent";
-
-const sortOptions: { value: SortOption; label: string }[] = [
-  { value: "relevant", label: "Most Relevant" },
-  { value: "price_asc", label: "Lowest Price" },
-  { value: "price_desc", label: "Highest Price" },
-  { value: "recent", label: "Most Recent" },
-];
-
 export default function Marketplace() {
   const [searchQuery, setSearchQuery] = useState("");
   const [industryFilter, setIndustryFilter] = useState("all");
   const [stageFilter, setStageFilter] = useState("all");
   const [priceFilter, setPriceFilter] = useState("all");
   const [timeFilter, setTimeFilter] = useState("all");
-  const [sortBy, setSortBy] = useState<SortOption>("relevant");
+  const [sortBy, setSortBy] = useState("relevant");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
@@ -224,7 +169,6 @@ export default function Marketplace() {
         return sorted.sort((a, b) => b.price - a.price);
       case "recent":
         return sorted.sort((a, b) => {
-          // Convert timeLeft to comparable values (assuming format "Xd Yh")
           const getHours = (time: string) => {
             const [days, hours] = time.split(" ");
             return parseInt(days) * 24 + parseInt(hours);
@@ -232,7 +176,7 @@ export default function Marketplace() {
           return getHours(b.timeLeft) - getHours(a.timeLeft);
         });
       default:
-        return sorted; // Most relevant (default order)
+        return sorted;
     }
   };
 
@@ -250,7 +194,7 @@ export default function Marketplace() {
             AI Exchange Club
           </span>
         </div>
-        <Button 
+        <Button
           className="bg-[#0EA4E9] hover:bg-[#0EA4E9]/90 text-white font-semibold"
           onClick={() => console.log("List Product clicked")}
         >
@@ -258,125 +202,31 @@ export default function Marketplace() {
           Sell Your AI SaaS
         </Button>
       </div>
-      
+
       <FeaturedCompaniesSlideshow />
 
-      <div className="bg-white shadow-lg rounded-lg p-6 mb-8 border border-gray-100">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
-          <div className="relative">
-            <Input
-              placeholder="Search products..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
-            />
-            <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-          </div>
-          
-          <Select value={industryFilter} onValueChange={setIndustryFilter}>
-            <SelectTrigger className="bg-[#f3f3f3]">
-              <SelectValue placeholder="Industry" />
-            </SelectTrigger>
-            <SelectContent className="bg-white border-gray-200">
-              <SelectItem value="all">All Industries</SelectItem>
-              {industries.map((industry) => (
-                <SelectItem key={industry} value={industry.toLowerCase()}>
-                  {industry}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          
-          <Select value={stageFilter} onValueChange={setStageFilter}>
-            <SelectTrigger className="bg-[#f3f3f3]">
-              <SelectValue placeholder="Stage" />
-            </SelectTrigger>
-            <SelectContent className="bg-white border-gray-200">
-              <SelectItem value="all">All Stages</SelectItem>
-              {stages.map((stage) => (
-                <SelectItem key={stage} value={stage.toLowerCase()}>
-                  {stage}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          
-          <Select value={priceFilter} onValueChange={setPriceFilter}>
-            <SelectTrigger className="bg-[#f3f3f3]">
-              <SelectValue placeholder="Price Range" />
-            </SelectTrigger>
-            <SelectContent className="bg-white border-gray-200">
-              <SelectItem value="all">All Prices</SelectItem>
-              {priceRanges.map((range) => (
-                <SelectItem key={range} value={range.toLowerCase()}>
-                  {range}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          
-          <Select value={timeFilter} onValueChange={setTimeFilter}>
-            <SelectTrigger className="bg-[#f3f3f3]">
-              <SelectValue placeholder="Time Left" />
-            </SelectTrigger>
-            <SelectContent className="bg-white border-gray-200">
-              <SelectItem value="all">All Auctions</SelectItem>
-              <SelectItem value="ending-soon">Ending Soon (24h)</SelectItem>
-              <SelectItem value="1-3-days">1-3 Days</SelectItem>
-              <SelectItem value="3-7-days">3-7 Days</SelectItem>
-              <SelectItem value="7-plus-days">7+ Days</SelectItem>
-            </SelectContent>
-          </Select>
+      <SearchFilters
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        industryFilter={industryFilter}
+        setIndustryFilter={setIndustryFilter}
+        stageFilter={stageFilter}
+        setStageFilter={setStageFilter}
+        priceFilter={priceFilter}
+        setPriceFilter={setPriceFilter}
+        timeFilter={timeFilter}
+        setTimeFilter={setTimeFilter}
+        sortBy={sortBy}
+        setSortBy={setSortBy}
+      />
 
-          <Select value={sortBy} onValueChange={(value: SortOption) => setSortBy(value)}>
-            <SelectTrigger className="bg-[#f3f3f3]">
-              <SelectValue placeholder="Sort by" />
-            </SelectTrigger>
-            <SelectContent className="bg-white border-gray-200">
-              {sortOptions.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
+      <ProductGrid products={currentItems} />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        {currentItems.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-      </div>
-
-      <div className="flex justify-center mb-12">
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious 
-                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
-              />
-            </PaginationItem>
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-              <PaginationItem key={page}>
-                <PaginationLink
-                  onClick={() => setCurrentPage(page)}
-                  isActive={currentPage === page}
-                >
-                  {page}
-                </PaginationLink>
-              </PaginationItem>
-            ))}
-            <PaginationItem>
-              <PaginationNext 
-                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      </div>
+      <MarketplacePagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        setCurrentPage={setCurrentPage}
+      />
 
       <MarketplaceFAQ />
       <MarketplaceFooter />
