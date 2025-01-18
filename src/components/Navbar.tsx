@@ -1,40 +1,30 @@
-import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import { Code } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export const Navbar = () => {
   return (
-    <motion.nav
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      className="fixed top-0 w-full backdrop-blur-md z-50 border-b border-white/10"
-    >
-      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <Link to="/" className="flex flex-col items-center">
-          <Code className="w-6 h-6 mb-1 text-[#D946EF]" />
-          <span className="font-exo text-xl font-semibold bg-gradient-to-r from-[#D946EF] via-[#8B5CF6] to-[#0EA5E9] text-transparent bg-clip-text">
-            AI Exchange Club
-          </span>
-        </Link>
-        <div className="flex items-center gap-4">
-          <Link to="/marketplace">
-            <Button variant="ghost" className="text-gray-200 hover:text-white hover:bg-white/10">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-accent shadow-lg backdrop-blur-sm bg-opacity-90">
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-between h-16">
+          <Link to="/" className="flex items-center space-x-2">
+            <span className="text-purple-400">&lt;/&gt;</span>
+            <span className="text-2xl font-bold bg-gradient-to-r from-[#9b87f5] via-[#7E69AB] to-[#0EA5E9] text-transparent bg-clip-text">
+              AI Exchange Club
+            </span>
+          </Link>
+          
+          <div className="hidden md:flex items-center space-x-6">
+            <Link to="/marketplace" className="text-gray-300 hover:text-white transition-colors">
               Marketplace
-            </Button>
-          </Link>
-          <Link to="/pricing">
-            <Button variant="ghost" className="text-gray-200 hover:text-white hover:bg-white/10">
-              Pricing & Fees
-            </Button>
-          </Link>
-          <Link to="/auth">
-            <Button className="bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] hover:from-[#D946EF] hover:to-[#8B5CF6] text-white shadow-lg">
-              Sign In
-            </Button>
-          </Link>
+            </Link>
+            <Link to="/auth">
+              <Button variant="secondary" className="bg-secondary hover:bg-secondary/90">
+                Sign In
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
-    </motion.nav>
+    </nav>
   );
 };
