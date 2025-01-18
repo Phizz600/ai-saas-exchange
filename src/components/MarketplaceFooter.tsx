@@ -71,6 +71,8 @@ export const MarketplaceFooter = () => {
               <a href="https://twitter.com" className="text-white/60 hover:text-white">Twitter</a>
               <a href="https://linkedin.com" className="text-white/60 hover:text-white">LinkedIn</a>
               <a href="https://github.com" className="text-white/60 hover:text-white">GitHub</a>
+              <a href="https://youtube.com" className="text-white/60 hover:text-white">YouTube</a>
+              <a href="https://instagram.com" className="text-white/60 hover:text-white">Instagram</a>
             </div>
           </div>
         </div>
