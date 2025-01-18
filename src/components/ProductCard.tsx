@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { ProductCardImage } from "./marketplace/product-card/ProductCardImage";
 import { ProductCardContent } from "./marketplace/product-card/ProductCardContent";
 import { ProductCardActions } from "./marketplace/product-card/ProductCardActions";
+import { RelatedProducts } from "./marketplace/product-card/RelatedProducts";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Eye } from "lucide-react";
@@ -90,6 +91,10 @@ export function ProductCard({ product }: ProductCardProps) {
                   )}
                 </div>
               </div>
+              <RelatedProducts 
+                currentProductCategory={product.category}
+                currentProductId={product.id}
+              />
             </div>
           </DialogContent>
         </Dialog>

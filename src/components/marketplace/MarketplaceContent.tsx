@@ -3,6 +3,7 @@ import { SearchFilters } from "@/components/marketplace/SearchFilters";
 import { ProductGrid } from "@/components/marketplace/ProductGrid";
 import { MarketplacePagination } from "@/components/marketplace/MarketplacePagination";
 import { CategoriesOverview } from "@/components/marketplace/CategoriesOverview";
+import { FeaturedProducts } from "@/components/marketplace/FeaturedProducts";
 import { useMarketplaceProducts } from "@/hooks/useMarketplaceProducts";
 import { useToast } from "@/hooks/use-toast";
 import { AlertCircle } from "lucide-react";
@@ -29,13 +30,18 @@ export const MarketplaceContent = () => {
   });
 
   useEffect(() => {
-    // Track page views
-    console.log('Analytics: Marketplace page viewed');
+    // Enhanced analytics tracking
+    console.log('Analytics: Marketplace page viewed', {
+      timestamp: new Date().toISOString(),
+      referrer: document.referrer,
+      userAgent: navigator.userAgent,
+    });
   }, []);
 
   useEffect(() => {
-    // Track filter changes
+    // Enhanced filter change tracking
     console.log('Analytics: Filters changed', {
+      timestamp: new Date().toISOString(),
       searchQuery,
       industryFilter,
       stageFilter,
@@ -43,8 +49,9 @@ export const MarketplaceContent = () => {
       timeFilter,
       sortBy,
       currentPage,
+      resultsCount: currentItems.length,
     });
-  }, [searchQuery, industryFilter, stageFilter, priceFilter, timeFilter, sortBy, currentPage]);
+  }, [searchQuery, industryFilter, stageFilter, priceFilter, timeFilter, sortBy, currentPage, currentItems.length]);
 
   if (error) {
     toast({
@@ -67,6 +74,7 @@ export const MarketplaceContent = () => {
   return (
     <>
       <CategoriesOverview />
+      <FeaturedProducts />
       <SearchFilters
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
