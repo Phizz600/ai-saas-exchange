@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { motion } from "framer-motion";
 
 export const MarketplaceFooter = () => {
   const [email, setEmail] = useState("");
@@ -16,9 +17,42 @@ export const MarketplaceFooter = () => {
     setEmail("");
   };
 
+  // Generate particles for the background
+  const particles = Array.from({ length: 20 }).map((_, i) => ({
+    id: i,
+    x: Math.random() * 100,
+    y: Math.random() * 100,
+    size: Math.random() * 10 + 5,
+  }));
+
   return (
-    <footer className="w-screen bg-gradient-to-r from-accent2 via-accent to-accent3 mt-24 py-16 text-white relative left-[50%] right-[50%] ml-[-50vw] mr-[-50vw]">
-      <div className="max-w-7xl mx-auto px-4 md:px-8">
+    <footer className="w-screen bg-gradient-to-r from-accent2 via-accent to-accent3 mt-24 py-16 text-white relative left-[50%] right-[50%] ml-[-50vw] mr-[-50vw] overflow-hidden">
+      {/* Animated background particles */}
+      <div className="absolute inset-0 pointer-events-none">
+        {particles.map((particle) => (
+          <motion.div
+            key={particle.id}
+            className="absolute bg-white/10 rounded-full"
+            style={{
+              left: `${particle.x}%`,
+              top: `${particle.y}%`,
+              width: particle.size,
+              height: particle.size,
+            }}
+            animate={{
+              y: [0, -20, 0],
+              opacity: [0.3, 0.6, 0.3],
+            }}
+            transition={{
+              duration: 3 + Math.random() * 2,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+        ))}
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 md:px-8 relative">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="col-span-1 md:col-span-2">
             <h3 className="text-2xl font-semibold mb-6">AI Exchange Club</h3>

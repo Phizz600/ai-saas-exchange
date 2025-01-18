@@ -203,42 +203,9 @@ export default function Marketplace() {
   const currentItems = mockProducts.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(mockProducts.length / itemsPerPage);
 
-  // Animated background elements
-  const particles = Array.from({ length: 20 }).map((_, i) => ({
-    id: i,
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    size: Math.random() * 10 + 5,
-  }));
-
   return (
-    <div className="min-h-screen bg-white pt-24 px-4 md:px-8 relative">
-      {/* Animated background particles */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        {particles.map((particle) => (
-          <motion.div
-            key={particle.id}
-            className="absolute bg-gray-200/30 rounded-full"
-            style={{
-              left: `${particle.x}%`,
-              top: `${particle.y}%`,
-              width: particle.size,
-              height: particle.size,
-            }}
-            animate={{
-              y: [0, -20, 0],
-              opacity: [0.3, 0.6, 0.3],
-            }}
-            transition={{
-              duration: 3 + Math.random() * 2,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-        ))}
-      </div>
-
-      <div className="flex justify-between items-center mb-12 relative">
+    <div className="min-h-screen bg-white pt-24 px-4 md:px-8">
+      <div className="flex justify-between items-center mb-12">
         <div className="flex flex-col items-center">
           <span className="font-exo text-3xl font-semibold bg-gradient-to-r from-[#D946EF] via-[#8B5CF6] to-[#0EA5E9] text-transparent bg-clip-text">
             AI Exchange Club
@@ -320,7 +287,7 @@ export default function Marketplace() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8 relative">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         {currentItems.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
@@ -356,7 +323,6 @@ export default function Marketplace() {
       </div>
 
       <MarketplaceFAQ />
-      
       <MarketplaceFooter />
       <LiveChatButton />
     </div>
