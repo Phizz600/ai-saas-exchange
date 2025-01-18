@@ -3,6 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Award, Trophy, BadgeCheck, BadgeDollarSign } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface Achievement {
   type: "FirstTimeBuyer" | "SuccessfulAcquisition" | "TopBidder" | "DealmakerOfMonth";
@@ -27,6 +28,19 @@ const getAchievementIcon = (type: Achievement["type"]) => {
       return <BadgeCheck className="h-4 w-4" />;
     case "DealmakerOfMonth":
       return <BadgeDollarSign className="h-4 w-4" />;
+  }
+};
+
+const getAchievementStyles = (type: Achievement["type"]) => {
+  switch (type) {
+    case "FirstTimeBuyer":
+      return "bg-purple-100 text-purple-800 hover:bg-purple-200";
+    case "SuccessfulAcquisition":
+      return "bg-green-100 text-green-800 hover:bg-green-200";
+    case "TopBidder":
+      return "bg-blue-100 text-blue-800 hover:bg-blue-200";
+    case "DealmakerOfMonth":
+      return "bg-orange-100 text-orange-800 hover:bg-orange-200";
   }
 };
 
@@ -63,7 +77,10 @@ export function SellerHoverCard({ seller }: SellerHoverCardProps) {
                 <Badge
                   key={index}
                   variant="secondary"
-                  className="flex items-center gap-1 text-xs bg-accent/10 hover:bg-accent/20"
+                  className={cn(
+                    "flex items-center gap-1 text-xs",
+                    getAchievementStyles(achievement.type)
+                  )}
                 >
                   {getAchievementIcon(achievement.type)}
                   {achievement.label}
