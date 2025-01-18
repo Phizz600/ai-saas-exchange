@@ -23,6 +23,30 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 
+const industries = [
+  "Content Generation",
+  "Customer Service",
+  "Image Generation",
+  "Development Tools",
+  "Audio Processing",
+  "Finance",
+  "Video Processing"
+];
+
+const stages = [
+  "MVP",
+  "Revenue",
+  "Pre-Revenue",
+  "Beta"
+];
+
+const priceRanges = [
+  "$0 - $10,000",
+  "$10,000 - $25,000",
+  "$25,000 - $50,000",
+  "$50,000+"
+];
+
 const mockProducts = [
   {
     id: 1,
