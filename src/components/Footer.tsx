@@ -1,4 +1,4 @@
-import { Youtube, Instagram, Linkedin, Twitter } from "lucide-react";
+import { Youtube, Instagram, Beehive } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 
@@ -17,18 +17,18 @@ export const Footer = () => {
   const socialLinks = [
     { icon: Youtube, href: "#", label: "YouTube" },
     { icon: Instagram, href: "#", label: "Instagram" },
-    { icon: Linkedin, href: "#", label: "LinkedIn" },
-    { icon: Twitter, href: "#", label: "Twitter" },
+    { icon: Beehive, href: "#", label: "Beehiiv" },
   ];
 
   return (
     <footer className="relative w-full py-8 bg-transparent">
       {/* Glowing cursor effect */}
       <div
-        className="fixed pointer-events-none w-[150px] h-[150px] rounded-full blur-[80px] bg-white/30 animate-pulse transition-all duration-300"
+        className="fixed pointer-events-none w-[150px] h-[150px] rounded-full blur-[80px] bg-white/30 transition-all duration-200"
         style={{
           left: `${mousePosition.x - 75}px`,
           top: `${mousePosition.y - 75}px`,
+          animation: "pulse 3s ease-in-out infinite",
         }}
       />
       
@@ -47,7 +47,7 @@ export const Footer = () => {
             ))}
           </div>
           <p className="text-white/40 text-sm">
-            © {new Date().getFullYear()} AI Exchange. All rights reserved.
+            © {new Date().getFullYear()} AI Exchange Club. All rights reserved.
           </p>
         </div>
       </div>

@@ -1,14 +1,24 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowRight, Mail, CircuitBoard, Brain, Network } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 export const Hero = () => {
   const [newsletterEmail, setNewsletterEmail] = useState("");
+  const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const navigate = useNavigate();
+  
+  const words = ["Companies", "Businesses", "Apps", "Plugins", "Tools", "MVPs"];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentWordIndex((prev) => (prev + 1) % words.length);
+    }, 2500);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleNewsletterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,7 +79,19 @@ export const Hero = () => {
             transition={{ delay: 0.2 }}
             className="font-exo text-5xl md:text-7xl font-bold text-white mb-6 leading-tight"
           >
-            Where AI SaaS Companies
+            Where AI{" "}
+            <AnimatePresence mode="wait">
+              <motion.span
+                key={currentWordIndex}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.5 }}
+                className="inline-block"
+              >
+                {words[currentWordIndex]}
+              </motion.span>
+            </AnimatePresence>
             <br />
             <span className="bg-gradient-to-r from-[#D946EF] via-[#8B5CF6] to-[#0EA5E9] text-transparent bg-clip-text">
               Find Their Perfect Match
