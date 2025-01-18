@@ -14,6 +14,7 @@ import { motion } from "framer-motion";
 import { FeaturedCompaniesSlideshow } from "@/components/FeaturedCompaniesSlideshow";
 import { MarketplaceFooter } from "@/components/MarketplaceFooter";
 import { MarketplaceFAQ } from "@/components/MarketplaceFAQ";
+import { LiveChatButton } from "@/components/LiveChatButton";
 import {
   Pagination,
   PaginationContent,
@@ -324,6 +325,7 @@ export default function Marketplace() {
       <MarketplaceFAQ />
       
       <MarketplaceFooter />
+      <LiveChatButton />
     </div>
   );
 }
