@@ -1,5 +1,5 @@
 import { ProductCard } from "@/components/ProductCard";
-import { Loader2 } from "lucide-react";
+import { Loader2, Search } from "lucide-react"; // Added Search import
 
 interface Product {
   id: number;

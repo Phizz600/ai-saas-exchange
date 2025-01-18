@@ -47,5 +47,6 @@ export const useMarketplaceProducts = ({
   return {
     currentItems,
     totalPages,
+    isLoading: false, // Added isLoading property
   };
 };
