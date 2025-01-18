@@ -1,5 +1,5 @@
-import { motion } from "framer-motion";
 import { ProductCard } from "@/components/ProductCard";
+import { Loader2 } from "lucide-react";
 
 interface Product {
   id: number;
@@ -24,36 +24,38 @@ interface Product {
 
 interface ProductGridProps {
   products: Product[];
+  isLoading?: boolean;
 }
 
-const container = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1
-    }
+export const ProductGrid = ({ products, isLoading = false }: ProductGridProps) => {
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-12">
+        <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
+        <p className="text-gray-600">Loading products...</p>
+      </div>
+    );
   }
-};
 
-const item = {
-  hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0 }
-};
+  if (products.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-12 text-center">
+        <div className="bg-gray-50 rounded-full p-4 mb-4">
+          <Search className="h-8 w-8 text-gray-400" />
+        </div>
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">No products found</h3>
+        <p className="text-gray-600 max-w-md">
+          We couldn't find any products matching your search criteria. Try adjusting your filters or search terms.
+        </p>
+      </div>
+    );
+  }
 
-export const ProductGrid = ({ products }: ProductGridProps) => {
   return (
-    <motion.div 
-      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8"
-      variants={container}
-      initial="hidden"
-      animate="show"
-    >
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 py-8">
       {products.map((product) => (
-        <motion.div key={product.id} variants={item}>
-          <ProductCard product={product} />
-        </motion.div>
+        <ProductCard key={product.id} product={product} />
       ))}
-    </motion.div>
+    </div>
   );
 };

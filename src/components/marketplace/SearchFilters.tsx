@@ -1,4 +1,4 @@
-import { Search, SlidersHorizontal } from "lucide-react";
+import { Search, SlidersHorizontal, X, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -10,6 +10,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { Badge } from "@/components/ui/badge";
 
 interface SearchFiltersProps {
   searchQuery: string;
@@ -24,6 +25,7 @@ interface SearchFiltersProps {
   setTimeFilter: (time: string) => void;
   sortBy: string;
   setSortBy: (sort: string) => void;
+  isLoading?: boolean;
 }
 
 const industries = [
@@ -65,38 +67,93 @@ export const SearchFilters = ({
   setTimeFilter,
   sortBy,
   setSortBy,
+  isLoading = false,
 }: SearchFiltersProps) => {
+  const hasActiveFilters = searchQuery || industryFilter !== 'all' || stageFilter !== 'all' || priceFilter !== 'all' || timeFilter !== 'all';
+
+  const clearAllFilters = () => {
+    setSearchQuery('');
+    setIndustryFilter('all');
+    setStageFilter('all');
+    setPriceFilter('all');
+    setTimeFilter('all');
+    setSortBy('relevant');
+  };
+
+  const renderActiveFilters = () => {
+    const filters = [];
+    if (searchQuery) {
+      filters.push(
+        <Badge key="search" variant="secondary" className="gap-1">
+          Search: {searchQuery}
+          <X className="h-3 w-3 cursor-pointer" onClick={() => setSearchQuery('')} />
+        </Badge>
+      );
+    }
+    if (industryFilter !== 'all') {
+      filters.push(
+        <Badge key="industry" variant="secondary" className="gap-1">
+          Industry: {industryFilter}
+          <X className="h-3 w-3 cursor-pointer" onClick={() => setIndustryFilter('all')} />
+        </Badge>
+      );
+    }
+    if (stageFilter !== 'all') {
+      filters.push(
+        <Badge key="stage" variant="secondary" className="gap-1">
+          Stage: {stageFilter}
+          <X className="h-3 w-3 cursor-pointer" onClick={() => setStageFilter('all')} />
+        </Badge>
+      );
+    }
+    if (priceFilter !== 'all') {
+      filters.push(
+        <Badge key="price" variant="secondary" className="gap-1">
+          Price: {priceFilter}
+          <X className="h-3 w-3 cursor-pointer" onClick={() => setPriceFilter('all')} />
+        </Badge>
+      );
+    }
+    return filters;
+  };
+
   return (
-    <div className="bg-white/80 backdrop-blur-xl shadow-lg rounded-xl p-4 mb-8 border border-gray-100/50">
-      <div className="flex flex-col md:flex-row gap-4">
-        <div className="relative flex-grow">
-          <Input
-            placeholder="Search AI products..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 bg-gray-50/50 border-gray-200/50 focus:border-primary/50 focus:ring-primary/50"
-          />
-          <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-        </div>
-        
-        <div className="hidden md:flex gap-2 flex-wrap">
-          <Select value={industryFilter} onValueChange={setIndustryFilter}>
-            <SelectTrigger className="w-[140px] bg-gray-50/50 border-gray-200/50">
-              <SelectValue placeholder="Industry" />
-            </SelectTrigger>
-            <SelectContent className="bg-white border shadow-lg">
-              <SelectItem value="all" className="hover:bg-gray-50">All Industries</SelectItem>
-              {industries.map((industry) => (
-                <SelectItem 
-                  key={industry} 
-                  value={industry.toLowerCase()}
-                  className="hover:bg-gray-50"
-                >
-                  {industry}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+    <div className="space-y-4">
+      <div className="bg-white/80 backdrop-blur-xl shadow-lg rounded-xl p-4 border border-gray-100/50">
+        <div className="flex flex-col md:flex-row gap-4">
+          <div className="relative flex-grow">
+            <Input
+              placeholder="Search AI products..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 bg-gray-50/50 border-gray-200/50 focus:border-primary/50 focus:ring-primary/50"
+              disabled={isLoading}
+            />
+            {isLoading ? (
+              <Loader2 className="absolute left-3 top-3 h-4 w-4 text-gray-400 animate-spin" />
+            ) : (
+              <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+            )}
+          </div>
+          
+          <div className="hidden md:flex gap-2 flex-wrap">
+            <Select value={industryFilter} onValueChange={setIndustryFilter} disabled={isLoading}>
+              <SelectTrigger className="w-[140px] bg-gray-50/50 border-gray-200/50">
+                <SelectValue placeholder="Industry" />
+              </SelectTrigger>
+              <SelectContent className="bg-white border shadow-lg">
+                <SelectItem value="all" className="hover:bg-gray-50">All Industries</SelectItem>
+                {industries.map((industry) => (
+                  <SelectItem 
+                    key={industry} 
+                    value={industry.toLowerCase()}
+                    className="hover:bg-gray-50"
+                  >
+                    {industry}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
 
           <Select value={stageFilter} onValueChange={setStageFilter}>
             <SelectTrigger className="w-[140px] bg-gray-50/50 border-gray-200/50">
@@ -150,23 +207,23 @@ export const SearchFilters = ({
               ))}
             </SelectContent>
           </Select>
-        </div>
+          </div>
 
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button variant="outline" className="md:hidden">
-              <SlidersHorizontal className="h-4 w-4 mr-2" />
-              Filters
-            </Button>
-          </SheetTrigger>
-          <SheetContent>
-            <SheetHeader>
-              <SheetTitle>Filters</SheetTitle>
-              <SheetDescription>
-                Refine your search with these filters
-              </SheetDescription>
-            </SheetHeader>
-            <div className="flex flex-col gap-4 mt-4">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="outline" className="md:hidden" disabled={isLoading}>
+                <SlidersHorizontal className="h-4 w-4 mr-2" />
+                Filters
+              </Button>
+            </SheetTrigger>
+            <SheetContent>
+              <SheetHeader>
+                <SheetTitle>Filters</SheetTitle>
+                <SheetDescription>
+                  Refine your search with these filters
+                </SheetDescription>
+              </SheetHeader>
+              <div className="flex flex-col gap-4 mt-4">
               <Select value={industryFilter} onValueChange={setIndustryFilter}>
                 <SelectTrigger>
                   <SelectValue placeholder="Industry" />
@@ -221,10 +278,40 @@ export const SearchFilters = ({
                   ))}
                 </SelectContent>
               </Select>
-            </div>
-          </SheetContent>
-        </Sheet>
+              </div>
+            </SheetContent>
+          </Sheet>
+
+          {hasActiveFilters && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={clearAllFilters}
+              className="hidden md:flex items-center gap-2"
+              disabled={isLoading}
+            >
+              <X className="h-4 w-4" />
+              Clear all
+            </Button>
+          )}
+        </div>
       </div>
+
+      {hasActiveFilters && (
+        <div className="flex flex-wrap gap-2">
+          {renderActiveFilters()}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={clearAllFilters}
+            className="md:hidden"
+            disabled={isLoading}
+          >
+            <X className="h-4 w-4 mr-2" />
+            Clear all
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

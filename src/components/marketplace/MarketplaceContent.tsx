@@ -13,7 +13,7 @@ export const MarketplaceContent = () => {
   const [sortBy, setSortBy] = useState("relevant");
   const [currentPage, setCurrentPage] = useState(1);
   
-  const { currentItems, totalPages } = useMarketplaceProducts({
+  const { currentItems, totalPages, isLoading } = useMarketplaceProducts({
     searchQuery,
     industryFilter,
     stageFilter,
@@ -38,15 +38,18 @@ export const MarketplaceContent = () => {
         setTimeFilter={setTimeFilter}
         sortBy={sortBy}
         setSortBy={setSortBy}
+        isLoading={isLoading}
       />
 
-      <ProductGrid products={currentItems} />
+      <ProductGrid products={currentItems} isLoading={isLoading} />
 
-      <MarketplacePagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        setCurrentPage={setCurrentPage}
-      />
+      {!isLoading && currentItems.length > 0 && (
+        <MarketplacePagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          setCurrentPage={setCurrentPage}
+        />
+      )}
     </>
   );
 };
