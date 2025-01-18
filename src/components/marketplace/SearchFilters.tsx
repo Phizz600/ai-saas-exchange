@@ -1,6 +1,15 @@
-import { Search } from "lucide-react";
+import { Search, SlidersHorizontal } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 interface SearchFiltersProps {
   searchQuery: string;
@@ -58,85 +67,147 @@ export const SearchFilters = ({
   setSortBy,
 }: SearchFiltersProps) => {
   return (
-    <div className="bg-white shadow-lg rounded-lg p-6 mb-8 border border-gray-100">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
-        <div className="relative">
+    <div className="bg-white/80 backdrop-blur-xl shadow-lg rounded-xl p-4 mb-8 border border-gray-100/50">
+      <div className="flex flex-col md:flex-row gap-4">
+        <div className="relative flex-grow">
           <Input
-            placeholder="Search products..."
+            placeholder="Search AI products..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
+            className="pl-10 bg-gray-50/50 border-gray-200/50 focus:border-primary/50 focus:ring-primary/50"
           />
           <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
         </div>
+        
+        <div className="hidden md:flex gap-2 flex-wrap">
+          <Select value={industryFilter} onValueChange={setIndustryFilter}>
+            <SelectTrigger className="w-[140px] bg-gray-50/50 border-gray-200/50">
+              <SelectValue placeholder="Industry" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Industries</SelectItem>
+              {industries.map((industry) => (
+                <SelectItem key={industry} value={industry.toLowerCase()}>
+                  {industry}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
 
-        <Select value={industryFilter} onValueChange={setIndustryFilter}>
-          <SelectTrigger className="bg-[#f3f3f3]">
-            <SelectValue placeholder="Industry" />
-          </SelectTrigger>
-          <SelectContent className="bg-white border-gray-200">
-            <SelectItem value="all">All Industries</SelectItem>
-            {industries.map((industry) => (
-              <SelectItem key={industry} value={industry.toLowerCase()}>
-                {industry}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+          <Select value={stageFilter} onValueChange={setStageFilter}>
+            <SelectTrigger className="w-[140px] bg-gray-50/50 border-gray-200/50">
+              <SelectValue placeholder="Stage" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Stages</SelectItem>
+              {stages.map((stage) => (
+                <SelectItem key={stage} value={stage.toLowerCase()}>
+                  {stage}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
 
-        <Select value={stageFilter} onValueChange={setStageFilter}>
-          <SelectTrigger className="bg-[#f3f3f3]">
-            <SelectValue placeholder="Stage" />
-          </SelectTrigger>
-          <SelectContent className="bg-white border-gray-200">
-            <SelectItem value="all">All Stages</SelectItem>
-            {stages.map((stage) => (
-              <SelectItem key={stage} value={stage.toLowerCase()}>
-                {stage}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+          <Select value={priceFilter} onValueChange={setPriceFilter}>
+            <SelectTrigger className="w-[140px] bg-gray-50/50 border-gray-200/50">
+              <SelectValue placeholder="Price Range" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Prices</SelectItem>
+              {priceRanges.map((range) => (
+                <SelectItem key={range} value={range.toLowerCase()}>
+                  {range}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
 
-        <Select value={priceFilter} onValueChange={setPriceFilter}>
-          <SelectTrigger className="bg-[#f3f3f3]">
-            <SelectValue placeholder="Price Range" />
-          </SelectTrigger>
-          <SelectContent className="bg-white border-gray-200">
-            <SelectItem value="all">All Prices</SelectItem>
-            {priceRanges.map((range) => (
-              <SelectItem key={range} value={range.toLowerCase()}>
-                {range}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+          <Select value={sortBy} onValueChange={setSortBy}>
+            <SelectTrigger className="w-[140px] bg-gray-50/50 border-gray-200/50">
+              <SelectValue placeholder="Sort by" />
+            </SelectTrigger>
+            <SelectContent>
+              {sortOptions.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
-        <Select value={timeFilter} onValueChange={setTimeFilter}>
-          <SelectTrigger className="bg-[#f3f3f3]">
-            <SelectValue placeholder="Time Left" />
-          </SelectTrigger>
-          <SelectContent className="bg-white border-gray-200">
-            <SelectItem value="all">All Auctions</SelectItem>
-            <SelectItem value="ending-soon">Ending Soon (24h)</SelectItem>
-            <SelectItem value="1-3-days">1-3 Days</SelectItem>
-            <SelectItem value="3-7-days">3-7 Days</SelectItem>
-            <SelectItem value="7-plus-days">7+ Days</SelectItem>
-          </SelectContent>
-        </Select>
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button variant="outline" className="md:hidden">
+              <SlidersHorizontal className="h-4 w-4 mr-2" />
+              Filters
+            </Button>
+          </SheetTrigger>
+          <SheetContent>
+            <SheetHeader>
+              <SheetTitle>Filters</SheetTitle>
+              <SheetDescription>
+                Refine your search with these filters
+              </SheetDescription>
+            </SheetHeader>
+            <div className="flex flex-col gap-4 mt-4">
+              <Select value={industryFilter} onValueChange={setIndustryFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Industry" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Industries</SelectItem>
+                  {industries.map((industry) => (
+                    <SelectItem key={industry} value={industry.toLowerCase()}>
+                      {industry}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
 
-        <Select value={sortBy} onValueChange={setSortBy}>
-          <SelectTrigger className="bg-[#f3f3f3]">
-            <SelectValue placeholder="Sort by" />
-          </SelectTrigger>
-          <SelectContent className="bg-white border-gray-200">
-            {sortOptions.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+              <Select value={stageFilter} onValueChange={setStageFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Stage" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Stages</SelectItem>
+                  {stages.map((stage) => (
+                    <SelectItem key={stage} value={stage.toLowerCase()}>
+                      {stage}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Select value={priceFilter} onValueChange={setPriceFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Price Range" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Prices</SelectItem>
+                  {priceRanges.map((range) => (
+                    <SelectItem key={range} value={range.toLowerCase()}>
+                      {range}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Select value={sortBy} onValueChange={setSortBy}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Sort by" />
+                </SelectTrigger>
+                <SelectContent>
+                  {sortOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </SheetContent>
+        </Sheet>
       </div>
     </div>
   );

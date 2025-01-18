@@ -1,4 +1,4 @@
-import { Heart, Clock, Trophy, Award, BadgeCheck, BadgeDollarSign } from "lucide-react";
+import { Heart, Clock, Trophy, Award, BadgeCheck, BadgeDollarSign, Eye, MessageSquare, Bookmark } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/hover-card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 interface Achievement {
   type: "FirstTimeBuyer" | "SuccessfulAcquisition" | "TopBidder" | "DealmakerOfMonth";
@@ -64,39 +65,56 @@ export function ProductCard({ product }: ProductCardProps) {
       animate={{ opacity: 1, scale: 1 }}
       whileHover={{ y: -5 }}
       transition={{ duration: 0.2 }}
+      className="group"
     >
-      <Card className="overflow-hidden bg-white border-gray-100">
+      <Card className="overflow-hidden bg-gradient-to-b from-white to-gray-50/50 backdrop-blur-xl border-gray-100/50 shadow-lg">
         <div className="relative aspect-video overflow-hidden">
           <img
             src={product.image}
             alt={product.title}
-            className="object-cover w-full h-full"
+            className="object-cover w-full h-full transform group-hover:scale-105 transition-transform duration-300"
           />
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute top-2 right-2 text-white hover:text-primary"
-          >
-            <Heart className="h-5 w-5" />
-          </Button>
-          <div className="absolute bottom-2 right-2 bg-black/70 text-white px-3 py-1 rounded-full flex items-center text-sm">
-            <Clock className="h-4 w-4 mr-1" />
-            {product.timeLeft}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <div className="absolute top-2 right-2 flex gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="bg-white/10 backdrop-blur-md hover:bg-white/20 text-white"
+            >
+              <Bookmark className="h-5 w-5" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="bg-white/10 backdrop-blur-md hover:bg-white/20 text-white"
+            >
+              <Heart className="h-5 w-5" />
+            </Button>
+          </div>
+          <div className="absolute bottom-2 right-2 flex gap-2">
+            <Badge variant="secondary" className="bg-black/70 text-white backdrop-blur-md">
+              <Clock className="h-4 w-4 mr-1" />
+              {product.timeLeft}
+            </Badge>
+            <Badge variant="secondary" className="bg-black/70 text-white backdrop-blur-md">
+              <Eye className="h-4 w-4 mr-1" />
+              2.5k views
+            </Badge>
           </div>
           <HoverCard>
             <HoverCardTrigger asChild>
               <Button
                 variant="ghost"
                 size="icon"
-                className="absolute top-2 left-2 p-1"
+                className="absolute top-2 left-2 p-1 bg-white/10 backdrop-blur-md hover:bg-white/20"
               >
-                <Avatar className="h-8 w-8 border-2 border-white">
+                <Avatar className="h-8 w-8 ring-2 ring-white/50">
                   <AvatarImage src={product.seller.avatar} alt={product.seller.name} />
                   <AvatarFallback>{product.seller.name.charAt(0)}</AvatarFallback>
                 </Avatar>
               </Button>
             </HoverCardTrigger>
-            <HoverCardContent className="w-80 bg-white border border-gray-200">
+            <HoverCardContent className="w-80 bg-white/90 backdrop-blur-xl border-gray-200/50">
               <div className="flex justify-between space-x-4">
                 <Avatar className="h-12 w-12">
                   <AvatarImage src={product.seller.avatar} />
@@ -109,7 +127,7 @@ export function ProductCard({ product }: ProductCardProps) {
                       <Badge
                         key={index}
                         variant="secondary"
-                        className="flex items-center gap-1 text-xs"
+                        className="flex items-center gap-1 text-xs bg-gray-100/80"
                       >
                         {getAchievementIcon(achievement.type)}
                         {achievement.label}
@@ -124,14 +142,24 @@ export function ProductCard({ product }: ProductCardProps) {
         <CardHeader>
           <div className="flex justify-between items-start">
             <div>
-              <CardTitle className="text-xl text-gray-900">{product.title}</CardTitle>
+              <CardTitle className="text-xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600">
+                {product.title}
+              </CardTitle>
               <div className="flex gap-2 items-center mt-1">
-                <CardDescription className="text-gray-500">
+                <Badge variant="outline" className="text-xs font-medium">
                   {product.category}
-                </CardDescription>
-                <span className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800">
+                </Badge>
+                <Badge 
+                  variant="secondary"
+                  className={cn(
+                    "text-xs font-medium",
+                    product.stage === "Revenue" && "bg-green-100 text-green-800",
+                    product.stage === "MVP" && "bg-blue-100 text-blue-800",
+                    product.stage === "Pre-Revenue" && "bg-orange-100 text-orange-800"
+                  )}
+                >
                   {product.stage}
-                </span>
+                </Badge>
               </div>
             </div>
             <div className="text-right">
@@ -139,7 +167,7 @@ export function ProductCard({ product }: ProductCardProps) {
                 ${product.price.toLocaleString()}
               </div>
               {product.stage === "Revenue" && (
-                <div className="text-sm text-green-500">
+                <div className="text-sm text-green-600 font-medium">
                   ${product.monthlyRevenue.toLocaleString()}/mo
                 </div>
               )}
@@ -147,17 +175,26 @@ export function ProductCard({ product }: ProductCardProps) {
           </div>
         </CardHeader>
         <CardContent>
-          <p className="text-gray-600">{product.description}</p>
+          <p className="text-gray-600 line-clamp-2">{product.description}</p>
         </CardContent>
         <CardFooter className="flex flex-col gap-2">
+          <div className="grid grid-cols-2 gap-2 w-full">
+            <Button 
+              variant="outline"
+              className="w-full hover:bg-gray-50"
+            >
+              <MessageSquare className="h-4 w-4 mr-2" />
+              Contact
+            </Button>
+            <Button 
+              variant="outline"
+              className="w-full hover:bg-gray-50"
+            >
+              <Eye className="h-4 w-4 mr-2" />
+              Details
+            </Button>
+          </div>
           <Button 
-            variant="secondary" 
-            className="w-full bg-[#0EA4E9] hover:bg-[#0EA4E9]/90 text-white"
-          >
-            View Details
-          </Button>
-          <Button 
-            variant="secondary" 
             className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 text-white"
           >
             Open Pitch Deck
