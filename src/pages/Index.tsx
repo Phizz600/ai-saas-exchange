@@ -2,6 +2,7 @@ import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
 import { Footer } from "@/components/Footer";
 import { motion } from "framer-motion";
+import { DemoProductCards } from "@/components/demo/DemoProductCards";
 
 const Index = () => {
   return (
@@ -28,6 +29,20 @@ const Index = () => {
       <Navbar />
       <main className="relative z-10">
         <Hero />
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="max-w-7xl mx-auto px-4 py-12"
+        >
+          <h2 className="text-2xl font-bold text-white mb-8 text-center">
+            Platform Preview
+            <span className="text-sm font-normal block text-gray-300">
+              (Demonstration purposes only - Example listings)
+            </span>
+          </h2>
+          <DemoProductCards />
+        </motion.div>
       </main>
       <Footer />
     </div>
