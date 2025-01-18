@@ -11,7 +11,7 @@ export const Header = () => {
         <div className="container mx-auto px-4">
           <div className="h-16 flex items-center justify-between">
             <div className="flex items-center gap-8">
-              <Link to="/" className="flex flex-col items-center">
+              <Link to="/" className="flex flex-col items-center mb-1">
                 <span className="text-2xl bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-transparent bg-clip-text pb-0">&lt;/&gt;</span>
                 <span className="text-2xl font-bold bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-transparent bg-clip-text">
                   AI Exchange Club
