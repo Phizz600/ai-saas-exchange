@@ -8,6 +8,7 @@ import { FeaturedCompaniesSlideshow } from "@/components/FeaturedCompaniesSlides
 import { MarketplaceFooter } from "@/components/MarketplaceFooter";
 import { MarketplaceFAQ } from "@/components/MarketplaceFAQ";
 import { LiveChatButton } from "@/components/LiveChatButton";
+import { Header } from "@/components/Header";
 
 const mockProducts = [
   {
@@ -187,50 +188,48 @@ export default function Marketplace() {
   const totalPages = Math.ceil(sortedProducts.length / itemsPerPage);
 
   return (
-    <div className="min-h-screen bg-white pt-24 px-4 md:px-8">
-      <div className="flex justify-between items-center mb-12">
-        <div className="flex flex-col items-center">
-          <span className="font-exo text-3xl font-semibold bg-gradient-to-r from-[#D946EF] via-[#8B5CF6] to-[#0EA5E9] text-transparent bg-clip-text">
-            AI Exchange Club
-          </span>
+    <div className="min-h-screen bg-white">
+      <Header />
+      <div className="pt-40 px-4 md:px-8">
+        <div className="flex justify-between items-center mb-12">
+          <Button
+            className="bg-[#0EA4E9] hover:bg-[#0EA4E9]/90 text-white font-semibold"
+            onClick={() => console.log("List Product clicked")}
+          >
+            <Plus className="mr-2" />
+            Sell Your AI SaaS
+          </Button>
         </div>
-        <Button
-          className="bg-[#0EA4E9] hover:bg-[#0EA4E9]/90 text-white font-semibold"
-          onClick={() => console.log("List Product clicked")}
-        >
-          <Plus className="mr-2" />
-          Sell Your AI SaaS
-        </Button>
+
+        <FeaturedCompaniesSlideshow />
+
+        <SearchFilters
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          industryFilter={industryFilter}
+          setIndustryFilter={setIndustryFilter}
+          stageFilter={stageFilter}
+          setStageFilter={setStageFilter}
+          priceFilter={priceFilter}
+          setPriceFilter={setPriceFilter}
+          timeFilter={timeFilter}
+          setTimeFilter={setTimeFilter}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+        />
+
+        <ProductGrid products={currentItems} />
+
+        <MarketplacePagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          setCurrentPage={setCurrentPage}
+        />
+
+        <MarketplaceFAQ />
+        <MarketplaceFooter />
+        <LiveChatButton />
       </div>
-
-      <FeaturedCompaniesSlideshow />
-
-      <SearchFilters
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        industryFilter={industryFilter}
-        setIndustryFilter={setIndustryFilter}
-        stageFilter={stageFilter}
-        setStageFilter={setStageFilter}
-        priceFilter={priceFilter}
-        setPriceFilter={setPriceFilter}
-        timeFilter={timeFilter}
-        setTimeFilter={setTimeFilter}
-        sortBy={sortBy}
-        setSortBy={setSortBy}
-      />
-
-      <ProductGrid products={currentItems} />
-
-      <MarketplacePagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        setCurrentPage={setCurrentPage}
-      />
-
-      <MarketplaceFAQ />
-      <MarketplaceFooter />
-      <LiveChatButton />
     </div>
   );
 }
