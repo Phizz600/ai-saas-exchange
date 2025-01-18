@@ -65,7 +65,7 @@ export const MarketplaceFooter = () => {
         <div className="mt-16 pt-8 border-t border-white/10">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-white/60 text-sm">
-              © 2024 AI Exchange Club. All rights reserved.
+              © 2025 AI Exchange Club. All rights reserved.
             </p>
             <div className="flex gap-6">
               <a href="https://youtube.com" className="text-white/60 hover:text-white">YouTube</a>

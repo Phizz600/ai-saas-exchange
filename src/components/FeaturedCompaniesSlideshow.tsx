@@ -33,7 +33,7 @@ const featuredCompanies = [
 
 export const FeaturedCompaniesSlideshow = () => {
   return (
-    <div className="bg-gradient-to-r from-accent2 to-accent3 rounded-lg p-8 mb-12">
+    <div className="bg-gradient-to-r from-accent2 to-accent3 rounded-lg p-8 mb-12 relative">
       <h2 className="text-xl font-semibold text-white mb-6">Featured Companies</h2>
       <Carousel
         opts={{
@@ -66,10 +66,10 @@ export const FeaturedCompaniesSlideshow = () => {
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="hidden md:flex">
+        <CarouselPrevious className="hidden md:flex absolute left-4 top-1/2">
           <ArrowLeft className="h-4 w-4" />
         </CarouselPrevious>
-        <CarouselNext className="hidden md:flex">
+        <CarouselNext className="hidden md:flex absolute right-4 top-1/2">
           <ArrowRight className="h-4 w-4" />
         </CarouselNext>
       </Carousel>

@@ -96,7 +96,7 @@ export function ProductCard({ product }: ProductCardProps) {
                 </Avatar>
               </Button>
             </HoverCardTrigger>
-            <HoverCardContent className="w-80">
+            <HoverCardContent className="w-80 bg-white border border-gray-200">
               <div className="flex justify-between space-x-4">
                 <Avatar className="h-12 w-12">
                   <AvatarImage src={product.seller.avatar} />
