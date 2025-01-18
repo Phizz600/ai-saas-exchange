@@ -14,14 +14,14 @@ export const CategoriesOverview = () => {
   });
 
   return (
-    <Card className="p-4 mb-6 bg-white/80 backdrop-blur-xl shadow-lg border border-gray-100/50">
-      <h2 className="text-lg font-semibold mb-3">Categories</h2>
+    <Card className="p-6 mb-6 bg-accent text-white shadow-lg border-0">
+      <h2 className="text-xl font-semibold mb-4">Categories</h2>
       <div className="flex flex-wrap gap-2">
         {categoriesOverview.map(({ name, count }) => (
           <Badge
             key={name}
             variant="secondary"
-            className="px-3 py-1 bg-gray-100/80 hover:bg-gray-200/80 cursor-pointer transition-colors"
+            className="px-4 py-2 bg-accent2 hover:bg-accent3 text-white cursor-pointer transition-colors text-sm font-medium"
           >
             {name} ({count})
           </Badge>
