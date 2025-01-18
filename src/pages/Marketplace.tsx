@@ -188,7 +188,7 @@ export default function Marketplace() {
   return (
     <div className="min-h-screen bg-white">
       <Header />
-      <div className="pt-40 px-4 md:px-8">
+      <div className="pt-52 px-4 md:px-8">
         <FeaturedCompaniesSlideshow />
 
         <SearchFilters
