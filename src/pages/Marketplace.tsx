@@ -1,5 +1,6 @@
 import { MarketplaceLayout } from "@/components/marketplace/MarketplaceLayout";
 
-export default function Marketplace() {
+export const Marketplace = () => {
+  console.log('Marketplace page component rendered');
   return <MarketplaceLayout />;
-}
+};
