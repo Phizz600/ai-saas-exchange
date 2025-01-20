@@ -10,7 +10,7 @@ export const MarketplaceLayout = () => {
   return (
     <div className="min-h-screen bg-white">
       <Header />
-      <div className="pt-32 sm:pt-52 px-4 md:px-8">
+      <div className="pt-20 px-4 md:px-8">
         <div className="max-w-7xl mx-auto">
           <MarketplaceBreadcrumb />
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">AI Products Marketplace</h1>
