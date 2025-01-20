@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Auth as SupabaseAuth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
-import { AuthError, AuthChangeEvent, Session } from "@supabase/supabase-js";
+import { AuthError, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthLayout } from "@/components/auth/AuthLayout";
 import { UserTypeSelection } from "@/components/auth/UserTypeSelection";
@@ -26,13 +26,13 @@ const Auth = () => {
     
     checkSession();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event: AuthChangeEvent, session: Session | null) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       console.log("Auth: Auth state changed:", event);
       
-      if (event === 'SIGNED_UP') {
+      if (event === "SIGNED_UP") {
         console.log("Auth: User signed up, showing user type selection");
         setShowUserTypeSelection(true);
-      } else if (event === 'SIGNED_IN' && session) {
+      } else if (event === "SIGNED_IN" && session) {
         if (!showUserTypeSelection) {
           console.log("Auth: User signed in, redirecting to marketplace");
           navigate("/marketplace");
@@ -45,11 +45,6 @@ const Auth = () => {
       subscription.unsubscribe();
     };
   }, [navigate, showUserTypeSelection]);
-
-  const handleError = (error: AuthError) => {
-    console.error("Auth: Error occurred:", error);
-    setErrorMessage(error.message);
-  };
 
   return (
     <AuthLayout>

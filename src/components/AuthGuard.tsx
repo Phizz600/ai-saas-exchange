@@ -40,14 +40,14 @@ export const AuthGuard = ({ children }: AuthGuardProps) => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       console.log("AuthGuard: Auth state changed:", event);
       
-      if (event === 'SIGNED_IN') {
+      if (event === "SIGNED_IN") {
         console.log("AuthGuard: User signed in");
         setSession(session);
-      } else if (event === 'SIGNED_OUT') {
+      } else if (event === "SIGNED_OUT") {
         console.log("AuthGuard: User signed out, redirecting to auth");
         setSession(null);
         navigate("/auth");
-      } else if (event === 'USER_UPDATED') {
+      } else if (event === "USER_UPDATED") {
         console.log("AuthGuard: User updated");
         setSession(session);
       }
