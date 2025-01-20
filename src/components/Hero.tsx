@@ -14,7 +14,7 @@ export const Hero = () => {
   const [subscriberCount, setSubscriberCount] = useState(342);
   const navigate = useNavigate();
   
-  const words = ["Companies", "Businesses", "Apps", "Plugins", "Tools", "MVPs"];
+  const words = ["Companies", "Businesses", "Apps", "Plugins", "Tools", "MVPs", "Bots"];
 
   useEffect(() => {
     const interval = setInterval(() => {
