@@ -6,11 +6,12 @@ export const Navbar = () => {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-accent shadow-lg backdrop-blur-sm bg-opacity-90">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          <Link to="/" className="flex flex-col items-center">
-            <span className="text-purple-400 text-2xl mb-1">&lt;/&gt;</span>
-            <span className="text-3xl font-bold bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-transparent bg-clip-text">
-              AI Exchange Club
-            </span>
+          <Link to="/" className="flex items-center">
+            <img 
+              src="/lovable-uploads/5947d1a1-1385-49a1-bf8f-3024df268fb6.png" 
+              alt="AI Exchange Club Logo" 
+              className="h-8 w-auto"
+            />
           </Link>
           
           <div className="hidden md:flex items-center space-x-6">
