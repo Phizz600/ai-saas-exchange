@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Auth as SupabaseAuth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
-import { AuthChangeEvent } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthLayout } from "@/components/auth/AuthLayout";
 import { UserTypeSelection } from "@/components/auth/UserTypeSelection";
@@ -22,15 +21,15 @@ const Auth = () => {
     };
     checkUser();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event: AuthChangeEvent, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       console.log("Auth state changed:", event);
       
-      if (event === AuthChangeEvent.SIGNED_UP) {
+      if (event === 'SIGNED_UP') {
         console.log("User signed up, showing user type selection");
         setShowUserTypeSelection(true);
       }
       
-      if (event === AuthChangeEvent.SIGNED_IN && session) {
+      if (event === 'SIGNED_IN' && session) {
         if (!showUserTypeSelection) {
           console.log("User signed in, redirecting to marketplace");
           navigate("/marketplace");
