@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Index } from "@/pages/Index";
-import { Auth } from "@/pages/Auth";
+import Index from "@/pages/Index";
+import Auth from "@/pages/Auth";
 import { Marketplace } from "@/pages/Marketplace";
 import { Toaster } from "@/components/ui/toaster";
 import "./App.css";
