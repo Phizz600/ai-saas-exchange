@@ -9,13 +9,13 @@ export const Header = () => {
       {/* Main Navigation */}
       <div className="bg-accent/80 backdrop-blur-sm text-white">
         <div className="container mx-auto px-4">
-          <div className="h-16 flex items-center justify-between">
+          <div className="h-14 flex items-center justify-between">
             <div className="flex items-center gap-8">
               <Link to="/" className="flex items-center">
                 <img 
                   src="/lovable-uploads/47eac7ab-ce1a-4bb8-800b-19f2bfcdd765.png" 
                   alt="AI Exchange Club Logo" 
-                  className="h-8 w-auto"
+                  className="h-6 w-auto"
                 />
               </Link>
             </div>
@@ -42,7 +42,7 @@ export const Header = () => {
       {/* Secondary Navigation */}
       <div className="bg-white/80 backdrop-blur-sm border-b">
         <div className="container mx-auto px-4">
-          <nav className="flex items-center h-12 gap-8 text-sm">
+          <nav className="flex items-center h-10 gap-8 text-sm">
             <Link to="/brokers" className="text-gray-600 hover:text-primary">
               Meet our Brokers
             </Link>
@@ -77,12 +77,12 @@ export const Header = () => {
       {/* Call to Action Bar */}
       <div className="bg-gray-50/80 backdrop-blur-sm border-b">
         <div className="container mx-auto px-4">
-          <div className="h-12 flex items-center justify-between">
+          <div className="h-10 flex items-center justify-between">
             <span className="text-sm text-gray-600">
               Register as a buyer. It's free!
             </span>
             <div className="flex gap-4">
-              <Button variant="outline" className="h-8">
+              <Button variant="outline" className="h-7">
                 Get a Free Valuation
               </Button>
             </div>
