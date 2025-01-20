@@ -20,7 +20,17 @@ export const FeaturedProducts = () => {
       <h2 className="text-xl font-semibold mb-4 text-accent">Trending Products</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {featuredProducts.map((product) => (
-          <ProductCard key={product.id} product={product} />
+          <ProductCard 
+            key={String(product.id)} 
+            product={{
+              ...product,
+              id: String(product.id),
+              seller: {
+                ...product.seller,
+                id: String(product.seller.id)
+              }
+            }} 
+          />
         ))}
       </div>
     </Card>

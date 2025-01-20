@@ -4,7 +4,7 @@ import { mockProducts } from "@/data/mockProducts";
 
 interface RelatedProductsProps {
   currentProductCategory: string;
-  currentProductId: number;
+  currentProductId: string;  // Changed from number to string
 }
 
 export const RelatedProducts = ({ currentProductCategory, currentProductId }: RelatedProductsProps) => {
@@ -13,7 +13,7 @@ export const RelatedProducts = ({ currentProductCategory, currentProductId }: Re
   const relatedProducts = mockProducts
     .filter(product => 
       product.category === currentProductCategory && 
-      product.id !== currentProductId
+      String(product.id) !== currentProductId  // Convert number to string for comparison
     )
     .slice(0, 2);
 
@@ -24,7 +24,17 @@ export const RelatedProducts = ({ currentProductCategory, currentProductId }: Re
       <h3 className="text-lg font-semibold mb-4">Related Products</h3>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {relatedProducts.map((product) => (
-          <ProductCard key={product.id} product={product} />
+          <ProductCard 
+            key={String(product.id)} 
+            product={{
+              ...product,
+              id: String(product.id),
+              seller: {
+                ...product.seller,
+                id: String(product.seller.id)
+              }
+            }} 
+          />
         ))}
       </div>
     </Card>
