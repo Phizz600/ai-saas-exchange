@@ -167,11 +167,12 @@ export const Hero = () => {
                   <span className="text-emerald-400 font-semibold">early access to exclusive deals</span> and connect with top AI innovators.
                 </p>
                 <div className="space-y-2">
-                  <Progress 
-                    value={(subscriberCount / 1000) * 100} 
-                    className="h-2 bg-white/10"
-                    indicatorClassName="bg-gradient-to-r from-[#D946EF] via-[#8B5CF6] to-[#0EA5E9]"
-                  />
+                  <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-gradient-to-r from-[#D946EF] via-[#8B5CF6] to-[#0EA5E9] transition-all duration-500"
+                      style={{ width: `${(subscriberCount / 1000) * 100}%` }}
+                    />
+                  </div>
                   <p className="text-sm text-gray-300">
                     <span className="text-white font-semibold">{subscriberCount}</span> out of <span className="text-white font-semibold">1,000</span> spots claimed
                   </p>
