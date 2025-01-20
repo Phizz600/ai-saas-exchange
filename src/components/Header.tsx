@@ -7,7 +7,7 @@ export const Header = () => {
   return (
     <header className="fixed top-0 w-full z-50">
       {/* Main Navigation */}
-      <div className="bg-accent text-white">
+      <div className="bg-accent/80 backdrop-blur-sm text-white">
         <div className="container mx-auto px-4">
           <div className="h-16 flex items-center justify-between">
             <div className="flex items-center gap-8">
@@ -40,7 +40,7 @@ export const Header = () => {
       </div>
 
       {/* Secondary Navigation */}
-      <div className="bg-white border-b">
+      <div className="bg-white/80 backdrop-blur-sm border-b">
         <div className="container mx-auto px-4">
           <nav className="flex items-center h-12 gap-8 text-sm">
             <Link to="/brokers" className="text-gray-600 hover:text-primary">
@@ -75,7 +75,7 @@ export const Header = () => {
       </div>
 
       {/* Call to Action Bar */}
-      <div className="bg-gray-50 border-b">
+      <div className="bg-gray-50/80 backdrop-blur-sm border-b">
         <div className="container mx-auto px-4">
           <div className="h-12 flex items-center justify-between">
             <span className="text-sm text-gray-600">
