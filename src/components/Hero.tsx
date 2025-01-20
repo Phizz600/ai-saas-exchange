@@ -157,9 +157,11 @@ export const Hero = () => {
                   </Button>
                 </div>
                 <p className="text-sm text-gray-300 px-2">
-                  Be one of the first 1,000 AI builders to join our waitlist and receive a{' '}
-                  <span className="text-[#D946EF] font-semibold">free AI-powered valuation</span> plus{' '}
-                  <span className="text-[#0EA5E9] font-semibold">exclusive lifetime membership (valued at $20/month)</span> when we go live.
+                  Join the first 1,000 to join the AI Exchange Club waitlist. Receive a{' '}
+                  <span className="text-[#D946EF] font-semibold">free AI valuation</span>,{' '}
+                  <span className="text-[#0EA5E9] font-semibold">lifetime membership</span>, and{' '}
+                  <span className="text-purple-400 font-semibold">waived listing fees</span>. Buyers: Enjoy{' '}
+                  <span className="text-emerald-400 font-semibold">early access to exclusive deals</span> and connect with top AI innovators.
                 </p>
               </motion.div>
             </form>
