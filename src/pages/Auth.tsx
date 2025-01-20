@@ -2,12 +2,10 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Auth as SupabaseAuth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
-import { AuthError } from "@supabase/supabase-js";
+import { AuthError, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthLayout } from "@/components/auth/AuthLayout";
 import { UserTypeSelection } from "@/components/auth/UserTypeSelection";
-
-type AuthEvent = 'SIGNED_IN' | 'SIGNED_UP' | 'SIGNED_OUT';
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -24,7 +22,7 @@ const Auth = () => {
     };
     checkUser();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event: AuthEvent, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("Auth state changed:", event);
       
       if (event === 'SIGNED_UP') {
