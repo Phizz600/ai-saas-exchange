@@ -2,47 +2,63 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Auth as SupabaseAuth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
-import { AuthError, Session } from "@supabase/supabase-js";
+import { AuthError, AuthChangeEvent, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthLayout } from "@/components/auth/AuthLayout";
 import { UserTypeSelection } from "@/components/auth/UserTypeSelection";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const Auth = () => {
   const navigate = useNavigate();
   const [showUserTypeSelection, setShowUserTypeSelection] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-    console.log("Auth component mounted");
-    const checkUser = async () => {
+    console.log("Auth: Component mounted");
+    
+    const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
-        console.log("User already logged in, redirecting to marketplace");
+        console.log("Auth: User already logged in, redirecting to marketplace");
         navigate("/marketplace");
       }
     };
-    checkUser();
+    
+    checkSession();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("Auth state changed:", event);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event: AuthChangeEvent, session: Session | null) => {
+      console.log("Auth: Auth state changed:", event);
       
       if (event === 'SIGNED_UP') {
-        console.log("User signed up, showing user type selection");
+        console.log("Auth: User signed up, showing user type selection");
         setShowUserTypeSelection(true);
-      }
-      
-      if (event === 'SIGNED_IN' && session) {
+      } else if (event === 'SIGNED_IN' && session) {
         if (!showUserTypeSelection) {
-          console.log("User signed in, redirecting to marketplace");
+          console.log("Auth: User signed in, redirecting to marketplace");
           navigate("/marketplace");
         }
       }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      console.log("Auth: Cleaning up subscription");
+      subscription.unsubscribe();
+    };
   }, [navigate, showUserTypeSelection]);
+
+  const handleError = (error: AuthError) => {
+    console.error("Auth: Error occurred:", error);
+    setErrorMessage(error.message);
+  };
 
   return (
     <AuthLayout>
+      {errorMessage && (
+        <Alert variant="destructive" className="mb-4">
+          <AlertDescription>{errorMessage}</AlertDescription>
+        </Alert>
+      )}
+      
       {showUserTypeSelection ? (
         <UserTypeSelection />
       ) : (
