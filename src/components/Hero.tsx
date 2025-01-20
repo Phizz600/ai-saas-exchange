@@ -10,7 +10,7 @@ import { motion, AnimatePresence } from "framer-motion";
 export const Hero = () => {
   const [newsletterEmail, setNewsletterEmail] = useState("");
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
-  const [subscriberCount, setSubscriberCount] = useState(342); // Starting with a mock count
+  const [subscriberCount, setSubscriberCount] = useState(342);
   const navigate = useNavigate();
   
   const words = ["Companies", "Businesses", "Apps", "Plugins", "Tools", "MVPs"];
@@ -30,7 +30,6 @@ export const Hero = () => {
     setNewsletterEmail("");
   };
 
-  // Enhanced animated background elements
   const particles = Array.from({ length: 30 }).map((_, i) => ({
     id: i,
     x: Math.random() * 100,
@@ -91,11 +90,6 @@ export const Hero = () => {
             transition={{ delay: 0.2 }}
             className="flex flex-col items-center mb-8"
           >
-            <img 
-              src="/lovable-uploads/47eac7ab-ce1a-4bb8-800b-19f2bfcdd765.png" 
-              alt="AI Exchange Club Logo" 
-              className="w-64 h-auto mb-6"
-            />
             <h1 className="font-exo text-5xl md:text-7xl font-bold text-white leading-tight">
               Where AI{" "}
               <AnimatePresence mode="wait">
