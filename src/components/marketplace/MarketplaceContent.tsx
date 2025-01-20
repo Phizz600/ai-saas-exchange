@@ -10,6 +10,10 @@ import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export const MarketplaceContent = () => {
+  useEffect(() => {
+    console.log('MarketplaceContent mounted');
+  }, []);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [industryFilter, setIndustryFilter] = useState("all");
   const [stageFilter, setStageFilter] = useState("all");
@@ -54,6 +58,7 @@ export const MarketplaceContent = () => {
   }, [searchQuery, industryFilter, stageFilter, priceFilter, timeFilter, sortBy, currentPage, currentItems.length]);
 
   if (error) {
+    console.error('MarketplaceContent error:', error);
     toast({
       variant: "destructive",
       title: "Error loading products",
