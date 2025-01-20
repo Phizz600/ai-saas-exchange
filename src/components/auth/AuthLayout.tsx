@@ -8,11 +8,11 @@ export const AuthLayout = ({ children }: AuthLayoutProps) => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-accent to-accent3 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        <div className="mb-8 text-center">
+        <div className="mb-4 text-center">
           <img 
             src="/lovable-uploads/b2726e08-98dd-472d-b44a-b780d6e1343e.png" 
             alt="AI Exchange Club Logo" 
-            className="h-32 mx-auto mb-4" // Increased from h-24 to h-32
+            className="h-40 mx-auto mb-1" // Reduced mb-4 to mb-1 to decrease spacing
           />
           <p className="text-gray-300">Sign in or create an account to continue</p>
         </div>
