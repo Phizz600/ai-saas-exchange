@@ -85,30 +85,37 @@ export const Hero = () => {
           className="space-y-8"
         >
           {/* Main heading */}
-          <motion.h1
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="font-exo text-5xl md:text-7xl font-bold text-white mb-6 leading-tight"
+            className="flex flex-col items-center mb-8"
           >
-            Where AI{" "}
-            <AnimatePresence mode="wait">
-              <motion.span
-                key={currentWordIndex}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.5 }}
-                className="inline-block"
-              >
-                {words[currentWordIndex]}
-              </motion.span>
-            </AnimatePresence>
-            <br />
-            <span className="bg-gradient-to-r from-[#D946EF] via-[#8B5CF6] to-[#0EA5E9] text-transparent bg-clip-text">
-              Find Their Perfect Match
-            </span>
-          </motion.h1>
+            <img 
+              src="/lovable-uploads/47eac7ab-ce1a-4bb8-800b-19f2bfcdd765.png" 
+              alt="AI Exchange Club Logo" 
+              className="w-64 h-auto mb-6"
+            />
+            <h1 className="font-exo text-5xl md:text-7xl font-bold text-white leading-tight">
+              Where AI{" "}
+              <AnimatePresence mode="wait">
+                <motion.span
+                  key={currentWordIndex}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.5 }}
+                  className="inline-block"
+                >
+                  {words[currentWordIndex]}
+                </motion.span>
+              </AnimatePresence>
+              <br />
+              <span className="bg-gradient-to-r from-[#D946EF] via-[#8B5CF6] to-[#0EA5E9] text-transparent bg-clip-text">
+                Find Their Perfect Match
+              </span>
+            </h1>
+          </motion.div>
 
           {/* Subheading */}
           <motion.p
