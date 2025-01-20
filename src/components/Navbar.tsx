@@ -10,7 +10,7 @@ export const Navbar = () => {
             <img 
               src="/lovable-uploads/5947d1a1-1385-49a1-bf8f-3024df268fb6.png" 
               alt="AI Exchange Club Logo" 
-              className="h-12 w-auto" // Increased from h-8 to h-12
+              className="h-16 w-auto" // Increased from h-12 to h-16
             />
           </Link>
           
