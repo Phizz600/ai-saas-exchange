@@ -30,12 +30,12 @@ const Auth = () => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event: AuthChangeEvent, session) => {
       console.log("Auth state changed:", event);
       
-      if (event === "SIGNED_UP") {
+      if (event === AuthChangeEvent.SIGNED_UP) {
         console.log("User signed up, showing user type selection");
         setShowUserTypeSelection(true);
       }
       
-      if (event === "SIGNED_IN" && session) {
+      if (event === AuthChangeEvent.SIGNED_IN && session) {
         if (!showUserTypeSelection) {
           console.log("User signed in, redirecting to marketplace");
           navigate("/marketplace");
