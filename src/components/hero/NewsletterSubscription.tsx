@@ -8,7 +8,7 @@ interface NewsletterSubscriptionProps {
   newsletterEmail: string;
   setNewsletterEmail: (email: string) => void;
   subscriberCount: number;
-  setSubscriberCount: (count: number) => void;
+  setSubscriberCount: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export const NewsletterSubscription = ({
@@ -20,7 +20,7 @@ export const NewsletterSubscription = ({
   const handleNewsletterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Newsletter email submitted:", newsletterEmail);
-    setSubscriberCount(prev => Math.min(prev + 1, 1000));
+    setSubscriberCount((prev) => Math.min(prev + 1, 1000));
     toast.success("Successfully joined the waitlist!");
     setNewsletterEmail("");
   };
