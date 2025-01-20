@@ -1,13 +1,16 @@
 import { Badge } from "@/components/ui/badge";
 import { formatCurrency } from "@/lib/utils";
+import { Database } from "@/integrations/supabase/types";
+
+type Product = Database['public']['Tables']['products']['Row'];
 
 interface ProductCardContentProps {
-  title: string;
-  description: string;
-  price: number;
-  category: string;
-  stage: string;
-  monthlyRevenue: number;
+  title: Product['title'];
+  description: Product['description'];
+  price: Product['price'];
+  category: Product['category'];
+  stage: Product['stage'];
+  monthlyRevenue: Product['monthly_revenue'];
 }
 
 export function ProductCardContent({
@@ -34,14 +37,14 @@ export function ProductCardContent({
           <div>
             <p className="text-sm text-gray-500 mb-1">Price</p>
             <p className="text-2xl font-bold text-primary">
-              {formatCurrency(price)}
+              {formatCurrency(Number(price))}
             </p>
           </div>
-          {stage === "Revenue" && (
+          {monthlyRevenue && stage === "Revenue" && (
             <div className="text-right">
               <p className="text-sm text-gray-500 mb-1">Monthly Revenue</p>
               <p className="text-lg font-semibold text-green-600">
-                {formatCurrency(monthlyRevenue)}
+                {formatCurrency(Number(monthlyRevenue))}
               </p>
             </div>
           )}

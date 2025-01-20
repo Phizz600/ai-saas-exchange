@@ -1,27 +1,11 @@
 import { ProductCard } from "@/components/ProductCard";
 import { ProductCardSkeleton } from "./product-card/ProductCardSkeleton";
 import { Search } from "lucide-react";
+import { Database } from "@/integrations/supabase/types";
 
-interface Product {
-  id: number;
-  title: string;
-  description: string;
-  price: number;
-  category: string;
-  stage: string;
-  monthlyRevenue: number;
-  image: string;
-  timeLeft: string;
-  seller: {
-    id: number;
-    name: string;
-    avatar: string;
-    achievements: {
-      type: "FirstTimeBuyer" | "SuccessfulAcquisition" | "TopBidder" | "DealmakerOfMonth";
-      label: string;
-    }[];
-  };
-}
+type Product = Database['public']['Tables']['products']['Row'] & {
+  seller: Database['public']['Tables']['profiles']['Row'];
+};
 
 interface ProductGridProps {
   products: Product[];

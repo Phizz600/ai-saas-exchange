@@ -1,5 +1,5 @@
-import { useMemo } from "react";
-import { mockProducts } from "@/data/mockProducts";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 interface UseMarketplaceProductsProps {
   searchQuery: string;
@@ -12,55 +12,103 @@ interface UseMarketplaceProductsProps {
 }
 
 export const useMarketplaceProducts = ({
+  searchQuery,
+  industryFilter,
+  stageFilter,
+  priceFilter,
   sortBy,
   currentPage,
 }: UseMarketplaceProductsProps) => {
   const itemsPerPage = 6;
 
-  const getSortedProducts = () => {
-    let sorted = [...mockProducts];
-    switch (sortBy) {
-      case "price_asc":
-        return sorted.sort((a, b) => a.price - b.price);
-      case "price_desc":
-        return sorted.sort((a, b) => b.price - a.price);
-      case "recent":
-        return sorted.sort((a, b) => {
-          const getHours = (time: string) => {
-            const [days, hours] = time.split(" ");
-            return parseInt(days) * 24 + parseInt(hours);
-          };
-          return getHours(b.timeLeft) - getHours(a.timeLeft);
-        });
-      case "popular":
-        // Simulated popularity based on monthly revenue
-        return sorted.sort((a, b) => b.monthlyRevenue - a.monthlyRevenue);
-      default:
-        return sorted;
+  const fetchProducts = async () => {
+    console.log('Fetching products with filters:', {
+      searchQuery,
+      industryFilter,
+      stageFilter,
+      priceFilter,
+      sortBy,
+      currentPage
+    });
+
+    let query = supabase
+      .from('products')
+      .select('*, seller:profiles(*)');
+
+    // Apply filters
+    if (searchQuery) {
+      query = query.ilike('title', `%${searchQuery}%`);
     }
+    if (industryFilter !== 'all') {
+      query = query.eq('category', industryFilter);
+    }
+    if (stageFilter !== 'all') {
+      query = query.eq('stage', stageFilter);
+    }
+    if (priceFilter !== 'all') {
+      const [min, max] = priceFilter.split('-').map(Number);
+      query = query.gte('price', min).lte('price', max);
+    }
+
+    // Apply sorting
+    switch (sortBy) {
+      case 'price_asc':
+        query = query.order('price', { ascending: true });
+        break;
+      case 'price_desc':
+        query = query.order('price', { ascending: false });
+        break;
+      case 'recent':
+        query = query.order('created_at', { ascending: false });
+        break;
+      default:
+        query = query.order('created_at', { ascending: false });
+    }
+
+    // Apply pagination
+    const start = (currentPage - 1) * itemsPerPage;
+    query = query.range(start, start + itemsPerPage - 1);
+
+    const { data: products, error, count } = await query;
+
+    if (error) {
+      console.error('Error fetching products:', error);
+      throw error;
+    }
+
+    return { products, count };
   };
 
-  const sortedProducts = useMemo(() => getSortedProducts(), [sortBy]);
-  
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = sortedProducts.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(sortedProducts.length / itemsPerPage);
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['products', searchQuery, industryFilter, stageFilter, priceFilter, sortBy, currentPage],
+    queryFn: fetchProducts,
+  });
 
   // Get categories overview
-  const categoriesOverview = useMemo(() => {
-    const categories = mockProducts.reduce((acc, product) => {
-      acc[product.category] = (acc[product.category] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
-    return Object.entries(categories).map(([name, count]) => ({ name, count }));
-  }, []);
+  const { data: categoriesData } = useQuery({
+    queryKey: ['categories'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('products')
+        .select('category')
+        .not('category', 'is', null);
+
+      if (error) throw error;
+
+      const categories = data.reduce((acc: Record<string, number>, product) => {
+        acc[product.category] = (acc[product.category] || 0) + 1;
+        return acc;
+      }, {});
+
+      return Object.entries(categories).map(([name, count]) => ({ name, count }));
+    },
+  });
 
   return {
-    currentItems,
-    totalPages,
-    isLoading: false,
-    error: null as Error | null,
-    categoriesOverview,
+    currentItems: data?.products || [],
+    totalPages: data?.count ? Math.ceil(data.count / itemsPerPage) : 0,
+    isLoading,
+    error,
+    categoriesOverview: categoriesData || [],
   };
 };
