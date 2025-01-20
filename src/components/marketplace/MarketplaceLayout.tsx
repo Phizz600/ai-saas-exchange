@@ -7,21 +7,29 @@ import { LiveChatButton } from "@/components/LiveChatButton";
 import { MarketplaceBreadcrumb } from "@/components/marketplace/MarketplaceBreadcrumb";
 
 export const MarketplaceLayout = () => {
+  console.log('Rendering MarketplaceLayout');
+  
   return (
     <div className="min-h-screen bg-white">
       <Header />
-      <div className="pt-20 px-4 md:px-8">
-        <div className="max-w-7xl mx-auto">
+      <main className="container mx-auto px-4 md:px-8">
+        <div className="max-w-7xl mx-auto space-y-8">
           <MarketplaceBreadcrumb />
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">AI Products Marketplace</h1>
-          <p className="text-sm sm:text-base text-gray-600 mb-6 sm:mb-8">Discover and acquire cutting-edge AI solutions for your business</p>
+          <div className="space-y-4">
+            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">
+              AI Products Marketplace
+            </h1>
+            <p className="text-lg text-gray-600">
+              Discover and acquire cutting-edge AI solutions for your business
+            </p>
+          </div>
           <FeaturedCompaniesSlideshow />
           <MarketplaceContent />
           <MarketplaceFAQ />
-          <MarketplaceFooter />
-          <LiveChatButton />
         </div>
-      </div>
+      </main>
+      <MarketplaceFooter />
+      <LiveChatButton />
     </div>
   );
 };
