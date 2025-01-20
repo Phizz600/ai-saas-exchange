@@ -13,7 +13,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface ProductCardProps {
   product: {
-    id: number;
+    id: string;  // Changed from number to string
     title: string;
     description: string;
     price: number;
@@ -23,7 +23,7 @@ interface ProductCardProps {
     image: string;
     timeLeft: string;
     seller: {
-      id: number;
+      id: string;  // Changed from number to string
       name: string;
       avatar: string;
       achievements: {
