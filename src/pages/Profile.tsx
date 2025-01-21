@@ -22,20 +22,43 @@ export const Profile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const { data: { user } } = await supabase.auth.getUser();
+        console.log("Fetching user session...");
+        const { data: { user }, error: sessionError } = await supabase.auth.getUser();
+        
+        if (sessionError) {
+          console.error("Session error:", sessionError);
+          throw sessionError;
+        }
+
         if (!user) {
+          console.log("No user found, redirecting to auth...");
           navigate("/auth");
           return;
         }
 
-        const { data: profileData, error } = await supabase
+        console.log("Fetching profile data for user:", user.id);
+        const { data: profileData, error: profileError } = await supabase
           .from("profiles")
           .select("*")
           .eq("id", user.id)
-          .single();
+          .maybeSingle();
 
-        if (error) throw error;
+        if (profileError) {
+          console.error("Profile fetch error:", profileError);
+          throw profileError;
+        }
+
+        if (!profileData) {
+          console.log("No profile found for user:", user.id);
+          toast({
+            variant: "destructive",
+            title: "Profile not found",
+            description: "Unable to load your profile. Please try again.",
+          });
+          return;
+        }
         
+        console.log("Profile data fetched successfully:", profileData);
         setProfile(profileData);
         
         // Calculate profile completion
@@ -48,7 +71,7 @@ export const Profile = () => {
         setCompletionProgress(completion);
         
       } catch (error) {
-        console.error("Error fetching profile:", error);
+        console.error("Error in profile fetch:", error);
         toast({
           variant: "destructive",
           title: "Error",
@@ -70,7 +93,16 @@ export const Profile = () => {
     );
   }
 
-  if (!profile) return null;
+  if (!profile) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-semibold mb-4">Profile Not Found</h2>
+          <Button onClick={() => navigate("/")}>Return Home</Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
