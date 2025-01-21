@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { UserCircle } from "lucide-react";
+import { UserCircle, MapPin, Calendar, Globe2, Clock } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/components/ui/use-toast";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -13,6 +15,7 @@ export const Profile = () => {
   const { toast } = useToast();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [completionProgress, setCompletionProgress] = useState(33);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -59,54 +62,144 @@ export const Profile = () => {
   if (!profile) return null;
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-4xl mx-auto space-y-6">
-        {/* Profile Header */}
-        <Card>
-          <CardHeader className="flex flex-row items-center space-x-4">
-            {profile.avatar_url ? (
-              <img
-                src={profile.avatar_url}
-                alt={profile.full_name || "Profile"}
-                className="w-16 h-16 rounded-full"
-              />
-            ) : (
-              <UserCircle className="w-16 h-16 text-gray-400" />
-            )}
-            <div>
-              <CardTitle>{profile.full_name || "Anonymous User"}</CardTitle>
-              <p className="text-sm text-muted-foreground">
-                {profile.user_type === "ai_builder" ? "AI Builder" : "AI Investor"}
-              </p>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground">{profile.bio || "No bio provided"}</p>
-          </CardContent>
-        </Card>
+    <div className="min-h-screen bg-gray-50">
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
+          {/* Left Sidebar */}
+          <div className="md:col-span-4">
+            <Card className="sticky top-8">
+              <CardContent className="pt-6">
+                <div className="flex flex-col items-center text-center">
+                  {profile.avatar_url ? (
+                    <img
+                      src={profile.avatar_url}
+                      alt={profile.full_name || "Profile"}
+                      className="w-32 h-32 rounded-full mb-4"
+                    />
+                  ) : (
+                    <UserCircle className="w-32 h-32 text-gray-400 mb-4" />
+                  )}
+                  <h2 className="text-2xl font-semibold mb-1">
+                    {profile.full_name || "Anonymous User"}
+                  </h2>
+                  <p className="text-sm text-muted-foreground mb-4">@{profile.username}</p>
+                  
+                  <div className="w-full space-y-4">
+                    <div className="flex items-center text-sm text-muted-foreground">
+                      <MapPin className="w-4 h-4 mr-2" />
+                      <span>United States</span>
+                    </div>
+                    <div className="flex items-center text-sm text-muted-foreground">
+                      <Calendar className="w-4 h-4 mr-2" />
+                      <span>Member since {new Date(profile.created_at).toLocaleDateString()}</span>
+                    </div>
+                    <div className="flex items-center text-sm text-muted-foreground">
+                      <Globe2 className="w-4 h-4 mr-2" />
+                      <span>English</span>
+                    </div>
+                    <div className="flex items-center text-sm text-muted-foreground">
+                      <Clock className="w-4 h-4 mr-2" />
+                      <span>Response time: ~2 hours</span>
+                    </div>
+                  </div>
 
-        {/* Conditional Content Based on User Type */}
-        {profile.user_type === "ai_builder" ? (
-          <Card>
-            <CardHeader>
-              <CardTitle>My AI Products</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {/* We'll implement the products list in the next iteration */}
-              <p className="text-muted-foreground">Your listed AI products will appear here.</p>
-            </CardContent>
-          </Card>
-        ) : (
-          <Card>
-            <CardHeader>
-              <CardTitle>My Investments</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {/* We'll implement the investments list in the next iteration */}
-              <p className="text-muted-foreground">Your AI investments will appear here.</p>
-            </CardContent>
-          </Card>
-        )}
+                  <div className="w-full mt-6">
+                    <Button 
+                      variant="outline" 
+                      className="w-full mb-3"
+                      onClick={() => navigate('/marketplace')}
+                    >
+                      Preview public profile
+                    </Button>
+                    {profile.user_type === "ai_builder" && (
+                      <Button 
+                        className="w-full bg-primary hover:bg-primary/90"
+                        onClick={() => navigate('/marketplace')}
+                      >
+                        Create New Listing
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Main Content */}
+          <div className="md:col-span-8">
+            {/* Profile Completion */}
+            <Card className="mb-6">
+              <CardHeader>
+                <CardTitle className="text-lg">
+                  Profile Completion
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <Progress value={completionProgress} className="h-2" />
+                  <p className="text-sm text-muted-foreground">
+                    Complete your profile to increase visibility and trust with potential {profile.user_type === "ai_builder" ? "buyers" : "sellers"}.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Bio Section */}
+            <Card className="mb-6">
+              <CardHeader>
+                <CardTitle className="text-lg">About Me</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">
+                  {profile.bio || "Tell others about yourself and your expertise..."}
+                </p>
+              </CardContent>
+            </Card>
+
+            {/* Conditional Content */}
+            {profile.user_type === "ai_builder" ? (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">My AI Products</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-center py-8">
+                    <h3 className="text-lg font-semibold mb-2">No products listed yet</h3>
+                    <p className="text-muted-foreground mb-4">
+                      Start selling your AI products to reach potential buyers
+                    </p>
+                    <Button 
+                      className="bg-primary hover:bg-primary/90"
+                      onClick={() => navigate('/marketplace')}
+                    >
+                      Create Your First Listing
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ) : (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">My Investments</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-center py-8">
+                    <h3 className="text-lg font-semibold mb-2">No investments yet</h3>
+                    <p className="text-muted-foreground mb-4">
+                      Browse the marketplace to find AI products to invest in
+                    </p>
+                    <Button 
+                      className="bg-primary hover:bg-primary/90"
+                      onClick={() => navigate('/marketplace')}
+                    >
+                      Explore Marketplace
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
