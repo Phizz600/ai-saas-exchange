@@ -69,6 +69,7 @@ export type Database = {
           created_at: string
           full_name: string | null
           id: string
+          liked_products: string[] | null
           updated_at: string
           user_type: Database["public"]["Enums"]["user_type"] | null
           username: string | null
@@ -79,6 +80,7 @@ export type Database = {
           created_at?: string
           full_name?: string | null
           id: string
+          liked_products?: string[] | null
           updated_at?: string
           user_type?: Database["public"]["Enums"]["user_type"] | null
           username?: string | null
@@ -89,6 +91,7 @@ export type Database = {
           created_at?: string
           full_name?: string | null
           id?: string
+          liked_products?: string[] | null
           updated_at?: string
           user_type?: Database["public"]["Enums"]["user_type"] | null
           username?: string | null

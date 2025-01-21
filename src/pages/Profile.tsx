@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { UserCircle, MapPin, Calendar, Globe2, Clock } from "lucide-react";
+import { MapPin, Calendar, Globe2, Clock } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/components/ui/use-toast";
+import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
+import { LikedProducts } from "@/components/profile/LikedProducts";
 import type { Database } from "@/integrations/supabase/types";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
@@ -34,8 +36,17 @@ export const Profile = () => {
 
         if (error) throw error;
         
-        console.log("Profile data:", profileData);
         setProfile(profileData);
+        
+        // Calculate profile completion
+        let completion = 0;
+        if (profileData.full_name) completion += 20;
+        if (profileData.avatar_url) completion += 20;
+        if (profileData.bio) completion += 20;
+        if (profileData.username) completion += 20;
+        if (profileData.user_type) completion += 20;
+        setCompletionProgress(completion);
+        
       } catch (error) {
         console.error("Error fetching profile:", error);
         toast({
@@ -70,16 +81,12 @@ export const Profile = () => {
             <Card className="sticky top-8">
               <CardContent className="pt-6">
                 <div className="flex flex-col items-center text-center">
-                  {profile.avatar_url ? (
-                    <img
-                      src={profile.avatar_url}
-                      alt={profile.full_name || "Profile"}
-                      className="w-32 h-32 rounded-full mb-4"
-                    />
-                  ) : (
-                    <UserCircle className="w-32 h-32 text-gray-400 mb-4" />
-                  )}
-                  <h2 className="text-2xl font-semibold mb-1">
+                  <ProfileAvatar
+                    avatarUrl={profile.avatar_url}
+                    userId={profile.id}
+                    onAvatarUpdate={(url) => setProfile(prev => prev ? { ...prev, avatar_url: url } : null)}
+                  />
+                  <h2 className="text-2xl font-semibold mb-1 mt-4">
                     {profile.full_name || "Anonymous User"}
                   </h2>
                   <p className="text-sm text-muted-foreground mb-4">@{profile.username}</p>
@@ -126,9 +133,9 @@ export const Profile = () => {
           </div>
 
           {/* Main Content */}
-          <div className="md:col-span-8">
+          <div className="md:col-span-8 space-y-6">
             {/* Profile Completion */}
-            <Card className="mb-6">
+            <Card>
               <CardHeader>
                 <CardTitle className="text-lg">
                   Profile Completion
@@ -145,7 +152,7 @@ export const Profile = () => {
             </Card>
 
             {/* Bio Section */}
-            <Card className="mb-6">
+            <Card>
               <CardHeader>
                 <CardTitle className="text-lg">About Me</CardTitle>
               </CardHeader>
@@ -155,6 +162,9 @@ export const Profile = () => {
                 </p>
               </CardContent>
             </Card>
+
+            {/* Liked Products */}
+            <LikedProducts likedProductIds={profile.liked_products || []} />
 
             {/* Conditional Content */}
             {profile.user_type === "ai_builder" ? (
