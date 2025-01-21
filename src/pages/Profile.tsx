@@ -17,7 +17,7 @@ export const Profile = () => {
   const { toast } = useToast();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
-  const [completionProgress, setCompletionProgress] = useState(33);
+  const [completionProgress, setCompletionProgress] = useState(0);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -87,7 +87,7 @@ export const Profile = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-accent to-accent2">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
       </div>
     );
@@ -95,18 +95,27 @@ export const Profile = () => {
 
   if (!profile) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-accent to-accent2">
+        <div className="text-center text-white">
           <h2 className="text-2xl font-semibold mb-4">Profile Not Found</h2>
-          <Button onClick={() => navigate("/")}>Return Home</Button>
+          <Button onClick={() => navigate("/")} variant="secondary">Return Home</Button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-b from-accent to-accent2">
       <div className="container mx-auto px-4 py-8">
+        {/* Brand Logo */}
+        <div className="flex justify-center mb-8">
+          <img 
+            src="/lovable-uploads/47eac7ab-ce1a-4bb8-800b-19f2bfcdd765.png" 
+            alt="AI Exchange Club Logo" 
+            className="h-12 w-auto"
+          />
+        </div>
+        
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
           {/* Left Sidebar */}
           <div className="md:col-span-4">
