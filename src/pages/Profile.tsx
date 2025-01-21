@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { MapPin, Calendar, Globe2, Clock } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/components/ui/use-toast";
-import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
+import { ProfileHeader } from "@/components/profile/ProfileHeader";
+import { ProfileCompletion } from "@/components/profile/ProfileCompletion";
+import { ProfileBio } from "@/components/profile/ProfileBio";
+import { ProfileContent } from "@/components/profile/ProfileContent";
 import { LikedProducts } from "@/components/profile/LikedProducts";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -110,136 +110,18 @@ export const Profile = () => {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
           {/* Left Sidebar */}
           <div className="md:col-span-4">
-            <Card className="sticky top-8">
-              <CardContent className="pt-6">
-                <div className="flex flex-col items-center text-center">
-                  <ProfileAvatar
-                    avatarUrl={profile.avatar_url}
-                    userId={profile.id}
-                    onAvatarUpdate={(url) => setProfile(prev => prev ? { ...prev, avatar_url: url } : null)}
-                  />
-                  <h2 className="text-2xl font-semibold mb-1 mt-4">
-                    {profile.full_name || "Anonymous User"}
-                  </h2>
-                  <p className="text-sm text-muted-foreground mb-4">@{profile.username}</p>
-                  
-                  <div className="w-full space-y-4">
-                    <div className="flex items-center text-sm text-muted-foreground">
-                      <MapPin className="w-4 h-4 mr-2" />
-                      <span>United States</span>
-                    </div>
-                    <div className="flex items-center text-sm text-muted-foreground">
-                      <Calendar className="w-4 h-4 mr-2" />
-                      <span>Member since {new Date(profile.created_at).toLocaleDateString()}</span>
-                    </div>
-                    <div className="flex items-center text-sm text-muted-foreground">
-                      <Globe2 className="w-4 h-4 mr-2" />
-                      <span>English</span>
-                    </div>
-                    <div className="flex items-center text-sm text-muted-foreground">
-                      <Clock className="w-4 h-4 mr-2" />
-                      <span>Response time: ~2 hours</span>
-                    </div>
-                  </div>
-
-                  <div className="w-full mt-6">
-                    <Button 
-                      variant="outline" 
-                      className="w-full mb-3"
-                      onClick={() => navigate('/marketplace')}
-                    >
-                      Preview public profile
-                    </Button>
-                    {profile.user_type === "ai_builder" && (
-                      <Button 
-                        className="w-full bg-primary hover:bg-primary/90"
-                        onClick={() => navigate('/marketplace')}
-                      >
-                        Create New Listing
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <ProfileHeader 
+              profile={profile} 
+              onAvatarUpdate={(url) => setProfile(prev => prev ? { ...prev, avatar_url: url } : null)}
+            />
           </div>
 
           {/* Main Content */}
           <div className="md:col-span-8 space-y-6">
-            {/* Profile Completion */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">
-                  Profile Completion
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <Progress value={completionProgress} className="h-2" />
-                  <p className="text-sm text-muted-foreground">
-                    Complete your profile to increase visibility and trust with potential {profile.user_type === "ai_builder" ? "buyers" : "sellers"}.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Bio Section */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">About Me</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  {profile.bio || "Tell others about yourself and your expertise..."}
-                </p>
-              </CardContent>
-            </Card>
-
-            {/* Liked Products */}
+            <ProfileCompletion progress={completionProgress} userType={profile.user_type} />
+            <ProfileBio bio={profile.bio} />
             <LikedProducts likedProductIds={profile.liked_products || []} />
-
-            {/* Conditional Content */}
-            {profile.user_type === "ai_builder" ? (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">My AI Products</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center py-8">
-                    <h3 className="text-lg font-semibold mb-2">No products listed yet</h3>
-                    <p className="text-muted-foreground mb-4">
-                      Start selling your AI products to reach potential buyers
-                    </p>
-                    <Button 
-                      className="bg-primary hover:bg-primary/90"
-                      onClick={() => navigate('/marketplace')}
-                    >
-                      Create Your First Listing
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ) : (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">My Investments</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center py-8">
-                    <h3 className="text-lg font-semibold mb-2">No investments yet</h3>
-                    <p className="text-muted-foreground mb-4">
-                      Browse the marketplace to find AI products to invest in
-                    </p>
-                    <Button 
-                      className="bg-primary hover:bg-primary/90"
-                      onClick={() => navigate('/marketplace')}
-                    >
-                      Explore Marketplace
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+            <ProfileContent profile={profile} />
           </div>
         </div>
       </div>

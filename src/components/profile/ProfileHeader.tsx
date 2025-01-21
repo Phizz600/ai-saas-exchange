@@ -1,0 +1,72 @@
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { ProfileAvatar } from "./ProfileAvatar";
+import { MapPin, Calendar, Globe2, Clock } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import type { Database } from "@/integrations/supabase/types";
+
+type Profile = Database["public"]["Tables"]["profiles"]["Row"];
+
+interface ProfileHeaderProps {
+  profile: Profile;
+  onAvatarUpdate: (url: string | null) => void;
+}
+
+export const ProfileHeader = ({ profile, onAvatarUpdate }: ProfileHeaderProps) => {
+  const navigate = useNavigate();
+
+  return (
+    <Card className="sticky top-8">
+      <CardContent className="pt-6">
+        <div className="flex flex-col items-center text-center">
+          <ProfileAvatar
+            avatarUrl={profile.avatar_url}
+            userId={profile.id}
+            onAvatarUpdate={onAvatarUpdate}
+          />
+          <h2 className="text-2xl font-semibold mb-1 mt-4">
+            {profile.full_name || "Anonymous User"}
+          </h2>
+          <p className="text-sm text-muted-foreground mb-4">@{profile.username}</p>
+          
+          <div className="w-full space-y-4">
+            <div className="flex items-center text-sm text-muted-foreground">
+              <MapPin className="w-4 h-4 mr-2" />
+              <span>United States</span>
+            </div>
+            <div className="flex items-center text-sm text-muted-foreground">
+              <Calendar className="w-4 h-4 mr-2" />
+              <span>Member since {new Date(profile.created_at).toLocaleDateString()}</span>
+            </div>
+            <div className="flex items-center text-sm text-muted-foreground">
+              <Globe2 className="w-4 h-4 mr-2" />
+              <span>English</span>
+            </div>
+            <div className="flex items-center text-sm text-muted-foreground">
+              <Clock className="w-4 h-4 mr-2" />
+              <span>Response time: ~2 hours</span>
+            </div>
+          </div>
+
+          <div className="w-full mt-6">
+            <Button 
+              variant="outline" 
+              className="w-full mb-3"
+              onClick={() => navigate('/marketplace')}
+            >
+              Preview public profile
+            </Button>
+            {profile.user_type === "ai_builder" && (
+              <Button 
+                className="w-full bg-primary hover:bg-primary/90"
+                onClick={() => navigate('/marketplace')}
+              >
+                Create New Listing
+              </Button>
+            )}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
