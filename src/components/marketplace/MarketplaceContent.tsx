@@ -7,6 +7,7 @@ import { useMarketplaceProducts } from "@/hooks/useMarketplaceProducts";
 import { useToast } from "@/hooks/use-toast";
 import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { mockProducts } from "@/data/mockProducts";
 
 export const MarketplaceContent = () => {
   useEffect(() => {
@@ -22,15 +23,11 @@ export const MarketplaceContent = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const { toast } = useToast();
   
-  const { currentItems, totalPages, isLoading, error } = useMarketplaceProducts({
-    searchQuery,
-    industryFilter,
-    stageFilter,
-    priceFilter,
-    timeFilter,
-    sortBy,
-    currentPage,
-  });
+  // For now, we'll use mock data directly instead of the hook
+  const currentItems = mockProducts;
+  const totalPages = 1;
+  const isLoading = false;
+  const error = null;
 
   useEffect(() => {
     // Enhanced analytics tracking

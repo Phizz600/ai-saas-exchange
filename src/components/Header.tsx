@@ -5,7 +5,7 @@ import { NavigationMenu, NavigationMenuItem, NavigationMenuList } from "@/compon
 
 export const Header = () => {
   return (
-    <header className="fixed top-0 w-full z-50">
+    <header className="w-full z-50">
       {/* Main Navigation */}
       <div className="bg-accent/80 backdrop-blur-sm text-white">
         <div className="container mx-auto px-4">
@@ -43,32 +43,20 @@ export const Header = () => {
       <div className="bg-white/80 backdrop-blur-sm border-b">
         <div className="container mx-auto px-4">
           <nav className="flex items-center h-10 gap-8 text-sm">
-            <Link to="/brokers" className="text-gray-600 hover:text-primary">
-              Meet our Brokers
-            </Link>
-            <Link to="/insights" className="text-gray-600 hover:text-primary">
-              Insights
-            </Link>
-            <Link to="/pitch" className="text-gray-600 hover:text-primary">
-              Pitch to Buyers
-            </Link>
-            <Link to="/about" className="text-gray-600 hover:text-primary">
+            <Link to="/why-ai-exchange" className="text-gray-600 hover:text-primary">
               Why AI Exchange
             </Link>
             <Link to="/blog" className="text-gray-600 hover:text-primary">
               Blog
             </Link>
-            <Link to="/pricing" className="text-gray-600 hover:text-primary">
-              Pricing
+            <Link to="/fees" className="text-gray-600 hover:text-primary">
+              Fees
             </Link>
             <Link to="/services" className="text-gray-600 hover:text-primary">
               Services
             </Link>
             <Link to="/resources" className="text-gray-600 hover:text-primary">
               Resources
-            </Link>
-            <Link to="/events" className="text-gray-600 hover:text-primary">
-              Events
             </Link>
           </nav>
         </div>
