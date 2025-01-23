@@ -3,9 +3,7 @@ import { ProductCardSkeleton } from "./product-card/ProductCardSkeleton";
 import { Search } from "lucide-react";
 import { Database } from "@/integrations/supabase/types";
 
-type Product = Database['public']['Tables']['products']['Row'] & {
-  seller: Database['public']['Tables']['profiles']['Row'];
-};
+type Product = Database['public']['Tables']['products']['Row'];
 
 interface ProductGridProps {
   products: Product[];
@@ -53,10 +51,10 @@ export const ProductGrid = ({ products, isLoading = false }: ProductGridProps) =
             image: product.image_url || "/placeholder.svg",
             timeLeft: "24h left", // TODO: Implement actual time calculation
             seller: {
-              id: product.seller?.id || "",
-              name: product.seller?.full_name || "Anonymous",
-              avatar: product.seller?.avatar_url || "/placeholder.svg",
-              achievements: [] // TODO: Implement achievements system
+              id: product.seller_id || "",
+              name: "Anonymous", // This would come from a join with profiles table
+              avatar: "/placeholder.svg",
+              achievements: [] // This would come from a separate achievements system
             }
           }}
         />
