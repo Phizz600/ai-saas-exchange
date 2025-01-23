@@ -18,10 +18,10 @@ export function Header() {
           </Link>
 
           <nav className="flex items-center space-x-6">
-            <Link to="/marketplace" className="text-sm font-medium">
+            <Link to="/marketplace" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
               Marketplace
             </Link>
-            <Link to="/fees" className="text-sm font-medium">
+            <Link to="/fees" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
               Fees
             </Link>
           </nav>
@@ -33,13 +33,6 @@ export function Header() {
             <Button>
               Sell Now
             </Button>
-            {!session?.user && (
-              <Link to="/auth">
-                <Button variant="outline">
-                  Sign in
-                </Button>
-              </Link>
-            )}
           </div>
         </div>
       </div>
