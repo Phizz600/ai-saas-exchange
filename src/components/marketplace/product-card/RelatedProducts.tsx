@@ -4,7 +4,7 @@ import { mockProducts } from "@/data/mockProducts";
 
 interface RelatedProductsProps {
   currentProductCategory: string;
-  currentProductId: string;  // Changed from number to string
+  currentProductId: string;
 }
 
 export const RelatedProducts = ({ currentProductCategory, currentProductId }: RelatedProductsProps) => {
@@ -13,9 +13,22 @@ export const RelatedProducts = ({ currentProductCategory, currentProductId }: Re
   const relatedProducts = mockProducts
     .filter(product => 
       product.category === currentProductCategory && 
-      String(product.id) !== currentProductId  // Convert number to string for comparison
+      String(product.id) !== currentProductId
     )
-    .slice(0, 2);
+    .slice(0, 2)
+    .map(product => ({
+      ...product,
+      id: String(product.id),
+      monthlyRevenue: product.monthly_revenue,
+      image: product.image_url,
+      timeLeft: "2 days left",
+      seller: {
+        id: String(product.seller_id),
+        name: "AI Innovator",
+        avatar: "/placeholder.svg",
+        achievements: []
+      }
+    }));
 
   if (relatedProducts.length === 0) return null;
 
@@ -24,17 +37,7 @@ export const RelatedProducts = ({ currentProductCategory, currentProductId }: Re
       <h3 className="text-lg font-semibold mb-4">Related Products</h3>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {relatedProducts.map((product) => (
-          <ProductCard 
-            key={String(product.id)} 
-            product={{
-              ...product,
-              id: String(product.id),
-              seller: {
-                ...product.seller,
-                id: String(product.seller.id)
-              }
-            }} 
-          />
+          <ProductCard key={product.id} product={product} />
         ))}
       </div>
     </Card>

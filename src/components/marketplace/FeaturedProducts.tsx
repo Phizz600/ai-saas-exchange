@@ -9,9 +9,22 @@ export const FeaturedProducts = () => {
   }, []);
 
   const featuredProducts = mockProducts
-    .filter(product => product.monthlyRevenue > 5000)
-    .sort((a, b) => b.monthlyRevenue - a.monthlyRevenue)
-    .slice(0, 3);
+    .filter(product => product.monthly_revenue > 5000)
+    .sort((a, b) => b.monthly_revenue - a.monthly_revenue)
+    .slice(0, 3)
+    .map(product => ({
+      ...product,
+      id: String(product.id),
+      monthlyRevenue: product.monthly_revenue,
+      image: product.image_url,
+      timeLeft: "2 days left",
+      seller: {
+        id: String(product.seller_id),
+        name: "AI Innovator",
+        avatar: "/placeholder.svg",
+        achievements: []
+      }
+    }));
 
   if (featuredProducts.length === 0) return null;
 
@@ -20,17 +33,7 @@ export const FeaturedProducts = () => {
       <h2 className="text-xl font-semibold mb-4 text-accent">Trending Products</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {featuredProducts.map((product) => (
-          <ProductCard 
-            key={String(product.id)} 
-            product={{
-              ...product,
-              id: String(product.id),
-              seller: {
-                ...product.seller,
-                id: String(product.seller.id)
-              }
-            }} 
-          />
+          <ProductCard key={product.id} product={product} />
         ))}
       </div>
     </Card>
