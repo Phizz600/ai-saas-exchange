@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@supabase/auth-helpers-react";
+import { useSession } from "@supabase/auth-helpers-react";
 
 export function Header() {
-  const auth = useAuth();
+  const session = useSession();
 
   return (
     <header className="w-full bg-white border-b z-40">
@@ -33,7 +33,7 @@ export function Header() {
             <Button>
               Sell Now
             </Button>
-            {!auth?.user && (
+            {!session?.user && (
               <Link to="/auth">
                 <Button variant="outline">
                   Sign in
