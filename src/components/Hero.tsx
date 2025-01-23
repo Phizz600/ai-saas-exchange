@@ -56,7 +56,7 @@ export const Hero = () => {
             transition={{ delay: 0.4 }}
             className="text-xl text-gray-200 mb-12 max-w-2xl mx-auto"
           >
-            Connect with top-tier investors, pitch your AI business or idea, and participate in timed, bid-based auctions. Unlock exclusive access to premium deals and accelerate the growth of your AI company.
+            Connect with top-tier investors, pitch your AI business or idea, and participate in timed, Dutch bid-based auctions. Unlock exclusive access to premium deals and accelerate the growth of your AI company.
           </motion.p>
 
           <div className="flex flex-col gap-6 items-center">
