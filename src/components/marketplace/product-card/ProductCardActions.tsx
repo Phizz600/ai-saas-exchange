@@ -33,9 +33,53 @@ export function ProductCardActions({ product }: ProductCardActionsProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isGeneratingDeck, setIsGeneratingDeck] = useState(false);
   const [pitchDeck, setPitchDeck] = useState<PitchDeckSlide[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const isAuction = !!product.auction_end_time;
   const auctionEnded = isAuction && new Date(product.auction_end_time) < new Date();
+
+  const handleBid = async () => {
+    if (!product.current_price) return;
+    
+    setIsSubmitting(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast({
+          title: "Authentication required",
+          description: "Please log in to place a bid",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      const { error } = await supabase
+        .from('bids')
+        .insert({
+          product_id: product.id,
+          bidder_id: user.id,
+          amount: product.current_price
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Bid placed successfully!",
+        description: `You've placed a bid for $${product.current_price.toLocaleString()}`,
+      });
+
+    } catch (error) {
+      console.error('Error placing bid:', error);
+      toast({
+        title: "Error placing bid",
+        description: "Please try again later",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const generatePitchDeck = async () => {
     setIsGeneratingDeck(true);
@@ -122,6 +166,16 @@ export function ProductCardActions({ product }: ProductCardActionsProps) {
               </div>
             </div>
           </div>
+
+          {!auctionEnded && (
+            <Button 
+              className="w-full mt-4 bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white"
+              onClick={handleBid}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Placing bid..." : "Place Bid"}
+            </Button>
+          )}
         </div>
       )}
 
