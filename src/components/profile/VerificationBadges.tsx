@@ -1,9 +1,8 @@
 import { UserCheck, MailCheck, Phone } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 
 export const VerificationBadges = () => {
   return (
-    <div className="mt-4 space-y-2">
+    <div className="mt-4 space-y-2 text-left w-full">
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
         <UserCheck className="w-4 h-4" />
         Identity Verified

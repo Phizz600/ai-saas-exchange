@@ -1,7 +1,26 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Navbar = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsAuthenticated(!!session);
+    };
+
+    checkAuth();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setIsAuthenticated(!!session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-sm">
       <div className="container mx-auto px-4">
@@ -14,15 +33,21 @@ export const Navbar = () => {
             />
           </Link>
           
-          <div className="hidden md:flex items-center space-x-6">
-            <Link to="/marketplace" className="text-gray-300 hover:text-white transition-colors">
-              Marketplace
-            </Link>
-            <Link to="/auth">
-              <Button variant="secondary" className="bg-secondary hover:bg-secondary/90">
-                Sign In
+          <div className="flex items-center space-x-6">
+            <Link to="/marketplace">
+              <Button 
+                className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 text-white"
+              >
+                Marketplace
               </Button>
             </Link>
+            {!isAuthenticated && (
+              <Link to="/auth">
+                <Button variant="secondary" className="bg-secondary hover:bg-secondary/90">
+                  Sign In
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
       </div>
