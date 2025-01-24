@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { formatCurrency } from "@/lib/utils";
 import { Database } from "@/integrations/supabase/types";
+import { Timer } from "lucide-react";
 
 type Product = Database['public']['Tables']['products']['Row'];
 
@@ -11,6 +12,11 @@ interface ProductCardContentProps {
   category: Product['category'];
   stage: Product['stage'];
   monthlyRevenue: Product['monthly_revenue'];
+  isAuction?: boolean;
+  currentPrice?: number;
+  minPrice?: number;
+  priceDecrement?: number;
+  auctionEndTime?: string;
 }
 
 export function ProductCardContent({
@@ -20,8 +26,12 @@ export function ProductCardContent({
   category,
   stage,
   monthlyRevenue,
+  isAuction,
+  currentPrice,
+  minPrice,
+  priceDecrement,
+  auctionEndTime,
 }: ProductCardContentProps) {
-  // Function to get category color based on category name
   const getCategoryColor = (category: string) => {
     const colors: Record<string, { bg: string; text: string }> = {
       'Content Generation': { bg: 'bg-purple-100', text: 'text-purple-700' },
@@ -34,6 +44,8 @@ export function ProductCardContent({
     };
     return colors[category] || { bg: 'bg-gray-100', text: 'text-gray-700' };
   };
+
+  const auctionEnded = auctionEndTime && new Date(auctionEndTime) < new Date();
 
   return (
     <div className="p-6">
@@ -48,19 +60,47 @@ export function ProductCardContent({
       
       <div className="space-y-4">
         <div className="flex justify-between items-end">
-          <div>
-            <p className="text-sm text-gray-500 mb-1">Price</p>
-            <p className="text-2xl font-bold text-primary">
-              {formatCurrency(Number(price))}
-            </p>
-          </div>
-          {monthlyRevenue && stage === "Revenue" && (
-            <div className="text-right">
-              <p className="text-sm text-gray-500 mb-1">Monthly Revenue</p>
-              <p className="text-lg font-semibold text-green-600">
-                {formatCurrency(Number(monthlyRevenue))}
-              </p>
-            </div>
+          {isAuction ? (
+            <>
+              <div>
+                <p className="text-sm text-gray-500 mb-1">Current Price</p>
+                <p className="text-2xl font-bold text-primary">
+                  {formatCurrency(Number(currentPrice))}
+                </p>
+                <p className="text-sm text-gray-500">
+                  Min: {formatCurrency(Number(minPrice))}
+                </p>
+              </div>
+              <div className="text-right">
+                <p className="text-sm text-gray-500 mb-1">Price Drop</p>
+                <p className="text-lg font-semibold text-amber-600">
+                  -{formatCurrency(Number(priceDecrement))}/min
+                </p>
+                {auctionEndTime && (
+                  <div className="flex items-center gap-1 text-sm text-gray-500 mt-1">
+                    <Timer className="h-4 w-4" />
+                    <span>{auctionEnded ? "Ended" : "Active"}</span>
+                  </div>
+                )}
+              </div>
+            </>
+          ) : (
+            <>
+              <div>
+                <p className="text-sm text-gray-500 mb-1">Price</p>
+                <p className="text-2xl font-bold text-primary">
+                  {formatCurrency(Number(price))}
+                </p>
+              </div>
+              {monthlyRevenue && stage === "Revenue" && (
+                <div className="text-right">
+                  <p className="text-sm text-gray-500 mb-1">Monthly Revenue</p>
+                  <p className="text-lg font-semibold text-green-600">
+                    {formatCurrency(Number(monthlyRevenue))}
+                  </p>
+                </div>
+              )}
+            </>
           )}
         </div>
 
@@ -83,6 +123,14 @@ export function ProductCardContent({
           >
             {stage}
           </Badge>
+          {isAuction && (
+            <Badge 
+              variant="secondary" 
+              className="bg-amber-100 text-amber-700"
+            >
+              Dutch Auction
+            </Badge>
+          )}
         </div>
       </div>
     </div>

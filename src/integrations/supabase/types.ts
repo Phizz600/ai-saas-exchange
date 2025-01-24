@@ -9,45 +9,105 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      bids: {
+        Row: {
+          amount: number
+          bidder_id: string
+          created_at: string
+          id: string
+          product_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          bidder_id: string
+          created_at?: string
+          id?: string
+          product_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          bidder_id?: string
+          created_at?: string
+          id?: string
+          product_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bids_bidder_id_fkey"
+            columns: ["bidder_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bids_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       products: {
         Row: {
+          auction_end_time: string | null
           category: string
           created_at: string
+          current_price: number | null
           description: string | null
           id: string
           image_url: string | null
+          min_price: number | null
           monthly_revenue: number | null
           price: number
+          price_decrement: number | null
           seller_id: string | null
           stage: string
+          starting_price: number | null
           status: string | null
           title: string
           updated_at: string
         }
         Insert: {
+          auction_end_time?: string | null
           category: string
           created_at?: string
+          current_price?: number | null
           description?: string | null
           id?: string
           image_url?: string | null
+          min_price?: number | null
           monthly_revenue?: number | null
           price: number
+          price_decrement?: number | null
           seller_id?: string | null
           stage: string
+          starting_price?: number | null
           status?: string | null
           title: string
           updated_at?: string
         }
         Update: {
+          auction_end_time?: string | null
           category?: string
           created_at?: string
+          current_price?: number | null
           description?: string | null
           id?: string
           image_url?: string | null
+          min_price?: number | null
           monthly_revenue?: number | null
           price?: number
+          price_decrement?: number | null
           seller_id?: string | null
           stage?: string
+          starting_price?: number | null
           status?: string | null
           title?: string
           updated_at?: string
@@ -103,7 +163,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      update_dutch_auction_prices: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
     }
     Enums: {
       user_type: "ai_builder" | "ai_investor"

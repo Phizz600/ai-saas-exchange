@@ -7,13 +7,15 @@ import { ProductCardActions } from "./marketplace/product-card/ProductCardAction
 import { RelatedProducts } from "./marketplace/product-card/RelatedProducts";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Eye, Shield, AlertCircle } from "lucide-react";
+import { Eye, Shield, AlertCircle, Timer } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface ProductCardProps {
   product: {
-    id: string;  // Changed from number to string
+    id: string;
     title: string;
     description: string;
     price: number;
@@ -22,8 +24,13 @@ interface ProductCardProps {
     monthlyRevenue: number;
     image: string;
     timeLeft: string;
+    auction_end_time?: string;
+    starting_price?: number;
+    current_price?: number;
+    min_price?: number;
+    price_decrement?: number;
     seller: {
-      id: string;  // Changed from number to string
+      id: string;
       name: string;
       avatar: string;
       achievements: {
@@ -37,10 +44,58 @@ interface ProductCardProps {
 export function ProductCard({ product }: ProductCardProps) {
   const [isFavorited, setIsFavorited] = useState(false);
   const isMobile = useIsMobile();
+  const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const toggleFavorite = () => {
     setIsFavorited(!isFavorited);
   };
+
+  const handleBid = async () => {
+    if (!product.current_price) return;
+    
+    setIsSubmitting(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast({
+          title: "Authentication required",
+          description: "Please log in to place a bid",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      const { error } = await supabase
+        .from('bids')
+        .insert({
+          product_id: product.id,
+          bidder_id: user.id,
+          amount: product.current_price
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Bid placed successfully!",
+        description: `You've placed a bid for ${product.current_price}`,
+      });
+
+    } catch (error) {
+      console.error('Error placing bid:', error);
+      toast({
+        title: "Error placing bid",
+        description: "Please try again later",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const isAuction = !!product.auction_end_time;
+  const auctionEnded = isAuction && new Date(product.auction_end_time) < new Date();
 
   return (
     <motion.div
@@ -78,19 +133,55 @@ export function ProductCard({ product }: ProductCardProps) {
                 <h2 className="text-xl sm:text-2xl font-bold">{product.title}</h2>
                 <p className="text-gray-600 mt-2">{product.description}</p>
                 <div className="mt-4 grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm text-gray-500">Price</p>
-                    <p className="text-xl sm:text-2xl font-bold">${product.price.toLocaleString()}</p>
-                  </div>
-                  {product.stage === "Revenue" && (
-                    <div>
-                      <p className="text-sm text-gray-500">Monthly Revenue</p>
-                      <p className="text-xl sm:text-2xl font-bold text-green-600">
-                        ${product.monthlyRevenue.toLocaleString()}
-                      </p>
-                    </div>
+                  {isAuction ? (
+                    <>
+                      <div>
+                        <p className="text-sm text-gray-500">Current Price</p>
+                        <p className="text-xl sm:text-2xl font-bold text-primary">
+                          ${product.current_price?.toLocaleString()}
+                        </p>
+                        <p className="text-sm text-gray-500 mt-1">
+                          Min Price: ${product.min_price?.toLocaleString()}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Time Left</p>
+                        <div className="flex items-center gap-1 text-amber-600">
+                          <Timer className="h-4 w-4" />
+                          <p>{auctionEnded ? "Auction ended" : product.timeLeft}</p>
+                        </div>
+                        <p className="text-sm text-gray-500 mt-1">
+                          Price drops: ${product.price_decrement?.toLocaleString()}/min
+                        </p>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div>
+                        <p className="text-sm text-gray-500">Price</p>
+                        <p className="text-xl sm:text-2xl font-bold">${product.price.toLocaleString()}</p>
+                      </div>
+                      {product.stage === "Revenue" && (
+                        <div>
+                          <p className="text-sm text-gray-500">Monthly Revenue</p>
+                          <p className="text-xl sm:text-2xl font-bold text-green-600">
+                            ${product.monthlyRevenue.toLocaleString()}
+                          </p>
+                        </div>
+                      )}
+                    </>
                   )}
                 </div>
+                
+                {isAuction && !auctionEnded && (
+                  <Button 
+                    className="w-full mt-4 bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9]"
+                    onClick={handleBid}
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? "Placing bid..." : "Place Bid"}
+                  </Button>
+                )}
               </div>
 
               <Alert className="bg-blue-50 border-blue-200">
@@ -131,6 +222,11 @@ export function ProductCard({ product }: ProductCardProps) {
           category={product.category}
           stage={product.stage}
           monthlyRevenue={product.monthlyRevenue}
+          isAuction={isAuction}
+          currentPrice={product.current_price}
+          minPrice={product.min_price}
+          priceDecrement={product.price_decrement}
+          auctionEndTime={product.auction_end_time}
         />
         <ProductCardActions />
       </Card>
