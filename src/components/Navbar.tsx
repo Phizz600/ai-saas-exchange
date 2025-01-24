@@ -1,10 +1,12 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Navbar = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const location = useLocation();
+  const isProfilePage = location.pathname === '/profile';
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -22,7 +24,7 @@ export const Navbar = () => {
   }, []);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-sm">
+    <nav className={`${isProfilePage ? '' : 'fixed'} top-0 left-0 right-0 z-50 backdrop-blur-sm`}>
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-24">
           <Link to="/" className="flex items-center">

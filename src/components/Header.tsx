@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -18,6 +18,8 @@ import { useEffect, useState } from "react";
 export function Header() {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const location = useLocation();
+  const isProfilePage = location.pathname === '/profile';
   const [profile, setProfile] = useState<{ avatar_url: string | null; username: string | null } | null>(null);
 
   useEffect(() => {
@@ -59,7 +61,7 @@ export function Header() {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200">
+    <header className={`${isProfilePage ? '' : 'fixed'} top-0 left-0 right-0 z-50 bg-white border-b border-gray-200`}>
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center space-x-3">
