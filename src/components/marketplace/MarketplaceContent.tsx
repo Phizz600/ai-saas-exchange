@@ -23,8 +23,19 @@ export const MarketplaceContent = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const { toast } = useToast();
   
-  // For now, we'll use mock data directly instead of the hook
-  const currentItems = mockProducts;
+  // Transform mock data to include auction fields
+  const currentItems = mockProducts.map(product => ({
+    ...product,
+    auction_end_time: null,
+    current_price: null,
+    min_price: null,
+    price_decrement: null,
+    starting_price: null,
+    id: String(product.id),
+    monthly_revenue: product.monthly_revenue,
+    image_url: product.image_url,
+  }));
+  
   const totalPages = 1;
   const isLoading = false;
   const error = null;
