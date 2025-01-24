@@ -13,7 +13,7 @@ export function Header() {
             <img 
               src="/lovable-uploads/f07753e1-1a02-44c4-82cc-0be1047cdf6e.png" 
               alt="AI Exchange Club" 
-              className="h-8"
+              className="h-12 w-auto"
             />
           </Link>
 
