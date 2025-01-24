@@ -1,9 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { Heart, Loader2, UserCheck, MailCheck, PhoneCheck, Badge } from "lucide-react";
+import { Heart, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ProductCard } from "@/components/ProductCard";
-import { Badge as UIBadge } from "@/components/ui/badge";
 
 interface LikedProductsProps {
   likedProductIds: string[];
