@@ -61,20 +61,6 @@ const Hero = () => {
           </motion.p>
 
           <div className="flex flex-col gap-6 items-center">
-            <motion.div 
-              whileHover={{ scale: 1.02 }} 
-              whileTap={{ scale: 0.98 }}
-              transition={{ duration: 0.2 }}
-            >
-              <Button
-                onClick={() => navigate('/auth')}
-                className="bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] hover:from-[#D946EF] hover:to-[#8B5CF6] text-white px-12 py-6 text-lg transition-all duration-300"
-              >
-                Marketplace
-                <ArrowRight className="ml-2 h-6 w-6" />
-              </Button>
-            </motion.div>
-
             <Suspense fallback={<Skeleton className="w-full max-w-md h-32" />}>
               <NewsletterSubscription
                 newsletterEmail={newsletterEmail}
