@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ProfileAvatar } from "./ProfileAvatar";
 import { MapPin, Calendar, Globe2, Clock, AlertCircle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { VerificationBadges } from "./VerificationBadges";
 import {
   HoverCard,
   HoverCardContent,
@@ -85,6 +86,8 @@ export const ProfileHeader = ({ profile, onAvatarUpdate }: ProfileHeaderProps) =
               </Button>
             )}
           </div>
+
+          <VerificationBadges />
         </div>
       </CardContent>
     </Card>
