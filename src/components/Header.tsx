@@ -62,11 +62,12 @@ export function Header() {
     <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          <Link to="/" className="flex items-center space-x-2">
-            <img src="/ai-exchange-logo.png" alt="AI Exchange" className="h-8 w-auto" />
-            <span className="exo-2-header text-xl font-bold bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] bg-clip-text text-transparent">
-              AI Exchange
-            </span>
+          <Link to="/" className="flex items-center space-x-3">
+            <img 
+              src="/lovable-uploads/0283f7d5-13a6-40c9-b40a-69868474cec9.png" 
+              alt="AI Exchange Club" 
+              className="h-12 w-auto"
+            />
           </Link>
 
           <div className="flex items-center space-x-4">

@@ -8,9 +8,9 @@ export const Navbar = () => {
         <div className="flex items-center justify-between h-24">
           <Link to="/" className="flex items-center">
             <img 
-              src="/lovable-uploads/47eac7ab-ce1a-4bb8-800b-19f2bfcdd765.png" 
-              alt="AI Exchange Club Logo" 
-              className="h-24 w-auto"
+              src="/lovable-uploads/0283f7d5-13a6-40c9-b40a-69868474cec9.png" 
+              alt="AI Exchange Club" 
+              className="h-16 w-auto"
             />
           </Link>
           
