@@ -27,9 +27,9 @@ export const LikedProducts = ({ likedProductIds }: LikedProductsProps) => {
 
   if (isLoading) {
     return (
-      <Card>
+      <Card className="animate-fade-in">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle className="flex items-center gap-2 font-exo">
             <Heart className="w-5 h-5" />
             Liked Products
           </CardTitle>
@@ -43,9 +43,9 @@ export const LikedProducts = ({ likedProductIds }: LikedProductsProps) => {
 
   if (!likedProducts?.length) {
     return (
-      <Card>
+      <Card className="animate-fade-in">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle className="flex items-center gap-2 font-exo">
             <Heart className="w-5 h-5" />
             Liked Products
           </CardTitle>
@@ -60,9 +60,9 @@ export const LikedProducts = ({ likedProductIds }: LikedProductsProps) => {
   }
 
   return (
-    <Card>
+    <Card className="animate-fade-in">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
+        <CardTitle className="flex items-center gap-2 font-exo">
           <Heart className="w-5 h-5" />
           Liked Products ({likedProducts.length})
         </CardTitle>

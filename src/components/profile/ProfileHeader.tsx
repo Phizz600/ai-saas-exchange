@@ -1,8 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ProfileAvatar } from "./ProfileAvatar";
-import { MapPin, Calendar, Globe2, Clock } from "lucide-react";
+import { MapPin, Calendar, Globe2, Clock, AlertCircle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 import type { Database } from "@/integrations/supabase/types";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
@@ -24,7 +29,7 @@ export const ProfileHeader = ({ profile, onAvatarUpdate }: ProfileHeaderProps) =
             userId={profile.id}
             onAvatarUpdate={onAvatarUpdate}
           />
-          <h2 className="text-2xl font-semibold mb-1 mt-4">
+          <h2 className="text-2xl font-semibold mb-1 mt-4 font-exo">
             {profile.full_name || "Anonymous User"}
           </h2>
           <p className="text-sm text-muted-foreground mb-4">@{profile.username}</p>
@@ -48,17 +53,32 @@ export const ProfileHeader = ({ profile, onAvatarUpdate }: ProfileHeaderProps) =
             </div>
           </div>
 
-          <div className="w-full mt-6">
+          <div className="w-full mt-6 space-y-3">
+            <HoverCard>
+              <HoverCardTrigger asChild>
+                <div className="flex items-center justify-center text-sm text-muted-foreground cursor-help">
+                  <AlertCircle className="w-4 h-4 mr-2" />
+                  <span>Communication Policy</span>
+                </div>
+              </HoverCardTrigger>
+              <HoverCardContent className="w-80">
+                <p className="text-sm">
+                  Direct messaging is enabled only after a sale is initiated. This helps maintain 
+                  a secure and focused marketplace environment.
+                </p>
+              </HoverCardContent>
+            </HoverCard>
+
             <Button 
               variant="outline" 
-              className="w-full mb-3"
+              className="w-full"
               onClick={() => navigate('/marketplace')}
             >
               Preview public profile
             </Button>
             {profile.user_type === "ai_builder" && (
               <Button 
-                className="w-full bg-primary hover:bg-primary/90"
+                className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 text-white"
                 onClick={() => navigate('/marketplace')}
               >
                 Create New Listing
