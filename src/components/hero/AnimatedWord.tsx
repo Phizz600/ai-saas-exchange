@@ -5,15 +5,15 @@ interface AnimatedWordProps {
   currentWordIndex: number;
 }
 
-export const AnimatedWord = ({ words, currentWordIndex }: AnimatedWordProps) => {
+const AnimatedWord = ({ words, currentWordIndex }: AnimatedWordProps) => {
   return (
     <AnimatePresence mode="wait">
       <motion.span
         key={currentWordIndex}
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -20 }}
-        transition={{ duration: 0.5 }}
+        exit={{ opacity: 0, y: -10 }}
+        transition={{ duration: 0.3 }}
         className="inline-block"
       >
         {words[currentWordIndex]}
@@ -21,3 +21,5 @@ export const AnimatedWord = ({ words, currentWordIndex }: AnimatedWordProps) => 
     </AnimatePresence>
   );
 };
+
+export default AnimatedWord;
