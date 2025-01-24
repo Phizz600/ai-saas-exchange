@@ -45,6 +45,16 @@ export function ProductCardContent({
     return colors[category] || { bg: 'bg-gray-100', text: 'text-gray-700' };
   };
 
+  const getStageColor = (stage: string) => {
+    const colors: Record<string, { bg: string; text: string }> = {
+      'Revenue': { bg: 'bg-green-100', text: 'text-green-700' },
+      'MVP': { bg: 'bg-blue-100', text: 'text-blue-700' },
+      'Prototype': { bg: 'bg-amber-100', text: 'text-amber-700' },
+      'Idea': { bg: 'bg-gray-100', text: 'text-gray-700' }
+    };
+    return colors[stage] || { bg: 'bg-gray-100', text: 'text-gray-700' };
+  };
+
   const auctionEnded = auctionEndTime && new Date(auctionEndTime) < new Date();
 
   return (
@@ -113,13 +123,7 @@ export function ProductCardContent({
           </Badge>
           <Badge 
             variant="secondary" 
-            className={
-              stage === "Revenue" 
-                ? "bg-green-100 text-green-700" 
-                : stage === "MVP" 
-                ? "bg-blue-100 text-blue-700"
-                : "bg-gray-100 text-gray-700"
-            }
+            className={`${getStageColor(stage).bg} ${getStageColor(stage).text}`}
           >
             {stage}
           </Badge>
