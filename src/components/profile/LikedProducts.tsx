@@ -1,8 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { Heart, Loader2 } from "lucide-react";
+import { Heart, Loader2, UserCheck, MailCheck, PhoneCheck, Badge } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ProductCard } from "@/components/ProductCard";
+import { Badge as UIBadge } from "@/components/ui/badge";
 
 interface LikedProductsProps {
   likedProductIds: string[];
@@ -29,7 +30,7 @@ export const LikedProducts = ({ likedProductIds }: LikedProductsProps) => {
     return (
       <Card className="animate-fade-in">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 font-exo">
+          <CardTitle className="text-lg font-exo flex items-center gap-2">
             <Heart className="w-5 h-5" />
             Liked Products
           </CardTitle>
@@ -45,7 +46,7 @@ export const LikedProducts = ({ likedProductIds }: LikedProductsProps) => {
     return (
       <Card className="animate-fade-in">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 font-exo">
+          <CardTitle className="text-lg font-exo flex items-center gap-2">
             <Heart className="w-5 h-5" />
             Liked Products
           </CardTitle>
@@ -62,7 +63,7 @@ export const LikedProducts = ({ likedProductIds }: LikedProductsProps) => {
   return (
     <Card className="animate-fade-in">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2 font-exo">
+        <CardTitle className="text-lg font-exo flex items-center gap-2">
           <Heart className="w-5 h-5" />
           Liked Products ({likedProducts.length})
         </CardTitle>

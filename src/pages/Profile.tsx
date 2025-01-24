@@ -8,6 +8,8 @@ import { ProfileCompletion } from "@/components/profile/ProfileCompletion";
 import { ProfileBio } from "@/components/profile/ProfileBio";
 import { ProfileContent } from "@/components/profile/ProfileContent";
 import { LikedProducts } from "@/components/profile/LikedProducts";
+import { Badge } from "@/components/ui/badge";
+import { UserCheck, MailCheck, PhoneCheck } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
@@ -123,12 +125,27 @@ export const Profile = () => {
               profile={profile} 
               onAvatarUpdate={(url) => setProfile(prev => prev ? { ...prev, avatar_url: url } : null)}
             />
+            {/* Verification Badges */}
+            <div className="mt-4 space-y-2">
+              <Badge variant="secondary" className="flex items-center gap-2 w-full justify-center py-2">
+                <UserCheck className="w-4 h-4" />
+                Identity Verified
+              </Badge>
+              <Badge variant="secondary" className="flex items-center gap-2 w-full justify-center py-2">
+                <MailCheck className="w-4 h-4" />
+                Email Verified
+              </Badge>
+              <Badge variant="secondary" className="flex items-center gap-2 w-full justify-center py-2">
+                <PhoneCheck className="w-4 h-4" />
+                Phone Verified
+              </Badge>
+            </div>
           </div>
 
           {/* Main Content */}
           <div className="md:col-span-8 space-y-6">
             <ProfileCompletion progress={completionProgress} userType={profile.user_type} />
-            <ProfileBio bio={profile.bio} />
+            <ProfileBio bio={profile.bio} userId={profile.id} />
             <LikedProducts likedProductIds={profile.liked_products || []} />
             <ProfileContent profile={profile} />
           </div>
