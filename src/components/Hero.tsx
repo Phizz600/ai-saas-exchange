@@ -1,14 +1,18 @@
+import { lazy, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { AnimatedWord } from "./hero/AnimatedWord";
-import { NewsletterSubscription } from "./hero/NewsletterSubscription";
-import { FeatureHighlights } from "./hero/FeatureHighlights";
-import { AnimatedBackground } from "./hero/AnimatedBackground";
+import { Skeleton } from "@/components/ui/skeleton";
 
-export const Hero = () => {
+// Lazy load less critical components
+const NewsletterSubscription = lazy(() => import("./hero/NewsletterSubscription"));
+const FeatureHighlights = lazy(() => import("./hero/FeatureHighlights"));
+const AnimatedBackground = lazy(() => import("./hero/AnimatedBackground"));
+
+const Hero = () => {
   const [newsletterEmail, setNewsletterEmail] = useState("");
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [subscriberCount, setSubscriberCount] = useState(342);
@@ -16,16 +20,11 @@ export const Hero = () => {
   
   const words = ["Companies", "Businesses", "Apps", "Plugins", "Tools", "MVPs", "Bots"];
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentWordIndex((prev) => (prev + 1) % words.length);
-    }, 2500);
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <div className="min-h-screen relative overflow-hidden">
-      <AnimatedBackground />
+      <Suspense fallback={<div className="absolute inset-0 bg-gradient-to-br from-accent via-accent2 to-accent3" />}>
+        <AnimatedBackground />
+      </Suspense>
 
       <div className="relative container mx-auto px-4 py-24 text-center">
         <motion.div
@@ -70,15 +69,19 @@ export const Hero = () => {
               </Button>
             </motion.div>
 
-            <NewsletterSubscription
-              newsletterEmail={newsletterEmail}
-              setNewsletterEmail={setNewsletterEmail}
-              subscriberCount={subscriberCount}
-              setSubscriberCount={setSubscriberCount}
-            />
+            <Suspense fallback={<Skeleton className="w-full max-w-md h-32" />}>
+              <NewsletterSubscription
+                newsletterEmail={newsletterEmail}
+                setNewsletterEmail={setNewsletterEmail}
+                subscriberCount={subscriberCount}
+                setSubscriberCount={setSubscriberCount}
+              />
+            </Suspense>
           </div>
 
-          <FeatureHighlights />
+          <Suspense fallback={<Skeleton className="w-full h-48 mt-16" />}>
+            <FeatureHighlights />
+          </Suspense>
 
           <div className="mt-8 text-sm text-gray-200">
             ✓ Free AI Valuations &nbsp; • &nbsp; ✓ Secure Platform &nbsp; • &nbsp; ✓ Premium Network
@@ -88,3 +91,5 @@ export const Hero = () => {
     </div>
   );
 };
+
+export default Hero;

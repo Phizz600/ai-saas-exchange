@@ -1,7 +1,7 @@
 import { CircuitBoard, Brain, Network } from "lucide-react";
 import { motion } from "framer-motion";
 
-export const FeatureHighlights = () => {
+const FeatureHighlights = () => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -27,3 +27,5 @@ export const FeatureHighlights = () => {
     </motion.div>
   );
 };
+
+export default FeatureHighlights;

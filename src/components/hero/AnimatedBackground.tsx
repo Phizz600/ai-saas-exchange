@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 
-export const AnimatedBackground = () => {
+const AnimatedBackground = () => {
   const particles = Array.from({ length: 30 }).map((_, i) => ({
     id: i,
     x: Math.random() * 100,
@@ -43,3 +43,5 @@ export const AnimatedBackground = () => {
     </>
   );
 };
+
+export default AnimatedBackground;

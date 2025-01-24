@@ -11,7 +11,7 @@ interface NewsletterSubscriptionProps {
   setSubscriberCount: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export const NewsletterSubscription = ({
+const NewsletterSubscription = ({
   newsletterEmail,
   setNewsletterEmail,
   subscriberCount,
@@ -67,3 +67,5 @@ export const NewsletterSubscription = ({
     </form>
   );
 };
+
+export default NewsletterSubscription;
