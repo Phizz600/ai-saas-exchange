@@ -228,7 +228,7 @@ export function ProductCard({ product }: ProductCardProps) {
           priceDecrement={product.price_decrement}
           auctionEndTime={product.auction_end_time}
         />
-        <ProductCardActions />
+        <ProductCardActions product={product} />
       </Card>
     </motion.div>
   );
