@@ -11,7 +11,7 @@ export function Header() {
         <div className="flex h-16 items-center justify-between">
           <Link to="/" className="flex items-center space-x-2">
             <img 
-              src="/lovable-uploads/b2726e08-98dd-472d-b44a-b780d6e1343e.png" 
+              src="/lovable-uploads/f07753e1-1a02-44c4-82cc-0be1047cdf6e.png" 
               alt="AI Exchange Club" 
               className="h-8"
             />

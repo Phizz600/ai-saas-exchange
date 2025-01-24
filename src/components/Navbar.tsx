@@ -8,7 +8,7 @@ export const Navbar = () => {
         <div className="flex items-center justify-between h-20">
           <Link to="/" className="flex items-center">
             <img 
-              src="/lovable-uploads/5947d1a1-1385-49a1-bf8f-3024df268fb6.png" 
+              src="/lovable-uploads/f07753e1-1a02-44c4-82cc-0be1047cdf6e.png" 
               alt="AI Exchange Club Logo" 
               className="h-20 w-auto"
             />
