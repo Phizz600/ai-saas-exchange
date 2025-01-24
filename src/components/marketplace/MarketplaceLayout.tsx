@@ -7,7 +7,7 @@ import { LiveChatButton } from "@/components/LiveChatButton";
 import { MarketplaceBreadcrumb } from "@/components/marketplace/MarketplaceBreadcrumb";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, LayoutDashboard } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export const MarketplaceLayout = () => {
@@ -38,15 +38,23 @@ export const MarketplaceLayout = () => {
                   Discover and acquire cutting-edge AI solutions for your business
                 </p>
               </div>
-              <Link to="/list-product">
-                <Button className="hidden sm:flex">
-                  <Plus className="mr-2 h-4 w-4" />
-                  List Your Product
-                </Button>
-                <Button className="sm:hidden" size="icon">
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </Link>
+              <div className="flex gap-2">
+                <Link to="/product-dashboard" className="hidden sm:block">
+                  <Button variant="outline">
+                    <LayoutDashboard className="mr-2 h-4 w-4" />
+                    Dashboard
+                  </Button>
+                </Link>
+                <Link to="/list-product">
+                  <Button className="hidden sm:flex">
+                    <Plus className="mr-2 h-4 w-4" />
+                    List Your Product
+                  </Button>
+                  <Button className="sm:hidden" size="icon">
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </Link>
+              </div>
             </div>
             <FeaturedCompaniesSlideshow />
             <MarketplaceContent />
