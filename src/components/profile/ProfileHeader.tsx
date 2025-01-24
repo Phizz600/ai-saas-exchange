@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ProfileAvatar } from "./ProfileAvatar";
-import { MapPin, Calendar, Globe2, Clock, AlertCircle } from "lucide-react";
+import { MapPin, Calendar, Globe2, AlertCircle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { VerificationBadges } from "./VerificationBadges";
 import {
@@ -47,10 +47,6 @@ export const ProfileHeader = ({ profile, onAvatarUpdate }: ProfileHeaderProps) =
             <div className="flex items-center text-sm text-muted-foreground">
               <Globe2 className="w-4 h-4 mr-2" />
               <span>English</span>
-            </div>
-            <div className="flex items-center text-sm text-muted-foreground">
-              <Clock className="w-4 h-4 mr-2" />
-              <span>Response time: ~2 hours</span>
             </div>
           </div>
 
