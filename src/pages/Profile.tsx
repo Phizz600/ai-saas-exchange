@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
+import { Navbar } from "@/components/Navbar";
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
 import { ProfileCompletion } from "@/components/profile/ProfileCompletion";
 import { ProfileBio } from "@/components/profile/ProfileBio";
@@ -106,16 +107,8 @@ export const Profile = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="container mx-auto px-4 py-8">
-        {/* Brand Logo */}
-        <div className="flex justify-center mb-8">
-          <img 
-            src="/lovable-uploads/47eac7ab-ce1a-4bb8-800b-19f2bfcdd765.png" 
-            alt="AI Exchange Club Logo" 
-            className="h-12 w-auto"
-          />
-        </div>
-        
+      <Navbar />
+      <div className="container mx-auto px-4 py-8 mt-24">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
           {/* Left Sidebar */}
           <div className="md:col-span-4">
