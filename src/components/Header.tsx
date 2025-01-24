@@ -8,12 +8,12 @@ export function Header() {
   return (
     <header className="w-full bg-white border-b z-40">
       <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between">
+        <div className="flex h-20 items-center justify-between">
           <Link to="/" className="flex items-center space-x-2">
             <img 
-              src="/lovable-uploads/f07753e1-1a02-44c4-82cc-0be1047cdf6e.png" 
+              src="/lovable-uploads/47eac7ab-ce1a-4bb8-800b-19f2bfcdd765.png" 
               alt="AI Exchange Club" 
-              className="h-8"
+              className="h-20 w-auto"
             />
           </Link>
 
