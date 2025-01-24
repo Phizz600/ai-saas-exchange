@@ -6,6 +6,9 @@ import { MarketplaceFooter } from "@/components/MarketplaceFooter";
 import { LiveChatButton } from "@/components/LiveChatButton";
 import { MarketplaceBreadcrumb } from "@/components/marketplace/MarketplaceBreadcrumb";
 import { useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export const MarketplaceLayout = () => {
   useEffect(() => {
@@ -26,13 +29,24 @@ export const MarketplaceLayout = () => {
         <div className="container mx-auto px-4 md:px-8 py-8">
           <div className="max-w-7xl mx-auto space-y-8">
             <MarketplaceBreadcrumb />
-            <div className="space-y-4">
-              <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">
-                AI Products Marketplace
-              </h1>
-              <p className="text-lg text-gray-600">
-                Discover and acquire cutting-edge AI solutions for your business
-              </p>
+            <div className="flex justify-between items-center">
+              <div className="space-y-4">
+                <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">
+                  AI Products Marketplace
+                </h1>
+                <p className="text-lg text-gray-600">
+                  Discover and acquire cutting-edge AI solutions for your business
+                </p>
+              </div>
+              <Link to="/list-product">
+                <Button className="hidden sm:flex">
+                  <Plus className="mr-2 h-4 w-4" />
+                  List Your Product
+                </Button>
+                <Button className="sm:hidden" size="icon">
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </Link>
             </div>
             <FeaturedCompaniesSlideshow />
             <MarketplaceContent />
