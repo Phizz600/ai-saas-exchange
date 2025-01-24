@@ -7,6 +7,7 @@ import { ProfileCompletion } from "@/components/profile/ProfileCompletion";
 import { ProfileBio } from "@/components/profile/ProfileBio";
 import { ProfileContent } from "@/components/profile/ProfileContent";
 import { LikedProducts } from "@/components/profile/LikedProducts";
+import { Button } from "@/components/ui/button";
 import type { Database } from "@/integrations/supabase/types";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
