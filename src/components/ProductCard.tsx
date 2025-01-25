@@ -49,17 +49,26 @@ export function ProductCard({ product, onView }: ProductCardProps) {
 
   useEffect(() => {
     const checkIfLiked = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
 
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('liked_products')
-        .eq('id', user.id)
-        .single();
+        const { data: profile, error } = await supabase
+          .from('profiles')
+          .select('liked_products')
+          .eq('id', user.id)
+          .maybeSingle();
 
-      if (profile?.liked_products?.includes(product.id)) {
-        setIsFavorited(true);
+        if (error) {
+          console.error('Error checking liked status:', error);
+          return;
+        }
+
+        if (profile?.liked_products?.includes(product.id)) {
+          setIsFavorited(true);
+        }
+      } catch (error) {
+        console.error('Error in checkIfLiked:', error);
       }
     };
 
@@ -78,23 +87,34 @@ export function ProductCard({ product, onView }: ProductCardProps) {
         return;
       }
 
-      const { data: profile } = await supabase
+      const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('liked_products')
         .eq('id', user.id)
-        .single();
+        .maybeSingle();
+
+      if (profileError) {
+        console.error('Error fetching profile:', profileError);
+        throw profileError;
+      }
 
       const currentLikes = profile?.liked_products || [];
       const newLikes = isFavorited
         ? currentLikes.filter((id: string) => id !== product.id)
         : [...currentLikes, product.id];
 
-      const { error } = await supabase
+      const { error: updateError } = await supabase
         .from('profiles')
-        .update({ liked_products: newLikes })
+        .update({ 
+          liked_products: newLikes,
+          updated_at: new Date().toISOString()
+        })
         .eq('id', user.id);
 
-      if (error) throw error;
+      if (updateError) {
+        console.error('Error updating liked products:', updateError);
+        throw updateError;
+      }
 
       setIsFavorited(!isFavorited);
       toast({
@@ -105,7 +125,8 @@ export function ProductCard({ product, onView }: ProductCardProps) {
       console.log('Product like toggled:', {
         productId: product.id,
         userId: user.id,
-        action: isFavorited ? 'unliked' : 'liked'
+        action: isFavorited ? 'unliked' : 'liked',
+        newLikes
       });
 
     } catch (error) {
