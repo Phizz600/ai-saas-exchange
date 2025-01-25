@@ -181,7 +181,7 @@ export function ListProductForm() {
                     <TooltipTrigger asChild>
                       <Info className="h-4 w-4 text-gray-500 cursor-help" />
                     </TooltipTrigger>
-                    <TooltipContent className="max-w-xs">
+                    <TooltipContent className="max-w-xs bg-white">
                       <p>Recommended image specifications:</p>
                       <ul className="list-disc ml-4 mt-1">
                         <li>Maximum size: 5MB</li>
