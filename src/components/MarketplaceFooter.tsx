@@ -45,7 +45,7 @@ export const MarketplaceFooter = () => {
               className="h-16 w-auto mb-6"
             />
             <p className="text-white">
-              Your premier destination for AI product trading and innovation.
+              Your premier destination for buying and selling AI products.
             </p>
           </div>
           <div className="col-span-1">
