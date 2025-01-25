@@ -36,16 +36,16 @@ export const Header = () => {
   });
 
   const tabs = [
-    { title: "Home", icon: Home },
-    { title: "Marketplace", icon: Store },
-    { title: "Products", icon: Package },
+    { title: "Home", icon: Home, description: "Return to homepage" },
+    { title: "Marketplace", icon: Store, description: "Browse available AI products" },
+    { title: "Products", icon: Package, description: "View all products" },
     { type: "separator" as const },
-    { title: "My Listings", icon: List },
-    { title: "Notifications", icon: Bell },
+    { title: "My Listings", icon: List, description: "Manage your product listings" },
+    { title: "Notifications", icon: Bell, description: "View your notifications" },
     { type: "separator" as const },
-    { title: "My Profile", icon: User },
-    { title: "Settings", icon: Settings },
-    { title: "Log Out", icon: LogOut },
+    { title: "My Profile", icon: User, description: "View and edit your profile" },
+    { title: "Settings", icon: Settings, description: "Adjust your preferences" },
+    { title: "Log Out", icon: LogOut, description: "Sign out of your account" },
   ];
 
   const handleTabChange = (index: number | null) => {
