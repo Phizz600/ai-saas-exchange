@@ -4,9 +4,12 @@ import { useNavigate } from "react-router-dom";
 import { ProfileMenu } from "@/components/header/ProfileMenu";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { NotificationSheet } from "@/components/marketplace/notifications/NotificationSheet";
+import { useNotifications } from "@/components/marketplace/notifications/useNotifications";
 
 export const Header = () => {
   const navigate = useNavigate();
+  const { notifications, unreadCount, markAsRead } = useNotifications();
 
   const { data: session } = useQuery({
     queryKey: ["session"],
@@ -37,7 +40,7 @@ export const Header = () => {
             <img
               src="/lovable-uploads/0283f7d5-13a6-40c9-b40a-69868474cec9.png"
               alt="AI Exchange"
-              className="h-12 w-auto" // Increased from h-8 to h-12
+              className="h-12 w-auto"
             />
           </Link>
         </div>
@@ -52,6 +55,11 @@ export const Header = () => {
               >
                 List Product
               </Button>
+              <NotificationSheet 
+                notifications={notifications}
+                unreadCount={unreadCount}
+                onMarkAsRead={markAsRead}
+              />
               <ProfileMenu profile={profile} />
             </>
           ) : (
