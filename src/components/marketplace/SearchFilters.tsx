@@ -1,12 +1,46 @@
 import { Search, SlidersHorizontal, X, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { useDebounce } from "use-debounce";
 import { useEffect, useState } from "react";
-import { useToast } from "@/components/ui/use-toast";
+import { FilterSection } from "./filters/FilterSection";
+
+const industries = [
+  { value: "all", label: "All Industries" },
+  { value: "content_generation", label: "Content Generation" },
+  { value: "customer_service", label: "Customer Service" },
+  { value: "image_generation", label: "Image Generation" },
+  { value: "development_tools", label: "Development Tools" },
+  { value: "audio_processing", label: "Audio Processing" },
+  { value: "finance", label: "Finance" },
+  { value: "video_processing", label: "Video Processing" }
+];
+
+const stages = [
+  { value: "all", label: "All Stages" },
+  { value: "mvp", label: "MVP" },
+  { value: "revenue", label: "Revenue" },
+  { value: "pre_revenue", label: "Pre-Revenue" },
+  { value: "beta", label: "Beta" }
+];
+
+const priceRanges = [
+  { value: "all", label: "All Prices" },
+  { value: "0-10000", label: "$0 - $10,000" },
+  { value: "10000-25000", label: "$10,000 - $25,000" },
+  { value: "25000-50000", label: "$25,000 - $50,000" },
+  { value: "50000+", label: "$50,000+" }
+];
+
+const sortOptions = [
+  { value: "relevant", label: "Most Relevant" },
+  { value: "price_asc", label: "Lowest Price" },
+  { value: "price_desc", label: "Highest Price" },
+  { value: "recent", label: "Most Recent" },
+  { value: "popular", label: "Most Popular" }
+];
 
 interface SearchFiltersProps {
   searchQuery: string;
@@ -24,33 +58,6 @@ interface SearchFiltersProps {
   isLoading?: boolean;
 }
 
-const industries = [
-  "Content Generation",
-  "Customer Service",
-  "Image Generation",
-  "Development Tools",
-  "Audio Processing",
-  "Finance",
-  "Video Processing"
-];
-
-const stages = ["MVP", "Revenue", "Pre-Revenue", "Beta"];
-
-const priceRanges = [
-  "$0 - $10,000",
-  "$10,000 - $25,000",
-  "$25,000 - $50,000",
-  "$50,000+"
-];
-
-const sortOptions = [
-  { value: "relevant", label: "Most Relevant" },
-  { value: "price_asc", label: "Lowest Price" },
-  { value: "price_desc", label: "Highest Price" },
-  { value: "recent", label: "Most Recent" },
-  { value: "popular", label: "Most Popular" },
-];
-
 export const SearchFilters = ({
   searchQuery,
   setSearchQuery,
@@ -64,11 +71,10 @@ export const SearchFilters = ({
   setTimeFilter,
   sortBy,
   setSortBy,
-  isLoading = false,
+  isLoading = false
 }: SearchFiltersProps) => {
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
   const [debouncedSearchQuery] = useDebounce(localSearchQuery, 300);
-  const { toast } = useToast();
 
   useEffect(() => {
     setSearchQuery(debouncedSearchQuery);
@@ -145,76 +151,37 @@ export const SearchFilters = ({
           </div>
           
           <div className="hidden md:flex gap-2 flex-wrap">
-            <Select value={industryFilter} onValueChange={setIndustryFilter} disabled={isLoading}>
-              <SelectTrigger className="w-[140px] bg-gray-50/50 border-gray-200/50">
-                <SelectValue placeholder="Industry" />
-              </SelectTrigger>
-              <SelectContent className="bg-white border shadow-lg">
-                <SelectItem value="all" className="hover:bg-gray-50">All Industries</SelectItem>
-                {industries.map((industry) => (
-                  <SelectItem 
-                    key={industry} 
-                    value={industry.toLowerCase()}
-                    className="hover:bg-gray-50"
-                  >
-                    {industry}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <FilterSection
+              label="Industry"
+              value={industryFilter}
+              onValueChange={setIndustryFilter}
+              options={industries}
+              disabled={isLoading}
+            />
 
-          <Select value={stageFilter} onValueChange={setStageFilter}>
-            <SelectTrigger className="w-[140px] bg-gray-50/50 border-gray-200/50">
-              <SelectValue placeholder="Stage" />
-            </SelectTrigger>
-            <SelectContent className="bg-white border shadow-lg">
-              <SelectItem value="all" className="hover:bg-gray-50">All Stages</SelectItem>
-              {stages.map((stage) => (
-                <SelectItem 
-                  key={stage} 
-                  value={stage.toLowerCase()}
-                  className="hover:bg-gray-50"
-                >
-                  {stage}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            <FilterSection
+              label="Stage"
+              value={stageFilter}
+              onValueChange={setStageFilter}
+              options={stages}
+              disabled={isLoading}
+            />
 
-          <Select value={priceFilter} onValueChange={setPriceFilter}>
-            <SelectTrigger className="w-[140px] bg-gray-50/50 border-gray-200/50">
-              <SelectValue placeholder="Price Range" />
-            </SelectTrigger>
-            <SelectContent className="bg-white border shadow-lg">
-              <SelectItem value="all" className="hover:bg-gray-50">All Prices</SelectItem>
-              {priceRanges.map((range) => (
-                <SelectItem 
-                  key={range} 
-                  value={range.toLowerCase()}
-                  className="hover:bg-gray-50"
-                >
-                  {range}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            <FilterSection
+              label="Price Range"
+              value={priceFilter}
+              onValueChange={setPriceFilter}
+              options={priceRanges}
+              disabled={isLoading}
+            />
 
-          <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="w-[140px] bg-gray-50/50 border-gray-200/50">
-              <SelectValue placeholder="Sort by" />
-            </SelectTrigger>
-            <SelectContent className="bg-white border shadow-lg">
-              {sortOptions.map((option) => (
-                <SelectItem 
-                  key={option.value} 
-                  value={option.value}
-                  className="hover:bg-gray-50"
-                >
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            <FilterSection
+              label="Sort by"
+              value={sortBy}
+              onValueChange={setSortBy}
+              options={sortOptions}
+              disabled={isLoading}
+            />
           </div>
 
           <Sheet>
@@ -232,60 +199,37 @@ export const SearchFilters = ({
                 </SheetDescription>
               </SheetHeader>
               <div className="flex flex-col gap-4 mt-4">
-              <Select value={industryFilter} onValueChange={setIndustryFilter}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Industry" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Industries</SelectItem>
-                  {industries.map((industry) => (
-                    <SelectItem key={industry} value={industry.toLowerCase()}>
-                      {industry}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                <FilterSection
+                  label="Industry"
+                  value={industryFilter}
+                  onValueChange={setIndustryFilter}
+                  options={industries}
+                  disabled={isLoading}
+                />
 
-              <Select value={stageFilter} onValueChange={setStageFilter}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Stage" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Stages</SelectItem>
-                  {stages.map((stage) => (
-                    <SelectItem key={stage} value={stage.toLowerCase()}>
-                      {stage}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                <FilterSection
+                  label="Stage"
+                  value={stageFilter}
+                  onValueChange={setStageFilter}
+                  options={stages}
+                  disabled={isLoading}
+                />
 
-              <Select value={priceFilter} onValueChange={setPriceFilter}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Price Range" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Prices</SelectItem>
-                  {priceRanges.map((range) => (
-                    <SelectItem key={range} value={range.toLowerCase()}>
-                      {range}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                <FilterSection
+                  label="Price Range"
+                  value={priceFilter}
+                  onValueChange={setPriceFilter}
+                  options={priceRanges}
+                  disabled={isLoading}
+                />
 
-              <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Sort by" />
-                </SelectTrigger>
-                <SelectContent>
-                  {sortOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                <FilterSection
+                  label="Sort by"
+                  value={sortBy}
+                  onValueChange={setSortBy}
+                  options={sortOptions}
+                  disabled={isLoading}
+                />
               </div>
             </SheetContent>
           </Sheet>
