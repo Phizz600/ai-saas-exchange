@@ -41,11 +41,11 @@ export const Header = () => {
     { type: "separator" as const },
     { title: "My Listings", icon: List },
     { title: "Cart", icon: ShoppingCart },
-  ];
+  ] as const;
 
   const handleTabChange = (index: number | null) => {
     if (index === null) return;
-    switch (tabs[index].title) {
+    switch (tabs[index].type === "separator" ? "" : tabs[index].title) {
       case "Home":
         navigate("/");
         break;
