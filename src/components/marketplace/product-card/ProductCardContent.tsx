@@ -102,14 +102,12 @@ export function ProductCardContent({
                   {formatCurrency(Number(price))}
                 </p>
               </div>
-              {monthlyRevenue && stage === "Revenue" && (
-                <div className="text-right">
-                  <p className="text-sm text-gray-500 mb-1">Monthly Revenue</p>
-                  <p className="text-lg font-semibold text-green-600">
-                    {formatCurrency(Number(monthlyRevenue))}
-                  </p>
-                </div>
-              )}
+              <div className="text-right">
+                <p className="text-sm text-gray-500 mb-1">Monthly Revenue</p>
+                <p className="text-lg font-semibold text-green-600">
+                  {monthlyRevenue ? formatCurrency(Number(monthlyRevenue)) : '-'}
+                </p>
+              </div>
             </>
           )}
         </div>
