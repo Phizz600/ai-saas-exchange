@@ -21,7 +21,12 @@ const NewsletterSubscription = ({
     e.preventDefault();
     console.log("Newsletter email submitted:", newsletterEmail);
     setSubscriberCount((prev) => Math.min(prev + 1, 1000));
-    toast.success("Successfully joined the waitlist!");
+    
+    // Show success toast with thank you message
+    toast.success("Thanks for subscribing!", {
+      description: "Welcome to the AI Exchange Club! We'll keep you updated on exclusive deals and opportunities.",
+    });
+    
     setNewsletterEmail("");
   };
 
