@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { ProfileMenu } from "@/components/header/ProfileMenu";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { NotificationSheet } from "@/components/marketplace/notifications/NotificationSheet";
@@ -105,16 +104,13 @@ export const Header = () => {
             />
           )}
           {session ? (
-            <>
-              <NotificationSheet 
-                notifications={notifications}
-                unreadCount={unreadCount}
-                onMarkAsRead={markAsRead}
-                open={isNotificationSheetOpen}
-                onOpenChange={setIsNotificationSheetOpen}
-              />
-              <ProfileMenu profile={profile} />
-            </>
+            <NotificationSheet 
+              notifications={notifications}
+              unreadCount={unreadCount}
+              onMarkAsRead={markAsRead}
+              open={isNotificationSheetOpen}
+              onOpenChange={setIsNotificationSheetOpen}
+            />
           ) : (
             <Button onClick={() => navigate("/auth")}>Sign In</Button>
           )}
