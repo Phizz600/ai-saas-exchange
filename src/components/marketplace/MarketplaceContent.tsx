@@ -21,7 +21,7 @@ export const MarketplaceContent = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const { toast } = useToast();
   
-  // Transform mock data to include auction fields
+  // Transform mock data to include auction fields and monthly_traffic
   const currentItems = mockProducts.map(product => ({
     ...product,
     auction_end_time: null,
@@ -31,6 +31,7 @@ export const MarketplaceContent = () => {
     starting_price: null,
     id: String(product.id),
     monthly_revenue: product.monthly_revenue,
+    monthly_traffic: product.monthly_traffic || 0,
     image_url: product.image_url,
   }));
   

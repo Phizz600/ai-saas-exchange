@@ -4,28 +4,13 @@ import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { ImageUpload } from "./ImageUpload";
-
-interface ListProductFormData {
-  title: string;
-  description: string;
-  price: number;
-  category: string;
-  stage: string;
-  monthlyRevenue: number;
-  monthlyTraffic: number;
-  image: File | null;
-}
+import { BasicInfoSection } from "./form-sections/BasicInfoSection";
+import { FinancialSection } from "./form-sections/FinancialSection";
+import { MetricsSection } from "./form-sections/MetricsSection";
+import { ListProductFormData } from "./types";
 
 export function ListProductForm() {
   const [isLoading, setIsLoading] = useState(false);
@@ -104,112 +89,9 @@ export function ListProductForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormField
-          control={form.control}
-          name="title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Product Title</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter your product title" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <Textarea 
-                  placeholder="Describe your AI product..."
-                  className="min-h-[100px]"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <FormField
-            control={form.control}
-            name="price"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Asking Price (USD)</FormLabel>
-                <FormControl>
-                  <Input 
-                    type="number" 
-                    placeholder="Enter asking price"
-                    {...field}
-                    onChange={e => field.onChange(Number(e.target.value))}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="monthlyRevenue"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Monthly Revenue (USD)</FormLabel>
-                <FormControl>
-                  <Input 
-                    type="number"
-                    placeholder="Enter monthly revenue"
-                    {...field}
-                    onChange={e => field.onChange(Number(e.target.value))}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <FormField
-            control={form.control}
-            name="monthlyTraffic"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Monthly Traffic</FormLabel>
-                <FormControl>
-                  <Input 
-                    type="number"
-                    placeholder="Enter monthly visitors"
-                    {...field}
-                    onChange={e => field.onChange(Number(e.target.value))}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="category"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Category</FormLabel>
-                <FormControl>
-                  <Input placeholder="e.g., Content Generation" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
+        <BasicInfoSection form={form} />
+        <FinancialSection form={form} />
+        <MetricsSection form={form} />
 
         <FormField
           control={form.control}
