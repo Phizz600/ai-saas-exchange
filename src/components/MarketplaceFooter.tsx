@@ -64,6 +64,29 @@ export const MarketplaceFooter = () => {
             <p className="text-white">
               Your premier destination for buying and selling AI products.
             </p>
+            
+            {/* Email opt-in section moved here */}
+            <div className="mt-6 w-full max-w-md">
+              <form onSubmit={handleSubscribe} className="space-y-4">
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                  <Input
+                    type="email"
+                    placeholder="Enter your email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-gray-400 focus:border-white/20"
+                    required
+                  />
+                </div>
+                <Button 
+                  type="submit"
+                  className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 transition-opacity text-white font-semibold"
+                >
+                  Subscribe
+                </Button>
+              </form>
+            </div>
           </div>
           <div className="col-span-1">
             <h4 className="font-bold text-white text-center md:text-left">Company</h4>
@@ -107,29 +130,6 @@ export const MarketplaceFooter = () => {
               </li>
             </ul>
           </div>
-        </div>
-        
-        {/* Email opt-in section */}
-        <div className="mt-12 max-w-md mx-auto">
-          <form onSubmit={handleSubscribe} className="space-y-4">
-            <div className="relative">
-              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-              <Input
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-gray-400 focus:border-white/20"
-                required
-              />
-            </div>
-            <Button 
-              type="submit"
-              className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 transition-opacity text-white font-semibold"
-            >
-              Subscribe
-            </Button>
-          </form>
         </div>
       </div>
     </footer>
