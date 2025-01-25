@@ -265,6 +265,12 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      increment_product_views: {
+        Args: {
+          product_id: string
+        }
+        Returns: undefined
+      }
       update_dutch_auction_prices: {
         Args: Record<PropertyKey, never>
         Returns: undefined

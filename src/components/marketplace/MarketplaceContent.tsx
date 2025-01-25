@@ -8,6 +8,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { mockProducts } from "@/data/mockProducts";
 import { supabase } from "@/integrations/supabase/client";
 import { Database } from "@/integrations/supabase/types";
+import { incrementProductViews } from "@/integrations/supabase/functions";
 import {
   Sheet,
   SheetContent,
@@ -110,11 +111,7 @@ export const MarketplaceContent = () => {
   // Track product views
   const trackProductView = async (productId: string) => {
     try {
-      const { error } = await supabase.rpc('increment_product_views', {
-        product_id: productId
-      });
-      
-      if (error) throw error;
+      await incrementProductViews(productId);
       console.log('Product view tracked:', productId);
     } catch (error) {
       console.error('Error tracking product view:', error);
