@@ -38,13 +38,16 @@ export const MarketplaceContent = () => {
   // Fetch notifications
   useEffect(() => {
     const fetchNotifications = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) {
+        console.log('No authenticated user found');
+        return;
+      }
 
       const { data: notifs, error } = await supabase
         .from('notifications')
         .select('*')
-        .eq('user_id', user.id)
+        .eq('user_id', session.user.id)
         .order('created_at', { ascending: false });
 
       if (error) {
@@ -61,39 +64,47 @@ export const MarketplaceContent = () => {
 
   // Subscribe to new notifications
   useEffect(() => {
-    console.log('Setting up real-time subscription for notifications');
-    const { data: { user } } = supabase.auth.getUser();
-    if (!user) return;
+    const setupNotificationSubscription = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) {
+        console.log('No authenticated user found for notification subscription');
+        return;
+      }
 
-    const channel = supabase
-      .channel('public:notifications')
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'notifications',
-          filter: `user_id=eq.${user.id}`
-        },
-        (payload) => {
-          console.log('New notification received:', payload);
-          const newNotification = payload.new as Notification;
-          
-          setNotifications(prev => [newNotification, ...prev]);
-          setUnreadCount(prev => prev + 1);
-          
-          toast({
-            title: newNotification.title,
-            description: newNotification.message,
-          });
-        }
-      )
-      .subscribe();
+      console.log('Setting up real-time subscription for notifications');
+      
+      const channel = supabase
+        .channel('public:notifications')
+        .on(
+          'postgres_changes',
+          {
+            event: 'INSERT',
+            schema: 'public',
+            table: 'notifications',
+            filter: `user_id=eq.${session.user.id}`
+          },
+          (payload) => {
+            console.log('New notification received:', payload);
+            const newNotification = payload.new as Notification;
+            
+            setNotifications(prev => [newNotification, ...prev]);
+            setUnreadCount(prev => prev + 1);
+            
+            toast({
+              title: newNotification.title,
+              description: newNotification.message,
+            });
+          }
+        )
+        .subscribe();
 
-    return () => {
-      console.log('Cleaning up notification subscription');
-      supabase.removeChannel(channel);
+      return () => {
+        console.log('Cleaning up notification subscription');
+        supabase.removeChannel(channel);
+      };
     };
+
+    setupNotificationSubscription();
   }, [toast]);
 
   // Track product views
@@ -131,6 +142,7 @@ export const MarketplaceContent = () => {
     }
   };
 
+  // Subscribe to new products
   useEffect(() => {
     console.log('Setting up real-time subscription for products');
     const channel = supabase
