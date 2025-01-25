@@ -102,7 +102,7 @@ export function ListProductForm() {
           hover:translate-y-[2px] active:translate-y-[4px] active:shadow-[0_0px_0px_rgb(42,98,143)]"
           disabled={isLoading}
         >
-          {isLoading ? "Listing Product..." : "List Product"}
+          {isLoading ? "Submitting Product..." : "Submit Product"}
         </Button>
       </form>
     </Form>
