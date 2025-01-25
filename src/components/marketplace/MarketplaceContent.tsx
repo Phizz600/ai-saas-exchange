@@ -6,12 +6,10 @@ import { useToast } from "@/hooks/use-toast";
 import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { mockProducts } from "@/data/mockProducts";
+import { supabase } from "@/integrations/supabase/client";
 
 export const MarketplaceContent = () => {
-  useEffect(() => {
-    console.log('MarketplaceContent mounted');
-  }, []);
-
+  const [products, setProducts] = useState(mockProducts);
   const [searchQuery, setSearchQuery] = useState("");
   const [industryFilter, setIndustryFilter] = useState("all");
   const [stageFilter, setStageFilter] = useState("all");
@@ -20,9 +18,38 @@ export const MarketplaceContent = () => {
   const [sortBy, setSortBy] = useState("relevant");
   const [currentPage, setCurrentPage] = useState(1);
   const { toast } = useToast();
-  
-  // Transform mock data to include all required fields
-  const currentItems = mockProducts.map(product => ({
+
+  useEffect(() => {
+    // Subscribe to real-time updates for new products
+    const channel = supabase
+      .channel('public:products')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'products'
+        },
+        (payload) => {
+          console.log('New product added:', payload);
+          const newProduct = payload.new;
+          setProducts(prevProducts => [...prevProducts, newProduct]);
+          
+          toast({
+            title: "New Product Listed",
+            description: `${newProduct.title} has been added to the marketplace`,
+          });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [toast]);
+
+  // Transform data to include all required fields
+  const currentItems = products.map(product => ({
     ...product,
     auction_end_time: null,
     current_price: null,
@@ -38,30 +65,6 @@ export const MarketplaceContent = () => {
   const totalPages = 1;
   const isLoading = false;
   const error = null;
-
-  useEffect(() => {
-    // Enhanced analytics tracking
-    console.log('Analytics: Marketplace page viewed', {
-      timestamp: new Date().toISOString(),
-      referrer: document.referrer,
-      userAgent: navigator.userAgent,
-    });
-  }, []);
-
-  useEffect(() => {
-    // Enhanced filter change tracking
-    console.log('Analytics: Filters changed', {
-      timestamp: new Date().toISOString(),
-      searchQuery,
-      industryFilter,
-      stageFilter,
-      priceFilter,
-      timeFilter,
-      sortBy,
-      currentPage,
-      resultsCount: currentItems.length,
-    });
-  }, [searchQuery, industryFilter, stageFilter, priceFilter, timeFilter, sortBy, currentPage, currentItems.length]);
 
   if (error) {
     console.error('MarketplaceContent error:', error);

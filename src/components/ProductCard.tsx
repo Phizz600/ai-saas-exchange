@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { ProductCardImage } from "./marketplace/product-card/ProductCardImage";
@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Eye } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ProductCardDialog } from "./marketplace/product-card/ProductCardDialog";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface ProductCardProps {
   product: {
@@ -41,9 +43,77 @@ interface ProductCardProps {
 export function ProductCard({ product }: ProductCardProps) {
   const [isFavorited, setIsFavorited] = useState(false);
   const isMobile = useIsMobile();
+  const { toast } = useToast();
 
-  const toggleFavorite = () => {
-    setIsFavorited(!isFavorited);
+  useEffect(() => {
+    const checkIfLiked = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('liked_products')
+        .eq('id', user.id)
+        .single();
+
+      if (profile?.liked_products?.includes(product.id)) {
+        setIsFavorited(true);
+      }
+    };
+
+    checkIfLiked();
+  }, [product.id]);
+
+  const toggleFavorite = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          title: "Authentication required",
+          description: "Please sign in to like products",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('liked_products')
+        .eq('id', user.id)
+        .single();
+
+      const currentLikes = profile?.liked_products || [];
+      const newLikes = isFavorited
+        ? currentLikes.filter((id: string) => id !== product.id)
+        : [...currentLikes, product.id];
+
+      const { error } = await supabase
+        .from('profiles')
+        .update({ liked_products: newLikes })
+        .eq('id', user.id);
+
+      if (error) throw error;
+
+      setIsFavorited(!isFavorited);
+      toast({
+        title: isFavorited ? "Product unliked" : "Product liked",
+        description: isFavorited ? "Removed from your liked products" : "Added to your liked products",
+      });
+
+      console.log('Product like toggled:', {
+        productId: product.id,
+        userId: user.id,
+        action: isFavorited ? 'unliked' : 'liked'
+      });
+
+    } catch (error) {
+      console.error('Error toggling product like:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update liked products. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
