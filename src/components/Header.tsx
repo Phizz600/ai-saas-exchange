@@ -7,7 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { NotificationSheet } from "@/components/marketplace/notifications/NotificationSheet";
 import { useNotifications } from "@/components/marketplace/notifications/useNotifications";
 import { ExpandableTabs } from "@/components/header/ExpandableTabs";
-import { Home, ShoppingCart, Store, Package, List } from "lucide-react";
+import { Home, Store, Package, List, Bell } from "lucide-react";
 
 export const Header = () => {
   const navigate = useNavigate();
@@ -40,12 +40,15 @@ export const Header = () => {
     { title: "Products", icon: Package },
     { type: "separator" as const },
     { title: "My Listings", icon: List },
-    { title: "Cart", icon: ShoppingCart },
+    { title: "Notifications", icon: Bell },
   ] as const;
 
   const handleTabChange = (index: number | null) => {
     if (index === null) return;
-    switch (tabs[index].type === "separator" ? "" : tabs[index].title) {
+    const tab = tabs[index];
+    if ('type' in tab) return;
+    
+    switch (tab.title) {
       case "Home":
         navigate("/");
         break;
@@ -58,8 +61,8 @@ export const Header = () => {
       case "My Listings":
         navigate("/product-dashboard");
         break;
-      case "Cart":
-        // Add cart navigation when implemented
+      case "Notifications":
+        // Do nothing as notifications are handled by NotificationSheet
         break;
     }
   };
@@ -67,14 +70,15 @@ export const Header = () => {
   return (
     <header className="w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
       <div className="container flex h-20 items-center justify-between">
-        <div className="flex items-center gap-8">
-          <Link to="/" className="flex items-center">
-            <img
-              src="/lovable-uploads/0283f7d5-13a6-40c9-b40a-69868474cec9.png"
-              alt="AI Exchange"
-              className="h-16 w-auto"
-            />
-          </Link>
+        <Link to="/" className="flex items-center">
+          <img
+            src="/lovable-uploads/0283f7d5-13a6-40c9-b40a-69868474cec9.png"
+            alt="AI Exchange"
+            className="h-16 w-auto"
+          />
+        </Link>
+
+        <div className="flex items-center gap-4">
           {session && (
             <ExpandableTabs 
               tabs={tabs} 
@@ -83,9 +87,6 @@ export const Header = () => {
               className="hidden md:flex"
             />
           )}
-        </div>
-
-        <div className="flex items-center gap-4">
           {session ? (
             <>
               <NotificationSheet 
