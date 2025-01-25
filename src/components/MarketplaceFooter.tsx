@@ -38,54 +38,54 @@ export const MarketplaceFooter = () => {
       </div>
       <div className="container mx-auto px-4 py-12 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="col-span-1 flex flex-col items-center md:items-start">
+          <div className="col-span-1 flex flex-col items-center text-center">
             <img 
               src="/lovable-uploads/c2d95fc3-b2b8-41f4-bee8-877a1d72cf6c.png"
               alt="AI Exchange Club"
               className="h-16 w-auto mb-6"
             />
-            <p className="text-white text-center md:text-left">
+            <p className="text-white">
               Your premier destination for AI product trading and innovation.
             </p>
           </div>
           <div className="col-span-1">
-            <h4 className="font-bold text-white">Company</h4>
+            <h4 className="font-bold text-white text-center md:text-left">Company</h4>
             <ul className="mt-4 space-y-2">
-              <li>
+              <li className="text-center md:text-left">
                 <Link to="/about" className="text-white/80 hover:text-white">About Us</Link>
               </li>
-              <li>
+              <li className="text-center md:text-left">
                 <Link to="/contact" className="text-white/80 hover:text-white">Contact</Link>
               </li>
-              <li>
+              <li className="text-center md:text-left">
                 <Link to="/careers" className="text-white/80 hover:text-white">Careers</Link>
               </li>
             </ul>
           </div>
           <div className="col-span-1">
-            <h4 className="font-bold text-white">Resources</h4>
+            <h4 className="font-bold text-white text-center md:text-left">Resources</h4>
             <ul className="mt-4 space-y-2">
-              <li>
+              <li className="text-center md:text-left">
                 <Link to="/blog" className="text-white/80 hover:text-white">Blog</Link>
               </li>
-              <li>
+              <li className="text-center md:text-left">
                 <Link to="/faq" className="text-white/80 hover:text-white">FAQ</Link>
               </li>
-              <li>
+              <li className="text-center md:text-left">
                 <Link to="/terms" className="text-white/80 hover:text-white">Terms of Service</Link>
               </li>
             </ul>
           </div>
           <div className="col-span-1">
-            <h4 className="font-bold text-white">Follow Us</h4>
+            <h4 className="font-bold text-white text-center md:text-left">Follow Us</h4>
             <ul className="mt-4 space-y-2">
-              <li>
+              <li className="text-center md:text-left">
                 <Link to="#" className="text-white/80 hover:text-white">Facebook</Link>
               </li>
-              <li>
+              <li className="text-center md:text-left">
                 <Link to="#" className="text-white/80 hover:text-white">Twitter</Link>
               </li>
-              <li>
+              <li className="text-center md:text-left">
                 <Link to="#" className="text-white/80 hover:text-white">Instagram</Link>
               </li>
             </ul>
