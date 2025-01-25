@@ -19,8 +19,8 @@ interface NotificationSheetProps {
 }
 
 export const NotificationSheet = ({ 
-  notifications, 
-  unreadCount, 
+  notifications = [], 
+  unreadCount = 0, 
   onMarkAsRead 
 }: NotificationSheetProps) => {
   return (
@@ -30,7 +30,7 @@ export const NotificationSheet = ({
           <Bell className="h-5 w-5" />
           {unreadCount > 0 && (
             <span 
-              className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-[#9b87f5] flex items-center justify-center text-[10px] text-white font-medium"
+              className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-[#8B5CF6] flex items-center justify-center text-[10px] text-white font-medium"
             >
               {unreadCount}
             </span>
@@ -42,7 +42,7 @@ export const NotificationSheet = ({
           <SheetTitle>Notifications</SheetTitle>
         </SheetHeader>
         <ScrollArea className="h-[calc(100vh-100px)] mt-4">
-          {notifications.length === 0 ? (
+          {(!notifications || notifications.length === 0) ? (
             <p className="text-center text-muted-foreground py-4">
               No notifications yet
             </p>
