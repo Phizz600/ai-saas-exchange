@@ -42,8 +42,8 @@ export function ProfileMenu({ profile }: ProfileMenuProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-          <Avatar className="h-8 w-8">
+        <Button variant="ghost" size="icon" className="relative h-12 w-12">
+          <Avatar className="h-12 w-12">
             <AvatarImage src={profile?.avatar_url} alt={profile?.username} />
             <AvatarFallback>{profile?.username?.[0]?.toUpperCase() || 'U'}</AvatarFallback>
           </Avatar>
