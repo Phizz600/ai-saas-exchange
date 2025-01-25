@@ -129,8 +129,8 @@ export function ExpandableTabs({
                   </AnimatePresence>
                 </motion.button>
               </TooltipTrigger>
-              <TooltipContent>
-                <p>{tabItem.description || tabItem.title}</p>
+              <TooltipContent className="bg-white border shadow-lg">
+                <p className="font-medium">{tabItem.title}</p>
               </TooltipContent>
             </Tooltip>
           );
