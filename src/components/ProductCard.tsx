@@ -38,10 +38,12 @@ interface ProductCardProps {
       }[];
     };
   };
+  onView?: () => void;
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({ product, onView }: ProductCardProps) {
   const [isFavorited, setIsFavorited] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const isMobile = useIsMobile();
   const { toast } = useToast();
 
@@ -116,6 +118,13 @@ export function ProductCard({ product }: ProductCardProps) {
     }
   };
 
+  const handleDialogOpenChange = (open: boolean) => {
+    setIsDialogOpen(open);
+    if (open && onView) {
+      onView();
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
@@ -125,7 +134,7 @@ export function ProductCard({ product }: ProductCardProps) {
       className="group touch-manipulation"
     >
       <Card className="overflow-hidden bg-gradient-to-b from-white to-gray-50/50 backdrop-blur-xl border-gray-100/50 shadow-lg">
-        <Dialog>
+        <Dialog open={isDialogOpen} onOpenChange={handleDialogOpenChange}>
           <DialogTrigger asChild>
             <Button 
               variant="ghost" 
