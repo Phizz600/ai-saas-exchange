@@ -23,6 +23,7 @@ interface ListProductFormData {
   category: string;
   stage: string;
   monthlyRevenue: number;
+  monthlyTraffic: number;
   image: File | null;
 }
 
@@ -39,6 +40,7 @@ export function ListProductForm() {
       category: "",
       stage: "",
       monthlyRevenue: 0,
+      monthlyTraffic: 0,
       image: null,
     },
   });
@@ -75,6 +77,7 @@ export function ListProductForm() {
         category: data.category,
         stage: data.stage,
         monthly_revenue: data.monthlyRevenue,
+        monthly_traffic: data.monthlyTraffic,
         image_url,
       });
 
@@ -139,11 +142,11 @@ export function ListProductForm() {
             name="price"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Price (USD)</FormLabel>
+                <FormLabel>Asking Price (USD)</FormLabel>
                 <FormControl>
                   <Input 
                     type="number" 
-                    placeholder="Enter price"
+                    placeholder="Enter asking price"
                     {...field}
                     onChange={e => field.onChange(Number(e.target.value))}
                   />
@@ -176,6 +179,25 @@ export function ListProductForm() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormField
             control={form.control}
+            name="monthlyTraffic"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Monthly Traffic</FormLabel>
+                <FormControl>
+                  <Input 
+                    type="number"
+                    placeholder="Enter monthly visitors"
+                    {...field}
+                    onChange={e => field.onChange(Number(e.target.value))}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
             name="category"
             render={({ field }) => (
               <FormItem>
@@ -187,21 +209,21 @@ export function ListProductForm() {
               </FormItem>
             )}
           />
-
-          <FormField
-            control={form.control}
-            name="stage"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Development Stage</FormLabel>
-                <FormControl>
-                  <Input placeholder="e.g., MVP, Revenue" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
         </div>
+
+        <FormField
+          control={form.control}
+          name="stage"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Development Stage</FormLabel>
+              <FormControl>
+                <Input placeholder="e.g., MVP, Revenue" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         <FormField
           control={form.control}

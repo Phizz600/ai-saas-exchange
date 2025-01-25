@@ -65,6 +65,7 @@ export type Database = {
           image_url: string | null
           min_price: number | null
           monthly_revenue: number | null
+          monthly_traffic: number | null
           price: number
           price_decrement: number | null
           seller_id: string | null
@@ -84,6 +85,7 @@ export type Database = {
           image_url?: string | null
           min_price?: number | null
           monthly_revenue?: number | null
+          monthly_traffic?: number | null
           price: number
           price_decrement?: number | null
           seller_id?: string | null
@@ -103,6 +105,7 @@ export type Database = {
           image_url?: string | null
           min_price?: number | null
           monthly_revenue?: number | null
+          monthly_traffic?: number | null
           price?: number
           price_decrement?: number | null
           seller_id?: string | null
