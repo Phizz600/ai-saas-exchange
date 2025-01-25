@@ -7,7 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { NotificationSheet } from "@/components/marketplace/notifications/NotificationSheet";
 import { useNotifications } from "@/components/marketplace/notifications/useNotifications";
 import { ExpandableTabs } from "@/components/header/ExpandableTabs";
-import { Home, Store, Package, List, Bell } from "lucide-react";
+import { Home, Store, Package, List, Bell, User } from "lucide-react";
 import { useState } from "react";
 
 export const Header = () => {
@@ -43,6 +43,8 @@ export const Header = () => {
     { type: "separator" as const },
     { title: "My Listings", icon: List },
     { title: "Notifications", icon: Bell },
+    { type: "separator" as const },
+    { title: "My Profile", icon: User },
   ];
 
   const handleTabChange = (index: number | null) => {
@@ -65,6 +67,9 @@ export const Header = () => {
         break;
       case "Notifications":
         setIsNotificationSheetOpen(true);
+        break;
+      case "My Profile":
+        navigate("/profile");
         break;
     }
   };
