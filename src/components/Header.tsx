@@ -6,6 +6,8 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { NotificationSheet } from "@/components/marketplace/notifications/NotificationSheet";
 import { useNotifications } from "@/components/marketplace/notifications/useNotifications";
+import { ExpandableTabs } from "@/components/header/ExpandableTabs";
+import { Home, ShoppingCart, Store, Package, List } from "lucide-react";
 
 export const Header = () => {
   const navigate = useNavigate();
@@ -32,10 +34,40 @@ export const Header = () => {
     },
   });
 
+  const tabs = [
+    { title: "Home", icon: Home },
+    { title: "Marketplace", icon: Store },
+    { title: "Products", icon: Package },
+    { type: "separator" as const },
+    { title: "My Listings", icon: List },
+    { title: "Cart", icon: ShoppingCart },
+  ];
+
+  const handleTabChange = (index: number | null) => {
+    if (index === null) return;
+    switch (tabs[index].title) {
+      case "Home":
+        navigate("/");
+        break;
+      case "Marketplace":
+        navigate("/marketplace");
+        break;
+      case "Products":
+        navigate("/product-dashboard");
+        break;
+      case "My Listings":
+        navigate("/product-dashboard");
+        break;
+      case "Cart":
+        // Add cart navigation when implemented
+        break;
+    }
+  };
+
   return (
     <header className="w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
       <div className="container flex h-20 items-center justify-between">
-        <div className="flex items-center">
+        <div className="flex items-center gap-8">
           <Link to="/" className="flex items-center">
             <img
               src="/lovable-uploads/0283f7d5-13a6-40c9-b40a-69868474cec9.png"
@@ -43,6 +75,14 @@ export const Header = () => {
               className="h-16 w-auto"
             />
           </Link>
+          {session && (
+            <ExpandableTabs 
+              tabs={tabs} 
+              onChange={handleTabChange}
+              activeColor="text-primary"
+              className="hidden md:flex"
+            />
+          )}
         </div>
 
         <div className="flex items-center gap-4">
