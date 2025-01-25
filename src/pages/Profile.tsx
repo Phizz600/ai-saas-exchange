@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
-import { Navbar } from "@/components/Navbar";
+import { Header } from "@/components/Header";
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
 import { ProfileCompletion } from "@/components/profile/ProfileCompletion";
 import { ProfileBio } from "@/components/profile/ProfileBio";
@@ -107,7 +107,7 @@ export const Profile = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      <Navbar />
+      <Header />
       <div className="container mx-auto px-4 py-4 mt-16">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
           {/* Left Sidebar */}
