@@ -11,6 +11,13 @@ import { BasicInfoSection } from "./form-sections/BasicInfoSection";
 import { FinancialSection } from "./form-sections/FinancialSection";
 import { MetricsSection } from "./MetricsSection";
 import { ListProductFormData } from "./types";
+import { Info } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export function ListProductForm() {
   const [isLoading, setIsLoading] = useState(false);
@@ -95,6 +102,16 @@ export function ListProductForm() {
     "Other"
   ];
 
+  const categories = [
+    "Content Generation",
+    "Image Generation",
+    "Customer Service",
+    "Development Tools",
+    "Data Analysis",
+    "Marketing",
+    "Other"
+  ];
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -129,10 +146,53 @@ export function ListProductForm() {
 
         <FormField
           control={form.control}
+          name="category"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Category</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger className="bg-white">
+                    <SelectValue placeholder="Select category" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent className="bg-white">
+                  {categories.map((category) => (
+                    <SelectItem key={category} value={category}>
+                      {category}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
           name="image"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Product Image</FormLabel>
+              <FormLabel className="flex items-center gap-2">
+                Product Image
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="h-4 w-4 text-gray-500 cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-xs">
+                      <p>Recommended image specifications:</p>
+                      <ul className="list-disc ml-4 mt-1">
+                        <li>Maximum size: 5MB</li>
+                        <li>Optimal dimensions: 1200x630 pixels</li>
+                        <li>Accepted formats: JPG, PNG, WebP</li>
+                        <li>You can use a screenshot of your product's homepage or landing page</li>
+                      </ul>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </FormLabel>
               <FormControl>
                 <ImageUpload
                   value={field.value}
