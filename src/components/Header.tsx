@@ -7,7 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { NotificationSheet } from "@/components/marketplace/notifications/NotificationSheet";
 import { useNotifications } from "@/components/marketplace/notifications/useNotifications";
 import { ExpandableTabs } from "@/components/header/ExpandableTabs";
-import { Home, Store, Package, List, Bell, User } from "lucide-react";
+import { Home, Store, Package, List, Bell, User, Settings, LogOut } from "lucide-react";
 import { useState } from "react";
 
 export const Header = () => {
@@ -45,6 +45,8 @@ export const Header = () => {
     { title: "Notifications", icon: Bell },
     { type: "separator" as const },
     { title: "My Profile", icon: User },
+    { title: "Settings", icon: Settings },
+    { title: "Log Out", icon: LogOut },
   ];
 
   const handleTabChange = (index: number | null) => {
@@ -70,6 +72,14 @@ export const Header = () => {
         break;
       case "My Profile":
         navigate("/profile");
+        break;
+      case "Settings":
+        navigate("/settings");
+        break;
+      case "Log Out":
+        supabase.auth.signOut().then(() => {
+          navigate('/auth');
+        });
         break;
     }
   };
