@@ -62,7 +62,7 @@ export const MarketplaceContent = () => {
     id: String(product.id),
     monthly_revenue: product.monthly_revenue || 0,
     monthly_traffic: product.monthly_traffic || 0,
-    image_url: product.image_url,
+    image_url: product.image_url || "/placeholder.svg",
   }));
   
   const totalPages = 1;
