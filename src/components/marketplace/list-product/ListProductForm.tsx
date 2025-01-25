@@ -5,7 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ImageUpload } from "./ImageUpload";
 import { BasicInfoSection } from "./form-sections/BasicInfoSection";
 import { FinancialSection } from "./form-sections/FinancialSection";
@@ -86,6 +86,15 @@ export function ListProductForm() {
     }
   };
 
+  const developmentStages = [
+    "MVP",
+    "Beta",
+    "Production Ready",
+    "Revenue Generating",
+    "Scaling",
+    "Other"
+  ];
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -99,9 +108,20 @@ export function ListProductForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Development Stage</FormLabel>
-              <FormControl>
-                <Input placeholder="e.g., MVP, Revenue" {...field} />
-              </FormControl>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select development stage" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {developmentStages.map((stage) => (
+                    <SelectItem key={stage} value={stage}>
+                      {stage}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
@@ -124,7 +144,13 @@ export function ListProductForm() {
           )}
         />
 
-        <Button type="submit" className="w-full" disabled={isLoading}>
+        <Button 
+          type="submit" 
+          className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3 px-6 rounded-lg transform transition-all duration-200 
+          shadow-[0_4px_0_rgb(42,98,143)] hover:shadow-[0_2px_0px_rgb(42,98,143)] 
+          hover:translate-y-[2px] active:translate-y-[4px] active:shadow-[0_0px_0px_rgb(42,98,143)]"
+          disabled={isLoading}
+        >
           {isLoading ? "Listing Product..." : "List Product"}
         </Button>
       </form>
