@@ -16,7 +16,7 @@ export const ProductDashboardLayout = () => {
               <p className="text-gray-600 mt-2">Manage your AI product listings</p>
             </div>
             <Link to="/list-product">
-              <Button className="flex items-center gap-2">
+              <Button className="flex items-center gap-2 bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 transition-opacity">
                 <Plus className="h-4 w-4" />
                 List New Product
               </Button>
