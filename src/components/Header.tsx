@@ -40,7 +40,7 @@ export function Header() {
           <div className="flex items-center">
             <Link to="/" className="flex items-center">
               <img
-                src="/ai-exchange-logo.png"
+                src="/lovable-uploads/0283f7d5-13a6-40c9-b40a-69868474cec9.png"
                 alt="AI Exchange"
                 className="h-8 w-auto"
               />
