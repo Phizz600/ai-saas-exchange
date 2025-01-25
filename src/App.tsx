@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Index } from "@/pages/Index";
+import Index from "@/pages/Index";
 import { Marketplace } from "@/pages/Marketplace";
-import { Auth } from "@/pages/Auth";
+import Auth from "@/pages/Auth";
 import { Profile } from "@/pages/Profile";
 import { ListProduct } from "@/pages/ListProduct";
 import { ProductDashboard } from "@/pages/ProductDashboard";
