@@ -10,7 +10,6 @@ import { FinancialSection } from "./form-sections/FinancialSection";
 import { MetricsSection } from "./MetricsSection";
 import { ImageSection } from "./form-sections/ImageSection";
 import { DevelopmentStageSection } from "./form-sections/DevelopmentStageSection";
-import { CategorySection } from "./form-sections/CategorySection";
 import { ListProductFormData } from "./types";
 
 export function ListProductForm() {
@@ -94,7 +93,6 @@ export function ListProductForm() {
         <FinancialSection form={form} />
         <MetricsSection form={form} />
         <DevelopmentStageSection form={form} />
-        <CategorySection form={form} />
         <ImageSection form={form} />
 
         <Button 
