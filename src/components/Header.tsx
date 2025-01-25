@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { NotificationSheet } from "./marketplace/notifications/NotificationSheet";
+import { useNotifications } from "./marketplace/notifications/useNotifications";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,6 +23,7 @@ export function Header() {
   const location = useLocation();
   const isProfilePage = location.pathname === '/profile';
   const [profile, setProfile] = useState<{ avatar_url: string | null; username: string | null } | null>(null);
+  const { notifications, unreadCount, markAsRead } = useNotifications();
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -78,7 +80,11 @@ export function Header() {
               <Link to="/marketplace">Marketplace</Link>
             </Button>
 
-            <NotificationSheet />
+            <NotificationSheet 
+              notifications={notifications}
+              unreadCount={unreadCount}
+              onMarkAsRead={markAsRead}
+            />
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
