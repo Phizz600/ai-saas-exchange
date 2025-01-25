@@ -1,6 +1,6 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Eye, Edit, Trash, ChartBar } from "lucide-react";
+import { Eye, Edit, Trash, ChartBar, Plus } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -48,6 +48,32 @@ export function ProductsTable({ products }: ProductsTableProps) {
 
     queryClient.invalidateQueries({ queryKey: ['seller-products'] });
   };
+
+  if (products.length === 0) {
+    return (
+      <div className="text-center py-16 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200">
+        <div className="space-y-6">
+          <div className="flex justify-center">
+            <div className="rounded-full bg-gray-100 p-3">
+              <Plus className="h-6 w-6 text-gray-400" />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <h3 className="text-lg font-medium text-gray-900">No products listed yet</h3>
+            <p className="text-gray-500 max-w-sm mx-auto">
+              Get started by listing your first AI product. It only takes a few minutes to create your listing.
+            </p>
+          </div>
+          <Link to="/list-product">
+            <Button className="flex items-center gap-2">
+              <Plus className="h-4 w-4" />
+              List Your First Product
+            </Button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="rounded-md border">
@@ -104,18 +130,6 @@ export function ProductsTable({ products }: ProductsTableProps) {
               </TableCell>
             </TableRow>
           ))}
-          {products.length === 0 && (
-            <TableRow>
-              <TableCell colSpan={7} className="text-center py-8">
-                <p className="text-gray-500">No products listed yet</p>
-                <Link to="/list-product">
-                  <Button className="mt-4">
-                    List Your First Product
-                  </Button>
-                </Link>
-              </TableCell>
-            </TableRow>
-          )}
         </TableBody>
       </Table>
     </div>
