@@ -7,9 +7,12 @@ import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { mockProducts } from "@/data/mockProducts";
 import { supabase } from "@/integrations/supabase/client";
+import { Database } from "@/integrations/supabase/types";
+
+type Product = Database['public']['Tables']['products']['Row'];
 
 export const MarketplaceContent = () => {
-  const [products, setProducts] = useState(mockProducts);
+  const [products, setProducts] = useState<Product[]>(mockProducts);
   const [searchQuery, setSearchQuery] = useState("");
   const [industryFilter, setIndustryFilter] = useState("all");
   const [stageFilter, setStageFilter] = useState("all");
@@ -20,7 +23,7 @@ export const MarketplaceContent = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Subscribe to real-time updates for new products
+    console.log('Setting up real-time subscription for products');
     const channel = supabase
       .channel('public:products')
       .on(
@@ -31,9 +34,13 @@ export const MarketplaceContent = () => {
           table: 'products'
         },
         (payload) => {
-          console.log('New product added:', payload);
-          const newProduct = payload.new;
-          setProducts(prevProducts => [...prevProducts, newProduct]);
+          console.log('New product received:', payload);
+          const newProduct = payload.new as Product;
+          
+          setProducts(prevProducts => {
+            console.log('Adding new product to state:', newProduct);
+            return [...prevProducts, newProduct];
+          });
           
           toast({
             title: "New Product Listed",
@@ -44,6 +51,7 @@ export const MarketplaceContent = () => {
       .subscribe();
 
     return () => {
+      console.log('Cleaning up real-time subscription');
       supabase.removeChannel(channel);
     };
   }, [toast]);
@@ -51,11 +59,6 @@ export const MarketplaceContent = () => {
   // Transform data to include all required fields
   const currentItems = products.map(product => ({
     ...product,
-    auction_end_time: null,
-    current_price: null,
-    min_price: null,
-    price_decrement: null,
-    starting_price: null,
     id: String(product.id),
     monthly_revenue: product.monthly_revenue || 0,
     monthly_traffic: product.monthly_traffic || 0,
