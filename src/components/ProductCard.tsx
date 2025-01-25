@@ -51,8 +51,12 @@ export function ProductCard({ product, onView }: ProductCardProps) {
     const checkIfLiked = async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return;
+        if (!user) {
+          console.log("ProductCard: No user found when checking liked status");
+          return;
+        }
 
+        console.log("ProductCard: Checking liked status for product", product.id);
         const { data: profile, error } = await supabase
           .from('profiles')
           .select('liked_products')
@@ -60,15 +64,16 @@ export function ProductCard({ product, onView }: ProductCardProps) {
           .maybeSingle();
 
         if (error) {
-          console.error('Error checking liked status:', error);
+          console.error('ProductCard: Error checking liked status:', error);
           return;
         }
 
         if (profile?.liked_products?.includes(product.id)) {
+          console.log("ProductCard: Product is liked", product.id);
           setIsFavorited(true);
         }
       } catch (error) {
-        console.error('Error in checkIfLiked:', error);
+        console.error('ProductCard: Error in checkIfLiked:', error);
       }
     };
 
@@ -79,6 +84,7 @@ export function ProductCard({ product, onView }: ProductCardProps) {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
+        console.log("ProductCard: No user found when toggling favorite");
         toast({
           title: "Authentication required",
           description: "Please sign in to like products",
@@ -87,6 +93,7 @@ export function ProductCard({ product, onView }: ProductCardProps) {
         return;
       }
 
+      console.log("ProductCard: Fetching current profile for user", user.id);
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('liked_products')
@@ -94,14 +101,30 @@ export function ProductCard({ product, onView }: ProductCardProps) {
         .maybeSingle();
 
       if (profileError) {
-        console.error('Error fetching profile:', profileError);
+        console.error('ProductCard: Error fetching profile:', profileError);
         throw profileError;
       }
 
-      const currentLikes = profile?.liked_products || [];
+      if (!profile) {
+        console.error('ProductCard: No profile found for user:', user.id);
+        toast({
+          title: "Error",
+          description: "Could not find your profile. Please try again.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const currentLikes = profile.liked_products || [];
       const newLikes = isFavorited
         ? currentLikes.filter((id: string) => id !== product.id)
         : [...currentLikes, product.id];
+
+      console.log("ProductCard: Updating liked products", {
+        currentLikes,
+        newLikes,
+        action: isFavorited ? 'unlike' : 'like'
+      });
 
       const { error: updateError } = await supabase
         .from('profiles')
@@ -112,7 +135,7 @@ export function ProductCard({ product, onView }: ProductCardProps) {
         .eq('id', user.id);
 
       if (updateError) {
-        console.error('Error updating liked products:', updateError);
+        console.error('ProductCard: Error updating liked products:', updateError);
         throw updateError;
       }
 
@@ -122,7 +145,7 @@ export function ProductCard({ product, onView }: ProductCardProps) {
         description: isFavorited ? "Removed from your liked products" : "Added to your liked products",
       });
 
-      console.log('Product like toggled:', {
+      console.log('ProductCard: Successfully toggled product like:', {
         productId: product.id,
         userId: user.id,
         action: isFavorited ? 'unliked' : 'liked',
@@ -130,7 +153,7 @@ export function ProductCard({ product, onView }: ProductCardProps) {
       });
 
     } catch (error) {
-      console.error('Error toggling product like:', error);
+      console.error('ProductCard: Error toggling product like:', error);
       toast({
         title: "Error",
         description: "Failed to update liked products. Please try again.",
