@@ -1,69 +1,35 @@
-import { Header } from "@/components/Header";
-import { FeaturedCompaniesSlideshow } from "@/components/FeaturedCompaniesSlideshow";
-import { MarketplaceContent } from "@/components/marketplace/MarketplaceContent";
-import { MarketplaceFAQ } from "@/components/MarketplaceFAQ";
-import { MarketplaceFooter } from "@/components/MarketplaceFooter";
-import { LiveChatButton } from "@/components/LiveChatButton";
-import { MarketplaceBreadcrumb } from "@/components/marketplace/MarketplaceBreadcrumb";
-import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Plus, LayoutDashboard } from "lucide-react";
+import { MarketplaceContent } from "./MarketplaceContent";
+import { MarketplaceFooter } from "@/components/MarketplaceFooter";
 import { Link } from "react-router-dom";
+import { Plus } from "lucide-react";
 
 export const MarketplaceLayout = () => {
-  useEffect(() => {
-    console.log('MarketplaceLayout mounted');
-    console.log('Checking component imports:', {
-      Header: !!Header,
-      FeaturedCompaniesSlideshow: !!FeaturedCompaniesSlideshow,
-      MarketplaceContent: !!MarketplaceContent,
-      MarketplaceFAQ: !!MarketplaceFAQ,
-      MarketplaceFooter: !!MarketplaceFooter,
-    });
-  }, []);
+  console.log('MarketplaceLayout component rendered');
   
   return (
-    <div className="min-h-screen bg-white flex flex-col">
-      <Header />
-      <main className="flex-grow w-full mt-16">
-        <div className="container mx-auto px-4 md:px-8 py-8">
-          <div className="max-w-7xl mx-auto space-y-8">
-            <MarketplaceBreadcrumb />
-            <div className="flex justify-between items-center">
-              <div className="space-y-4">
-                <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">
-                  AI Products Marketplace
-                </h1>
-                <p className="text-lg text-gray-600">
-                  Discover and acquire cutting-edge AI solutions for your business
-                </p>
-              </div>
-              <div className="flex gap-2">
-                <Link to="/product-dashboard" className="hidden sm:block">
-                  <Button variant="outline">
-                    <LayoutDashboard className="mr-2 h-4 w-4" />
-                    Dashboard
-                  </Button>
-                </Link>
-                <Link to="/list-product">
-                  <Button className="hidden sm:flex">
-                    <Plus className="mr-2 h-4 w-4" />
-                    List Your Product
-                  </Button>
-                  <Button className="sm:hidden" size="icon">
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </Link>
-              </div>
-            </div>
-            <FeaturedCompaniesSlideshow />
-            <MarketplaceContent />
-            <MarketplaceFAQ />
+    <div className="min-h-screen flex flex-col">
+      <div className="flex-grow">
+        <div className="container mx-auto px-4 py-8">
+          <div className="flex justify-between items-center mb-8">
+            <h1 className="text-2xl font-bold">AI Products Marketplace</h1>
+            <Link to="/list-product">
+              <Button 
+                className="hidden sm:flex bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 transition-opacity"
+              >
+                <Plus className="mr-2 h-4 w-4" /> List Your Product
+              </Button>
+              <Button 
+                className="sm:hidden bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 transition-opacity"
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            </Link>
           </div>
+          <MarketplaceContent />
         </div>
-      </main>
+      </div>
       <MarketplaceFooter />
-      <LiveChatButton />
     </div>
   );
 };
