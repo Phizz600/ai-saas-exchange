@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { NotificationSheet } from "./marketplace/notifications/NotificationSheet";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -76,6 +77,8 @@ export function Header() {
             <Button variant="ghost" asChild>
               <Link to="/marketplace">Marketplace</Link>
             </Button>
+
+            <NotificationSheet />
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
