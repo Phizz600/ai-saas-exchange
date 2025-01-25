@@ -38,13 +38,13 @@ export const MarketplaceFooter = () => {
       </div>
       <div className="container mx-auto px-4 py-12 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="col-span-1">
+          <div className="col-span-1 flex flex-col items-center md:items-start">
             <img 
               src="/lovable-uploads/c2d95fc3-b2b8-41f4-bee8-877a1d72cf6c.png"
               alt="AI Exchange Club"
               className="h-16 w-auto mb-6"
             />
-            <p className="text-white">
+            <p className="text-white text-center md:text-left">
               Your premier destination for AI product trading and innovation.
             </p>
           </div>
