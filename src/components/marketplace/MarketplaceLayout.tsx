@@ -28,7 +28,7 @@ export const MarketplaceLayout = () => {
       <main className="flex-grow w-full mt-16">
         <div className="container mx-auto px-4 md:px-8 py-8">
           <MarketplaceBreadcrumb />
-          <div className="flex justify-between items-center mb-8">
+          <div className="flex justify-between items-center mb-12">
             <div className="space-y-4">
               <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">
                 AI Products Marketplace
@@ -59,7 +59,7 @@ export const MarketplaceLayout = () => {
               </Link>
             </div>
           </div>
-          <div className="max-w-none">
+          <div className="max-w-none space-y-12">
             <FeaturedCompaniesSlideshow />
             <MarketplaceContent />
             <MarketplaceFAQ />
