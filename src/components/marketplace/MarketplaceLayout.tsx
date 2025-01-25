@@ -27,39 +27,39 @@ export const MarketplaceLayout = () => {
       <Header />
       <main className="flex-grow w-full mt-16">
         <div className="container mx-auto px-4 md:px-8 py-8">
-          <div className="max-w-7xl mx-auto space-y-8">
-            <MarketplaceBreadcrumb />
-            <div className="flex justify-between items-center">
-              <div className="space-y-4">
-                <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">
-                  AI Products Marketplace
-                </h1>
-                <p className="text-lg text-gray-600">
-                  Discover and acquire cutting-edge AI solutions for your business
-                </p>
-              </div>
-              <div className="flex gap-2">
-                <Link to="/product-dashboard" className="hidden sm:block">
-                  <Button variant="outline">
-                    <LayoutDashboard className="mr-2 h-4 w-4" />
-                    Dashboard
-                  </Button>
-                </Link>
-                <Link to="/list-product">
-                  <Button 
-                    className="hidden sm:flex bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 transition-opacity"
-                  >
-                    <Plus className="mr-2 h-4 w-4" />
-                    List Your Product
-                  </Button>
-                  <Button 
-                    className="sm:hidden bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 transition-opacity"
-                  >
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </Link>
-              </div>
+          <MarketplaceBreadcrumb />
+          <div className="flex justify-between items-center mb-8">
+            <div className="space-y-4">
+              <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">
+                AI Products Marketplace
+              </h1>
+              <p className="text-lg text-gray-600">
+                Discover and acquire cutting-edge AI solutions for your business
+              </p>
             </div>
+            <div className="flex gap-2">
+              <Link to="/product-dashboard" className="hidden sm:block">
+                <Button variant="outline">
+                  <LayoutDashboard className="mr-2 h-4 w-4" />
+                  Dashboard
+                </Button>
+              </Link>
+              <Link to="/list-product">
+                <Button 
+                  className="hidden sm:flex bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 transition-opacity"
+                >
+                  <Plus className="mr-2 h-4 w-4" />
+                  List Your Product
+                </Button>
+                <Button 
+                  className="sm:hidden bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 transition-opacity"
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
+          </div>
+          <div className="max-w-none">
             <FeaturedCompaniesSlideshow />
             <MarketplaceContent />
             <MarketplaceFAQ />

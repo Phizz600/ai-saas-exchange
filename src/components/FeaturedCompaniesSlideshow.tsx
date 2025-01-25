@@ -33,7 +33,7 @@ const featuredCompanies = [
 
 export const FeaturedCompaniesSlideshow = () => {
   return (
-    <div className="bg-gradient-to-r from-accent2 to-accent3 rounded-lg p-8 mb-12 relative">
+    <div className="bg-gradient-to-r from-accent2 to-accent3 rounded-lg p-8 relative">
       <h2 className="text-xl font-semibold text-white mb-6">Featured Companies</h2>
       <Carousel
         opts={{
