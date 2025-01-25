@@ -16,15 +16,19 @@ interface NotificationSheetProps {
   notifications: Notification[];
   unreadCount: number;
   onMarkAsRead: (notificationId: string) => Promise<void>;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 export const NotificationSheet = ({ 
   notifications = [], 
   unreadCount = 0, 
-  onMarkAsRead 
+  onMarkAsRead,
+  open,
+  onOpenChange
 }: NotificationSheetProps) => {
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetTrigger asChild>
         <Button variant="ghost" size="icon" className="relative h-12 w-12">
           <Bell className="h-7 w-7" />

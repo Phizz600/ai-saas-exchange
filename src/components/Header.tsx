@@ -8,10 +8,12 @@ import { NotificationSheet } from "@/components/marketplace/notifications/Notifi
 import { useNotifications } from "@/components/marketplace/notifications/useNotifications";
 import { ExpandableTabs } from "@/components/header/ExpandableTabs";
 import { Home, Store, Package, List, Bell } from "lucide-react";
+import { useState } from "react";
 
 export const Header = () => {
   const navigate = useNavigate();
   const { notifications, unreadCount, markAsRead } = useNotifications();
+  const [isNotificationSheetOpen, setIsNotificationSheetOpen] = useState(false);
 
   const { data: session } = useQuery({
     queryKey: ["session"],
@@ -62,7 +64,7 @@ export const Header = () => {
         navigate("/product-dashboard");
         break;
       case "Notifications":
-        // Do nothing as notifications are handled by NotificationSheet
+        setIsNotificationSheetOpen(true);
         break;
     }
   };
@@ -93,6 +95,8 @@ export const Header = () => {
                 notifications={notifications}
                 unreadCount={unreadCount}
                 onMarkAsRead={markAsRead}
+                open={isNotificationSheetOpen}
+                onOpenChange={setIsNotificationSheetOpen}
               />
               <ProfileMenu profile={profile} />
             </>
