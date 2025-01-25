@@ -2,7 +2,7 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/comp
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { UseFormReturn } from "react-hook-form";
-import { ListProductFormData } from "../types";
+import { ListProductFormData } from "./types";
 
 interface MetricsSectionProps {
   form: UseFormReturn<ListProductFormData>;
@@ -49,11 +49,11 @@ export function MetricsSection({ form }: MetricsSectionProps) {
             <FormLabel>Category</FormLabel>
             <Select onValueChange={field.onChange} defaultValue={field.value}>
               <FormControl>
-                <SelectTrigger>
+                <SelectTrigger className="bg-white">
                   <SelectValue placeholder="Select a category" />
                 </SelectTrigger>
               </FormControl>
-              <SelectContent>
+              <SelectContent className="bg-white">
                 {categories.map((category) => (
                   <SelectItem key={category} value={category}>
                     {category}

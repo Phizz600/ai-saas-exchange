@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ImageUpload } from "./ImageUpload";
 import { BasicInfoSection } from "./form-sections/BasicInfoSection";
 import { FinancialSection } from "./form-sections/FinancialSection";
-import { MetricsSection } from "./form-sections/MetricsSection";
+import { MetricsSection } from "./MetricsSection";
 import { ListProductFormData } from "./types";
 
 export function ListProductForm() {
@@ -110,11 +110,11 @@ export function ListProductForm() {
               <FormLabel>Development Stage</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
-                  <SelectTrigger>
+                  <SelectTrigger className="bg-white">
                     <SelectValue placeholder="Select development stage" />
                   </SelectTrigger>
                 </FormControl>
-                <SelectContent>
+                <SelectContent className="bg-white">
                   {developmentStages.map((stage) => (
                     <SelectItem key={stage} value={stage}>
                       {stage}
