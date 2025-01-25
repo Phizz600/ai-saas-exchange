@@ -1,7 +1,14 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { toast } from "sonner";
+import { Mail } from "lucide-react";
 
 export const MarketplaceFooter = () => {
+  const [email, setEmail] = useState("");
+  
   const particles = Array.from({ length: 20 }).map((_, i) => ({
     id: i,
     x: Math.random() * 100,
@@ -9,6 +16,16 @@ export const MarketplaceFooter = () => {
     size: Math.random() * 10 + 5,
     duration: 3 + Math.random() * 4,
   }));
+
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (email) {
+      toast.success("Thanks for subscribing!", {
+        description: "You'll receive updates about new AI products and features.",
+      });
+      setEmail("");
+    }
+  };
 
   return (
     <footer className="relative overflow-hidden">
@@ -90,6 +107,29 @@ export const MarketplaceFooter = () => {
               </li>
             </ul>
           </div>
+        </div>
+        
+        {/* Email opt-in section */}
+        <div className="mt-12 max-w-md mx-auto">
+          <form onSubmit={handleSubscribe} className="space-y-4">
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+              <Input
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-gray-400 focus:border-white/20"
+                required
+              />
+            </div>
+            <Button 
+              type="submit"
+              className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 transition-opacity text-white font-semibold"
+            >
+              Subscribe
+            </Button>
+          </form>
         </div>
       </div>
     </footer>
