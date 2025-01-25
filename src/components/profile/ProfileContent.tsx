@@ -30,7 +30,7 @@ export const ProfileContent = ({ profile }: ProfileContentProps) => {
               : "Browse the marketplace to find AI products to purchase"}
           </p>
           <Button 
-            className="bg-primary hover:bg-primary/90"
+            className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 text-white"
             onClick={() => navigate('/marketplace')}
           >
             {profile.user_type === "ai_builder" 
