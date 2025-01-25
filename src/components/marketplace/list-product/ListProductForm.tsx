@@ -69,8 +69,9 @@ export function ListProductForm() {
       if (error) throw error;
 
       toast({
-        title: "Success!",
-        description: "Your product has been listed successfully.",
+        title: "Product Submitted Successfully!",
+        description: "Thank you for your submission. After a quick team review, your product will be made live for purchase on the marketplace.",
+        duration: 5000,
       });
 
       navigate("/marketplace");
