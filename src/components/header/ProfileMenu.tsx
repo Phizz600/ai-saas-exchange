@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
 import { User, Settings, LogOut } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -16,7 +15,6 @@ import { useToast } from "@/hooks/use-toast";
 interface ProfileMenuProps {
   profile?: {
     username?: string;
-    avatar_url?: string;
   };
 }
 
@@ -43,10 +41,7 @@ export function ProfileMenu({ profile }: ProfileMenuProps) {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" className="relative h-12 w-12">
-          <Avatar className="h-12 w-12">
-            <AvatarImage src={profile?.avatar_url} alt={profile?.username} />
-            <AvatarFallback>{profile?.username?.[0]?.toUpperCase() || 'U'}</AvatarFallback>
-          </Avatar>
+          <User className="h-6 w-6" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent 
