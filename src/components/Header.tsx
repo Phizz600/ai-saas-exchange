@@ -41,7 +41,7 @@ export const Header = () => {
     { type: "separator" as const },
     { title: "My Listings", icon: List },
     { title: "Notifications", icon: Bell },
-  ] as const;
+  ];
 
   const handleTabChange = (index: number | null) => {
     if (index === null) return;
