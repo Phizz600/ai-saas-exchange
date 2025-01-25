@@ -76,10 +76,6 @@ export function Header() {
           </Link>
 
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" asChild>
-              <Link to="/marketplace">Marketplace</Link>
-            </Button>
-
             <NotificationSheet 
               notifications={notifications}
               unreadCount={unreadCount}
