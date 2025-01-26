@@ -10,7 +10,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarProvider,
-  SidebarTrigger
 } from "@/components/ui/sidebar";
 import { BarChart3, Package, Settings, Bell, PieChart } from "lucide-react";
 import { NotificationSheet } from "../marketplace/notifications/NotificationSheet";
