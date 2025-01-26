@@ -3,6 +3,8 @@ import { ProductDashboardContent } from "./ProductDashboardContent";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Plus } from "lucide-react";
+import { MarketplaceStats } from "./MarketplaceStats";
+import { QuickActions } from "./QuickActions";
 
 export const ProductDashboardLayout = () => {
   return (
@@ -12,7 +14,7 @@ export const ProductDashboardLayout = () => {
         <div className="max-w-7xl mx-auto space-y-8">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Product Dashboard</h1>
+              <h1 className="text-3xl font-bold text-gray-900 font-exo">Product Dashboard</h1>
               <p className="text-gray-600 mt-2">Manage your AI product listings</p>
             </div>
             <Link to="/list-product">
@@ -22,6 +24,8 @@ export const ProductDashboardLayout = () => {
               </Button>
             </Link>
           </div>
+          <MarketplaceStats />
+          <QuickActions />
           <ProductDashboardContent />
         </div>
       </main>

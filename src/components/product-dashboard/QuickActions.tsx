@@ -39,11 +39,11 @@ export const QuickActions = () => {
 
   return (
     <Card className="p-6 mb-8">
-      <h2 className="text-xl font-semibold mb-4">Quick Actions</h2>
+      <h2 className="text-xl font-semibold mb-4 font-exo">Quick Actions</h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Button 
           variant="outline" 
-          className="flex items-center gap-2 h-auto py-4"
+          className="flex items-center gap-2 h-auto py-4 bg-gradient-to-r hover:from-[#D946EE]/10 hover:via-[#8B5CF6]/10 hover:to-[#0EA4E9]/10"
           onClick={handlePauseListing}
         >
           <Pause className="h-4 w-4" />
@@ -55,7 +55,7 @@ export const QuickActions = () => {
 
         <Button 
           variant="outline" 
-          className="flex items-center gap-2 h-auto py-4"
+          className="flex items-center gap-2 h-auto py-4 bg-gradient-to-r hover:from-[#D946EE]/10 hover:via-[#8B5CF6]/10 hover:to-[#0EA4E9]/10"
         >
           <TrendingUp className="h-4 w-4" />
           <div className="text-left">
@@ -66,7 +66,7 @@ export const QuickActions = () => {
 
         <Button 
           variant="outline" 
-          className="flex items-center gap-2 h-auto py-4"
+          className="flex items-center gap-2 h-auto py-4 bg-gradient-to-r hover:from-[#D946EE]/10 hover:via-[#8B5CF6]/10 hover:to-[#0EA4E9]/10"
         >
           <Percent className="h-4 w-4" />
           <div className="text-left">
