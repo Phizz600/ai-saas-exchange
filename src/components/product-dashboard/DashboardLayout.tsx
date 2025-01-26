@@ -7,11 +7,9 @@ import {
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
   SidebarProvider,
 } from "@/components/ui/sidebar";
-import { BarChart3, Package, Settings, Bell, PieChart } from "lucide-react";
+import { Bell } from "lucide-react";
 import { NotificationSheet } from "../marketplace/notifications/NotificationSheet";
 import { useNotifications } from "../marketplace/notifications/useNotifications";
 import { Badge } from "../ui/badge";
@@ -19,13 +17,6 @@ import { Badge } from "../ui/badge";
 export const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const { notifications, unreadCount, markAsRead } = useNotifications();
-
-  const menuItems = [
-    { title: "Overview", icon: BarChart3, url: "/product-dashboard" },
-    { title: "Products", icon: Package, url: "/product-dashboard/products" },
-    { title: "Analytics", icon: PieChart, url: "/product-dashboard/analytics" },
-    { title: "Settings", icon: Settings, url: "/product-dashboard/settings" },
-  ];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -38,16 +29,6 @@ export const DashboardLayout = ({ children }: { children: React.ReactNode }) => 
                 <SidebarGroupLabel>Dashboard</SidebarGroupLabel>
                 <SidebarGroupContent>
                   <SidebarMenu>
-                    {menuItems.map((item) => (
-                      <SidebarMenuItem key={item.title}>
-                        <SidebarMenuButton asChild>
-                          <a href={item.url} className="flex items-center gap-2">
-                            <item.icon className="h-4 w-4" />
-                            <span>{item.title}</span>
-                          </a>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-                    ))}
                   </SidebarMenu>
                 </SidebarGroupContent>
               </SidebarGroup>
