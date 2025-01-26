@@ -87,11 +87,11 @@ export function DashboardSidebar() {
   return (
     <Sidebar variant="inset" className="border-r border-gray-200">
       <SidebarContent>
-        <div className="mb-4 px-2">
+        <div className="mb-4 px-4">
           <img 
-            src="/ai-exchange-logo.png" 
+            src="/lovable-uploads/f3cf11c0-ed0e-4867-bb14-08ad64a872a1.png" 
             alt="Logo" 
-            className="h-8 w-auto"
+            className="h-12 w-auto"
           />
         </div>
 
