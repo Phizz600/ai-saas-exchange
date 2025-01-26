@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card";
-import { BarChart3, TrendingUp, Users } from "lucide-react";
+import { BarChart3, TrendingUp, Package } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
