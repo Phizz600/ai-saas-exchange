@@ -2,11 +2,7 @@ import { useState } from "react";
 import { Header } from "@/components/Header";
 import { 
   Sidebar, 
-  SidebarContent, 
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenu,
+  SidebarContent,
   SidebarProvider,
 } from "@/components/ui/sidebar";
 import { Bell } from "lucide-react";
@@ -25,13 +21,6 @@ export const DashboardLayout = ({ children }: { children: React.ReactNode }) => 
         <div className="flex min-h-[calc(100vh-4rem)] w-full pt-16">
           <Sidebar>
             <SidebarContent>
-              <SidebarGroup>
-                <SidebarGroupLabel>Dashboard</SidebarGroupLabel>
-                <SidebarGroupContent>
-                  <SidebarMenu>
-                  </SidebarMenu>
-                </SidebarGroupContent>
-              </SidebarGroup>
             </SidebarContent>
           </Sidebar>
 
