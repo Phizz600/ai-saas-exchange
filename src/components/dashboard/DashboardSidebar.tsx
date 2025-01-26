@@ -22,7 +22,8 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useAuth } from "@supabase/auth-helpers-react";
+import { useSession } from "@supabase/auth-helpers-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const saleModuleItems = [
   {
@@ -71,8 +72,17 @@ const generalItems = [
 ];
 
 export function DashboardSidebar() {
-  const auth = useAuth();
-  const user = auth?.user;
+  const session = useSession();
+  const user = session?.user;
+
+  const handleSignOut = async () => {
+    try {
+      await supabase.auth.signOut();
+      console.log("User signed out successfully");
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
 
   return (
     <Sidebar variant="inset" className="border-r border-gray-200">
@@ -151,7 +161,7 @@ export function DashboardSidebar() {
             </div>
           </div>
           <button 
-            onClick={() => auth?.signOut()} 
+            onClick={handleSignOut} 
             className="text-gray-400 hover:text-gray-600"
           >
             <LogOut className="h-5 w-5" />
