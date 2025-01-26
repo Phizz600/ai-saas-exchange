@@ -91,7 +91,7 @@ export function DashboardSidebar() {
           <img 
             src="/lovable-uploads/f3cf11c0-ed0e-4867-bb14-08ad64a872a1.png" 
             alt="Logo" 
-            className="h-12 w-auto"
+            className="h-16 w-auto"
           />
         </div>
 
