@@ -130,9 +130,6 @@ export function ExpandableTabs({
               </TooltipTrigger>
               <TooltipContent className="bg-white border shadow-lg">
                 <p className="font-medium">{tabItem.title}</p>
-                {tabItem.description && (
-                  <p className="text-sm text-muted-foreground">{tabItem.description}</p>
-                )}
               </TooltipContent>
             </Tooltip>
           );
