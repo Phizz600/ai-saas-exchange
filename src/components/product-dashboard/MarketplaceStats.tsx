@@ -3,16 +3,28 @@ import { BarChart3, TrendingUp, Users } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
+interface Product {
+  id: string;
+  title: string;
+  status: string;
+  seller: {
+    id: string;
+    username: string;
+  };
+}
+
 export const MarketplaceStats = () => {
-  const { data: stats } = useQuery(['marketplace-stats'], async () => {
-    const { data, error } = await supabase
-      .from('products')
-      .select('*, seller:profiles(*)')
-      .eq('status', 'active');
+  const { data: stats } = useQuery<Product[]>({
+    queryKey: ['marketplace-stats'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*, seller:profiles(*)')
+        .eq('status', 'active');
 
-    if (error) throw error;
-
-    return data;
+      if (error) throw error;
+      return data;
+    }
   });
 
   return (
