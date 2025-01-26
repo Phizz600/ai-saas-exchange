@@ -15,9 +15,6 @@ export const Header = () => {
       description: "Go to homepage"
     },
     {
-      type: "separator"
-    },
-    {
       title: "Marketplace",
       icon: Store,
       description: "Browse AI products"
