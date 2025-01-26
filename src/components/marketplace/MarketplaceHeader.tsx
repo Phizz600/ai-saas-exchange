@@ -17,7 +17,7 @@ interface MarketplaceHeaderProps {
   isLoading: boolean;
   notifications: any[];
   unreadCount: number;
-  onMarkAsRead: () => void;
+  onMarkAsRead: (notificationId: string) => Promise<void>;
 }
 
 export const MarketplaceHeader = ({
