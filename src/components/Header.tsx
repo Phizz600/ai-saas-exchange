@@ -88,9 +88,9 @@ export const Header = () => {
       <div className="container flex h-20 items-center justify-between">
         <Link to="/" className="flex items-center">
           <img
-            src="/lovable-uploads/0ba2beb5-8a80-4276-809e-4735a8beb42f.png"
+            src="/lovable-uploads/c68a87a1-ae60-4ffa-bcfd-fddfee1e948f.png"
             alt="AI Exchange"
-            className="h-16 w-auto"
+            className="h-12 w-auto"
           />
         </Link>
 
