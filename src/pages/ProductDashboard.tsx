@@ -1,8 +1,14 @@
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import { ProductDashboardLayout } from "@/components/product-dashboard/ProductDashboardLayout";
+import { DashboardLayout } from "@/components/product-dashboard/DashboardLayout";
+import { MarketplaceStats } from "@/components/product-dashboard/MarketplaceStats";
+import { QuickActions } from "@/components/product-dashboard/QuickActions";
+import { ProductsTable } from "@/components/product-dashboard/ProductsTable";
 
 export const ProductDashboard = () => {
-  console.log('ProductDashboard page component rendered');
-  return <ProductDashboardLayout />;
+  return (
+    <DashboardLayout>
+      <MarketplaceStats />
+      <QuickActions />
+      <ProductsTable products={[]} />
+    </DashboardLayout>
+  );
 };
