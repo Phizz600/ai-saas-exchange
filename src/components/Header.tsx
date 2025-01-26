@@ -87,7 +87,11 @@ export const Header = () => {
     <header className="w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
       <div className="container flex h-20 items-center justify-between">
         <Link to="/" className="flex items-center">
-          {/* Image removed as requested */}
+          <img
+            src="/lovable-uploads/0ba2beb5-8a80-4276-809e-4735a8beb42f.png"
+            alt="AI Exchange"
+            className="h-16 w-auto"
+          />
         </Link>
 
         <div className="flex items-center gap-4">
