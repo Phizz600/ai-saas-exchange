@@ -64,12 +64,14 @@ export function ProductsTable({ products }: ProductsTableProps) {
               Get started by listing your first AI product. It only takes a few minutes to create your listing.
             </p>
           </div>
-          <Link to="/list-product">
-            <Button className="flex items-center gap-2">
-              <Plus className="h-4 w-4" />
-              List Your First Product
-            </Button>
-          </Link>
+          <div className="flex justify-center">
+            <Link to="/list-product">
+              <Button className="flex items-center gap-2 bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 transition-opacity">
+                <Plus className="h-4 w-4" />
+                List Your First Product
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
     );
