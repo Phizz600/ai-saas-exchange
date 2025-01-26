@@ -2,13 +2,25 @@ import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { ExpandableTabs } from "./header/ExpandableTabs";
 import { ProfileMenu } from "./header/ProfileMenu";
-import { Home, Store, LayoutDashboard, Bell, MessageSquare, Settings, HelpCircle } from "lucide-react";
+import { Home, Store, LayoutDashboard, Bell, MessageSquare, Settings, HelpCircle, User, LogOut } from "lucide-react";
+
+interface Tab {
+  title: string;
+  icon: any;
+  description?: string;
+}
+
+interface Separator {
+  type: "separator";
+}
+
+type TabItem = Tab | Separator;
 
 export const Header = () => {
   const location = useLocation();
   const isMarketplace = location.pathname === '/marketplace';
 
-  const navigationTabs = [
+  const navigationTabs: TabItem[] = [
     {
       title: "Home",
       icon: Home,
@@ -49,6 +61,19 @@ export const Header = () => {
       title: "Help",
       icon: HelpCircle,
       description: "Get help"
+    },
+    {
+      type: "separator"
+    },
+    {
+      title: "Profile",
+      icon: User,
+      description: "View profile"
+    },
+    {
+      title: "Sign Out",
+      icon: LogOut,
+      description: "Sign out of your account"
     }
   ];
 
