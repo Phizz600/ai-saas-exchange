@@ -5,7 +5,6 @@ import { MarketplacePagination } from "@/components/marketplace/MarketplacePagin
 import { useToast } from "@/hooks/use-toast";
 import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { mockProducts } from "@/data/mockProducts";
 import { supabase } from "@/integrations/supabase/client";
 import { Database } from "@/integrations/supabase/types";
 import { incrementProductViews } from "@/integrations/supabase/functions";
@@ -15,7 +14,8 @@ import { useNotifications } from "./notifications/useNotifications";
 type Product = Database['public']['Tables']['products']['Row'];
 
 export const MarketplaceContent = () => {
-  const [products, setProducts] = useState<Product[]>(mockProducts);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [industryFilter, setIndustryFilter] = useState("all");
   const [stageFilter, setStageFilter] = useState("all");
@@ -25,6 +25,38 @@ export const MarketplaceContent = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const { toast } = useToast();
   const { notifications, unreadCount, markAsRead } = useNotifications();
+
+  // Fetch initial products
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        console.log('Fetching products from Supabase');
+        const { data, error } = await supabase
+          .from('products')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          console.error('Error fetching products:', error);
+          throw error;
+        }
+
+        console.log('Products fetched successfully:', data);
+        setProducts(data || []);
+      } catch (error) {
+        console.error('Error in fetchProducts:', error);
+        toast({
+          variant: "destructive",
+          title: "Error loading products",
+          description: "Failed to load marketplace products. Please try again.",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, [toast]);
 
   // Subscribe to new products
   useEffect(() => {
@@ -44,7 +76,7 @@ export const MarketplaceContent = () => {
           
           setProducts(prevProducts => {
             console.log('Adding new product to state:', newProduct);
-            return [...prevProducts, newProduct];
+            return [newProduct, ...prevProducts];
           });
           
           toast({
@@ -71,33 +103,19 @@ export const MarketplaceContent = () => {
     }
   };
 
-  // Transform data to include all required fields
-  const currentItems = products.map(product => ({
-    ...product,
-    id: String(product.id),
-    monthly_revenue: product.monthly_revenue || 0,
-    monthly_traffic: product.monthly_traffic || 0,
-    image_url: product.image_url || "/placeholder.svg",
-  }));
-  
-  const totalPages = 1;
-  const isLoading = false;
-  const error = null;
-
-  if (error) {
-    console.error('MarketplaceContent error:', error);
-    toast({
-      variant: "destructive",
-      title: "Error loading products",
-      description: "Please try again later.",
-    });
-
+  if (isLoading) {
     return (
-      <Alert variant="destructive">
+      <ProductGrid products={[]} isLoading={true} />
+    );
+  }
+
+  if (products.length === 0 && !isLoading) {
+    return (
+      <Alert>
         <AlertCircle className="h-4 w-4" />
-        <AlertTitle>Error</AlertTitle>
+        <AlertTitle>No Products Found</AlertTitle>
         <AlertDescription>
-          There was an error loading the marketplace products. Please try refreshing the page.
+          There are currently no products listed in the marketplace. Be the first to list your AI product!
         </AlertDescription>
       </Alert>
     );
@@ -119,7 +137,7 @@ export const MarketplaceContent = () => {
           setTimeFilter={setTimeFilter}
           sortBy={sortBy}
           setSortBy={setSortBy}
-          isLoading={false}
+          isLoading={isLoading}
         />
 
         <NotificationSheet 
@@ -131,14 +149,14 @@ export const MarketplaceContent = () => {
 
       <ProductGrid 
         products={products} 
-        isLoading={false} 
+        isLoading={isLoading} 
         onProductView={trackProductView}
       />
 
       {!isLoading && products.length > 0 && (
         <MarketplacePagination
           currentPage={currentPage}
-          totalPages={totalPages}
+          totalPages={Math.ceil(products.length / 6)}
           setCurrentPage={setCurrentPage}
         />
       )}
