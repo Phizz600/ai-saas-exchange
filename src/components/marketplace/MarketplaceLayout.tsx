@@ -27,14 +27,7 @@ export const MarketplaceLayout = () => {
       <Header />
       <main className="flex-grow w-full mt-16">
         <div className="container mx-auto px-4 md:px-8 py-8">
-          <div className="flex items-center mb-6">
-            <img 
-              src="/lovable-uploads/410d1e6b-e7e7-499e-a8f7-9bf6bda5e131.png" 
-              alt="AI Exchange Logo" 
-              className="h-12 w-12 mr-4"
-            />
-            <MarketplaceBreadcrumb />
-          </div>
+          <MarketplaceBreadcrumb />
           <div className="flex justify-between items-center mb-12">
             <div className="space-y-4">
               <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">
