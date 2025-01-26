@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { ExpandableTabs } from "./header/ExpandableTabs";
 import { ProfileMenu } from "./header/ProfileMenu";
-import { Home, Store, LayoutDashboard, Bell, MessageSquare, Settings, HelpCircle, User, LogOut } from "lucide-react";
+import { Home, Store, LayoutDashboard, Bell, Settings, HelpCircle, User, LogOut } from "lucide-react";
 
 interface Tab {
   title: string;
@@ -46,11 +46,6 @@ export const Header = () => {
       title: "Notifications",
       icon: Bell,
       description: "View notifications"
-    },
-    {
-      title: "Messages",
-      icon: MessageSquare,
-      description: "View messages"
     },
     {
       title: "Settings",
