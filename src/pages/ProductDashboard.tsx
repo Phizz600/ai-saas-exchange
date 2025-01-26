@@ -1,14 +1,17 @@
 import { DashboardLayout } from "@/components/product-dashboard/DashboardLayout";
 import { MarketplaceStats } from "@/components/product-dashboard/MarketplaceStats";
-import { QuickActions } from "@/components/product-dashboard/QuickActions";
-import { ProductsTable } from "@/components/product-dashboard/ProductsTable";
+import { ProductDashboardContent } from "@/components/product-dashboard/ProductDashboardContent";
 
 export const ProductDashboard = () => {
   return (
     <DashboardLayout>
-      <MarketplaceStats />
-      <QuickActions />
-      <ProductsTable products={[]} />
+      <div className="space-y-8">
+        <MarketplaceStats />
+        <div>
+          <h2 className="text-xl font-semibold mb-4 font-exo">Your Products</h2>
+          <ProductDashboardContent />
+        </div>
+      </div>
     </DashboardLayout>
   );
 };

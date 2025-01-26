@@ -1,29 +1,30 @@
-import { useState } from "react";
 import { Header } from "@/components/Header";
-import { NotificationSheet } from "../marketplace/notifications/NotificationSheet";
-import { useNotifications } from "../marketplace/notifications/useNotifications";
+import { Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 export const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
-  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
-  const { notifications, unreadCount, markAsRead } = useNotifications();
-
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#F8F9FC]">
       <Header />
       <main className="container mx-auto px-4 py-8 mt-16">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Product Dashboard</h1>
+        <div className="flex flex-col space-y-8">
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 font-exo">Hey there!</h1>
+              <p className="text-gray-500 mt-2">Track, manage and analyze your AI products performance.</p>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Input 
+                  placeholder="Search products..." 
+                  className="pl-10 w-[250px] bg-white border-gray-200"
+                />
+              </div>
+            </div>
+          </div>
+          {children}
         </div>
-
-        {children}
-
-        <NotificationSheet
-          notifications={notifications}
-          unreadCount={unreadCount}
-          onMarkAsRead={markAsRead}
-          open={isNotificationsOpen}
-          onOpenChange={setIsNotificationsOpen}
-        />
       </main>
     </div>
   );
