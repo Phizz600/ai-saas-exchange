@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { Header } from "@/components/Header";
-import { Bell } from "lucide-react";
 import { NotificationSheet } from "../marketplace/notifications/NotificationSheet";
 import { useNotifications } from "../marketplace/notifications/useNotifications";
-import { Badge } from "../ui/badge";
 
 export const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
@@ -15,21 +13,6 @@ export const DashboardLayout = ({ children }: { children: React.ReactNode }) => 
       <main className="container mx-auto px-4 py-8 mt-16">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Product Dashboard</h1>
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => setIsNotificationsOpen(true)}
-              className="relative p-2 text-gray-600 hover:text-gray-900 transition-colors"
-            >
-              <Bell className="h-6 w-6" />
-              {unreadCount > 0 && (
-                <Badge 
-                  className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-red-500"
-                >
-                  {unreadCount}
-                </Badge>
-              )}
-            </button>
-          </div>
         </div>
 
         {children}
