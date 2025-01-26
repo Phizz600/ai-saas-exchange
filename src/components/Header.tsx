@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { ExpandableTabs } from "./header/ExpandableTabs";
 import { ProfileMenu } from "./header/ProfileMenu";
-import { Home, Store, LayoutDashboard } from "lucide-react";
+import { Home, Store, LayoutDashboard, Bell, MessageSquare, Settings, HelpCircle } from "lucide-react";
 
 export const Header = () => {
   const location = useLocation();
@@ -26,8 +26,31 @@ export const Header = () => {
       title: "Dashboard",
       icon: LayoutDashboard,
       description: "View your dashboard"
+    },
+    {
+      type: "separator"
+    },
+    {
+      title: "Notifications",
+      icon: Bell,
+      description: "View notifications"
+    },
+    {
+      title: "Messages",
+      icon: MessageSquare,
+      description: "View messages"
+    },
+    {
+      title: "Settings",
+      icon: Settings,
+      description: "Manage settings"
+    },
+    {
+      title: "Help",
+      icon: HelpCircle,
+      description: "Get help"
     }
-  ];
+  ] as const;
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200">
@@ -43,9 +66,11 @@ export const Header = () => {
                 />
               </Link>
             )}
-            <ExpandableTabs tabs={navigationTabs} />
           </div>
-          <ProfileMenu />
+          <div className="flex items-center gap-4">
+            <ExpandableTabs tabs={navigationTabs} />
+            <ProfileMenu />
+          </div>
         </div>
       </div>
     </header>
