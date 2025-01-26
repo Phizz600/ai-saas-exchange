@@ -14,17 +14,14 @@ interface Product {
 }
 
 export const MarketplaceStats = () => {
-  const { data: stats } = useQuery<Product[]>({
-    queryKey: ['marketplace-stats'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('products')
-        .select('*, seller:profiles(*)')
-        .eq('status', 'active');
+  const { data: stats } = useQuery<Product[]>(['marketplace-stats'], async () => {
+    const { data, error } = await supabase
+      .from('products')
+      .select('*, seller:profiles(*)')
+      .eq('status', 'active');
 
-      if (error) throw error;
-      return data;
-    }
+    if (error) throw error;
+    return data;
   });
 
   return (
