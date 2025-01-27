@@ -1,9 +1,7 @@
 import {
   BarChart2,
   ShoppingBag,
-  TrendingUp,
-  Megaphone,
-  Store,
+  Lightbulb,
   HelpCircle,
   Settings,
 } from "lucide-react";
@@ -20,19 +18,9 @@ export const saleModuleItems = [
     path: "/products",
   },
   {
-    title: "Traffics",
-    icon: TrendingUp,
-    path: "/traffics",
-  },
-  {
-    title: "Marketing Tools",
-    icon: Megaphone,
-    path: "/marketing",
-  },
-  {
-    title: "Store Info",
-    icon: Store,
-    path: "/store",
+    title: "Promote your shop",
+    icon: Lightbulb,
+    path: "/promote",
   },
 ];
 
