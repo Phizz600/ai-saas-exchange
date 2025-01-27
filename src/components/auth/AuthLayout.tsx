@@ -12,7 +12,7 @@ export const AuthLayout = ({ children }: AuthLayoutProps) => {
           <img 
             src="/lovable-uploads/b2726e08-98dd-472d-b44a-b780d6e1343e.png" 
             alt="AI Exchange Club Logo" 
-            className="h-40 mx-auto mb-0" // Removed bottom margin completely
+            className="h-40 mx-auto mb-0"
           />
           <p className="text-gray-300">Sign in or create an account to continue</p>
         </div>
