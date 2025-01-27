@@ -2,6 +2,12 @@ import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface Tab {
   title: string;
@@ -33,36 +39,37 @@ export const ExpandableTabs = ({ tabs }: ExpandableTabsProps) => {
     const Icon = tab_.icon;
     const isActive = tab_.path === location.pathname;
 
-    if (tab_.onClick) {
-      return (
-        <Button
-          key={tab_.title}
-          variant="ghost"
-          className={cn(
-            "h-12 w-12 rounded-full hover:bg-gray-100",
-            isActive && "bg-gray-100"
-          )}
-          onClick={tab_.onClick}
-        >
-          <Icon className="h-5 w-5" />
-          <span className="sr-only">{tab_.title}</span>
-        </Button>
-      );
-    }
+    const button = (
+      <Button
+        variant="ghost"
+        className={cn(
+          "h-12 w-12 rounded-full hover:bg-gray-100 bg-white",
+          isActive && "bg-gray-100"
+        )}
+        onClick={tab_.onClick}
+      >
+        <Icon className="h-5 w-5" />
+        <span className="sr-only">{tab_.title}</span>
+      </Button>
+    );
 
     return (
-      <Link key={tab_.title} to={tab_.path || "#"}>
-        <Button
-          variant="ghost"
-          className={cn(
-            "h-12 w-12 rounded-full hover:bg-gray-100",
-            isActive && "bg-gray-100"
-          )}
-        >
-          <Icon className="h-5 w-5" />
-          <span className="sr-only">{tab_.title}</span>
-        </Button>
-      </Link>
+      <TooltipProvider key={tab_.title}>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            {tab_.onClick ? (
+              button
+            ) : (
+              <Link to={tab_.path || "#"}>
+                {button}
+              </Link>
+            )}
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{tab_.title}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     );
   };
 
