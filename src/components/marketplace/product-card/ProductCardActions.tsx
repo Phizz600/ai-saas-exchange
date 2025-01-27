@@ -105,15 +105,6 @@ export function ProductCardActions({ product }: ProductCardActionsProps) {
 
   return (
     <CardFooter className="flex flex-col gap-3">
-      {!isAuction && (
-        <Button 
-          className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white"
-          onClick={handleBuyNow}
-        >
-          Buy Now - ${product.price?.toLocaleString()}
-        </Button>
-      )}
-
       {isAuction && !auctionEnded && (
         <Button 
           className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white"
@@ -139,6 +130,15 @@ export function ProductCardActions({ product }: ProductCardActionsProps) {
           <PitchDeckSlideshow product={product} />
         </DialogContent>
       </Dialog>
+
+      {!isAuction && (
+        <Button 
+          className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white"
+          onClick={handleBuyNow}
+        >
+          Buy Now - ${product.price?.toLocaleString()}
+        </Button>
+      )}
     </CardFooter>
   );
 }
