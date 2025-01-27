@@ -40,6 +40,17 @@ export function ListProductForm() {
       setIsLoading(true);
       console.log('Submitting product data:', data);
 
+      // Get the current user
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          title: "Authentication required",
+          description: "Please log in to list a product",
+          variant: "destructive"
+        });
+        return;
+      }
+
       let image_url = null;
       if (data.image) {
         const fileExt = data.image.name.split('.').pop();
@@ -69,6 +80,7 @@ export function ListProductForm() {
         monthly_revenue: data.monthlyRevenue,
         monthly_traffic: data.monthlyTraffic,
         image_url,
+        seller_id: user.id, // Add the seller_id
         ...(data.isAuction && {
           auction_end_time: data.auctionEndTime?.toISOString(),
           starting_price: data.startingPrice,
