@@ -35,36 +35,19 @@ export const MarketplaceStats = () => {
       // Calculate total revenue (sum of all product prices)
       const totalRevenue = products.reduce((sum, product) => sum + (product.price || 0), 0);
       
-      // Calculate total views, likes, and bids
+      // Calculate total views and bids
       const analytics = products.reduce((acc, product) => {
-        const productAnalytics = product.product_analytics?.[0] || { views: 0, likes: 0, bids: 0 };
+        const productAnalytics = product.product_analytics?.[0] || { views: 0, bids: 0 };
         return {
           views: acc.views + (productAnalytics.views || 0),
-          likes: acc.likes + (productAnalytics.likes || 0),
           totalBids: acc.totalBids + (productAnalytics.bids || 0),
         };
-      }, { views: 0, likes: 0, totalBids: 0 });
-
-      // Calculate active bids (status = 'pending')
-      const activeBids = products.reduce((sum, product) => {
-        const pendingBids = product.bids?.filter(bid => bid.status === 'pending') || [];
-        return sum + pendingBids.length;
-      }, 0);
-
-      // Calculate highest bid amount
-      const highestBid = products.reduce((max, product) => {
-        const productHighestBid = product.bids?.reduce((highest, bid) => {
-          return bid.amount > highest ? bid.amount : highest;
-        }, 0) || 0;
-        return productHighestBid > max ? productHighestBid : max;
-      }, 0);
+      }, { views: 0, totalBids: 0 });
 
       return {
         totalRevenue,
         productCount: products.length,
         ...analytics,
-        activeBids,
-        highestBid,
       };
     },
   });
@@ -93,30 +76,6 @@ export const MarketplaceStats = () => {
         title="Total Bids"
         value={stats?.totalBids || 0}
         change={{ value: 15, type: 'increase' }}
-        subtitle="vs last month"
-      />
-      <StatsCard
-        title="Active Bids"
-        value={stats?.activeBids || 0}
-        change={{ value: 8, type: 'increase' }}
-        subtitle="vs last month"
-      />
-      <StatsCard
-        title="Highest Bid"
-        value={formatCurrency(stats?.highestBid || 0)}
-        change={{ value: 20, type: 'increase' }}
-        subtitle="vs last month"
-      />
-      <StatsCard
-        title="Total Likes"
-        value={stats?.likes || 0}
-        change={{ value: 5, type: 'increase' }}
-        subtitle="vs last month"
-      />
-      <StatsCard
-        title="Bid Success Rate"
-        value={`${stats?.totalBids ? Math.round((stats.activeBids / stats.totalBids) * 100) : 0}%`}
-        change={{ value: 3, type: 'increase' }}
         subtitle="vs last month"
       />
     </div>
