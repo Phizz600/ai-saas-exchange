@@ -2,6 +2,13 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/comp
 import { Input } from "@/components/ui/input";
 import { UseFormReturn } from "react-hook-form";
 import { ListProductFormData } from "../types";
+import { Info } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface FinancialSectionProps {
   form: UseFormReturn<ListProductFormData>;
@@ -15,7 +22,19 @@ export function FinancialSection({ form }: FinancialSectionProps) {
         name="price"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Asking Price (USD)</FormLabel>
+            <FormLabel className="flex items-center gap-2">
+              Asking Price (USD)
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Info className="h-4 w-4 text-gray-500 cursor-help" />
+                  </TooltipTrigger>
+                  <TooltipContent className="bg-white">
+                    <p>Set a competitive price based on your product's features, market position, and revenue potential</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </FormLabel>
             <FormControl>
               <Input 
                 type="number" 
@@ -34,7 +53,19 @@ export function FinancialSection({ form }: FinancialSectionProps) {
         name="monthlyRevenue"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Monthly Revenue (USD)</FormLabel>
+            <FormLabel className="flex items-center gap-2">
+              Monthly Revenue (USD)
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Info className="h-4 w-4 text-gray-500 cursor-help" />
+                  </TooltipTrigger>
+                  <TooltipContent className="bg-white">
+                    <p>Enter the average monthly revenue your AI product generates</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </FormLabel>
             <FormControl>
               <Input 
                 type="number"

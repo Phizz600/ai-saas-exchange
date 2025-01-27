@@ -3,6 +3,13 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { UseFormReturn } from "react-hook-form";
 import { ListProductFormData } from "./types";
+import { Info } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface MetricsSectionProps {
   form: UseFormReturn<ListProductFormData>;
@@ -27,7 +34,19 @@ export function MetricsSection({ form }: MetricsSectionProps) {
         name="monthlyTraffic"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Monthly Traffic</FormLabel>
+            <FormLabel className="flex items-center gap-2">
+              Monthly Traffic
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Info className="h-4 w-4 text-gray-500 cursor-help" />
+                  </TooltipTrigger>
+                  <TooltipContent className="bg-white">
+                    <p>The average number of unique visitors your product receives per month</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </FormLabel>
             <FormControl>
               <Input 
                 type="number"
@@ -46,7 +65,19 @@ export function MetricsSection({ form }: MetricsSectionProps) {
         name="category"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Category</FormLabel>
+            <FormLabel className="flex items-center gap-2">
+              Category
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Info className="h-4 w-4 text-gray-500 cursor-help" />
+                  </TooltipTrigger>
+                  <TooltipContent className="bg-white">
+                    <p>Select the category that best describes your AI product's primary function</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </FormLabel>
             <Select onValueChange={field.onChange} defaultValue={field.value}>
               <FormControl>
                 <SelectTrigger className="bg-white">
