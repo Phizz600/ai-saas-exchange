@@ -4,7 +4,6 @@ import {
   TrendingUp,
   Megaphone,
   Store,
-  Lightbulb,
   HelpCircle,
   Settings,
 } from "lucide-react";
@@ -34,11 +33,6 @@ export const saleModuleItems = [
     title: "Store Info",
     icon: Store,
     path: "/store",
-  },
-  {
-    title: "Promote your shop",
-    icon: Lightbulb,
-    path: "/promote",
   },
 ];
 
