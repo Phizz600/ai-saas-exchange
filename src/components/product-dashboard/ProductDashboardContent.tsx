@@ -10,7 +10,7 @@ export const ProductDashboardContent = () => {
   const { data: products, isLoading, error } = useQuery({
     queryKey: ['seller-products'],
     queryFn: async () => {
-      console.log('Fetching seller products');
+      console.log('Starting to fetch seller products...');
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
@@ -18,9 +18,17 @@ export const ProductDashboardContent = () => {
         return [];
       }
 
+      console.log('Fetching products for user:', user.id);
+
       const { data, error } = await supabase
         .from('products')
-        .select('*')
+        .select(`
+          *,
+          seller:profiles (
+            id,
+            full_name
+          )
+        `)
         .eq('seller_id', user.id)
         .order('created_at', { ascending: false });
 
