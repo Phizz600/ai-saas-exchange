@@ -31,7 +31,19 @@ export function AuctionSection({ form }: AuctionSectionProps) {
         render={({ field }) => (
           <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
             <div className="space-y-0.5">
-              <FormLabel className="text-base">Dutch Auction</FormLabel>
+              <div className="flex items-center gap-2">
+                <FormLabel className="text-base">Dutch Auction</FormLabel>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="h-4 w-4 text-gray-500 cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-white max-w-[300px] p-3">
+                      <p>A Dutch auction starts at a high price and gradually decreases over time until a buyer makes a purchase or it reaches the minimum price. This creates urgency as buyers must decide between waiting for a lower price or risking another buyer purchasing first.</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
               <div className="text-sm text-muted-foreground">
                 Enable Dutch auction for this product
               </div>
