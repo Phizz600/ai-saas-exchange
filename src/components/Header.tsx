@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { ExpandableTabs } from "./header/ExpandableTabs";
 import { ProfileMenu } from "./header/ProfileMenu";
-import { Home, Store, LayoutDashboard, Bell, Settings, HelpCircle, User, LogOut } from "lucide-react";
+import { Home, Store, LayoutDashboard, Bell, Settings, HelpCircle, LogOut } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -91,12 +91,6 @@ export const Header = () => {
       type: "separator"
     },
     {
-      title: "Profile",
-      icon: User,
-      description: "View profile",
-      path: "/profile"
-    },
-    {
       title: "Sign Out",
       icon: LogOut,
       description: "Sign out of your account",
@@ -121,7 +115,6 @@ export const Header = () => {
           </div>
           <div className="flex items-center gap-4">
             <ExpandableTabs tabs={navigationTabs} />
-            <ProfileMenu />
           </div>
         </div>
       </div>
