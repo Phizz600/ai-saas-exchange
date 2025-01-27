@@ -49,11 +49,7 @@ export const WatchedProducts = () => {
   }
 
   if (!watchedProducts?.length) {
-    return (
-      <Card className="p-6 text-center text-gray-500">
-        No frequently viewed products yet
-      </Card>
-    );
+    return null;
   }
 
   return (
