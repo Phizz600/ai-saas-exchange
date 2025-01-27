@@ -107,7 +107,7 @@ export function ProductCardActions({ product }: ProductCardActionsProps) {
     <CardFooter className="flex flex-col gap-3">
       {isAuction && !auctionEnded && (
         <Button 
-          className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white"
+          className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white transform hover:-translate-y-0.5 active:translate-y-0 shadow-[0_4px_0_rgb(0,0,0)] active:shadow-[0_0px_0_rgb(0,0,0)] transition-all duration-150"
           onClick={handleBid}
           disabled={isSubmitting}
         >
@@ -120,7 +120,7 @@ export function ProductCardActions({ product }: ProductCardActionsProps) {
       <Dialog>
         <DialogTrigger asChild>
           <Button 
-            className="w-full bg-white text-black hover:bg-gradient-to-r hover:from-[#D946EE] hover:via-[#8B5CF6] hover:to-[#0EA4E9] hover:text-white transition-all duration-300"
+            className="w-full bg-white text-black hover:bg-gradient-to-r hover:from-[#D946EE] hover:via-[#8B5CF6] hover:to-[#0EA4E9] hover:text-white transform hover:-translate-y-0.5 active:translate-y-0 shadow-[0_4px_0_rgb(0,0,0)] active:shadow-[0_0px_0_rgb(0,0,0)] transition-all duration-150"
           >
             <Presentation className="h-4 w-4 mr-2" />
             View Pitch Deck
@@ -133,7 +133,7 @@ export function ProductCardActions({ product }: ProductCardActionsProps) {
 
       {!isAuction && (
         <Button 
-          className="w-full bg-black text-white hover:bg-gradient-to-r hover:from-[#D946EE] hover:via-[#8B5CF6] hover:to-[#0EA4E9] hover:text-white transition-all duration-300"
+          className="w-full bg-black text-white hover:bg-gradient-to-r hover:from-[#D946EE] hover:via-[#8B5CF6] hover:to-[#0EA4E9] hover:text-white transform hover:-translate-y-0.5 active:translate-y-0 shadow-[0_4px_0_rgb(0,0,0)] active:shadow-[0_0px_0_rgb(0,0,0)] transition-all duration-150"
           onClick={handleBuyNow}
         >
           <ShoppingCart className="h-4 w-4 mr-2" />
