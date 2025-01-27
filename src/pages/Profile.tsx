@@ -108,8 +108,8 @@ export const Profile = () => {
   return (
     <div className="min-h-screen bg-white">
       <Header />
-      <div className="container mx-auto px-3 py-1 mt-12">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-2">
+      <div className="container mx-auto px-3 py-8 mt-20">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
           {/* Left Sidebar */}
           <div className="md:col-span-4">
             <ProfileHeader 
@@ -119,7 +119,7 @@ export const Profile = () => {
           </div>
 
           {/* Main Content */}
-          <div className="md:col-span-8 space-y-2">
+          <div className="md:col-span-8 space-y-6">
             <ProfileCompletion progress={completionProgress} userType={profile.user_type} />
             <ProfileBio bio={profile.bio} userId={profile.id} />
             <LikedProducts likedProductIds={profile.liked_products || []} />
