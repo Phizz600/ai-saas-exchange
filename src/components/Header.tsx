@@ -1,8 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { ExpandableTabs } from "./header/ExpandableTabs";
-import { ProfileMenu } from "./header/ProfileMenu";
-import { Home, Store, LayoutDashboard, Bell, Settings, HelpCircle, LogOut } from "lucide-react";
+import { Home, Store, LayoutDashboard, Bell, Settings, HelpCircle, User, LogOut } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -86,6 +85,15 @@ export const Header = () => {
       icon: HelpCircle,
       description: "Get help",
       path: "/help"
+    },
+    {
+      type: "separator"
+    },
+    {
+      title: "Profile",
+      icon: User,
+      description: "View profile",
+      path: "/profile"
     },
     {
       type: "separator"
