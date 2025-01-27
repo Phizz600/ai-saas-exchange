@@ -60,7 +60,6 @@ export const ProductDashboardContent = () => {
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-xl font-semibold mb-4 font-exo">Your Products</h2>
         <ProductsTable products={products || []} />
       </div>
       
