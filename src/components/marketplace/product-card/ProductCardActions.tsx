@@ -1,4 +1,4 @@
-import { Presentation } from "lucide-react";
+import { Presentation, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CardFooter } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
@@ -136,6 +136,7 @@ export function ProductCardActions({ product }: ProductCardActionsProps) {
           className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white"
           onClick={handleBuyNow}
         >
+          <ShoppingCart className="h-4 w-4 mr-2" />
           Buy Now - ${product.price?.toLocaleString()}
         </Button>
       )}
