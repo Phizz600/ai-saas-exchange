@@ -3,6 +3,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { ProductsTable } from "./ProductsTable";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
+import { WatchedProducts } from "./WatchedProducts";
+import { ActiveBidsProducts } from "./ActiveBidsProducts";
 
 export const ProductDashboardContent = () => {
   const { toast } = useToast();
@@ -55,5 +57,22 @@ export const ProductDashboardContent = () => {
     );
   }
 
-  return <ProductsTable products={products || []} />;
+  return (
+    <div className="space-y-8">
+      <div>
+        <h2 className="text-xl font-semibold mb-4 font-exo">Your Products</h2>
+        <ProductsTable products={products || []} />
+      </div>
+      
+      <div>
+        <h2 className="text-xl font-semibold mb-4 font-exo">Products You're Watching</h2>
+        <WatchedProducts />
+      </div>
+      
+      <div>
+        <h2 className="text-xl font-semibold mb-4 font-exo">Your Active Bids</h2>
+        <ActiveBidsProducts />
+      </div>
+    </div>
+  );
 };
