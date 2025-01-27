@@ -10,6 +10,7 @@ import { FinancialSection } from "./form-sections/FinancialSection";
 import { MetricsSection } from "./MetricsSection";
 import { ImageSection } from "./form-sections/ImageSection";
 import { DevelopmentStageSection } from "./form-sections/DevelopmentStageSection";
+import { AuctionSection } from "./form-sections/AuctionSection";
 import { ListProductFormData } from "./types";
 
 export function ListProductForm() {
@@ -27,6 +28,10 @@ export function ListProductForm() {
       monthlyRevenue: 0,
       monthlyTraffic: 0,
       image: null,
+      isAuction: false,
+      startingPrice: 0,
+      minPrice: 0,
+      priceDecrement: 0,
     },
   });
 
@@ -55,16 +60,25 @@ export function ListProductForm() {
         image_url = publicUrl;
       }
 
-      const { error } = await supabase.from('products').insert({
+      const productData = {
         title: data.title,
         description: data.description,
-        price: data.price,
+        price: data.isAuction ? data.startingPrice : data.price,
         category: data.category,
         stage: data.stage,
         monthly_revenue: data.monthlyRevenue,
         monthly_traffic: data.monthlyTraffic,
         image_url,
-      });
+        ...(data.isAuction && {
+          auction_end_time: data.auctionEndTime?.toISOString(),
+          starting_price: data.startingPrice,
+          current_price: data.startingPrice,
+          min_price: data.minPrice,
+          price_decrement: data.priceDecrement
+        })
+      };
+
+      const { error } = await supabase.from('products').insert(productData);
 
       if (error) throw error;
 
@@ -91,6 +105,7 @@ export function ListProductForm() {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <BasicInfoSection form={form} />
+        <AuctionSection form={form} />
         <FinancialSection form={form} />
         <MetricsSection form={form} />
         <DevelopmentStageSection form={form} />

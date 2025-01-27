@@ -7,4 +7,9 @@ export interface ListProductFormData {
   monthlyRevenue: number;
   monthlyTraffic: number;
   image: File | null;
+  isAuction: boolean;
+  auctionEndTime?: Date;
+  startingPrice?: number;
+  minPrice?: number;
+  priceDecrement?: number;
 }

@@ -167,7 +167,7 @@ export type Database = {
           monthly_traffic: number | null
           price: number
           price_decrement: number | null
-          seller_id: string | null
+          seller_id: string
           stage: string
           starting_price: number | null
           status: string | null
@@ -187,7 +187,7 @@ export type Database = {
           monthly_traffic?: number | null
           price: number
           price_decrement?: number | null
-          seller_id?: string | null
+          seller_id: string
           stage: string
           starting_price?: number | null
           status?: string | null
@@ -207,7 +207,7 @@ export type Database = {
           monthly_traffic?: number | null
           price?: number
           price_decrement?: number | null
-          seller_id?: string | null
+          seller_id?: string
           stage?: string
           starting_price?: number | null
           status?: string | null
