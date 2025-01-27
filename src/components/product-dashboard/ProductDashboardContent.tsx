@@ -64,7 +64,6 @@ export const ProductDashboardContent = () => {
       </div>
       
       <div>
-        <h2 className="text-xl font-semibold mb-4 font-exo">Products You're Watching</h2>
         <WatchedProducts />
       </div>
       
