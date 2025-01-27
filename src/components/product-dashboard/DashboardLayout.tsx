@@ -41,7 +41,7 @@ export const DashboardLayout = ({ children }: { children: React.ReactNode }) => 
     fetchProfile();
   }, []);
 
-  const firstName = profile?.full_name?.split(' ')[0] || 'there';
+  const firstName = profile?.first_name || profile?.full_name?.split(' ')[0] || 'there';
 
   return (
     <SidebarProvider defaultOpen>

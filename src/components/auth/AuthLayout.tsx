@@ -14,7 +14,7 @@ export const AuthLayout = ({ children }: AuthLayoutProps) => {
             alt="AI Exchange Club Logo" 
             className="h-40 mx-auto mb-0"
           />
-          <p className="text-gray-300">Sign in or create an account to continue</p>
+          <p className="text-gray-300">Please enter your details to continue</p>
         </div>
         <div className="bg-card rounded-lg shadow-xl p-8">
           {children}
