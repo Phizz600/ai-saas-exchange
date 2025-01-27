@@ -7,7 +7,7 @@ export const MarketplaceStats = () => {
   const { data: stats } = useQuery({
     queryKey: ['dashboard-stats'],
     queryFn: async () => {
-      console.log('Fetching dashboard stats');
+      console.log('Fetching seller dashboard stats');
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return null;
 
