@@ -29,36 +29,44 @@ export const NotificationSheet = ({
 }: NotificationSheetProps) => {
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent>
-        <SheetHeader>
-          <SheetTitle>Notifications</SheetTitle>
+      <SheetContent side="right" className="w-[400px] sm:w-[540px] p-0">
+        <SheetHeader className="p-6 border-b border-border">
+          <SheetTitle className="text-xl font-semibold">Notifications</SheetTitle>
         </SheetHeader>
-        <ScrollArea className="h-[calc(100vh-100px)] mt-4">
-          {(!notifications || notifications.length === 0) ? (
-            <p className="text-center text-muted-foreground py-4">
-              No notifications yet
-            </p>
-          ) : (
-            <div className="space-y-4">
-              {notifications.map((notification) => (
-                <div
-                  key={notification.id}
-                  className={`p-4 rounded-lg border ${
-                    notification.read ? 'bg-background' : 'bg-muted'
-                  }`}
-                  onClick={() => onMarkAsRead(notification.id)}
-                >
-                  <h4 className="font-semibold">{notification.title}</h4>
-                  <p className="text-sm text-muted-foreground">
-                    {notification.message}
-                  </p>
-                  <span className="text-xs text-muted-foreground">
-                    {new Date(notification.created_at).toLocaleDateString()}
-                  </span>
-                </div>
-              ))}
-            </div>
-          )}
+        <ScrollArea className="h-[calc(100vh-85px)]">
+          <div className="p-6">
+            {(!notifications || notifications.length === 0) ? (
+              <div className="flex flex-col items-center justify-center py-8 text-center">
+                <Bell className="h-12 w-12 text-muted-foreground/50 mb-4" />
+                <p className="text-lg font-medium text-muted-foreground">
+                  No notifications yet
+                </p>
+                <p className="text-sm text-muted-foreground/70">
+                  When you get notifications, they'll show up here
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {notifications.map((notification) => (
+                  <div
+                    key={notification.id}
+                    className={`p-4 rounded-lg border transition-colors cursor-pointer hover:bg-accent ${
+                      notification.read ? 'bg-background' : 'bg-accent/50'
+                    }`}
+                    onClick={() => onMarkAsRead(notification.id)}
+                  >
+                    <h4 className="font-semibold">{notification.title}</h4>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      {notification.message}
+                    </p>
+                    <span className="text-xs text-muted-foreground/70 mt-2 block">
+                      {new Date(notification.created_at).toLocaleDateString()}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </ScrollArea>
       </SheetContent>
     </Sheet>

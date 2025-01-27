@@ -4,6 +4,9 @@ import { ExpandableTabs } from "./header/ExpandableTabs";
 import { Home, Store, LayoutDashboard, Bell, Settings, HelpCircle, User, LogOut } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { NotificationSheet } from "./marketplace/notifications/NotificationSheet";
+import { useNotifications } from "./marketplace/notifications/useNotifications";
+import { useState } from "react";
 
 interface Tab {
   title: string;
@@ -24,6 +27,8 @@ export const Header = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const isMarketplace = location.pathname === '/marketplace';
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const { notifications, unreadCount, markAsRead } = useNotifications();
 
   const handleSignOut = async () => {
     try {
@@ -72,7 +77,7 @@ export const Header = () => {
       title: "Notifications",
       icon: Bell,
       description: "View notifications",
-      path: "/notifications"
+      onClick: () => setNotificationsOpen(true)
     },
     {
       title: "Settings",
@@ -126,6 +131,13 @@ export const Header = () => {
           </div>
         </div>
       </div>
+      <NotificationSheet
+        notifications={notifications}
+        unreadCount={unreadCount}
+        onMarkAsRead={markAsRead}
+        open={notificationsOpen}
+        onOpenChange={setNotificationsOpen}
+      />
     </header>
   );
 };
