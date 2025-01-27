@@ -6,9 +6,15 @@ import { Switch } from "@/components/ui/switch";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Info } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface AuctionSectionProps {
   form: UseFormReturn<ListProductFormData>;
@@ -47,7 +53,19 @@ export function AuctionSection({ form }: AuctionSectionProps) {
             name="startingPrice"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Starting Price (USD)</FormLabel>
+                <FormLabel className="flex items-center gap-2">
+                  Starting Price (USD)
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Info className="h-4 w-4 text-gray-500 cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent className="bg-white">
+                        <p>The initial price at which your auction will begin</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </FormLabel>
                 <FormControl>
                   <Input
                     type="number"
@@ -66,7 +84,19 @@ export function AuctionSection({ form }: AuctionSectionProps) {
             name="minPrice"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Minimum Price (USD)</FormLabel>
+                <FormLabel className="flex items-center gap-2">
+                  Minimum Price (USD)
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Info className="h-4 w-4 text-gray-500 cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent className="bg-white">
+                        <p>The lowest price you're willing to accept. The auction will stop at this price</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </FormLabel>
                 <FormControl>
                   <Input
                     type="number"
@@ -85,7 +115,19 @@ export function AuctionSection({ form }: AuctionSectionProps) {
             name="priceDecrement"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Price Decrement (USD/min)</FormLabel>
+                <FormLabel className="flex items-center gap-2">
+                  Price Decrement (USD/min)
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Info className="h-4 w-4 text-gray-500 cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent className="bg-white">
+                        <p>How much the price will decrease per minute until reaching the minimum price</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </FormLabel>
                 <FormControl>
                   <Input
                     type="number"
@@ -104,7 +146,19 @@ export function AuctionSection({ form }: AuctionSectionProps) {
             name="auctionEndTime"
             render={({ field }) => (
               <FormItem className="flex flex-col">
-                <FormLabel>Auction End Time</FormLabel>
+                <FormLabel className="flex items-center gap-2">
+                  Auction End Time
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Info className="h-4 w-4 text-gray-500 cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent className="bg-white">
+                        <p>When the auction will automatically end, regardless of current price</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
@@ -124,7 +178,7 @@ export function AuctionSection({ form }: AuctionSectionProps) {
                       </Button>
                     </FormControl>
                   </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
+                  <PopoverContent className="w-auto p-0 bg-white" align="start">
                     <Calendar
                       mode="single"
                       selected={field.value}
