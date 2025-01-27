@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { SellerHoverCard } from "./SellerHoverCard";
 import { useState } from "react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 interface ProductCardImageProps {
   image: string;
@@ -48,6 +49,14 @@ export function ProductCardImage({
         loading="lazy"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      
+      <div className="absolute top-2 left-2">
+        <Avatar className="h-8 w-8 border-2 border-white shadow-md">
+          <AvatarImage src={seller.avatar} alt={seller.name} />
+          <AvatarFallback>{seller.name.charAt(0)}</AvatarFallback>
+        </Avatar>
+      </div>
+
       <div className="absolute top-2 right-2 flex gap-2">
         <Button
           variant="ghost"
