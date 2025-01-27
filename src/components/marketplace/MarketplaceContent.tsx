@@ -16,7 +16,7 @@ export const MarketplaceContent = () => {
   const [sortBy, setSortBy] = useState("relevant");
   const [currentPage, setCurrentPage] = useState(1);
   
-  const { products, isLoading } = useProducts();
+  const { data: products = [], isLoading } = useProducts();
   const { notifications, unreadCount, markAsRead } = useNotifications();
 
   // Track product views
