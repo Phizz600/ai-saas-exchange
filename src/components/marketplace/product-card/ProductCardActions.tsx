@@ -120,7 +120,7 @@ export function ProductCardActions({ product }: ProductCardActionsProps) {
       <Dialog>
         <DialogTrigger asChild>
           <Button 
-            className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 text-white"
+            className="w-full bg-white text-black hover:bg-gradient-to-r hover:from-[#D946EE] hover:via-[#8B5CF6] hover:to-[#0EA4E9] hover:text-white transition-all duration-300"
           >
             <Presentation className="h-4 w-4 mr-2" />
             View Pitch Deck
@@ -133,7 +133,7 @@ export function ProductCardActions({ product }: ProductCardActionsProps) {
 
       {!isAuction && (
         <Button 
-          className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white"
+          className="w-full bg-black text-white hover:bg-gradient-to-r hover:from-[#D946EE] hover:via-[#8B5CF6] hover:to-[#0EA4E9] hover:text-white transition-all duration-300"
           onClick={handleBuyNow}
         >
           <ShoppingCart className="h-4 w-4 mr-2" />
