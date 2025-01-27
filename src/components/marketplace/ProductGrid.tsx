@@ -38,29 +38,32 @@ export const ProductGrid = ({ products, isLoading = false, onProductView }: Prod
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 py-4 sm:py-8 px-2 sm:px-0">
-      {products.map((product) => (
-        <ProductCard
-          key={product.id}
-          product={{
-            id: product.id,
-            title: product.title,
-            description: product.description || "",
-            price: Number(product.price),
-            category: product.category,
-            stage: product.stage,
-            monthlyRevenue: Number(product.monthly_revenue || 0),
-            image: product.image_url || "/placeholder.svg",
-            timeLeft: "24h left", // TODO: Implement actual time calculation
-            seller: {
-              id: product.seller_id || "",
-              name: "Anonymous", // This would come from a join with profiles table
-              avatar: "/placeholder.svg",
-              achievements: [] // This would come from a separate achievements system
-            }
-          }}
-          onView={() => onProductView?.(product.id)}
-        />
-      ))}
+      {products.map((product) => {
+        console.log('Product seller data:', product.seller_id);
+        return (
+          <ProductCard
+            key={product.id}
+            product={{
+              id: product.id,
+              title: product.title,
+              description: product.description || "",
+              price: Number(product.price),
+              category: product.category,
+              stage: product.stage,
+              monthlyRevenue: Number(product.monthly_revenue || 0),
+              image: product.image_url || "/placeholder.svg",
+              timeLeft: "24h left", // TODO: Implement actual time calculation
+              seller: {
+                id: product.seller_id || "",
+                name: "Anonymous", // This would come from a join with profiles table
+                avatar: "/placeholder.svg", // Default avatar
+                achievements: [] // This would come from a separate achievements system
+              }
+            }}
+            onView={() => onProductView?.(product.id)}
+          />
+        );
+      })}
     </div>
   );
 };
