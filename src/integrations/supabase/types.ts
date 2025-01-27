@@ -270,7 +270,7 @@ export type Database = {
     Functions: {
       increment_product_views: {
         Args: {
-          product_id: string
+          input_product_id: string
         }
         Returns: undefined
       }
