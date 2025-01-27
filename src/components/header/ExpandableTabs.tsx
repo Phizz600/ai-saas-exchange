@@ -39,7 +39,7 @@ export const ExpandableTabs = ({ tabs }: ExpandableTabsProps) => {
           key={tab_.title}
           variant="ghost"
           className={cn(
-            "h-12 w-12 hover:bg-gray-100",
+            "h-12 w-12 rounded-full hover:bg-gray-100",
             isActive && "bg-gray-100"
           )}
           onClick={tab_.onClick}
@@ -55,7 +55,7 @@ export const ExpandableTabs = ({ tabs }: ExpandableTabsProps) => {
         <Button
           variant="ghost"
           className={cn(
-            "h-12 w-12 hover:bg-gray-100",
+            "h-12 w-12 rounded-full hover:bg-gray-100",
             isActive && "bg-gray-100"
           )}
         >
@@ -67,7 +67,7 @@ export const ExpandableTabs = ({ tabs }: ExpandableTabsProps) => {
   };
 
   return (
-    <nav className="flex items-center gap-1">
+    <nav className="flex items-center gap-1 bg-gray-50 p-2 rounded-full">
       {tabs.map(renderTab)}
     </nav>
   );

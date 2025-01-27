@@ -121,7 +121,7 @@ export const Header = () => {
               </Link>
             )}
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center">
             <ExpandableTabs tabs={navigationTabs} />
           </div>
         </div>
