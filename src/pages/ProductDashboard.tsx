@@ -3,6 +3,9 @@ import { MarketplaceStats } from "@/components/product-dashboard/MarketplaceStat
 import { ProductDashboardContent } from "@/components/product-dashboard/ProductDashboardContent";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Store, ShoppingBag } from "lucide-react";
+import { StatsCard } from "@/components/product-dashboard/StatsCard";
+import { ActiveBidsProducts } from "@/components/product-dashboard/ActiveBidsProducts";
+import { WatchedProducts } from "@/components/product-dashboard/WatchedProducts";
 
 export const ProductDashboard = () => {
   return (
