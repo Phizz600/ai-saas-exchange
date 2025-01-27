@@ -38,12 +38,11 @@ export const ExpandableTabs = ({ tabs }: ExpandableTabsProps) => {
         <Button
           key={tab_.title}
           variant="ghost"
-          size="icon"
-          onClick={tab_.onClick}
           className={cn(
-            "hover:bg-gray-100",
+            "h-12 w-12 hover:bg-gray-100",
             isActive && "bg-gray-100"
           )}
+          onClick={tab_.onClick}
         >
           <Icon className="h-5 w-5" />
           <span className="sr-only">{tab_.title}</span>
@@ -55,9 +54,8 @@ export const ExpandableTabs = ({ tabs }: ExpandableTabsProps) => {
       <Link key={tab_.title} to={tab_.path || "#"}>
         <Button
           variant="ghost"
-          size="icon"
           className={cn(
-            "hover:bg-gray-100",
+            "h-12 w-12 hover:bg-gray-100",
             isActive && "bg-gray-100"
           )}
         >
