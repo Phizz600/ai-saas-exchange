@@ -74,15 +74,53 @@ export function ProductCardActions({ product }: ProductCardActionsProps) {
     }
   };
 
+  const handleBuyNow = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast({
+          title: "Authentication required",
+          description: "Please log in to make a purchase",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Here you would typically initiate the purchase process
+      toast({
+        title: "Starting purchase process",
+        description: "You'll be redirected to complete your purchase",
+      });
+
+    } catch (error) {
+      console.error('Error initiating purchase:', error);
+      toast({
+        title: "Error",
+        description: "Could not initiate purchase. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
   return (
     <CardFooter className="flex flex-col gap-3">
+      {!isAuction && (
+        <Button 
+          className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white"
+          onClick={handleBuyNow}
+        >
+          Buy Now - ${product.price?.toLocaleString()}
+        </Button>
+      )}
+
       {isAuction && !auctionEnded && (
         <Button 
           className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white"
           onClick={handleBid}
           disabled={isSubmitting}
         >
-          {isSubmitting ? "Placing bid..." : "Place Bid"}
+          {isSubmitting ? "Placing bid..." : `Bid Now - $${product.current_price?.toLocaleString()}`}
         </Button>
       )}
 
