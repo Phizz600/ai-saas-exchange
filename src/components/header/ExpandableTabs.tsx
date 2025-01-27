@@ -1,21 +1,14 @@
-"use client";
-
-import * as React from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { useOnClickOutside } from "usehooks-ts";
+import { Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { LucideIcon } from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 
 interface Tab {
   title: string;
-  icon: LucideIcon;
+  icon: any;
   description?: string;
+  path?: string;
+  onClick?: () => void;
 }
 
 interface Separator {
@@ -26,118 +19,58 @@ type TabItem = Tab | Separator;
 
 interface ExpandableTabsProps {
   tabs: TabItem[];
-  className?: string;
-  activeColor?: string;
-  onChange?: (index: number | null) => void;
 }
 
-const buttonVariants = {
-  initial: {
-    gap: 0,
-    paddingLeft: ".5rem",
-    paddingRight: ".5rem",
-  },
-  animate: (isSelected: boolean) => ({
-    gap: isSelected ? ".5rem" : 0,
-    paddingLeft: isSelected ? "1rem" : ".5rem",
-    paddingRight: isSelected ? "1rem" : ".5rem",
-  }),
-};
+export const ExpandableTabs = ({ tabs }: ExpandableTabsProps) => {
+  const location = useLocation();
 
-const spanVariants = {
-  initial: { width: 0, opacity: 0 },
-  animate: { width: "auto", opacity: 1 },
-  exit: { width: 0, opacity: 0 },
-};
+  const renderTab = (tab: TabItem) => {
+    if ('type' in tab && tab.type === 'separator') {
+      return <div key={Math.random()} className="w-px h-6 bg-gray-200" />;
+    }
 
-const transition = { delay: 0.1, type: "spring", bounce: 0, duration: 0.6 };
+    const tab_ = tab as Tab;
+    const Icon = tab_.icon;
+    const isActive = tab_.path === location.pathname;
 
-export function ExpandableTabs({
-  tabs,
-  className,
-  activeColor = "text-primary",
-  onChange,
-}: ExpandableTabsProps) {
-  const [selected, setSelected] = React.useState<number | null>(null);
-  const outsideClickRef = React.useRef(null);
+    if (tab_.onClick) {
+      return (
+        <Button
+          key={tab_.title}
+          variant="ghost"
+          size="icon"
+          onClick={tab_.onClick}
+          className={cn(
+            "hover:bg-gray-100",
+            isActive && "bg-gray-100"
+          )}
+        >
+          <Icon className="h-5 w-5" />
+          <span className="sr-only">{tab_.title}</span>
+        </Button>
+      );
+    }
 
-  useOnClickOutside(outsideClickRef, () => {
-    setSelected(null);
-    onChange?.(null);
-  });
-
-  const handleSelect = (index: number) => {
-    setSelected(index);
-    onChange?.(index);
+    return (
+      <Link key={tab_.title} to={tab_.path || "#"}>
+        <Button
+          variant="ghost"
+          size="icon"
+          className={cn(
+            "hover:bg-gray-100",
+            isActive && "bg-gray-100"
+          )}
+        >
+          <Icon className="h-5 w-5" />
+          <span className="sr-only">{tab_.title}</span>
+        </Button>
+      </Link>
+    );
   };
 
   return (
-    <TooltipProvider>
-      <div
-        ref={outsideClickRef}
-        className={cn(
-          "flex flex-wrap items-center gap-2 rounded-2xl border bg-background p-1 shadow-sm",
-          className
-        )}
-      >
-        {tabs.map((tab, index) => {
-          if ('type' in tab && tab.type === "separator") {
-            return (
-              <div 
-                key={`separator-${index}`}
-                className="mx-1 h-[24px] w-[1.2px] bg-border" 
-                aria-hidden="true" 
-              />
-            );
-          }
-
-          const tabItem = tab as Tab;
-          const Icon = tabItem.icon;
-          
-          return (
-            <Tooltip key={tabItem.title}>
-              <TooltipTrigger asChild>
-                <motion.button
-                  variants={buttonVariants}
-                  initial={false}
-                  animate="animate"
-                  custom={selected === index}
-                  onClick={() => handleSelect(index)}
-                  transition={transition}
-                  className={cn(
-                    "relative flex items-center rounded-xl px-4 py-2 text-sm font-medium transition-colors duration-300",
-                    selected === index
-                      ? cn("bg-muted", activeColor)
-                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                  )}
-                >
-                  <Icon size={20} />
-                  <AnimatePresence initial={false}>
-                    {selected === index && (
-                      <motion.span
-                        variants={spanVariants}
-                        initial="initial"
-                        animate="animate"
-                        exit="exit"
-                        transition={transition}
-                        className="overflow-hidden"
-                      >
-                        {tabItem.title}
-                      </motion.span>
-                    )}
-                  </AnimatePresence>
-                </motion.button>
-              </TooltipTrigger>
-              <TooltipContent className="bg-white border shadow-lg">
-                <p className="font-medium">{tabItem.title}</p>
-                {tabItem.description && (
-                  <p className="text-sm text-muted-foreground">{tabItem.description}</p>
-                )}
-              </TooltipContent>
-            </Tooltip>
-          );
-        })}
-      </div>
-    </TooltipProvider>
+    <nav className="flex items-center gap-1">
+      {tabs.map(renderTab)}
+    </nav>
   );
-}
+};

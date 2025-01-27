@@ -1,13 +1,17 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { ExpandableTabs } from "./header/ExpandableTabs";
 import { ProfileMenu } from "./header/ProfileMenu";
 import { Home, Store, LayoutDashboard, Bell, Settings, HelpCircle, User, LogOut } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Tab {
   title: string;
   icon: any;
   description?: string;
+  path?: string;
+  onClick?: () => void;
 }
 
 interface Separator {
@@ -18,13 +22,34 @@ type TabItem = Tab | Separator;
 
 export const Header = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { toast } = useToast();
   const isMarketplace = location.pathname === '/marketplace';
+
+  const handleSignOut = async () => {
+    try {
+      await supabase.auth.signOut();
+      toast({
+        title: "Signed out successfully",
+        description: "You have been signed out of your account",
+      });
+      navigate('/');
+    } catch (error) {
+      console.error('Error signing out:', error);
+      toast({
+        title: "Error signing out",
+        description: "There was a problem signing out of your account",
+        variant: "destructive",
+      });
+    }
+  };
 
   const navigationTabs: TabItem[] = [
     {
       title: "Home",
       icon: Home,
-      description: "Go to homepage"
+      description: "Go to homepage",
+      path: "/"
     },
     {
       type: "separator"
@@ -32,12 +57,14 @@ export const Header = () => {
     {
       title: "Marketplace",
       icon: Store,
-      description: "Browse AI products"
+      description: "Browse AI products",
+      path: "/marketplace"
     },
     {
       title: "Dashboard",
       icon: LayoutDashboard,
-      description: "View your dashboard"
+      description: "View your dashboard",
+      path: "/product-dashboard"
     },
     {
       type: "separator"
@@ -45,17 +72,20 @@ export const Header = () => {
     {
       title: "Notifications",
       icon: Bell,
-      description: "View notifications"
+      description: "View notifications",
+      path: "/notifications"
     },
     {
       title: "Settings",
       icon: Settings,
-      description: "Manage settings"
+      description: "Manage settings",
+      path: "/settings"
     },
     {
       title: "Help",
       icon: HelpCircle,
-      description: "Get help"
+      description: "Get help",
+      path: "/help"
     },
     {
       type: "separator"
@@ -63,12 +93,14 @@ export const Header = () => {
     {
       title: "Profile",
       icon: User,
-      description: "View profile"
+      description: "View profile",
+      path: "/profile"
     },
     {
       title: "Sign Out",
       icon: LogOut,
-      description: "Sign out of your account"
+      description: "Sign out of your account",
+      onClick: handleSignOut
     }
   ];
 
