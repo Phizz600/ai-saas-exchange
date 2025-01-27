@@ -49,7 +49,11 @@ export const WatchedProducts = () => {
   }
 
   if (!watchedProducts?.length) {
-    return null;
+    return (
+      <Card className="flex items-center justify-center p-8 bg-white/90">
+        <p className="text-gray-500 text-lg">No products being watched at the moment</p>
+      </Card>
+    );
   }
 
   return (
