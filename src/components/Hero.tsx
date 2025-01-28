@@ -5,7 +5,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Shield, ShieldCheck, LockKeyhole } from "lucide-react";
+import { Shield, ShieldCheck, LockKeyhole, ChevronDown } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 // Lazy load components
 const AnimatedWord = lazy(() => import("./hero/AnimatedWord"));
@@ -17,6 +18,8 @@ const Hero = () => {
   const [newsletterEmail, setNewsletterEmail] = useState("");
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [subscriberCount, setSubscriberCount] = useState(342);
+  const [isSellerOpen, setIsSellerOpen] = useState(false);
+  const [isBuyerOpen, setIsBuyerOpen] = useState(false);
   const navigate = useNavigate();
   
   const words = ["Companies", "Businesses", "Apps", "Plugins", "Tools", "MVPs", "Bots"];
@@ -40,7 +43,7 @@ const Hero = () => {
             transition={{ duration: 0.3 }}
             className="flex flex-col items-center mb-8"
           >
-            <h1 className="font-exo text-5xl md:text-7xl font-bold leading-tight text-white">
+            <h1 className="font-exo text-5xl md:text-7xl font-bold leading-tight text-white text-center">
               The AI Dutch Auction
               <br />
               Marketplace:
@@ -54,7 +57,7 @@ const Hero = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3 }}
-            className="text-xl text-gray-200 mb-12 max-w-2xl mx-auto"
+            className="text-xl text-gray-200 mb-12 max-w-2xl mx-auto text-center"
           >
             AI SaaS tools and companies drop in price until sold. Secure deals faster with timed auctions. Unlock exclusive access to premium deals and accelerate the growth of your AI portfolio.
           </motion.p>
@@ -125,42 +128,50 @@ const Hero = () => {
             </div>
           </div>
 
-          {/* For Sellers & Buyers Section */}
-          <div className="mt-24 grid grid-cols-1 md:grid-cols-2 gap-12">
-            {/* For Sellers */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.4 }}
-              className="bg-white/10 backdrop-blur-sm p-8 rounded-lg transform transition-all duration-300 hover:scale-105 hover:bg-white/15"
-            >
-              <h3 className="text-2xl font-bold text-white mb-4">For Sellers</h3>
-              <h4 className="text-xl font-semibold text-white mb-3">Why Dutch Auctions Work for AI Startups</h4>
-              <ul className="space-y-3 text-gray-300">
-                <li>• Avoid undervaluation with a transparent pricing model</li>
-                <li>• Attract serious buyers racing to buy your AI SaaS product</li>
-              </ul>
-            </motion.div>
-
-            {/* For Buyers */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.5 }}
-              className="bg-white/10 backdrop-blur-sm p-8 rounded-lg transform transition-all duration-300 hover:scale-105 hover:bg-white/15"
-            >
-              <h3 className="text-2xl font-bold text-white mb-4">For Buyers</h3>
-              <h4 className="text-xl font-semibold text-white mb-3">Why Bid on AI Assets Here</h4>
-              <ul className="space-y-3 text-gray-300">
-                <li>• Acquire undervalued AI SaaS products before competitors</li>
-                <li>• No bidding wars, first to act wins</li>
-              </ul>
-            </motion.div>
-          </div>
-
           <Suspense fallback={<Skeleton className="w-full h-48 mt-16" />}>
             <FeatureHighlights />
           </Suspense>
+
+          {/* For Sellers & Buyers Section */}
+          <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* For Sellers */}
+            <Collapsible
+              open={isSellerOpen}
+              onOpenChange={setIsSellerOpen}
+              className="bg-white/10 backdrop-blur-sm p-6 rounded-lg transition-all duration-300 hover:bg-white/15"
+            >
+              <CollapsibleTrigger className="flex items-center justify-between w-full">
+                <h3 className="text-2xl font-bold text-white">For Sellers</h3>
+                <ChevronDown className={`w-6 h-6 text-white transition-transform duration-300 ${isSellerOpen ? 'rotate-180' : ''}`} />
+              </CollapsibleTrigger>
+              <CollapsibleContent className="mt-4 space-y-4">
+                <h4 className="text-xl font-semibold text-white">Why Dutch Auctions Work for AI Startups</h4>
+                <ul className="space-y-3 text-gray-300">
+                  <li>• Avoid undervaluation with a transparent pricing model</li>
+                  <li>• Attract serious buyers racing to buy your AI SaaS product</li>
+                </ul>
+              </CollapsibleContent>
+            </Collapsible>
+
+            {/* For Buyers */}
+            <Collapsible
+              open={isBuyerOpen}
+              onOpenChange={setIsBuyerOpen}
+              className="bg-white/10 backdrop-blur-sm p-6 rounded-lg transition-all duration-300 hover:bg-white/15"
+            >
+              <CollapsibleTrigger className="flex items-center justify-between w-full">
+                <h3 className="text-2xl font-bold text-white">For Buyers</h3>
+                <ChevronDown className={`w-6 h-6 text-white transition-transform duration-300 ${isBuyerOpen ? 'rotate-180' : ''}`} />
+              </CollapsibleTrigger>
+              <CollapsibleContent className="mt-4 space-y-4">
+                <h4 className="text-xl font-semibold text-white">Why Bid on AI Assets Here</h4>
+                <ul className="space-y-3 text-gray-300">
+                  <li>• Acquire undervalued AI SaaS products before competitors</li>
+                  <li>• No bidding wars, first to act wins</li>
+                </ul>
+              </CollapsibleContent>
+            </Collapsible>
+          </div>
 
           <div className="mt-8 text-sm text-gray-200">
             ✓ Free AI Valuations &nbsp; • &nbsp; ✓ Secure Platform &nbsp; • &nbsp; ✓ Premium Network
