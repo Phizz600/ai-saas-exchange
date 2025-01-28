@@ -40,13 +40,10 @@ const Hero = () => {
             className="flex flex-col items-center mb-8"
           >
             <h1 className="font-exo text-5xl md:text-7xl font-bold text-white leading-tight">
-              Where AI{" "}
-              <Suspense fallback={<Skeleton className="inline-block w-32 h-12" />}>
-                <AnimatedWord words={words} currentWordIndex={currentWordIndex} />
-              </Suspense>
+              The AI Dutch Auction
               <br />
               <span className="bg-gradient-to-r from-[#D946EF] via-[#8B5CF6] to-[#0EA5E9] text-transparent bg-clip-text">
-                Find Their Perfect Match
+                Marketplace: Bid, Buy, or Sell at the Perfect Price
               </span>
             </h1>
           </motion.div>
@@ -57,7 +54,7 @@ const Hero = () => {
             transition={{ duration: 0.3 }}
             className="text-xl text-gray-200 mb-12 max-w-2xl mx-auto"
           >
-            Connect with top-tier investors, pitch your AI business or idea, and participate in timed, Dutch auctions. Unlock exclusive access to premium deals and accelerate the growth of your AI company.
+            AI Tools and companies drop in price until sold. Secure deals faster with timed auctions. Unlock exclusive access to premium deals and accelerate the growth of your AI portfolio.
           </motion.p>
 
           <div className="flex flex-col gap-6 items-center">
