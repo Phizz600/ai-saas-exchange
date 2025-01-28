@@ -40,12 +40,12 @@ const Hero = () => {
             transition={{ duration: 0.3 }}
             className="flex flex-col items-center mb-8"
           >
-            <h1 className="font-exo text-5xl md:text-7xl font-bold leading-tight">
+            <h1 className="font-exo text-5xl md:text-7xl font-bold leading-tight text-white">
               The AI Dutch Auction
               <br />
-              <span className="text-white">Marketplace</span>
+              Marketplace:
               <span className="bg-gradient-to-r from-[#D946EF] via-[#8B5CF6] to-[#0EA5E9] text-transparent bg-clip-text">
-                : Bid, Buy, or Sell at the Perfect Price
+                Bid, Buy, or Sell at the Perfect Price
               </span>
             </h1>
           </motion.div>
@@ -56,8 +56,19 @@ const Hero = () => {
             transition={{ duration: 0.3 }}
             className="text-xl text-gray-200 mb-12 max-w-2xl mx-auto"
           >
-            AI Tools and companies drop in price until sold. Secure deals faster with timed auctions. Unlock exclusive access to premium deals and accelerate the growth of your AI portfolio.
+            AI SaaS tools and companies drop in price until sold. Secure deals faster with timed auctions. Unlock exclusive access to premium deals and accelerate the growth of your AI portfolio.
           </motion.p>
+
+          <div className="flex flex-col gap-6 items-center">
+            <Suspense fallback={<Skeleton className="w-full max-w-md h-32" />}>
+              <NewsletterSubscription
+                newsletterEmail={newsletterEmail}
+                setNewsletterEmail={setNewsletterEmail}
+                subscriberCount={subscriberCount}
+                setSubscriberCount={setSubscriberCount}
+              />
+            </Suspense>
+          </div>
 
           {/* Security Badges */}
           <div className="flex flex-wrap justify-center gap-6 mb-8">
@@ -73,17 +84,6 @@ const Hero = () => {
               <LockKeyhole className="w-5 h-5 text-purple-400" />
               <span className="text-sm text-gray-200">Verified AI Startups</span>
             </div>
-          </div>
-
-          <div className="flex flex-col gap-6 items-center">
-            <Suspense fallback={<Skeleton className="w-full max-w-md h-32" />}>
-              <NewsletterSubscription
-                newsletterEmail={newsletterEmail}
-                setNewsletterEmail={setNewsletterEmail}
-                subscriberCount={subscriberCount}
-                setSubscriberCount={setSubscriberCount}
-              />
-            </Suspense>
           </div>
 
           {/* How it Works Section */}
