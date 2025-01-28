@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Mail, Cursor } from "lucide-react";
+import { Mail, MousePointer } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 
@@ -47,7 +47,7 @@ const NewsletterSubscription = ({
           </div>
           <Button type="submit" className="bg-orange-500 hover:bg-orange-600 text-white px-8 shadow-lg">
             Join
-            <Cursor className="ml-2 h-5 w-5" />
+            <MousePointer className="ml-2 h-5 w-5" />
           </Button>
         </div>
         <p className="text-sm text-gray-300 px-2">
