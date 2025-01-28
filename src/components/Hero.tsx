@@ -88,13 +88,13 @@ const Hero = () => {
 
           {/* How it Works Section */}
           <div className="mt-16 space-y-8">
-            <h2 className="text-3xl font-bold text-white">How it Works</h2>
+            <h2 className="text-3xl font-bold text-white text-center">How it Works</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="bg-white/10 backdrop-blur-sm p-6 rounded-lg"
+                className="bg-white/10 backdrop-blur-sm p-6 rounded-lg transform transition-all duration-300 hover:scale-105 hover:bg-white/15"
               >
                 <div className="text-2xl font-bold text-white mb-2">1</div>
                 <h3 className="text-xl font-semibold text-white mb-3">List Your Product</h3>
@@ -105,7 +105,7 @@ const Hero = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="bg-white/10 backdrop-blur-sm p-6 rounded-lg"
+                className="bg-white/10 backdrop-blur-sm p-6 rounded-lg transform transition-all duration-300 hover:scale-105 hover:bg-white/15"
               >
                 <div className="text-2xl font-bold text-white mb-2">2</div>
                 <h3 className="text-xl font-semibold text-white mb-3">Watch Prices Drop</h3>
@@ -116,13 +116,46 @@ const Hero = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="bg-white/10 backdrop-blur-sm p-6 rounded-lg"
+                className="bg-white/10 backdrop-blur-sm p-6 rounded-lg transform transition-all duration-300 hover:scale-105 hover:bg-white/15"
               >
                 <div className="text-2xl font-bold text-white mb-2">3</div>
                 <h3 className="text-xl font-semibold text-white mb-3">Secure the Deal</h3>
                 <p className="text-gray-300">The highest bidder at the end of the auction wins if the buyer agrees to sell.</p>
               </motion.div>
             </div>
+          </div>
+
+          {/* For Sellers & Buyers Section */}
+          <div className="mt-24 grid grid-cols-1 md:grid-cols-2 gap-12">
+            {/* For Sellers */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.4 }}
+              className="bg-white/10 backdrop-blur-sm p-8 rounded-lg transform transition-all duration-300 hover:scale-105 hover:bg-white/15"
+            >
+              <h3 className="text-2xl font-bold text-white mb-4">For Sellers</h3>
+              <h4 className="text-xl font-semibold text-white mb-3">Why Dutch Auctions Work for AI Startups</h4>
+              <ul className="space-y-3 text-gray-300">
+                <li>• Avoid undervaluation with a transparent pricing model</li>
+                <li>• Attract serious buyers racing to buy your AI SaaS product</li>
+              </ul>
+            </motion.div>
+
+            {/* For Buyers */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.5 }}
+              className="bg-white/10 backdrop-blur-sm p-8 rounded-lg transform transition-all duration-300 hover:scale-105 hover:bg-white/15"
+            >
+              <h3 className="text-2xl font-bold text-white mb-4">For Buyers</h3>
+              <h4 className="text-xl font-semibold text-white mb-3">Why Bid on AI Assets Here</h4>
+              <ul className="space-y-3 text-gray-300">
+                <li>• Acquire undervalued AI SaaS products before competitors</li>
+                <li>• No bidding wars, first to act wins</li>
+              </ul>
+            </motion.div>
           </div>
 
           <Suspense fallback={<Skeleton className="w-full h-48 mt-16" />}>
