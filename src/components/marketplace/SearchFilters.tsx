@@ -83,6 +83,7 @@ export const SearchFilters = ({
   const hasActiveFilters = searchQuery || industryFilter !== 'all' || stageFilter !== 'all' || priceFilter !== 'all' || timeFilter !== 'all';
 
   const clearAllFilters = () => {
+    setLocalSearchQuery('');
     setSearchQuery('');
     setIndustryFilter('all');
     setStageFilter('all');
@@ -97,30 +98,36 @@ export const SearchFilters = ({
       filters.push(
         <Badge key="search" variant="secondary" className="gap-1">
           Search: {searchQuery}
-          <X className="h-3 w-3 cursor-pointer" onClick={() => setSearchQuery('')} />
+          <X className="h-3 w-3 cursor-pointer" onClick={() => {
+            setLocalSearchQuery('');
+            setSearchQuery('');
+          }} />
         </Badge>
       );
     }
     if (industryFilter !== 'all') {
+      const industryLabel = industries.find(i => i.value === industryFilter)?.label;
       filters.push(
         <Badge key="industry" variant="secondary" className="gap-1">
-          Industry: {industryFilter}
+          Industry: {industryLabel}
           <X className="h-3 w-3 cursor-pointer" onClick={() => setIndustryFilter('all')} />
         </Badge>
       );
     }
     if (stageFilter !== 'all') {
+      const stageLabel = stages.find(s => s.value === stageFilter)?.label;
       filters.push(
         <Badge key="stage" variant="secondary" className="gap-1">
-          Stage: {stageFilter}
+          Stage: {stageLabel}
           <X className="h-3 w-3 cursor-pointer" onClick={() => setStageFilter('all')} />
         </Badge>
       );
     }
     if (priceFilter !== 'all') {
+      const priceLabel = priceRanges.find(p => p.value === priceFilter)?.label;
       filters.push(
         <Badge key="price" variant="secondary" className="gap-1">
-          Price: {priceFilter}
+          Price: {priceLabel}
           <X className="h-3 w-3 cursor-pointer" onClick={() => setPriceFilter('all')} />
         </Badge>
       );

@@ -19,7 +19,7 @@ export const FilterSection = ({
 }: FilterSectionProps) => {
   return (
     <Select value={value} onValueChange={onValueChange} disabled={disabled}>
-      <SelectTrigger className="w-[140px] bg-gray-50/50 border-gray-200/50">
+      <SelectTrigger className="w-[140px] bg-gray-50/50 border-gray-200/50 hover:bg-gray-100/50 transition-colors">
         <SelectValue placeholder={placeholder || label} />
       </SelectTrigger>
       <SelectContent className="bg-white border shadow-lg">
@@ -27,7 +27,7 @@ export const FilterSection = ({
           <SelectItem 
             key={option.value} 
             value={option.value}
-            className="hover:bg-gray-50"
+            className="hover:bg-gray-50 cursor-pointer"
           >
             {option.label}
           </SelectItem>
