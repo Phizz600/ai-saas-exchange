@@ -1,9 +1,10 @@
-import { Presentation, ShoppingCart } from "lucide-react";
+import { Presentation, ShoppingCart, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CardFooter } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { AuctionSection } from "./auction/AuctionSection";
 import { PitchDeckSlideshow } from "./pitch-deck/PitchDeckSlideshow";
+import { OfferDialog } from "./offer/OfferDialog";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -27,6 +28,7 @@ interface ProductCardActionsProps {
 
 export function ProductCardActions({ product }: ProductCardActionsProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isOfferDialogOpen, setIsOfferDialogOpen] = useState(false);
   const { toast } = useToast();
   const isAuction = !!product.auction_end_time;
   const auctionEnded = isAuction && new Date(product.auction_end_time) < new Date();
@@ -128,6 +130,24 @@ export function ProductCardActions({ product }: ProductCardActionsProps) {
         </DialogTrigger>
         <DialogContent className="sm:max-w-2xl">
           <PitchDeckSlideshow product={product} />
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isOfferDialogOpen} onOpenChange={setIsOfferDialogOpen}>
+        <DialogTrigger asChild>
+          <Button 
+            className="w-full bg-white text-black hover:bg-gradient-to-r hover:from-[#D946EE] hover:via-[#8B5CF6] hover:to-[#0EA4E9] hover:text-white transition-all duration-300"
+          >
+            <MessageSquare className="h-4 w-4 mr-2" />
+            Make an Offer
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-md">
+          <OfferDialog 
+            productId={product.id}
+            productTitle={product.title}
+            onClose={() => setIsOfferDialogOpen(false)}
+          />
         </DialogContent>
       </Dialog>
 
