@@ -1,103 +1,63 @@
-import { useState } from "react";
-import { ProductGrid } from "@/components/marketplace/ProductGrid";
-import { MarketplacePagination } from "@/components/marketplace/MarketplacePagination";
-import { EmptyState } from "@/components/marketplace/EmptyState";
-import { MarketplaceHeader } from "@/components/marketplace/MarketplaceHeader";
-import { useProducts } from "@/hooks/useProducts";
-import { useNotifications } from "../marketplace/notifications/useNotifications";
-import { incrementProductViews } from "@/integrations/supabase/functions";
-import { useToast } from "@/hooks/use-toast";
+import { useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { ProductsTable } from "./ProductsTable";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export const ProductDashboardContent = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [industryFilter, setIndustryFilter] = useState("all");
-  const [stageFilter, setStageFilter] = useState("all");
-  const [priceFilter, setPriceFilter] = useState("all");
-  const [timeFilter, setTimeFilter] = useState("all");
-  const [sortBy, setSortBy] = useState("relevant");
-  const [currentPage, setCurrentPage] = useState(1);
-  
-  const { data: products = [], isLoading } = useProducts();
-  const { notifications, unreadCount, markAsRead } = useNotifications();
-  const { toast } = useToast();
+  const { data: products, isLoading, error } = useQuery({
+    queryKey: ['seller-products'],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('No user found');
 
-  // Track product views
-  const trackProductView = async (productId: string) => {
-    try {
-      await incrementProductViews(productId);
-      console.log('Product view tracked:', productId);
-    } catch (error) {
-      console.error('Error tracking product view:', error);
-    }
-  };
-
-  const handlePauseProduct = async (productId: string) => {
-    try {
-      const { error } = await supabase
+      console.log('Fetching products for seller:', user.id);
+      
+      const { data, error } = await supabase
         .from('products')
-        .update({ status: 'paused' })
-        .eq('id', productId);
+        .select('*')
+        .eq('seller_id', user.id)
+        .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching products:', error);
+        throw error;
+      }
 
-      toast({
-        title: "Product paused",
-        description: "Your product has been paused and is no longer visible in the marketplace",
-      });
-    } catch (error) {
-      console.error('Error pausing product:', error);
-      toast({
-        title: "Error",
-        description: "Failed to pause product. Please try again.",
-        variant: "destructive",
-      });
+      console.log('Products fetched:', data);
+      return data;
+    },
+  });
+
+  useEffect(() => {
+    if (error) {
+      console.error('Error in ProductDashboardContent:', error);
     }
-  };
+  }, [error]);
 
   if (isLoading) {
-    return <ProductGrid products={[]} isLoading={true} />;
+    return <div>Loading...</div>;
   }
 
-  if (products.length === 0 && !isLoading) {
-    return <EmptyState />;
+  if (error) {
+    return <div>Error loading products</div>;
   }
 
   return (
-    <>
-      <MarketplaceHeader
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        industryFilter={industryFilter}
-        setIndustryFilter={setIndustryFilter}
-        stageFilter={stageFilter}
-        setStageFilter={setStageFilter}
-        priceFilter={priceFilter}
-        setPriceFilter={setPriceFilter}
-        timeFilter={timeFilter}
-        setTimeFilter={setTimeFilter}
-        sortBy={sortBy}
-        setSortBy={setSortBy}
-        isLoading={isLoading}
-        notifications={notifications}
-        unreadCount={unreadCount}
-        onMarkAsRead={markAsRead}
-      />
-
-      <ProductGrid 
-        products={products} 
-        isLoading={isLoading} 
-        onProductView={trackProductView}
-        onPauseProduct={handlePauseProduct}
-      />
-
-      {!isLoading && products.length > 0 && (
-        <MarketplacePagination
-          currentPage={currentPage}
-          totalPages={Math.ceil(products.length / 6)}
-          setCurrentPage={setCurrentPage}
-        />
-      )}
-    </>
+    <div className="space-y-8">
+      <ProductsTable products={products || []} />
+      <div className="flex justify-center mt-8">
+        <Link to="/list-product">
+          <Button 
+            className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 transition-opacity"
+          >
+            <Plus className="mr-2 h-4 w-4" />
+            List Your Product
+          </Button>
+        </Link>
+      </div>
+    </div>
   );
 };
