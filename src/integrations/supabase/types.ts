@@ -63,7 +63,7 @@ export type Database = {
           related_bid_id: string | null
           related_product_id: string | null
           title: string
-          type: string
+          type: Database["public"]["Enums"]["notification_type"]
           user_id: string
         }
         Insert: {
@@ -74,7 +74,7 @@ export type Database = {
           related_bid_id?: string | null
           related_product_id?: string | null
           title: string
-          type: string
+          type: Database["public"]["Enums"]["notification_type"]
           user_id: string
         }
         Update: {
@@ -85,7 +85,7 @@ export type Database = {
           related_bid_id?: string | null
           related_product_id?: string | null
           title?: string
-          type?: string
+          type?: Database["public"]["Enums"]["notification_type"]
           user_id?: string
         }
         Relationships: [
@@ -316,6 +316,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_high_traffic: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       increment_product_views: {
         Args: {
           input_product_id: string
@@ -328,6 +332,13 @@ export type Database = {
       }
     }
     Enums: {
+      notification_type:
+        | "sale"
+        | "liked_product_sold"
+        | "product_liked"
+        | "product_viewed"
+        | "product_offer"
+        | "high_traffic"
       user_type: "ai_builder" | "ai_investor"
     }
     CompositeTypes: {

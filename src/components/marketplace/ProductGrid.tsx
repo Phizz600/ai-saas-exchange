@@ -9,9 +9,15 @@ interface ProductGridProps {
   products: Product[];
   isLoading?: boolean;
   onProductView?: (productId: string) => void;
+  onPauseProduct?: (productId: string) => void;
 }
 
-export const ProductGrid = ({ products, isLoading = false, onProductView }: ProductGridProps) => {
+export const ProductGrid = ({ 
+  products, 
+  isLoading = false, 
+  onProductView,
+  onPauseProduct 
+}: ProductGridProps) => {
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 py-4 sm:py-8 px-2 sm:px-0">
@@ -58,9 +64,12 @@ export const ProductGrid = ({ products, isLoading = false, onProductView }: Prod
                 name: "Anonymous", // This would come from a join with profiles table
                 avatar: "/placeholder.svg", // Default avatar
                 achievements: [] // This would come from a separate achievements system
-              }
+              },
+              status: product.status
             }}
             onView={() => onProductView?.(product.id)}
+            onPause={() => onPauseProduct?.(product.id)}
+            showPauseButton={true}
           />
         );
       })}

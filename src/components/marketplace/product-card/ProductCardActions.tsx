@@ -1,4 +1,4 @@
-import { Presentation, ShoppingCart, MessageSquare } from "lucide-react";
+import { Presentation, ShoppingCart, MessageSquare, Pause } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CardFooter } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
@@ -23,10 +23,13 @@ interface ProductCardActionsProps {
     current_price?: number;
     min_price?: number;
     price_decrement?: number;
+    status?: string;
   };
+  showPauseButton?: boolean;
+  onPause?: () => void;
 }
 
-export function ProductCardActions({ product }: ProductCardActionsProps) {
+export function ProductCardActions({ product, showPauseButton, onPause }: ProductCardActionsProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isOfferDialogOpen, setIsOfferDialogOpen] = useState(false);
   const { toast } = useToast();
@@ -65,6 +68,17 @@ export function ProductCardActions({ product }: ProductCardActionsProps) {
   return (
     <CardFooter className="flex flex-col gap-3">
       {isAuction && !auctionEnded && <AuctionSection product={product} />}
+
+      {showPauseButton && product.status === 'active' && (
+        <Button 
+          variant="outline"
+          className="w-full"
+          onClick={onPause}
+        >
+          <Pause className="h-4 w-4 mr-2" />
+          Pause Listing
+        </Button>
+      )}
 
       <Dialog>
         <DialogTrigger asChild>
