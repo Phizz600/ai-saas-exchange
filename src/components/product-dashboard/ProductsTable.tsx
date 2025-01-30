@@ -6,7 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useState } from "react";
 
@@ -30,30 +30,52 @@ export function ProductsTable({ products }: ProductsTableProps) {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async (productId: string) => {
-    const { error } = await supabase
-      .from('products')
-      .delete()
-      .eq('id', productId);
+    setIsDeleting(true);
+    try {
+      // First delete related analytics
+      console.log('Deleting product analytics for product:', productId);
+      const { error: analyticsError } = await supabase
+        .from('product_analytics')
+        .delete()
+        .eq('product_id', productId);
 
-    if (error) {
-      console.error('Error deleting product:', error);
+      if (analyticsError) {
+        console.error('Error deleting product analytics:', analyticsError);
+        throw analyticsError;
+      }
+
+      // Then delete the product
+      console.log('Deleting product:', productId);
+      const { error: productError } = await supabase
+        .from('products')
+        .delete()
+        .eq('id', productId);
+
+      if (productError) {
+        console.error('Error deleting product:', productError);
+        throw productError;
+      }
+
+      toast({
+        title: "Product deleted",
+        description: "The product has been successfully deleted.",
+      });
+
+      queryClient.invalidateQueries({ queryKey: ['seller-products'] });
+    } catch (error) {
+      console.error('Error in delete operation:', error);
       toast({
         variant: "destructive",
         title: "Error deleting product",
-        description: error.message,
+        description: "There was an error deleting the product. Please try again.",
       });
-      return;
+    } finally {
+      setIsDeleting(false);
+      setIsDeleteDialogOpen(false);
     }
-
-    toast({
-      title: "Product deleted",
-      description: "The product has been successfully deleted.",
-    });
-
-    queryClient.invalidateQueries({ queryKey: ['seller-products'] });
-    setIsDeleteDialogOpen(false);
   };
 
   const handleView = (product: Product) => {
@@ -209,14 +231,16 @@ export function ProductsTable({ products }: ProductsTableProps) {
               <Button
                 variant="outline"
                 onClick={() => setIsDeleteDialogOpen(false)}
+                disabled={isDeleting}
               >
                 Cancel
               </Button>
               <Button
                 variant="destructive"
                 onClick={() => productToDelete && handleDelete(productToDelete)}
+                disabled={isDeleting}
               >
-                Delete
+                {isDeleting ? "Deleting..." : "Delete"}
               </Button>
             </DialogFooter>
           </DialogContent>
