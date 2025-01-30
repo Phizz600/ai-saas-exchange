@@ -35,8 +35,46 @@ export function ProductsTable({ products }: ProductsTableProps) {
   const handleDelete = async (productId: string) => {
     setIsDeleting(true);
     try {
-      // First delete related analytics
-      console.log('Deleting product analytics for product:', productId);
+      console.log('Starting deletion process for product:', productId);
+      
+      // Delete notifications first (they reference both bids and products)
+      console.log('Deleting related notifications...');
+      const { error: notificationsError } = await supabase
+        .from('notifications')
+        .delete()
+        .eq('related_product_id', productId);
+
+      if (notificationsError) {
+        console.error('Error deleting notifications:', notificationsError);
+        throw notificationsError;
+      }
+
+      // Delete bids
+      console.log('Deleting related bids...');
+      const { error: bidsError } = await supabase
+        .from('bids')
+        .delete()
+        .eq('product_id', productId);
+
+      if (bidsError) {
+        console.error('Error deleting bids:', bidsError);
+        throw bidsError;
+      }
+
+      // Delete offers
+      console.log('Deleting related offers...');
+      const { error: offersError } = await supabase
+        .from('offers')
+        .delete()
+        .eq('product_id', productId);
+
+      if (offersError) {
+        console.error('Error deleting offers:', offersError);
+        throw offersError;
+      }
+
+      // Delete analytics
+      console.log('Deleting product analytics...');
       const { error: analyticsError } = await supabase
         .from('product_analytics')
         .delete()
@@ -47,8 +85,8 @@ export function ProductsTable({ products }: ProductsTableProps) {
         throw analyticsError;
       }
 
-      // Then delete the product
-      console.log('Deleting product:', productId);
+      // Finally delete the product
+      console.log('Deleting the product...');
       const { error: productError } = await supabase
         .from('products')
         .delete()
