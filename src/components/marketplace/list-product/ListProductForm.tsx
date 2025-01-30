@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -7,14 +7,15 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { BasicInfoSection } from "./form-sections/BasicInfoSection";
 import { FinancialSection } from "./form-sections/FinancialSection";
-import { MetricsSection } from "./MetricsSection";
-import { ImageSection } from "./form-sections/ImageSection";
-import { DevelopmentStageSection } from "./form-sections/DevelopmentStageSection";
+import { TechnicalSection } from "./form-sections/TechnicalSection";
+import { TrafficSection } from "./form-sections/TrafficSection";
 import { AuctionSection } from "./form-sections/AuctionSection";
+import { FormProgressBar } from "./form-sections/FormProgressBar";
 import { ListProductFormData } from "./types";
 
 export function ListProductForm() {
   const [isLoading, setIsLoading] = useState(false);
+  const [currentSection, setCurrentSection] = useState(0);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -32,15 +33,39 @@ export function ListProductForm() {
       startingPrice: 0,
       minPrice: 0,
       priceDecrement: 0,
+      priceDecrementInterval: "minute",
+      techStack: "",
+      techStackOther: "",
+      integrations: "",
+      integrationsOther: "",
+      teamSize: "",
+      hasPatents: false,
+      competitors: "",
+      demoUrl: "",
+      isVerified: false,
     },
   });
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = document.querySelectorAll('section');
+      sections.forEach((section, index) => {
+        const rect = section.getBoundingClientRect();
+        if (rect.top <= 100 && rect.bottom >= 100) {
+          setCurrentSection(index);
+        }
+      });
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const onSubmit = async (data: ListProductFormData) => {
     try {
       setIsLoading(true);
       console.log('Submitting product data:', data);
 
-      // Get the current user
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         toast({
@@ -60,9 +85,7 @@ export function ListProductForm() {
           .from('product-images')
           .upload(filePath, data.image);
 
-        if (uploadError) {
-          throw uploadError;
-        }
+        if (uploadError) throw uploadError;
 
         const { data: { publicUrl } } = supabase.storage
           .from('product-images')
@@ -80,13 +103,23 @@ export function ListProductForm() {
         monthly_revenue: data.monthlyRevenue,
         monthly_traffic: data.monthlyTraffic,
         image_url,
-        seller_id: user.id, // Add the seller_id
+        seller_id: user.id,
+        tech_stack: data.techStack,
+        tech_stack_other: data.techStackOther,
+        integrations: data.integrations,
+        integrations_other: data.integrationsOther,
+        team_size: data.teamSize,
+        has_patents: data.hasPatents,
+        competitors: data.competitors,
+        demo_url: data.demoUrl,
+        is_verified: data.isVerified,
         ...(data.isAuction && {
           auction_end_time: data.auctionEndTime?.toISOString(),
           starting_price: data.startingPrice,
           current_price: data.startingPrice,
           min_price: data.minPrice,
-          price_decrement: data.priceDecrement
+          price_decrement: data.priceDecrement,
+          price_decrement_interval: data.priceDecrementInterval
         })
       };
 
@@ -116,12 +149,27 @@ export function ListProductForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <BasicInfoSection form={form} />
-        <AuctionSection form={form} />
-        <FinancialSection form={form} />
-        <MetricsSection form={form} />
-        <DevelopmentStageSection form={form} />
-        <ImageSection form={form} />
+        <FormProgressBar currentSection={currentSection} />
+        
+        <section id="basics" className="space-y-8">
+          <BasicInfoSection form={form} />
+        </section>
+
+        <section id="financials" className="space-y-8">
+          <FinancialSection form={form} />
+        </section>
+
+        <section id="technical" className="space-y-8">
+          <TechnicalSection form={form} />
+        </section>
+
+        <section id="traffic" className="space-y-8">
+          <TrafficSection form={form} />
+        </section>
+
+        <section id="auction" className="space-y-8">
+          <AuctionSection form={form} />
+        </section>
 
         <Button 
           type="submit" 

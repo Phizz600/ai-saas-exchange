@@ -8,7 +8,9 @@ export interface ListProductFormData {
   monthlyTraffic: number;
   monthlyChurnRate?: number;
   techStack?: string;
+  techStackOther?: string;
   integrations?: string;
+  integrationsOther?: string;
   grossProfitMargin?: number;
   activeUsers?: number;
   image: File | null;
@@ -17,4 +19,10 @@ export interface ListProductFormData {
   startingPrice?: number;
   minPrice?: number;
   priceDecrement?: number;
+  priceDecrementInterval?: string;
+  teamSize?: string;
+  hasPatents?: boolean;
+  competitors?: string;
+  demoUrl?: string;
+  isVerified?: boolean;
 }

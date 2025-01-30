@@ -205,60 +205,84 @@ export type Database = {
         Row: {
           auction_end_time: string | null
           category: string
+          competitors: string | null
           created_at: string
           current_price: number | null
+          demo_url: string | null
           description: string | null
+          has_patents: boolean | null
           id: string
           image_url: string | null
+          integrations_other: string | null
+          is_verified: boolean | null
           min_price: number | null
           monthly_revenue: number | null
           monthly_traffic: number | null
           price: number
           price_decrement: number | null
+          price_decrement_interval: string | null
           seller_id: string
           stage: string
           starting_price: number | null
           status: string | null
+          team_size: string | null
+          tech_stack_other: string | null
           title: string
           updated_at: string
         }
         Insert: {
           auction_end_time?: string | null
           category: string
+          competitors?: string | null
           created_at?: string
           current_price?: number | null
+          demo_url?: string | null
           description?: string | null
+          has_patents?: boolean | null
           id?: string
           image_url?: string | null
+          integrations_other?: string | null
+          is_verified?: boolean | null
           min_price?: number | null
           monthly_revenue?: number | null
           monthly_traffic?: number | null
           price: number
           price_decrement?: number | null
+          price_decrement_interval?: string | null
           seller_id: string
           stage: string
           starting_price?: number | null
           status?: string | null
+          team_size?: string | null
+          tech_stack_other?: string | null
           title: string
           updated_at?: string
         }
         Update: {
           auction_end_time?: string | null
           category?: string
+          competitors?: string | null
           created_at?: string
           current_price?: number | null
+          demo_url?: string | null
           description?: string | null
+          has_patents?: boolean | null
           id?: string
           image_url?: string | null
+          integrations_other?: string | null
+          is_verified?: boolean | null
           min_price?: number | null
           monthly_revenue?: number | null
           monthly_traffic?: number | null
           price?: number
           price_decrement?: number | null
+          price_decrement_interval?: string | null
           seller_id?: string
           stage?: string
           starting_price?: number | null
           status?: string | null
+          team_size?: string | null
+          tech_stack_other?: string | null
           title?: string
           updated_at?: string
         }
