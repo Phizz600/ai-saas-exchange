@@ -6,6 +6,11 @@ export interface ListProductFormData {
   stage: string;
   monthlyRevenue: number;
   monthlyTraffic: number;
+  monthlyChurnRate?: number;
+  techStack?: string;
+  integrations?: string;
+  grossProfitMargin?: number;
+  activeUsers?: number;
   image: File | null;
   isAuction: boolean;
   auctionEndTime?: Date;

@@ -22,6 +22,15 @@ interface AuctionSectionProps {
 
 export function AuctionSection({ form }: AuctionSectionProps) {
   const isAuction = form.watch("isAuction");
+  const monthlyRevenue = form.watch("monthlyRevenue");
+
+  const handleAuctionToggle = (checked: boolean) => {
+    form.setValue("isAuction", checked);
+    if (checked && monthlyRevenue) {
+      // Auto-fill starting price as 10x monthly revenue
+      form.setValue("startingPrice", monthlyRevenue * 10);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -39,7 +48,7 @@ export function AuctionSection({ form }: AuctionSectionProps) {
                       <Info className="h-4 w-4 text-gray-500 cursor-help" />
                     </TooltipTrigger>
                     <TooltipContent className="bg-white max-w-[300px] p-3">
-                      <p>A Dutch auction starts at a high price and gradually decreases over time until a buyer makes a purchase or it reaches the minimum price. This creates urgency as buyers must decide between waiting for a lower price or risking another buyer purchasing first.</p>
+                      <p>A Dutch auction starts at a high price and gradually decreases over time until a buyer makes a purchase or it reaches the minimum price.</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -51,7 +60,7 @@ export function AuctionSection({ form }: AuctionSectionProps) {
             <FormControl>
               <Switch
                 checked={field.value}
-                onCheckedChange={field.onChange}
+                onCheckedChange={handleAuctionToggle}
               />
             </FormControl>
           </FormItem>
@@ -60,67 +69,133 @@ export function AuctionSection({ form }: AuctionSectionProps) {
 
       {isAuction && (
         <div className="space-y-4">
-          <FormField
-            control={form.control}
-            name="startingPrice"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="flex items-center gap-2">
-                  Starting Price (USD)
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Info className="h-4 w-4 text-gray-500 cursor-help" />
-                      </TooltipTrigger>
-                      <TooltipContent className="bg-white">
-                        <p>The initial price at which your auction will begin</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    placeholder="Enter starting price"
-                    {...field}
-                    onChange={e => field.onChange(Number(e.target.value))}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="startingPrice"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="flex items-center gap-2">
+                    Starting Price (USD)
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Info className="h-4 w-4 text-gray-500 cursor-help" />
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-white">
+                          <p>Starting price for your Dutch auction. Price drops until sold.</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="Enter starting price"
+                      {...field}
+                      onChange={e => field.onChange(Number(e.target.value))}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="minPrice"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="flex items-center gap-2">
-                  Minimum Price (USD)
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Info className="h-4 w-4 text-gray-500 cursor-help" />
-                      </TooltipTrigger>
-                      <TooltipContent className="bg-white">
-                        <p>The lowest price you're willing to accept. The auction will stop at this price</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    placeholder="Enter minimum price"
-                    {...field}
-                    onChange={e => field.onChange(Number(e.target.value))}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="grossProfitMargin"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="flex items-center gap-2">
+                    Gross Profit Margin (%)
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Info className="h-4 w-4 text-gray-500 cursor-help" />
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-white">
+                          <p>Percentage of revenue remaining after direct costs</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="Enter profit margin"
+                      {...field}
+                      onChange={e => field.onChange(Number(e.target.value))}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="minPrice"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="flex items-center gap-2">
+                    Minimum Price (USD)
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Info className="h-4 w-4 text-gray-500 cursor-help" />
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-white">
+                          <p>The lowest price you're willing to accept. The auction will stop at this price</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="Enter minimum price"
+                      {...field}
+                      onChange={e => field.onChange(Number(e.target.value))}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="activeUsers"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="flex items-center gap-2">
+                    Active Customers/Users
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Info className="h-4 w-4 text-gray-500 cursor-help" />
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-white">
+                          <p>Number of current active users or customers</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="Enter active users"
+                      {...field}
+                      onChange={e => field.onChange(Number(e.target.value))}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
           <FormField
             control={form.control}
