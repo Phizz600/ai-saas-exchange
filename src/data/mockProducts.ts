@@ -21,7 +21,15 @@ export const mockProducts: Product[] = [
     starting_price: null,
     current_price: null,
     min_price: null,
-    price_decrement: null
+    price_decrement: null,
+    price_decrement_interval: "minute",
+    demo_url: "https://demo.example.com",
+    tech_stack_other: null,
+    integrations_other: null,
+    is_verified: false,
+    team_size: "1-5",
+    has_patents: false,
+    competitors: "None"
   },
   {
     id: "2",
@@ -41,6 +49,14 @@ export const mockProducts: Product[] = [
     starting_price: null,
     current_price: null,
     min_price: null,
-    price_decrement: null
+    price_decrement: null,
+    price_decrement_interval: "minute",
+    demo_url: null,
+    tech_stack_other: null,
+    integrations_other: null,
+    is_verified: false,
+    team_size: "5-10",
+    has_patents: false,
+    competitors: "Various chatbot solutions"
   }
 ];
