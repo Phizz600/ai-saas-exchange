@@ -34,6 +34,7 @@ export function AuctionSection({ form }: AuctionSectionProps) {
 
   return (
     <div className="space-y-6">
+      <h2 className="text-2xl font-semibold">Dutch Auction Settings</h2>
       <FormField
         control={form.control}
         name="isAuction"
