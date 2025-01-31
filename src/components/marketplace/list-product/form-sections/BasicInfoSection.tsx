@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { UseFormReturn } from "react-hook-form";
 import { ListProductFormData } from "../types";
-import { Info } from "lucide-react";
+import { Info, Link } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -70,6 +70,39 @@ export function BasicInfoSection({ form }: BasicInfoSectionProps) {
                   className="min-h-[100px]"
                   {...field}
                 />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="demoUrl"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="flex items-center gap-2">
+                Link to Product
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="h-4 w-4 text-gray-500 cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-white">
+                      <p>Provide a link to your product's website or demo</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </FormLabel>
+              <FormControl>
+                <div className="relative">
+                  <Input 
+                    placeholder="https://your-product.com" 
+                    {...field}
+                    className="pl-9"
+                  />
+                  <Link className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>

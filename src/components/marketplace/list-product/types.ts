@@ -25,4 +25,5 @@ export interface ListProductFormData {
   competitors?: string;
   demoUrl?: string;
   isVerified?: boolean;
+  isGoogleAnalyticsVerified?: boolean;
 }
