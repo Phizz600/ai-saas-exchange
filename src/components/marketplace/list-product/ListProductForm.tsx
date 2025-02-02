@@ -12,12 +12,21 @@ import { TrafficSection } from "./form-sections/TrafficSection";
 import { AuctionSection } from "./form-sections/AuctionSection";
 import { FormProgressBar } from "./form-sections/FormProgressBar";
 import { ListProductFormData } from "./types";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
 export function ListProductForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [currentSection, setCurrentSection] = useState(0);
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  const sections = [
+    { id: 0, title: "Basics", component: BasicInfoSection },
+    { id: 1, title: "Financials", component: FinancialSection },
+    { id: 2, title: "Technical", component: TechnicalSection },
+    { id: 3, title: "Traffic", component: TrafficSection },
+    { id: 4, title: "Dutch Auction", component: AuctionSection },
+  ];
 
   const form = useForm<ListProductFormData>({
     defaultValues: {
@@ -46,20 +55,19 @@ export function ListProductForm() {
     },
   });
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const sections = document.querySelectorAll('section');
-      sections.forEach((section, index) => {
-        const rect = section.getBoundingClientRect();
-        if (rect.top <= 100 && rect.bottom >= 100) {
-          setCurrentSection(index);
-        }
-      });
-    };
+  const nextSection = () => {
+    if (currentSection < sections.length - 1) {
+      setCurrentSection(prev => prev + 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  const previousSection = () => {
+    if (currentSection > 0) {
+      setCurrentSection(prev => prev - 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
 
   const onSubmit = async (data: ListProductFormData) => {
     try {
@@ -146,40 +154,51 @@ export function ListProductForm() {
     }
   };
 
+  const CurrentSectionComponent = sections[currentSection].component;
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormProgressBar currentSection={currentSection} />
         
-        <section id="basics" className="space-y-8">
-          <BasicInfoSection form={form} />
-        </section>
+        <div className="space-y-8 min-h-[400px]">
+          <CurrentSectionComponent form={form} />
+        </div>
 
-        <section id="financials" className="space-y-8">
-          <FinancialSection form={form} />
-        </section>
-
-        <section id="technical" className="space-y-8">
-          <TechnicalSection form={form} />
-        </section>
-
-        <section id="traffic" className="space-y-8">
-          <TrafficSection form={form} />
-        </section>
-
-        <section id="auction" className="space-y-8">
-          <AuctionSection form={form} />
-        </section>
-
-        <Button 
-          type="submit" 
-          className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3 px-6 rounded-lg transform transition-all duration-200 
-          shadow-[0_4px_0_rgb(42,98,143)] hover:shadow-[0_2px_0px_rgb(42,98,143)] 
-          hover:translate-y-[2px] active:translate-y-[4px] active:shadow-[0_0px_0px_rgb(42,98,143)]"
-          disabled={isLoading}
-        >
-          {isLoading ? "Submitting Product..." : "Submit Product"}
-        </Button>
+        <div className="flex justify-between items-center pt-6 border-t">
+          {currentSection > 0 && (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={previousSection}
+              className="flex items-center gap-2"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Previous
+            </Button>
+          )}
+          
+          {currentSection < sections.length - 1 ? (
+            <Button
+              type="button"
+              onClick={nextSection}
+              className="ml-auto flex items-center gap-2"
+            >
+              Next
+              <ArrowRight className="h-4 w-4" />
+            </Button>
+          ) : (
+            <Button 
+              type="submit"
+              className="ml-auto bg-primary hover:bg-primary/90 text-white font-semibold py-3 px-6 rounded-lg transform transition-all duration-200 
+              shadow-[0_4px_0_rgb(42,98,143)] hover:shadow-[0_2px_0px_rgb(42,98,143)] 
+              hover:translate-y-[2px] active:translate-y-[4px] active:shadow-[0_0px_0px_rgb(42,98,143)]"
+              disabled={isLoading}
+            >
+              {isLoading ? "Submitting Product..." : "Submit Product"}
+            </Button>
+          )}
+        </div>
       </form>
     </Form>
   );
