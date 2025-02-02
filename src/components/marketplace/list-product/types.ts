@@ -19,7 +19,7 @@ export interface ListProductFormData {
   startingPrice?: number;
   minPrice?: number;
   priceDecrement?: number;
-  priceDecrementInterval?: string;
+  priceDecrementInterval?: 'minute' | 'hour' | 'day' | 'week' | 'month';
   teamSize?: string;
   hasPatents?: boolean;
   competitors?: string;
