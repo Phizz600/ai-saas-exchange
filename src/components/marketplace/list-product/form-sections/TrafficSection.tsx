@@ -52,7 +52,7 @@ export function TrafficSection({ form }: TrafficSectionProps) {
 
     try {
       // Initialize Google Sign-in with proper error handling
-      const auth2 = await new Promise((resolve, reject) => {
+      const auth2 = await new Promise<GoogleAuth>((resolve, reject) => {
         window.gapi.load('auth2', {
           callback: () => {
             window.gapi.auth2
