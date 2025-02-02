@@ -40,17 +40,35 @@ export function TrafficSection({ form }: TrafficSectionProps) {
       return;
     }
 
+    // Check if gapi is loaded
+    if (!window.gapi) {
+      toast({
+        title: "Google API Not Loaded",
+        description: "Please wait for the Google API to load and try again.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
-      // Initialize Google Sign-in
-      const auth2 = await new Promise<any>((resolve, reject) => {
-        window.gapi.load('auth2', () => {
-          window.gapi.auth2.init({
-            client_id: clientId,
-            scope: "https://www.googleapis.com/auth/analytics.readonly"
-          }).then(resolve, reject);
+      // Initialize Google Sign-in with proper error handling
+      const auth2 = await new Promise((resolve, reject) => {
+        window.gapi.load('auth2', {
+          callback: () => {
+            window.gapi.auth2
+              .init({
+                client_id: clientId,
+                scope: "https://www.googleapis.com/auth/analytics.readonly"
+              })
+              .then(resolve)
+              .catch(reject);
+          },
+          onerror: () => {
+            reject(new Error('Failed to load auth2'));
+          }
         });
       });
-      
+
       const googleUser = await auth2.signIn();
       const token = googleUser.getAuthResponse().access_token;
       console.log("Successfully connected to Google Analytics", token);
