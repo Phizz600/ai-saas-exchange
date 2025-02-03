@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -32,6 +32,7 @@ export function ListProductForm() {
     defaultValues: {
       title: "",
       description: "",
+      price: 0,
       category: "",
       stage: "",
       industry: "",
@@ -47,8 +48,6 @@ export function ListProductForm() {
       priceDecrementInterval: "minute",
       techStack: "",
       techStackOther: "",
-      integrations: "",
-      integrationsOther: "",
       teamSize: "",
       hasPatents: false,
       competitors: "",
@@ -122,8 +121,6 @@ export function ListProductForm() {
         seller_id: user.id,
         tech_stack: data.techStack,
         tech_stack_other: data.techStackOther,
-        integrations: data.integrations,
-        integrations_other: data.integrationsOther,
         team_size: data.teamSize,
         has_patents: data.hasPatents,
         competitors: data.competitors,

@@ -1,6 +1,7 @@
 export interface ListProductFormData {
   title: string;
   description: string;
+  price?: number;
   category: string;
   stage: string;
   industry: string;
@@ -9,8 +10,6 @@ export interface ListProductFormData {
   monthlyChurnRate?: number;
   techStack?: string;
   techStackOther?: string;
-  integrations?: string;
-  integrationsOther?: string;
   grossProfitMargin?: number;
   activeUsers?: string;
   image: File | null;
