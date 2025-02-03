@@ -25,15 +25,6 @@ export function TechnicalSection({ form }: TechnicalSectionProps) {
     "Other"
   ];
 
-  const integrations = [
-    "Slack",
-    "Salesforce",
-    "AWS",
-    "Google Cloud",
-    "Azure",
-    "Other"
-  ];
-
   const stages = [
     "MVP",
     "Beta",
@@ -43,11 +34,10 @@ export function TechnicalSection({ form }: TechnicalSectionProps) {
   ];
 
   const watchTechStack = form.watch("techStack");
-  const watchIntegrations = form.watch("integrations");
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-semibold">Technical</h2>
+      <h2 className="text-2xl font-semibold">Technical Details</h2>
       
       <div className="space-y-4">
         <FormField
@@ -96,59 +86,6 @@ export function TechnicalSection({ form }: TechnicalSectionProps) {
                 <FormLabel>Specify Tech Stack</FormLabel>
                 <FormControl>
                   <Input placeholder="Enter your tech stack" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        )}
-
-        <FormField
-          control={form.control}
-          name="integrations"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="flex items-center gap-2">
-                Integrations
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Info className="h-4 w-4 text-gray-500 cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="bg-white">
-                      <p>Key platforms your product integrates with</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger className="bg-white">
-                    <SelectValue placeholder="Select integration" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent className="bg-white">
-                  {integrations.map((integration) => (
-                    <SelectItem key={integration} value={integration}>
-                      {integration}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {watchIntegrations === "Other" && (
-          <FormField
-            control={form.control}
-            name="integrationsOther"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Specify Integration</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter your integration" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

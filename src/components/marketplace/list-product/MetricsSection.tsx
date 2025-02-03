@@ -36,15 +36,6 @@ export function MetricsSection({ form }: MetricsSectionProps) {
     "Other"
   ];
 
-  const integrations = [
-    "Slack",
-    "Salesforce",
-    "AWS",
-    "Google Cloud",
-    "Azure",
-    "Other"
-  ];
-
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -177,43 +168,6 @@ export function MetricsSection({ form }: MetricsSectionProps) {
                   {techStacks.map((tech) => (
                     <SelectItem key={tech} value={tech}>
                       {tech}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="integrations"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="flex items-center gap-2">
-                Integrations
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Info className="h-4 w-4 text-gray-500 cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="bg-white">
-                      <p>Key platforms your product integrates with</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger className="bg-white">
-                    <SelectValue placeholder="Select integration" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent className="bg-white">
-                  {integrations.map((integration) => (
-                    <SelectItem key={integration} value={integration}>
-                      {integration}
                     </SelectItem>
                   ))}
                 </SelectContent>
