@@ -1,19 +1,18 @@
 export interface ListProductFormData {
   title: string;
   description: string;
-  price: number;
   category: string;
   stage: string;
   industry: string;
   monthlyRevenue: number;
-  monthlyTraffic: number;
+  monthlyTraffic: string;
   monthlyChurnRate?: number;
   techStack?: string;
   techStackOther?: string;
   integrations?: string;
   integrationsOther?: string;
   grossProfitMargin?: number;
-  activeUsers?: number;
+  activeUsers?: string;
   image: File | null;
   isAuction: boolean;
   auctionEndTime?: Date;

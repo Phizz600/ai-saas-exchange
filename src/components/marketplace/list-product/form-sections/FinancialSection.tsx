@@ -21,26 +21,26 @@ export function FinancialSection({ form }: FinancialSectionProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <FormField
           control={form.control}
-          name="price"
+          name="monthlyRevenue"
           render={({ field }) => (
             <FormItem>
               <FormLabel className="flex items-center gap-2">
-                Asking Price (USD)
+                MRR (Monthly Recurring Revenue)
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Info className="h-4 w-4 text-gray-500 cursor-help" />
                     </TooltipTrigger>
                     <TooltipContent className="bg-white">
-                      <p>Set a competitive price based on your product's features, market position, and revenue potential</p>
+                      <p>Monthly recurring revenue from your AI product</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
               </FormLabel>
               <FormControl>
                 <Input 
-                  type="number" 
-                  placeholder="Enter asking price"
+                  type="number"
+                  placeholder="Enter MRR in USD"
                   {...field}
                   onChange={e => field.onChange(Number(e.target.value))}
                 />
@@ -52,18 +52,18 @@ export function FinancialSection({ form }: FinancialSectionProps) {
 
         <FormField
           control={form.control}
-          name="monthlyRevenue"
+          name="grossProfitMargin"
           render={({ field }) => (
             <FormItem>
               <FormLabel className="flex items-center gap-2">
-                Monthly Revenue (USD)
+                Gross Profit Margin (%)
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Info className="h-4 w-4 text-gray-500 cursor-help" />
                     </TooltipTrigger>
                     <TooltipContent className="bg-white">
-                      <p>Enter the average monthly revenue your AI product generates</p>
+                      <p>Percentage of revenue that remains after direct costs</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -71,7 +71,7 @@ export function FinancialSection({ form }: FinancialSectionProps) {
               <FormControl>
                 <Input 
                   type="number"
-                  placeholder="Enter monthly revenue"
+                  placeholder="Enter profit margin"
                   {...field}
                   onChange={e => field.onChange(Number(e.target.value))}
                 />

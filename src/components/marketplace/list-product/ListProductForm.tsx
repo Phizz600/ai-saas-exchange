@@ -32,12 +32,13 @@ export function ListProductForm() {
     defaultValues: {
       title: "",
       description: "",
-      price: 0,
       category: "",
       stage: "",
       industry: "",
       monthlyRevenue: 0,
-      monthlyTraffic: 0,
+      monthlyTraffic: "",
+      activeUsers: "",
+      grossProfitMargin: 0,
       image: null,
       isAuction: false,
       startingPrice: 0,
@@ -55,6 +56,11 @@ export function ListProductForm() {
       isVerified: false,
     },
   });
+
+  const handleSectionClick = (sectionIndex: number) => {
+    setCurrentSection(sectionIndex);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const nextSection = () => {
     if (currentSection < sections.length - 1) {
@@ -161,7 +167,10 @@ export function ListProductForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormProgressBar currentSection={currentSection} />
+        <FormProgressBar 
+          currentSection={currentSection} 
+          onSectionClick={handleSectionClick}
+        />
         
         <div className="space-y-8 min-h-[400px]">
           <CurrentSectionComponent form={form} />
