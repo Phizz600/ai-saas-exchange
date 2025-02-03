@@ -29,7 +29,8 @@ export const mockProducts: Product[] = [
     is_verified: false,
     team_size: "1-5",
     has_patents: false,
-    competitors: "None"
+    competitors: "None",
+    industry: "AI/Machine Learning"
   },
   {
     id: "2",
@@ -57,6 +58,7 @@ export const mockProducts: Product[] = [
     is_verified: false,
     team_size: "5-10",
     has_patents: false,
-    competitors: "Various chatbot solutions"
+    competitors: "Various chatbot solutions",
+    industry: "Enterprise Software"
   }
 ];
