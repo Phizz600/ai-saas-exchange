@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Shield, ShieldCheck, LockKeyhole, ChevronDown } from "lucide-react";
+import { Shield, ShieldCheck, LockKeyhole, ChevronDown, Star } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 // Lazy load components
@@ -43,10 +43,31 @@ const Hero = () => {
             transition={{ duration: 0.3 }}
             className="flex flex-col items-center mb-8"
           >
+            {/* Logo */}
+            <img 
+              src="/ai-exchange-logo.png" 
+              alt="AI Exchange Logo" 
+              className="w-48 h-48 mb-8" // Increased size from default
+            />
+            
+            {/* Reviews */}
+            <div className="flex items-center gap-2 mb-6 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
+              <div className="flex">
+                {[...Array(5)].map((_, i) => (
+                  <Star
+                    key={i}
+                    className={`w-4 h-4 ${i < 5 ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`}
+                  />
+                ))}
+              </div>
+              <span className="text-white font-medium">4.89</span>
+              <span className="text-gray-200">({312} reviews)</span>
+            </div>
+
             <h1 className="font-exo text-5xl md:text-7xl font-bold leading-tight text-white text-center">
-              The AI Dutch Auction
+              The Dutch Auction Marketplace
               <br />
-              Marketplace:
+              for AI SaaS:
               <span className="bg-gradient-to-r from-[#D946EF] via-[#8B5CF6] to-[#0EA5E9] text-transparent bg-clip-text">
                 Bid, Buy, or Sell at the Perfect Price
               </span>
