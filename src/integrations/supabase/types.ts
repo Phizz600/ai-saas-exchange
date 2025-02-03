@@ -227,6 +227,7 @@ export type Database = {
           starting_price: number | null
           status: string | null
           team_size: string | null
+          tech_stack: string | null
           tech_stack_other: string | null
           title: string
           updated_at: string
@@ -256,6 +257,7 @@ export type Database = {
           starting_price?: number | null
           status?: string | null
           team_size?: string | null
+          tech_stack?: string | null
           tech_stack_other?: string | null
           title: string
           updated_at?: string
@@ -285,6 +287,7 @@ export type Database = {
           starting_price?: number | null
           status?: string | null
           team_size?: string | null
+          tech_stack?: string | null
           tech_stack_other?: string | null
           title?: string
           updated_at?: string
