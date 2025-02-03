@@ -213,6 +213,7 @@ export type Database = {
           has_patents: boolean | null
           id: string
           image_url: string | null
+          industry: string | null
           integrations_other: string | null
           is_verified: boolean | null
           min_price: number | null
@@ -241,6 +242,7 @@ export type Database = {
           has_patents?: boolean | null
           id?: string
           image_url?: string | null
+          industry?: string | null
           integrations_other?: string | null
           is_verified?: boolean | null
           min_price?: number | null
@@ -269,6 +271,7 @@ export type Database = {
           has_patents?: boolean | null
           id?: string
           image_url?: string | null
+          industry?: string | null
           integrations_other?: string | null
           is_verified?: boolean | null
           min_price?: number | null

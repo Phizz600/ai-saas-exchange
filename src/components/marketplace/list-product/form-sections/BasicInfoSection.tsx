@@ -5,6 +5,13 @@ import { UseFormReturn } from "react-hook-form";
 import { ListProductFormData } from "../types";
 import { Info, Link } from "lucide-react";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
@@ -16,6 +23,19 @@ interface BasicInfoSectionProps {
 }
 
 export function BasicInfoSection({ form }: BasicInfoSectionProps) {
+  const industries = [
+    "AI/Machine Learning",
+    "E-commerce",
+    "Education",
+    "Enterprise Software",
+    "Finance",
+    "Healthcare",
+    "Marketing",
+    "Productivity",
+    "Social Media",
+    "Other"
+  ];
+
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-semibold">Basics</h2>
@@ -41,6 +61,43 @@ export function BasicInfoSection({ form }: BasicInfoSectionProps) {
               <FormControl>
                 <Input placeholder="Enter your product title" {...field} />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="industry"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="flex items-center gap-2">
+                Industry
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="h-4 w-4 text-gray-500 cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-white">
+                      <p>Select the primary industry your product serves</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger className="bg-white">
+                    <SelectValue placeholder="Select an industry" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent className="bg-white">
+                  {industries.map((industry) => (
+                    <SelectItem key={industry} value={industry}>
+                      {industry}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}

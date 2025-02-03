@@ -4,6 +4,7 @@ export interface ListProductFormData {
   price: number;
   category: string;
   stage: string;
+  industry: string;
   monthlyRevenue: number;
   monthlyTraffic: number;
   monthlyChurnRate?: number;
