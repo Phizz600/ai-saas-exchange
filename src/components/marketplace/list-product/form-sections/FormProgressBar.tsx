@@ -14,13 +14,19 @@ export function FormProgressBar({ currentSection, onSectionClick }: FormProgress
     "Dutch Auction"
   ];
 
+  const handleSectionClick = (e: React.MouseEvent, index: number) => {
+    e.preventDefault(); // Prevent form submission
+    onSectionClick(index);
+  };
+
   return (
     <div className="mb-8">
       <div className="flex justify-between mb-2">
         {sections.map((section, index) => (
           <button
             key={section}
-            onClick={() => onSectionClick(index)}
+            onClick={(e) => handleSectionClick(e, index)}
+            type="button" // Explicitly set button type to prevent form submission
             className={cn(
               "text-sm font-medium transition-colors",
               currentSection >= index ? "text-primary" : "text-gray-400",
