@@ -50,7 +50,9 @@ export const ProfileHeader = ({ profile, onAvatarUpdate }: ProfileHeaderProps) =
             </div>
           </div>
 
-          <div className="w-full mt-6 space-y-3">
+          <VerificationBadges />
+
+          <div className="w-full mt-4 space-y-3">
             <HoverCard>
               <HoverCardTrigger asChild>
                 <div className="flex items-center justify-center text-sm text-muted-foreground cursor-help">
@@ -82,8 +84,6 @@ export const ProfileHeader = ({ profile, onAvatarUpdate }: ProfileHeaderProps) =
               </Button>
             )}
           </div>
-
-          <VerificationBadges />
         </div>
       </CardContent>
     </Card>
