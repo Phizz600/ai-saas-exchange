@@ -23,7 +23,7 @@ interface SidebarMenuGroupProps {
 export const SidebarMenuGroup = ({ label, items }: SidebarMenuGroupProps) => {
   return (
     <SidebarGroup>
-      <SidebarGroupLabel className="text-gray-400 font-normal">
+      <SidebarGroupLabel className="text-gray-300 font-normal text-sm">
         {label}
       </SidebarGroupLabel>
       <SidebarGroupContent>
@@ -33,11 +33,11 @@ export const SidebarMenuGroup = ({ label, items }: SidebarMenuGroupProps) => {
               <SidebarMenuButton
                 asChild
                 tooltip={item.title}
-                className="hover:bg-purple-50 text-gray-600 hover:text-purple-600"
+                className="hover:bg-[#5B3DF5] text-gray-100 hover:text-white transition-colors rounded-lg"
               >
-                <Link to={item.path} className="flex items-center gap-2">
-                  <item.icon className="h-5 w-5 text-gray-400" />
-                  <span>{item.title}</span>
+                <Link to={item.path} className="flex items-center gap-3 px-3 py-2">
+                  <item.icon className="h-5 w-5" />
+                  <span className="font-medium">{item.title}</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
