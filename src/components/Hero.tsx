@@ -43,13 +43,6 @@ const Hero = () => {
             transition={{ duration: 0.3 }}
             className="flex flex-col items-center mb-8"
           >
-            {/* Logo */}
-            <img 
-              src="/ai-exchange-logo.png" 
-              alt="AI Exchange Logo" 
-              className="w-48 h-48 mb-8" // Increased size from default
-            />
-            
             {/* Reviews */}
             <div className="flex items-center gap-2 mb-6 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
               <div className="flex">
