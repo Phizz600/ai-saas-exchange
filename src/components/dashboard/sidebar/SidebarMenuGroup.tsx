@@ -33,7 +33,7 @@ export const SidebarMenuGroup = ({ label, items }: SidebarMenuGroupProps) => {
               <SidebarMenuButton
                 asChild
                 tooltip={item.title}
-                className="hover:bg-[#5B3DF5] text-gray-100 hover:text-white transition-colors rounded-lg"
+                className="hover:bg-accent2 text-gray-100 hover:text-white transition-colors rounded-lg"
               >
                 <Link to={item.path} className="flex items-center gap-3 px-3 py-2">
                   <item.icon className="h-5 w-5" />
