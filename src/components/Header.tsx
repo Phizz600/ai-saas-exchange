@@ -26,7 +26,6 @@ export const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const isMarketplace = location.pathname === '/marketplace';
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const { notifications, unreadCount, markAsRead } = useNotifications();
 
@@ -110,15 +109,13 @@ export const Header = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
-            {isMarketplace && (
-              <Link to="/" className="flex items-center">
-                <img 
-                  src="/lovable-uploads/410d1e6b-e7e7-499e-a8f7-9bf6bda5e131.png" 
-                  alt="AI Exchange Logo" 
-                  className="h-10 w-10"
-                />
-              </Link>
-            )}
+            <Link to="/" className="flex items-center">
+              <img 
+                src="/lovable-uploads/410d1e6b-e7e7-499e-a8f7-9bf6bda5e131.png" 
+                alt="AI Exchange Logo" 
+                className="h-10 w-10"
+              />
+            </Link>
           </div>
           <div className="flex items-center">
             <ExpandableTabs tabs={navigationTabs} />
