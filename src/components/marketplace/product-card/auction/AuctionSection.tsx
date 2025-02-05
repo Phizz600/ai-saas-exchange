@@ -1,8 +1,17 @@
-import { Timer, DollarSign } from "lucide-react";
+
+import { Timer, TrendingDown, Share } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 
 interface AuctionSectionProps {
   product: {
@@ -16,6 +25,7 @@ interface AuctionSectionProps {
 
 export function AuctionSection({ product }: AuctionSectionProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isShareOpen, setIsShareOpen] = useState(false);
   const { toast } = useToast();
   const auctionEnded = product.auction_end_time && new Date(product.auction_end_time) < new Date();
 
@@ -62,6 +72,24 @@ export function AuctionSection({ product }: AuctionSectionProps) {
     }
   };
 
+  const handleShare = async (url: string) => {
+    try {
+      await navigator.clipboard.writeText(url);
+      toast({
+        title: "Link copied",
+        description: "Product link has been copied to clipboard",
+      });
+      setIsShareOpen(false);
+    } catch (error) {
+      console.error('Error copying to clipboard:', error);
+      toast({
+        title: "Error",
+        description: "Could not copy the link. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
   return (
     <div className="w-full p-4 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg border border-purple-200">
       <div className="flex justify-between items-center mb-3">
@@ -69,38 +97,63 @@ export function AuctionSection({ product }: AuctionSectionProps) {
           <Timer className="h-5 w-5 text-purple-600" />
           <span className="font-medium text-purple-900">Dutch Auction</span>
         </div>
-        {!auctionEnded && (
-          <span className="text-sm font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded">
-            Active
-          </span>
-        )}
+        <Dialog open={isShareOpen} onOpenChange={setIsShareOpen}>
+          <DialogTrigger asChild>
+            <Button variant="ghost" size="icon" className="h-9 w-9">
+              <Share className="h-4 w-4 text-gray-500" />
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Share this product</DialogTitle>
+            </DialogHeader>
+            <div className="p-4 space-y-4">
+              <div className="flex gap-2">
+                <Input 
+                  readOnly 
+                  value={window.location.href} 
+                  className="bg-gray-50"
+                />
+                <Button 
+                  onClick={() => handleShare(window.location.href)}
+                >
+                  Copy
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
       
-      <div className="space-y-2">
-        <div className="flex justify-between items-center">
-          <span className="text-gray-600">Current Price</span>
-          <span className="text-lg font-bold text-purple-600">
+      <div className="grid grid-cols-2 gap-4 mb-4">
+        <div>
+          <span className="text-sm font-semibold text-gray-600">Current Price</span>
+          <div className="text-lg font-bold text-purple-600">
             ${product.current_price?.toLocaleString()}
-          </span>
-        </div>
-        <div className="flex justify-between items-center text-sm">
-          <span className="text-gray-500">Min Price</span>
-          <span className="font-medium text-gray-900">
-            ${product.min_price?.toLocaleString()}
-          </span>
-        </div>
-        <div className="flex justify-between items-center text-sm">
-          <span className="text-gray-500">Price Drop</span>
-          <div className="flex items-center gap-1 text-amber-600">
-            <DollarSign className="h-3 w-3" />
-            <span>{product.price_decrement?.toLocaleString()}/min</span>
           </div>
+        </div>
+        <div>
+          <span className="text-sm font-semibold text-gray-600">Min Price</span>
+          <div className="font-medium text-gray-900">
+            ${product.min_price?.toLocaleString()}
+          </div>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between text-sm mb-4">
+        <div className="flex items-center gap-2 text-gray-600">
+          <Timer className="h-4 w-4" />
+          <span>24h left</span>
+        </div>
+        <div className="flex items-center gap-2 text-amber-600">
+          <TrendingDown className="h-4 w-4" />
+          <span>Drops ${product.price_decrement?.toLocaleString()}/hour</span>
         </div>
       </div>
 
       {!auctionEnded && (
         <Button 
-          className="w-full mt-4 bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white"
+          className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white hover:opacity-90"
           onClick={handleBid}
           disabled={isSubmitting}
         >
