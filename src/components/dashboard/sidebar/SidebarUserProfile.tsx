@@ -19,22 +19,22 @@ export const SidebarUserProfile = () => {
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-3">
-        <Avatar className="h-10 w-10 bg-white">
-          <AvatarImage src="/lovable-uploads/db546c52-d93f-41d7-8bf4-a0dfd0b5c3b7.png" />
-          <AvatarFallback className="bg-white">
+        <Avatar className="h-10 w-10 bg-purple-500">
+          <AvatarImage src={user?.user_metadata?.avatar_url} />
+          <AvatarFallback>
             {user?.email?.charAt(0).toUpperCase() || 'U'}
           </AvatarFallback>
         </Avatar>
         <div className="flex flex-col">
-          <span className="text-sm font-medium text-white">
+          <span className="text-sm font-medium">
             {user?.user_metadata?.full_name || user?.email?.split('@')[0]}
           </span>
-          <span className="text-xs text-gray-300">{user?.email}</span>
+          <span className="text-xs text-gray-500">{user?.email}</span>
         </div>
       </div>
       <button 
         onClick={handleSignOut} 
-        className="text-gray-300 hover:text-white transition-colors"
+        className="text-gray-400 hover:text-gray-600"
       >
         <LogOut className="h-5 w-5" />
       </button>
