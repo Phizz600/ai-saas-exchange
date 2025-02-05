@@ -18,7 +18,7 @@ export const saleModuleItems = [
     path: "/products",
   },
   {
-    title: "Promote your product",
+    title: "Promote product",
     icon: Lightbulb,
     path: "/promote",
   },
