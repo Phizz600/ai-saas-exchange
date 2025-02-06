@@ -17,6 +17,7 @@ export function ProductPage() {
   const { id } = useParams();
   const [product, setProduct] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLiked, setIsLiked] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -89,7 +90,7 @@ export function ProductPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Left Column - Product Image */}
         <div className="space-y-6">
-          <ProductGallery images={[product.image]} />
+          <ProductGallery images={[product.image_url]} />
           <Card className="p-6">
             <h3 className="text-lg font-semibold mb-4">Product Details</h3>
             <div className="space-y-3">
@@ -103,7 +104,9 @@ export function ProductPage() {
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Monthly Revenue</span>
-                <span className="font-medium">${product.monthlyRevenue.toLocaleString()}</span>
+                <span className="font-medium">
+                  ${product.monthly_revenue ? product.monthly_revenue.toLocaleString() : '0'}
+                </span>
               </div>
             </div>
           </Card>
@@ -172,7 +175,7 @@ export function ProductPage() {
                 <div>
                   <p className="text-sm text-gray-600">Current Price</p>
                   <p className="text-3xl font-bold">
-                    ${product.current_price?.toLocaleString() || product.price.toLocaleString()}
+                    ${(product.current_price || product.price).toLocaleString()}
                   </p>
                 </div>
                 {product.auction_end_time && (
@@ -183,7 +186,7 @@ export function ProductPage() {
                     </div>
                     <div className="flex items-center gap-2 text-sm text-gray-600">
                       <TrendingDown className="h-4 w-4" />
-                      <span>Drops ${product.price_decrement}/hour</span>
+                      <span>Drops ${product.price_decrement ? product.price_decrement.toLocaleString() : '0'}/hour</span>
                     </div>
                   </div>
                 )}
