@@ -5,6 +5,7 @@ import Auth from "@/pages/Auth";
 import { Profile } from "@/pages/Profile";
 import { ListProduct } from "@/pages/ListProduct";
 import { ProductDashboard } from "@/pages/ProductDashboard";
+import { ProductPage } from "@/components/product/ProductPage";
 import { Toaster } from "@/components/ui/toaster";
 import { AuthGuard } from "@/components/AuthGuard";
 import "./App.css";
@@ -16,6 +17,7 @@ function App() {
         <Route path="/" element={<Index />} />
         <Route path="/marketplace" element={<Marketplace />} />
         <Route path="/auth" element={<Auth />} />
+        <Route path="/product/:id" element={<ProductPage />} />
         <Route 
           path="/profile" 
           element={

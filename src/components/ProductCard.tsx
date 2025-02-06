@@ -11,6 +11,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { ProductCardDialog } from "./marketplace/product-card/ProductCardDialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { Link } from "react-router-dom";
 
 interface ProductCardProps {
   product: {
@@ -196,28 +197,33 @@ export function ProductCard({ product, onView }: ProductCardProps) {
           </DialogContent>
         </Dialog>
 
-        <ProductCardImage
-          image={product.image}
-          title={product.title}
-          timeLeft={product.timeLeft}
-          seller={product.seller}
-          isFavorited={isFavorited}
-          onFavoriteClick={toggleFavorite}
-        />
-        <ProductCardContent
-          title={product.title}
-          description={product.description}
-          price={product.price}
-          category={product.category}
-          stage={product.stage}
-          monthlyRevenue={product.monthlyRevenue}
-          isAuction={!!product.auction_end_time}
-          currentPrice={product.current_price}
-          minPrice={product.min_price}
-          priceDecrement={product.price_decrement}
-          auctionEndTime={product.auction_end_time}
-        />
-        <ProductCardActions product={product} />
+        <Link to={`/product/${product.id}`} className="block">
+          <ProductCardImage
+            image={product.image}
+            title={product.title}
+            timeLeft={product.timeLeft}
+            seller={product.seller}
+            isFavorited={isFavorited}
+            onFavoriteClick={(e) => {
+              e.preventDefault(); // Prevent navigation when clicking favorite
+              toggleFavorite();
+            }}
+          />
+          <ProductCardContent
+            title={product.title}
+            description={product.description}
+            price={product.price}
+            category={product.category}
+            stage={product.stage}
+            monthlyRevenue={product.monthlyRevenue}
+            isAuction={!!product.auction_end_time}
+            currentPrice={product.current_price}
+            minPrice={product.min_price}
+            priceDecrement={product.price_decrement}
+            auctionEndTime={product.auction_end_time}
+          />
+          <ProductCardActions product={product} />
+        </Link>
       </Card>
     </motion.div>
   );
