@@ -29,8 +29,8 @@ export function ProductPage() {
             *,
             seller:profiles (
               id,
-              name,
-              avatar
+              full_name,
+              avatar_url
             )
           `)
           .eq('id', id)
