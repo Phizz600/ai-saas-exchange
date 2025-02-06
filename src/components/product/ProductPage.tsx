@@ -1,16 +1,15 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Share2, Timer, TrendingDown, ExternalLink, Heart } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { PriceHistoryChart } from "./sections/PriceHistoryChart";
-import { ProductStats } from "./sections/ProductStats";
+import { ProductHeader } from "./sections/ProductHeader";
+import { ProductPricing } from "./sections/ProductPricing";
 import { ProductGallery } from "./sections/ProductGallery";
+import { ProductStats } from "./sections/ProductStats";
+import { PriceHistoryChart } from "./sections/PriceHistoryChart";
 import { ProductReviews } from "./sections/ProductReviews";
 import { RelatedProducts } from "../marketplace/product-card/RelatedProducts";
+import { Card } from "@/components/ui/card";
 
 export function ProductPage() {
   const { id } = useParams();
@@ -128,135 +127,12 @@ export function ProductPage() {
 
         {/* Right Column - Product Info */}
         <div className="space-y-6">
-          <div className="flex justify-between items-start">
-            <div>
-              <h1 className="text-3xl font-bold mb-2">{product.title}</h1>
-              <p className="text-gray-600">{product.description}</p>
-            </div>
-            <div className="flex gap-2">
-              <Button 
-                variant="outline" 
-                size="icon"
-                onClick={() => {
-                  navigator.clipboard.writeText(window.location.href);
-                  toast({
-                    title: "Link copied!",
-                    description: "Product link has been copied to your clipboard",
-                  });
-                }}
-              >
-                <Share2 className="h-4 w-4" />
-              </Button>
-              <Button 
-                variant="outline" 
-                size="icon"
-                onClick={async () => {
-                  try {
-                    const { data: { user } } = await supabase.auth.getUser();
-                    if (!user) {
-                      toast({
-                        title: "Authentication required",
-                        description: "Please sign in to like products",
-                        variant: "destructive",
-                      });
-                      return;
-                    }
-
-                    const { data: profile } = await supabase
-                      .from('profiles')
-                      .select('liked_products')
-                      .eq('id', user.id)
-                      .single();
-
-                    const currentLikes = profile?.liked_products || [];
-                    const newLikes = isLiked
-                      ? currentLikes.filter((productId: string) => productId !== id)
-                      : [...currentLikes, id];
-
-                    await supabase
-                      .from('profiles')
-                      .update({ 
-                        liked_products: newLikes,
-                        updated_at: new Date().toISOString()
-                      })
-                      .eq('id', user.id);
-
-                    setIsLiked(!isLiked);
-                    toast({
-                      title: isLiked ? "Product unliked" : "Product liked",
-                      description: isLiked ? "Removed from your liked products" : "Added to your liked products",
-                    });
-                  } catch (error) {
-                    console.error('Error toggling like:', error);
-                    toast({
-                      title: "Error",
-                      description: "Could not update liked status",
-                      variant: "destructive",
-                    });
-                  }
-                }}
-              >
-                <Heart className={`h-4 w-4 ${isLiked ? "fill-current text-red-500" : ""}`} />
-              </Button>
-            </div>
-          </div>
-
-          {/* Price Section */}
-          <Card className="p-6">
-            <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <div>
-                  <p className="text-sm text-gray-600">Current Price</p>
-                  <p className="text-3xl font-bold">
-                    ${(product.current_price || product.price).toLocaleString()}
-                  </p>
-                </div>
-                {product.auction_end_time && (
-                  <div className="text-right">
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <Timer className="h-4 w-4" />
-                      <span>{product.timeLeft} left</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <TrendingDown className="h-4 w-4" />
-                      <span>Drops ${product.price_decrement ? product.price_decrement.toLocaleString() : '0'}/hour</span>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              <div className="flex gap-3">
-                <Button 
-                  className="flex-1 bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9]"
-                >
-                  {product.auction_end_time ? "Place Bid" : "Buy Now"}
-                </Button>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button variant="outline" className="flex-1">
-                      View Pitch Deck
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    {/* Pitch deck content */}
-                  </DialogContent>
-                </Dialog>
-              </div>
-
-              {product.demo_url && (
-                <a 
-                  href={product.demo_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-sm text-blue-600 hover:underline mt-4"
-                >
-                  <ExternalLink className="h-4 w-4" />
-                  View Live Demo
-                </a>
-              )}
-            </div>
-          </Card>
-
+          <ProductHeader 
+            product={product}
+            isLiked={isLiked}
+            setIsLiked={setIsLiked}
+          />
+          <ProductPricing product={product} />
           <ProductStats product={product} />
           <PriceHistoryChart productId={product.id} />
         </div>
