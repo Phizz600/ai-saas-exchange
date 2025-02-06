@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import { Share2, Timer, TrendingDown, ExternalLink, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -24,6 +23,11 @@ export function ProductPage() {
     const fetchProduct = async () => {
       try {
         console.log('Fetching product with ID:', id);
+        if (!id) {
+          console.error('No product ID provided');
+          return;
+        }
+
         const { data, error } = await supabase
           .from('products')
           .select(`
@@ -44,6 +48,18 @@ export function ProductPage() {
 
         console.log('Fetched product:', data);
         setProduct(data);
+
+        // Check if product is liked by current user
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('liked_products')
+            .eq('id', user.id)
+            .single();
+          
+          setIsLiked(profile?.liked_products?.includes(id) || false);
+        }
       } catch (error) {
         console.error('Error:', error);
         toast({
@@ -56,9 +72,7 @@ export function ProductPage() {
       }
     };
 
-    if (id) {
-      fetchProduct();
-    }
+    fetchProduct();
   }, [id, toast]);
 
   if (isLoading) {
@@ -147,6 +161,25 @@ export function ProductPage() {
                       });
                       return;
                     }
+
+                    const { data: profile } = await supabase
+                      .from('profiles')
+                      .select('liked_products')
+                      .eq('id', user.id)
+                      .single();
+
+                    const currentLikes = profile?.liked_products || [];
+                    const newLikes = isLiked
+                      ? currentLikes.filter((productId: string) => productId !== id)
+                      : [...currentLikes, id];
+
+                    await supabase
+                      .from('profiles')
+                      .update({ 
+                        liked_products: newLikes,
+                        updated_at: new Date().toISOString()
+                      })
+                      .eq('id', user.id);
 
                     setIsLiked(!isLiked);
                     toast({

@@ -81,7 +81,8 @@ export function ProductCard({ product, onView }: ProductCardProps) {
     checkIfLiked();
   }, [product.id]);
 
-  const toggleFavorite = async () => {
+  const toggleFavorite = async (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent navigation when clicking the favorite button
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
@@ -106,17 +107,7 @@ export function ProductCard({ product, onView }: ProductCardProps) {
         throw profileError;
       }
 
-      if (!profile) {
-        console.error('ProductCard: No profile found for user:', user.id);
-        toast({
-          title: "Error",
-          description: "Could not find your profile. Please try again.",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      const currentLikes = profile.liked_products || [];
+      const currentLikes = profile?.liked_products || [];
       const newLikes = isFavorited
         ? currentLikes.filter((id: string) => id !== product.id)
         : [...currentLikes, product.id];
@@ -144,13 +135,6 @@ export function ProductCard({ product, onView }: ProductCardProps) {
       toast({
         title: isFavorited ? "Product unliked" : "Product liked",
         description: isFavorited ? "Removed from your liked products" : "Added to your liked products",
-      });
-
-      console.log('ProductCard: Successfully toggled product like:', {
-        productId: product.id,
-        userId: user.id,
-        action: isFavorited ? 'unliked' : 'liked',
-        newLikes
       });
 
     } catch (error) {
@@ -184,10 +168,7 @@ export function ProductCard({ product, onView }: ProductCardProps) {
             <Button 
               variant="ghost" 
               className="absolute top-2 right-14 z-10 p-2 bg-white/10 backdrop-blur-md hover:bg-white/20"
-              style={{ 
-                WebkitTapHighlightColor: 'transparent',
-                touchAction: 'manipulation'
-              }}
+              onClick={(e) => e.preventDefault()} // Prevent navigation when clicking the preview button
             >
               <Eye className="h-4 w-4" />
             </Button>
@@ -204,10 +185,7 @@ export function ProductCard({ product, onView }: ProductCardProps) {
             timeLeft={product.timeLeft}
             seller={product.seller}
             isFavorited={isFavorited}
-            onFavoriteClick={(e) => {
-              e.preventDefault(); // Prevent navigation when clicking favorite
-              toggleFavorite();
-            }}
+            onFavoriteClick={toggleFavorite}
           />
           <ProductCardContent
             title={product.title}
