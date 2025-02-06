@@ -1,14 +1,20 @@
 import { Card } from "@/components/ui/card";
 import { TrendingUp, Users, Star } from "lucide-react";
+import { formatCurrency } from "@/lib/utils";
 
 interface ProductStatsProps {
   product: {
     id: string;
-    monthlyRevenue: number;
+    monthlyRevenue?: number;
   };
 }
 
 export function ProductStats({ product }: ProductStatsProps) {
+  // Safely format the monthly revenue with a default of 0
+  const formattedRevenue = product.monthlyRevenue 
+    ? formatCurrency(product.monthlyRevenue)
+    : '$0';
+
   return (
     <Card className="p-6">
       <h3 className="text-lg font-semibold mb-4">Product Stats</h3>
@@ -18,7 +24,7 @@ export function ProductStats({ product }: ProductStatsProps) {
             <TrendingUp className="h-4 w-4" />
             <span>Monthly Revenue</span>
           </div>
-          <p className="text-xl font-semibold">${product.monthlyRevenue.toLocaleString()}</p>
+          <p className="text-xl font-semibold">{formattedRevenue}</p>
         </div>
         <div>
           <div className="flex items-center gap-2 text-sm text-gray-600 mb-1">
