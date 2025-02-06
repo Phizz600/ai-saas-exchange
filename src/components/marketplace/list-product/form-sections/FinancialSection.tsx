@@ -52,6 +52,37 @@ export function FinancialSection({ form }: FinancialSectionProps) {
 
         <FormField
           control={form.control}
+          name="monthlyProfit"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="flex items-center gap-2">
+                Monthly Profit
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="h-4 w-4 text-gray-500 cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-white">
+                      <p>Net profit generated monthly after all expenses</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </FormLabel>
+              <FormControl>
+                <Input 
+                  type="number"
+                  placeholder="Enter monthly profit in USD"
+                  {...field}
+                  onChange={e => field.onChange(Number(e.target.value))}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
           name="grossProfitMargin"
           render={({ field }) => (
             <FormItem>

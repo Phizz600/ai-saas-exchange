@@ -6,6 +6,7 @@ export interface ListProductFormData {
   stage: string;
   industry: string;
   monthlyRevenue: number;
+  monthlyProfit?: number;
   monthlyTraffic: string;
   monthlyChurnRate?: number;
   techStack?: string;
@@ -25,4 +26,6 @@ export interface ListProductFormData {
   demoUrl?: string;
   isVerified?: boolean;
   isGoogleAnalyticsVerified?: boolean;
+  sellerName?: string;
+  sellerEmail?: string;
 }
