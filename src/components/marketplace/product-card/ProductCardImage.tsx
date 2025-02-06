@@ -10,7 +10,7 @@ interface ProductCardImageProps {
   title: string;
   timeLeft: string;
   isFavorited: boolean;
-  onFavoriteClick: () => void;
+  onFavoriteClick: (e: React.MouseEvent) => void;
   seller: {
     name: string;
     avatar: string;
@@ -74,10 +74,7 @@ export function ProductCardImage({
           className={`bg-white/10 backdrop-blur-md hover:bg-white/20 text-white ${
             isFavorited ? "text-red-500" : ""
           }`}
-          onClick={() => {
-            onFavoriteClick();
-            console.log('Analytics: Product favorited', { title });
-          }}
+          onClick={onFavoriteClick}
         >
           <Heart className={`h-5 w-5 ${isFavorited ? "fill-current" : ""}`} />
         </Button>

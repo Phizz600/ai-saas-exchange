@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { Share2, Timer, TrendingDown, ExternalLink, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -12,68 +13,76 @@ import { ProductGallery } from "./sections/ProductGallery";
 import { ProductReviews } from "./sections/ProductReviews";
 import { RelatedProducts } from "../marketplace/product-card/RelatedProducts";
 
-interface ProductPageProps {
-  product: {
-    id: string;
-    title: string;
-    description: string;
-    price: number;
-    category: string;
-    stage: string;
-    monthlyRevenue: number;
-    image: string;
-    timeLeft: string;
-    auction_end_time?: string;
-    current_price?: number;
-    min_price?: number;
-    price_decrement?: number;
-    demo_url?: string;
-    seller: {
-      id: string;
-      name: string;
-      avatar: string;
-    };
-  };
-}
-
-export function ProductPage({ product }: ProductPageProps) {
-  const [isLiked, setIsLiked] = useState(false);
+export function ProductPage() {
+  const { id } = useParams();
+  const [product, setProduct] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
-  const handleShare = () => {
-    navigator.clipboard.writeText(window.location.href);
-    toast({
-      title: "Link copied!",
-      description: "Product link has been copied to your clipboard",
-    });
-  };
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        console.log('Fetching product with ID:', id);
+        const { data, error } = await supabase
+          .from('products')
+          .select(`
+            *,
+            seller:profiles (
+              id,
+              name,
+              avatar
+            )
+          `)
+          .eq('id', id)
+          .single();
 
-  const handleLike = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
+        if (error) {
+          console.error('Error fetching product:', error);
+          throw error;
+        }
+
+        console.log('Fetched product:', data);
+        setProduct(data);
+      } catch (error) {
+        console.error('Error:', error);
         toast({
-          title: "Authentication required",
-          description: "Please sign in to like products",
+          title: "Error",
+          description: "Failed to load product details",
           variant: "destructive",
         });
-        return;
+      } finally {
+        setIsLoading(false);
       }
+    };
 
-      setIsLiked(!isLiked);
-      toast({
-        title: isLiked ? "Product unliked" : "Product liked",
-        description: isLiked ? "Removed from your liked products" : "Added to your liked products",
-      });
-    } catch (error) {
-      console.error('Error toggling like:', error);
-      toast({
-        title: "Error",
-        description: "Could not update liked status",
-        variant: "destructive",
-      });
+    if (id) {
+      fetchProduct();
     }
-  };
+  }, [id, toast]);
+
+  if (isLoading) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="animate-pulse">
+          <div className="h-64 bg-gray-200 rounded-lg mb-4"></div>
+          <div className="h-8 bg-gray-200 rounded w-1/3 mb-4"></div>
+          <div className="h-4 bg-gray-200 rounded w-2/3 mb-2"></div>
+          <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-2">Product Not Found</h1>
+          <p className="text-gray-600">The product you're looking for doesn't exist or has been removed.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -111,14 +120,45 @@ export function ProductPage({ product }: ProductPageProps) {
               <Button 
                 variant="outline" 
                 size="icon"
-                onClick={handleShare}
+                onClick={() => {
+                  navigator.clipboard.writeText(window.location.href);
+                  toast({
+                    title: "Link copied!",
+                    description: "Product link has been copied to your clipboard",
+                  });
+                }}
               >
                 <Share2 className="h-4 w-4" />
               </Button>
               <Button 
                 variant="outline" 
                 size="icon"
-                onClick={handleLike}
+                onClick={async () => {
+                  try {
+                    const { data: { user } } = await supabase.auth.getUser();
+                    if (!user) {
+                      toast({
+                        title: "Authentication required",
+                        description: "Please sign in to like products",
+                        variant: "destructive",
+                      });
+                      return;
+                    }
+
+                    setIsLiked(!isLiked);
+                    toast({
+                      title: isLiked ? "Product unliked" : "Product liked",
+                      description: isLiked ? "Removed from your liked products" : "Added to your liked products",
+                    });
+                  } catch (error) {
+                    console.error('Error toggling like:', error);
+                    toast({
+                      title: "Error",
+                      description: "Could not update liked status",
+                      variant: "destructive",
+                    });
+                  }
+                }}
               >
                 <Heart className={`h-4 w-4 ${isLiked ? "fill-current text-red-500" : ""}`} />
               </Button>
