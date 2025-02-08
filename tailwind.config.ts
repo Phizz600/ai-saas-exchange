@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -88,12 +89,18 @@ export default {
             "background-position": "right center",
           },
         },
+        rainbow: {
+          "0%": { "background-position": "0% 50%" },
+          "50%": { "background-position": "100% 50%" },
+          "100%": { "background-position": "0% 50%" },
+        },
       },
       animation: {
         "fade-in": "fade-in 0.5s ease-out",
         "slide-in": "slide-in 0.5s ease-out",
         float: "float 3s ease-in-out infinite",
         gradient: "gradient 15s ease infinite",
+        rainbow: "rainbow 3s linear infinite",
       },
     },
   },
