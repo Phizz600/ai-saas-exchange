@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 
 const AnimatedBackground = () => {
@@ -16,7 +17,7 @@ const AnimatedBackground = () => {
           {particles.map((particle) => (
             <motion.div
               key={particle.id}
-              className="absolute rounded-full bg-gradient-to-r from-white/10 to-transparent backdrop-blur-sm"
+              className="absolute rounded-full bg-gradient-to-r from-white/30 to-transparent backdrop-blur-sm"
               style={{
                 left: `${particle.x}%`,
                 top: `${particle.y}%`,
@@ -26,7 +27,7 @@ const AnimatedBackground = () => {
               animate={{
                 y: [0, -30, 0],
                 x: [0, Math.random() * 20 - 10, 0],
-                opacity: [0.2, 0.5, 0.2],
+                opacity: [0.4, 0.7, 0.4],
                 scale: [1, 1.2, 1],
               }}
               transition={{
