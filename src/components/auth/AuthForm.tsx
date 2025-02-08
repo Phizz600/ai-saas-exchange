@@ -31,7 +31,16 @@ export const AuthForm = () => {
             },
           },
         });
-        if (error) throw error;
+        if (error) {
+          if (error.message.includes("User already registered")) {
+            setErrorMessage("This email is already registered. Please sign in instead.");
+            // Automatically switch to sign in mode
+            setIsSignUp(false);
+          } else {
+            setErrorMessage(error.message);
+          }
+          return;
+        }
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email,
