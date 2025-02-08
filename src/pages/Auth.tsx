@@ -28,17 +28,30 @@ const Auth = () => {
     console.log("Auth: Component mounted");
     
     const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError) {
+        console.error("Session error:", sessionError);
+        return;
+      }
+      
       if (session) {
         console.log("Auth: User already logged in, checking user type");
-        const { data: profile } = await supabase
+        const { data: profile, error: profileError } = await supabase
           .from('profiles')
           .select('user_type')
           .eq('id', session.user.id)
-          .single();
+          .maybeSingle();
         
+        if (profileError) {
+          console.error("Profile error:", profileError);
+          return;
+        }
+
         if (profile?.user_type === 'ai_investor') {
           navigate("/coming-soon");
+        } else if (profile?.user_type === 'ai_builder') {
+          navigate("/list-product");
         } else {
           navigate("/marketplace");
         }
@@ -52,11 +65,16 @@ const Auth = () => {
       
       if (event === "SIGNED_IN" && session) {
         console.log("Auth: User signed in, checking user type");
-        const { data: profile } = await supabase
+        const { data: profile, error: profileError } = await supabase
           .from('profiles')
           .select('user_type')
           .eq('id', session.user.id)
-          .single();
+          .maybeSingle();
+
+        if (profileError) {
+          console.error("Profile error:", profileError);
+          return;
+        }
 
         if (profile?.user_type === 'ai_investor') {
           navigate("/coming-soon");
@@ -195,9 +213,9 @@ const Auth = () => {
 
         <Button 
           type="submit" 
-          className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 shadow-lg hover:shadow-xl transition-all duration-300 text-white"
+          className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 shadow-lg hover:shadow-xl transition-all duration-300 text-white text-lg py-6"
         >
-          {isSignUp ? "Sign Up" : "Sign In"}
+          {isSignUp ? "List your AI Product Now" : "Sign In"}
         </Button>
 
         <p className="text-center text-sm">
