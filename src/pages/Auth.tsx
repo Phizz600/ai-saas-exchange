@@ -30,19 +30,41 @@ const Auth = () => {
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
-        console.log("Auth: User already logged in, redirecting to marketplace");
-        navigate("/marketplace");
+        console.log("Auth: User already logged in, checking user type");
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('user_type')
+          .eq('id', session.user.id)
+          .single();
+        
+        if (profile?.user_type === 'ai_investor') {
+          navigate("/coming-soon");
+        } else {
+          navigate("/marketplace");
+        }
       }
     };
     
     checkSession();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("Auth: Auth state changed:", event);
       
       if (event === "SIGNED_IN" && session) {
-        console.log("Auth: User signed in, redirecting to marketplace");
-        navigate("/marketplace");
+        console.log("Auth: User signed in, checking user type");
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('user_type')
+          .eq('id', session.user.id)
+          .single();
+
+        if (profile?.user_type === 'ai_investor') {
+          navigate("/coming-soon");
+        } else if (profile?.user_type === 'ai_builder') {
+          navigate("/list-product");
+        } else {
+          navigate("/marketplace");
+        }
       }
     });
 
@@ -194,4 +216,3 @@ const Auth = () => {
 };
 
 export default Auth;
-
