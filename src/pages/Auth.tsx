@@ -91,6 +91,20 @@ const Auth = () => {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
+        {isSignUp && (
+          <div>
+            <Label htmlFor="firstName">First Name</Label>
+            <Input
+              id="firstName"
+              type="text"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              required
+              className="bg-white"
+            />
+          </div>
+        )}
+
         <div>
           <Label htmlFor="email">Email</Label>
           <Input
@@ -102,53 +116,6 @@ const Auth = () => {
             className="bg-white"
           />
         </div>
-        
-        {isSignUp && (
-          <>
-            <div>
-              <Label htmlFor="firstName">First Name</Label>
-              <Input
-                id="firstName"
-                type="text"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                required
-                className="bg-white"
-              />
-            </div>
-
-            <div className="flex items-center justify-between space-x-2">
-              <Label htmlFor="userType" className="font-exo">I am a</Label>
-              <div className="flex items-center space-x-2">
-                <span className={`text-sm ${!isBuilder ? 'text-primary font-medium' : 'text-muted-foreground'}`}>
-                  Investor
-                </span>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Switch
-                        id="userType"
-                        checked={isBuilder}
-                        onCheckedChange={setIsBuilder}
-                        className="data-[state=checked]:bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9]"
-                      />
-                    </TooltipTrigger>
-                    <TooltipContent className="bg-white p-4 max-w-xs">
-                      <p className="text-sm text-gray-600">
-                        Choose how you'll use the marketplace:
-                        <br />- As an Investor to buy AI products
-                        <br />- As a Builder to sell AI products
-                      </p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-                <span className={`text-sm ${isBuilder ? 'text-primary font-medium' : 'text-muted-foreground'}`}>
-                  Builder
-                </span>
-              </div>
-            </div>
-          </>
-        )}
 
         <div>
           <Label htmlFor="password">Password</Label>
@@ -161,6 +128,44 @@ const Auth = () => {
             className="bg-white"
           />
         </div>
+        
+        {isSignUp && (
+          <div className="flex items-center justify-between space-x-2 bg-gray-50 p-3 rounded-lg">
+            <div className="flex items-center space-x-2">
+              <Label htmlFor="userType" className="font-exo">I am a</Label>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className="cursor-help">🛈</span>
+                  </TooltipTrigger>
+                  <TooltipContent className="bg-white p-4 max-w-xs">
+                    <p className="text-sm text-gray-600">
+                      Choose how you'll use the marketplace:
+                      <br />- As an Investor to buy AI products
+                      <br />- As a Builder to sell AI products
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+            <div className="flex items-center space-x-2">
+              <span className={`text-sm ${!isBuilder ? 'text-primary font-medium' : 'text-muted-foreground'}`}>
+                Investor
+              </span>
+              <Switch
+                id="userType"
+                checked={isBuilder}
+                onCheckedChange={setIsBuilder}
+                className="relative h-6 w-11 cursor-pointer rounded-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <span className="block h-5 w-5 rounded-full bg-white shadow-lg ring-0 transition-transform data-[state=checked]:translate-x-5 data-[state=unchecked]:translate-x-0" />
+              </Switch>
+              <span className={`text-sm ${isBuilder ? 'text-primary font-medium' : 'text-muted-foreground'}`}>
+                Builder
+              </span>
+            </div>
+          </div>
+        )}
 
         <Button 
           type="submit" 
