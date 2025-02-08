@@ -25,6 +25,12 @@ export const ListingThankYou = () => {
               </p>
             </div>
             
+            <div className="space-y-4 text-center max-w-xl">
+              <p className="text-gray-600 italic">
+                Keep an eye on your email for updates about your listing and our launch.
+              </p>
+            </div>
+
             {/* Queue Position Card */}
             <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6 border border-purple-100">
               <div className="flex items-center justify-between mb-4">
@@ -35,12 +41,6 @@ export const ListingThankYou = () => {
                 <span className="text-2xl font-bold text-[#D946EF]">#127</span>
               </div>
               <p className="text-sm text-gray-600 mb-3">Estimated review time: 24-48 hours</p>
-            </div>
-
-            <div className="space-y-4 text-center max-w-xl">
-              <p className="text-gray-600 italic">
-                Keep an eye on your email for updates about your listing and our launch.
-              </p>
             </div>
             
             <a href="https://aiexchangeclub.beehiiv.com/subscribe" target="_blank" rel="noopener noreferrer" className="w-full">
@@ -63,13 +63,13 @@ export const ListingThankYou = () => {
               </div>
             </div>
 
-            <div className="text-sm text-gray-600 max-w-md text-center">
+            <div className="text-sm text-gray-600 max-w-md">
               Join our exclusive AI Exchange Club newsletter and unlock:
-              <ul className="mt-2 space-y-1">
-                <li>✨ Early access to marketplace features</li>
-                <li>💎 Exclusive AI industry insights</li>
-                <li>🚀 Priority listing opportunities</li>
-                <li>🤝 Network with fellow AI innovators</li>
+              <ul className="mt-2 space-y-1 pl-0">
+                <li className="text-left">✨ Early access to marketplace features</li>
+                <li className="text-left">💎 Exclusive AI industry insights</li>
+                <li className="text-left">🚀 Priority listing opportunities</li>
+                <li className="text-left">🤝 Network with fellow AI innovators</li>
               </ul>
             </div>
 
