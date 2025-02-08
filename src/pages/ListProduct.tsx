@@ -1,5 +1,5 @@
+
 import { ListProductForm } from "@/components/marketplace/list-product/ListProductForm";
-import { Link } from "react-router-dom";
 import { HelpCircle } from "lucide-react";
 import {
   Tooltip,
@@ -15,13 +15,11 @@ export const ListProduct = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-3xl mx-auto space-y-6 bg-white/90 rounded-xl shadow-xl p-8 backdrop-blur-sm">
           <div className="flex flex-col items-center space-y-4">
-            <Link to="/">
-              <img 
-                src="/lovable-uploads/f74b20e6-6798-4aeb-badd-2da6c2dce40b.png"
-                alt="AI Exchange Logo"
-                className="w-24 h-24 object-contain animate-float cursor-pointer hover:opacity-80 transition-opacity"
-              />
-            </Link>
+            <img 
+              src="/lovable-uploads/f74b20e6-6798-4aeb-badd-2da6c2dce40b.png"
+              alt="AI Exchange Logo"
+              className="w-24 h-24 object-contain animate-float"
+            />
             <h1 className="text-4xl font-exo font-bold bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] text-transparent bg-clip-text">
               List Your AI Product
             </h1>
