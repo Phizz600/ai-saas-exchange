@@ -1,4 +1,3 @@
-
 import { lazy, Suspense, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
@@ -10,7 +9,6 @@ import { Shield, ShieldCheck, LockKeyhole, ChevronDown, Star } from "lucide-reac
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 // Lazy load components
-const AnimatedWord = lazy(() => import("./hero/AnimatedWord"));
 const NewsletterSubscription = lazy(() => import("./hero/NewsletterSubscription"));
 const FeatureHighlights = lazy(() => import("./hero/FeatureHighlights"));
 const AnimatedBackground = lazy(() => import("./hero/AnimatedBackground"));
