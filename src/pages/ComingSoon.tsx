@@ -111,7 +111,7 @@ export const ComingSoon = () => {
 
           <div className="text-center text-gray-500 text-sm">
             Already have an AI product to list?{" "}
-            <Link to="/auth" className="text-[#8B5CF6] hover:underline">
+            <Link to="/list-product" className="text-[#8B5CF6] hover:underline">
               List Your AI Product & Get Early Access to Investors
             </Link>
           </div>
@@ -120,3 +120,4 @@ export const ComingSoon = () => {
     </div>
   );
 };
+
