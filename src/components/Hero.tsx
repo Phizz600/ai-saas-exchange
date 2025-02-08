@@ -1,9 +1,10 @@
-import { lazy, Suspense } from "react";
+
+import { lazy, Suspense, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Shield, ShieldCheck, LockKeyhole, ChevronDown, Star } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -22,7 +23,15 @@ const Hero = () => {
   const [isBuyerOpen, setIsBuyerOpen] = useState(false);
   const navigate = useNavigate();
   
-  const words = ["Companies", "Businesses", "Apps", "Plugins", "Tools", "MVPs", "Bots"];
+  const words = ["SaaS", "Bots", "Apps", "Tools", "Startups", "APIs", "Products", "Solutions", "Algorithms", "Models", "Agents", "Platforms"];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentWordIndex((prevIndex) => (prevIndex + 1) % words.length);
+    }, 2500); // 2.5 seconds interval
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="min-h-screen relative overflow-hidden">
@@ -60,7 +69,20 @@ const Hero = () => {
             <h1 className="font-exo text-5xl md:text-7xl font-bold leading-tight text-white text-center">
               The Dutch Auction Marketplace
               <br />
-              for AI SaaS:
+              for AI{" "}
+              <AnimatePresence mode="wait">
+                <motion.span
+                  key={currentWordIndex}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.3 }}
+                  className="inline-block bg-gradient-to-r from-[#D946EF] via-[#8B5CF6] to-[#0EA5E9] text-transparent bg-clip-text"
+                >
+                  {words[currentWordIndex]}
+                </motion.span>
+              </AnimatePresence>
+              :<br />
               <span className="bg-gradient-to-r from-[#D946EF] via-[#8B5CF6] to-[#0EA5E9] text-transparent bg-clip-text">
                 Bid, Buy, or Sell at the Perfect Price
               </span>
