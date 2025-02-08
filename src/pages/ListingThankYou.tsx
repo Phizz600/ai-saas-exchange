@@ -18,6 +18,15 @@ export const ListingThankYou = () => {
             <h1 className="text-4xl font-exo font-bold bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] text-transparent bg-clip-text">
               Thank You for Your Submission!
             </h1>
+
+            <div className="space-y-4 text-center max-w-xl">
+              <p className="text-lg text-gray-700">
+                Your AI product has been successfully submitted and is now under review for approval.
+              </p>
+              <p className="text-lg text-gray-700">
+                Our marketplace is launching soon, and we'll notify you as soon as we go live!
+              </p>
+            </div>
             
             {/* Queue Position Card */}
             <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6 border border-purple-100">
@@ -32,38 +41,40 @@ export const ListingThankYou = () => {
             </div>
 
             <div className="space-y-4 text-center max-w-xl">
-              <p className="text-lg text-gray-700">
-                Your AI product has been successfully submitted and is now under review for approval.
-              </p>
-              <p className="text-lg text-gray-700">
-                Our marketplace is launching soon, and we'll notify you as soon as we go live!
-              </p>
-
-              {/* Social Proof Section */}
-              <div className="mt-6 p-4 bg-purple-50 rounded-lg">
-                <div className="flex items-center justify-center space-x-2 mb-3">
-                  <Users className="h-5 w-5 text-[#8B5CF6]" />
-                  <span className="font-semibold text-gray-700">Join 1,000+ AI Founders</span>
-                </div>
-                <div className="space-y-2">
-                  <Progress value={80} className="h-2 bg-purple-100" />
-                  <p className="text-sm text-gray-600">
-                    <span className="font-semibold text-[#D946EF]">Only 200 spots left!</span> Be part of the first wave of AI innovators.
-                  </p>
-                </div>
-              </div>
-
               <p className="text-gray-600 italic">
                 Keep an eye on your email for updates about your listing and our launch.
               </p>
             </div>
             
-            <Link to="/">
-              <Button className="mt-8 bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] hover:opacity-90">
-                <Home className="mr-2 h-4 w-4" />
-                Return to Home
+            <Link to="/coming-soon">
+              <Button className="w-full mt-8 bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] hover:opacity-90">
+                Join the Club
               </Button>
             </Link>
+
+            <div className="text-sm text-gray-600 max-w-md text-center">
+              Join our exclusive AI Exchange Club newsletter and unlock:
+              <ul className="mt-2 space-y-1">
+                <li>✨ Early access to marketplace features</li>
+                <li>💎 Exclusive AI industry insights</li>
+                <li>🚀 Priority listing opportunities</li>
+                <li>🤝 Network with fellow AI innovators</li>
+              </ul>
+            </div>
+
+            {/* Social Proof Section */}
+            <div className="w-full max-w-md p-4 bg-purple-50 rounded-lg">
+              <div className="flex items-center justify-center space-x-2 mb-3">
+                <Users className="h-5 w-5 text-[#8B5CF6]" />
+                <span className="font-semibold text-gray-700">Join 1,000+ AI Founders</span>
+              </div>
+              <div className="space-y-2">
+                <Progress value={80} className="h-2 bg-purple-100" />
+                <p className="text-sm text-gray-600">
+                  <span className="font-semibold text-[#D946EF]">Only 200 spots left!</span> Be part of the first wave of AI innovators.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
