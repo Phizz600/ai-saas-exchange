@@ -2,6 +2,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ShieldCheck, Rocket, LineChart, Users } from "lucide-react";
+import { Footer } from "@/components/Footer";
 
 export const ComingSoon = () => {
   return (
@@ -117,6 +118,7 @@ export const ComingSoon = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };
