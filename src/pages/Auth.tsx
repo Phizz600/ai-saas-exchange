@@ -136,7 +136,7 @@ const Auth = () => {
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <span className="cursor-help">🛈</span>
+                    <span className="cursor-help text-gray-400 hover:text-gray-600">?</span>
                   </TooltipTrigger>
                   <TooltipContent className="bg-white p-4 max-w-xs">
                     <p className="text-sm text-gray-600">
@@ -156,7 +156,11 @@ const Auth = () => {
                 id="userType"
                 checked={isBuilder}
                 onCheckedChange={setIsBuilder}
-                className="relative h-6 w-11 cursor-pointer rounded-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                className={`relative h-6 w-11 cursor-pointer rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${
+                  isBuilder 
+                    ? 'bg-gradient-to-r from-[#8B5CF6] to-[#0EA4E9]' 
+                    : 'bg-gradient-to-r from-[#10B981] to-[#34D399]'
+                }`}
               >
                 <span className="block h-5 w-5 rounded-full bg-white shadow-lg ring-0 transition-transform data-[state=checked]:translate-x-5 data-[state=unchecked]:translate-x-0" />
               </Switch>
@@ -190,3 +194,4 @@ const Auth = () => {
 };
 
 export default Auth;
+
