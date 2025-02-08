@@ -1,19 +1,17 @@
 
-import { lazy, Suspense, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Shield, ShieldCheck, LockKeyhole, ChevronDown, Star } from "lucide-react";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { motion } from "framer-motion";
 import { RainbowButton } from "@/components/ui/rainbow-button";
 
 // Lazy load components
 const NewsletterSubscription = lazy(() => import("./hero/NewsletterSubscription"));
 const FeatureHighlights = lazy(() => import("./hero/FeatureHighlights"));
 const AnimatedBackground = lazy(() => import("./hero/AnimatedBackground"));
+const HeroTitle = lazy(() => import("./hero/HeroTitle"));
+const HowItWorks = lazy(() => import("./hero/HowItWorks"));
+const SecurityFeatures = lazy(() => import("./hero/SecurityFeatures"));
+const RoleInfo = lazy(() => import("./hero/RoleInfo"));
 
 const Hero = () => {
   const [newsletterEmail, setNewsletterEmail] = useState("");
@@ -21,7 +19,6 @@ const Hero = () => {
   const [subscriberCount, setSubscriberCount] = useState(342);
   const [isSellerOpen, setIsSellerOpen] = useState(false);
   const [isBuyerOpen, setIsBuyerOpen] = useState(false);
-  const navigate = useNavigate();
   
   const words = ["SaaS", "Bots", "Apps", "Tools", "Startups", "APIs", "Products", "Solutions", "Algorithms", "Models", "Agents", "Platforms"];
 
@@ -46,47 +43,9 @@ const Hero = () => {
           transition={{ duration: 0.5 }}
           className="space-y-8"
         >
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.3 }}
-            className="flex flex-col items-center mb-8"
-          >
-            <div className="flex items-center gap-2 mb-6 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
-              <div className="flex">
-                {[...Array(5)].map((_, i) => (
-                  <Star
-                    key={i}
-                    className={`w-4 h-4 ${i < 5 ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`}
-                  />
-                ))}
-              </div>
-              <span className="text-white font-medium">4.89</span>
-              <span className="text-gray-200">({312} reviews)</span>
-            </div>
-
-            <h1 className="font-exo text-5xl md:text-7xl font-bold leading-tight text-white text-center">
-              The Dutch Auction Marketplace
-              <br />
-              for AI{" "}
-              <AnimatePresence mode="wait">
-                <motion.span
-                  key={currentWordIndex}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.3 }}
-                  className="inline-block text-white"
-                >
-                  {words[currentWordIndex]}
-                </motion.span>
-              </AnimatePresence>
-              :<br />
-              <span className="bg-gradient-to-r from-[#D946EF] via-[#8B5CF6] to-[#0EA5E9] text-transparent bg-clip-text">
-                Bid, Buy, or Sell at the Perfect Price
-              </span>
-            </h1>
-          </motion.div>
+          <Suspense fallback={<Skeleton className="h-48" />}>
+            <HeroTitle currentWordIndex={currentWordIndex} words={words} />
+          </Suspense>
 
           <motion.p
             initial={{ opacity: 0 }}
@@ -109,100 +68,26 @@ const Hero = () => {
             </Suspense>
           </div>
 
-          <div className="flex flex-wrap justify-center gap-6 mb-8">
-            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
-              <ShieldCheck className="w-5 h-5 text-green-400" />
-              <span className="text-sm text-gray-200">Escrow-protected transactions</span>
-            </div>
-            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
-              <Shield className="w-5 h-5 text-blue-400" />
-              <span className="text-sm text-gray-200">GDPR Compliant</span>
-            </div>
-            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
-              <LockKeyhole className="w-5 h-5 text-purple-400" />
-              <span className="text-sm text-gray-200">Verified AI Startups</span>
-            </div>
-          </div>
+          <Suspense fallback={<Skeleton className="h-16" />}>
+            <SecurityFeatures />
+          </Suspense>
 
-          <div className="mt-16 space-y-8">
-            <h2 className="text-3xl font-bold text-white text-center">How it Works</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="bg-white/10 backdrop-blur-sm p-6 rounded-lg transform transition-all duration-300 hover:scale-105 hover:bg-white/15"
-              >
-                <div className="text-2xl font-bold text-white mb-2">1</div>
-                <h3 className="text-xl font-semibold text-white mb-3">List Your Product</h3>
-                <p className="text-gray-300">List your AI product, company, tool, etc, with a starting price.</p>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="bg-white/10 backdrop-blur-sm p-6 rounded-lg transform transition-all duration-300 hover:scale-105 hover:bg-white/15"
-              >
-                <div className="text-2xl font-bold text-white mb-2">2</div>
-                <h3 className="text-xl font-semibold text-white mb-3">Watch Prices Drop</h3>
-                <p className="text-gray-300">Buyers bid as the price drops daily/hourly.</p>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="bg-white/10 backdrop-blur-sm p-6 rounded-lg transform transition-all duration-300 hover:scale-105 hover:bg-white/15"
-              >
-                <div className="text-2xl font-bold text-white mb-2">3</div>
-                <h3 className="text-xl font-semibold text-white mb-3">Secure the Deal</h3>
-                <p className="text-gray-300">The highest bidder at the end of the auction wins if the buyer agrees to sell.</p>
-              </motion.div>
-            </div>
-          </div>
+          <Suspense fallback={<Skeleton className="h-64" />}>
+            <HowItWorks />
+          </Suspense>
 
           <Suspense fallback={<Skeleton className="w-full h-48 mt-16" />}>
             <FeatureHighlights />
           </Suspense>
 
-          <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-8">
-            <Collapsible
-              open={isSellerOpen}
-              onOpenChange={setIsSellerOpen}
-              className="bg-white/10 backdrop-blur-sm p-6 rounded-lg transition-all duration-300 hover:bg-white/15"
-            >
-              <CollapsibleTrigger className="flex items-center justify-between w-full">
-                <h3 className="text-2xl font-bold text-white">For Sellers</h3>
-                <ChevronDown className={`w-6 h-6 text-white transition-transform duration-300 ${isSellerOpen ? 'rotate-180' : ''}`} />
-              </CollapsibleTrigger>
-              <CollapsibleContent className="mt-4 space-y-4">
-                <h4 className="text-xl font-semibold text-white">Why Dutch Auctions Work for AI Startups</h4>
-                <ul className="space-y-3 text-gray-300">
-                  <li>• Avoid undervaluation with a transparent pricing model</li>
-                  <li>• Attract serious buyers racing to buy your AI SaaS product</li>
-                </ul>
-              </CollapsibleContent>
-            </Collapsible>
-
-            <Collapsible
-              open={isBuyerOpen}
-              onOpenChange={setIsBuyerOpen}
-              className="bg-white/10 backdrop-blur-sm p-6 rounded-lg transition-all duration-300 hover:bg-white/15"
-            >
-              <CollapsibleTrigger className="flex items-center justify-between w-full">
-                <h3 className="text-2xl font-bold text-white">For Buyers</h3>
-                <ChevronDown className={`w-6 h-6 text-white transition-transform duration-300 ${isBuyerOpen ? 'rotate-180' : ''}`} />
-              </CollapsibleTrigger>
-              <CollapsibleContent className="mt-4 space-y-4">
-                <h4 className="text-xl font-semibold text-white">Why Bid on AI Assets Here</h4>
-                <ul className="space-y-3 text-gray-300">
-                  <li>• Acquire undervalued AI SaaS products before competitors</li>
-                  <li>• No bidding wars, first to act wins</li>
-                </ul>
-              </CollapsibleContent>
-            </Collapsible>
-          </div>
+          <Suspense fallback={<Skeleton className="h-64" />}>
+            <RoleInfo
+              isSellerOpen={isSellerOpen}
+              setIsSellerOpen={setIsSellerOpen}
+              isBuyerOpen={isBuyerOpen}
+              setIsBuyerOpen={setIsBuyerOpen}
+            />
+          </Suspense>
 
           <div className="mt-8 text-sm text-gray-200">
             ✓ Free AI Valuations &nbsp; • &nbsp; ✓ Secure Platform &nbsp; • &nbsp; ✓ Premium Network
