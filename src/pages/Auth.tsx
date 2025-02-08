@@ -213,9 +213,9 @@ const Auth = () => {
 
         <Button 
           type="submit" 
-          className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 shadow-lg hover:shadow-xl transition-all duration-300 text-white text-lg py-6"
+          className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 shadow-lg hover:shadow-xl transition-all duration-300 text-white"
         >
-          {isSignUp ? "List your AI Product Now" : "Sign In"}
+          {isSignUp ? "Sign Up" : "Sign In"}
         </Button>
 
         <p className="text-center text-sm">
