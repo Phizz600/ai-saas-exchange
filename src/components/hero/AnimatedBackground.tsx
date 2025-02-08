@@ -7,7 +7,7 @@ const AnimatedBackground = () => {
     x: Math.random() * 100,
     y: Math.random() * 100,
     size: Math.random() * 15 + 5,
-    duration: 3 + Math.random() * 4,
+    duration: 15 + Math.random() * 10, // Increased duration for smoother movement
   }));
 
   return (
@@ -25,15 +25,16 @@ const AnimatedBackground = () => {
                 height: particle.size,
               }}
               animate={{
-                y: [0, -30, 0],
-                x: [0, Math.random() * 20 - 10, 0],
-                opacity: [0.4, 0.7, 0.4],
-                scale: [1, 1.2, 1],
+                y: [0, -50, 0],
+                x: [0, Math.random() * 30 - 15, 0],
+                opacity: [0.3, 0.5, 0.3],
+                scale: [1, 1.1, 1],
               }}
               transition={{
                 duration: particle.duration,
                 repeat: Infinity,
                 ease: "easeInOut",
+                times: [0, 0.5, 1], // Ensure smooth transitions between states
               }}
             />
           ))}

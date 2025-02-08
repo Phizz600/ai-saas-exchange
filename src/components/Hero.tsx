@@ -1,3 +1,4 @@
+
 import { lazy, Suspense, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
@@ -97,7 +98,7 @@ const Hero = () => {
           </motion.p>
 
           <div className="flex flex-col gap-6 items-center">
-            <RainbowButton>Get Unlimited Access</RainbowButton>
+            <RainbowButton className="text-lg py-6 px-12">List your AI Product Now</RainbowButton>
             <Suspense fallback={<Skeleton className="w-full max-w-md h-32" />}>
               <NewsletterSubscription
                 newsletterEmail={newsletterEmail}
