@@ -4,7 +4,6 @@ import { ShieldCheck, Rocket, LineChart, Users } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { useState } from "react";
 import { Progress } from "@/components/ui/progress";
-import { TestimonialsSection } from "@/components/blocks/testimonials-with-marquee";
 
 const testimonials = [
   {
@@ -104,11 +103,13 @@ export const ComingSoon = () => {
           </div>
 
           {/* Testimonials Section */}
-          <TestimonialsSection
-            title="Trusted by AI Founders & Investors"
-            description="Join hundreds of innovators already transforming the AI acquisition market"
-            testimonials={testimonials}
-          />
+          <div className="mt-16">
+            <TestimonialsSection
+              title="Trusted by AI Founders & Investors"
+              description="Join hundreds of innovators already transforming the AI acquisition market"
+              testimonials={testimonials}
+            />
+          </div>
 
           {/* Newsletter Signup */}
           <div className="max-w-xl mx-auto space-y-6">
