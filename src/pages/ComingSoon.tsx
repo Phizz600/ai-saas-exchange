@@ -1,24 +1,9 @@
 
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Mail, ChevronRight, ShieldCheck, Rocket, LineChart, Users } from "lucide-react";
-import { toast } from "sonner";
+import { ShieldCheck, Rocket, LineChart, Users } from "lucide-react";
 
 export const ComingSoon = () => {
-  const [email, setEmail] = useState("");
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) {
-      toast.error("Please enter your email address");
-      return;
-    }
-    toast.success("Thank you for joining! We'll keep you updated.");
-    setEmail("");
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#9b87f5] via-[#D946EF] to-[#0EA5E9]">
       <div className="container mx-auto px-4 py-12">
@@ -84,27 +69,15 @@ export const ComingSoon = () => {
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="flex gap-2">
-                <div className="relative flex-1">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-5 h-5" />
-                  <Input
-                    type="email"
-                    placeholder="Enter your email"
-                    className="pl-10 w-full"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                </div>
+            <div className="flex justify-center">
+              <a href="https://aiexchangeclub.beehiiv.com/subscribe" target="_blank" rel="noopener noreferrer" className="w-full">
                 <Button 
-                  type="submit"
-                  className="bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] hover:opacity-90 text-white"
+                  className="w-full bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] hover:opacity-90 text-white"
                 >
-                  <span>Join Now</span>
-                  <ChevronRight className="w-4 h-4 ml-2" />
+                  Join Now
                 </Button>
-              </div>
-            </form>
+              </a>
+            </div>
 
             <div className="text-sm text-gray-600">
               ✓ Premium deal flow &nbsp; • &nbsp; 
