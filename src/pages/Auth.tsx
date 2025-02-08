@@ -158,7 +158,7 @@ const Auth = () => {
                 onCheckedChange={setIsBuilder}
                 className={`relative h-6 w-11 cursor-pointer rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${
                   isBuilder 
-                    ? 'bg-gradient-to-r from-[#8B5CF6] to-[#0EA4E9]' 
+                    ? 'bg-[#8B5CF6]'
                     : 'bg-gradient-to-r from-[#10B981] to-[#34D399]'
                 }`}
               >
