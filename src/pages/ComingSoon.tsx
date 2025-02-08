@@ -3,8 +3,12 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ShieldCheck, Rocket, LineChart, Users } from "lucide-react";
 import { Footer } from "@/components/Footer";
+import { useState } from "react";
+import { Progress } from "@/components/ui/progress";
 
 export const ComingSoon = () => {
+  const [progress] = useState(80); // 800 out of 1000 spots taken
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#9b87f5] via-[#D946EF] to-[#0EA5E9]">
       <div className="container mx-auto px-4 py-12">
@@ -64,10 +68,23 @@ export const ComingSoon = () => {
           {/* Newsletter Signup */}
           <div className="max-w-xl mx-auto space-y-6">
             <div className="text-center space-y-4">
-              <h2 className="text-2xl font-bold text-gray-800">Join The Club</h2>
-              <p className="text-gray-600">
-                Be first in line when we launch. Get exclusive benefits and early access to premium AI investments.
-              </p>
+              <div className="bg-[#8B5CF6] text-white py-4 px-6 rounded-lg mb-8">
+                <h2 className="text-2xl font-bold">Join the AI Exchange Club Newsletter</h2>
+              </div>
+              
+              <div className="space-y-6">
+                <div className="flex items-center justify-center gap-3">
+                  <Users className="w-6 h-6 text-[#8B5CF6]" />
+                  <h3 className="text-xl font-semibold text-gray-800">Join 1,000+ AI Founders</h3>
+                </div>
+                
+                <div className="space-y-2">
+                  <Progress value={progress} className="h-2 bg-purple-100" />
+                  <p className="text-[#D946EF] font-semibold">
+                    Only 200 spots left! <span className="text-gray-700">Be part of the first wave of AI innovators.</span>
+                  </p>
+                </div>
+              </div>
             </div>
 
             <div className="flex justify-center">
@@ -122,4 +139,3 @@ export const ComingSoon = () => {
     </div>
   );
 };
-
