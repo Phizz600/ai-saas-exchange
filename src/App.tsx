@@ -10,6 +10,7 @@ import { ProductPage } from "@/components/product/ProductPage";
 import { Toaster } from "@/components/ui/toaster";
 import { AuthGuard } from "@/components/AuthGuard";
 import { ComingSoon } from "@/pages/ComingSoon";
+import { ListingThankYou } from "@/pages/ListingThankYou";
 import "./App.css";
 
 function App() {
@@ -34,6 +35,14 @@ function App() {
           element={
             <AuthGuard>
               <ListProduct />
+            </AuthGuard>
+          } 
+        />
+        <Route 
+          path="/listing-thank-you" 
+          element={
+            <AuthGuard>
+              <ListingThankYou />
             </AuthGuard>
           } 
         />

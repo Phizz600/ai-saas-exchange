@@ -62,7 +62,7 @@ export function ListProductForm() {
     if (currentSection === sections.length - 1) {
       const success = await handleProductSubmission(data, setIsLoading);
       if (success) {
-        navigate("/marketplace");
+        navigate("/listing-thank-you");
       }
     }
   };
