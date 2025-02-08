@@ -1,30 +1,125 @@
 
 import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Mail, ChevronRight, ShieldCheck, Rocket, LineChart, Users } from "lucide-react";
+import { toast } from "sonner";
 
 export const ComingSoon = () => {
+  const [email, setEmail] = useState("");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) {
+      toast.error("Please enter your email address");
+      return;
+    }
+    toast.success("Thank you for joining! We'll keep you updated.");
+    setEmail("");
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#9b87f5] via-[#D946EF] to-[#0EA5E9] flex items-center justify-center">
-      <div className="max-w-2xl mx-auto p-8 bg-white/90 rounded-xl shadow-xl backdrop-blur-sm text-center">
-        <Link to="/">
-          <img 
-            src="/lovable-uploads/f74b20e6-6798-4aeb-badd-2da6c2dce40b.png"
-            alt="AI Exchange Logo"
-            className="w-24 h-24 mx-auto mb-8 object-contain animate-float cursor-pointer hover:opacity-80 transition-opacity"
-          />
-        </Link>
-        <h1 className="text-4xl font-exo font-bold bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] text-transparent bg-clip-text mb-6">
-          Coming Soon
-        </h1>
-        <p className="text-lg text-gray-600 mb-8">
-          The Investor portal is currently under development. We're working hard to bring you the best AI investment opportunities.
-        </p>
-        <p className="text-gray-500">
-          In the meantime, you can{" "}
-          <Link to="/auth" className="text-[#8B5CF6] hover:underline">
-            sign up as a Builder
+    <div className="min-h-screen bg-gradient-to-br from-[#9b87f5] via-[#D946EF] to-[#0EA5E9]">
+      <div className="container mx-auto px-4 py-12">
+        <div className="max-w-4xl mx-auto space-y-12 bg-white/90 rounded-xl shadow-xl p-8 backdrop-blur-sm">
+          <Link to="/">
+            <img 
+              src="/lovable-uploads/f74b20e6-6798-4aeb-badd-2da6c2dce40b.png"
+              alt="AI Exchange Logo"
+              className="w-24 h-24 mx-auto mb-8 object-contain animate-float cursor-pointer hover:opacity-80 transition-opacity"
+            />
           </Link>
-          {" "}to list your AI products.
-        </p>
+
+          <div className="text-center space-y-6">
+            <h1 className="text-4xl md:text-5xl font-exo font-bold bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] text-transparent bg-clip-text">
+              The Future of AI Asset Investment
+            </h1>
+            <p className="text-xl text-gray-700 max-w-2xl mx-auto">
+              Join an exclusive network of investors gaining early access to cutting-edge AI products, tools, and companies through our innovative Dutch auction marketplace.
+            </p>
+          </div>
+
+          {/* Benefits Grid */}
+          <div className="grid md:grid-cols-2 gap-6 my-12">
+            <div className="bg-white/50 p-6 rounded-lg border border-purple-100">
+              <div className="flex items-center gap-3 mb-4">
+                <ShieldCheck className="w-8 h-8 text-[#8B5CF6]" />
+                <h3 className="text-xl font-semibold text-gray-800">Premium Deals</h3>
+              </div>
+              <p className="text-gray-600">Get exclusive first access to vetted AI companies and products before they hit the public market.</p>
+            </div>
+
+            <div className="bg-white/50 p-6 rounded-lg border border-purple-100">
+              <div className="flex items-center gap-3 mb-4">
+                <LineChart className="w-8 h-8 text-[#D946EF]" />
+                <h3 className="text-xl font-semibold text-gray-800">Market Advantage</h3>
+              </div>
+              <p className="text-gray-600">Leverage our Dutch auction system to acquire valuable AI assets at optimal prices.</p>
+            </div>
+
+            <div className="bg-white/50 p-6 rounded-lg border border-purple-100">
+              <div className="flex items-center gap-3 mb-4">
+                <Users className="w-8 h-8 text-[#0EA5E9]" />
+                <h3 className="text-xl font-semibold text-gray-800">Elite Network</h3>
+              </div>
+              <p className="text-gray-600">Connect with fellow AI investors and founders in our exclusive community.</p>
+            </div>
+
+            <div className="bg-white/50 p-6 rounded-lg border border-purple-100">
+              <div className="flex items-center gap-3 mb-4">
+                <Rocket className="w-8 h-8 text-emerald-500" />
+                <h3 className="text-xl font-semibold text-gray-800">Early Mover</h3>
+              </div>
+              <p className="text-gray-600">Be among the first to capitalize on emerging AI opportunities and trends.</p>
+            </div>
+          </div>
+
+          {/* Newsletter Signup */}
+          <div className="max-w-xl mx-auto space-y-6">
+            <div className="text-center space-y-4">
+              <h2 className="text-2xl font-bold text-gray-800">Join The Club</h2>
+              <p className="text-gray-600">
+                Be first in line when we launch. Get exclusive benefits and early access to premium AI investments.
+              </p>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="flex gap-2">
+                <div className="relative flex-1">
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-5 h-5" />
+                  <Input
+                    type="email"
+                    placeholder="Enter your email"
+                    className="pl-10 w-full"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+                <Button 
+                  type="submit"
+                  className="bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] hover:opacity-90 text-white"
+                >
+                  <span>Join Now</span>
+                  <ChevronRight className="w-4 h-4 ml-2" />
+                </Button>
+              </div>
+            </form>
+
+            <div className="text-sm text-gray-600">
+              ✓ Premium deal flow &nbsp; • &nbsp; 
+              ✓ Market insights &nbsp; • &nbsp; 
+              ✓ Community access
+            </div>
+          </div>
+
+          <div className="text-center text-gray-500 text-sm">
+            Already have an AI product to list?{" "}
+            <Link to="/auth" className="text-[#8B5CF6] hover:underline">
+              Sign up as a Builder
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );
