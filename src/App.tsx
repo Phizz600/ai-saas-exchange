@@ -1,3 +1,4 @@
+
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Index from "@/pages/Index";
 import { Marketplace } from "@/pages/Marketplace";
@@ -8,6 +9,7 @@ import { ProductDashboard } from "@/pages/ProductDashboard";
 import { ProductPage } from "@/components/product/ProductPage";
 import { Toaster } from "@/components/ui/toaster";
 import { AuthGuard } from "@/components/AuthGuard";
+import { ComingSoon } from "@/pages/ComingSoon";
 import "./App.css";
 
 function App() {
@@ -18,6 +20,7 @@ function App() {
         <Route path="/marketplace" element={<Marketplace />} />
         <Route path="/auth" element={<Auth />} />
         <Route path="/product/:id" element={<ProductPage />} />
+        <Route path="/coming-soon" element={<ComingSoon />} />
         <Route 
           path="/profile" 
           element={
