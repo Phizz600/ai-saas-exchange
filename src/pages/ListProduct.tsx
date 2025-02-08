@@ -23,8 +23,8 @@ export const ListProduct = () => {
             <h1 className="text-4xl font-exo font-bold bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] text-transparent bg-clip-text">
               List Your AI Product
             </h1>
-            <p className="text-lg text-gray-600">
-              Share your AI innovation with potential buyers and investors
+            <p className="text-lg text-gray-600 text-center">
+              Share your AI innovation with potential buyers and investors. Only select information will be publicly displayed for your protection.
             </p>
           </div>
           <ListProductForm />
