@@ -1,9 +1,11 @@
+
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ShieldCheck, Rocket, LineChart, Users } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { useState } from "react";
 import { Progress } from "@/components/ui/progress";
+import { TestimonialsSection } from "@/components/blocks/testimonials-with-marquee";
 
 const testimonials = [
   {
