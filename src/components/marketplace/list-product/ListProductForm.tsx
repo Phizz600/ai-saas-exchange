@@ -58,9 +58,12 @@ export function ListProductForm() {
     useFormNavigation(sections.length);
 
   const onSubmit = async (data: ListProductFormData) => {
-    const success = await handleProductSubmission(data, setIsLoading);
-    if (success) {
-      navigate("/marketplace");
+    // Only process submission if we're on the last section
+    if (currentSection === sections.length - 1) {
+      const success = await handleProductSubmission(data, setIsLoading);
+      if (success) {
+        navigate("/marketplace");
+      }
     }
   };
 
