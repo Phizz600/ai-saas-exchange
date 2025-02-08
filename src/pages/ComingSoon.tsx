@@ -84,12 +84,35 @@ export const ComingSoon = () => {
               ✓ Market insights &nbsp; • &nbsp; 
               ✓ Community access
             </div>
+
+            {/* Newsletter Benefits */}
+            <div className="space-y-3 bg-purple-50 p-6 rounded-lg">
+              <h3 className="font-semibold text-gray-800">Why Join as an Investor?</h3>
+              <ul className="space-y-2 text-gray-700">
+                <li className="flex items-start gap-2">
+                  <span className="text-[#8B5CF6] font-bold">→</span>
+                  <span>First access to vetted AI companies before public launch</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#8B5CF6] font-bold">→</span>
+                  <span>Exclusive deals and preferential pricing through Dutch auctions</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#8B5CF6] font-bold">→</span>
+                  <span>Connect with fellow AI investors and industry leaders</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#8B5CF6] font-bold">→</span>
+                  <span>Weekly curated insights on emerging AI opportunities</span>
+                </li>
+              </ul>
+            </div>
           </div>
 
           <div className="text-center text-gray-500 text-sm">
             Already have an AI product to list?{" "}
             <Link to="/auth" className="text-[#8B5CF6] hover:underline">
-              Sign up as a Builder
+              List Your AI Product & Get Early Access to Investors
             </Link>
           </div>
         </div>
