@@ -48,7 +48,7 @@ export const ListingThankYou = () => {
             
             <a href="https://aiexchangeclub.beehiiv.com/subscribe" target="_blank" rel="noopener noreferrer" className="w-full">
               <Button className="w-full mt-8 bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] hover:opacity-90">
-                Join the Club
+                Join the AI Exchange Club Newsletter
               </Button>
             </a>
 
@@ -81,3 +81,4 @@ export const ListingThankYou = () => {
     </div>
   );
 };
+
