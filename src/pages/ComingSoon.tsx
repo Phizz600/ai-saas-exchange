@@ -1,10 +1,48 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ShieldCheck, Rocket, LineChart, Users } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { useState } from "react";
 import { Progress } from "@/components/ui/progress";
+import { TestimonialsSection } from "@/components/blocks/testimonials-with-marquee";
+
+const testimonials = [
+  {
+    author: {
+      name: "Alex Chen",
+      handle: "@aigrowth",
+      avatar: "https://images.unsplash.com/photo-1566492031773-4f4e44671857?w=150&h=150&fit=crop&crop=face",
+    },
+    text: "Sold our NLP API through the Dutch auction in 72 hours. The competitive pricing model drove serious buyers from day one.",
+    href: "https://twitter.com/aigrowth"
+  },
+  {
+    author: {
+      name: "Priya Kapoor",
+      handle: "@techinvestor",
+      avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&h=150&fit=crop&crop=face",
+    },
+    text: "Acquired three AI tools at fair market value through the descending price mechanism. The transparency is unmatched.",
+    href: "https://twitter.com/techinvestor"
+  },
+  {
+    author: {
+      name: "James Müller",
+      handle: "@aimarket",
+      avatar: "https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=150&h=150&fit=crop&crop=face",
+    },
+    text: "Listed our computer vision startup and had multiple offers before the price floor. The escrow system made closing seamless.",
+  },
+  {
+    author: {
+      name: "Sarah Johnson",
+      handle: "@saasfounder",
+      avatar: "https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?w=150&h=150&fit=crop&crop=face",
+    },
+    text: "The AI valuation model helped us price our chatbot platform perfectly. Received 12 bids in the first auction cycle.",
+    href: "https://twitter.com/saasfounder"
+  }
+];
 
 export const ComingSoon = () => {
   const [progress] = useState(80); // 800 out of 1000 spots taken
@@ -64,6 +102,13 @@ export const ComingSoon = () => {
               <p className="text-gray-600">Be among the first to capitalize on emerging AI opportunities and trends.</p>
             </div>
           </div>
+
+          {/* Testimonials Section */}
+          <TestimonialsSection
+            title="Trusted by AI Founders & Investors"
+            description="Join hundreds of innovators already transforming the AI acquisition market"
+            testimonials={testimonials}
+          />
 
           {/* Newsletter Signup */}
           <div className="max-w-xl mx-auto space-y-6">
