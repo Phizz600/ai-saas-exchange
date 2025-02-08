@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ShieldCheck, Rocket, LineChart, Users } from "lucide-react";
@@ -70,7 +71,7 @@ export const ComingSoon = () => {
               <div className="space-y-6">
                 <div className="flex items-center justify-center gap-3">
                   <Users className="w-6 h-6 text-[#8B5CF6]" />
-                  <h3 className="text-xl font-semibold text-gray-800">Join 1,000+ AI Founders</h3>
+                  <h3 className="text-xl font-semibold text-gray-800">Join 1,000+ AI Investors</h3>
                 </div>
                 
                 <div className="space-y-2">
@@ -87,7 +88,7 @@ export const ComingSoon = () => {
                 <Button 
                   className="w-full bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] hover:opacity-90 text-white"
                 >
-                  Join Now
+                  Join The AI Exchange Club Newsletter
                 </Button>
               </a>
             </div>
