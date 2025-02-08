@@ -76,6 +76,13 @@ export function ListProductForm() {
     }
   };
 
+  const getTrafficValue = (range: string): number => {
+    // Split the range and take the upper bound
+    const upperBound = range.split('-')[1] || range;
+    // Remove commas and convert to number
+    return parseInt(upperBound.replace(/,/g, ''));
+  };
+
   const onSubmit = async (data: ListProductFormData) => {
     try {
       setIsLoading(true);
@@ -109,6 +116,9 @@ export function ListProductForm() {
         image_url = publicUrl;
       }
 
+      // Convert traffic ranges to numbers
+      const monthlyTrafficValue = data.monthlyTraffic ? getTrafficValue(data.monthlyTraffic) : 0;
+
       const productData = {
         title: data.title,
         description: data.description,
@@ -117,7 +127,7 @@ export function ListProductForm() {
         stage: data.stage,
         industry: data.industry,
         monthly_revenue: data.monthlyRevenue || 0,
-        monthly_traffic: data.monthlyTraffic || '0',
+        monthly_traffic: monthlyTrafficValue,
         image_url,
         seller_id: user.id,
         tech_stack: data.techStack === 'Other' ? data.techStackOther : data.techStack,
