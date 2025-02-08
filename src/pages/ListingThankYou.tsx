@@ -46,21 +46,11 @@ export const ListingThankYou = () => {
               </p>
             </div>
             
-            <Link to="/coming-soon">
+            <a href="https://aiexchangeclub.beehiiv.com/subscribe" target="_blank" rel="noopener noreferrer" className="w-full">
               <Button className="w-full mt-8 bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] hover:opacity-90">
                 Join the Club
               </Button>
-            </Link>
-
-            <div className="text-sm text-gray-600 max-w-md text-center">
-              Join our exclusive AI Exchange Club newsletter and unlock:
-              <ul className="mt-2 space-y-1">
-                <li>✨ Early access to marketplace features</li>
-                <li>💎 Exclusive AI industry insights</li>
-                <li>🚀 Priority listing opportunities</li>
-                <li>🤝 Network with fellow AI innovators</li>
-              </ul>
-            </div>
+            </a>
 
             {/* Social Proof Section */}
             <div className="w-full max-w-md p-4 bg-purple-50 rounded-lg">
@@ -74,6 +64,16 @@ export const ListingThankYou = () => {
                   <span className="font-semibold text-[#D946EF]">Only 200 spots left!</span> Be part of the first wave of AI innovators.
                 </p>
               </div>
+            </div>
+
+            <div className="text-sm text-gray-600 max-w-md text-center">
+              Join our exclusive AI Exchange Club newsletter and unlock:
+              <ul className="mt-2 space-y-1">
+                <li>✨ Early access to marketplace features</li>
+                <li>💎 Exclusive AI industry insights</li>
+                <li>🚀 Priority listing opportunities</li>
+                <li>🤝 Network with fellow AI innovators</li>
+              </ul>
             </div>
           </div>
         </div>
