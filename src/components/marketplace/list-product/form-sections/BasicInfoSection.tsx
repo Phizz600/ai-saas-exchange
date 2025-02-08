@@ -47,6 +47,8 @@ export function BasicInfoSection({ form }: BasicInfoSectionProps) {
     "500+"
   ];
 
+  const watchIndustry = form.watch("industry");
+
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-semibold">Basics</h2>
@@ -165,6 +167,22 @@ export function BasicInfoSection({ form }: BasicInfoSectionProps) {
             </FormItem>
           )}
         />
+
+        {watchIndustry === "Other" && (
+          <FormField
+            control={form.control}
+            name="industryOther"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Specify Industry</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter your industry" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
         <FormField
           control={form.control}
