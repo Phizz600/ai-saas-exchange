@@ -2,23 +2,20 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
 import { BasicInfoSection } from "./form-sections/BasicInfoSection";
 import { FinancialSection } from "./form-sections/FinancialSection";
 import { TechnicalSection } from "./form-sections/TechnicalSection";
 import { TrafficSection } from "./form-sections/TrafficSection";
 import { AuctionSection } from "./form-sections/AuctionSection";
 import { FormProgressBar } from "./form-sections/FormProgressBar";
+import { FormNavigationButtons } from "./components/FormNavigationButtons";
+import { useFormNavigation } from "./hooks/useFormNavigation";
+import { handleProductSubmission } from "./utils/formSubmissionHandler";
+import { Form } from "@/components/ui/form";
 import { ListProductFormData } from "./types";
-import { ArrowLeft, ArrowRight } from "lucide-react";
 
 export function ListProductForm() {
   const [isLoading, setIsLoading] = useState(false);
-  const [currentSection, setCurrentSection] = useState(0);
-  const { toast } = useToast();
   const navigate = useNavigate();
 
   const sections = [
@@ -57,115 +54,13 @@ export function ListProductForm() {
     },
   });
 
-  const handleSectionClick = (sectionIndex: number) => {
-    setCurrentSection(sectionIndex);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const nextSection = () => {
-    if (currentSection < sections.length - 1) {
-      setCurrentSection(prev => prev + 1);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  };
-
-  const previousSection = () => {
-    if (currentSection > 0) {
-      setCurrentSection(prev => prev - 1);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  };
-
-  const getTrafficValue = (range: string): number => {
-    // Split the range and take the upper bound
-    const upperBound = range.split('-')[1] || range;
-    // Remove commas and convert to number
-    return parseInt(upperBound.replace(/,/g, ''));
-  };
+  const { currentSection, handleSectionClick, nextSection, previousSection } = 
+    useFormNavigation(sections.length);
 
   const onSubmit = async (data: ListProductFormData) => {
-    try {
-      setIsLoading(true);
-      console.log('Submitting product data:', data);
-
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        toast({
-          title: "Authentication required",
-          description: "Please log in to list a product",
-          variant: "destructive"
-        });
-        return;
-      }
-
-      let image_url = null;
-      if (data.image) {
-        const fileExt = data.image.name.split('.').pop();
-        const filePath = `${crypto.randomUUID()}.${fileExt}`;
-        
-        const { error: uploadError } = await supabase.storage
-          .from('product-images')
-          .upload(filePath, data.image);
-
-        if (uploadError) throw uploadError;
-
-        const { data: { publicUrl } } = supabase.storage
-          .from('product-images')
-          .getPublicUrl(filePath);
-          
-        image_url = publicUrl;
-      }
-
-      // Convert traffic ranges to numbers
-      const monthlyTrafficValue = data.monthlyTraffic ? getTrafficValue(data.monthlyTraffic) : 0;
-
-      const productData = {
-        title: data.title,
-        description: data.description,
-        price: data.isAuction ? data.startingPrice : data.price || 0,
-        category: data.category,
-        stage: data.stage,
-        industry: data.industry,
-        monthly_revenue: data.monthlyRevenue || 0,
-        monthly_traffic: monthlyTrafficValue,
-        image_url,
-        seller_id: user.id,
-        tech_stack: data.techStack === 'Other' ? data.techStackOther : data.techStack,
-        team_size: data.teamSize,
-        has_patents: data.hasPatents,
-        competitors: data.competitors,
-        demo_url: data.demoUrl,
-        is_verified: data.isVerified,
-        ...(data.isAuction && {
-          auction_end_time: data.auctionEndTime?.toISOString(),
-          starting_price: data.startingPrice || 0,
-          current_price: data.startingPrice || 0,
-          min_price: data.minPrice || 0,
-          price_decrement: data.priceDecrement || 0,
-          price_decrement_interval: data.priceDecrementInterval
-        })
-      };
-
-      const { error } = await supabase.from('products').insert(productData);
-
-      if (error) throw error;
-
-      toast({
-        title: "Product Submitted Successfully!",
-        description: "Thank you for your submission. After a quick team review, your product will be made live for purchase on the marketplace.",
-        duration: 5000,
-      });
-
+    const success = await handleProductSubmission(data, setIsLoading);
+    if (success) {
       navigate("/marketplace");
-    } catch (error) {
-      console.error('Error submitting product:', error);
-      toast({
-        title: "Error",
-        description: "Failed to list your product. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -183,40 +78,13 @@ export function ListProductForm() {
           <CurrentSectionComponent form={form} />
         </div>
 
-        <div className="flex justify-between items-center pt-6 border-t">
-          {currentSection > 0 && (
-            <Button
-              type="button"
-              variant="outline"
-              onClick={previousSection}
-              className="flex items-center gap-2"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Previous
-            </Button>
-          )}
-          
-          {currentSection < sections.length - 1 ? (
-            <Button
-              type="button"
-              onClick={nextSection}
-              className="ml-auto flex items-center gap-2"
-            >
-              Next
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-          ) : (
-            <Button 
-              type="submit"
-              className="ml-auto bg-gradient-to-r from-[#8B5CF6] via-[#D946EE] to-[#0EA4E9] text-white font-semibold py-3 px-6 rounded-lg transform transition-all duration-200 
-              hover:opacity-90 shadow-[0_4px_0_rgb(42,98,143)] hover:shadow-[0_2px_0px_rgb(42,98,143)] 
-              hover:translate-y-[2px] active:translate-y-[4px] active:shadow-[0_0px_0px_rgb(42,98,143)]"
-              disabled={isLoading}
-            >
-              {isLoading ? "Submitting Product..." : "Submit Product"}
-            </Button>
-          )}
-        </div>
+        <FormNavigationButtons
+          currentSection={currentSection}
+          totalSections={sections.length}
+          onPrevious={previousSection}
+          onNext={nextSection}
+          isSubmitting={isLoading}
+        />
       </form>
     </Form>
   );
