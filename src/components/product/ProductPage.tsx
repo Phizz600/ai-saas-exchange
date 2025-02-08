@@ -1,5 +1,6 @@
+
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { ProductHeader } from "./sections/ProductHeader";
@@ -13,6 +14,7 @@ import { Card } from "@/components/ui/card";
 
 export function ProductPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [product, setProduct] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isLiked, setIsLiked] = useState(false);
@@ -24,10 +26,12 @@ export function ProductPage() {
         console.log('Fetching product with ID:', id);
         if (!id) {
           console.error('No product ID provided');
+          navigate('/marketplace');
           return;
         }
 
-        const { data, error } = await supabase
+        // Query for the specific product using the id from params
+        const { data: product, error } = await supabase
           .from('products')
           .select(`
             *,
@@ -38,15 +42,25 @@ export function ProductPage() {
             )
           `)
           .eq('id', id)
-          .single();
+          .maybeSingle();
 
         if (error) {
           console.error('Error fetching product:', error);
           throw error;
         }
 
-        console.log('Fetched product:', data);
-        setProduct(data);
+        if (!product) {
+          toast({
+            title: "Product not found",
+            description: "The product you're looking for doesn't exist or has been removed.",
+            variant: "destructive",
+          });
+          navigate('/marketplace');
+          return;
+        }
+
+        console.log('Fetched product:', product);
+        setProduct(product);
 
         // Check if product is liked by current user
         const { data: { user } } = await supabase.auth.getUser();
@@ -55,9 +69,11 @@ export function ProductPage() {
             .from('profiles')
             .select('liked_products')
             .eq('id', user.id)
-            .single();
+            .maybeSingle();
           
-          setIsLiked(profile?.liked_products?.includes(id) || false);
+          if (profile?.liked_products) {
+            setIsLiked(profile.liked_products.includes(id));
+          }
         }
       } catch (error) {
         console.error('Error:', error);
@@ -72,7 +88,7 @@ export function ProductPage() {
     };
 
     fetchProduct();
-  }, [id, toast]);
+  }, [id, toast, navigate]);
 
   if (isLoading) {
     return (
