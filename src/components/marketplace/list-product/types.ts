@@ -1,3 +1,4 @@
+
 export interface ListProductFormData {
   title: string;
   description: string;
@@ -28,4 +29,5 @@ export interface ListProductFormData {
   isGoogleAnalyticsVerified?: boolean;
   sellerName?: string;
   sellerEmail?: string;
+  numberOfEmployees?: string;
 }
