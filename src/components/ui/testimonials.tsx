@@ -61,13 +61,6 @@ export function Testimonials({ testimonials, className }: TestimonialsProps) {
                   <div className="mt-4 flex-grow text-sm text-muted-foreground">
                     "{testimonial.text}"
                   </div>
-                  <div className="mt-4">
-                    <img
-                      alt="Social media icon"
-                      className="h-5 w-5"
-                      src={testimonial.social}
-                    />
-                  </div>
                 </div>
               </div>
             </CarouselItem>
