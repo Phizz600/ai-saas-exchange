@@ -38,7 +38,9 @@ export const mockProducts: Product[] = [
     tech_stack: "Python",
     product_age: "1-3 years",
     business_location: "United States",
-    special_notes: "Currently processing over 1 million requests per month with 99.9% uptime."
+    special_notes: "Currently processing over 1 million requests per month with 99.9% uptime.",
+    highest_bid: null,
+    highest_bidder_id: null
   },
   {
     id: "2",
@@ -74,6 +76,8 @@ export const mockProducts: Product[] = [
     tech_stack: "JavaScript",
     product_age: "6-12 months",
     business_location: "Canada",
-    special_notes: "Integrates seamlessly with popular CRM platforms"
+    special_notes: "Integrates seamlessly with popular CRM platforms",
+    highest_bid: null,
+    highest_bidder_id: null
   }
 ];
