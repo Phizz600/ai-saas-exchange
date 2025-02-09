@@ -1,3 +1,4 @@
+
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { UseFormReturn } from "react-hook-form";
@@ -126,37 +127,6 @@ export function AuctionSection({ form }: AuctionSectionProps) {
                   <Input
                     type="number"
                     placeholder="Enter minimum price"
-                    {...field}
-                    onChange={e => field.onChange(Number(e.target.value))}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="activeUsers"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="flex items-center gap-2">
-                  Active Customers/Users
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Info className="h-4 w-4 text-gray-500 cursor-help" />
-                      </TooltipTrigger>
-                      <TooltipContent className="bg-white">
-                        <p>Number of current active users or customers</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    placeholder="Enter active users"
                     {...field}
                     onChange={e => field.onChange(Number(e.target.value))}
                   />
