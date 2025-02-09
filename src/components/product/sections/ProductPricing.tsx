@@ -28,13 +28,16 @@ export function ProductPricing({ product }: ProductPricingProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
-  // Fetch recent bids
+  // Fetch recent bids with bidder information
   const { data: recentBids } = useQuery({
     queryKey: ['recent-bids', product.id],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('bids')
-        .select('*')
+        .select(`
+          *,
+          bidder:profiles!bids_bidder_id_fkey(full_name)
+        `)
         .eq('product_id', product.id)
         .gte('created_at', new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString())
         .order('created_at', { ascending: false });
@@ -43,6 +46,20 @@ export function ProductPricing({ product }: ProductPricingProps) {
       return data;
     },
   });
+
+  const formatBidderName = (fullName: string | null) => {
+    if (!fullName) return "Anonymous";
+    const initial = fullName.charAt(0).toUpperCase();
+    return `${initial}${'*'.repeat(6)}`;
+  };
+
+  const formatTimeAgo = (timestamp: string) => {
+    const minutes = Math.floor((Date.now() - new Date(timestamp).getTime()) / 60000);
+    if (minutes < 60) return `${minutes}m ago`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours}h ago`;
+    return `${Math.floor(hours / 24)}d ago`;
+  };
 
   useEffect(() => {
     const calculateTimeLeft = () => {
@@ -163,13 +180,20 @@ export function ProductPricing({ product }: ProductPricingProps) {
             )}
           </div>
 
-          {recentBids && (
-            <div className="text-sm text-gray-600">
-              {recentBids.length > 0 ? (
+          {recentBids && recentBids.length > 0 && (
+            <div className="space-y-2">
+              <div className="text-sm text-gray-600">
                 <p>{recentBids.length} bid{recentBids.length !== 1 ? 's' : ''} placed in the last 12h</p>
-              ) : (
-                <p>No bids in the last 12h</p>
-              )}
+              </div>
+              <div className="bg-gray-50 p-3 rounded-md">
+                <p className="text-sm text-gray-600">
+                  Last bid placed by: <span className="font-medium">{formatBidderName(recentBids[0].bidder?.full_name)}</span>
+                  <br />
+                  <span className="text-gray-500">
+                    ${recentBids[0].amount.toLocaleString()} • {formatTimeAgo(recentBids[0].created_at)}
+                  </span>
+                </p>
+              </div>
             </div>
           )}
 
