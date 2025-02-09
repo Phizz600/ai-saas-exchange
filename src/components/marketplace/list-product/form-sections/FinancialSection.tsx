@@ -1,3 +1,4 @@
+
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { UseFormReturn } from "react-hook-form";
@@ -103,6 +104,37 @@ export function FinancialSection({ form }: FinancialSectionProps) {
                 <Input 
                   type="number"
                   placeholder="Enter profit margin"
+                  {...field}
+                  onChange={e => field.onChange(Number(e.target.value))}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="monthlyChurnRate"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="flex items-center gap-2">
+                Monthly Churn Rate (%)
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="h-4 w-4 text-gray-500 cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-white">
+                      <p>Percentage of customers that stop using your product each month</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </FormLabel>
+              <FormControl>
+                <Input 
+                  type="number"
+                  placeholder="Enter churn rate"
                   {...field}
                   onChange={e => field.onChange(Number(e.target.value))}
                 />

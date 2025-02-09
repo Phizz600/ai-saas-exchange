@@ -54,6 +54,8 @@ export const handleProductSubmission = async (
       stage: data.stage,
       industry: data.industry,
       monthly_revenue: data.monthlyRevenue || 0,
+      monthly_profit: data.monthlyProfit || 0,
+      gross_profit_margin: data.grossProfitMargin || 0,
       monthly_traffic: monthlyTrafficValue,
       image_url,
       seller_id: user.id,

@@ -1,17 +1,20 @@
 
 import { Card } from "@/components/ui/card";
-import { TrendingUp, Users, Star, Shield, Zap, Building2 } from "lucide-react";
+import { TrendingUp, Users, Star, Shield, Zap, Building2, Info } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 
 interface ProductStatsProps {
   product: {
     id: string;
     monthly_revenue?: number;
+    monthly_profit?: number;
+    gross_profit_margin?: number;
     tech_stack?: string;
     tech_stack_other?: string;
     integrations_other?: string;
     team_size?: string;
     stage?: string;
+    special_notes?: string;
   };
 }
 
@@ -21,11 +24,15 @@ export function ProductStats({ product }: ProductStatsProps) {
     ? formatCurrency(product.monthly_revenue)
     : '$0';
 
+  const formattedProfit = product.monthly_profit
+    ? formatCurrency(product.monthly_profit)
+    : 'Not disclosed';
+
   const getRevenueStatus = () => {
     if (!product.monthly_revenue || product.monthly_revenue === 0) {
       return `Beta: Revenue starts ${product.stage === 'MVP' ? 'Q3 2024' : 'Q3 2025'}`;
     }
-    return `Monthly Churn: 2.5%`;
+    return `Monthly Profit: ${formattedProfit}`;
   };
 
   const getTechStack = () => {
@@ -65,21 +72,22 @@ export function ProductStats({ product }: ProductStatsProps) {
 
         <div>
           <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+            <Info className="h-4 w-4" />
+            <span>Gross Profit Margin</span>
+          </div>
+          <p className="text-lg font-semibold">
+            {product.gross_profit_margin ? `${product.gross_profit_margin}%` : 'Not disclosed'}
+          </p>
+          <p className="text-sm text-gray-600">Based on current operations</p>
+        </div>
+
+        <div>
+          <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
             <Zap className="h-4 w-4" />
             <span>Tech Stack</span>
           </div>
           <p className="text-lg font-semibold">Enterprise Grade</p>
           <p className="text-sm text-gray-600">{getTechStack()}</p>
-        </div>
-
-        <div>
-          <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-            <Shield className="h-4 w-4" />
-            <span>Compliance & Integrations</span>
-          </div>
-          <p className="text-lg font-semibold">Enterprise Ready</p>
-          <p className="text-sm text-gray-600">GDPR Compliant | SOC 2 Certified</p>
-          <p className="text-sm text-gray-600 mt-1">Works with Slack, Salesforce, Stripe</p>
         </div>
 
         <div>
@@ -91,16 +99,18 @@ export function ProductStats({ product }: ProductStatsProps) {
           <p className="text-sm text-gray-600">{getTeamComposition()}</p>
         </div>
 
-        <div className="md:col-span-2">
-          <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-            <Star className="h-4 w-4" />
-            <span>Customer Success Story</span>
+        {product.special_notes && (
+          <div className="md:col-span-2">
+            <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+              <Star className="h-4 w-4" />
+              <span>Special Notes</span>
+            </div>
+            <p className="text-lg font-semibold">Key Highlights</p>
+            <p className="text-sm text-gray-600 whitespace-pre-wrap">
+              {product.special_notes}
+            </p>
           </div>
-          <p className="text-lg font-semibold">Proven Results</p>
-          <p className="text-sm text-gray-600">
-            Reduced support tickets by 40% for Enterprise Clients
-          </p>
-        </div>
+        )}
       </div>
     </Card>
   );
