@@ -1,3 +1,4 @@
+
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -9,6 +10,7 @@ interface UseMarketplaceProductsProps {
   timeFilter: string;
   sortBy: string;
   currentPage: number;
+  showVerifiedOnly?: boolean;
 }
 
 export const useMarketplaceProducts = ({
@@ -18,6 +20,7 @@ export const useMarketplaceProducts = ({
   priceFilter,
   sortBy,
   currentPage,
+  showVerifiedOnly = false,
 }: UseMarketplaceProductsProps) => {
   const itemsPerPage = 6;
 
@@ -28,7 +31,8 @@ export const useMarketplaceProducts = ({
       stageFilter,
       priceFilter,
       sortBy,
-      currentPage
+      currentPage,
+      showVerifiedOnly
     });
 
     let query = supabase
@@ -48,6 +52,11 @@ export const useMarketplaceProducts = ({
     if (priceFilter !== 'all') {
       const [min, max] = priceFilter.split('-').map(Number);
       query = query.gte('price', min).lte('price', max);
+    }
+
+    // Apply verification filter
+    if (showVerifiedOnly) {
+      query = query.or('is_revenue_verified.eq.true,is_code_audited.eq.true,is_traffic_verified.eq.true');
     }
 
     // Apply sorting
@@ -80,7 +89,7 @@ export const useMarketplaceProducts = ({
   };
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ['products', searchQuery, industryFilter, stageFilter, priceFilter, sortBy, currentPage],
+    queryKey: ['products', searchQuery, industryFilter, stageFilter, priceFilter, sortBy, currentPage, showVerifiedOnly],
     queryFn: fetchProducts,
   });
 

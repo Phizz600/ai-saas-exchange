@@ -1,13 +1,18 @@
+
 import { DashboardLayout } from "@/components/product-dashboard/DashboardLayout";
 import { MarketplaceStats } from "@/components/product-dashboard/MarketplaceStats";
 import { ProductDashboardContent } from "@/components/product-dashboard/ProductDashboardContent";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Store, ShoppingBag } from "lucide-react";
+import { Store, ShoppingBag, ToggleLeft, ToggleRight } from "lucide-react";
 import { StatsCard } from "@/components/product-dashboard/StatsCard";
 import { ActiveBidsProducts } from "@/components/product-dashboard/ActiveBidsProducts";
 import { WatchedProducts } from "@/components/product-dashboard/WatchedProducts";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 export const ProductDashboard = () => {
+  const [showVerifiedOnly, setShowVerifiedOnly] = useState(false);
+
   return (
     <DashboardLayout>
       <Tabs defaultValue="seller" className="space-y-8">
@@ -23,10 +28,24 @@ export const ProductDashboard = () => {
         </TabsList>
         
         <TabsContent value="seller" className="space-y-8">
-          <MarketplaceStats />
+          <div className="flex justify-between items-center">
+            <MarketplaceStats />
+            <Button
+              variant="outline"
+              onClick={() => setShowVerifiedOnly(!showVerifiedOnly)}
+              className="flex items-center gap-2"
+            >
+              {showVerifiedOnly ? (
+                <ToggleRight className="h-4 w-4" />
+              ) : (
+                <ToggleLeft className="h-4 w-4" />
+              )}
+              Show Verified Only
+            </Button>
+          </div>
           <div>
             <h2 className="text-xl font-semibold mb-4 font-exo">Your Products</h2>
-            <ProductDashboardContent />
+            <ProductDashboardContent showVerifiedOnly={showVerifiedOnly} />
           </div>
         </TabsContent>
 
