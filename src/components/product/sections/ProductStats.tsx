@@ -6,7 +6,7 @@ import { formatCurrency } from "@/lib/utils";
 interface ProductStatsProps {
   product: {
     id: string;
-    monthlyRevenue?: number;
+    monthly_revenue?: number;
     tech_stack?: string;
     tech_stack_other?: string;
     integrations_other?: string;
@@ -17,12 +17,12 @@ interface ProductStatsProps {
 
 export function ProductStats({ product }: ProductStatsProps) {
   // Safely format the monthly revenue with a default of 0
-  const formattedRevenue = product.monthlyRevenue 
-    ? formatCurrency(product.monthlyRevenue)
+  const formattedRevenue = product.monthly_revenue 
+    ? formatCurrency(product.monthly_revenue)
     : '$0';
 
   const getRevenueStatus = () => {
-    if (!product.monthlyRevenue || product.monthlyRevenue === 0) {
+    if (!product.monthly_revenue || product.monthly_revenue === 0) {
       return `Beta: Revenue starts ${product.stage === 'MVP' ? 'Q3 2024' : 'Q3 2025'}`;
     }
     return `Monthly Churn: 2.5%`;

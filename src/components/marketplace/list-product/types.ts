@@ -34,5 +34,6 @@ export interface ListProductFormData {
   numberOfEmployees?: string;
   productAge?: string;
   businessLocation?: string;
+  integrations_other?: string;
 }
 
