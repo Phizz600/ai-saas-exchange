@@ -63,6 +63,8 @@ export const handleProductSubmission = async (
       competitors: data.competitors,
       demo_url: data.demoUrl,
       is_verified: data.isVerified,
+      product_age: data.productAge,
+      business_location: data.businessLocation,
       ...(data.isAuction && {
         auction_end_time: data.auctionEndTime?.toISOString(),
         starting_price: data.startingPrice || 0,
