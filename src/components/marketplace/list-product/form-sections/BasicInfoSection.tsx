@@ -1,3 +1,4 @@
+
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -45,6 +46,37 @@ export function BasicInfoSection({ form }: BasicInfoSectionProps) {
     "101-250",
     "251-500",
     "500+"
+  ];
+
+  const productAgeRanges = [
+    "Less than 6 months",
+    "6-12 months",
+    "1-2 years",
+    "2-5 years",
+    "5+ years"
+  ];
+
+  const countries = [
+    "United States",
+    "United Kingdom",
+    "Canada",
+    "Australia",
+    "Germany",
+    "France",
+    "Spain",
+    "Italy",
+    "Netherlands",
+    "Sweden",
+    "Norway",
+    "Denmark",
+    "Finland",
+    "Japan",
+    "South Korea",
+    "Singapore",
+    "India",
+    "Brazil",
+    "Mexico",
+    "Other"
   ];
 
   const watchIndustry = form.watch("industry");
@@ -126,6 +158,80 @@ export function BasicInfoSection({ form }: BasicInfoSectionProps) {
               <FormControl>
                 <Input placeholder="Enter your product title" {...field} />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="productAge"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="flex items-center gap-2">
+                Product Age
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="h-4 w-4 text-gray-500 cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-white">
+                      <p>How long has your product been in development/operation?</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger className="bg-white">
+                    <SelectValue placeholder="Select product age" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent className="bg-white">
+                  {productAgeRanges.map((range) => (
+                    <SelectItem key={range} value={range} className="bg-white hover:bg-gray-100">
+                      {range}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="businessLocation"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="flex items-center gap-2">
+                Business Location
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="h-4 w-4 text-gray-500 cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-white">
+                      <p>Where is your business primarily located?</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger className="bg-white">
+                    <SelectValue placeholder="Select country" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent className="bg-white">
+                  {countries.map((country) => (
+                    <SelectItem key={country} value={country} className="bg-white hover:bg-gray-100">
+                      {country}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
@@ -287,3 +393,4 @@ export function BasicInfoSection({ form }: BasicInfoSectionProps) {
     </div>
   );
 }
+

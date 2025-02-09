@@ -32,4 +32,7 @@ export interface ListProductFormData {
   sellerName?: string;
   sellerEmail?: string;
   numberOfEmployees?: string;
+  productAge?: string;
+  businessLocation?: string;
 }
+
