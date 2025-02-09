@@ -54,6 +54,33 @@ export type Database = {
           },
         ]
       }
+      draft_products: {
+        Row: {
+          created_at: string
+          form_data: Json
+          form_section: number
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          form_data: Json
+          form_section?: number
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          form_data?: Json
+          form_section?: number
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           created_at: string

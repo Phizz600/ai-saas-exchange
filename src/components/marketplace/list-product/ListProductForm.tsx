@@ -14,9 +14,11 @@ import { useFormNavigation } from "./hooks/useFormNavigation";
 import { handleProductSubmission } from "./utils/formSubmissionHandler";
 import { Form } from "@/components/ui/form";
 import { ListProductFormData } from "./types";
+import { useAutosave } from "./hooks/useAutosave";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function ListProductForm() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
   const sections = [
@@ -60,15 +62,39 @@ export function ListProductForm() {
   const { currentSection, handleSectionClick, nextSection, previousSection } = 
     useFormNavigation(sections.length);
 
+  const { isLoading } = useAutosave(form, currentSection);
+
   const onSubmit = async (data: ListProductFormData) => {
-    // Only process submission if we're on the last section
     if (currentSection === sections.length - 1) {
-      const success = await handleProductSubmission(data, setIsLoading);
-      if (success) {
-        navigate("/listing-thank-you");
+      setIsSubmitting(true);
+      try {
+        const success = await handleProductSubmission(data, setIsSubmitting);
+        if (success) {
+          // Clean up draft after successful submission
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user) {
+            await supabase
+              .from('draft_products')
+              .delete()
+              .eq('user_id', user.id);
+          }
+          navigate("/listing-thank-you");
+        }
+      } finally {
+        setIsSubmitting(false);
       }
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="space-y-8">
+        <Skeleton className="h-8 w-full" />
+        <Skeleton className="h-96 w-full" />
+        <Skeleton className="h-12 w-full" />
+      </div>
+    );
+  }
 
   const CurrentSectionComponent = sections[currentSection].component;
 
@@ -89,7 +115,7 @@ export function ListProductForm() {
           totalSections={sections.length}
           onPrevious={previousSection}
           onNext={nextSection}
-          isSubmitting={isLoading}
+          isSubmitting={isSubmitting}
         />
       </form>
     </Form>
