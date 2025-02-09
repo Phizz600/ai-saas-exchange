@@ -28,7 +28,32 @@ export function ProductPricing({ product }: ProductPricingProps) {
   const [timeLeft, setTimeLeft] = useState("");
   const [nextDrop, setNextDrop] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [currentPrice, setCurrentPrice] = useState(product.current_price);
   const { toast } = useToast();
+
+  // Subscribe to real-time price updates
+  useEffect(() => {
+    const channel = supabase
+      .channel('product-price-updates')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'products',
+          filter: `id=eq.${product.id}`
+        },
+        (payload: any) => {
+          console.log('Product updated:', payload);
+          setCurrentPrice(payload.new.current_price);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [product.id]);
 
   // Fetch recent bids with bidder information
   const { data: recentBids, refetch: refetchBids } = useQuery({
@@ -111,12 +136,12 @@ export function ProductPricing({ product }: ProductPricingProps) {
       }
 
       const bidValue = parseFloat(bidAmount);
-      const currentHighestBid = product.highest_bid || product.starting_price || product.current_price || 0;
+      const currentHighestBid = currentPrice || product.starting_price || product.price || 0;
 
       if (isNaN(bidValue) || bidValue <= currentHighestBid) {
         toast({
           title: "Invalid bid amount",
-          description: `Bid must be greater than the current highest bid of $${currentHighestBid.toLocaleString()}`,
+          description: `Bid must be greater than the current price of $${currentHighestBid.toLocaleString()}`,
           variant: "destructive"
         });
         return;
@@ -149,7 +174,7 @@ export function ProductPricing({ product }: ProductPricingProps) {
         description: `You've placed a bid for $${bidValue.toLocaleString()}`,
       });
       setBidAmount("");
-      refetchBids(); // Refresh the bids list
+      refetchBids();
 
     } catch (error) {
       console.error('Error placing bid:', error);
@@ -164,7 +189,7 @@ export function ProductPricing({ product }: ProductPricingProps) {
   };
 
   // Determine the current price to display
-  const displayPrice = product.current_price || product.starting_price || product.price || 0;
+  const displayPrice = currentPrice || product.starting_price || product.price || 0;
 
   return (
     <Card className="p-6">
