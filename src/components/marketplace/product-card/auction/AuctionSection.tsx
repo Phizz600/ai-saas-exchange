@@ -1,7 +1,7 @@
 
 import { Timer, TrendingDown, Share } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -26,11 +26,37 @@ interface AuctionSectionProps {
 export function AuctionSection({ product }: AuctionSectionProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);
+  const [currentPrice, setCurrentPrice] = useState(product.current_price);
   const { toast } = useToast();
   const auctionEnded = product.auction_end_time && new Date(product.auction_end_time) < new Date();
 
+  // Subscribe to real-time price updates
+  useEffect(() => {
+    const channel = supabase
+      .channel('product-price-updates')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'products',
+          filter: `id=eq.${product.id}`
+        },
+        (payload: any) => {
+          if (payload.new.current_price !== currentPrice) {
+            setCurrentPrice(payload.new.current_price);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [product.id]); // Remove currentPrice from dependencies
+
   const handleBid = async () => {
-    if (!product.current_price) return;
+    if (!currentPrice) return;
     
     setIsSubmitting(true);
     try {
@@ -50,14 +76,14 @@ export function AuctionSection({ product }: AuctionSectionProps) {
         .insert({
           product_id: product.id,
           bidder_id: user.id,
-          amount: product.current_price
+          amount: currentPrice
         });
 
       if (error) throw error;
 
       toast({
         title: "Bid placed successfully!",
-        description: `You've placed a bid for $${product.current_price.toLocaleString()}`,
+        description: `You've placed a bid for $${currentPrice.toLocaleString()}`,
       });
 
     } catch (error) {
@@ -129,7 +155,7 @@ export function AuctionSection({ product }: AuctionSectionProps) {
         <div>
           <span className="text-sm font-semibold text-gray-600">Current Price</span>
           <div className="text-lg font-bold text-purple-600">
-            ${product.current_price?.toLocaleString()}
+            ${currentPrice?.toLocaleString()}
           </div>
         </div>
         <div>
