@@ -32,7 +32,7 @@ export const useAutosave = (form: UseFormReturn<ListProductFormData>, currentSec
 
         if (drafts) {
           form.reset(drafts.form_data as ListProductFormData);
-          setDraftId(drafts.id);
+          setDraftId(draftId);
         }
       } catch (error) {
         console.error('Error loading draft:', error);
@@ -46,7 +46,7 @@ export const useAutosave = (form: UseFormReturn<ListProductFormData>, currentSec
 
   // Auto-save changes
   useEffect(() => {
-    const saveDraft = async () => {
+    const saveDraft = async (showToast = false) => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return;
@@ -79,23 +79,33 @@ export const useAutosave = (form: UseFormReturn<ListProductFormData>, currentSec
           setDraftId(data.id);
         }
 
-        toast({
-          description: "Draft saved",
-          duration: 2000
-        });
+        if (showToast) {
+          toast({
+            description: "Draft saved",
+            duration: 2000
+          });
+        }
       } catch (error) {
         console.error('Error saving draft:', error);
-        toast({
-          variant: "destructive",
-          title: "Error saving draft",
-          description: "Please try again later"
-        });
+        if (showToast) {
+          toast({
+            variant: "destructive",
+            title: "Error saving draft",
+            description: "Please try again later"
+          });
+        }
       }
     };
 
-    const debounceTimeout = setTimeout(saveDraft, 1000);
+    // Auto-save quietly
+    const debounceTimeout = setTimeout(() => saveDraft(false), 1000);
     return () => clearTimeout(debounceTimeout);
   }, [form.watch(), currentSection, draftId]);
 
-  return { isLoading };
+  const saveForLater = async () => {
+    await saveDraft(true); // Save with toast notification
+  };
+
+  return { isLoading, saveForLater };
 };
+

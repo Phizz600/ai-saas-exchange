@@ -63,7 +63,7 @@ export function ListProductForm() {
   const { currentSection, handleSectionClick, nextSection, previousSection } = 
     useFormNavigation(sections.length);
 
-  const { isLoading } = useAutosave(form, currentSection);
+  const { isLoading, saveForLater } = useAutosave(form, currentSection);
 
   const onSubmit = async (data: ListProductFormData) => {
     if (currentSection === sections.length - 1) {
@@ -116,6 +116,7 @@ export function ListProductForm() {
           totalSections={sections.length}
           onPrevious={previousSection}
           onNext={nextSection}
+          onSaveForLater={saveForLater}
           isSubmitting={isSubmitting}
         />
       </form>
