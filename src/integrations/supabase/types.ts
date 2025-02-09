@@ -225,6 +225,7 @@ export type Database = {
           price_decrement_interval: string | null
           product_age: string | null
           seller_id: string
+          special_notes: string | null
           stage: string
           starting_price: number | null
           status: string | null
@@ -257,6 +258,7 @@ export type Database = {
           price_decrement_interval?: string | null
           product_age?: string | null
           seller_id: string
+          special_notes?: string | null
           stage: string
           starting_price?: number | null
           status?: string | null
@@ -289,6 +291,7 @@ export type Database = {
           price_decrement_interval?: string | null
           product_age?: string | null
           seller_id?: string
+          special_notes?: string | null
           stage?: string
           starting_price?: number | null
           status?: string | null

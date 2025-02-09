@@ -30,7 +30,6 @@ export function ProductPage() {
           return;
         }
 
-        // Query for the specific product using the id from params
         const { data: product, error } = await supabase
           .from('products')
           .select(`
@@ -62,7 +61,6 @@ export function ProductPage() {
         console.log('Fetched product:', product);
         setProduct(product);
 
-        // Check if product is liked by current user
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
           const { data: profile } = await supabase
@@ -137,6 +135,12 @@ export function ProductPage() {
                   ${product.monthly_revenue ? product.monthly_revenue.toLocaleString() : '0'}
                 </span>
               </div>
+              {product.special_notes && (
+                <div className="mt-4 border-t pt-4">
+                  <h4 className="text-base font-semibold mb-2">Special Notes</h4>
+                  <p className="text-gray-600 whitespace-pre-wrap">{product.special_notes}</p>
+                </div>
+              )}
             </div>
           </Card>
         </div>
