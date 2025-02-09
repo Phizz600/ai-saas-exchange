@@ -6,6 +6,7 @@ import { BasicInfoSection } from "./form-sections/BasicInfoSection";
 import { FinancialSection } from "./form-sections/FinancialSection";
 import { TechnicalSection } from "./form-sections/TechnicalSection";
 import { TrafficSection } from "./form-sections/TrafficSection";
+import { AuctionSection } from "./form-sections/AuctionSection";
 import { SpecialNotesSection } from "./form-sections/SpecialNotesSection";
 import { FormProgressBar } from "./form-sections/FormProgressBar";
 import { FormNavigationButtons } from "./components/FormNavigationButtons";
@@ -24,6 +25,7 @@ export function ListProductForm() {
     { id: 2, title: "Technical", component: TechnicalSection },
     { id: 3, title: "Traffic", component: TrafficSection },
     { id: 4, title: "Special Notes", component: SpecialNotesSection },
+    { id: 5, title: "Dutch Auction", component: AuctionSection },
   ];
 
   const form = useForm<ListProductFormData>({
@@ -39,6 +41,11 @@ export function ListProductForm() {
       activeUsers: "",
       grossProfitMargin: undefined,
       image: null,
+      isAuction: false,
+      startingPrice: undefined,
+      minPrice: undefined,
+      priceDecrement: undefined,
+      priceDecrementInterval: "minute",
       techStack: "",
       techStackOther: "",
       teamSize: "",
