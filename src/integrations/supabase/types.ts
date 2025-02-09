@@ -216,6 +216,9 @@ export type Database = {
           image_url: string | null
           industry: string | null
           integrations_other: string | null
+          is_code_audited: boolean | null
+          is_revenue_verified: boolean | null
+          is_traffic_verified: boolean | null
           is_verified: boolean | null
           min_price: number | null
           monthly_revenue: number | null
@@ -249,6 +252,9 @@ export type Database = {
           image_url?: string | null
           industry?: string | null
           integrations_other?: string | null
+          is_code_audited?: boolean | null
+          is_revenue_verified?: boolean | null
+          is_traffic_verified?: boolean | null
           is_verified?: boolean | null
           min_price?: number | null
           monthly_revenue?: number | null
@@ -282,6 +288,9 @@ export type Database = {
           image_url?: string | null
           industry?: string | null
           integrations_other?: string | null
+          is_code_audited?: boolean | null
+          is_revenue_verified?: boolean | null
+          is_traffic_verified?: boolean | null
           is_verified?: boolean | null
           min_price?: number | null
           monthly_revenue?: number | null

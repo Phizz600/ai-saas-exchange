@@ -1,7 +1,7 @@
-
 import { Card } from "@/components/ui/card";
 import { TrendingUp, Users, Star, Shield, Zap, Building2, Info } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
+import { VerificationBadges } from "./VerificationBadges";
 
 interface ProductStatsProps {
   product: {
@@ -15,6 +15,9 @@ interface ProductStatsProps {
     team_size?: string;
     stage?: string;
     special_notes?: string;
+    is_revenue_verified?: boolean;
+    is_code_audited?: boolean;
+    is_traffic_verified?: boolean;
   };
 }
 
@@ -60,7 +63,12 @@ export function ProductStats({ product }: ProductStatsProps) {
   return (
     <Card className="p-6">
       <h3 className="text-lg font-semibold mb-6">Critical Buyer Details</h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <VerificationBadges
+        isRevenueVerified={!!product.is_revenue_verified}
+        isCodeAudited={!!product.is_code_audited}
+        isTrafficVerified={!!product.is_traffic_verified}
+      />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
         <div>
           <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
             <TrendingUp className="h-4 w-4" />
