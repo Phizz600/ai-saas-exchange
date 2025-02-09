@@ -18,6 +18,8 @@ interface ProductPricingProps {
     price_decrement_interval?: string;
     min_price?: number;
     demo_url?: string;
+    highest_bid?: number;
+    starting_price?: number;
   };
 }
 
@@ -29,7 +31,7 @@ export function ProductPricing({ product }: ProductPricingProps) {
   const { toast } = useToast();
 
   // Fetch recent bids with bidder information
-  const { data: recentBids } = useQuery({
+  const { data: recentBids, refetch: refetchBids } = useQuery({
     queryKey: ['recent-bids', product.id],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -109,10 +111,12 @@ export function ProductPricing({ product }: ProductPricingProps) {
       }
 
       const bidValue = parseFloat(bidAmount);
-      if (isNaN(bidValue) || bidValue < (product.current_price || 0)) {
+      const currentHighestBid = product.highest_bid || product.starting_price || product.current_price || 0;
+
+      if (isNaN(bidValue) || bidValue <= currentHighestBid) {
         toast({
           title: "Invalid bid amount",
-          description: "Bid must be greater than or equal to the current price",
+          description: `Bid must be greater than the current highest bid of $${currentHighestBid.toLocaleString()}`,
           variant: "destructive"
         });
         return;
@@ -127,13 +131,25 @@ export function ProductPricing({ product }: ProductPricingProps) {
           status: 'pending'
         });
 
-      if (error) throw error;
+      if (error) {
+        if (error.message.includes('higher than current highest bid')) {
+          toast({
+            title: "Invalid bid amount",
+            description: "Someone else has placed a higher bid. Please refresh and try again.",
+            variant: "destructive"
+          });
+        } else {
+          throw error;
+        }
+        return;
+      }
 
       toast({
         title: "Bid placed successfully!",
         description: `You've placed a bid for $${bidValue.toLocaleString()}`,
       });
       setBidAmount("");
+      refetchBids(); // Refresh the bids list
 
     } catch (error) {
       console.error('Error placing bid:', error);
@@ -147,6 +163,9 @@ export function ProductPricing({ product }: ProductPricingProps) {
     }
   };
 
+  // Determine the current price to display
+  const displayPrice = product.current_price || product.starting_price || product.price || 0;
+
   return (
     <Card className="p-6">
       <div className="space-y-6">
@@ -155,7 +174,7 @@ export function ProductPricing({ product }: ProductPricingProps) {
             <div>
               <p className="text-sm text-gray-600">Current Price</p>
               <p className="text-3xl font-bold">
-                ${(product.current_price || product.price || 0).toLocaleString()}
+                ${displayPrice.toLocaleString()}
               </p>
               {product.min_price && (
                 <p className="text-sm text-gray-600 mt-1">
@@ -203,7 +222,7 @@ export function ProductPricing({ product }: ProductPricingProps) {
               value={bidAmount}
               onChange={(e) => setBidAmount(e.target.value)}
               placeholder="Enter bid amount"
-              min={product.current_price || product.price || 0}
+              min={displayPrice}
               step="0.01"
             />
             <Button 

@@ -212,6 +212,8 @@ export type Database = {
           demo_url: string | null
           description: string | null
           has_patents: boolean | null
+          highest_bid: number | null
+          highest_bidder_id: string | null
           id: string
           image_url: string | null
           industry: string | null
@@ -248,6 +250,8 @@ export type Database = {
           demo_url?: string | null
           description?: string | null
           has_patents?: boolean | null
+          highest_bid?: number | null
+          highest_bidder_id?: string | null
           id?: string
           image_url?: string | null
           industry?: string | null
@@ -284,6 +288,8 @@ export type Database = {
           demo_url?: string | null
           description?: string | null
           has_patents?: boolean | null
+          highest_bid?: number | null
+          highest_bidder_id?: string | null
           id?: string
           image_url?: string | null
           industry?: string | null
