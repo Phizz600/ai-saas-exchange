@@ -35,5 +35,5 @@ export interface ListProductFormData {
   productAge?: string;
   businessLocation?: string;
   integrations_other?: string;
+  specialNotes?: string;
 }
-

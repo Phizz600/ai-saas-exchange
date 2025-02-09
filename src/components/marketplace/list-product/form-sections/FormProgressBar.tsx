@@ -1,3 +1,4 @@
+
 import { cn } from "@/lib/utils";
 
 interface FormProgressBarProps {
@@ -11,6 +12,7 @@ export function FormProgressBar({ currentSection, onSectionClick }: FormProgress
     "Financials",
     "Technical",
     "Traffic & Users",
+    "Special Notes",
     "Dutch Auction"
   ];
 
@@ -26,7 +28,7 @@ export function FormProgressBar({ currentSection, onSectionClick }: FormProgress
           <button
             key={section}
             onClick={(e) => handleSectionClick(e, index)}
-            type="button" // Explicitly set button type to prevent form submission
+            type="button"
             className={cn(
               "text-sm font-medium transition-colors",
               currentSection >= index ? "text-primary" : "text-gray-400",
@@ -40,7 +42,7 @@ export function FormProgressBar({ currentSection, onSectionClick }: FormProgress
       <div className="w-full h-2 bg-gray-200 rounded-full">
         <div 
           className="h-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] rounded-full transition-all duration-300"
-          style={{ width: `${(currentSection + 1) * 20}%` }}
+          style={{ width: `${(currentSection + 1) * 16.67}%` }}
         />
       </div>
     </div>
