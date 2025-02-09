@@ -1,3 +1,4 @@
+
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -6,20 +7,30 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 
-export const ProductDashboardContent = () => {
+interface ProductDashboardContentProps {
+  showVerifiedOnly: boolean;
+}
+
+export const ProductDashboardContent = ({ showVerifiedOnly }: ProductDashboardContentProps) => {
   const { data: products, isLoading, error } = useQuery({
-    queryKey: ['seller-products'],
+    queryKey: ['seller-products', showVerifiedOnly],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('No user found');
 
       console.log('Fetching products for seller:', user.id);
       
-      const { data, error } = await supabase
+      let query = supabase
         .from('products')
         .select('*')
         .eq('seller_id', user.id)
         .order('created_at', { ascending: false });
+
+      if (showVerifiedOnly) {
+        query = query.or('is_revenue_verified.eq.true,is_code_audited.eq.true,is_traffic_verified.eq.true');
+      }
+
+      const { data, error } = await query;
 
       if (error) {
         console.error('Error fetching products:', error);
