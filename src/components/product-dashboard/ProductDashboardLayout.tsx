@@ -1,3 +1,4 @@
+
 import { Header } from "@/components/Header";
 import { ProductDashboardContent } from "./ProductDashboardContent";
 import { Button } from "@/components/ui/button";
@@ -26,7 +27,7 @@ export const ProductDashboardLayout = () => {
           </div>
           <MarketplaceStats />
           <QuickActions />
-          <ProductDashboardContent />
+          <ProductDashboardContent showVerifiedOnly={false} />
         </div>
       </main>
     </div>
