@@ -34,7 +34,8 @@ export const mockProducts: Product[] = [
     industry: "AI/Machine Learning",
     tech_stack: "Python",
     product_age: "1-3 years",
-    business_location: "United States"
+    business_location: "United States",
+    special_notes: "Currently processing over 1 million requests per month with 99.9% uptime."
   },
   {
     id: "2",
@@ -66,6 +67,7 @@ export const mockProducts: Product[] = [
     industry: "Enterprise Software",
     tech_stack: "JavaScript",
     product_age: "6-12 months",
-    business_location: "Canada"
+    business_location: "Canada",
+    special_notes: "Integrates seamlessly with popular CRM platforms"
   }
 ];
