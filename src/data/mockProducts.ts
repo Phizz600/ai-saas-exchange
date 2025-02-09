@@ -1,3 +1,4 @@
+
 import { Database } from "@/integrations/supabase/types";
 
 type Product = Database['public']['Tables']['products']['Row'];
@@ -31,7 +32,9 @@ export const mockProducts: Product[] = [
     has_patents: false,
     competitors: "None",
     industry: "AI/Machine Learning",
-    tech_stack: "Python"
+    tech_stack: "Python",
+    product_age: "1-3 years",
+    business_location: "United States"
   },
   {
     id: "2",
@@ -61,6 +64,8 @@ export const mockProducts: Product[] = [
     has_patents: false,
     competitors: "Various chatbot solutions",
     industry: "Enterprise Software",
-    tech_stack: "JavaScript"
+    tech_stack: "JavaScript",
+    product_age: "6-12 months",
+    business_location: "Canada"
   }
 ];
