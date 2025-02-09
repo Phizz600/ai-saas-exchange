@@ -16,6 +16,7 @@ import { Form } from "@/components/ui/form";
 import { ListProductFormData } from "./types";
 import { useAutosave } from "./hooks/useAutosave";
 import { Skeleton } from "@/components/ui/skeleton";
+import { supabase } from "@/integrations/supabase/client";
 
 export function ListProductForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
