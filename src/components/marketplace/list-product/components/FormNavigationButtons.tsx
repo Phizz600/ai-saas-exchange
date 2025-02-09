@@ -30,9 +30,12 @@ export function FormNavigationButtons({
             className="flex items-center gap-2"
           >
             <ArrowLeft className="h-4 w-4" />
-            Previous
+            Back
           </Button>
         )}
+      </div>
+
+      <div className="flex items-center gap-2">
         <Button
           type="button"
           variant="outline"
@@ -42,27 +45,26 @@ export function FormNavigationButtons({
           <Save className="h-4 w-4" />
           Save for later
         </Button>
+        
+        {currentSection < totalSections - 1 ? (
+          <Button
+            type="button"
+            onClick={onNext}
+            className="flex items-center gap-2"
+          >
+            Next
+            <ArrowRight className="h-4 w-4" />
+          </Button>
+        ) : (
+          <Button 
+            type="submit"
+            className="bg-gradient-to-r from-[#8B5CF6] via-[#D946EE] to-[#0EA4E9] text-white font-semibold py-3 px-6 rounded-lg hover:opacity-90"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Submitting Product..." : "Submit Product"}
+          </Button>
+        )}
       </div>
-      
-      {currentSection < totalSections - 1 ? (
-        <Button
-          type="button"
-          onClick={onNext}
-          className="flex items-center gap-2"
-        >
-          Next
-          <ArrowRight className="h-4 w-4" />
-        </Button>
-      ) : (
-        <Button 
-          type="submit"
-          className="bg-gradient-to-r from-[#8B5CF6] via-[#D946EE] to-[#0EA4E9] text-white font-semibold py-3 px-6 rounded-lg hover:opacity-90"
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? "Submitting Product..." : "Submit Product"}
-        </Button>
-      )}
     </div>
   );
 }
-
