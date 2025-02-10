@@ -1,5 +1,6 @@
+
 import { Card } from "@/components/ui/card";
-import { TrendingUp, Users, Star, Shield, Zap, Building2, Info, Eye, Mouse, Bookmark, Fire } from "lucide-react";
+import { TrendingUp, Users, Star, Shield, Zap, Building2, Info, Eye, Mouse, Bookmark, Flame } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { VerificationBadges } from "./VerificationBadges";
 import { useQuery } from "@tanstack/react-query";
@@ -95,7 +96,7 @@ export function ProductStats({ product }: ProductStatsProps) {
         <h3 className="text-lg font-semibold">Critical Buyer Details</h3>
         {isHighTraffic && (
           <Badge variant="secondary" className="bg-amber-100 text-amber-700 flex items-center gap-1">
-            <Fire className="h-4 w-4" />
+            <Flame className="h-4 w-4" />
             Trending
           </Badge>
         )}
