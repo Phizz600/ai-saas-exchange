@@ -95,12 +95,6 @@ export const useAutosave = (form: UseFormReturn<ListProductFormData>, currentSec
     }
   };
 
-  // Auto-save changes with a shorter debounce time
-  useEffect(() => {
-    const debounceTimeout = setTimeout(() => saveDraft(false), 500);
-    return () => clearTimeout(debounceTimeout);
-  }, [form.watch(), currentSection, draftId]);
-
   const saveForLater = async () => {
     await saveDraft(true); // Save with toast notification
   };
