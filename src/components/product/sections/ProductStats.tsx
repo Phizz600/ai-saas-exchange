@@ -1,4 +1,3 @@
-
 import { Card } from "@/components/ui/card";
 import { TrendingUp, Users, Star, Shield, Zap, Building2, Info, Eye, Mouse, Bookmark, Flame } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
@@ -6,6 +5,7 @@ import { VerificationBadges } from "./VerificationBadges";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
+import { getProductAnalytics } from "@/integrations/supabase/functions";
 
 interface ProductStatsProps {
   product: {
@@ -29,24 +29,7 @@ export function ProductStats({ product }: ProductStatsProps) {
   // Query for last 24h analytics
   const { data: analytics, isLoading } = useQuery({
     queryKey: ['product-analytics', product.id],
-    queryFn: async () => {
-      const yesterday = new Date();
-      yesterday.setDate(yesterday.getDate() - 1);
-      
-      const { data, error } = await supabase
-        .from('product_analytics')
-        .select('views, clicks, saves')
-        .eq('product_id', product.id)
-        .gte('date', yesterday.toISOString())
-        .maybeSingle();
-
-      if (error) {
-        console.error('Error fetching analytics:', error);
-        throw error;
-      }
-      
-      return data || { views: 0, clicks: 0, saves: 0 };
-    },
+    queryFn: () => getProductAnalytics(product.id),
   });
 
   // Calculate if the product has high traffic

@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
@@ -9,6 +10,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
+import { incrementProductViews, incrementProductClicks } from "@/integrations/supabase/functions";
 
 interface ProductCardProps {
   product: {
@@ -70,7 +72,17 @@ export function ProductCard({ product, onView }: ProductCardProps) {
     };
 
     checkIfLiked();
+    // Increment view when the card is mounted
+    incrementProductViews(product.id).catch(console.error);
   }, [product.id]);
+
+  const handleCardClick = async () => {
+    try {
+      await incrementProductClicks(product.id);
+    } catch (error) {
+      console.error('Error tracking product click:', error);
+    }
+  };
 
   const toggleFavorite = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -127,6 +139,7 @@ export function ProductCard({ product, onView }: ProductCardProps) {
       whileHover={!isMobile ? { y: -5 } : undefined}
       transition={{ duration: 0.2 }}
       className="group touch-manipulation"
+      onClick={handleCardClick}
     >
       <Card className="overflow-hidden bg-gradient-to-b from-white to-gray-50/50 backdrop-blur-xl border-gray-100/50 shadow-lg">
         <ProductCardHeader 
