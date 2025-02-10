@@ -9,7 +9,7 @@ interface FormProgressBarProps {
 export function FormProgressBar({ currentSection, onSectionClick }: FormProgressBarProps) {
   const sections = [
     "Basics",
-    "Financials",
+    "Financials", 
     "Technical",
     "Traffic & Users",
     "Special Notes",
@@ -31,7 +31,8 @@ export function FormProgressBar({ currentSection, onSectionClick }: FormProgress
             type="button"
             className={cn(
               "text-sm font-medium transition-colors",
-              currentSection >= index ? "text-primary" : "text-gray-400",
+              currentSection === index ? "text-primary" : 
+              currentSection > index ? "text-primary/80" : "text-gray-400",
               "hover:text-primary/80"
             )}
           >
@@ -42,7 +43,7 @@ export function FormProgressBar({ currentSection, onSectionClick }: FormProgress
       <div className="w-full h-2 bg-gray-200 rounded-full">
         <div 
           className="h-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] rounded-full transition-all duration-300"
-          style={{ width: `${(currentSection + 1) * 16.67}%` }}
+          style={{ width: `${((currentSection) / (sections.length - 1)) * 100}%` }}
         />
       </div>
     </div>
