@@ -63,13 +63,13 @@ export function ProductStats({ product }: ProductStatsProps) {
           id,
           amount,
           created_at,
-          bidder:profiles!bids_bidder_id_fkey(full_name)
+          bidder:profiles(full_name)
         `)
         .eq('product_id', product.id)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data as Bid[];
+      return data as unknown as Bid[];
     },
   });
 
@@ -187,23 +187,23 @@ export function ProductStats({ product }: ProductStatsProps) {
         <div className="col-span-full bg-gray-50 p-4 rounded-lg">
           <div className="flex justify-between items-center mb-3">
             <h4 className="text-sm font-semibold text-gray-600">Last 24 Hours Activity</h4>
-            {lastBid && (
+            {bids && bids.length > 0 && (
               <Sheet>
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="sm" className="text-sm text-blue-600 hover:text-blue-700">
                     <History className="h-4 w-4 mr-1" />
-                    View Bid History
+                    View All Bids
                   </Button>
                 </SheetTrigger>
                 <SheetContent>
                   <SheetHeader>
-                    <SheetTitle>Bid History</SheetTitle>
+                    <SheetTitle>Complete Bid History</SheetTitle>
                     <SheetDescription>
-                      Complete bid history for this product
+                      All bids placed on this product
                     </SheetDescription>
                   </SheetHeader>
                   <div className="mt-6 space-y-4">
-                    {bids?.map((bid) => (
+                    {bids.map((bid) => (
                       <div key={bid.id} className="border-b border-gray-200 pb-3">
                         <div className="flex justify-between items-start">
                           <div>
@@ -221,7 +221,7 @@ export function ProductStats({ product }: ProductStatsProps) {
               </Sheet>
             )}
           </div>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 gap-4 mb-4">
             <div className="flex items-center gap-2">
               <div className="p-2 bg-blue-100 rounded-full">
                 <Eye className="h-4 w-4 text-blue-600" />
