@@ -14,7 +14,7 @@ import { RelatedProducts } from "../marketplace/product-card/RelatedProducts";
 import { Card } from "@/components/ui/card";
 
 export function ProductPage() {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [product, setProduct] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);

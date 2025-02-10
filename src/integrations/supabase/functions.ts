@@ -1,8 +1,18 @@
 
 import { supabase } from './client';
 
+const isValidUUID = (uuid: string) => {
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  return uuidRegex.test(uuid);
+};
+
 export const incrementProductViews = async (productId: string) => {
   try {
+    if (!isValidUUID(productId)) {
+      console.error('Invalid product ID format:', productId);
+      return null;
+    }
+
     console.log('Incrementing views for product:', productId);
     const { data, error } = await supabase
       .from('product_analytics')
@@ -18,7 +28,7 @@ export const incrementProductViews = async (productId: string) => {
         }
       )
       .select('views')
-      .single();
+      .maybeSingle();
 
     if (error) {
       console.error('Error incrementing product views:', error);
@@ -29,12 +39,17 @@ export const incrementProductViews = async (productId: string) => {
     return data;
   } catch (error) {
     console.error('Failed to increment product views:', error);
-    throw error;
+    return null;
   }
 };
 
 export const incrementProductClicks = async (productId: string) => {
   try {
+    if (!isValidUUID(productId)) {
+      console.error('Invalid product ID format:', productId);
+      return null;
+    }
+
     const { data, error } = await supabase
       .from('product_analytics')
       .upsert(
@@ -49,7 +64,7 @@ export const incrementProductClicks = async (productId: string) => {
         }
       )
       .select('clicks')
-      .single();
+      .maybeSingle();
 
     if (error) {
       console.error('Error incrementing product clicks:', error);
@@ -58,12 +73,17 @@ export const incrementProductClicks = async (productId: string) => {
     return data;
   } catch (error) {
     console.error('Error incrementing product clicks:', error);
-    throw error;
+    return null;
   }
 };
 
 export const getProductAnalytics = async (productId: string) => {
   try {
+    if (!isValidUUID(productId)) {
+      console.error('Invalid product ID format:', productId);
+      return { views: 0, clicks: 0, saves: 0 };
+    }
+
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
     
@@ -76,11 +96,12 @@ export const getProductAnalytics = async (productId: string) => {
 
     if (error) {
       console.error('Error fetching product analytics:', error);
-      throw error;
+      return { views: 0, clicks: 0, saves: 0 };
     }
+    
     return data || { views: 0, clicks: 0, saves: 0 };
   } catch (error) {
     console.error('Error fetching product analytics:', error);
-    throw error;
+    return { views: 0, clicks: 0, saves: 0 };
   }
 };
