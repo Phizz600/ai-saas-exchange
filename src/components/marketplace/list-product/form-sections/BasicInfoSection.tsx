@@ -18,9 +18,9 @@ export function BasicInfoSection({ form }: BasicInfoSectionProps) {
       <div className="space-y-4">
         <ContactInfoFields form={form} />
         <ProductInfoFields form={form} />
-        <ImageSection form={form} />
         <CompanyInfoFields form={form} />
         <LocationIndustryFields form={form} />
+        <ImageSection form={form} />
       </div>
     </div>
   );
