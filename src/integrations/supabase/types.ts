@@ -190,31 +190,37 @@ export type Database = {
       product_analytics: {
         Row: {
           bids: number | null
+          clicks: number | null
           created_at: string
           date: string
           id: string
           likes: number | null
           product_id: string
+          saves: number | null
           updated_at: string
           views: number | null
         }
         Insert: {
           bids?: number | null
+          clicks?: number | null
           created_at?: string
           date?: string
           id?: string
           likes?: number | null
           product_id: string
+          saves?: number | null
           updated_at?: string
           views?: number | null
         }
         Update: {
           bids?: number | null
+          clicks?: number | null
           created_at?: string
           date?: string
           id?: string
           likes?: number | null
           product_id?: string
+          saves?: number | null
           updated_at?: string
           views?: number | null
         }
@@ -457,6 +463,14 @@ export type Database = {
           input_product_id: string
         }
         Returns: undefined
+      }
+      is_high_traffic: {
+        Args: {
+          p_views: number
+          p_clicks: number
+          p_saves: number
+        }
+        Returns: boolean
       }
       update_dutch_auction_prices: {
         Args: Record<PropertyKey, never>

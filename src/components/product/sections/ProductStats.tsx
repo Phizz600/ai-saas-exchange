@@ -1,7 +1,10 @@
 import { Card } from "@/components/ui/card";
-import { TrendingUp, Users, Star, Shield, Zap, Building2, Info } from "lucide-react";
+import { TrendingUp, Users, Star, Shield, Zap, Building2, Info, Eye, Mouse, Bookmark, Fire } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { VerificationBadges } from "./VerificationBadges";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { Badge } from "@/components/ui/badge";
 
 interface ProductStatsProps {
   product: {
@@ -22,6 +25,32 @@ interface ProductStatsProps {
 }
 
 export function ProductStats({ product }: ProductStatsProps) {
+  // Query for last 24h analytics
+  const { data: analytics } = useQuery({
+    queryKey: ['product-analytics', product.id],
+    queryFn: async () => {
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      
+      const { data, error } = await supabase
+        .from('product_analytics')
+        .select('views, clicks, saves')
+        .eq('product_id', product.id)
+        .gte('date', yesterday.toISOString())
+        .maybeSingle();
+
+      if (error) throw error;
+      return data || { views: 0, clicks: 0, saves: 0 };
+    },
+  });
+
+  // Calculate if the product has high traffic
+  const isHighTraffic = analytics && (
+    analytics.views >= 100 || 
+    analytics.clicks >= 50 || 
+    analytics.saves >= 25
+  );
+
   // Safely format the monthly revenue with a default of 0
   const formattedRevenue = product.monthly_revenue 
     ? formatCurrency(product.monthly_revenue)
@@ -62,13 +91,56 @@ export function ProductStats({ product }: ProductStatsProps) {
 
   return (
     <Card className="p-6">
-      <h3 className="text-lg font-semibold mb-6">Critical Buyer Details</h3>
+      <div className="flex justify-between items-center mb-6">
+        <h3 className="text-lg font-semibold">Critical Buyer Details</h3>
+        {isHighTraffic && (
+          <Badge variant="secondary" className="bg-amber-100 text-amber-700 flex items-center gap-1">
+            <Fire className="h-4 w-4" />
+            Trending
+          </Badge>
+        )}
+      </div>
+
       <VerificationBadges
         isRevenueVerified={!!product.is_revenue_verified}
         isCodeAudited={!!product.is_code_audited}
         isTrafficVerified={!!product.is_traffic_verified}
       />
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+        <div className="col-span-full bg-gray-50 p-4 rounded-lg">
+          <h4 className="text-sm font-semibold text-gray-600 mb-3">Last 24 Hours Activity</h4>
+          <div className="grid grid-cols-3 gap-4">
+            <div className="flex items-center gap-2">
+              <div className="p-2 bg-blue-100 rounded-full">
+                <Eye className="h-4 w-4 text-blue-600" />
+              </div>
+              <div>
+                <p className="text-lg font-semibold">{analytics?.views || 0}</p>
+                <p className="text-sm text-gray-600">Views</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="p-2 bg-purple-100 rounded-full">
+                <Mouse className="h-4 w-4 text-purple-600" />
+              </div>
+              <div>
+                <p className="text-lg font-semibold">{analytics?.clicks || 0}</p>
+                <p className="text-sm text-gray-600">Clicks</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="p-2 bg-pink-100 rounded-full">
+                <Bookmark className="h-4 w-4 text-pink-600" />
+              </div>
+              <div>
+                <p className="text-lg font-semibold">{analytics?.saves || 0}</p>
+                <p className="text-sm text-gray-600">Saves</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div>
           <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
             <TrendingUp className="h-4 w-4" />
