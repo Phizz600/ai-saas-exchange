@@ -29,6 +29,7 @@ export function ProductsTable({ products }: ProductsTableProps) {
   const [productToDelete, setProductToDelete] = useState<string | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -121,6 +122,11 @@ export function ProductsTable({ products }: ProductsTableProps) {
     setIsViewDialogOpen(true);
   };
 
+  const handleEdit = (product: Product) => {
+    setSelectedProduct(product);
+    setIsEditDialogOpen(true);
+  };
+
   if (products.length === 0) {
     return (
       <div className="text-center py-16 bg-white rounded-lg border-2 border-dashed border-gray-200">
@@ -190,11 +196,13 @@ export function ProductsTable({ products }: ProductsTableProps) {
 
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Link to={`/edit-product/${product.id}`}>
-                          <Button variant="ghost" size="icon">
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                        </Link>
+                        <Button 
+                          variant="ghost" 
+                          size="icon"
+                          onClick={() => handleEdit(product)}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
                       </TooltipTrigger>
                       <TooltipContent>
                         <p>Edit product</p>
@@ -255,6 +263,16 @@ export function ProductsTable({ products }: ProductsTableProps) {
             </div>
           </DialogContent>
         </Dialog>
+
+        {/* Edit Product Dialog */}
+        <EditProductDialog
+          product={selectedProduct}
+          isOpen={isEditDialogOpen}
+          onClose={() => {
+            setIsEditDialogOpen(false);
+            setSelectedProduct(null);
+          }}
+        />
 
         {/* Delete Confirmation Dialog */}
         <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
