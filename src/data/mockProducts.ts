@@ -40,7 +40,8 @@ export const mockProducts: Product[] = [
     business_location: "United States",
     special_notes: "Currently processing over 1 million requests per month with 99.9% uptime.",
     highest_bid: null,
-    highest_bidder_id: null
+    highest_bidder_id: null,
+    gross_profit_margin: 85
   },
   {
     id: "2",
@@ -78,6 +79,7 @@ export const mockProducts: Product[] = [
     business_location: "Canada",
     special_notes: "Integrates seamlessly with popular CRM platforms",
     highest_bid: null,
-    highest_bidder_id: null
+    highest_bidder_id: null,
+    gross_profit_margin: 65
   }
 ];
