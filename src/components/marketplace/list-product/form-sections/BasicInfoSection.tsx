@@ -37,6 +37,18 @@ export function BasicInfoSection({ form }: BasicInfoSectionProps) {
     "Other"
   ];
 
+  const categories = [
+    "Natural Language Processing",
+    "Machine Learning",
+    "Content Generation",
+    "Computer Vision",
+    "Voice & Speech",
+    "Data Analytics",
+    "Automation",
+    "Recommendation Systems",
+    "Other"
+  ];
+
   const employeeRanges = [
     "1-5",
     "6-10",
@@ -158,6 +170,43 @@ export function BasicInfoSection({ form }: BasicInfoSectionProps) {
               <FormControl>
                 <Input placeholder="Enter your product title" {...field} />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="category"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="flex items-center gap-2">
+                AI Category
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="h-4 w-4 text-gray-500 cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-white">
+                      <p>Select the primary category that best describes your AI tool's functionality</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger className="bg-white">
+                    <SelectValue placeholder="Select AI category" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent className="bg-white">
+                  {categories.map((category) => (
+                    <SelectItem key={category} value={category} className="bg-white hover:bg-gray-100">
+                      {category}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
@@ -393,4 +442,3 @@ export function BasicInfoSection({ form }: BasicInfoSectionProps) {
     </div>
   );
 }
-
