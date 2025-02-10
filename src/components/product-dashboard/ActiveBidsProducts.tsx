@@ -1,3 +1,4 @@
+
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
@@ -23,7 +24,8 @@ export const ActiveBidsProducts = () => {
             price,
             image_url,
             category,
-            stage
+            stage,
+            current_price
           )
         `)
         .eq('bidder_id', user.id)
@@ -35,7 +37,15 @@ export const ActiveBidsProducts = () => {
         throw error;
       }
 
-      return data;
+      // Group bids by product and get the most recent bid for each
+      const latestBidsByProduct = data.reduce((acc: any, bid: any) => {
+        if (!acc[bid.product.id] || new Date(bid.created_at) > new Date(acc[bid.product.id].created_at)) {
+          acc[bid.product.id] = bid;
+        }
+        return acc;
+      }, {});
+
+      return Object.values(latestBidsByProduct);
     },
   });
 
@@ -56,27 +66,39 @@ export const ActiveBidsProducts = () => {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-      {activeBids.map((bid) => (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {activeBids.map((bid: any) => (
         <Link to={`/product/${bid.product.id}`} key={bid.id}>
-          <Card className="p-4 hover:shadow-lg transition-shadow">
-            <div className="aspect-video relative mb-3">
+          <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+            <div className="aspect-video relative">
               {bid.product.image_url ? (
                 <img
                   src={bid.product.image_url}
                   alt={bid.product.title}
-                  className="w-full h-full object-cover rounded-md"
+                  className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="w-full h-full bg-gray-100 rounded-md flex items-center justify-center">
+                <div className="w-full h-full bg-gray-100 flex items-center justify-center">
                   <span className="text-gray-400">No image</span>
                 </div>
               )}
             </div>
-            <h3 className="font-medium text-sm mb-1">{bid.product.title}</h3>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Your bid: {formatCurrency(bid.amount)}</span>
-              <span className="text-xs text-gray-500">Current: {formatCurrency(bid.product.price)}</span>
+            <div className="p-4">
+              <h3 className="text-xl font-semibold mb-4">{bid.product.title}</h3>
+              <div className="flex justify-between items-baseline">
+                <div>
+                  <span className="text-sm text-gray-500">Your bid:</span>
+                  <span className="text-lg font-bold ml-2 text-purple-600">
+                    {formatCurrency(bid.amount)}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-sm text-gray-500">Current:</span>
+                  <span className="text-base ml-2 text-gray-700">
+                    {formatCurrency(bid.product.current_price)}
+                  </span>
+                </div>
+              </div>
             </div>
           </Card>
         </Link>
