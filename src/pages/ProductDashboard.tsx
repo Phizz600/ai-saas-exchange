@@ -82,7 +82,7 @@ export const ProductDashboard = () => {
               <ActiveBidsProducts />
             </div>
             <div>
-              <h2 className="text-xl font-semibold mb-4 font-exo">Products You're Watching</h2>
+              <h2 className="text-xl font-semibold mb-4 font-exo">Products You've Saved</h2>
               <WatchedProducts />
             </div>
           </div>

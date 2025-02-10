@@ -1,3 +1,4 @@
+
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
@@ -6,14 +7,14 @@ import { formatCurrency } from "@/lib/utils";
 import { Link } from "react-router-dom";
 
 export const WatchedProducts = () => {
-  const { data: watchedProducts, isLoading } = useQuery({
-    queryKey: ['watched-products'],
+  const { data: savedProducts, isLoading } = useQuery({
+    queryKey: ['saved-products'],
     queryFn: async () => {
-      console.log('Fetching watched products');
+      console.log('Fetching saved products');
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return [];
 
-      // Get products with high view counts from the user
+      // Get products that have been saved by the user
       const { data, error } = await supabase
         .from('product_analytics')
         .select(`
@@ -27,12 +28,12 @@ export const WatchedProducts = () => {
             stage
           )
         `)
-        .gt('views', 5) // Products viewed more than 5 times
-        .order('views', { ascending: false })
+        .gt('saves', 0) // Products that have been saved
+        .order('saves', { ascending: false })
         .limit(4);
 
       if (error) {
-        console.error('Error fetching watched products:', error);
+        console.error('Error fetching saved products:', error);
         throw error;
       }
 
@@ -48,17 +49,17 @@ export const WatchedProducts = () => {
     );
   }
 
-  if (!watchedProducts?.length) {
+  if (!savedProducts?.length) {
     return (
       <Card className="flex items-center justify-center p-8 bg-white/90">
-        <p className="text-gray-500 text-lg">No products being watched at the moment</p>
+        <p className="text-gray-500 text-lg">No products saved at the moment</p>
       </Card>
     );
   }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-      {watchedProducts.map((item) => (
+      {savedProducts.map((item) => (
         <Link to={`/product/${item.product.id}`} key={item.id}>
           <Card className="p-4 hover:shadow-lg transition-shadow">
             <div className="aspect-video relative mb-3">
@@ -77,7 +78,7 @@ export const WatchedProducts = () => {
             <h3 className="font-medium text-sm mb-1">{item.product.title}</h3>
             <div className="flex justify-between items-center">
               <span className="text-sm text-gray-600">{formatCurrency(item.product.price)}</span>
-              <span className="text-xs text-gray-500">{item.views} views</span>
+              <span className="text-xs text-gray-500">{item.saves} saves</span>
             </div>
           </Card>
         </Link>
