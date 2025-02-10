@@ -5,6 +5,7 @@ import { ContactInfoFields } from "./basic-info/ContactInfoFields";
 import { CompanyInfoFields } from "./basic-info/CompanyInfoFields";
 import { ProductInfoFields } from "./basic-info/ProductInfoFields";
 import { LocationIndustryFields } from "./basic-info/LocationIndustryFields";
+import { ImageSection } from "./ImageSection";
 
 interface BasicInfoSectionProps {
   form: UseFormReturn<ListProductFormData>;
@@ -17,6 +18,7 @@ export function BasicInfoSection({ form }: BasicInfoSectionProps) {
       <div className="space-y-4">
         <ContactInfoFields form={form} />
         <ProductInfoFields form={form} />
+        <ImageSection form={form} />
         <CompanyInfoFields form={form} />
         <LocationIndustryFields form={form} />
       </div>
