@@ -27,7 +27,7 @@ interface ProductStatsProps {
 
 export function ProductStats({ product }: ProductStatsProps) {
   // Query for last 24h analytics
-  const { data: analytics } = useQuery({
+  const { data: analytics, isLoading } = useQuery({
     queryKey: ['product-analytics', product.id],
     queryFn: async () => {
       const yesterday = new Date();
@@ -40,7 +40,11 @@ export function ProductStats({ product }: ProductStatsProps) {
         .gte('date', yesterday.toISOString())
         .maybeSingle();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching analytics:', error);
+        throw error;
+      }
+      
       return data || { views: 0, clicks: 0, saves: 0 };
     },
   });
@@ -117,7 +121,7 @@ export function ProductStats({ product }: ProductStatsProps) {
                 <Eye className="h-4 w-4 text-blue-600" />
               </div>
               <div>
-                <p className="text-lg font-semibold">{analytics?.views || 0}</p>
+                <p className="text-lg font-semibold">{isLoading ? '-' : analytics?.views || 0}</p>
                 <p className="text-sm text-gray-600">Views</p>
               </div>
             </div>
@@ -126,7 +130,7 @@ export function ProductStats({ product }: ProductStatsProps) {
                 <Mouse className="h-4 w-4 text-purple-600" />
               </div>
               <div>
-                <p className="text-lg font-semibold">{analytics?.clicks || 0}</p>
+                <p className="text-lg font-semibold">{isLoading ? '-' : analytics?.clicks || 0}</p>
                 <p className="text-sm text-gray-600">Clicks</p>
               </div>
             </div>
@@ -135,7 +139,7 @@ export function ProductStats({ product }: ProductStatsProps) {
                 <Bookmark className="h-4 w-4 text-pink-600" />
               </div>
               <div>
-                <p className="text-lg font-semibold">{analytics?.saves || 0}</p>
+                <p className="text-lg font-semibold">{isLoading ? '-' : analytics?.saves || 0}</p>
                 <p className="text-sm text-gray-600">Saves</p>
               </div>
             </div>
