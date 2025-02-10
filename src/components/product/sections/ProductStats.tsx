@@ -1,6 +1,6 @@
 
 import { Card } from "@/components/ui/card";
-import { TrendingUp, Users, Star, Shield, Zap, Building2, Info, Eye, Mouse, Bookmark, Flame } from "lucide-react";
+import { TrendingUp, Users, Star, Shield, Zap, Building2, Info, Eye, Mouse, Bookmark, Flame, History } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { VerificationBadges } from "./VerificationBadges";
 import { useQuery } from "@tanstack/react-query";
@@ -8,6 +8,16 @@ import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { getProductAnalytics } from "@/integrations/supabase/functions";
 import { useEffect, useState } from "react";
+import { format } from "date-fns";
+import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 interface ProductStatsProps {
   product: {
@@ -27,12 +37,41 @@ interface ProductStatsProps {
   };
 }
 
+interface Bid {
+  id: string;
+  amount: number;
+  created_at: string;
+  bidder: {
+    full_name: string | null;
+  };
+}
+
 export function ProductStats({ product }: ProductStatsProps) {
   const [analytics, setAnalytics] = useState<{
     views: number;
     clicks: number;
     saves: number;
   }>({ views: 0, clicks: 0, saves: 0 });
+
+  // Query to fetch bid history
+  const { data: bids } = useQuery({
+    queryKey: ['bids', product.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('bids')
+        .select(`
+          id,
+          amount,
+          created_at,
+          bidder:profiles!bids_bidder_id_fkey(full_name)
+        `)
+        .eq('product_id', product.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      return data as Bid[];
+    },
+  });
 
   // Initial fetch of analytics
   useEffect(() => {
@@ -50,14 +89,13 @@ export function ProductStats({ product }: ProductStatsProps) {
       .on(
         'postgres_changes',
         {
-          event: '*', // Listen to all events (INSERT, UPDATE, DELETE)
+          event: '*',
           schema: 'public',
           table: 'product_analytics',
           filter: `product_id=eq.${product.id}`,
         },
         async (payload) => {
           console.log('Received real-time update:', payload);
-          // Fetch latest analytics when we receive an update
           const data = await getProductAnalytics(product.id);
           setAnalytics(data);
         }
@@ -68,6 +106,17 @@ export function ProductStats({ product }: ProductStatsProps) {
       supabase.removeChannel(channel);
     };
   }, [product.id]);
+
+  const formatBidderName = (fullName: string | null) => {
+    if (!fullName) return "Anonymous";
+    const nameParts = fullName.split(' ');
+    if (nameParts.length === 0) return "Anonymous";
+    
+    const firstInitial = nameParts[0].charAt(0).toUpperCase();
+    const lastInitial = nameParts.length > 1 ? nameParts[nameParts.length - 1].charAt(0).toUpperCase() : '';
+    
+    return `${firstInitial}${lastInitial}****`;
+  };
 
   // Calculate if the product has high traffic
   const isHighTraffic = analytics && (
@@ -114,6 +163,8 @@ export function ProductStats({ product }: ProductStatsProps) {
     return sizeToEngineers[product.team_size] || "Team details coming soon";
   };
 
+  const lastBid = bids && bids.length > 0 ? bids[0] : null;
+
   return (
     <Card className="p-6">
       <div className="flex justify-between items-center mb-6">
@@ -134,7 +185,42 @@ export function ProductStats({ product }: ProductStatsProps) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
         <div className="col-span-full bg-gray-50 p-4 rounded-lg">
-          <h4 className="text-sm font-semibold text-gray-600 mb-3">Last 24 Hours Activity</h4>
+          <div className="flex justify-between items-center mb-3">
+            <h4 className="text-sm font-semibold text-gray-600">Last 24 Hours Activity</h4>
+            {lastBid && (
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="ghost" size="sm" className="text-sm text-blue-600 hover:text-blue-700">
+                    <History className="h-4 w-4 mr-1" />
+                    View Bid History
+                  </Button>
+                </SheetTrigger>
+                <SheetContent>
+                  <SheetHeader>
+                    <SheetTitle>Bid History</SheetTitle>
+                    <SheetDescription>
+                      Complete bid history for this product
+                    </SheetDescription>
+                  </SheetHeader>
+                  <div className="mt-6 space-y-4">
+                    {bids?.map((bid) => (
+                      <div key={bid.id} className="border-b border-gray-200 pb-3">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <p className="font-semibold">{formatCurrency(bid.amount)}</p>
+                            <p className="text-sm text-gray-600">by {formatBidderName(bid.bidder.full_name)}</p>
+                          </div>
+                          <p className="text-sm text-gray-500">
+                            {format(new Date(bid.created_at), 'MMM d, yyyy h:mm a')}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </SheetContent>
+              </Sheet>
+            )}
+          </div>
           <div className="grid grid-cols-3 gap-4">
             <div className="flex items-center gap-2">
               <div className="p-2 bg-blue-100 rounded-full">
@@ -164,6 +250,24 @@ export function ProductStats({ product }: ProductStatsProps) {
               </div>
             </div>
           </div>
+          {lastBid && (
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-900">Latest Bid</p>
+                  <p className="text-sm text-gray-600">
+                    by {formatBidderName(lastBid.bidder.full_name)}
+                  </p>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm font-medium text-gray-900">{formatCurrency(lastBid.amount)}</p>
+                  <p className="text-sm text-gray-500">
+                    {format(new Date(lastBid.created_at), 'MMM d, h:mm a')}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         <div>
