@@ -244,6 +244,7 @@ export type Database = {
           current_price: number | null
           demo_url: string | null
           description: string | null
+          gross_profit_margin: number | null
           has_patents: boolean | null
           highest_bid: number | null
           highest_bidder_id: string | null
@@ -282,6 +283,7 @@ export type Database = {
           current_price?: number | null
           demo_url?: string | null
           description?: string | null
+          gross_profit_margin?: number | null
           has_patents?: boolean | null
           highest_bid?: number | null
           highest_bidder_id?: string | null
@@ -320,6 +322,7 @@ export type Database = {
           current_price?: number | null
           demo_url?: string | null
           description?: string | null
+          gross_profit_margin?: number | null
           has_patents?: boolean | null
           highest_bid?: number | null
           highest_bidder_id?: string | null
