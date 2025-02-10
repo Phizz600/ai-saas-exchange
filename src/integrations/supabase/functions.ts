@@ -4,10 +4,22 @@ import { supabase } from './client';
 export const incrementProductViews = async (productId: string) => {
   try {
     console.log('Incrementing views for product:', productId);
-    const { data, error } = await supabase.rpc('increment_product_views', {
-      input_product_id: productId
-    });
-    
+    const { data, error } = await supabase
+      .from('product_analytics')
+      .upsert(
+        {
+          product_id: productId,
+          date: new Date().toISOString().split('T')[0],
+          views: 1
+        },
+        {
+          onConflict: 'product_id,date',
+          ignoreDuplicates: false
+        }
+      )
+      .select('views')
+      .single();
+
     if (error) {
       console.error('Error incrementing product views:', error);
       throw error;
@@ -39,7 +51,10 @@ export const incrementProductClicks = async (productId: string) => {
       .select('clicks')
       .single();
 
-    if (error) throw error;
+    if (error) {
+      console.error('Error incrementing product clicks:', error);
+      throw error;
+    }
     return data;
   } catch (error) {
     console.error('Error incrementing product clicks:', error);
@@ -56,10 +71,13 @@ export const getProductAnalytics = async (productId: string) => {
       .from('product_analytics')
       .select('views, clicks, saves')
       .eq('product_id', productId)
-      .gte('date', yesterday.toISOString())
+      .gte('date', yesterday.toISOString().split('T')[0])
       .maybeSingle();
 
-    if (error) throw error;
+    if (error) {
+      console.error('Error fetching product analytics:', error);
+      throw error;
+    }
     return data || { views: 0, clicks: 0, saves: 0 };
   } catch (error) {
     console.error('Error fetching product analytics:', error);
