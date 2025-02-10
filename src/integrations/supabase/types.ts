@@ -257,6 +257,7 @@ export type Database = {
           is_traffic_verified: boolean | null
           is_verified: boolean | null
           min_price: number | null
+          monthly_profit: number | null
           monthly_revenue: number | null
           monthly_traffic: number | null
           price: number
@@ -296,6 +297,7 @@ export type Database = {
           is_traffic_verified?: boolean | null
           is_verified?: boolean | null
           min_price?: number | null
+          monthly_profit?: number | null
           monthly_revenue?: number | null
           monthly_traffic?: number | null
           price: number
@@ -335,6 +337,7 @@ export type Database = {
           is_traffic_verified?: boolean | null
           is_verified?: boolean | null
           min_price?: number | null
+          monthly_profit?: number | null
           monthly_revenue?: number | null
           monthly_traffic?: number | null
           price?: number
