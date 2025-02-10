@@ -95,10 +95,9 @@ export const useAutosave = (form: UseFormReturn<ListProductFormData>, currentSec
     }
   };
 
-  // Auto-save changes
+  // Auto-save changes with a shorter debounce time
   useEffect(() => {
-    // Auto-save quietly
-    const debounceTimeout = setTimeout(() => saveDraft(false), 1000);
+    const debounceTimeout = setTimeout(() => saveDraft(false), 500);
     return () => clearTimeout(debounceTimeout);
   }, [form.watch(), currentSection, draftId]);
 
@@ -108,4 +107,3 @@ export const useAutosave = (form: UseFormReturn<ListProductFormData>, currentSec
 
   return { isLoading, saveForLater };
 };
-
