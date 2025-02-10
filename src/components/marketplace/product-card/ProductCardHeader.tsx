@@ -1,4 +1,5 @@
-import { Eye } from "lucide-react";
+
+import { Bookmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { ProductCardDialog } from "./ProductCardDialog";
@@ -45,9 +46,9 @@ export function ProductCardHeader({
         <Button 
           variant="ghost" 
           className="absolute top-2 right-14 z-10 p-2 bg-white/10 backdrop-blur-md hover:bg-white/20"
-          onClick={(e) => e.preventDefault()} // Prevent navigation when clicking the preview button
+          onClick={(e) => e.preventDefault()} 
         >
-          <Eye className="h-4 w-4" />
+          <Bookmark className="h-4 w-4" />
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-2xl mx-4 sm:mx-auto">
