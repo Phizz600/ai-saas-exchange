@@ -1,7 +1,9 @@
-import { Share2, Heart } from "lucide-react";
+
+import { Share2, Heart, Bookmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useState, useEffect } from "react";
 
 interface ProductHeaderProps {
   product: {
@@ -15,6 +17,30 @@ interface ProductHeaderProps {
 
 export function ProductHeader({ product, isLiked, setIsLiked }: ProductHeaderProps) {
   const { toast } = useToast();
+  const [isSaved, setIsSaved] = useState(false);
+
+  useEffect(() => {
+    const checkIfSaved = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('saved_products')
+          .eq('id', user.id)
+          .single();
+
+        if (profile?.saved_products?.includes(product.id)) {
+          setIsSaved(true);
+        }
+      } catch (error) {
+        console.error('Error checking saved status:', error);
+      }
+    };
+
+    checkIfSaved();
+  }, [product.id]);
 
   const handleLike = async () => {
     try {
@@ -62,6 +88,53 @@ export function ProductHeader({ product, isLiked, setIsLiked }: ProductHeaderPro
     }
   };
 
+  const handleSave = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          title: "Authentication required",
+          description: "Please sign in to save products",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('saved_products')
+        .eq('id', user.id)
+        .single();
+
+      const currentSaves = profile?.saved_products || [];
+      const newSaves = isSaved
+        ? currentSaves.filter((id: string) => id !== product.id)
+        : [...currentSaves, product.id];
+
+      await supabase
+        .from('profiles')
+        .update({ 
+          saved_products: newSaves,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', user.id);
+
+      setIsSaved(!isSaved);
+      toast({
+        title: isSaved ? "Product unsaved" : "Product saved",
+        description: isSaved ? "Removed from your saved products" : "Added to your saved products",
+      });
+
+    } catch (error) {
+      console.error('Error toggling product save:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save product. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="flex justify-between items-start">
       <div>
@@ -81,6 +154,13 @@ export function ProductHeader({ product, isLiked, setIsLiked }: ProductHeaderPro
           }}
         >
           <Share2 className="h-4 w-4" />
+        </Button>
+        <Button 
+          variant="outline" 
+          size="icon"
+          onClick={handleSave}
+        >
+          <Bookmark className={`h-4 w-4 ${isSaved ? "fill-current" : ""}`} />
         </Button>
         <Button 
           variant="outline" 
