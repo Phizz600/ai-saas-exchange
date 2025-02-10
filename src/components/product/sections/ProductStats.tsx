@@ -1,3 +1,4 @@
+
 import { Card } from "@/components/ui/card";
 import { TrendingUp, Users, Star, Shield, Zap, Building2, Info, Eye, Mouse, Bookmark, Flame } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
@@ -6,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { getProductAnalytics } from "@/integrations/supabase/functions";
+import { useEffect, useState } from "react";
 
 interface ProductStatsProps {
   product: {
@@ -26,11 +28,46 @@ interface ProductStatsProps {
 }
 
 export function ProductStats({ product }: ProductStatsProps) {
-  // Query for last 24h analytics
-  const { data: analytics, isLoading } = useQuery({
-    queryKey: ['product-analytics', product.id],
-    queryFn: () => getProductAnalytics(product.id),
-  });
+  const [analytics, setAnalytics] = useState<{
+    views: number;
+    clicks: number;
+    saves: number;
+  }>({ views: 0, clicks: 0, saves: 0 });
+
+  // Initial fetch of analytics
+  useEffect(() => {
+    const fetchAnalytics = async () => {
+      const data = await getProductAnalytics(product.id);
+      setAnalytics(data);
+    };
+    fetchAnalytics();
+  }, [product.id]);
+
+  // Subscribe to real-time updates
+  useEffect(() => {
+    const channel = supabase
+      .channel('analytics-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*', // Listen to all events (INSERT, UPDATE, DELETE)
+          schema: 'public',
+          table: 'product_analytics',
+          filter: `product_id=eq.${product.id}`,
+        },
+        async (payload) => {
+          console.log('Received real-time update:', payload);
+          // Fetch latest analytics when we receive an update
+          const data = await getProductAnalytics(product.id);
+          setAnalytics(data);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [product.id]);
 
   // Calculate if the product has high traffic
   const isHighTraffic = analytics && (
@@ -104,7 +141,7 @@ export function ProductStats({ product }: ProductStatsProps) {
                 <Eye className="h-4 w-4 text-blue-600" />
               </div>
               <div>
-                <p className="text-lg font-semibold">{isLoading ? '-' : analytics?.views || 0}</p>
+                <p className="text-lg font-semibold">{analytics?.views || 0}</p>
                 <p className="text-sm text-gray-600">Views</p>
               </div>
             </div>
@@ -113,7 +150,7 @@ export function ProductStats({ product }: ProductStatsProps) {
                 <Mouse className="h-4 w-4 text-purple-600" />
               </div>
               <div>
-                <p className="text-lg font-semibold">{isLoading ? '-' : analytics?.clicks || 0}</p>
+                <p className="text-lg font-semibold">{analytics?.clicks || 0}</p>
                 <p className="text-sm text-gray-600">Clicks</p>
               </div>
             </div>
@@ -122,7 +159,7 @@ export function ProductStats({ product }: ProductStatsProps) {
                 <Bookmark className="h-4 w-4 text-pink-600" />
               </div>
               <div>
-                <p className="text-lg font-semibold">{isLoading ? '-' : analytics?.saves || 0}</p>
+                <p className="text-lg font-semibold">{analytics?.saves || 0}</p>
                 <p className="text-sm text-gray-600">Saves</p>
               </div>
             </div>
