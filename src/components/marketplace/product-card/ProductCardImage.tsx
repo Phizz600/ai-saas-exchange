@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { SellerHoverCard } from "./SellerHoverCard";
 import { useState } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface ProductCardImageProps {
   image: string;
@@ -32,6 +34,7 @@ export function ProductCardImage({
 }: ProductCardImageProps) {
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const { toast } = useToast();
 
   const handleSaveClick = async (e: React.MouseEvent) => {
     e.preventDefault();
