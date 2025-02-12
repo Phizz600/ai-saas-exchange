@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
@@ -106,7 +107,7 @@ export const MarketplaceFooter = () => {
             <h4 className="font-bold text-white text-center md:text-left">Resources</h4>
             <ul className="mt-4 space-y-2">
               <li className="text-center md:text-left">
-                <Link to="/blog" className="text-white/80 hover:text-white">Blog</Link>
+                <a href="https://aiexchangeclub.beehiiv.com/" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white">Blog</a>
               </li>
               <li className="text-center md:text-left">
                 <Link to="/faq" className="text-white/80 hover:text-white">FAQ</Link>
