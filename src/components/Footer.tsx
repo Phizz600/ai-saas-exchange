@@ -17,12 +17,7 @@ export const Footer = () => {
             <div className="flex flex-col items-center md:items-start">
               <h3 className="text-white font-semibold mb-4">Resources</h3>
               <div className="flex flex-col space-y-2">
-                <Link to="/fees-pricing" className="text-white/60 hover:text-white transition-colors">
-                  Fees & Pricing
-                </Link>
-                <Link to="/policies" className="text-white/60 hover:text-white transition-colors">
-                  Policies
-                </Link>
+                {/* Links removed as requested */}
               </div>
             </div>
           </div>
