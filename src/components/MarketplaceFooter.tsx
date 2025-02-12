@@ -110,6 +110,12 @@ export const MarketplaceFooter = () => {
                 <a href="https://aiexchangeclub.beehiiv.com/" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white">Blog</a>
               </li>
               <li className="text-center md:text-left">
+                <Link to="/fees-pricing" className="text-white/80 hover:text-white">Fees & Pricing</Link>
+              </li>
+              <li className="text-center md:text-left">
+                <Link to="/policies" className="text-white/80 hover:text-white">Policies</Link>
+              </li>
+              <li className="text-center md:text-left">
                 <Link to="/faq" className="text-white/80 hover:text-white">FAQ</Link>
               </li>
               <li className="text-center md:text-left">
