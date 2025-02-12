@@ -13,6 +13,19 @@ export const Footer = () => {
     <footer className="relative w-full py-8 bg-transparent">
       <div className="container mx-auto px-4">
         <div className="flex flex-col items-center justify-center gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-4xl">
+            <div className="flex flex-col items-center md:items-start">
+              <h3 className="text-white font-semibold mb-4">Resources</h3>
+              <div className="flex flex-col space-y-2">
+                <Link to="/fees-pricing" className="text-white/60 hover:text-white transition-colors">
+                  Fees & Pricing
+                </Link>
+                <Link to="/policies" className="text-white/60 hover:text-white transition-colors">
+                  Policies
+                </Link>
+              </div>
+            </div>
+          </div>
           <div className="flex items-center space-x-6">
             {socialLinks.map(({ icon: Icon, href, label }) => (
               <Link
