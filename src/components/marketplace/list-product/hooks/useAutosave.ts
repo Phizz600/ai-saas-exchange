@@ -22,10 +22,11 @@ export const useAutosave = (form: UseFormReturn<ListProductFormData>, currentSec
         const { data: drafts, error } = await supabase
           .from('draft_products')
           .select('*')
+          .eq('user_id', user.id)
           .limit(1)
-          .single();
+          .maybeSingle(); // Changed from .single() to .maybeSingle()
 
-        if (error && error.code !== 'PGRST116') { // PGRST116 is "no rows returned"
+        if (error) {
           console.error('Error loading draft:', error);
           return;
         }
