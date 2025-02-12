@@ -41,13 +41,13 @@ export function AuctionSection({ form }: AuctionSectionProps) {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-semibold">Selling Method</h2>
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-4">
+          <span className={`text-sm ${!isAuction ? "text-primary" : "text-gray-500"}`}>Fixed Price</span>
           <FormField
             control={form.control}
             name="isAuction"
             render={({ field }) => (
               <FormItem className="flex items-center space-x-2">
-                <FormLabel>Dutch Auction</FormLabel>
                 <FormControl>
                   <Switch
                     checked={field.value}
@@ -57,6 +57,7 @@ export function AuctionSection({ form }: AuctionSectionProps) {
               </FormItem>
             )}
           />
+          <span className={`text-sm ${isAuction ? "text-primary" : "text-gray-500"}`}>Dutch Auction</span>
         </div>
       </div>
       

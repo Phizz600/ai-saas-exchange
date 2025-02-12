@@ -13,7 +13,7 @@ export function FormProgressBar({ currentSection, onSectionClick }: FormProgress
     "Technical",
     "Traffic & Users",
     "Special Notes",
-    "Dutch Auction"
+    "Selling Method"
   ];
 
   const handleSectionClick = (e: React.MouseEvent, index: number) => {
