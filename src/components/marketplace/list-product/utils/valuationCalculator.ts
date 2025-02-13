@@ -6,7 +6,8 @@ export const calculateValuation = (
   industry: string,
   hasPatents: boolean,
   monthlyRevenue?: number,
-  previousMonthRevenue?: number
+  previousMonthRevenue?: number,
+  customerAcquisitionCost?: number
 ): { low: number; high: number } => {
   // Base multiples
   const revenueMultipleLow = 4;
@@ -54,9 +55,22 @@ export const calculateValuation = (
   // IP multiplier
   const ipMultiplier = hasPatents ? 1.1 : 1.0;
 
+  // CAC efficiency factor
+  let cacFactor = 1.0;
+  if (customerAcquisitionCost && mrr > 0) {
+    const monthsToRecoup = customerAcquisitionCost / (mrr * grossMargin);
+    if (monthsToRecoup < 6) {
+      cacFactor = 1.2; // Very efficient CAC
+    } else if (monthsToRecoup < 12) {
+      cacFactor = 1.1; // Good CAC
+    } else if (monthsToRecoup > 24) {
+      cacFactor = 0.8; // Poor CAC
+    }
+  }
+
   // Calculate valuation range
-  const valuationLow = (mrr * revenueMultipleLow) * growthFactor * marginFactor * riskFactor * industryMultiplier * ipMultiplier;
-  const valuationHigh = (mrr * revenueMultipleHigh) * growthFactor * marginFactor * riskFactor * industryMultiplier * ipMultiplier;
+  const valuationLow = (mrr * revenueMultipleLow) * growthFactor * marginFactor * riskFactor * industryMultiplier * ipMultiplier * cacFactor;
+  const valuationHigh = (mrr * revenueMultipleHigh) * growthFactor * marginFactor * riskFactor * industryMultiplier * ipMultiplier * cacFactor;
 
   return {
     low: Math.round(valuationLow),

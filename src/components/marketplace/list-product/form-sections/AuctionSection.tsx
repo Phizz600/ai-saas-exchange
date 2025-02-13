@@ -43,13 +43,17 @@ export function AuctionSection({ form }: AuctionSectionProps) {
   const watchGrossProfitMargin = (form.watch("grossProfitMargin") || 0) / 100;
   const watchIndustry = form.watch("industry") || "";
   const watchHasPatents = form.watch("hasPatents") || false;
+  const watchCustomerAcquisitionCost = form.watch("customerAcquisitionCost");
 
   const valuation = calculateValuation(
     watchMonthlyRevenue,
     watchMonthlyChurnRate / 100,
     watchGrossProfitMargin,
     watchIndustry,
-    watchHasPatents
+    watchHasPatents,
+    undefined,
+    undefined,
+    watchCustomerAcquisitionCost
   );
 
   return (
@@ -307,7 +311,7 @@ export function AuctionSection({ form }: AuctionSectionProps) {
           {formatCurrency(valuation.low)} - {formatCurrency(valuation.high)}
         </div>
         <p className="text-sm mt-2 text-white/80">
-          This valuation is based on your monthly revenue, churn rate, profit margins, and other factors.
+          This valuation is based on your monthly revenue, churn rate, profit margins, customer acquisition costs, and other factors.
           It's an estimate to help guide your pricing strategy.
         </p>
       </Card>
