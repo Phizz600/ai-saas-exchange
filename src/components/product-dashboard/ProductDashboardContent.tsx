@@ -3,9 +3,6 @@ import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { ProductsTable } from "./ProductsTable";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
-import { Link } from "react-router-dom";
 
 interface ProductDashboardContentProps {
   showVerifiedOnly: boolean;
@@ -59,16 +56,6 @@ export const ProductDashboardContent = ({ showVerifiedOnly }: ProductDashboardCo
   return (
     <div className="space-y-8">
       <ProductsTable products={products || []} />
-      <div className="flex justify-center mt-8">
-        <Link to="/list-product">
-          <Button 
-            className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 transition-opacity"
-          >
-            <Plus className="mr-2 h-4 w-4" />
-            List Your Product
-          </Button>
-        </Link>
-      </div>
     </div>
   );
 };
