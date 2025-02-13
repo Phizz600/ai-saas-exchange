@@ -61,6 +61,30 @@ export type Database = {
           },
         ]
       }
+      daily_product_views: {
+        Row: {
+          action: string
+          id: string
+          product_id: string
+          user_id: string
+          viewed_at: string | null
+        }
+        Insert: {
+          action: string
+          id?: string
+          product_id: string
+          user_id: string
+          viewed_at?: string | null
+        }
+        Update: {
+          action?: string
+          id?: string
+          product_id?: string
+          user_id?: string
+          viewed_at?: string | null
+        }
+        Relationships: []
+      }
       draft_products: {
         Row: {
           created_at: string
@@ -620,6 +644,12 @@ export type Database = {
       check_high_traffic: {
         Args: Record<PropertyKey, never>
         Returns: undefined
+      }
+      get_daily_views_count: {
+        Args: {
+          user_uuid: string
+        }
+        Returns: number
       }
       increment_product_views: {
         Args: {
