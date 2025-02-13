@@ -55,40 +55,42 @@ export const MarketplaceFooter = () => {
         ))}
       </div>
       <div className="container mx-auto px-4 py-12 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="col-span-1 flex flex-col items-center text-center">
-            <img 
-              src="/lovable-uploads/c2d95fc3-b2b8-41f4-bee8-877a1d72cf6c.png"
-              alt="AI Exchange Club"
-              className="h-16 w-auto mb-6"
-            />
-            
-            {/* Email opt-in section */}
-            <div className="mt-6 w-full max-w-md">
-              <h3 className="text-white font-semibold mb-2">Get Early Access to Off-Market AI Deals</h3>
-              <p className="text-white/80 text-sm mb-4">Join 1,000+ AI founders and investors</p>
-              <form onSubmit={handleSubscribe} className="space-y-4">
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                  <Input
-                    type="email"
-                    placeholder="Enter your email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-gray-400 focus:border-white/20"
-                    required
-                  />
-                </div>
-                <Button 
-                  type="submit"
-                  className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 transition-opacity text-white font-semibold"
-                >
-                  Subscribe Now
-                </Button>
-              </form>
+        <div className="grid grid-cols-4 gap-8">
+          <div className="col-span-4 md:col-span-1">
+            <div className="flex flex-col items-center md:items-start">
+              <img 
+                src="/lovable-uploads/c2d95fc3-b2b8-41f4-bee8-877a1d72cf6c.png"
+                alt="AI Exchange Club"
+                className="h-16 w-auto mb-6"
+              />
+              
+              {/* Email opt-in section */}
+              <div className="w-full max-w-md">
+                <h3 className="text-white font-semibold mb-2 text-center md:text-left">Get Early Access to Off-Market AI Deals</h3>
+                <p className="text-white/80 text-sm mb-4 text-center md:text-left">Join 1,000+ AI founders and investors</p>
+                <form onSubmit={handleSubscribe} className="space-y-4">
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                    <Input
+                      type="email"
+                      placeholder="Enter your email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-gray-400 focus:border-white/20"
+                      required
+                    />
+                  </div>
+                  <Button 
+                    type="submit"
+                    className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 transition-opacity text-white font-semibold"
+                  >
+                    Subscribe Now
+                  </Button>
+                </form>
+              </div>
             </div>
           </div>
-          <div className="col-span-1">
+          <div className="col-span-4 md:col-span-1">
             <h4 className="font-bold text-white text-center md:text-left">Company</h4>
             <ul className="mt-4 space-y-2">
               <li className="text-center md:text-left">
@@ -102,7 +104,7 @@ export const MarketplaceFooter = () => {
               </li>
             </ul>
           </div>
-          <div className="col-span-1">
+          <div className="col-span-4 md:col-span-1">
             <h4 className="font-bold text-white text-center md:text-left">Resources</h4>
             <ul className="mt-4 space-y-2">
               <li className="text-center md:text-left">
@@ -122,7 +124,7 @@ export const MarketplaceFooter = () => {
               </li>
             </ul>
           </div>
-          <div className="col-span-1">
+          <div className="col-span-4 md:col-span-1">
             <h4 className="font-bold text-white text-center md:text-left">Follow Us</h4>
             <ul className="mt-4 space-y-2">
               <li className="text-center md:text-left">
