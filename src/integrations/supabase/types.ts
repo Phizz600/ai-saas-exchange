@@ -610,16 +610,12 @@ export type Database = {
     Views: {
       matched_products: {
         Row: {
-          business_model: string | null
           category: string | null
-          description: string | null
-          industry: string | null
-          investment_timeline: string | null
           investor_id: string | null
           match_score: number | null
           price: number | null
           product_id: string | null
-          stage: string | null
+          seller_id: string | null
           title: string | null
         }
         Relationships: [
@@ -627,6 +623,13 @@ export type Database = {
             foreignKeyName: "investor_preferences_user_id_fkey"
             columns: ["investor_id"]
             isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "products_seller_id_fkey"
+            columns: ["seller_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },

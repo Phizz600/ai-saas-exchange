@@ -36,9 +36,9 @@ export function ProductCardDialog({ product }: ProductCardDialogProps) {
     
     setIsSubmitting(true);
     try {
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
       
-      if (sessionError || !session?.user) {
+      if (userError || !user) {
         toast({
           title: "Authentication required",
           description: "Please log in to place a bid",
@@ -47,22 +47,41 @@ export function ProductCardDialog({ product }: ProductCardDialogProps) {
         return;
       }
 
-      const { error } = await supabase
+      // First check if user already has a pending bid
+      const { data: existingBids } = await supabase
+        .from('bids')
+        .select('id')
+        .eq('product_id', product.id)
+        .eq('bidder_id', user.id)
+        .eq('status', 'pending')
+        .single();
+
+      if (existingBids) {
+        toast({
+          title: "Bid already exists",
+          description: "You already have a pending bid on this product",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      const { error: bidError } = await supabase
         .from('bids')
         .insert({
           product_id: product.id,
-          bidder_id: session.user.id,
-          amount: product.current_price
+          bidder_id: user.id,
+          amount: product.current_price,
+          status: 'pending'
         });
 
-      if (error) {
-        console.error('Error placing bid:', error);
-        throw error;
+      if (bidError) {
+        console.error('Error placing bid:', bidError);
+        throw bidError;
       }
 
       toast({
         title: "Bid placed successfully!",
-        description: `You've placed a bid for ${product.current_price}`,
+        description: `You've placed a bid for $${product.current_price.toLocaleString()}`,
       });
 
     } catch (error: any) {
