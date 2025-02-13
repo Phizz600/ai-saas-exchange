@@ -105,9 +105,10 @@ export const MatchedProducts = () => {
   const currentMatch = matches[currentIndex];
 
   return (
-    <div className="relative">
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-8 z-10">
-        <span className="bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white px-4 py-1 rounded-full text-sm font-medium">
+    <div className="relative mt-8">
+      <div className="text-center mb-4">
+        <h2 className="text-2xl font-bold mb-2">Your Matches</h2>
+        <span className="inline-block bg-[#9b87f5] text-white px-6 py-2 rounded-full text-sm font-medium">
           {currentIndex + 1}/{matches.length}
         </span>
       </div>
