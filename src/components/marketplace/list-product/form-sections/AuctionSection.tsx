@@ -22,6 +22,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { calculateValuation, formatCurrency } from "../utils/valuationCalculator";
+import { Card } from "@/components/ui/card";
 
 interface AuctionSectionProps {
   form: UseFormReturn<ListProductFormData>;
@@ -35,6 +37,20 @@ export function AuctionSection({ form }: AuctionSectionProps) {
   if (monthlyRevenue && !form.getValues("startingPrice")) {
     form.setValue("startingPrice", monthlyRevenue * 10);
   }
+
+  const watchMonthlyRevenue = form.watch("monthlyRevenue") || 0;
+  const watchMonthlyChurnRate = form.watch("monthlyChurnRate") || 0;
+  const watchGrossProfitMargin = (form.watch("grossProfitMargin") || 0) / 100;
+  const watchIndustry = form.watch("industry") || "";
+  const watchHasPatents = form.watch("hasPatents") || false;
+
+  const valuation = calculateValuation(
+    watchMonthlyRevenue,
+    watchMonthlyChurnRate / 100,
+    watchGrossProfitMargin,
+    watchIndustry,
+    watchHasPatents
+  );
 
   return (
     <div className="space-y-6">
@@ -283,6 +299,18 @@ export function AuctionSection({ form }: AuctionSectionProps) {
           />
         </div>
       )}
+
+      {/* Valuation Card */}
+      <Card className="p-6 bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] text-white">
+        <h3 className="text-xl font-semibold mb-4">Estimated Valuation Range</h3>
+        <div className="text-2xl font-bold">
+          {formatCurrency(valuation.low)} - {formatCurrency(valuation.high)}
+        </div>
+        <p className="text-sm mt-2 text-white/80">
+          This valuation is based on your monthly revenue, churn rate, profit margins, and other factors.
+          It's an estimate to help guide your pricing strategy.
+        </p>
+      </Card>
     </div>
   );
 }
