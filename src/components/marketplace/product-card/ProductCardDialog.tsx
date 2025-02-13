@@ -1,3 +1,4 @@
+
 import { Shield, AlertCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -35,9 +36,9 @@ export function ProductCardDialog({ product }: ProductCardDialogProps) {
     
     setIsSubmitting(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
       
-      if (!user) {
+      if (sessionError || !session?.user) {
         toast({
           title: "Authentication required",
           description: "Please log in to place a bid",
@@ -50,22 +51,25 @@ export function ProductCardDialog({ product }: ProductCardDialogProps) {
         .from('bids')
         .insert({
           product_id: product.id,
-          bidder_id: user.id,
+          bidder_id: session.user.id,
           amount: product.current_price
         });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error placing bid:', error);
+        throw error;
+      }
 
       toast({
         title: "Bid placed successfully!",
         description: `You've placed a bid for ${product.current_price}`,
       });
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error placing bid:', error);
       toast({
         title: "Error placing bid",
-        description: "Please try again later",
+        description: error.message || "Please try again later",
         variant: "destructive"
       });
     } finally {
