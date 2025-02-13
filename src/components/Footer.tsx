@@ -15,7 +15,6 @@ export const Footer = () => {
         <div className="flex flex-col items-center justify-center gap-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-4xl">
             <div className="flex flex-col items-center md:items-start">
-              <h3 className="text-white font-semibold mb-4">Resources</h3>
               <div className="flex flex-col space-y-2">
                 {/* Resources links can be added here */}
               </div>
