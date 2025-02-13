@@ -106,8 +106,8 @@ export const MatchedProducts = () => {
 
   return (
     <div className="relative mt-8">
-      <div className="text-center mb-4">
-        <h2 className="text-2xl font-bold mb-2">Your Matches</h2>
+      <div className="text-center mb-8">
+        <h2 className="text-2xl font-bold mb-4">Your Matches</h2>
         <span className="inline-block bg-[#9b87f5] text-white px-6 py-2 rounded-full text-sm font-medium">
           {currentIndex + 1}/{matches.length}
         </span>
