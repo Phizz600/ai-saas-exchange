@@ -1,4 +1,3 @@
-
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { UseFormReturn } from "react-hook-form";
@@ -47,6 +46,18 @@ export function AuctionSection({ form }: AuctionSectionProps) {
   const watchIndustry = form.watch("industry") || "";
   const watchHasPatents = form.watch("hasPatents") || false;
   const watchCustomerAcquisitionCost = form.watch("customerAcquisitionCost");
+
+  const handleValuationClick = (value: number, isHigh: boolean) => {
+    if (isAuction) {
+      if (isHigh) {
+        form.setValue("startingPrice", value);
+      } else {
+        form.setValue("minPrice", value);
+      }
+    } else {
+      form.setValue("price", value);
+    }
+  };
 
   useEffect(() => {
     const updateValuation = async () => {
@@ -317,12 +328,25 @@ export function AuctionSection({ form }: AuctionSectionProps) {
       {/* Valuation Card */}
       <Card className="p-6 bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] text-white">
         <h3 className="text-xl font-semibold mb-4">AI-Powered Valuation Range</h3>
-        <div className="text-2xl font-bold">
-          {formatCurrency(valuation.low)} - {formatCurrency(valuation.high)}
+        <div className="text-2xl font-bold flex items-center justify-center gap-4">
+          <button
+            onClick={() => handleValuationClick(valuation.low, false)}
+            className="hover:opacity-80 transition-opacity"
+          >
+            {formatCurrency(valuation.low)}
+          </button>
+          <span>-</span>
+          <button
+            onClick={() => handleValuationClick(valuation.high, true)}
+            className="hover:opacity-80 transition-opacity"
+          >
+            {formatCurrency(valuation.high)}
+          </button>
         </div>
         <p className="text-sm mt-2 text-white/80">
           This AI-powered valuation is based on your monthly revenue, churn rate, profit margins, customer acquisition costs, and other factors.
           Our machine learning model analyzes these metrics to provide a customized valuation range.
+          Click on either value to use it as your {isAuction ? "auction prices" : "fixed price"}.
         </p>
       </Card>
     </div>
