@@ -57,13 +57,7 @@ export const MarketplaceFooter = () => {
       <div className="container mx-auto px-4 py-12 relative z-10">
         <div className="grid grid-cols-4 gap-8">
           <div className="col-span-4 md:col-span-1">
-            <div className="flex flex-col items-center md:items-start">
-              <img 
-                src="/lovable-uploads/c2d95fc3-b2b8-41f4-bee8-877a1d72cf6c.png"
-                alt="AI Exchange Club"
-                className="h-16 w-auto mb-6"
-              />
-              
+            <div className="flex flex-col items-center md:items-start">              
               {/* Email opt-in section */}
               <div className="w-full max-w-md">
                 <h3 className="text-white font-semibold mb-2 text-center md:text-left">Get Early Access to Off-Market AI Deals</h3>
@@ -84,7 +78,7 @@ export const MarketplaceFooter = () => {
                     type="submit"
                     className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 transition-opacity text-white font-semibold"
                   >
-                    Subscribe Now
+                    Join the Club
                   </Button>
                 </form>
               </div>
