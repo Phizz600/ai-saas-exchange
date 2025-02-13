@@ -1,3 +1,4 @@
+
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { UseFormReturn } from "react-hook-form";
@@ -24,12 +25,14 @@ import {
 } from "@/components/ui/select";
 import { calculateValuation, formatCurrency } from "../utils/valuationCalculator";
 import { Card } from "@/components/ui/card";
+import { useEffect, useState } from "react";
 
 interface AuctionSectionProps {
   form: UseFormReturn<ListProductFormData>;
 }
 
 export function AuctionSection({ form }: AuctionSectionProps) {
+  const [valuation, setValuation] = useState<{ low: number; high: number }>({ low: 0, high: 0 });
   const monthlyRevenue = form.watch("monthlyRevenue");
   const isAuction = form.watch("isAuction");
 
@@ -45,16 +48,23 @@ export function AuctionSection({ form }: AuctionSectionProps) {
   const watchHasPatents = form.watch("hasPatents") || false;
   const watchCustomerAcquisitionCost = form.watch("customerAcquisitionCost");
 
-  const valuation = calculateValuation(
-    watchMonthlyRevenue,
-    watchMonthlyChurnRate / 100,
-    watchGrossProfitMargin,
-    watchIndustry,
-    watchHasPatents,
-    undefined,
-    undefined,
-    watchCustomerAcquisitionCost
-  );
+  useEffect(() => {
+    const updateValuation = async () => {
+      const newValuation = await calculateValuation(
+        watchMonthlyRevenue,
+        watchMonthlyChurnRate / 100,
+        watchGrossProfitMargin,
+        watchIndustry,
+        watchHasPatents,
+        undefined,
+        undefined,
+        watchCustomerAcquisitionCost
+      );
+      setValuation(newValuation);
+    };
+
+    updateValuation();
+  }, [watchMonthlyRevenue, watchMonthlyChurnRate, watchGrossProfitMargin, watchIndustry, watchHasPatents, watchCustomerAcquisitionCost]);
 
   return (
     <div className="space-y-6">
@@ -306,13 +316,13 @@ export function AuctionSection({ form }: AuctionSectionProps) {
 
       {/* Valuation Card */}
       <Card className="p-6 bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] text-white">
-        <h3 className="text-xl font-semibold mb-4">Estimated Valuation Range</h3>
+        <h3 className="text-xl font-semibold mb-4">AI-Powered Valuation Range</h3>
         <div className="text-2xl font-bold">
           {formatCurrency(valuation.low)} - {formatCurrency(valuation.high)}
         </div>
         <p className="text-sm mt-2 text-white/80">
-          This valuation is based on your monthly revenue, churn rate, profit margins, customer acquisition costs, and other factors.
-          It's an estimate to help guide your pricing strategy.
+          This AI-powered valuation is based on your monthly revenue, churn rate, profit margins, customer acquisition costs, and other factors.
+          Our machine learning model analyzes these metrics to provide a customized valuation range.
         </p>
       </Card>
     </div>

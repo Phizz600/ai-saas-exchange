@@ -1,5 +1,65 @@
 
-export const calculateValuation = (
+import * as tf from '@tensorflow/tfjs';
+
+// Training data (simplified example)
+const trainingData = {
+  features: [
+    [10000, 0.03, 1], // MRR, Churn, Industry (1 = healthcare)
+    [5000, 0.05, 0],
+    [20000, 0.02, 1],
+    [15000, 0.04, 0],
+    [25000, 0.01, 1]
+  ],
+  labels: [6.5, 4.0, 8.0, 5.5, 7.5] // Revenue multiples
+};
+
+// Create and train the model
+const createModel = async () => {
+  const model = tf.sequential();
+  model.add(tf.layers.dense({ units: 1, inputShape: [3] }));
+  
+  model.compile({
+    optimizer: tf.train.adam(0.01),
+    loss: 'meanSquaredError'
+  });
+
+  const xs = tf.tensor2d(trainingData.features);
+  const ys = tf.tensor1d(trainingData.labels);
+
+  await model.fit(xs, ys, {
+    epochs: 100,
+    verbose: 0
+  });
+
+  return model;
+};
+
+// Cache the model
+let cachedModel: tf.LayersModel | null = null;
+
+const predictRevenueMultiple = async (
+  mrr: number,
+  churnRate: number,
+  industry: string
+): Promise<number> => {
+  if (!cachedModel) {
+    cachedModel = await createModel();
+  }
+
+  const industryCode = ["healthcare", "fintech", "autonomous vehicles"].includes(industry.toLowerCase()) ? 1 : 0;
+  const input = tf.tensor2d([[mrr, churnRate, industryCode]]);
+  
+  const prediction = await cachedModel.predict(input) as tf.Tensor;
+  const multiple = (await prediction.data())[0];
+  
+  // Cleanup
+  input.dispose();
+  prediction.dispose();
+
+  return Math.max(4, Math.min(8, multiple)); // Clamp between 4-8x
+};
+
+export const calculateValuation = async (
   mrr: number,
   churnRate: number,
   grossMargin: number,
@@ -8,11 +68,7 @@ export const calculateValuation = (
   monthlyRevenue?: number,
   previousMonthRevenue?: number,
   customerAcquisitionCost?: number
-): { low: number; high: number } => {
-  // Base multiples
-  const revenueMultipleLow = 4;
-  const revenueMultipleHigh = 8;
-
+): Promise<{ low: number; high: number }> => {
   // Calculate growth rate if we have both current and previous month revenue
   let growthRate = 0;
   if (monthlyRevenue && previousMonthRevenue && previousMonthRevenue > 0) {
@@ -47,11 +103,6 @@ export const calculateValuation = (
     riskFactor = 1.0;
   }
 
-  // Industry multiplier
-  const industryMultiplier = ["healthcare", "fintech", "autonomous vehicles"].includes(industry.toLowerCase())
-    ? 1.2
-    : 1.0;
-
   // IP multiplier
   const ipMultiplier = hasPatents ? 1.1 : 1.0;
 
@@ -68,9 +119,12 @@ export const calculateValuation = (
     }
   }
 
-  // Calculate valuation range
-  const valuationLow = (mrr * revenueMultipleLow) * growthFactor * marginFactor * riskFactor * industryMultiplier * ipMultiplier * cacFactor;
-  const valuationHigh = (mrr * revenueMultipleHigh) * growthFactor * marginFactor * riskFactor * industryMultiplier * ipMultiplier * cacFactor;
+  // Get AI-predicted revenue multiple
+  const revenueMultiple = await predictRevenueMultiple(mrr, churnRate, industry);
+
+  // Calculate valuation range using AI-predicted multiple
+  const valuationLow = (mrr * revenueMultiple * 0.9) * growthFactor * marginFactor * riskFactor * ipMultiplier * cacFactor;
+  const valuationHigh = (mrr * revenueMultiple * 1.1) * growthFactor * marginFactor * riskFactor * ipMultiplier * cacFactor;
 
   return {
     low: Math.round(valuationLow),
