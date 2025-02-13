@@ -62,9 +62,6 @@ export const MarketplaceFooter = () => {
               alt="AI Exchange Club"
               className="h-16 w-auto mb-6"
             />
-            <p className="text-white">
-              Your premier destination for buying and selling AI products.
-            </p>
             
             {/* Email opt-in section */}
             <div className="mt-6 w-full max-w-md">
