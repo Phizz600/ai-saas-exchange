@@ -17,7 +17,7 @@ export const Footer = () => {
             <div className="flex flex-col items-center md:items-start">
               <h3 className="text-white font-semibold mb-4">Resources</h3>
               <div className="flex flex-col space-y-2">
-                {/* Links removed as requested */}
+                {/* Resources links can be added here */}
               </div>
             </div>
           </div>
