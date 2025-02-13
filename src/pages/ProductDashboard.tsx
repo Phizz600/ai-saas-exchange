@@ -7,6 +7,7 @@ import { Store, ShoppingBag, ToggleLeft, ToggleRight } from "lucide-react";
 import { StatsCard } from "@/components/product-dashboard/StatsCard";
 import { ActiveBidsProducts } from "@/components/product-dashboard/ActiveBidsProducts";
 import { WatchedProducts } from "@/components/product-dashboard/WatchedProducts";
+import { MatchedProducts } from "@/components/product-dashboard/MatchedProducts";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
@@ -77,6 +78,10 @@ export const ProductDashboard = () => {
             />
           </div>
           <div className="space-y-8">
+            <div>
+              <h2 className="text-xl font-semibold mb-4 font-exo">Your Matches</h2>
+              <MatchedProducts />
+            </div>
             <div>
               <h2 className="text-xl font-semibold mb-4 font-exo">Your Active Bids</h2>
               <ActiveBidsProducts />

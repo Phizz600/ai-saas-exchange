@@ -49,6 +49,13 @@ export type Database = {
             foreignKeyName: "bids_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: false
+            referencedRelation: "matched_products"
+            referencedColumns: ["product_id"]
+          },
+          {
+            foreignKeyName: "bids_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
             referencedRelation: "products"
             referencedColumns: ["id"]
           },
@@ -80,6 +87,74 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      investor_preferences: {
+        Row: {
+          created_at: string
+          id: string
+          investment_stage:
+            | Database["public"]["Enums"]["investment_preference"][]
+            | null
+          max_investment: number | null
+          min_investment: number | null
+          preferred_categories: string[] | null
+          preferred_industries: string[] | null
+          risk_appetite:
+            | Database["public"]["Enums"]["investment_preference"][]
+            | null
+          target_market:
+            | Database["public"]["Enums"]["investment_preference"][]
+            | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          investment_stage?:
+            | Database["public"]["Enums"]["investment_preference"][]
+            | null
+          max_investment?: number | null
+          min_investment?: number | null
+          preferred_categories?: string[] | null
+          preferred_industries?: string[] | null
+          risk_appetite?:
+            | Database["public"]["Enums"]["investment_preference"][]
+            | null
+          target_market?:
+            | Database["public"]["Enums"]["investment_preference"][]
+            | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          investment_stage?:
+            | Database["public"]["Enums"]["investment_preference"][]
+            | null
+          max_investment?: number | null
+          min_investment?: number | null
+          preferred_categories?: string[] | null
+          preferred_industries?: string[] | null
+          risk_appetite?:
+            | Database["public"]["Enums"]["investment_preference"][]
+            | null
+          target_market?:
+            | Database["public"]["Enums"]["investment_preference"][]
+            | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "investor_preferences_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       notifications: {
         Row: {
@@ -122,6 +197,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "bids"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_related_product_id_fkey"
+            columns: ["related_product_id"]
+            isOneToOne: false
+            referencedRelation: "matched_products"
+            referencedColumns: ["product_id"]
           },
           {
             foreignKeyName: "notifications_related_product_id_fkey"
@@ -182,6 +264,13 @@ export type Database = {
             foreignKeyName: "offers_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: false
+            referencedRelation: "matched_products"
+            referencedColumns: ["product_id"]
+          },
+          {
+            foreignKeyName: "offers_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
             referencedRelation: "products"
             referencedColumns: ["id"]
           },
@@ -225,6 +314,13 @@ export type Database = {
           views?: number | null
         }
         Relationships: [
+          {
+            foreignKeyName: "product_analytics_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "matched_products"
+            referencedColumns: ["product_id"]
+          },
           {
             foreignKeyName: "product_analytics_product_id_fkey"
             columns: ["product_id"]
@@ -446,6 +542,13 @@ export type Database = {
             foreignKeyName: "promotions_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: false
+            referencedRelation: "matched_products"
+            referencedColumns: ["product_id"]
+          },
+          {
+            foreignKeyName: "promotions_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
             referencedRelation: "products"
             referencedColumns: ["id"]
           },
@@ -460,9 +563,37 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      matched_products: {
+        Row: {
+          category: string | null
+          description: string | null
+          industry: string | null
+          investor_id: string | null
+          match_score: number | null
+          price: number | null
+          product_id: string | null
+          stage: string | null
+          title: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "investor_preferences_user_id_fkey"
+            columns: ["investor_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
+      calculate_match_score: {
+        Args: {
+          product_id: string
+          investor_id: string
+        }
+        Returns: number
+      }
       check_high_traffic: {
         Args: Record<PropertyKey, never>
         Returns: undefined
@@ -487,6 +618,16 @@ export type Database = {
       }
     }
     Enums: {
+      investment_preference:
+        | "early_stage"
+        | "growth_stage"
+        | "established"
+        | "high_risk"
+        | "moderate_risk"
+        | "low_risk"
+        | "b2b"
+        | "b2c"
+        | "enterprise"
       notification_type:
         | "sale"
         | "liked_product_sold"
