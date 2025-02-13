@@ -1,12 +1,11 @@
-import { Presentation, ShoppingCart, MessageSquare } from "lucide-react";
+
+import { MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CardFooter } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { AuctionSection } from "./auction/AuctionSection";
-import { PitchDeckSlideshow } from "./pitch-deck/PitchDeckSlideshow";
 import { OfferDialog } from "./offer/OfferDialog";
 import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
 interface ProductCardActionsProps {
@@ -27,58 +26,14 @@ interface ProductCardActionsProps {
 }
 
 export function ProductCardActions({ product }: ProductCardActionsProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isOfferDialogOpen, setIsOfferDialogOpen] = useState(false);
   const { toast } = useToast();
   const isAuction = !!product.auction_end_time;
   const auctionEnded = isAuction && new Date(product.auction_end_time) < new Date();
 
-  const handleBuyNow = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        toast({
-          title: "Authentication required",
-          description: "Please log in to make a purchase",
-          variant: "destructive"
-        });
-        return;
-      }
-
-      // Here you would typically initiate the purchase process
-      toast({
-        title: "Starting purchase process",
-        description: "You'll be redirected to complete your purchase",
-      });
-
-    } catch (error) {
-      console.error('Error initiating purchase:', error);
-      toast({
-        title: "Error",
-        description: "Could not initiate purchase. Please try again.",
-        variant: "destructive"
-      });
-    }
-  };
-
   return (
     <CardFooter className="flex flex-col gap-3">
       {isAuction && !auctionEnded && <AuctionSection product={product} />}
-
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button 
-            className="w-full bg-white text-black hover:bg-gradient-to-r hover:from-[#D946EE] hover:via-[#8B5CF6] hover:to-[#0EA4E9] hover:text-white transition-all duration-300"
-          >
-            <Presentation className="h-4 w-4 mr-2" />
-            View Pitch Deck
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-2xl">
-          <PitchDeckSlideshow product={product} />
-        </DialogContent>
-      </Dialog>
 
       <Dialog open={isOfferDialogOpen} onOpenChange={setIsOfferDialogOpen}>
         <DialogTrigger asChild>
@@ -99,16 +54,6 @@ export function ProductCardActions({ product }: ProductCardActionsProps) {
           />
         </DialogContent>
       </Dialog>
-
-      {!isAuction && (
-        <Button 
-          className="w-full bg-black text-white hover:bg-gradient-to-r hover:from-[#D946EE] hover:via-[#8B5CF6] hover:to-[#0EA4E9] hover:text-white transition-all duration-300"
-          onClick={handleBuyNow}
-        >
-          <ShoppingCart className="h-4 w-4 mr-2" />
-          Buy Now - ${product.price?.toLocaleString()}
-        </Button>
-      )}
     </CardFooter>
   );
 }
