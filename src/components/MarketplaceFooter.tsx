@@ -66,8 +66,10 @@ export const MarketplaceFooter = () => {
               Your premier destination for buying and selling AI products.
             </p>
             
-            {/* Email opt-in section moved here */}
+            {/* Email opt-in section */}
             <div className="mt-6 w-full max-w-md">
+              <h3 className="text-white font-semibold mb-2">Get Early Access to Off-Market AI Deals</h3>
+              <p className="text-white/80 text-sm mb-4">Join 1,000+ AI founders and investors</p>
               <form onSubmit={handleSubscribe} className="space-y-4">
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
@@ -84,7 +86,7 @@ export const MarketplaceFooter = () => {
                   type="submit"
                   className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 transition-opacity text-white font-semibold"
                 >
-                  Subscribe
+                  Subscribe Now
                 </Button>
               </form>
             </div>
