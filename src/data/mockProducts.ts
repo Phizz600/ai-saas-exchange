@@ -42,7 +42,9 @@ export const mockProducts: Product[] = [
     special_notes: "Currently processing over 1 million requests per month with 99.9% uptime.",
     highest_bid: null,
     highest_bidder_id: null,
-    gross_profit_margin: 85
+    gross_profit_margin: 85,
+    business_model: "SaaS",
+    investment_timeline: "medium"
   },
   {
     id: "2",
@@ -82,6 +84,8 @@ export const mockProducts: Product[] = [
     special_notes: "Integrates seamlessly with popular CRM platforms",
     highest_bid: null,
     highest_bidder_id: null,
-    gross_profit_margin: 65
+    gross_profit_margin: 65,
+    business_model: "API",
+    investment_timeline: "short"
   }
 ];
