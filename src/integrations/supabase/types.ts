@@ -90,59 +90,74 @@ export type Database = {
       }
       investor_preferences: {
         Row: {
+          business_model: string[] | null
           created_at: string
+          current_question: number | null
           id: string
           investment_stage:
             | Database["public"]["Enums"]["investment_preference"][]
             | null
+          investment_timeline: string | null
           max_investment: number | null
           min_investment: number | null
           preferred_categories: string[] | null
           preferred_industries: string[] | null
+          required_integrations: string[] | null
           risk_appetite:
             | Database["public"]["Enums"]["investment_preference"][]
             | null
           target_market:
             | Database["public"]["Enums"]["investment_preference"][]
             | null
+          technical_expertise: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
+          business_model?: string[] | null
           created_at?: string
+          current_question?: number | null
           id?: string
           investment_stage?:
             | Database["public"]["Enums"]["investment_preference"][]
             | null
+          investment_timeline?: string | null
           max_investment?: number | null
           min_investment?: number | null
           preferred_categories?: string[] | null
           preferred_industries?: string[] | null
+          required_integrations?: string[] | null
           risk_appetite?:
             | Database["public"]["Enums"]["investment_preference"][]
             | null
           target_market?:
             | Database["public"]["Enums"]["investment_preference"][]
             | null
+          technical_expertise?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
+          business_model?: string[] | null
           created_at?: string
+          current_question?: number | null
           id?: string
           investment_stage?:
             | Database["public"]["Enums"]["investment_preference"][]
             | null
+          investment_timeline?: string | null
           max_investment?: number | null
           min_investment?: number | null
           preferred_categories?: string[] | null
           preferred_industries?: string[] | null
+          required_integrations?: string[] | null
           risk_appetite?:
             | Database["public"]["Enums"]["investment_preference"][]
             | null
           target_market?:
             | Database["public"]["Enums"]["investment_preference"][]
             | null
+          technical_expertise?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -334,6 +349,7 @@ export type Database = {
         Row: {
           auction_end_time: string | null
           business_location: string | null
+          business_model: string | null
           category: string
           competitors: string | null
           created_at: string
@@ -348,6 +364,7 @@ export type Database = {
           image_url: string | null
           industry: string | null
           integrations_other: string | null
+          investment_timeline: string | null
           is_code_audited: boolean | null
           is_revenue_verified: boolean | null
           is_traffic_verified: boolean | null
@@ -374,6 +391,7 @@ export type Database = {
         Insert: {
           auction_end_time?: string | null
           business_location?: string | null
+          business_model?: string | null
           category: string
           competitors?: string | null
           created_at?: string
@@ -388,6 +406,7 @@ export type Database = {
           image_url?: string | null
           industry?: string | null
           integrations_other?: string | null
+          investment_timeline?: string | null
           is_code_audited?: boolean | null
           is_revenue_verified?: boolean | null
           is_traffic_verified?: boolean | null
@@ -414,6 +433,7 @@ export type Database = {
         Update: {
           auction_end_time?: string | null
           business_location?: string | null
+          business_model?: string | null
           category?: string
           competitors?: string | null
           created_at?: string
@@ -428,6 +448,7 @@ export type Database = {
           image_url?: string | null
           industry?: string | null
           integrations_other?: string | null
+          investment_timeline?: string | null
           is_code_audited?: boolean | null
           is_revenue_verified?: boolean | null
           is_traffic_verified?: boolean | null
@@ -628,6 +649,13 @@ export type Database = {
         | "b2b"
         | "b2c"
         | "enterprise"
+        | "healthcare"
+        | "fintech"
+        | "ecommerce"
+        | "autonomous_vehicles"
+        | "nlp"
+        | "computer_vision"
+        | "other"
       notification_type:
         | "sale"
         | "liked_product_sold"

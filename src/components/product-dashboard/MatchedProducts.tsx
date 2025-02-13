@@ -6,9 +6,13 @@ import { ProductCard } from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
 import { Settings } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import { PreferenceQuestionnaire } from "./PreferenceQuestionnaire";
 
 export const MatchedProducts = () => {
-  const { data: matches, isLoading } = useQuery({
+  const [showQuestionnaire, setShowQuestionnaire] = useState(false);
+  
+  const { data: matches, isLoading, refetch } = useQuery({
     queryKey: ['matched-products'],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -40,17 +44,29 @@ export const MatchedProducts = () => {
     );
   }
 
+  if (showQuestionnaire) {
+    return (
+      <PreferenceQuestionnaire
+        onComplete={() => {
+          setShowQuestionnaire(false);
+          refetch();
+        }}
+      />
+    );
+  }
+
   if (!matches || matches.length === 0) {
     return (
       <Card className="p-6 text-center">
         <h3 className="text-lg font-semibold mb-2">No Matches Yet</h3>
         <p className="text-gray-500 mb-4">Set up your investment preferences to get personalized AI product recommendations.</p>
-        <Link to="/preferences">
-          <Button className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9]">
-            <Settings className="w-4 h-4 mr-2" />
-            Set Preferences
-          </Button>
-        </Link>
+        <Button 
+          className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9]"
+          onClick={() => setShowQuestionnaire(true)}
+        >
+          <Settings className="w-4 h-4 mr-2" />
+          Set Preferences
+        </Button>
       </Card>
     );
   }
