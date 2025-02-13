@@ -53,12 +53,25 @@ export const AuthForm = () => {
             },
           },
         });
+
         if (error) {
-          if (error.message.includes("User already registered")) {
-            setErrorMessage("This email is already registered. Please sign in instead.");
-            setIsSignUp(false);
-          } else {
-            setErrorMessage(error.message);
+          // Parse the error body if it exists
+          try {
+            const errorBody = error.message && JSON.parse(error.message);
+            if (errorBody?.code === "user_already_exists" || error.message.includes("User already registered")) {
+              setErrorMessage("This email is already registered. Please sign in instead.");
+              setIsSignUp(false);
+            } else {
+              setErrorMessage(error.message);
+            }
+          } catch {
+            // If parsing fails, handle the error message directly
+            if (error.message.includes("User already registered")) {
+              setErrorMessage("This email is already registered. Please sign in instead.");
+              setIsSignUp(false);
+            } else {
+              setErrorMessage(error.message);
+            }
           }
           return;
         }
@@ -67,11 +80,19 @@ export const AuthForm = () => {
           email,
           password,
         });
-        if (error) throw error;
+        if (error) {
+          setErrorMessage(error.message);
+          return;
+        }
       }
     } catch (error: any) {
       console.error("Auth error:", error);
-      setErrorMessage(error.message);
+      if (error.message.includes("User already registered")) {
+        setErrorMessage("This email is already registered. Please sign in instead.");
+        setIsSignUp(false);
+      } else {
+        setErrorMessage(error.message || "An error occurred during authentication.");
+      }
     }
   };
 
