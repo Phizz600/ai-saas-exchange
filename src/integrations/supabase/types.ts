@@ -665,6 +665,12 @@ export type Database = {
         }
         Returns: boolean
       }
+      truncate_to_date: {
+        Args: {
+          ts: string
+        }
+        Returns: string
+      }
       update_dutch_auction_prices: {
         Args: Record<PropertyKey, never>
         Returns: undefined
