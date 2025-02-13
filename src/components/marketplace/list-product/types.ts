@@ -1,3 +1,4 @@
+
 export interface ListProductFormData {
   title: string;
   description: string;
@@ -38,4 +39,5 @@ export interface ListProductFormData {
   isRevenueVerified?: boolean;
   isCodeAudited?: boolean;
   isTrafficVerified?: boolean;
+  customerAcquisitionCost?: number;
 }

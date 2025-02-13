@@ -143,6 +143,37 @@ export function FinancialSection({ form }: FinancialSectionProps) {
             </FormItem>
           )}
         />
+
+        <FormField
+          control={form.control}
+          name="customerAcquisitionCost"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="flex items-center gap-2">
+                Customer Acquisition Cost (CAC)
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="h-4 w-4 text-gray-500 cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-white">
+                      <p>Average cost to acquire a single customer, including marketing and sales expenses</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </FormLabel>
+              <FormControl>
+                <Input 
+                  type="number"
+                  placeholder="Enter CAC in USD"
+                  {...field}
+                  onChange={e => field.onChange(Number(e.target.value))}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
       </div>
     </div>
   );
