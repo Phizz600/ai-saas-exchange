@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { ProductCard } from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
-import { Settings, Info } from "lucide-react";
+import { Settings, Info, ArrowUpDown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { PreferenceQuestionnaire } from "./PreferenceQuestionnaire";
@@ -13,12 +13,20 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export const MatchedProducts = () => {
   const [showQuestionnaire, setShowQuestionnaire] = useState(false);
+  const [sortBy, setSortBy] = useState<"match" | "price_asc" | "price_desc">("match");
   
   const { data: matches, isLoading, refetch } = useQuery({
-    queryKey: ['matched-products'],
+    queryKey: ['matched-products', sortBy],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return [];
@@ -31,7 +39,7 @@ export const MatchedProducts = () => {
         .single();
 
       // Get matched products
-      const { data: matchedProducts, error } = await supabase
+      let query = supabase
         .from('matched_products')
         .select(`
           *,
@@ -42,9 +50,23 @@ export const MatchedProducts = () => {
             technical_expertise_required:stage
           )
         `)
-        .eq('investor_id', user.id)
-        .order('match_score', { ascending: false })
-        .limit(3);
+        .eq('investor_id', user.id);
+
+      // Apply sorting
+      switch (sortBy) {
+        case "price_asc":
+          query = query.order('price', { ascending: true });
+          break;
+        case "price_desc":
+          query = query.order('price', { ascending: false });
+          break;
+        default:
+          query = query.order('match_score', { ascending: false });
+      }
+
+      query = query.limit(3);
+      
+      const { data: matchedProducts, error } = await query;
 
       if (error) {
         console.error('Error fetching matches:', error);
@@ -113,8 +135,22 @@ export const MatchedProducts = () => {
 
   return (
     <div className="space-y-4">
+      <div className="flex justify-end">
+        <Select value={sortBy} onValueChange={(value) => setSortBy(value as typeof sortBy)}>
+          <SelectTrigger className="w-[180px]">
+            <ArrowUpDown className="mr-2 h-4 w-4" />
+            <SelectValue placeholder="Sort by..." />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="match">Best Match</SelectItem>
+            <SelectItem value="price_asc">Price: Low to High</SelectItem>
+            <SelectItem value="price_desc">Price: High to Low</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
       {matches.map((match) => (
-        <div key={match.product_id} className="relative">
+        <div key={match.product_id} className="relative group">
           <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
             <span className="bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white px-3 py-1 rounded-full text-sm font-medium">
               {Math.round(match.match_score)}% Match
@@ -158,30 +194,35 @@ export const MatchedProducts = () => {
               </HoverCardContent>
             </HoverCard>
           </div>
-          <ProductCard
-            product={{
-              id: match.product_id,
-              title: match.title,
-              description: match.description || "",
-              price: Number(match.price),
-              category: match.category,
-              stage: match.stage,
-              monthlyRevenue: 0,
-              image: "/placeholder.svg",
-              timeLeft: "24h left",
-              auction_end_time: undefined,
-              starting_price: undefined,
-              current_price: undefined,
-              min_price: undefined,
-              price_decrement: undefined,
-              seller: {
-                id: "",
-                name: "Anonymous",
-                avatar: "/placeholder.svg",
-                achievements: []
-              }
-            }}
-          />
+          <Link 
+            to={`/product/${match.product_id}`}
+            className="block transition-transform hover:-translate-y-1"
+          >
+            <ProductCard
+              product={{
+                id: match.product_id,
+                title: match.title,
+                description: match.description || "",
+                price: Number(match.price),
+                category: match.category,
+                stage: match.stage,
+                monthlyRevenue: 0,
+                image: "/placeholder.svg",
+                timeLeft: "24h left",
+                auction_end_time: undefined,
+                starting_price: undefined,
+                current_price: undefined,
+                min_price: undefined,
+                price_decrement: undefined,
+                seller: {
+                  id: "",
+                  name: "Anonymous",
+                  avatar: "/placeholder.svg",
+                  achievements: []
+                }
+              }}
+            />
+          </Link>
         </div>
       ))}
       <Link to="/matches" className="block">
