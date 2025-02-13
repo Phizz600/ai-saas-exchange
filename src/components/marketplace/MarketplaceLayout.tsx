@@ -63,8 +63,8 @@ export const MarketplaceLayout = () => {
           </div>
           <div className="max-w-none space-y-12">
             <FeaturedCompaniesSlideshow />
-            <TrustBoosters />
             <MarketplaceContent />
+            <TrustBoosters />
             <MarketplaceFAQ />
           </div>
         </div>
