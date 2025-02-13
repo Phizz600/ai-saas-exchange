@@ -38,11 +38,11 @@ export const ProductGrid = ({ products, isLoading = false, onProductView }: Prod
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 sm:gap-8 py-6 sm:py-10 px-2 sm:px-0 max-w-[1400px] mx-auto">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 py-6 sm:py-10 px-2 sm:px-0 max-w-[1400px] mx-auto">
       {products.map((product) => {
         console.log('Product seller data:', product.seller_id);
         return (
-          <div className="mx-auto w-full max-w-[450px]">
+          <div className="mx-auto w-full max-w-[400px]">
             <ProductCard
               key={product.id}
               product={{
