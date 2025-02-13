@@ -72,8 +72,14 @@ export const MatchedProducts = () => {
               price: Number(match.price),
               category: match.category,
               stage: match.stage,
+              monthlyRevenue: 0, // Added missing required property
               image: "/placeholder.svg",
               timeLeft: "24h left",
+              auction_end_time: undefined,
+              starting_price: undefined,
+              current_price: undefined,
+              min_price: undefined,
+              price_decrement: undefined,
               seller: {
                 id: "",
                 name: "Anonymous",
