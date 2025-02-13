@@ -118,18 +118,20 @@ export const PreferenceQuestionnaire = ({ onComplete }: { onComplete: () => void
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return;
 
-        // Map answers to preference structure
+        // Map answers to preference structure with proper array handling
         const preferences = {
-          preferred_industries: answers[1] as string[],
+          preferred_industries: Array.isArray(answers[1]) ? answers[1] : [answers[1]],
           min_investment: answers[2] === 'under_10k' ? 0 : 10000,
           max_investment: answers[2] === 'over_100k' ? 1000000 : 100000,
-          risk_appetite: [answers[3]] as string[], // Using the correct enum values (low_risk, moderate_risk, high_risk)
-          preferred_categories: [answers[4]] as string[],
+          risk_appetite: [answers[3]], // Single value wrapped in array
+          preferred_categories: Array.isArray(answers[4]) ? answers[4] : [answers[4]],
           technical_expertise: answers[5] as string,
-          required_integrations: answers[6] as string[],
+          required_integrations: Array.isArray(answers[6]) ? answers[6] : [answers[6]],
           investment_timeline: answers[7] as string,
           current_question: questions.length
         };
+
+        console.log('Saving preferences:', preferences);
 
         const { error } = await supabase
           .from('investor_preferences')
@@ -138,7 +140,10 @@ export const PreferenceQuestionnaire = ({ onComplete }: { onComplete: () => void
             ...preferences
           });
 
-        if (error) throw error;
+        if (error) {
+          console.error('Supabase error:', error);
+          throw error;
+        }
 
         toast({
           title: "Preferences saved!",
