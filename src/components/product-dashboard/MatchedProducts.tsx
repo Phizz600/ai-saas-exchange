@@ -106,6 +106,12 @@ export const MatchedProducts = () => {
 
   return (
     <div className="relative">
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-8 z-10">
+        <span className="bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white px-4 py-1 rounded-full text-sm font-medium">
+          {currentIndex + 1}/{matches.length}
+        </span>
+      </div>
+
       <AnimatePresence mode="wait">
         <motion.div
           key={currentMatch.product_id}
