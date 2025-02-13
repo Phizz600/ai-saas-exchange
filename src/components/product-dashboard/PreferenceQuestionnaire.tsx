@@ -40,9 +40,9 @@ const questions = [
     title: "What's your risk appetite?",
     type: "single",
     options: [
-      { id: "low", label: "Low (Established products with steady revenue)" },
-      { id: "medium", label: "Medium (Growing products with some traction)" },
-      { id: "high", label: "High (Early-stage products with high growth potential)" }
+      { id: "low_risk", label: "Low (Established products with steady revenue)" },
+      { id: "moderate_risk", label: "Medium (Growing products with some traction)" },
+      { id: "high_risk", label: "High (Early-stage products with high growth potential)" }
     ]
   },
   {
@@ -123,8 +123,8 @@ export const PreferenceQuestionnaire = ({ onComplete }: { onComplete: () => void
           preferred_industries: answers[1] as string[],
           min_investment: answers[2] === 'under_10k' ? 0 : 10000,
           max_investment: answers[2] === 'over_100k' ? 1000000 : 100000,
-          risk_appetite: [answers[3]] as string[],
-          preferred_categories: [answers[4]] as string[], // Wrap single value in array
+          risk_appetite: [answers[3]] as string[], // Already using the correct enum values
+          preferred_categories: [answers[4]] as string[],
           technical_expertise: answers[5] as string,
           required_integrations: answers[6] as string[],
           investment_timeline: answers[7] as string,
