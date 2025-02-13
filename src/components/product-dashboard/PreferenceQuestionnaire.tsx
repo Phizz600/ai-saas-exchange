@@ -123,7 +123,7 @@ export const PreferenceQuestionnaire = ({ onComplete }: { onComplete: () => void
           preferred_industries: answers[1] as string[],
           min_investment: answers[2] === 'under_10k' ? 0 : 10000,
           max_investment: answers[2] === 'over_100k' ? 1000000 : 100000,
-          risk_appetite: [answers[3]] as string[], // Already using the correct enum values
+          risk_appetite: [answers[3]] as string[], // Using the correct enum values (low_risk, moderate_risk, high_risk)
           preferred_categories: [answers[4]] as string[],
           technical_expertise: answers[5] as string,
           required_integrations: answers[6] as string[],
