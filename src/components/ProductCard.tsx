@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
@@ -138,8 +137,7 @@ export function ProductCard({ product, onView }: ProductCardProps) {
       animate={{ opacity: 1, scale: 1 }}
       whileHover={!isMobile ? { y: -5 } : undefined}
       transition={{ duration: 0.2 }}
-      className="group touch-manipulation"
-      onClick={handleCardClick}
+      className="group touch-manipulation max-w-[300px] mx-auto"
     >
       <Card className="overflow-hidden bg-gradient-to-b from-white to-gray-50/50 backdrop-blur-xl border-gray-100/50 shadow-lg">
         <ProductCardHeader 
