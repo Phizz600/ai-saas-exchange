@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
@@ -42,30 +41,56 @@ interface ProductCardProps {
 
 export function ProductCard({ product, onView }: ProductCardProps) {
   const [isSaved, setIsSaved] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
   useEffect(() => {
+    let mounted = true;
+
     const checkIfSaved = async () => {
       try {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return;
+        setIsLoading(true);
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        
+        if (sessionError) {
+          console.error('Session error:', sessionError);
+          return;
+        }
 
-        const { data: profile } = await supabase
+        if (!session?.user) {
+          console.log('No authenticated user');
+          return;
+        }
+
+        const { data: profile, error: profileError } = await supabase
           .from('profiles')
           .select('saved_products')
-          .eq('id', user.id)
+          .eq('id', session.user.id)
           .single();
 
-        if (profile?.saved_products?.includes(product.id)) {
+        if (profileError) {
+          console.error('Profile error:', profileError);
+          return;
+        }
+
+        if (mounted && profile?.saved_products?.includes(product.id)) {
           setIsSaved(true);
         }
       } catch (error) {
         console.error('Error checking saved status:', error);
+      } finally {
+        if (mounted) {
+          setIsLoading(false);
+        }
       }
     };
 
     checkIfSaved();
     incrementProductViews(product.id).catch(console.error);
+
+    return () => {
+      mounted = false;
+    };
   }, [product.id]);
 
   const handleCardClick = async () => {
@@ -124,8 +149,8 @@ export function ProductCard({ product, onView }: ProductCardProps) {
     }
   };
 
-  const growthRate = "30%"; // This would come from actual data
-  const activeUsers = "2K"; // This would come from actual data
+  const growthRate = "30%";
+  const activeUsers = "2K";
 
   return (
     <Link to={`/product/${product.id}`} onClick={handleCardClick}>
@@ -192,6 +217,7 @@ export function ProductCard({ product, onView }: ProductCardProps) {
                   e.preventDefault();
                   onView?.();
                 }}
+                disabled={isLoading}
               >
                 <MessageSquare className="w-4 h-4 mr-2" />
                 Make an Offer
