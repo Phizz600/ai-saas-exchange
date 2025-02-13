@@ -1,11 +1,13 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { UserTypeSelector } from "./UserTypeSelector";
+import { Checkbox } from "@/components/ui/checkbox";
+import { cn } from "@/lib/utils";
 
 export const AuthForm = () => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -14,6 +16,21 @@ export const AuthForm = () => {
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [isBuilder, setIsBuilder] = useState(false);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [isFormValid, setIsFormValid] = useState(false);
+
+  useEffect(() => {
+    if (isSignUp) {
+      setIsFormValid(
+        email !== "" &&
+        password !== "" &&
+        firstName !== "" &&
+        agreedToTerms
+      );
+    } else {
+      setIsFormValid(email !== "" && password !== "");
+    }
+  }, [email, password, firstName, agreedToTerms, isSignUp]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,6 +38,11 @@ export const AuthForm = () => {
 
     try {
       if (isSignUp) {
+        if (!isFormValid) {
+          setErrorMessage("Please fill in all fields and agree to the terms of service.");
+          return;
+        }
+
         const { error } = await supabase.auth.signUp({
           email,
           password,
@@ -34,7 +56,6 @@ export const AuthForm = () => {
         if (error) {
           if (error.message.includes("User already registered")) {
             setErrorMessage("This email is already registered. Please sign in instead.");
-            // Automatically switch to sign in mode
             setIsSignUp(false);
           } else {
             setErrorMessage(error.message);
@@ -102,9 +123,32 @@ export const AuthForm = () => {
       
       {isSignUp && <UserTypeSelector isBuilder={isBuilder} setIsBuilder={setIsBuilder} />}
 
+      {isSignUp && (
+        <div className="flex items-center space-x-2">
+          <Checkbox
+            id="terms"
+            checked={agreedToTerms}
+            onCheckedChange={(checked) => setAgreedToTerms(checked as boolean)}
+            className="bg-white"
+          />
+          <label
+            htmlFor="terms"
+            className="text-sm text-gray-600 cursor-pointer"
+          >
+            I agree to the Terms of Service and Privacy Policy
+          </label>
+        </div>
+      )}
+
       <Button 
         type="submit" 
-        className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 shadow-lg hover:shadow-xl transition-all duration-300 text-white"
+        disabled={isSignUp && !isFormValid}
+        className={cn(
+          "w-full transition-all duration-300 text-white",
+          isSignUp && !isFormValid
+            ? "bg-gray-300 cursor-not-allowed"
+            : "bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 shadow-lg hover:shadow-xl"
+        )}
       >
         {isSignUp ? "Sign Up" : "Sign In"}
       </Button>
@@ -113,7 +157,10 @@ export const AuthForm = () => {
         {isSignUp ? "Already have an account? " : "Don't have an account? "}
         <button
           type="button"
-          onClick={() => setIsSignUp(!isSignUp)}
+          onClick={() => {
+            setIsSignUp(!isSignUp);
+            setErrorMessage("");
+          }}
           className="text-primary hover:underline"
         >
           {isSignUp ? "Sign In" : "Sign Up"}
