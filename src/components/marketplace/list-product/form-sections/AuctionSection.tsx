@@ -328,7 +328,7 @@ export function AuctionSection({ form }: AuctionSectionProps) {
 
       {/* Valuation Card */}
       <Card className="p-6 bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] text-white">
-        <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
+        <h3 className="text-xl font-semibold mb-4 flex items-center justify-center gap-2">
           <Sparkle className="h-5 w-5" />
           AI-Powered Valuation Range
         </h3>
