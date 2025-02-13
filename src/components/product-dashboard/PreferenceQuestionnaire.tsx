@@ -47,12 +47,17 @@ const questions = [
   },
   {
     id: 4,
-    title: "What's your preferred business model?",
-    type: "multiple",
+    title: "AI Category",
+    type: "single",
     options: [
-      { id: "saas", label: "SaaS (Subscription-based)" },
-      { id: "api", label: "API (Pay-per-use)" },
-      { id: "licensing", label: "Licensing (IP-based)" },
+      { id: "natural_language_processing", label: "Natural Language Processing" },
+      { id: "machine_learning", label: "Machine Learning" },
+      { id: "content_generation", label: "Content Generation" },
+      { id: "computer_vision", label: "Computer Vision" },
+      { id: "voice_speech", label: "Voice & Speech" },
+      { id: "data_analytics", label: "Data Analytics" },
+      { id: "automation", label: "Automation" },
+      { id: "recommendation_systems", label: "Recommendation Systems" },
       { id: "other", label: "Other" }
     ]
   },
