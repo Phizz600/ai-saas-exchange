@@ -9,7 +9,7 @@ import { MarketplaceBreadcrumb } from "@/components/marketplace/MarketplaceBread
 import { TrustBoosters } from "@/components/marketplace/trust/TrustBoosters";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Plus, LayoutDashboard } from "lucide-react";
+import { Plus, LayoutDashboard, Shield, CheckCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export const MarketplaceLayout = () => {
