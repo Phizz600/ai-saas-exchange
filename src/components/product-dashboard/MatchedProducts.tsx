@@ -3,15 +3,17 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { ProductCard } from "@/components/ProductCard";
-import { X, Check } from "lucide-react";
+import { X, Check, ShoppingBag } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 export const MatchedProducts = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const { toast } = useToast();
+  const navigate = useNavigate();
   
   const { data: viewsData } = useQuery({
     queryKey: ['daily-views-count'],
@@ -94,10 +96,17 @@ export const MatchedProducts = () => {
     return (
       <Card className="p-6 text-center">
         <h3 className="text-xl font-semibold mb-2 font-exo">No More Matches Today</h3>
-        <p className="text-gray-500 mb-4">
+        <p className="text-gray-500 mb-6">
           You've reached your daily limit or viewed all available matches. 
           Come back tomorrow to see new matches!
         </p>
+        <Button
+          className="bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] hover:opacity-90 text-white"
+          onClick={() => navigate('/marketplace')}
+        >
+          <ShoppingBag className="w-4 h-4 mr-2" />
+          Browse Marketplace
+        </Button>
       </Card>
     );
   }
