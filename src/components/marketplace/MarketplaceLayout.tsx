@@ -63,6 +63,26 @@ export const MarketplaceLayout = () => {
           </div>
           <div className="max-w-none space-y-12">
             <FeaturedCompaniesSlideshow />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow">
+                <div className="flex items-center gap-3">
+                  <Shield className="h-6 w-6 text-primary" />
+                  <h3 className="font-semibold text-lg">Escrow Protected</h3>
+                </div>
+                <p className="mt-2 text-gray-600">
+                  Your payment is held securely until the transfer is complete
+                </p>
+              </div>
+              <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow">
+                <div className="flex items-center gap-3">
+                  <CheckCircle className="h-6 w-6 text-green-600" />
+                  <h3 className="font-semibold text-lg">100% Verified Listings</h3>
+                </div>
+                <p className="mt-2 text-gray-600">
+                  Every product undergoes thorough verification
+                </p>
+              </div>
+            </div>
             <MarketplaceContent />
             <TrustBoosters />
             <MarketplaceFAQ />
