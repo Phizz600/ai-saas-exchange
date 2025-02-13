@@ -1,3 +1,4 @@
+
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { UseFormReturn } from "react-hook-form";
@@ -5,7 +6,7 @@ import { ListProductFormData } from "../types";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import { CalendarIcon, Info } from "lucide-react";
+import { CalendarIcon, Info, Sparkle } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Switch } from "@/components/ui/switch";
@@ -327,7 +328,10 @@ export function AuctionSection({ form }: AuctionSectionProps) {
 
       {/* Valuation Card */}
       <Card className="p-6 bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] text-white">
-        <h3 className="text-xl font-semibold mb-4">AI-Powered Valuation Range</h3>
+        <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
+          <Sparkle className="h-5 w-5" />
+          AI-Powered Valuation Range
+        </h3>
         <div className="text-2xl font-bold flex items-center justify-center gap-4">
           <button
             onClick={() => handleValuationClick(valuation.low, false)}
