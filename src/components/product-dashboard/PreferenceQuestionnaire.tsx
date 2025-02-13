@@ -124,7 +124,7 @@ export const PreferenceQuestionnaire = ({ onComplete }: { onComplete: () => void
           min_investment: answers[2] === 'under_10k' ? 0 : 10000,
           max_investment: answers[2] === 'over_100k' ? 1000000 : 100000,
           risk_appetite: [answers[3]] as string[],
-          business_model: answers[4] as string[],
+          preferred_categories: [answers[4]] as string[], // Wrap single value in array
           technical_expertise: answers[5] as string,
           required_integrations: answers[6] as string[],
           investment_timeline: answers[7] as string,
