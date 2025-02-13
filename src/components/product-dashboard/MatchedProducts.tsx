@@ -35,21 +35,17 @@ export const MatchedProducts = () => {
       const { data: preferences } = await supabase
         .from('investor_preferences')
         .select('*')
-        .eq('user_id', user.id)
-        .single();
+        .eq('user_id', user.id);
+
+      // If no preferences are set, return empty array
+      if (!preferences || preferences.length === 0) {
+        return [];
+      }
 
       // Get matched products
       let query = supabase
         .from('matched_products')
-        .select(`
-          *,
-          products (
-            business_model,
-            investment_timeline,
-            industry,
-            technical_expertise_required:stage
-          )
-        `)
+        .select('*')
         .eq('investor_id', user.id);
 
       // Apply sorting
@@ -76,10 +72,10 @@ export const MatchedProducts = () => {
       return matchedProducts.map(match => ({
         ...match,
         matchDetails: {
-          industryMatch: match.products?.industry && preferences?.preferred_industries?.includes(match.products.industry),
-          businessModelMatch: match.products?.business_model && preferences?.business_model?.includes(match.products.business_model),
-          timelineMatch: match.products?.investment_timeline === preferences?.investment_timeline,
-          technicalMatch: getExpertiseMatch(preferences?.technical_expertise, match.products?.technical_expertise_required)
+          industryMatch: match.industry && preferences[0]?.preferred_industries?.includes(match.industry),
+          businessModelMatch: match.business_model && preferences[0]?.business_model?.includes(match.business_model),
+          timelineMatch: match.investment_timeline === preferences[0]?.investment_timeline,
+          technicalMatch: getExpertiseMatch(preferences[0]?.technical_expertise, match.stage)
         }
       }));
     }

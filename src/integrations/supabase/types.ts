@@ -586,9 +586,11 @@ export type Database = {
     Views: {
       matched_products: {
         Row: {
+          business_model: string | null
           category: string | null
           description: string | null
           industry: string | null
+          investment_timeline: string | null
           investor_id: string | null
           match_score: number | null
           price: number | null
