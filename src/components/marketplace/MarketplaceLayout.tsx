@@ -1,3 +1,4 @@
+
 import { Header } from "@/components/Header";
 import { FeaturedCompaniesSlideshow } from "@/components/FeaturedCompaniesSlideshow";
 import { MarketplaceContent } from "@/components/marketplace/MarketplaceContent";
@@ -5,6 +6,7 @@ import { MarketplaceFAQ } from "@/components/MarketplaceFAQ";
 import { MarketplaceFooter } from "@/components/MarketplaceFooter";
 import { LiveChatButton } from "@/components/LiveChatButton";
 import { MarketplaceBreadcrumb } from "@/components/marketplace/MarketplaceBreadcrumb";
+import { TrustBoosters } from "@/components/marketplace/trust/TrustBoosters";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus, LayoutDashboard } from "lucide-react";
@@ -61,6 +63,7 @@ export const MarketplaceLayout = () => {
           </div>
           <div className="max-w-none space-y-12">
             <FeaturedCompaniesSlideshow />
+            <TrustBoosters />
             <MarketplaceContent />
             <MarketplaceFAQ />
           </div>
