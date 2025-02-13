@@ -1,15 +1,15 @@
+
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
-import { ProductCardImage } from "./marketplace/product-card/ProductCardImage";
-import { ProductCardContent } from "./marketplace/product-card/ProductCardContent";
-import { ProductCardActions } from "./marketplace/product-card/ProductCardActions";
-import { ProductCardHeader } from "./marketplace/product-card/ProductCardHeader";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Zap, DollarSign, ShieldCheck, TrendingDown, MessageSquare } from "lucide-react";
+import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Link } from "react-router-dom";
 import { incrementProductViews, incrementProductClicks } from "@/integrations/supabase/functions";
+import { formatCurrency } from "@/lib/utils";
 
 interface ProductCardProps {
   product: {
@@ -41,37 +41,30 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, onView }: ProductCardProps) {
-  const [isFavorited, setIsFavorited] = useState(false);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const isMobile = useIsMobile();
+  const [isSaved, setIsSaved] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
-    const checkIfLiked = async () => {
+    const checkIfSaved = async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
-        if (!user) {
-          console.log("ProductCard: No user found when checking liked status");
-          return;
-        }
+        if (!user) return;
 
         const { data: profile } = await supabase
           .from('profiles')
-          .select('liked_products')
+          .select('saved_products')
           .eq('id', user.id)
-          .maybeSingle();
+          .single();
 
-        if (profile?.liked_products?.includes(product.id)) {
-          console.log("ProductCard: Product is liked", product.id);
-          setIsFavorited(true);
+        if (profile?.saved_products?.includes(product.id)) {
+          setIsSaved(true);
         }
       } catch (error) {
-        console.error('ProductCard: Error in checkIfLiked:', error);
+        console.error('Error checking saved status:', error);
       }
     };
 
-    checkIfLiked();
-    // Increment view when the card is mounted
+    checkIfSaved();
     incrementProductViews(product.id).catch(console.error);
   }, [product.id]);
 
@@ -83,14 +76,14 @@ export function ProductCard({ product, onView }: ProductCardProps) {
     }
   };
 
-  const toggleFavorite = async (e: React.MouseEvent) => {
+  const handleSaveClick = async (e: React.MouseEvent) => {
     e.preventDefault();
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         toast({
           title: "Authentication required",
-          description: "Please sign in to like products",
+          description: "Please sign in to save products",
           variant: "destructive",
         });
         return;
@@ -98,83 +91,115 @@ export function ProductCard({ product, onView }: ProductCardProps) {
 
       const { data: profile } = await supabase
         .from('profiles')
-        .select('liked_products')
+        .select('saved_products')
         .eq('id', user.id)
-        .maybeSingle();
+        .single();
 
-      const currentLikes = profile?.liked_products || [];
-      const newLikes = isFavorited
-        ? currentLikes.filter((id: string) => id !== product.id)
-        : [...currentLikes, product.id];
+      const currentSaves = profile?.saved_products || [];
+      const newSaves = isSaved
+        ? currentSaves.filter((id: string) => id !== product.id)
+        : [...currentSaves, product.id];
 
       await supabase
         .from('profiles')
         .update({ 
-          liked_products: newLikes,
+          saved_products: newSaves,
           updated_at: new Date().toISOString()
         })
         .eq('id', user.id);
 
-      setIsFavorited(!isFavorited);
+      setIsSaved(!isSaved);
       toast({
-        title: isFavorited ? "Product unliked" : "Product liked",
-        description: isFavorited ? "Removed from your liked products" : "Added to your liked products",
+        title: isSaved ? "Product unsaved" : "Product saved",
+        description: isSaved ? "Removed from saved products" : "Added to your saved products",
       });
 
     } catch (error) {
-      console.error('ProductCard: Error toggling product like:', error);
+      console.error('Error toggling product save:', error);
       toast({
         title: "Error",
-        description: "Failed to update liked products. Please try again.",
+        description: "Failed to save product. Please try again.",
         variant: "destructive",
       });
     }
   };
 
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      whileHover={!isMobile ? { y: -5 } : undefined}
-      transition={{ duration: 0.2 }}
-      className="group touch-manipulation max-w-[300px] mx-auto"
-    >
-      <Card className="overflow-hidden bg-gradient-to-b from-white to-gray-50/50 backdrop-blur-xl border-gray-100/50 shadow-lg">
-        <ProductCardHeader 
-          product={product}
-          isDialogOpen={isDialogOpen}
-          onDialogOpenChange={(open) => {
-            setIsDialogOpen(open);
-            if (open && onView) onView();
-          }}
-          onView={onView}
-        />
+  const growthRate = "30%"; // This would come from actual data
+  const activeUsers = "2K"; // This would come from actual data
 
-        <Link to={`/product/${product.id}`} className="block">
-          <ProductCardImage
-            image={product.image}
-            title={product.title}
-            timeLeft={product.timeLeft}
-            seller={product.seller}
-            isFavorited={isFavorited}
-            onFavoriteClick={toggleFavorite}
-          />
-          <ProductCardContent
-            title={product.title}
-            description={product.description}
-            price={product.price}
-            category={product.category}
-            stage={product.stage}
-            monthlyRevenue={product.monthlyRevenue}
-            isAuction={!!product.auction_end_time}
-            currentPrice={product.current_price}
-            minPrice={product.min_price}
-            priceDecrement={product.price_decrement}
-            auctionEndTime={product.auction_end_time}
-          />
-          <ProductCardActions product={product} />
-        </Link>
-      </Card>
-    </motion.div>
+  return (
+    <Link to={`/product/${product.id}`} onClick={handleCardClick}>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        className="h-full"
+      >
+        <Card className="overflow-hidden h-full hover:shadow-lg transition-shadow duration-300">
+          <div className="relative h-48">
+            <img
+              src={product.image}
+              alt={product.title}
+              className="w-full h-full object-cover"
+            />
+            {product.auction_end_time && (
+              <div className="absolute top-2 right-2">
+                <Badge variant="secondary" className="bg-amber-100 text-amber-700">
+                  <TrendingDown className="w-4 h-4 mr-1" />
+                  Dutch Auction
+                </Badge>
+              </div>
+            )}
+          </div>
+          
+          <div className="p-6 space-y-4">
+            <div>
+              <h3 className="font-exo text-xl font-semibold text-gray-900 mb-2">
+                {product.title}
+              </h3>
+              
+              <div className="flex flex-wrap gap-2 mb-4">
+                <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
+                  {product.category}
+                </Badge>
+                <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                  {product.stage}
+                </Badge>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 text-gray-700">
+                <Zap className="w-4 h-4 text-amber-500" />
+                <span>{growthRate} MoM Growth</span>
+              </div>
+              
+              <div className="flex items-center gap-2 text-gray-700">
+                <DollarSign className="w-4 h-4 text-green-500" />
+                <span>{formatCurrency(product.monthlyRevenue)} MRR</span>
+              </div>
+              
+              <div className="flex items-center gap-2 text-gray-700">
+                <ShieldCheck className="w-4 h-4 text-blue-500" />
+                <span>Revenue Verified</span>
+              </div>
+            </div>
+
+            <div className="pt-4">
+              <Button 
+                className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 text-white"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onView?.();
+                }}
+              >
+                <MessageSquare className="w-4 h-4 mr-2" />
+                Make an Offer
+              </Button>
+            </div>
+          </div>
+        </Card>
+      </motion.div>
+    </Link>
   );
 }

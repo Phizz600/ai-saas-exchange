@@ -15,7 +15,7 @@ interface ProductGridProps {
 export const ProductGrid = ({ products, isLoading = false, onProductView }: ProductGridProps) => {
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 py-6 sm:py-10 px-2 sm:px-0">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 py-8 px-4">
         {Array.from({ length: 6 }).map((_, index) => (
           <ProductCardSkeleton key={index} />
         ))}
@@ -25,7 +25,7 @@ export const ProductGrid = ({ products, isLoading = false, onProductView }: Prod
 
   if (products.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-8 sm:py-12 text-center px-4">
+      <div className="flex flex-col items-center justify-center py-12 text-center px-4">
         <div className="bg-gray-50 rounded-full p-4 mb-4">
           <Search className="h-8 w-8 text-gray-400" />
         </div>
@@ -38,35 +38,35 @@ export const ProductGrid = ({ products, isLoading = false, onProductView }: Prod
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 py-6 sm:py-10 px-2 sm:px-0 max-w-[1400px] mx-auto">
-      {products.map((product) => {
-        console.log('Product seller data:', product.seller_id);
-        return (
-          <div className="mx-auto w-full max-w-[400px]">
-            <ProductCard
-              key={product.id}
-              product={{
-                id: product.id,
-                title: product.title,
-                description: product.description || "",
-                price: Number(product.price),
-                category: product.category,
-                stage: product.stage,
-                monthlyRevenue: Number(product.monthly_revenue || 0),
-                image: product.image_url || "/placeholder.svg",
-                timeLeft: "24h left", // TODO: Implement actual time calculation
-                seller: {
-                  id: product.seller_id || "",
-                  name: "Anonymous", // This would come from a join with profiles table
-                  avatar: "/placeholder.svg", // Default avatar
-                  achievements: [] // This would come from a separate achievements system
-                }
-              }}
-              onView={() => onProductView?.(product.id)}
-            />
-          </div>
-        );
-      })}
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 py-8 px-4 max-w-[1400px] mx-auto">
+      {products.map((product) => (
+        <ProductCard
+          key={product.id}
+          product={{
+            id: product.id,
+            title: product.title,
+            description: product.description || "",
+            price: Number(product.price),
+            category: product.category,
+            stage: product.stage,
+            monthlyRevenue: Number(product.monthly_revenue || 0),
+            image: product.image_url || "/placeholder.svg",
+            timeLeft: "24h left",
+            auction_end_time: product.auction_end_time,
+            starting_price: product.starting_price,
+            current_price: product.current_price,
+            min_price: product.min_price,
+            price_decrement: product.price_decrement,
+            seller: {
+              id: product.seller_id || "",
+              name: "Anonymous",
+              avatar: "/placeholder.svg",
+              achievements: []
+            }
+          }}
+          onView={() => onProductView?.(product.id)}
+        />
+      ))}
     </div>
   );
 };
