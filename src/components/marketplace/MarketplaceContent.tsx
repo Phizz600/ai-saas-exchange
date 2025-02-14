@@ -1,9 +1,10 @@
+
 import { useState } from "react";
 import { ProductGrid } from "@/components/marketplace/ProductGrid";
 import { MarketplacePagination } from "@/components/marketplace/MarketplacePagination";
 import { EmptyState } from "@/components/marketplace/EmptyState";
 import { MarketplaceHeader } from "@/components/marketplace/MarketplaceHeader";
-import { useProducts } from "@/hooks/useProducts";
+import { useMarketplaceProducts } from "@/hooks/useMarketplaceProducts";
 import { useNotifications } from "./notifications/useNotifications";
 import { incrementProductViews } from "@/integrations/supabase/functions";
 
@@ -15,8 +16,19 @@ export const MarketplaceContent = () => {
   const [timeFilter, setTimeFilter] = useState("all");
   const [sortBy, setSortBy] = useState("relevant");
   const [currentPage, setCurrentPage] = useState(1);
+  const [showVerifiedOnly, setShowVerifiedOnly] = useState(false);
   
-  const { data: products = [], isLoading } = useProducts();
+  const { currentItems: products, totalPages, isLoading } = useMarketplaceProducts({
+    searchQuery,
+    industryFilter,
+    stageFilter,
+    priceFilter,
+    timeFilter,
+    sortBy,
+    currentPage,
+    showVerifiedOnly
+  });
+  
   const { notifications, unreadCount, markAsRead } = useNotifications();
 
   // Track product views
@@ -33,7 +45,7 @@ export const MarketplaceContent = () => {
     return <ProductGrid products={[]} isLoading={true} />;
   }
 
-  if (products.length === 0 && !isLoading) {
+  if (!products || products.length === 0) {
     return <EmptyState />;
   }
 
@@ -67,7 +79,7 @@ export const MarketplaceContent = () => {
       {!isLoading && products.length > 0 && (
         <MarketplacePagination
           currentPage={currentPage}
-          totalPages={Math.ceil(products.length / 6)}
+          totalPages={totalPages}
           setCurrentPage={setCurrentPage}
         />
       )}

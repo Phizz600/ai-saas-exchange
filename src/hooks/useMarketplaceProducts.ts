@@ -39,8 +39,14 @@ export const useMarketplaceProducts = ({
       .from('products')
       .select(`
         *,
-        seller:profiles(*)
-      `);
+        seller:profiles (
+          id,
+          full_name,
+          avatar_url,
+          achievements
+        )
+      `)
+      .eq('status', 'active'); // Only fetch active listings
 
     // Apply filters
     if (searchQuery) {
