@@ -51,12 +51,11 @@ export const ProductGrid = ({ products, isLoading = false, onProductView }: Prod
             stage: product.stage,
             monthlyRevenue: Number(product.monthly_revenue || 0),
             image: product.image_url || "/placeholder.svg",
-            timeLeft: "24h left",
             auction_end_time: product.auction_end_time,
-            starting_price: product.starting_price,
             current_price: product.current_price,
             min_price: product.min_price,
             price_decrement: product.price_decrement,
+            auction_status: product.auction_status,
             seller: {
               id: product.seller_id || "",
               name: "Anonymous",

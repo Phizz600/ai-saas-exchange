@@ -37,7 +37,10 @@ export const useMarketplaceProducts = ({
 
     let query = supabase
       .from('products')
-      .select('*, seller:profiles(*)');
+      .select(`
+        *,
+        seller:profiles(*)
+      `);
 
     // Apply filters
     if (searchQuery) {

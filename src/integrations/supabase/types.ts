@@ -372,6 +372,7 @@ export type Database = {
       products: {
         Row: {
           auction_end_time: string | null
+          auction_status: string | null
           business_location: string | null
           business_model: string | null
           category: string
@@ -414,6 +415,7 @@ export type Database = {
         }
         Insert: {
           auction_end_time?: string | null
+          auction_status?: string | null
           business_location?: string | null
           business_model?: string | null
           category: string
@@ -456,6 +458,7 @@ export type Database = {
         }
         Update: {
           auction_end_time?: string | null
+          auction_status?: string | null
           business_location?: string | null
           business_model?: string | null
           category?: string

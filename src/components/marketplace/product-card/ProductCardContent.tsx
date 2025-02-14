@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { formatCurrency } from "@/lib/utils";
 import { Database } from "@/integrations/supabase/types";
 import { Timer } from "lucide-react";
+import { useEffect, useState } from "react";
 
 type Product = Database['public']['Tables']['products']['Row'];
 
@@ -13,11 +14,11 @@ interface ProductCardContentProps {
   category: Product['category'];
   stage: Product['stage'];
   monthlyRevenue: Product['monthly_revenue'];
-  isAuction?: boolean;
-  currentPrice?: number;
-  minPrice?: number;
-  priceDecrement?: number;
-  auctionEndTime?: string;
+  auction_end_time?: Product['auction_end_time'];
+  current_price?: Product['current_price'];
+  min_price?: Product['min_price'];
+  price_decrement?: Product['price_decrement'];
+  auction_status?: Product['auction_status'];
 }
 
 export function ProductCardContent({
@@ -27,12 +28,40 @@ export function ProductCardContent({
   category,
   stage,
   monthlyRevenue,
-  isAuction,
-  currentPrice,
-  minPrice,
-  priceDecrement,
-  auctionEndTime,
+  auction_end_time,
+  current_price,
+  min_price,
+  price_decrement,
+  auction_status,
 }: ProductCardContentProps) {
+  const [timeLeft, setTimeLeft] = useState<string>('');
+  const isAuction = !!auction_end_time;
+  
+  useEffect(() => {
+    if (!auction_end_time) return;
+
+    const calculateTimeLeft = () => {
+      const now = new Date().getTime();
+      const endTime = new Date(auction_end_time).getTime();
+      const difference = endTime - now;
+
+      if (difference <= 0) {
+        setTimeLeft('Auction ended');
+        return;
+      }
+
+      const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+
+      setTimeLeft(`${days}d ${hours}h ${minutes}m`);
+    };
+
+    calculateTimeLeft();
+    const timer = setInterval(calculateTimeLeft, 60000);
+    return () => clearInterval(timer);
+  }, [auction_end_time]);
+
   const getCategoryColor = (category: string) => {
     const colors: Record<string, { bg: string; text: string }> = {
       'Content Generation': { bg: 'bg-purple-100', text: 'text-purple-700' },
@@ -56,8 +85,6 @@ export function ProductCardContent({
     return colors[stage] || { bg: 'bg-gray-100', text: 'text-gray-700' };
   };
 
-  const auctionEnded = auctionEndTime && new Date(auctionEndTime) < new Date();
-
   return (
     <div className="p-6">
       <h3 className="font-semibold text-lg text-gray-900 mb-2 line-clamp-1">
@@ -66,6 +93,25 @@ export function ProductCardContent({
       <p className="text-sm text-gray-500 line-clamp-2 mb-4">{description}</p>
       
       <div className="grid grid-cols-2 gap-4 mb-4">
+        <div>
+          <span className="text-sm font-semibold text-gray-600">
+            {isAuction ? 'Current Price' : 'Price'}
+          </span>
+          <div className="font-medium text-green-600">
+            {isAuction ? (
+              <>
+                {formatCurrency(current_price || price)}
+                {min_price && (
+                  <span className="text-sm text-gray-500 ml-1">
+                    (Min: {formatCurrency(min_price)})
+                  </span>
+                )}
+              </>
+            ) : (
+              formatCurrency(price)
+            )}
+          </div>
+        </div>
         <div>
           <span className="text-sm font-semibold text-gray-600">Monthly Revenue</span>
           <div className="font-medium text-green-600">
@@ -94,17 +140,30 @@ export function ProductCardContent({
             </Badge>
           </div>
         </div>
-        {isAuction && (
-          <div>
-            <Badge 
-              variant="secondary" 
-              className="bg-amber-100 text-amber-700"
-            >
-              Dutch Auction
-            </Badge>
-          </div>
-        )}
       </div>
+
+      {isAuction && (
+        <div className="mt-4 space-y-2">
+          <Badge 
+            variant="secondary" 
+            className="bg-amber-100 text-amber-700"
+          >
+            Dutch Auction
+          </Badge>
+          
+          {timeLeft && (
+            <div className="flex items-center gap-2 text-sm text-gray-600">
+              <Timer className="h-4 w-4" />
+              <span>{timeLeft}</span>
+              {price_decrement && (
+                <span className="text-amber-600 ml-2">
+                  Drops {formatCurrency(price_decrement)}/hour
+                </span>
+              )}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
