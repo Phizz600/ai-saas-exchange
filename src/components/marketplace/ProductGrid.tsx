@@ -3,18 +3,20 @@ import { ProductCard } from "./ProductCard";
 import { ProductCardSkeleton } from "./product-card/ProductCardSkeleton";
 import { Search } from "lucide-react";
 import { Database } from "@/integrations/supabase/types";
-import { useAuth } from "@supabase/auth-helpers-react";
+import { useSession } from '@supabase/auth-helpers-react';
 
-type Product = Database['public']['Tables']['products']['Row'];
+type ProductWithSeller = Database['public']['Tables']['products']['Row'] & {
+  seller: Database['public']['Tables']['profiles']['Row'] | null;
+};
 
 interface ProductGridProps {
-  products: Product[];
+  products: ProductWithSeller[];
   isLoading?: boolean;
   onProductView?: (productId: string) => void;
 }
 
 export const ProductGrid = ({ products, isLoading = false, onProductView }: ProductGridProps) => {
-  const auth = useAuth();
+  const session = useSession();
 
   if (isLoading) {
     return (
@@ -64,7 +66,7 @@ export const ProductGrid = ({ products, isLoading = false, onProductView }: Prod
               avatar: product.seller?.avatar_url || "/placeholder.svg"
             }
           }}
-          showEditButton={auth?.user?.id === product.seller_id}
+          showEditButton={session?.user?.id === product.seller_id}
         />
       ))}
     </div>
