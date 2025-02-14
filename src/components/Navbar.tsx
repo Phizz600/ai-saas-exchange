@@ -1,3 +1,4 @@
+
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
@@ -37,7 +38,7 @@ export const Navbar = () => {
 
   return (
     <nav className={`${isProfilePage ? '' : 'fixed'} top-0 left-0 right-0 z-50 backdrop-blur-sm`}>
-      <div className="container mx-auto px-4">
+      <div className="max-w-[2000px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-24">
           <Link to="/" className="flex items-center">
             <img 
@@ -47,16 +48,16 @@ export const Navbar = () => {
             />
           </Link>
           
-          <div className="flex items-center space-x-6">
+          <div className="flex items-center gap-4">
             <Button 
               onClick={handleMarketplaceClick}
-              className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 text-white"
+              className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 text-white whitespace-nowrap"
             >
               Marketplace
             </Button>
             {!isAuthenticated && (
               <Link to="/auth">
-                <Button variant="secondary" className="bg-secondary hover:bg-secondary/90">
+                <Button variant="secondary" className="bg-secondary hover:bg-secondary/90 whitespace-nowrap">
                   Sign In
                 </Button>
               </Link>
