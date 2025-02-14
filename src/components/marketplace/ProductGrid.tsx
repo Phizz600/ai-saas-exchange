@@ -1,8 +1,9 @@
 
-import { ProductCard } from "@/components/ProductCard";
+import { ProductCard } from "./ProductCard";
 import { ProductCardSkeleton } from "./product-card/ProductCardSkeleton";
 import { Search } from "lucide-react";
 import { Database } from "@/integrations/supabase/types";
+import { useAuth } from "@supabase/auth-helpers-react";
 
 type Product = Database['public']['Tables']['products']['Row'];
 
@@ -13,6 +14,8 @@ interface ProductGridProps {
 }
 
 export const ProductGrid = ({ products, isLoading = false, onProductView }: ProductGridProps) => {
+  const auth = useAuth();
+
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 py-8 px-4">
@@ -56,13 +59,12 @@ export const ProductGrid = ({ products, isLoading = false, onProductView }: Prod
             min_price: product.min_price,
             price_decrement: product.price_decrement,
             seller: {
-              id: product.seller_id || "",
-              name: "Anonymous",
-              avatar: "/placeholder.svg",
-              achievements: []
+              id: product.seller?.id || "",
+              name: product.seller?.full_name || "Anonymous",
+              avatar: product.seller?.avatar_url || "/placeholder.svg"
             }
           }}
-          onView={() => onProductView?.(product.id)}
+          showEditButton={auth?.user?.id === product.seller_id}
         />
       ))}
     </div>
