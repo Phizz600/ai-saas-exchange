@@ -36,7 +36,7 @@ export const mockProducts: Product[] = [
     has_patents: false,
     competitors: "None",
     industry: "AI/Machine Learning",
-    tech_stack: ["Python", "TensorFlow", "AWS"], // Changed from string to string array
+    tech_stack: ["Python", "TensorFlow", "AWS"],
     product_age: "1-3 years",
     business_location: "United States",
     special_notes: "Currently processing over 1 million requests per month with 99.9% uptime.",
@@ -44,7 +44,8 @@ export const mockProducts: Product[] = [
     highest_bidder_id: null,
     gross_profit_margin: 85,
     business_model: "SaaS",
-    investment_timeline: "medium"
+    investment_timeline: "medium",
+    auction_status: "pending"
   },
   {
     id: "2",
@@ -78,7 +79,7 @@ export const mockProducts: Product[] = [
     has_patents: false,
     competitors: "Various chatbot solutions",
     industry: "Enterprise Software",
-    tech_stack: ["JavaScript", "Node.js", "MongoDB"], // Changed from string to string array
+    tech_stack: ["JavaScript", "Node.js", "MongoDB"],
     product_age: "6-12 months",
     business_location: "Canada",
     special_notes: "Integrates seamlessly with popular CRM platforms",
@@ -86,6 +87,7 @@ export const mockProducts: Product[] = [
     highest_bidder_id: null,
     gross_profit_margin: 65,
     business_model: "API",
-    investment_timeline: "short"
+    investment_timeline: "short",
+    auction_status: "pending"
   }
 ];

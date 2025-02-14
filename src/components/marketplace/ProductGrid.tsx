@@ -55,7 +55,6 @@ export const ProductGrid = ({ products, isLoading = false, onProductView }: Prod
             current_price: product.current_price,
             min_price: product.min_price,
             price_decrement: product.price_decrement,
-            auction_status: product.auction_status,
             seller: {
               id: product.seller_id || "",
               name: "Anonymous",
