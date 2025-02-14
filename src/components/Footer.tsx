@@ -6,7 +6,7 @@ export const Footer = () => {
   const socialLinks = [
     { icon: Youtube, href: "#", label: "YouTube" },
     { icon: Instagram, href: "#", label: "Instagram" },
-    { icon: Rss, href: "#", label: "Beehiiv" },
+    { icon: Rss, href: "https://aiexchangeclub.beehiiv.com/subscribe", label: "Beehiiv" },
   ];
 
   return (
