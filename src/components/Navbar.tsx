@@ -38,36 +38,40 @@ export const Navbar = () => {
   };
 
   if (isProductPage) {
-    return null; // Don't render the default navbar on product pages
+    return null;
   }
 
   return (
-    <nav className={`${isProfilePage ? '' : 'fixed'} w-full top-0 left-0 right-0 z-50 backdrop-blur-sm px-4 sm:px-6 lg:px-8`}>
-      <div className="flex items-center justify-between h-24 max-w-full">
-        <Link to="/" className="flex items-center flex-shrink-0">
-          <img 
-            src="/lovable-uploads/0283f7d5-13a6-40c9-b40a-69868474cec9.png" 
-            alt="AI Exchange Club" 
-            className="h-16 w-auto"
-          />
-        </Link>
-        
-        <div className="flex items-center gap-6 flex-shrink-0">
-          <Button 
-            onClick={handleMarketplaceClick}
-            className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 text-white whitespace-nowrap min-w-fit"
-          >
-            Marketplace
-          </Button>
-          {!isAuthenticated && (
-            <Link to="/auth">
-              <Button variant="secondary" className="bg-secondary hover:bg-secondary/90 whitespace-nowrap min-w-fit">
-                Sign In
-              </Button>
+    <div className="fixed top-0 left-0 right-0 z-50">
+      <nav className="w-full bg-white/80 backdrop-blur-sm border-b">
+        <div className="mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex h-24 justify-between items-center">
+            <Link to="/" className="flex-shrink-0">
+              <img 
+                src="/lovable-uploads/0283f7d5-13a6-40c9-b40a-69868474cec9.png" 
+                alt="AI Exchange Club" 
+                className="h-16 w-auto"
+              />
             </Link>
-          )}
+            
+            <div className="flex items-center gap-4 ml-auto">
+              <Button 
+                onClick={handleMarketplaceClick}
+                className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 text-white"
+              >
+                Marketplace
+              </Button>
+              {!isAuthenticated && (
+                <Link to="/auth">
+                  <Button variant="secondary" className="bg-secondary hover:bg-secondary/90">
+                    Sign In
+                  </Button>
+                </Link>
+              )}
+            </div>
+          </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+    </div>
   );
 };
