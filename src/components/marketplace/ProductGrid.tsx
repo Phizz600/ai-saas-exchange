@@ -51,7 +51,7 @@ export const ProductGrid = ({ products, isLoading = false, onProductView }: Prod
             id: product.id,
             title: product.title,
             description: product.description || "",
-            price: Number(product.price),
+            price: product.current_price || Number(product.price),
             category: product.category,
             stage: product.stage,
             monthlyRevenue: Number(product.monthly_revenue || 0),
