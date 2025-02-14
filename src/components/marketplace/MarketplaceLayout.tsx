@@ -9,7 +9,7 @@ import { MarketplaceBreadcrumb } from "@/components/marketplace/MarketplaceBread
 import { TrustBoosters } from "@/components/marketplace/trust/TrustBoosters";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Plus, LayoutDashboard, Menu, ShieldCheck, CheckCircle2 } from "lucide-react";
+import { Plus, LayoutDashboard, Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
@@ -91,7 +91,7 @@ export const MarketplaceLayout = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow">
                 <div className="flex items-center gap-3">
-                  <ShieldCheck className="h-6 w-6 text-primary" />
+                  <Shield className="h-6 w-6 text-primary" />
                   <h3 className="font-semibold text-lg">Escrow Protected</h3>
                 </div>
                 <p className="mt-2 text-gray-600">
@@ -100,7 +100,7 @@ export const MarketplaceLayout = () => {
               </div>
               <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow">
                 <div className="flex items-center gap-3">
-                  <CheckCircle2 className="h-6 w-6 text-green-600" />
+                  <CheckCircle className="h-6 w-6 text-green-600" />
                   <h3 className="font-semibold text-lg">100% Verified Listings</h3>
                 </div>
                 <p className="mt-2 text-gray-600">
