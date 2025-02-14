@@ -42,8 +42,7 @@ export const useMarketplaceProducts = ({
         seller:profiles (
           id,
           full_name,
-          avatar_url,
-          achievements
+          avatar_url
         )
       `)
       .eq('status', 'active'); // Only fetch active listings

@@ -15,8 +15,7 @@ export const FeaturedProducts = () => {
           seller:profiles (
             id,
             full_name,
-            avatar_url,
-            achievements
+            avatar_url
           )
         `)
         .eq('status', 'active')
@@ -55,7 +54,7 @@ export const FeaturedProducts = () => {
                 id: product.seller?.id || "",
                 name: product.seller?.full_name || "Anonymous",
                 avatar: product.seller?.avatar_url || "/placeholder.svg",
-                achievements: product.seller?.achievements || []
+                achievements: []
               }
             }}
           />
