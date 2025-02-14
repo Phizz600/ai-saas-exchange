@@ -20,7 +20,7 @@ interface ProductCardProps {
     stage: string;
     monthlyRevenue: number;
     image: string;
-    timeLeft: string;
+    timeLeft?: string;
     auction_end_time?: string;
     starting_price?: number;
     current_price?: number;
