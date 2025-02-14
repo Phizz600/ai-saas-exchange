@@ -8,6 +8,7 @@ export const Navbar = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const isProductPage = location.pathname.startsWith('/product/');
   const isProfilePage = location.pathname === '/profile';
 
   useEffect(() => {
@@ -35,6 +36,10 @@ export const Navbar = () => {
       navigate("/marketplace");
     }
   };
+
+  if (isProductPage) {
+    return null; // Don't render the default navbar on product pages
+  }
 
   return (
     <nav className={`${isProfilePage ? '' : 'fixed'} w-full top-0 left-0 right-0 z-50 backdrop-blur-sm px-4 sm:px-6 lg:px-8`}>
