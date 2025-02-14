@@ -44,7 +44,7 @@ export const Navbar = () => {
             <img 
               src="/lovable-uploads/0283f7d5-13a6-40c9-b40a-69868474cec9.png" 
               alt="AI Exchange Club" 
-              className="h-30 w-auto"
+              className="h-20 w-auto"
             />
           </Link>
           
