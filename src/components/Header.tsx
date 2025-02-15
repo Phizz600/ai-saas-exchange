@@ -15,6 +15,7 @@ interface Tab {
   description?: string;
   path?: string;
   onClick?: () => void;
+  indicator?: boolean;
 }
 
 interface Separator {
@@ -68,7 +69,8 @@ export const Header = () => {
       title: "Notifications",
       icon: Bell,
       description: "View notifications",
-      onClick: () => setNotificationsOpen(true)
+      onClick: () => setNotificationsOpen(true),
+      indicator: unreadCount > 0
     },
     {
       title: "Help",
