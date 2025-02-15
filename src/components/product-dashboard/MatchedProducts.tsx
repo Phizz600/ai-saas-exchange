@@ -32,7 +32,10 @@ export const MatchedProducts = () => {
         <p className="text-gray-600 mb-4">
           We'll notify you when we find products that match your investment preferences.
         </p>
-        <Button asChild>
+        <Button 
+          asChild
+          className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 transition-opacity"
+        >
           <Link to="/marketplace" className="flex items-center gap-2">
             <Store className="h-4 w-4" />
             Browse Marketplace
