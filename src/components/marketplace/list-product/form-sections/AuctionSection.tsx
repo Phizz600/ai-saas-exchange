@@ -1,4 +1,3 @@
-
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { UseFormReturn } from "react-hook-form";
@@ -48,7 +47,8 @@ export function AuctionSection({ form }: AuctionSectionProps) {
   const watchHasPatents = form.watch("hasPatents") || false;
   const watchCustomerAcquisitionCost = form.watch("customerAcquisitionCost");
 
-  const handleValuationClick = (value: number, isHigh: boolean) => {
+  const handleValuationClick = (e: React.MouseEvent, value: number, isHigh: boolean) => {
+    e.preventDefault(); // Prevent form submission
     if (isAuction) {
       if (isHigh) {
         form.setValue("startingPrice", value);
@@ -334,14 +334,16 @@ export function AuctionSection({ form }: AuctionSectionProps) {
         </h3>
         <div className="text-2xl font-bold flex items-center justify-center gap-4">
           <button
-            onClick={() => handleValuationClick(valuation.low, false)}
+            type="button"
+            onClick={(e) => handleValuationClick(e, valuation.low, false)}
             className="hover:opacity-80 transition-opacity"
           >
             {formatCurrency(valuation.low)}
           </button>
           <span>-</span>
           <button
-            onClick={() => handleValuationClick(valuation.high, true)}
+            type="button"
+            onClick={(e) => handleValuationClick(e, valuation.high, true)}
             className="hover:opacity-80 transition-opacity"
           >
             {formatCurrency(valuation.high)}
