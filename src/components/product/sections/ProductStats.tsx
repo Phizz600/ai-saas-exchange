@@ -9,15 +9,7 @@ import { getProductAnalytics } from "@/integrations/supabase/functions";
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 interface ProductStatsProps {
   product: {
     id: string;
@@ -47,7 +39,6 @@ interface ProductStatsProps {
     is_traffic_verified?: boolean;
   };
 }
-
 interface Bid {
   id: string;
   amount: number;
@@ -56,50 +47,57 @@ interface Bid {
     full_name: string | null;
   };
 }
-
-export function ProductStats({ product }: ProductStatsProps) {
+export function ProductStats({
+  product
+}: ProductStatsProps) {
   const [analytics, setAnalytics] = useState<{
     views: number;
     clicks: number;
     saves: number;
-  }>({ views: 0, clicks: 0, saves: 0 });
+  }>({
+    views: 0,
+    clicks: 0,
+    saves: 0
+  });
 
   // Query to fetch complete product details
-  const { data: productDetails } = useQuery({
+  const {
+    data: productDetails
+  } = useQuery({
     queryKey: ['product-details', product.id],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('products')
-        .select(`
+      const {
+        data,
+        error
+      } = await supabase.from('products').select(`
           *,
           seller:profiles(full_name)
-        `)
-        .eq('id', product.id)
-        .single();
-
+        `).eq('id', product.id).single();
       if (error) throw error;
       return data;
-    },
+    }
   });
 
   // Query to fetch bid history
-  const { data: bids } = useQuery({
+  const {
+    data: bids
+  } = useQuery({
     queryKey: ['bids', product.id],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('bids')
-        .select(`
+      const {
+        data,
+        error
+      } = await supabase.from('bids').select(`
           id,
           amount,
           created_at,
           bidder:profiles(full_name)
-        `)
-        .eq('product_id', product.id)
-        .order('created_at', { ascending: false });
-
+        `).eq('product_id', product.id).order('created_at', {
+        ascending: false
+      });
       if (error) throw error;
       return data as unknown as Bid[];
-    },
+    }
   });
 
   // Initial fetch of analytics
@@ -113,24 +111,16 @@ export function ProductStats({ product }: ProductStatsProps) {
 
   // Subscribe to real-time updates
   useEffect(() => {
-    const channel = supabase
-      .channel('analytics-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'product_analytics',
-          filter: `product_id=eq.${product.id}`,
-        },
-        async (payload) => {
-          console.log('Received real-time update:', payload);
-          const data = await getProductAnalytics(product.id);
-          setAnalytics(data);
-        }
-      )
-      .subscribe();
-
+    const channel = supabase.channel('analytics-changes').on('postgres_changes', {
+      event: '*',
+      schema: 'public',
+      table: 'product_analytics',
+      filter: `product_id=eq.${product.id}`
+    }, async payload => {
+      console.log('Received real-time update:', payload);
+      const data = await getProductAnalytics(product.id);
+      setAnalytics(data);
+    }).subscribe();
     return () => {
       supabase.removeChannel(channel);
     };
@@ -140,80 +130,49 @@ export function ProductStats({ product }: ProductStatsProps) {
   if (!productDetails) {
     return <Card className="p-6"><div>Loading product details...</div></Card>;
   }
-
-  const isHighTraffic = analytics && (
-    analytics.views >= 100 || 
-    analytics.clicks >= 50 || 
-    analytics.saves >= 25
-  );
-
-  const formattedRevenue = product.monthly_revenue 
-    ? formatCurrency(product.monthly_revenue)
-    : '$0';
-
-  const formattedProfit = product.monthly_profit
-    ? formatCurrency(product.monthly_profit)
-    : 'Not disclosed';
-
+  const isHighTraffic = analytics && (analytics.views >= 100 || analytics.clicks >= 50 || analytics.saves >= 25);
+  const formattedRevenue = product.monthly_revenue ? formatCurrency(product.monthly_revenue) : '$0';
+  const formattedProfit = product.monthly_profit ? formatCurrency(product.monthly_profit) : 'Not disclosed';
   const getRevenueStatus = () => {
     if (!product.monthly_revenue || product.monthly_revenue === 0) {
       return `Beta: Revenue starts ${product.stage === 'MVP' ? 'Q3 2024' : 'Q3 2025'}`;
     }
     return `Monthly Profit: ${formattedProfit}`;
   };
-
   const getTechStack = () => {
     if (product.tech_stack_other) {
       return product.tech_stack_other;
     }
-    return product.tech_stack && product.tech_stack.length > 0
-      ? `Built with ${product.tech_stack.join(', ')}`
-      : "Tech stack details coming soon";
+    return product.tech_stack && product.tech_stack.length > 0 ? `Built with ${product.tech_stack.join(', ')}` : "Tech stack details coming soon";
   };
-
   const getTeamComposition = () => {
-    return product.team_size 
-      ? `Core Team: ${product.team_size}`
-      : "Team details coming soon";
+    return product.team_size ? `Core Team: ${product.team_size}` : "Team details coming soon";
   };
-
   const formatBidderName = (fullName: string | null) => {
     if (!fullName) return "Anonymous";
     const nameParts = fullName.split(' ');
     if (nameParts.length === 0) return "Anonymous";
-    
     const firstInitial = nameParts[0].charAt(0).toUpperCase();
     const lastInitial = nameParts.length > 1 ? nameParts[nameParts.length - 1].charAt(0).toUpperCase() : '';
-    
     return `${firstInitial}${lastInitial}****`;
   };
-
   const lastBid = bids && bids.length > 0 ? bids[0] : null;
-
-  return (
-    <Card className="p-6">
+  return <Card className="p-6">
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-lg font-semibold">Critical Buyer Details</h3>
-        {isHighTraffic && (
-          <Badge variant="secondary" className="bg-amber-100 text-amber-700 flex items-center gap-1">
+        {isHighTraffic && <Badge variant="secondary" className="bg-amber-100 text-amber-700 flex items-center gap-1">
             <Flame className="h-4 w-4" />
             Trending
-          </Badge>
-        )}
+          </Badge>}
       </div>
 
-      <VerificationBadges
-        isRevenueVerified={!!product.is_revenue_verified}
-        isCodeAudited={!!product.is_code_audited}
-        isTrafficVerified={!!product.is_traffic_verified}
-      />
+      <VerificationBadges isRevenueVerified={!!product.is_revenue_verified} isCodeAudited={!!product.is_code_audited} isTrafficVerified={!!product.is_traffic_verified} />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
         <div className="col-span-full bg-gray-50 p-4 rounded-lg">
           <div className="flex justify-between items-center mb-3">
             <h4 className="text-sm font-semibold text-gray-600">Last 24 Hours Activity</h4>
-            {bids && bids.length > 0 && (
-              <Sheet>
+            {bids && bids.length > 0 && <Sheet>
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="sm" className="text-sm text-blue-600 hover:text-blue-700">
                     <History className="h-4 w-4 mr-1" />
@@ -228,8 +187,7 @@ export function ProductStats({ product }: ProductStatsProps) {
                     </SheetDescription>
                   </SheetHeader>
                   <div className="mt-6 space-y-4">
-                    {bids.map((bid) => (
-                      <div key={bid.id} className="border-b border-gray-200 pb-3">
+                    {bids.map(bid => <div key={bid.id} className="border-b border-gray-200 pb-3">
                         <div className="flex justify-between items-start">
                           <div>
                             <p className="font-semibold">{formatCurrency(bid.amount)}</p>
@@ -239,12 +197,10 @@ export function ProductStats({ product }: ProductStatsProps) {
                             {format(new Date(bid.created_at), 'MMM d, yyyy h:mm a')}
                           </p>
                         </div>
-                      </div>
-                    ))}
+                      </div>)}
                   </div>
                 </SheetContent>
-              </Sheet>
-            )}
+              </Sheet>}
           </div>
           <div className="grid grid-cols-3 gap-4 mb-4">
             <div className="flex items-center gap-2">
@@ -275,8 +231,7 @@ export function ProductStats({ product }: ProductStatsProps) {
               </div>
             </div>
           </div>
-          {lastBid && (
-            <div className="mt-4 pt-4 border-t border-gray-200">
+          {lastBid && <div className="mt-4 pt-4 border-t border-gray-200">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-900">Latest Bid</p>
@@ -291,8 +246,7 @@ export function ProductStats({ product }: ProductStatsProps) {
                   </p>
                 </div>
               </div>
-            </div>
-          )}
+            </div>}
         </div>
 
         <div>
@@ -304,60 +258,50 @@ export function ProductStats({ product }: ProductStatsProps) {
           <p className="text-sm text-gray-600">{getRevenueStatus()}</p>
         </div>
 
-        {product.gross_profit_margin !== undefined && (
-          <div>
+        {product.gross_profit_margin !== undefined && <div>
             <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
               <Info className="h-4 w-4" />
               <span>Gross Profit Margin</span>
             </div>
             <p className="text-lg font-semibold">{product.gross_profit_margin}%</p>
             <p className="text-sm text-gray-600">Based on current operations</p>
-          </div>
-        )}
+          </div>}
 
-        {product.monthly_profit !== undefined && (
-          <div>
+        {product.monthly_profit !== undefined && <div>
             <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
               <Star className="h-4 w-4" />
               <span>Monthly Profit</span>
             </div>
             <p className="text-lg font-semibold">{formatCurrency(product.monthly_profit)}</p>
             <p className="text-sm text-gray-600">Net profit after expenses</p>
-          </div>
-        )}
+          </div>}
 
-        {product.monthly_churn_rate !== undefined && (
-          <div>
+        {product.monthly_churn_rate !== undefined && <div>
             <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
               <Users className="h-4 w-4" />
               <span>Monthly Churn Rate</span>
             </div>
             <p className="text-lg font-semibold">{product.monthly_churn_rate}%</p>
             <p className="text-sm text-gray-600">Customer retention metric</p>
-          </div>
-        )}
+          </div>}
 
-        {product.active_users && (
-          <div>
+        {product.active_users && <div>
             <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
               <Users className="h-4 w-4" />
               <span>Active Users</span>
             </div>
             <p className="text-lg font-semibold">{product.active_users}</p>
             <p className="text-sm text-gray-600">Current user base</p>
-          </div>
-        )}
+          </div>}
 
-        {product.monthly_traffic !== undefined && (
-          <div>
+        {product.monthly_traffic !== undefined && <div>
             <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
               <Eye className="h-4 w-4" />
               <span>Monthly Traffic</span>
             </div>
             <p className="text-lg font-semibold">{product.monthly_traffic.toLocaleString()}</p>
             <p className="text-sm text-gray-600">Monthly visitors</p>
-          </div>
-        )}
+          </div>}
 
         <div>
           <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
@@ -366,9 +310,7 @@ export function ProductStats({ product }: ProductStatsProps) {
           </div>
           <p className="text-lg font-semibold">Technology</p>
           <p className="text-sm text-gray-600">{getTechStack()}</p>
-          {product.integrations_other && (
-            <p className="text-sm text-gray-600 mt-1">Integrations: {product.integrations_other}</p>
-          )}
+          {product.integrations_other && <p className="text-sm text-gray-600 mt-1">Integrations: {product.integrations_other}</p>}
         </div>
 
         <div>
@@ -378,72 +320,55 @@ export function ProductStats({ product }: ProductStatsProps) {
           </div>
           <p className="text-lg font-semibold">Company Details</p>
           <p className="text-sm text-gray-600">{getTeamComposition()}</p>
-          {product.business_location && (
-            <p className="text-sm text-gray-600 mt-1">Based in {product.business_location}</p>
-          )}
+          {product.business_location && <p className="text-sm text-gray-600 mt-1">Based in {product.business_location}</p>}
         </div>
 
-        {product.competitors && (
-          <div>
+        {product.competitors && <div>
             <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
               <Shield className="h-4 w-4" />
               <span>Competition</span>
             </div>
             <p className="text-lg font-semibold">Market Position</p>
             <p className="text-sm text-gray-600">{product.competitors}</p>
-          </div>
-        )}
+          </div>}
 
-        {product.customer_acquisition_cost !== undefined && (
-          <div>
+        {product.customer_acquisition_cost !== undefined && <div>
             <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
               <Users className="h-4 w-4" />
               <span>Customer Acquisition</span>
             </div>
             <p className="text-lg font-semibold">{formatCurrency(product.customer_acquisition_cost)}</p>
             <p className="text-sm text-gray-600">Cost per customer</p>
-          </div>
-        )}
+          </div>}
 
-        {product.monetization && (
-          <div>
+        {product.monetization && <div>
             <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
               <Star className="h-4 w-4" />
               <span>Monetization Strategy</span>
             </div>
             <p className="text-lg font-semibold">
-              {product.monetization_other || 
-                product.monetization.split('_').map(word => 
-                  word.charAt(0).toUpperCase() + word.slice(1)
-                ).join(' ')
-              }
+              {product.monetization_other || product.monetization.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
             </p>
-          </div>
-        )}
+          </div>}
 
-        {product.product_age && (
-          <div>
+        {product.product_age && <div>
             <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
               <History className="h-4 w-4" />
               <span>Product Age</span>
             </div>
             <p className="text-lg font-semibold">{product.product_age}</p>
-          </div>
-        )}
+          </div>}
 
-        {product.special_notes && (
-          <div className="md:col-span-2">
+        {product.special_notes && <div className="md:col-span-2">
             <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
               <Star className="h-4 w-4" />
-              <span>Special Notes</span>
+              <span></span>
             </div>
-            <p className="text-lg font-semibold">Key Highlights</p>
+            <p className="text-lg font-semibold"></p>
             <p className="text-sm text-gray-600 whitespace-pre-wrap">
               {product.special_notes}
             </p>
-          </div>
-        )}
+          </div>}
       </div>
-    </Card>
-  );
+    </Card>;
 }
