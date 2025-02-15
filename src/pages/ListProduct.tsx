@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/tooltip";
 
 export const ListProduct = () => {
-  console.log('ListProduct page rendered'); // Add logging to debug routing
+  console.log('ListProduct page rendered');
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#9b87f5] via-[#D946EF] to-[#0EA5E9]">
       <div className="container mx-auto px-4 py-8">

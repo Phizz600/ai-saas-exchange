@@ -1,17 +1,15 @@
 
 import { useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthLayout } from "@/components/auth/AuthLayout";
 import { AuthForm } from "@/components/auth/AuthForm";
 
 const Auth = () => {
   const navigate = useNavigate();
-  const location = useLocation();
 
   useEffect(() => {
     console.log("Auth: Component mounted");
-    console.log("Location state:", location.state);
     
     const checkSession = async () => {
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
@@ -34,21 +32,12 @@ const Auth = () => {
           return;
         }
 
-        // If we have a stored redirect path, use it
-        const redirectPath = location.state?.from || '/marketplace';
-        console.log("Redirecting to:", redirectPath);
-        
-        // Check if the user is trying to access list-product
-        if (redirectPath === '/list-product') {
-          if (profile?.user_type === 'ai_builder') {
-            navigate(redirectPath);
-          } else {
-            navigate('/marketplace');
-          }
-        } else if (profile?.user_type === 'ai_investor') {
+        if (profile?.user_type === 'ai_investor') {
           navigate("/coming-soon");
+        } else if (profile?.user_type === 'ai_builder') {
+          navigate("/list-product");
         } else {
-          navigate(redirectPath);
+          navigate("/marketplace");
         }
       }
     };
@@ -71,21 +60,12 @@ const Auth = () => {
           return;
         }
 
-        // If we have a stored redirect path, use it
-        const redirectPath = location.state?.from || '/marketplace';
-        console.log("Redirecting to:", redirectPath);
-
-        // Check if the user is trying to access list-product
-        if (redirectPath === '/list-product') {
-          if (profile?.user_type === 'ai_builder') {
-            navigate(redirectPath);
-          } else {
-            navigate('/marketplace');
-          }
-        } else if (profile?.user_type === 'ai_investor') {
+        if (profile?.user_type === 'ai_investor') {
           navigate("/coming-soon");
+        } else if (profile?.user_type === 'ai_builder') {
+          navigate("/list-product");
         } else {
-          navigate(redirectPath);
+          navigate("/marketplace");
         }
       }
     });
@@ -94,7 +74,7 @@ const Auth = () => {
       console.log("Auth: Cleaning up subscription");
       subscription.unsubscribe();
     };
-  }, [navigate, location]);
+  }, [navigate]);
 
   return (
     <AuthLayout>

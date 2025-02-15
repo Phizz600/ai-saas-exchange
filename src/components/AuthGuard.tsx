@@ -1,6 +1,5 @@
-
 import { useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Session } from "@supabase/supabase-js";
 
@@ -10,13 +9,11 @@ interface AuthGuardProps {
 
 export const AuthGuard = ({ children }: AuthGuardProps) => {
   const navigate = useNavigate();
-  const location = useLocation();
   const [isLoading, setIsLoading] = useState(true);
   const [session, setSession] = useState<Session | null>(null);
 
   useEffect(() => {
     console.log("AuthGuard: Checking session...");
-    console.log("Current path:", location.pathname);
     
     const checkAuth = async () => {
       try {
@@ -25,14 +22,14 @@ export const AuthGuard = ({ children }: AuthGuardProps) => {
         
         if (!session) {
           console.log("AuthGuard: No session found, redirecting to auth");
-          navigate("/auth", { state: { from: location.pathname } });
+          navigate("/auth");
         } else {
           console.log("AuthGuard: Session found", session.user.id);
           setSession(session);
         }
       } catch (error) {
         console.error("AuthGuard: Error checking auth status:", error);
-        navigate("/auth", { state: { from: location.pathname } });
+        navigate("/auth");
       } finally {
         setIsLoading(false);
       }
@@ -40,7 +37,7 @@ export const AuthGuard = ({ children }: AuthGuardProps) => {
 
     checkAuth();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       console.log("AuthGuard: Auth state changed:", event);
       
       if (event === "SIGNED_IN") {
@@ -49,7 +46,7 @@ export const AuthGuard = ({ children }: AuthGuardProps) => {
       } else if (event === "SIGNED_OUT") {
         console.log("AuthGuard: User signed out, redirecting to auth");
         setSession(null);
-        navigate("/auth", { state: { from: location.pathname } });
+        navigate("/auth");
       } else if (event === "USER_UPDATED") {
         console.log("AuthGuard: User updated");
         setSession(session);
@@ -60,7 +57,7 @@ export const AuthGuard = ({ children }: AuthGuardProps) => {
       console.log("AuthGuard: Cleaning up subscription");
       subscription.unsubscribe();
     };
-  }, [navigate, location]);
+  }, [navigate]);
 
   if (isLoading) {
     return (
