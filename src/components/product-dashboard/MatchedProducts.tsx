@@ -2,7 +2,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { ProductCard } from "@/components/ProductCard";
 import { getMatchedProducts } from "@/integrations/supabase/functions";
-import { EmptyState } from "../marketplace/EmptyState";
+import { Card } from "@/components/ui/card";
 
 export const MatchedProducts = () => {
   const { data: matchedProducts = [], isLoading } = useQuery({
@@ -24,10 +24,12 @@ export const MatchedProducts = () => {
 
   if (!matchedProducts.length) {
     return (
-      <EmptyState
-        title="No Matches Found"
-        description="We'll notify you when we find products that match your investment preferences."
-      />
+      <Card className="p-6 text-center">
+        <h3 className="text-lg font-semibold mb-2">No Matches Found</h3>
+        <p className="text-gray-600">
+          We'll notify you when we find products that match your investment preferences.
+        </p>
+      </Card>
     );
   }
 
@@ -43,8 +45,14 @@ export const MatchedProducts = () => {
             price: Number(product.price),
             category: product.category,
             stage: product.stage,
+            monthlyRevenue: 0,
             image: product.image_url || "/placeholder.svg",
-            matchScore: Math.round(product.match_score)
+            seller: {
+              id: "",
+              name: "",
+              avatar: "",
+              achievements: []
+            }
           }}
         />
       ))}
