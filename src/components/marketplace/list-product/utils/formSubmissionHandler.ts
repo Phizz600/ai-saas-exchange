@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { ListProductFormData } from "../types";
 import { toast } from "@/hooks/use-toast";
@@ -27,7 +26,7 @@ export const handleProductSubmission = async (
     }
 
     let image_url = null;
-    if (data.image) {
+    if (data.image && data.image instanceof File) {
       const fileExt = data.image.name.split('.').pop();
       const filePath = `${crypto.randomUUID()}.${fileExt}`;
       
@@ -113,7 +112,6 @@ export const handleProductSubmission = async (
   }
 };
 
-// Add function to handle product updates
 export const handleProductUpdate = async (
   productId: string,
   data: Partial<ListProductFormData>,
