@@ -25,7 +25,6 @@ interface ProductPricingProps {
 export function ProductPricing({ product }: ProductPricingProps) {
   const [bidAmount, setBidAmount] = useState("");
   const [offerAmount, setOfferAmount] = useState("");
-  const [offerMessage, setOfferMessage] = useState("");
   const [timeLeft, setTimeLeft] = useState("");
   const [nextDrop, setNextDrop] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -207,7 +206,6 @@ export function ProductPricing({ product }: ProductPricingProps) {
           product_id: product.id,
           bidder_id: user.id,
           amount,
-          message: offerMessage,
           status: 'pending'
         });
 
@@ -218,7 +216,6 @@ export function ProductPricing({ product }: ProductPricingProps) {
         description: `You've made an offer for $${amount.toLocaleString()}`,
       });
       setOfferAmount("");
-      setOfferMessage("");
 
     } catch (error) {
       console.error('Error making offer:', error);
@@ -313,11 +310,6 @@ export function ProductPricing({ product }: ProductPricingProps) {
               placeholder="Enter offer amount"
               min="0"
               step="0.01"
-            />
-            <Input
-              value={offerMessage}
-              onChange={(e) => setOfferMessage(e.target.value)}
-              placeholder="Add a message (optional)"
             />
             <Button 
               variant="outline"
