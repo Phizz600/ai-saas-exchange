@@ -35,7 +35,9 @@ const Hero = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const handleListProduct = () => {
+  const handleListProduct = async () => {
+    console.log('Session state:', session); // Debug log
+
     if (!session?.user) {
       toast({
         title: "Authentication Required",
@@ -43,8 +45,19 @@ const Hero = () => {
         variant: "destructive",
       });
       navigate('/auth');
-    } else {
+      return;
+    }
+
+    try {
+      console.log('Attempting to navigate to /list-product'); // Debug log
       navigate('/list-product');
+    } catch (error) {
+      console.error('Navigation error:', error); // Debug log
+      toast({
+        title: "Navigation Error",
+        description: "Unable to access the listing form. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
