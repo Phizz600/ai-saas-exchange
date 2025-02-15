@@ -1,4 +1,3 @@
-
 import { supabase } from './client';
 
 const isValidUUID = (uuid: string) => {
@@ -103,5 +102,31 @@ export const getProductAnalytics = async (productId: string) => {
   } catch (error) {
     console.error('Error fetching product analytics:', error);
     return { views: 0, clicks: 0, saves: 0 };
+  }
+};
+
+export const getMatchedProducts = async () => {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      console.error('User not authenticated');
+      return [];
+    }
+
+    const { data, error } = await supabase
+      .from('matched_products')
+      .select('*')
+      .eq('investor_id', user.id)
+      .order('match_score', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching matched products:', error);
+      throw error;
+    }
+
+    return data || [];
+  } catch (error) {
+    console.error('Error in getMatchedProducts:', error);
+    return [];
   }
 };

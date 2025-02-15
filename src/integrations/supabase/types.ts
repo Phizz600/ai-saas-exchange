@@ -635,11 +635,13 @@ export type Database = {
       matched_products: {
         Row: {
           category: string | null
+          description: string | null
+          image_url: string | null
           investor_id: string | null
           match_score: number | null
           price: number | null
           product_id: string | null
-          seller_id: string | null
+          stage: string | null
           title: string | null
         }
         Relationships: [
@@ -647,13 +649,6 @@ export type Database = {
             foreignKeyName: "investor_preferences_user_id_fkey"
             columns: ["investor_id"]
             isOneToOne: true
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "products_seller_id_fkey"
-            columns: ["seller_id"]
-            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
