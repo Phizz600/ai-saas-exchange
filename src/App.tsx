@@ -1,107 +1,75 @@
 
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Index from "./pages/Index";
-import Auth from "./pages/Auth";
-import { Marketplace } from "./pages/Marketplace";
-import { Profile } from "./pages/Profile";
-import { AuthGuard } from "./components/AuthGuard";
-import { MarketplaceLayout } from "./components/marketplace/MarketplaceLayout";
-import { ProductPage } from "./components/product/ProductPage";
-import Help from "./pages/Help";
-import Settings from "./pages/Settings";
-import { ProductDashboard } from "./pages/ProductDashboard";
-import Products from "./pages/Products";
-import Promote from "./pages/Promote";
-import { AdminDashboard } from "./pages/AdminDashboard";
-
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Index />,
-  },
-  {
-    path: "/marketplace",
-    element: (
-      <AuthGuard>
-        <MarketplaceLayout>
-          <Marketplace />
-        </MarketplaceLayout>
-      </AuthGuard>
-    ),
-  },
-  {
-    path: "/auth",
-    element: <Auth />,
-  },
-  {
-    path: "/profile",
-    element: (
-      <AuthGuard>
-        <Profile />
-      </AuthGuard>
-    ),
-  },
-  {
-    path: "/admin",
-    element: (
-      <AuthGuard>
-        <AdminDashboard />
-      </AuthGuard>
-    ),
-  },
-  {
-    path: "/product/:id",
-    element: (
-      <AuthGuard>
-        <ProductPage />
-      </AuthGuard>
-    ),
-  },
-  {
-    path: "/help",
-    element: (
-      <AuthGuard>
-        <Help />
-      </AuthGuard>
-    ),
-  },
-  {
-    path: "/settings",
-    element: (
-      <AuthGuard>
-        <Settings />
-      </AuthGuard>
-    ),
-  },
-  {
-    path: "/product-dashboard",
-    element: (
-      <AuthGuard>
-        <ProductDashboard />
-      </AuthGuard>
-    ),
-  },
-  {
-    path: "/products",
-    element: (
-      <AuthGuard>
-        <Products />
-      </AuthGuard>
-    ),
-  },
-  {
-    path: "/promote",
-    element: (
-      <AuthGuard>
-        <Promote />
-      </AuthGuard>
-    ),
-  },
-]);
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Index from "@/pages/Index";
+import { Marketplace } from "@/pages/Marketplace";
+import Auth from "@/pages/Auth";
+import { Profile } from "@/pages/Profile";
+import { ListProduct } from "@/pages/ListProduct";
+import { ProductDashboard } from "@/pages/ProductDashboard";
+import { ProductPage } from "@/components/product/ProductPage";
+import { Toaster } from "@/components/ui/toaster";
+import { AuthGuard } from "@/components/AuthGuard";
+import { ComingSoon } from "@/pages/ComingSoon";
+import { ListingThankYou } from "@/pages/ListingThankYou";
+import { FeesPricing } from "@/pages/FeesPricing";
+import { Policies } from "@/pages/Policies";
+import "./App.css";
 
 function App() {
   return (
-    <RouterProvider router={router} />
+    <Router>
+      <Routes>
+        <Route path="/" element={<Index />} />
+        <Route path="/marketplace" element={<Marketplace />} />
+        <Route path="/auth" element={<Auth />} />
+        <Route path="/product/:id" element={<ProductPage />} />
+        <Route path="/coming-soon" element={<ComingSoon />} />
+        <Route path="/fees-pricing" element={<FeesPricing />} />
+        <Route path="/policies" element={<Policies />} />
+        <Route 
+          path="/profile" 
+          element={
+            <AuthGuard>
+              <Profile />
+            </AuthGuard>
+          } 
+        />
+        <Route 
+          path="/list-product" 
+          element={
+            <AuthGuard>
+              <ListProduct />
+            </AuthGuard>
+          } 
+        />
+        <Route 
+          path="/listing-thank-you" 
+          element={
+            <AuthGuard>
+              <ListingThankYou />
+            </AuthGuard>
+          } 
+        />
+        <Route 
+          path="/product-dashboard" 
+          element={
+            <AuthGuard>
+              <ProductDashboard />
+            </AuthGuard>
+          } 
+        />
+        {/* Add a catch-all route for 404 */}
+        <Route path="*" element={
+          <div className="min-h-screen flex items-center justify-center">
+            <div className="text-center">
+              <h1 className="text-4xl font-bold mb-4">404</h1>
+              <p className="text-gray-600">Page not found</p>
+            </div>
+          </div>
+        } />
+      </Routes>
+      <Toaster />
+    </Router>
   );
 }
 

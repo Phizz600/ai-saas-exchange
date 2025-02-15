@@ -669,27 +669,6 @@ export type Database = {
           },
         ]
       }
-      user_roles: {
-        Row: {
-          created_at: string
-          id: string
-          role: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          role: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          role?: Database["public"]["Enums"]["app_role"]
-          user_id?: string
-        }
-        Relationships: []
-      }
     }
     Views: {
       matched_products: {
@@ -737,13 +716,6 @@ export type Database = {
         }
         Returns: number
       }
-      has_role: {
-        Args: {
-          user_id: string
-          requested_role: Database["public"]["Enums"]["app_role"]
-        }
-        Returns: boolean
-      }
       increment_product_views: {
         Args: {
           input_product_id: string
@@ -770,7 +742,6 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "moderator" | "user"
       investment_preference:
         | "early_stage"
         | "growth_stage"
