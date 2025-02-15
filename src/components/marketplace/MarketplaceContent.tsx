@@ -7,7 +7,8 @@ import { MarketplaceHeader } from "@/components/marketplace/MarketplaceHeader";
 import { useMarketplaceProducts } from "@/hooks/useMarketplaceProducts";
 import { useNotifications } from "./notifications/useNotifications";
 import { incrementProductViews } from "@/integrations/supabase/functions";
-import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import { CheckCircle } from "lucide-react";
 
 export const MarketplaceContent = () => {
@@ -53,15 +54,18 @@ export const MarketplaceContent = () => {
 
   return (
     <>
-      <div className="flex justify-between items-center mb-4">
-        <Button
-          variant="outline"
-          onClick={() => setShowVerifiedOnly(!showVerifiedOnly)}
-          className={`flex items-center gap-2 ${showVerifiedOnly ? 'bg-green-50 border-green-200 text-green-700' : ''}`}
-        >
-          <CheckCircle className="h-4 w-4" />
-          Show Verified Only
-        </Button>
+      <div className="flex items-center gap-2 mb-4">
+        <div className="flex items-center space-x-2">
+          <Switch
+            id="verified-mode"
+            checked={showVerifiedOnly}
+            onCheckedChange={setShowVerifiedOnly}
+          />
+          <Label htmlFor="verified-mode" className="flex items-center gap-2 text-sm font-medium cursor-pointer">
+            <CheckCircle className="h-4 w-4" />
+            Show Verified Only
+          </Label>
+        </div>
       </div>
 
       <MarketplaceHeader
