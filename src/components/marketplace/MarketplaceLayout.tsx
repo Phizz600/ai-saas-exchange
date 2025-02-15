@@ -11,8 +11,13 @@ import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus, LayoutDashboard, Shield, CheckCircle } from "lucide-react";
 import { Link } from "react-router-dom";
+import { ReactNode } from "react";
 
-export const MarketplaceLayout = () => {
+interface MarketplaceLayoutProps {
+  children: ReactNode;
+}
+
+export const MarketplaceLayout = ({ children }: MarketplaceLayoutProps) => {
   useEffect(() => {
     console.log('MarketplaceLayout mounted');
     console.log('Checking component imports:', {
@@ -83,7 +88,7 @@ export const MarketplaceLayout = () => {
                 </p>
               </div>
             </div>
-            <MarketplaceContent />
+            {children}
             <TrustBoosters />
             <MarketplaceFAQ />
           </div>
