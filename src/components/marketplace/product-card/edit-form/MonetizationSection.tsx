@@ -3,72 +3,96 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/comp
 import { Input } from "@/components/ui/input";
 import { UseFormReturn } from "react-hook-form";
 import { ListProductFormData } from "../../list-product/types";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useState } from "react";
 
 interface MonetizationSectionProps {
   form: UseFormReturn<Partial<ListProductFormData>>;
 }
 
-const MONETIZATION_OPTIONS = [
-  'subscription',
-  'pay_per_use',
-  'freemium',
-  'one_time_purchase',
-  'usage_based',
-  'tiered_pricing',
-  'enterprise_licensing',
-  'marketplace_commission',
-  'advertising',
-  'data_monetization',
-  'affiliate',
-  'other'
-] as const;
-
 export const MonetizationSection = ({ form }: MonetizationSectionProps) => {
-  const showMonetizationOther = form.watch('monetization') === 'other';
+  const formatCurrencyInput = (value: string) => {
+    let numericValue = value.replace(/[^0-9.]/g, '');
+    const parts = numericValue.split('.');
+    if (parts.length > 2) {
+      numericValue = parts[0] + '.' + parts.slice(1).join('');
+    }
+    if (parts.length === 2 && parts[1].length > 2) {
+      numericValue = parts[0] + '.' + parts[1].slice(0, 2);
+    }
+    if (numericValue) {
+      const number = parseFloat(numericValue);
+      if (!isNaN(number)) {
+        return `$${number.toLocaleString('en-US', {
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 2
+        })}`;
+      }
+    }
+    return '';
+  };
+
+  const parseCurrencyValue = (value: string) => {
+    return parseFloat(value.replace(/[$,]/g, '')) || 0;
+  };
 
   return (
     <>
       <FormField
         control={form.control}
-        name="monetization"
+        name="price"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Monetization Strategy</FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select monetization strategy" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent position="item-aligned" className="bg-white">
-                {MONETIZATION_OPTIONS.map((option) => (
-                  <SelectItem key={option} value={option}>
-                    {option.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <FormLabel>Asking Price</FormLabel>
+            <FormControl>
+              <Input
+                type="text"
+                value={formatCurrencyInput(field.value?.toString() || '')}
+                onChange={(e) => field.onChange(parseCurrencyValue(e.target.value))}
+                className="font-mono"
+              />
+            </FormControl>
             <FormMessage />
           </FormItem>
         )}
       />
 
-      {showMonetizationOther && (
-        <FormField
-          control={form.control}
-          name="monetizationOther"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Other Monetization Strategy</FormLabel>
-              <FormControl>
-                <Input {...field} placeholder="Describe your monetization strategy" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      )}
+      <FormField
+        control={form.control}
+        name="monthlyRevenue"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Monthly Revenue</FormLabel>
+            <FormControl>
+              <Input
+                type="text"
+                value={formatCurrencyInput(field.value?.toString() || '')}
+                onChange={(e) => field.onChange(parseCurrencyValue(e.target.value))}
+                className="font-mono"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="customerAcquisitionCost"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Customer Acquisition Cost</FormLabel>
+            <FormControl>
+              <Input
+                type="text"
+                value={formatCurrencyInput(field.value?.toString() || '')}
+                onChange={(e) => field.onChange(parseCurrencyValue(e.target.value))}
+                className="font-mono"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
     </>
   );
 };
