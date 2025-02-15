@@ -3,6 +3,9 @@ import { lazy, Suspense, useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
 import { RainbowButton } from "@/components/ui/rainbow-button";
+import { useNavigate } from "react-router-dom";
+import { useSession } from "@supabase/auth-helpers-react";
+import { useToast } from "@/hooks/use-toast";
 
 // Lazy load components
 const NewsletterSubscription = lazy(() => import("./hero/NewsletterSubscription"));
@@ -14,6 +17,9 @@ const SecurityFeatures = lazy(() => import("./hero/SecurityFeatures"));
 const RoleInfo = lazy(() => import("./hero/RoleInfo"));
 
 const Hero = () => {
+  const navigate = useNavigate();
+  const session = useSession();
+  const { toast } = useToast();
   const [newsletterEmail, setNewsletterEmail] = useState("");
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [subscriberCount, setSubscriberCount] = useState(342);
@@ -29,6 +35,19 @@ const Hero = () => {
 
     return () => clearInterval(interval);
   }, []);
+
+  const handleListProduct = () => {
+    if (session) {
+      navigate('/list-product');
+    } else {
+      toast({
+        title: "Authentication Required",
+        description: "Please sign in to list your AI product",
+        variant: "destructive",
+      });
+      navigate('/auth');
+    }
+  };
 
   return (
     <div className="min-h-screen relative overflow-hidden">
@@ -57,7 +76,12 @@ const Hero = () => {
           </motion.p>
 
           <div className="flex flex-col gap-6 items-center">
-            <RainbowButton className="text-lg py-6 px-12">List your AI Product Now</RainbowButton>
+            <RainbowButton 
+              onClick={handleListProduct} 
+              className="text-lg py-6 px-12"
+            >
+              List your AI Product Now
+            </RainbowButton>
             <Suspense fallback={<Skeleton className="w-full max-w-md h-32" />}>
               <NewsletterSubscription
                 newsletterEmail={newsletterEmail}
