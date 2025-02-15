@@ -353,8 +353,34 @@ export function ProductStats({ product: initialProduct }: ProductStatsProps) {
               <Users className="h-4 w-4" />
               <span>Customer Acquisition</span>
             </div>
-            <p className="text-lg font-semibold">{formatCurrency(productDetails.customer_acquisition_cost)}</p>
+            <p className="text-lg font-semibold">${productDetails.customer_acquisition_cost.toLocaleString()}</p>
             <p className="text-sm text-gray-600">Cost per customer</p>
+          </div>
+        )}
+
+        {productDetails.monetization && (
+          <div>
+            <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+              <Star className="h-4 w-4" />
+              <span>Monetization Strategy</span>
+            </div>
+            <p className="text-lg font-semibold">
+              {productDetails.monetization_other || 
+                productDetails.monetization.split('_').map(word => 
+                  word.charAt(0).toUpperCase() + word.slice(1)
+                ).join(' ')
+              }
+            </p>
+          </div>
+        )}
+
+        {productDetails.product_age && (
+          <div>
+            <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+              <History className="h-4 w-4" />
+              <span>Product Age</span>
+            </div>
+            <p className="text-lg font-semibold">{productDetails.product_age}</p>
           </div>
         )}
 

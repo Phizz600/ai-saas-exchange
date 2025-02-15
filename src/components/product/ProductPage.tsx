@@ -62,6 +62,28 @@ export function ProductPage() {
         console.log('Fetched product:', product);
         setProduct(product);
 
+        // Subscribe to real-time changes
+        const channel = supabase
+          .channel('product-updates')
+          .on(
+            'postgres_changes',
+            {
+              event: '*',
+              schema: 'public',
+              table: 'products',
+              filter: `id=eq.${id}`
+            },
+            (payload) => {
+              console.log('Product updated:', payload);
+              // Merge the new data with existing seller info
+              setProduct(current => ({
+                ...payload.new,
+                seller: current.seller
+              }));
+            }
+          )
+          .subscribe();
+
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
           const { data: profile } = await supabase
@@ -74,6 +96,10 @@ export function ProductPage() {
             setIsLiked(profile.liked_products.includes(id));
           }
         }
+
+        return () => {
+          supabase.removeChannel(channel);
+        };
       } catch (error) {
         console.error('Error:', error);
         toast({
