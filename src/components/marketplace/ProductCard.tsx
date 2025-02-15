@@ -171,7 +171,7 @@ export function ProductCard({ product, showEditButton = false }: ProductCardProp
               alt={product.title}
               className="w-full h-full object-cover"
             />
-            <div className="absolute top-2 right-2 flex gap-2">
+            <div className="absolute top-2 right-2 flex gap-1">
               {showEditButton && (
                 <Button
                   variant="ghost"
@@ -182,7 +182,7 @@ export function ProductCard({ product, showEditButton = false }: ProductCardProp
                     setIsEditDialogOpen(true);
                   }}
                 >
-                  <Edit2 className="h-4 w-4" />
+                  <Edit2 className="h-5 w-5" />
                 </Button>
               )}
               <Button
@@ -193,7 +193,7 @@ export function ProductCard({ product, showEditButton = false }: ProductCardProp
                 }`}
                 onClick={toggleSave}
               >
-                <Bookmark className={`h-4 w-4 ${isSaved ? "fill-current" : ""}`} />
+                <Bookmark className={`h-5 w-5 ${isSaved ? "fill-current" : ""}`} />
               </Button>
               <Button
                 variant="ghost"
@@ -203,7 +203,7 @@ export function ProductCard({ product, showEditButton = false }: ProductCardProp
                 }`}
                 onClick={toggleFavorite}
               >
-                <Heart className={`h-4 w-4 ${isFavorited ? "fill-current" : ""}`} />
+                <Heart className={`h-5 w-5 ${isFavorited ? "fill-current" : ""}`} />
               </Button>
             </div>
             {isAuction && (
