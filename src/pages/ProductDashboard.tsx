@@ -46,12 +46,12 @@ export const ProductDashboard = () => {
             </Button>
           </div>
           <div>
-            <h2 className="text-xl font-semibold mb-4 font-exo">Your Products</h2>
-            <ProductDashboardContent showVerifiedOnly={showVerifiedOnly} />
-          </div>
-          <div>
             <h2 className="text-xl font-semibold mb-4 font-exo">Offers on Your Products</h2>
             <ProductOffers />
+          </div>
+          <div>
+            <h2 className="text-xl font-semibold mb-4 font-exo">Your Products</h2>
+            <ProductDashboardContent showVerifiedOnly={showVerifiedOnly} />
           </div>
         </TabsContent>
 
