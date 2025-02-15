@@ -121,6 +121,31 @@ export function ProductPricing({ product }: ProductPricingProps) {
     return () => clearInterval(timer);
   }, [product.auction_end_time, product.price_decrement_interval]);
 
+  const formatCurrencyInput = (value: string) => {
+    let numericValue = value.replace(/[^0-9.]/g, '');
+    const parts = numericValue.split('.');
+    if (parts.length > 2) {
+      numericValue = parts[0] + '.' + parts.slice(1).join('');
+    }
+    if (parts.length === 2 && parts[1].length > 2) {
+      numericValue = parts[0] + '.' + parts[1].slice(0, 2);
+    }
+    if (numericValue) {
+      const number = parseFloat(numericValue);
+      if (!isNaN(number)) {
+        return `$${number.toLocaleString('en-US', {
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 2
+        })}`;
+      }
+    }
+    return '';
+  };
+
+  const parseCurrencyValue = (value: string) => {
+    return parseFloat(value.replace(/[$,]/g, '')) || 0;
+  };
+
   const handleBid = async () => {
     try {
       setIsSubmitting(true);
@@ -135,7 +160,7 @@ export function ProductPricing({ product }: ProductPricingProps) {
         return;
       }
 
-      const bidValue = parseFloat(bidAmount);
+      const bidValue = parseCurrencyValue(bidAmount);
       const currentHighestBid = currentPrice || product.starting_price || product.price || 0;
 
       if (isNaN(bidValue) || bidValue <= currentHighestBid) {
@@ -190,7 +215,7 @@ export function ProductPricing({ product }: ProductPricingProps) {
         return;
       }
 
-      const amount = parseFloat(offerAmount);
+      const amount = parseCurrencyValue(offerAmount);
       if (isNaN(amount) || amount <= 0) {
         toast({
           title: "Invalid offer amount",
@@ -285,12 +310,11 @@ export function ProductPricing({ product }: ProductPricingProps) {
           {product.auction_end_time && (
             <div className="space-y-3">
               <Input
-                type="number"
+                type="text"
                 value={bidAmount}
-                onChange={(e) => setBidAmount(e.target.value)}
+                onChange={(e) => setBidAmount(formatCurrencyInput(e.target.value))}
                 placeholder="Enter bid amount"
-                min={displayPrice}
-                step="0.01"
+                className="font-mono"
               />
               <Button 
                 className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90"
@@ -304,12 +328,11 @@ export function ProductPricing({ product }: ProductPricingProps) {
 
           <div className="space-y-3 mt-4 pt-4 border-t border-gray-200">
             <Input
-              type="number"
+              type="text"
               value={offerAmount}
-              onChange={(e) => setOfferAmount(e.target.value)}
+              onChange={(e) => setOfferAmount(formatCurrencyInput(e.target.value))}
               placeholder="Enter offer amount"
-              min="0"
-              step="0.01"
+              className="font-mono"
             />
             <Button 
               variant="outline"
