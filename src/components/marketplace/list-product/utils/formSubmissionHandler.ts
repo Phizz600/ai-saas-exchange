@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { ListProductFormData } from "../types";
 import { toast } from "@/hooks/use-toast";
@@ -45,6 +46,8 @@ export const handleProductSubmission = async (
 
     const monthlyTrafficValue = data.monthlyTraffic ? getTrafficValue(data.monthlyTraffic) : 0;
 
+    const auctionEndTime = data.auctionEndTime ? new Date(data.auctionEndTime).toISOString() : null;
+
     const productData = {
       title: data.title,
       description: data.description,
@@ -79,7 +82,7 @@ export const handleProductSubmission = async (
       monetization_other: data.monetization === 'other' ? data.monetizationOther : null,
       updated_at: new Date().toISOString(),
       ...(data.isAuction && {
-        auction_end_time: data.auctionEndTime?.toISOString(),
+        auction_end_time: auctionEndTime,
         starting_price: data.startingPrice || 0,
         current_price: data.startingPrice || 0,
         min_price: data.minPrice || 0,
