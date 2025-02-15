@@ -77,6 +77,8 @@ export const handleProductSubmission = async (
       number_of_employees: data.numberOfEmployees,
       customer_acquisition_cost: data.customerAcquisitionCost || 0,
       monetization: data.monetization === 'other' ? data.monetizationOther : data.monetization,
+      monetization_other: data.monetization === 'other' ? data.monetizationOther : null,
+      updated_at: new Date().toISOString(),
       ...(data.isAuction && {
         auction_end_time: data.auctionEndTime?.toISOString(),
         starting_price: data.startingPrice || 0,
@@ -103,6 +105,105 @@ export const handleProductSubmission = async (
     toast({
       title: "Error",
       description: "Failed to list your product. Please try again.",
+      variant: "destructive",
+    });
+    return false;
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+// Add function to handle product updates
+export const handleProductUpdate = async (
+  productId: string,
+  data: Partial<ListProductFormData>,
+  setIsLoading: (loading: boolean) => void
+): Promise<boolean> => {
+  try {
+    setIsLoading(true);
+    console.log('Updating product data:', { productId, data });
+
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      toast({
+        title: "Authentication required",
+        description: "Please log in to update your product",
+        variant: "destructive"
+      });
+      return false;
+    }
+
+    // First verify that the user owns this product
+    const { data: existingProduct } = await supabase
+      .from('products')
+      .select('seller_id')
+      .eq('id', productId)
+      .single();
+
+    if (!existingProduct || existingProduct.seller_id !== user.id) {
+      toast({
+        title: "Unauthorized",
+        description: "You don't have permission to update this product",
+        variant: "destructive"
+      });
+      return false;
+    }
+
+    const monthlyTrafficValue = data.monthlyTraffic ? getTrafficValue(data.monthlyTraffic) : undefined;
+
+    const updateData = {
+      ...(data.title && { title: data.title }),
+      ...(data.description && { description: data.description }),
+      ...(data.price && { price: data.price }),
+      ...(data.category && { category: data.category }),
+      ...(data.stage && { stage: data.stage }),
+      ...(data.industry && { industry: data.industry }),
+      ...(data.monthlyRevenue && { monthly_revenue: data.monthlyRevenue }),
+      ...(data.monthlyProfit && { monthly_profit: data.monthlyProfit }),
+      ...(data.grossProfitMargin && { gross_profit_margin: data.grossProfitMargin }),
+      ...(data.monthlyChurnRate && { monthly_churn_rate: data.monthlyChurnRate }),
+      ...(monthlyTrafficValue && { monthly_traffic: monthlyTrafficValue }),
+      ...(data.activeUsers && { active_users: data.activeUsers }),
+      ...(data.techStack && { 
+        tech_stack: data.techStack === 'Other' ? null : [data.techStack],
+        tech_stack_other: data.techStack === 'Other' ? data.techStackOther : null 
+      }),
+      ...(data.integrations_other && { integrations_other: data.integrations_other }),
+      ...(data.teamSize && { team_size: data.teamSize }),
+      ...(typeof data.hasPatents !== 'undefined' && { has_patents: data.hasPatents }),
+      ...(data.competitors && { competitors: data.competitors }),
+      ...(data.demoUrl && { demo_url: data.demoUrl }),
+      ...(data.productAge && { product_age: data.productAge }),
+      ...(data.businessLocation && { business_location: data.businessLocation }),
+      ...(data.specialNotes && { special_notes: data.specialNotes }),
+      ...(data.numberOfEmployees && { number_of_employees: data.numberOfEmployees }),
+      ...(data.customerAcquisitionCost && { customer_acquisition_cost: data.customerAcquisitionCost }),
+      ...(data.monetization && { 
+        monetization: data.monetization === 'other' ? data.monetizationOther : data.monetization,
+        monetization_other: data.monetization === 'other' ? data.monetizationOther : null
+      }),
+      updated_at: new Date().toISOString()
+    };
+
+    const { error } = await supabase
+      .from('products')
+      .update(updateData)
+      .eq('id', productId);
+
+    if (error) throw error;
+
+    toast({
+      title: "Product Updated Successfully!",
+      description: "Your product listing has been updated.",
+      duration: 5000,
+    });
+
+    return true;
+  } catch (error) {
+    console.error('Error updating product:', error);
+    toast({
+      title: "Error",
+      description: "Failed to update your product. Please try again.",
       variant: "destructive",
     });
     return false;

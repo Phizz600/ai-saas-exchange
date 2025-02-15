@@ -380,6 +380,7 @@ export type Database = {
           competitors: string | null
           created_at: string
           current_price: number | null
+          customer_acquisition_cost: number | null
           demo_url: string | null
           description: string | null
           gross_profit_margin: number | null
@@ -398,6 +399,7 @@ export type Database = {
           is_verified: boolean | null
           min_price: number | null
           monetization: string | null
+          monetization_other: string | null
           monthly_churn_rate: number | null
           monthly_profit: number | null
           monthly_revenue: number | null
@@ -428,6 +430,7 @@ export type Database = {
           competitors?: string | null
           created_at?: string
           current_price?: number | null
+          customer_acquisition_cost?: number | null
           demo_url?: string | null
           description?: string | null
           gross_profit_margin?: number | null
@@ -446,6 +449,7 @@ export type Database = {
           is_verified?: boolean | null
           min_price?: number | null
           monetization?: string | null
+          monetization_other?: string | null
           monthly_churn_rate?: number | null
           monthly_profit?: number | null
           monthly_revenue?: number | null
@@ -476,6 +480,7 @@ export type Database = {
           competitors?: string | null
           created_at?: string
           current_price?: number | null
+          customer_acquisition_cost?: number | null
           demo_url?: string | null
           description?: string | null
           gross_profit_margin?: number | null
@@ -494,6 +499,7 @@ export type Database = {
           is_verified?: boolean | null
           min_price?: number | null
           monetization?: string | null
+          monetization_other?: string | null
           monthly_churn_rate?: number | null
           monthly_profit?: number | null
           monthly_revenue?: number | null
