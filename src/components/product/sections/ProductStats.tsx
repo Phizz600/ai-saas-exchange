@@ -24,6 +24,27 @@ interface ProductStatsProps {
     seller: {
       full_name: string | null;
     };
+    monthly_revenue?: number;
+    monthly_profit?: number;
+    gross_profit_margin?: number;
+    monthly_churn_rate?: number;
+    monthly_traffic?: number;
+    active_users?: string;
+    tech_stack?: string[];
+    tech_stack_other?: string;
+    integrations_other?: string;
+    team_size?: string;
+    business_location?: string;
+    competitors?: string;
+    customer_acquisition_cost?: number;
+    monetization?: string;
+    monetization_other?: string;
+    product_age?: string;
+    special_notes?: string;
+    stage?: string;
+    is_revenue_verified?: boolean;
+    is_code_audited?: boolean;
+    is_traffic_verified?: boolean;
   };
 }
 
@@ -36,7 +57,7 @@ interface Bid {
   };
 }
 
-export function ProductStats({ product: initialProduct }: ProductStatsProps) {
+export function ProductStats({ product }: ProductStatsProps) {
   const [analytics, setAnalytics] = useState<{
     views: number;
     clicks: number;
@@ -45,7 +66,7 @@ export function ProductStats({ product: initialProduct }: ProductStatsProps) {
 
   // Query to fetch complete product details
   const { data: productDetails } = useQuery({
-    queryKey: ['product-details', initialProduct.id],
+    queryKey: ['product-details', product.id],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('products')
@@ -53,7 +74,7 @@ export function ProductStats({ product: initialProduct }: ProductStatsProps) {
           *,
           seller:profiles(full_name)
         `)
-        .eq('id', initialProduct.id)
+        .eq('id', product.id)
         .single();
 
       if (error) throw error;
@@ -63,7 +84,7 @@ export function ProductStats({ product: initialProduct }: ProductStatsProps) {
 
   // Query to fetch bid history
   const { data: bids } = useQuery({
-    queryKey: ['bids', initialProduct.id],
+    queryKey: ['bids', product.id],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('bids')
@@ -73,7 +94,7 @@ export function ProductStats({ product: initialProduct }: ProductStatsProps) {
           created_at,
           bidder:profiles(full_name)
         `)
-        .eq('product_id', initialProduct.id)
+        .eq('product_id', product.id)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -84,11 +105,11 @@ export function ProductStats({ product: initialProduct }: ProductStatsProps) {
   // Initial fetch of analytics
   useEffect(() => {
     const fetchAnalytics = async () => {
-      const data = await getProductAnalytics(initialProduct.id);
+      const data = await getProductAnalytics(product.id);
       setAnalytics(data);
     };
     fetchAnalytics();
-  }, [initialProduct.id]);
+  }, [product.id]);
 
   // Subscribe to real-time updates
   useEffect(() => {
@@ -100,11 +121,11 @@ export function ProductStats({ product: initialProduct }: ProductStatsProps) {
           event: '*',
           schema: 'public',
           table: 'product_analytics',
-          filter: `product_id=eq.${initialProduct.id}`,
+          filter: `product_id=eq.${product.id}`,
         },
         async (payload) => {
           console.log('Received real-time update:', payload);
-          const data = await getProductAnalytics(initialProduct.id);
+          const data = await getProductAnalytics(product.id);
           setAnalytics(data);
         }
       )
@@ -113,7 +134,7 @@ export function ProductStats({ product: initialProduct }: ProductStatsProps) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [initialProduct.id]);
+  }, [product.id]);
 
   // If product details haven't loaded yet, show loading state
   if (!productDetails) {
@@ -126,33 +147,33 @@ export function ProductStats({ product: initialProduct }: ProductStatsProps) {
     analytics.saves >= 25
   );
 
-  const formattedRevenue = productDetails.monthly_revenue 
-    ? formatCurrency(productDetails.monthly_revenue)
+  const formattedRevenue = product.monthly_revenue 
+    ? formatCurrency(product.monthly_revenue)
     : '$0';
 
-  const formattedProfit = productDetails.monthly_profit
-    ? formatCurrency(productDetails.monthly_profit)
+  const formattedProfit = product.monthly_profit
+    ? formatCurrency(product.monthly_profit)
     : 'Not disclosed';
 
   const getRevenueStatus = () => {
-    if (!productDetails.monthly_revenue || productDetails.monthly_revenue === 0) {
-      return `Beta: Revenue starts ${productDetails.stage === 'MVP' ? 'Q3 2024' : 'Q3 2025'}`;
+    if (!product.monthly_revenue || product.monthly_revenue === 0) {
+      return `Beta: Revenue starts ${product.stage === 'MVP' ? 'Q3 2024' : 'Q3 2025'}`;
     }
     return `Monthly Profit: ${formattedProfit}`;
   };
 
   const getTechStack = () => {
-    if (productDetails.tech_stack_other) {
-      return productDetails.tech_stack_other;
+    if (product.tech_stack_other) {
+      return product.tech_stack_other;
     }
-    return productDetails.tech_stack 
-      ? `Built with ${productDetails.tech_stack}`
+    return product.tech_stack && product.tech_stack.length > 0
+      ? `Built with ${product.tech_stack.join(', ')}`
       : "Tech stack details coming soon";
   };
 
   const getTeamComposition = () => {
-    return productDetails.team_size 
-      ? `Core Team: ${productDetails.team_size} employees`
+    return product.team_size 
+      ? `Core Team: ${product.team_size}`
       : "Team details coming soon";
   };
 
@@ -182,9 +203,9 @@ export function ProductStats({ product: initialProduct }: ProductStatsProps) {
       </div>
 
       <VerificationBadges
-        isRevenueVerified={!!productDetails.is_revenue_verified}
-        isCodeAudited={!!productDetails.is_code_audited}
-        isTrafficVerified={!!productDetails.is_traffic_verified}
+        isRevenueVerified={!!product.is_revenue_verified}
+        isCodeAudited={!!product.is_code_audited}
+        isTrafficVerified={!!product.is_traffic_verified}
       />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
@@ -283,44 +304,70 @@ export function ProductStats({ product: initialProduct }: ProductStatsProps) {
           <p className="text-sm text-gray-600">{getRevenueStatus()}</p>
         </div>
 
-        <div>
-          <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-            <Info className="h-4 w-4" />
-            <span>Gross Profit Margin</span>
+        {product.gross_profit_margin !== undefined && (
+          <div>
+            <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+              <Info className="h-4 w-4" />
+              <span>Gross Profit Margin</span>
+            </div>
+            <p className="text-lg font-semibold">{product.gross_profit_margin}%</p>
+            <p className="text-sm text-gray-600">Based on current operations</p>
           </div>
-          <p className="text-lg font-semibold">
-            {productDetails.gross_profit_margin ? `${productDetails.gross_profit_margin}%` : 'Not disclosed'}
-          </p>
-          <p className="text-sm text-gray-600">Based on current operations</p>
-        </div>
+        )}
 
-        <div>
-          <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-            <Users className="h-4 w-4" />
-            <span>Active Users</span>
+        {product.monthly_profit !== undefined && (
+          <div>
+            <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+              <Star className="h-4 w-4" />
+              <span>Monthly Profit</span>
+            </div>
+            <p className="text-lg font-semibold">{formatCurrency(product.monthly_profit)}</p>
+            <p className="text-sm text-gray-600">Net profit after expenses</p>
           </div>
-          <p className="text-lg font-semibold">User Base</p>
-          <p className="text-sm text-gray-600">{productDetails.active_users || 'Not disclosed'}</p>
-        </div>
+        )}
 
-        <div>
-          <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-            <Eye className="h-4 w-4" />
-            <span>Monthly Traffic</span>
+        {product.monthly_churn_rate !== undefined && (
+          <div>
+            <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+              <Users className="h-4 w-4" />
+              <span>Monthly Churn Rate</span>
+            </div>
+            <p className="text-lg font-semibold">{product.monthly_churn_rate}%</p>
+            <p className="text-sm text-gray-600">Customer retention metric</p>
           </div>
-          <p className="text-lg font-semibold">Traffic Stats</p>
-          <p className="text-sm text-gray-600">{productDetails.monthly_traffic || 'Not disclosed'}</p>
-        </div>
+        )}
+
+        {product.active_users && (
+          <div>
+            <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+              <Users className="h-4 w-4" />
+              <span>Active Users</span>
+            </div>
+            <p className="text-lg font-semibold">{product.active_users}</p>
+            <p className="text-sm text-gray-600">Current user base</p>
+          </div>
+        )}
+
+        {product.monthly_traffic !== undefined && (
+          <div>
+            <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+              <Eye className="h-4 w-4" />
+              <span>Monthly Traffic</span>
+            </div>
+            <p className="text-lg font-semibold">{product.monthly_traffic.toLocaleString()}</p>
+            <p className="text-sm text-gray-600">Monthly visitors</p>
+          </div>
+        )}
 
         <div>
           <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
             <Zap className="h-4 w-4" />
             <span>Tech Stack</span>
           </div>
-          <p className="text-lg font-semibold">Enterprise Grade</p>
+          <p className="text-lg font-semibold">Technology</p>
           <p className="text-sm text-gray-600">{getTechStack()}</p>
-          {productDetails.integrations_other && (
-            <p className="text-sm text-gray-600 mt-1">Integrations: {productDetails.integrations_other}</p>
+          {product.integrations_other && (
+            <p className="text-sm text-gray-600 mt-1">Integrations: {product.integrations_other}</p>
           )}
         </div>
 
@@ -331,42 +378,42 @@ export function ProductStats({ product: initialProduct }: ProductStatsProps) {
           </div>
           <p className="text-lg font-semibold">Company Details</p>
           <p className="text-sm text-gray-600">{getTeamComposition()}</p>
-          {productDetails.business_location && (
-            <p className="text-sm text-gray-600 mt-1">Based in {productDetails.business_location}</p>
+          {product.business_location && (
+            <p className="text-sm text-gray-600 mt-1">Based in {product.business_location}</p>
           )}
         </div>
 
-        {productDetails.competitors && (
+        {product.competitors && (
           <div>
             <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
               <Shield className="h-4 w-4" />
               <span>Competition</span>
             </div>
             <p className="text-lg font-semibold">Market Position</p>
-            <p className="text-sm text-gray-600">{productDetails.competitors}</p>
+            <p className="text-sm text-gray-600">{product.competitors}</p>
           </div>
         )}
 
-        {productDetails.customer_acquisition_cost && (
+        {product.customer_acquisition_cost !== undefined && (
           <div>
             <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
               <Users className="h-4 w-4" />
               <span>Customer Acquisition</span>
             </div>
-            <p className="text-lg font-semibold">${productDetails.customer_acquisition_cost.toLocaleString()}</p>
+            <p className="text-lg font-semibold">{formatCurrency(product.customer_acquisition_cost)}</p>
             <p className="text-sm text-gray-600">Cost per customer</p>
           </div>
         )}
 
-        {productDetails.monetization && (
+        {product.monetization && (
           <div>
             <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
               <Star className="h-4 w-4" />
               <span>Monetization Strategy</span>
             </div>
             <p className="text-lg font-semibold">
-              {productDetails.monetization_other || 
-                productDetails.monetization.split('_').map(word => 
+              {product.monetization_other || 
+                product.monetization.split('_').map(word => 
                   word.charAt(0).toUpperCase() + word.slice(1)
                 ).join(' ')
               }
@@ -374,17 +421,17 @@ export function ProductStats({ product: initialProduct }: ProductStatsProps) {
           </div>
         )}
 
-        {productDetails.product_age && (
+        {product.product_age && (
           <div>
             <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
               <History className="h-4 w-4" />
               <span>Product Age</span>
             </div>
-            <p className="text-lg font-semibold">{productDetails.product_age}</p>
+            <p className="text-lg font-semibold">{product.product_age}</p>
           </div>
         )}
 
-        {productDetails.special_notes && (
+        {product.special_notes && (
           <div className="md:col-span-2">
             <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
               <Star className="h-4 w-4" />
@@ -392,7 +439,7 @@ export function ProductStats({ product: initialProduct }: ProductStatsProps) {
             </div>
             <p className="text-lg font-semibold">Key Highlights</p>
             <p className="text-sm text-gray-600 whitespace-pre-wrap">
-              {productDetails.special_notes}
+              {product.special_notes}
             </p>
           </div>
         )}
