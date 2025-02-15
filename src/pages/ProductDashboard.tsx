@@ -8,6 +8,7 @@ import { StatsCard } from "@/components/product-dashboard/StatsCard";
 import { ActiveBidsProducts } from "@/components/product-dashboard/ActiveBidsProducts";
 import { WatchedProducts } from "@/components/product-dashboard/WatchedProducts";
 import { MatchedProducts } from "@/components/product-dashboard/MatchedProducts";
+import { ProductOffers } from "@/components/product-dashboard/ProductOffers";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
@@ -47,6 +48,10 @@ export const ProductDashboard = () => {
           <div>
             <h2 className="text-xl font-semibold mb-4 font-exo">Your Products</h2>
             <ProductDashboardContent showVerifiedOnly={showVerifiedOnly} />
+          </div>
+          <div>
+            <h2 className="text-xl font-semibold mb-4 font-exo">Offers on Your Products</h2>
+            <ProductOffers />
           </div>
         </TabsContent>
 

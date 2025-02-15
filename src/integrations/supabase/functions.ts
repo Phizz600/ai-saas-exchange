@@ -130,3 +130,59 @@ export const getMatchedProducts = async () => {
     return [];
   }
 };
+
+export const getProductOffers = async () => {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      console.error('User not authenticated');
+      return [];
+    }
+
+    const { data, error } = await supabase
+      .from('offers')
+      .select(`
+        *,
+        products:product_id (
+          title,
+          image_url
+        ),
+        bidder:bidder_id (
+          full_name,
+          avatar_url
+        )
+      `)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching offers:', error);
+      throw error;
+    }
+
+    return data || [];
+  } catch (error) {
+    console.error('Error in getProductOffers:', error);
+    return [];
+  }
+};
+
+export const updateOfferStatus = async (offerId: string, status: 'accepted' | 'declined') => {
+  try {
+    const { data, error } = await supabase
+      .from('offers')
+      .update({ status })
+      .eq('id', offerId)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error updating offer status:', error);
+      throw error;
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error in updateOfferStatus:', error);
+    return null;
+  }
+};
