@@ -1,7 +1,11 @@
+
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { format } from "date-fns";
 
 interface PriceHistoryChartProps {
   productId: string;
@@ -10,13 +14,32 @@ interface PriceHistoryChartProps {
 export function PriceHistoryChart({ productId }: PriceHistoryChartProps) {
   const [timeRange, setTimeRange] = useState<"1M" | "3M" | "6M" | "1Y">("1M");
   
-  // Mock data - replace with real data from your API
-  const data = [
-    { date: "2024-01", price: 10000 },
-    { date: "2024-02", price: 9500 },
-    { date: "2024-03", price: 9800 },
-    // ... more data points
-  ];
+  const { data: priceHistory, isLoading } = useQuery({
+    queryKey: ['price-history', productId, timeRange],
+    queryFn: async () => {
+      const rangeInDays = timeRange === "1Y" ? 365 : 
+                         timeRange === "6M" ? 180 : 
+                         timeRange === "3M" ? 90 : 30;
+
+      const { data, error } = await supabase
+        .from('bids')
+        .select('amount, created_at')
+        .eq('product_id', productId)
+        .gte('created_at', new Date(Date.now() - rangeInDays * 24 * 60 * 60 * 1000).toISOString())
+        .order('created_at', { ascending: true });
+
+      if (error) throw error;
+
+      return data.map(bid => ({
+        date: format(new Date(bid.created_at), 'MMM dd'),
+        price: bid.amount
+      }));
+    }
+  });
+
+  if (isLoading || !priceHistory || priceHistory.length === 0) {
+    return null; // Don't show the chart if there's no price history
+  }
 
   return (
     <Card className="p-6">
@@ -38,7 +61,7 @@ export function PriceHistoryChart({ productId }: PriceHistoryChartProps) {
       
       <div className="h-[300px]">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={data}>
+          <LineChart data={priceHistory}>
             <XAxis dataKey="date" />
             <YAxis />
             <Tooltip />
