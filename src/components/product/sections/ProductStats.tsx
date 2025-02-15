@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+
 interface ProductStatsProps {
   product: {
     id: string;
@@ -39,6 +40,7 @@ interface ProductStatsProps {
     is_traffic_verified?: boolean;
   };
 }
+
 interface Bid {
   id: string;
   amount: number;
@@ -47,6 +49,7 @@ interface Bid {
     full_name: string | null;
   };
 }
+
 export function ProductStats({
   product
 }: ProductStatsProps) {
@@ -362,9 +365,9 @@ export function ProductStats({
         {product.special_notes && <div className="md:col-span-2">
             <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
               <Star className="h-4 w-4" />
-              <span></span>
+              <span>Special Notes</span>
             </div>
-            <p className="text-lg font-semibold"></p>
+            <p className="text-lg font-semibold">Additional Information</p>
             <p className="text-sm text-gray-600 whitespace-pre-wrap">
               {product.special_notes}
             </p>
