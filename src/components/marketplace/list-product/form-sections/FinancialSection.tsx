@@ -1,3 +1,4 @@
+
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { UseFormReturn } from "react-hook-form";
@@ -92,7 +93,7 @@ export function FinancialSection({ form }: FinancialSectionProps) {
                     <SelectValue placeholder="Select monetization strategy" />
                   </SelectTrigger>
                 </FormControl>
-                <SelectContent>
+                <SelectContent position="item-aligned" className="bg-white">
                   {MONETIZATION_OPTIONS.map((option) => (
                     <SelectItem key={option} value={option}>
                       {option.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}

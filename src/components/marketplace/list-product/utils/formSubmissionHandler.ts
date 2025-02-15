@@ -73,7 +73,6 @@ export const handleProductSubmission = async (
       is_traffic_verified: data.isTrafficVerified || false,
       product_age: data.productAge,
       business_location: data.businessLocation,
-      business_model: data.businessModel,
       special_notes: data.specialNotes,
       number_of_employees: data.numberOfEmployees,
       customer_acquisition_cost: data.customerAcquisitionCost || 0,
