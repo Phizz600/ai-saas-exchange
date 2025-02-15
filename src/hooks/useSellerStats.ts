@@ -1,3 +1,4 @@
+
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -16,7 +17,7 @@ export const useSellerStats = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return null;
 
-      const { data: products } = await supabase
+      const { data: products, error } = await supabase
         .from('products')
         .select(`
           *,
@@ -26,6 +27,11 @@ export const useSellerStats = () => {
           )
         `)
         .eq('seller_id', user.id);
+
+      if (error) {
+        console.error('Error fetching seller stats:', error);
+        throw error;
+      }
 
       if (!products) return null;
 
@@ -45,5 +51,6 @@ export const useSellerStats = () => {
         ...analytics,
       };
     },
+    retry: 1,
   });
 };
