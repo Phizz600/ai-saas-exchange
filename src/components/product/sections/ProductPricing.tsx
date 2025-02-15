@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Timer, TrendingDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -25,6 +24,8 @@ interface ProductPricingProps {
 
 export function ProductPricing({ product }: ProductPricingProps) {
   const [bidAmount, setBidAmount] = useState("");
+  const [offerAmount, setOfferAmount] = useState("");
+  const [offerMessage, setOfferMessage] = useState("");
   const [timeLeft, setTimeLeft] = useState("");
   const [nextDrop, setNextDrop] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -156,30 +157,73 @@ export function ProductPricing({ product }: ProductPricingProps) {
           status: 'pending'
         });
 
-      if (error) {
-        if (error.message.includes('higher than current highest bid')) {
-          toast({
-            title: "Invalid bid amount",
-            description: "Someone else has placed a higher bid. Please refresh and try again.",
-            variant: "destructive"
-          });
-        } else {
-          throw error;
-        }
-        return;
-      }
+      if (error) throw error;
 
       toast({
         title: "Bid placed successfully!",
         description: `You've placed a bid for $${bidValue.toLocaleString()}`,
       });
       setBidAmount("");
-      refetchBids();
 
     } catch (error) {
       console.error('Error placing bid:', error);
       toast({
         title: "Error placing bid",
+        description: "Please try again later",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleOffer = async () => {
+    try {
+      setIsSubmitting(true);
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast({
+          title: "Authentication required",
+          description: "Please log in to make an offer",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      const amount = parseFloat(offerAmount);
+      if (isNaN(amount) || amount <= 0) {
+        toast({
+          title: "Invalid offer amount",
+          description: "Please enter a valid offer amount",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      const { error } = await supabase
+        .from('offers')
+        .insert({
+          product_id: product.id,
+          bidder_id: user.id,
+          amount,
+          message: offerMessage,
+          status: 'pending'
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Offer submitted successfully!",
+        description: `You've made an offer for $${amount.toLocaleString()}`,
+      });
+      setOfferAmount("");
+      setOfferMessage("");
+
+    } catch (error) {
+      console.error('Error making offer:', error);
+      toast({
+        title: "Error submitting offer",
         description: "Please try again later",
         variant: "destructive"
       });
@@ -241,21 +285,47 @@ export function ProductPricing({ product }: ProductPricingProps) {
             </div>
           )}
 
-          <div className="space-y-3">
+          {product.auction_end_time && (
+            <div className="space-y-3">
+              <Input
+                type="number"
+                value={bidAmount}
+                onChange={(e) => setBidAmount(e.target.value)}
+                placeholder="Enter bid amount"
+                min={displayPrice}
+                step="0.01"
+              />
+              <Button 
+                className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90"
+                onClick={handleBid}
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Placing bid..." : "Place Bid"}
+              </Button>
+            </div>
+          )}
+
+          <div className="space-y-3 mt-4 pt-4 border-t border-gray-200">
             <Input
               type="number"
-              value={bidAmount}
-              onChange={(e) => setBidAmount(e.target.value)}
-              placeholder="Enter bid amount"
-              min={displayPrice}
+              value={offerAmount}
+              onChange={(e) => setOfferAmount(e.target.value)}
+              placeholder="Enter offer amount"
+              min="0"
               step="0.01"
             />
+            <Input
+              value={offerMessage}
+              onChange={(e) => setOfferMessage(e.target.value)}
+              placeholder="Add a message (optional)"
+            />
             <Button 
-              className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90"
-              onClick={handleBid}
+              variant="outline"
+              className="w-full border-2 hover:bg-gray-50"
+              onClick={handleOffer}
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Placing bid..." : "Place Bid"}
+              {isSubmitting ? "Submitting..." : "Make an Offer"}
             </Button>
           </div>
         </div>
