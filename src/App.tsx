@@ -1,14 +1,15 @@
+
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
-import Marketplace from "./pages/Marketplace";
-import Profile from "./pages/Profile";
+import { Marketplace } from "./pages/Marketplace";
+import { Profile } from "./pages/Profile";
 import { AuthGuard } from "./components/AuthGuard";
-import { MarketplaceLayout } from "./layouts/MarketplaceLayout";
+import { MarketplaceLayout } from "./components/marketplace/MarketplaceLayout";
 import { ProductPage } from "./components/product/ProductPage";
 import Help from "./pages/Help";
 import Settings from "./pages/Settings";
-import ProductDashboard from "./pages/ProductDashboard";
+import { ProductDashboard } from "./pages/ProductDashboard";
 import Products from "./pages/Products";
 import Promote from "./pages/Promote";
 import { AdminDashboard } from "./pages/AdminDashboard";
