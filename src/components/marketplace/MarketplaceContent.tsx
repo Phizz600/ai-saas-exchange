@@ -44,14 +44,6 @@ export const MarketplaceContent = () => {
     }
   };
 
-  if (isLoading) {
-    return <ProductGrid products={[]} isLoading={true} />;
-  }
-
-  if (!products || products.length === 0) {
-    return <EmptyState />;
-  }
-
   return (
     <>
       <div className="flex items-center gap-2 mb-4">
@@ -87,18 +79,23 @@ export const MarketplaceContent = () => {
         onMarkAsRead={markAsRead}
       />
 
-      <ProductGrid 
-        products={products} 
-        isLoading={isLoading} 
-        onProductView={trackProductView}
-      />
-
-      {!isLoading && products.length > 0 && (
-        <MarketplacePagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          setCurrentPage={setCurrentPage}
-        />
+      {isLoading ? (
+        <ProductGrid products={[]} isLoading={true} />
+      ) : products && products.length > 0 ? (
+        <>
+          <ProductGrid 
+            products={products} 
+            isLoading={false} 
+            onProductView={trackProductView}
+          />
+          <MarketplacePagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            setCurrentPage={setCurrentPage}
+          />
+        </>
+      ) : (
+        <EmptyState />
       )}
     </>
   );
