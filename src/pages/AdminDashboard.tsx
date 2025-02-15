@@ -36,25 +36,31 @@ export const AdminDashboard = () => {
     <AdminLayout>
       <div className="space-y-8">
         <div>
-          <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            <Card className="p-4">
-              <h3 className="text-sm font-medium text-gray-500">Pending Review</h3>
-              <p className="text-2xl font-bold">{stats?.pending || 0}</p>
+          <h1 className="text-2xl font-bold mb-6 text-gray-900">Admin Dashboard</h1>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Card className="p-6 bg-white shadow-sm hover:shadow-md transition-shadow">
+              <h3 className="text-sm font-medium text-gray-500 uppercase">Pending Review</h3>
+              <p className="text-3xl font-bold mt-2 bg-gradient-to-r from-[#8B5CF6] to-[#D946EE] bg-clip-text text-transparent">
+                {stats?.pending || 0}
+              </p>
             </Card>
-            <Card className="p-4">
-              <h3 className="text-sm font-medium text-gray-500">Approved</h3>
-              <p className="text-2xl font-bold">{stats?.approved || 0}</p>
+            <Card className="p-6 bg-white shadow-sm hover:shadow-md transition-shadow">
+              <h3 className="text-sm font-medium text-gray-500 uppercase">Approved</h3>
+              <p className="text-3xl font-bold mt-2 bg-gradient-to-r from-[#8B5CF6] to-[#D946EE] bg-clip-text text-transparent">
+                {stats?.approved || 0}
+              </p>
             </Card>
-            <Card className="p-4">
-              <h3 className="text-sm font-medium text-gray-500">Rejected</h3>
-              <p className="text-2xl font-bold">{stats?.rejected || 0}</p>
+            <Card className="p-6 bg-white shadow-sm hover:shadow-md transition-shadow">
+              <h3 className="text-sm font-medium text-gray-500 uppercase">Rejected</h3>
+              <p className="text-3xl font-bold mt-2 bg-gradient-to-r from-[#8B5CF6] to-[#D946EE] bg-clip-text text-transparent">
+                {stats?.rejected || 0}
+              </p>
             </Card>
           </div>
         </div>
 
-        <div>
-          <h2 className="text-xl font-bold mb-4">Pending Products</h2>
+        <div className="bg-white rounded-lg shadow-sm p-6">
+          <h2 className="text-xl font-bold mb-6 text-gray-900">Pending Products</h2>
           <PendingProductsTable />
         </div>
       </div>
