@@ -47,6 +47,31 @@ export function AuctionSection({ form }: AuctionSectionProps) {
   const watchHasPatents = form.watch("hasPatents") || false;
   const watchCustomerAcquisitionCost = form.watch("customerAcquisitionCost");
 
+  const formatCurrencyInput = (value: string) => {
+    let numericValue = value.replace(/[^0-9.]/g, '');
+    const parts = numericValue.split('.');
+    if (parts.length > 2) {
+      numericValue = parts[0] + '.' + parts.slice(1).join('');
+    }
+    if (parts.length === 2 && parts[1].length > 2) {
+      numericValue = parts[0] + '.' + parts[1].slice(0, 2);
+    }
+    if (numericValue) {
+      const number = parseFloat(numericValue);
+      if (!isNaN(number)) {
+        return `$${number.toLocaleString('en-US', {
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 2
+        })}`;
+      }
+    }
+    return '';
+  };
+
+  const parseCurrencyValue = (value: string) => {
+    return parseFloat(value.replace(/[$,]/g, '')) || 0;
+  };
+
   const handleValuationClick = (e: React.MouseEvent, value: number, isHigh: boolean) => {
     e.preventDefault(); // Prevent form submission
     if (isAuction) {
@@ -124,10 +149,11 @@ export function AuctionSection({ form }: AuctionSectionProps) {
                   </FormLabel>
                   <FormControl>
                     <Input
-                      type="number"
+                      type="text"
                       placeholder="Enter starting price"
-                      {...field}
-                      onChange={e => field.onChange(Number(e.target.value))}
+                      value={formatCurrencyInput(field.value?.toString() || '')}
+                      onChange={(e) => field.onChange(parseCurrencyValue(e.target.value))}
+                      className="font-mono"
                     />
                   </FormControl>
                   <FormMessage />
@@ -155,10 +181,11 @@ export function AuctionSection({ form }: AuctionSectionProps) {
                   </FormLabel>
                   <FormControl>
                     <Input
-                      type="number"
+                      type="text"
                       placeholder="Enter minimum price"
-                      {...field}
-                      onChange={e => field.onChange(Number(e.target.value))}
+                      value={formatCurrencyInput(field.value?.toString() || '')}
+                      onChange={(e) => field.onChange(parseCurrencyValue(e.target.value))}
+                      className="font-mono"
                     />
                   </FormControl>
                   <FormMessage />
@@ -188,10 +215,11 @@ export function AuctionSection({ form }: AuctionSectionProps) {
                   </FormLabel>
                   <FormControl>
                     <Input
-                      type="number"
+                      type="text"
                       placeholder="Enter price decrement"
-                      {...field}
-                      onChange={e => field.onChange(Number(e.target.value))}
+                      value={formatCurrencyInput(field.value?.toString() || '')}
+                      onChange={(e) => field.onChange(parseCurrencyValue(e.target.value))}
+                      className="font-mono"
                     />
                   </FormControl>
                   <FormMessage />
@@ -313,10 +341,11 @@ export function AuctionSection({ form }: AuctionSectionProps) {
                 </FormLabel>
                 <FormControl>
                   <Input
-                    type="number"
+                    type="text"
                     placeholder="Enter price"
-                    {...field}
-                    onChange={e => field.onChange(Number(e.target.value))}
+                    value={formatCurrencyInput(field.value?.toString() || '')}
+                    onChange={(e) => field.onChange(parseCurrencyValue(e.target.value))}
+                    className="font-mono"
                   />
                 </FormControl>
                 <FormMessage />

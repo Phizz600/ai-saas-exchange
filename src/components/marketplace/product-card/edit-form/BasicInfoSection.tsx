@@ -10,6 +10,31 @@ interface BasicInfoSectionProps {
 }
 
 export const BasicInfoSection = ({ form }: BasicInfoSectionProps) => {
+  const formatCurrencyInput = (value: string) => {
+    let numericValue = value.replace(/[^0-9.]/g, '');
+    const parts = numericValue.split('.');
+    if (parts.length > 2) {
+      numericValue = parts[0] + '.' + parts.slice(1).join('');
+    }
+    if (parts.length === 2 && parts[1].length > 2) {
+      numericValue = parts[0] + '.' + parts[1].slice(0, 2);
+    }
+    if (numericValue) {
+      const number = parseFloat(numericValue);
+      if (!isNaN(number)) {
+        return `$${number.toLocaleString('en-US', {
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 2
+        })}`;
+      }
+    }
+    return '';
+  };
+
+  const parseCurrencyValue = (value: string) => {
+    return parseFloat(value.replace(/[$,]/g, '')) || 0;
+  };
+
   return (
     <>
       <FormField
@@ -34,9 +59,10 @@ export const BasicInfoSection = ({ form }: BasicInfoSectionProps) => {
             <FormLabel>Price</FormLabel>
             <FormControl>
               <Input 
-                type="number" 
-                {...field}
-                onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                type="text"
+                value={formatCurrencyInput(field.value?.toString() || '')}
+                onChange={(e) => field.onChange(parseCurrencyValue(e.target.value))}
+                className="font-mono"
               />
             </FormControl>
             <FormMessage />
