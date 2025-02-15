@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import {
   Table,
@@ -30,7 +29,7 @@ interface Product {
   price: number;
   status: string;
   seller: {
-    full_name: string;
+    full_name: string | null;
   } | null;
   created_at: string;
 }
@@ -53,13 +52,18 @@ export const PendingProductsTable = () => {
           price,
           status,
           created_at,
-          seller:profiles(full_name)
+          seller:profiles!products_seller_id_fkey (full_name)
         `)
         .eq('status', 'pending')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data as Product[];
+      
+      // Transform the data to match our Product interface
+      return (data as any[]).map(item => ({
+        ...item,
+        seller: item.seller ? { full_name: item.seller.full_name } : null
+      })) as Product[];
     },
   });
 
