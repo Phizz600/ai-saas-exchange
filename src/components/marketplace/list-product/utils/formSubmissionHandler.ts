@@ -77,6 +77,7 @@ export const handleProductSubmission = async (
       special_notes: data.specialNotes,
       number_of_employees: data.numberOfEmployees,
       customer_acquisition_cost: data.customerAcquisitionCost || 0,
+      monetization: data.monetization === 'other' ? data.monetizationOther : data.monetization,
       ...(data.isAuction && {
         auction_end_time: data.auctionEndTime?.toISOString(),
         starting_price: data.startingPrice || 0,

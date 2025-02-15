@@ -1,4 +1,3 @@
-
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { UseFormReturn } from "react-hook-form";
@@ -10,12 +9,30 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface FinancialSectionProps {
   form: UseFormReturn<ListProductFormData>;
 }
 
+const MONETIZATION_OPTIONS = [
+  'subscription',
+  'pay_per_use',
+  'freemium',
+  'one_time_purchase',
+  'usage_based',
+  'tiered_pricing',
+  'enterprise_licensing',
+  'marketplace_commission',
+  'advertising',
+  'data_monetization',
+  'affiliate',
+  'other'
+] as const;
+
 export function FinancialSection({ form }: FinancialSectionProps) {
+  const showMonetizationOther = form.watch('monetization') === 'other';
+
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-semibold">Financials</h2>
@@ -50,6 +67,62 @@ export function FinancialSection({ form }: FinancialSectionProps) {
             </FormItem>
           )}
         />
+
+        <FormField
+          control={form.control}
+          name="monetization"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="flex items-center gap-2">
+                Monetization Strategy
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="h-4 w-4 text-gray-500 cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-white">
+                      <p>How do you monetize your AI product?</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select monetization strategy" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {MONETIZATION_OPTIONS.map((option) => (
+                    <SelectItem key={option} value={option}>
+                      {option.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {showMonetizationOther && (
+          <FormField
+            control={form.control}
+            name="monetizationOther"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Other Monetization Strategy</FormLabel>
+                <FormControl>
+                  <Input 
+                    placeholder="Describe your monetization strategy"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
         <FormField
           control={form.control}

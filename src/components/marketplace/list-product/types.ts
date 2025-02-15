@@ -40,4 +40,6 @@ export interface ListProductFormData {
   isCodeAudited?: boolean;
   isTrafficVerified?: boolean;
   customerAcquisitionCost?: number;
+  monetization?: string;
+  monetizationOther?: string;
 }

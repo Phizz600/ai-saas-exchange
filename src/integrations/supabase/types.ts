@@ -397,6 +397,7 @@ export type Database = {
           is_traffic_verified: boolean | null
           is_verified: boolean | null
           min_price: number | null
+          monetization: string | null
           monthly_churn_rate: number | null
           monthly_profit: number | null
           monthly_revenue: number | null
@@ -444,6 +445,7 @@ export type Database = {
           is_traffic_verified?: boolean | null
           is_verified?: boolean | null
           min_price?: number | null
+          monetization?: string | null
           monthly_churn_rate?: number | null
           monthly_profit?: number | null
           monthly_revenue?: number | null
@@ -491,6 +493,7 @@ export type Database = {
           is_traffic_verified?: boolean | null
           is_verified?: boolean | null
           min_price?: number | null
+          monetization?: string | null
           monthly_churn_rate?: number | null
           monthly_profit?: number | null
           monthly_revenue?: number | null
@@ -712,6 +715,17 @@ export type Database = {
         | "nlp"
         | "computer_vision"
         | "other"
+      monetization_type:
+        | "subscription"
+        | "pay_per_use"
+        | "freemium"
+        | "one_time_purchase"
+        | "usage_based"
+        | "tiered_pricing"
+        | "enterprise_licensing"
+        | "marketplace_commission"
+        | "advertising"
+        | "data_monetization"
       notification_type:
         | "sale"
         | "liked_product_sold"
