@@ -371,6 +371,7 @@ export type Database = {
       }
       products: {
         Row: {
+          active_users: string | null
           auction_end_time: string | null
           auction_status: string | null
           business_location: string | null
@@ -388,6 +389,7 @@ export type Database = {
           id: string
           image_url: string | null
           industry: string | null
+          integrations: string[] | null
           integrations_other: string | null
           investment_timeline: string | null
           is_code_audited: boolean | null
@@ -395,9 +397,11 @@ export type Database = {
           is_traffic_verified: boolean | null
           is_verified: boolean | null
           min_price: number | null
+          monthly_churn_rate: number | null
           monthly_profit: number | null
           monthly_revenue: number | null
           monthly_traffic: number | null
+          number_of_employees: string | null
           price: number
           price_decrement: number | null
           price_decrement_interval: string | null
@@ -414,6 +418,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          active_users?: string | null
           auction_end_time?: string | null
           auction_status?: string | null
           business_location?: string | null
@@ -431,6 +436,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           industry?: string | null
+          integrations?: string[] | null
           integrations_other?: string | null
           investment_timeline?: string | null
           is_code_audited?: boolean | null
@@ -438,9 +444,11 @@ export type Database = {
           is_traffic_verified?: boolean | null
           is_verified?: boolean | null
           min_price?: number | null
+          monthly_churn_rate?: number | null
           monthly_profit?: number | null
           monthly_revenue?: number | null
           monthly_traffic?: number | null
+          number_of_employees?: string | null
           price: number
           price_decrement?: number | null
           price_decrement_interval?: string | null
@@ -457,6 +465,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          active_users?: string | null
           auction_end_time?: string | null
           auction_status?: string | null
           business_location?: string | null
@@ -474,6 +483,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           industry?: string | null
+          integrations?: string[] | null
           integrations_other?: string | null
           investment_timeline?: string | null
           is_code_audited?: boolean | null
@@ -481,9 +491,11 @@ export type Database = {
           is_traffic_verified?: boolean | null
           is_verified?: boolean | null
           min_price?: number | null
+          monthly_churn_rate?: number | null
           monthly_profit?: number | null
           monthly_revenue?: number | null
           monthly_traffic?: number | null
+          number_of_employees?: string | null
           price?: number
           price_decrement?: number | null
           price_decrement_interval?: string | null
