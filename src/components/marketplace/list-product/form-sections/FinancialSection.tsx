@@ -31,15 +31,21 @@ const MONETIZATION_OPTIONS = [
 ] as const;
 
 const formatValue = (value: string) => {
-  // Remove any existing formatting first
-  const plainNumber = value.replace(/[,$]/g, '');
-  // Format with commas and dollar sign
-  const formattedNumber = plainNumber ? `$${Number(plainNumber).toLocaleString()}` : '';
+  // Remove any existing formatting first (but keep decimal part)
+  const parts = value.replace(/[,$]/g, '').split('.');
+  const plainNumber = parts[0];
+  const decimals = parts[1];
+  
+  // Format with commas and dollar sign, preserving decimals if they exist
+  let formattedNumber = plainNumber ? `$${Number(plainNumber).toLocaleString()}` : '';
+  if (decimals !== undefined) {
+    formattedNumber += `.${decimals}`;
+  }
   return formattedNumber;
 };
 
 const parseValue = (value: string) => {
-  // Extract just the number from the formatted string
+  // Extract just the number from the formatted string, preserving decimals
   return Number(value.replace(/[,$]/g, ''));
 };
 
@@ -74,7 +80,9 @@ export function FinancialSection({ form }: FinancialSectionProps) {
                   value={field.value ? formatValue(field.value.toString()) : ''}
                   onChange={(e) => {
                     const value = parseValue(e.target.value);
-                    field.onChange(value);
+                    if (!isNaN(value)) {
+                      field.onChange(value);
+                    }
                   }}
                 />
               </FormControl>
@@ -107,7 +115,9 @@ export function FinancialSection({ form }: FinancialSectionProps) {
                   value={field.value ? formatValue(field.value.toString()) : ''}
                   onChange={(e) => {
                     const value = parseValue(e.target.value);
-                    field.onChange(value);
+                    if (!isNaN(value)) {
+                      field.onChange(value);
+                    }
                   }}
                 />
               </FormControl>
@@ -140,7 +150,9 @@ export function FinancialSection({ form }: FinancialSectionProps) {
                   value={field.value ? formatValue(field.value.toString()) : ''}
                   onChange={(e) => {
                     const value = parseValue(e.target.value);
-                    field.onChange(value);
+                    if (!isNaN(value)) {
+                      field.onChange(value);
+                    }
                   }}
                 />
               </FormControl>
