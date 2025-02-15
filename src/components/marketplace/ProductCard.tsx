@@ -174,9 +174,9 @@ export function ProductCard({ product, showEditButton = false }: ProductCardProp
             <div className="absolute top-2 right-2 flex gap-2">
               {showEditButton && (
                 <Button
-                  variant="secondary"
+                  variant="ghost"
                   size="icon"
-                  className="bg-white/90 hover:bg-white"
+                  className="text-white hover:text-white hover:bg-black/20"
                   onClick={(e) => {
                     e.preventDefault();
                     setIsEditDialogOpen(true);
@@ -186,9 +186,9 @@ export function ProductCard({ product, showEditButton = false }: ProductCardProp
                 </Button>
               )}
               <Button
-                variant="secondary"
+                variant="ghost"
                 size="icon"
-                className={`bg-white/90 hover:bg-white ${
+                className={`text-white hover:text-white hover:bg-black/20 ${
                   isSaved ? "text-primary" : ""
                 }`}
                 onClick={toggleSave}
@@ -196,9 +196,9 @@ export function ProductCard({ product, showEditButton = false }: ProductCardProp
                 <Bookmark className={`h-4 w-4 ${isSaved ? "fill-current" : ""}`} />
               </Button>
               <Button
-                variant="secondary"
+                variant="ghost"
                 size="icon"
-                className={`bg-white/90 hover:bg-white ${
+                className={`text-white hover:text-white hover:bg-black/20 ${
                   isFavorited ? "text-red-500" : ""
                 }`}
                 onClick={toggleFavorite}
