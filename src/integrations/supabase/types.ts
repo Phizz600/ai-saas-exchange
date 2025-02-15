@@ -663,6 +663,10 @@ export type Database = {
         }
         Returns: number
       }
+      check_auctions_ending_soon: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       check_high_traffic: {
         Args: Record<PropertyKey, never>
         Returns: undefined
@@ -734,6 +738,10 @@ export type Database = {
         | "product_viewed"
         | "product_offer"
         | "high_traffic"
+        | "product_saved"
+        | "auction_ending_soon"
+        | "auction_ended"
+        | "new_bid"
       user_type: "ai_builder" | "ai_investor"
     }
     CompositeTypes: {

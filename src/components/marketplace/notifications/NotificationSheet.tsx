@@ -1,13 +1,11 @@
 
 import { Bell } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@/components/ui/sheet";
 import { Database } from "@/integrations/supabase/types";
 
@@ -28,6 +26,28 @@ export const NotificationSheet = ({
   open,
   onOpenChange
 }: NotificationSheetProps) => {
+  // Helper function to get appropriate background color based on notification type
+  const getNotificationBgColor = (type: string, read: boolean | null) => {
+    if (read) return 'bg-background';
+    
+    switch (type) {
+      case 'auction_ending_soon':
+        return 'bg-amber-50';
+      case 'auction_ended':
+        return 'bg-blue-50';
+      case 'new_bid':
+        return 'bg-green-50';
+      case 'product_saved':
+        return 'bg-purple-50';
+      case 'product_liked':
+        return 'bg-pink-50';
+      case 'sale':
+        return 'bg-emerald-50';
+      default:
+        return 'bg-[#8B5CF6]/5';
+    }
+  };
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="right" className="w-[400px] sm:w-[540px] p-0">
@@ -52,7 +72,7 @@ export const NotificationSheet = ({
                   <div
                     key={notification.id}
                     className={`p-4 rounded-lg border transition-colors cursor-pointer hover:bg-accent ${
-                      notification.read ? 'bg-background' : 'bg-[#8B5CF6]/5'
+                      getNotificationBgColor(notification.type, notification.read)
                     }`}
                     onClick={() => onMarkAsRead(notification.id)}
                   >
