@@ -178,6 +178,7 @@ export function ProductPage() {
                 )}
               </div>
             </Card>
+            <PriceHistoryChart productId={product.id} />
           </div>
 
           {/* Right Column - Product Info */}
@@ -189,7 +190,6 @@ export function ProductPage() {
             />
             <ProductPricing product={product} />
             <ProductStats product={product} />
-            <PriceHistoryChart productId={product.id} />
           </div>
         </div>
 
