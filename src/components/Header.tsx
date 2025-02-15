@@ -1,7 +1,8 @@
+
 import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { ExpandableTabs } from "./header/ExpandableTabs";
-import { Home, Store, LayoutDashboard, Bell, HelpCircle, User, LogOut } from "lucide-react";
+import { Store, LayoutDashboard, Bell, HelpCircle, User, LogOut } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { NotificationSheet } from "./marketplace/notifications/NotificationSheet";
@@ -48,15 +49,6 @@ export const Header = () => {
   };
 
   const navigationTabs: TabItem[] = [
-    {
-      title: "Home",
-      icon: Home,
-      description: "Go to homepage",
-      path: "/"
-    },
-    {
-      type: "separator"
-    },
     {
       title: "Marketplace",
       icon: Store,
