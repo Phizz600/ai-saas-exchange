@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Edit2, Timer, Heart } from "lucide-react";
+import { Edit2, Timer, Heart, Bookmark } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -37,6 +37,7 @@ export function ProductCard({ product, showEditButton = false }: ProductCardProp
   const [timeLeft, setTimeLeft] = useState<string>("");
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
   const { toast } = useToast();
   const isAuction = !!product.auction_end_time;
 
@@ -112,6 +113,53 @@ export function ProductCard({ product, showEditButton = false }: ProductCardProp
     }
   };
 
+  const toggleSave = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          title: "Authentication required",
+          description: "Please sign in to save products",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('saved_products')
+        .eq('id', user.id)
+        .single();
+
+      const currentSaves = profile?.saved_products || [];
+      const newSaves = isSaved
+        ? currentSaves.filter((id: string) => id !== product.id)
+        : [...currentSaves, product.id];
+
+      await supabase
+        .from('profiles')
+        .update({ 
+          saved_products: newSaves,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', user.id);
+
+      setIsSaved(!isSaved);
+      toast({
+        title: isSaved ? "Product unsaved" : "Product saved",
+        description: isSaved ? "Removed from your saved products" : "Added to your saved products",
+      });
+    } catch (error) {
+      console.error('Error toggling save:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save product. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
   return (
     <>
       <Link to={`/product/${product.id}`}>
@@ -137,6 +185,16 @@ export function ProductCard({ product, showEditButton = false }: ProductCardProp
                   <Edit2 className="h-4 w-4" />
                 </Button>
               )}
+              <Button
+                variant="secondary"
+                size="icon"
+                className={`bg-white/90 hover:bg-white ${
+                  isSaved ? "text-primary" : ""
+                }`}
+                onClick={toggleSave}
+              >
+                <Bookmark className={`h-4 w-4 ${isSaved ? "fill-current" : ""}`} />
+              </Button>
               <Button
                 variant="secondary"
                 size="icon"
