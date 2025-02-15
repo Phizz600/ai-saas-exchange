@@ -107,7 +107,7 @@ export const Header = () => {
               <img 
                 src="/lovable-uploads/410d1e6b-e7e7-499e-a8f7-9bf6bda5e131.png" 
                 alt="AI Exchange Logo" 
-                className="h-10 w-10"
+                className="h-12 w-12"
               />
             </Link>
           </div>
