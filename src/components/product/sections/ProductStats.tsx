@@ -34,6 +34,16 @@ interface ProductStatsProps {
     is_revenue_verified?: boolean;
     is_code_audited?: boolean;
     is_traffic_verified?: boolean;
+    category?: string;
+    monthly_traffic?: string;
+    active_users?: string;
+    demo_url?: string;
+    business_location?: string;
+    customer_acquisition_cost?: number;
+    competitors?: string;
+    seller: {
+      full_name: string | null;
+    };
   };
 }
 
@@ -146,21 +156,14 @@ export function ProductStats({ product }: ProductStatsProps) {
       return product.tech_stack_other;
     }
     return product.tech_stack 
-      ? `Built with ${product.tech_stack}, AWS, GPT-4`
+      ? `Built with ${product.tech_stack}`
       : "Tech stack details coming soon";
   };
 
   const getTeamComposition = () => {
-    if (!product.team_size) return "Team details coming soon";
-    
-    const sizeToEngineers: Record<string, string> = {
-      "1-5": "Core Team: 2 Engineers, 1 Data Scientist",
-      "5-10": "Core Team: 5 Engineers, 2 Data Scientists",
-      "10-20": "Core Team: 8 Engineers, 3 Data Scientists",
-      "20+": "Core Team: 15+ Engineers, 5 Data Scientists"
-    };
-    
-    return sizeToEngineers[product.team_size] || "Team details coming soon";
+    return product.team_size 
+      ? `Core Team: ${product.team_size} employees`
+      : "Team details coming soon";
   };
 
   const lastBid = bids && bids.length > 0 ? bids[0] : null;
@@ -292,21 +295,67 @@ export function ProductStats({ product }: ProductStatsProps) {
 
         <div>
           <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+            <Users className="h-4 w-4" />
+            <span>Active Users</span>
+          </div>
+          <p className="text-lg font-semibold">User Base</p>
+          <p className="text-sm text-gray-600">{product.active_users || 'Not disclosed'}</p>
+        </div>
+
+        <div>
+          <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+            <Eye className="h-4 w-4" />
+            <span>Monthly Traffic</span>
+          </div>
+          <p className="text-lg font-semibold">Traffic Stats</p>
+          <p className="text-sm text-gray-600">{product.monthly_traffic || 'Not disclosed'}</p>
+        </div>
+
+        <div>
+          <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
             <Zap className="h-4 w-4" />
             <span>Tech Stack</span>
           </div>
           <p className="text-lg font-semibold">Enterprise Grade</p>
           <p className="text-sm text-gray-600">{getTechStack()}</p>
+          {product.integrations_other && (
+            <p className="text-sm text-gray-600 mt-1">Integrations: {product.integrations_other}</p>
+          )}
         </div>
 
         <div>
           <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
             <Building2 className="h-4 w-4" />
-            <span>Team Composition</span>
+            <span>Team & Location</span>
           </div>
-          <p className="text-lg font-semibold">Expert Team</p>
+          <p className="text-lg font-semibold">Company Details</p>
           <p className="text-sm text-gray-600">{getTeamComposition()}</p>
+          {product.business_location && (
+            <p className="text-sm text-gray-600 mt-1">Based in {product.business_location}</p>
+          )}
         </div>
+
+        {product.competitors && (
+          <div>
+            <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+              <Shield className="h-4 w-4" />
+              <span>Competition</span>
+            </div>
+            <p className="text-lg font-semibold">Market Position</p>
+            <p className="text-sm text-gray-600">{product.competitors}</p>
+          </div>
+        )}
+
+        {product.customer_acquisition_cost && (
+          <div>
+            <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+              <Users className="h-4 w-4" />
+              <span>Customer Acquisition</span>
+            </div>
+            <p className="text-lg font-semibold">{formatCurrency(product.customer_acquisition_cost)}</p>
+            <p className="text-sm text-gray-600">Cost per customer</p>
+          </div>
+        )}
 
         {product.special_notes && (
           <div className="md:col-span-2">
