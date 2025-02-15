@@ -1,5 +1,5 @@
 
-import { DashboardLayout } from "@/components/product-dashboard/DashboardLayout";
+import { AdminLayout } from "@/components/admin/AdminLayout";
 import { PendingProductsTable } from "@/components/admin/PendingProductsTable";
 import { Card } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
@@ -33,7 +33,7 @@ export const AdminDashboard = () => {
   });
 
   return (
-    <DashboardLayout>
+    <AdminLayout>
       <div className="space-y-8">
         <div>
           <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
@@ -58,6 +58,6 @@ export const AdminDashboard = () => {
           <PendingProductsTable />
         </div>
       </div>
-    </DashboardLayout>
+    </AdminLayout>
   );
 };
