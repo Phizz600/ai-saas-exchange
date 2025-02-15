@@ -2,6 +2,12 @@
 import { LucideIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import { NavigateFunction, useNavigate } from "react-router-dom";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface Tab {
   title: string;
@@ -47,15 +53,23 @@ export const ExpandableTabs = ({ tabs }: Props) => {
 
         return (
           <div key={index} className="relative">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => handleClick(tabItem)}
-              className="relative flex items-center space-x-1 px-3"
-            >
-              <Icon className="h-4 w-4" />
-              <span>{tabItem.title}</span>
-            </Button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleClick(tabItem)}
+                    className="relative w-10 h-10 p-2"
+                  >
+                    <Icon className="h-5 w-5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{tabItem.title}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
             {tabItem.indicator && (
               <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full" />
             )}
