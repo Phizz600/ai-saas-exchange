@@ -3,6 +3,9 @@ import { useQuery } from "@tanstack/react-query";
 import { ProductCard } from "@/components/ProductCard";
 import { getMatchedProducts } from "@/integrations/supabase/functions";
 import { Card } from "@/components/ui/card";
+import { Store } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 export const MatchedProducts = () => {
   const { data: matchedProducts = [], isLoading } = useQuery({
@@ -26,9 +29,15 @@ export const MatchedProducts = () => {
     return (
       <Card className="p-6 text-center">
         <h3 className="text-lg font-semibold mb-2">No Matches Found</h3>
-        <p className="text-gray-600">
+        <p className="text-gray-600 mb-4">
           We'll notify you when we find products that match your investment preferences.
         </p>
+        <Button asChild>
+          <Link to="/marketplace" className="flex items-center gap-2">
+            <Store className="h-4 w-4" />
+            Browse Marketplace
+          </Link>
+        </Button>
       </Card>
     );
   }
