@@ -411,6 +411,7 @@ export type Database = {
       products: {
         Row: {
           active_users: string | null
+          admin_feedback: string | null
           auction_end_time: string | null
           auction_status: string | null
           business_location: string | null
@@ -448,6 +449,8 @@ export type Database = {
           price_decrement: number | null
           price_decrement_interval: string | null
           product_age: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
           seller_id: string
           special_notes: string | null
           stage: string
@@ -461,6 +464,7 @@ export type Database = {
         }
         Insert: {
           active_users?: string | null
+          admin_feedback?: string | null
           auction_end_time?: string | null
           auction_status?: string | null
           business_location?: string | null
@@ -498,6 +502,8 @@ export type Database = {
           price_decrement?: number | null
           price_decrement_interval?: string | null
           product_age?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           seller_id: string
           special_notes?: string | null
           stage: string
@@ -511,6 +517,7 @@ export type Database = {
         }
         Update: {
           active_users?: string | null
+          admin_feedback?: string | null
           auction_end_time?: string | null
           auction_status?: string | null
           business_location?: string | null
@@ -548,6 +555,8 @@ export type Database = {
           price_decrement?: number | null
           price_decrement_interval?: string | null
           product_age?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           seller_id?: string
           special_notes?: string | null
           stage?: string
