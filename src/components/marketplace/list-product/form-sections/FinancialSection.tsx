@@ -1,4 +1,3 @@
-
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { UseFormReturn } from "react-hook-form";
@@ -31,6 +30,19 @@ const MONETIZATION_OPTIONS = [
   'other'
 ] as const;
 
+const formatValue = (value: string) => {
+  // Remove any existing formatting first
+  const plainNumber = value.replace(/[,$]/g, '');
+  // Format with commas and dollar sign
+  const formattedNumber = plainNumber ? `$${Number(plainNumber).toLocaleString()}` : '';
+  return formattedNumber;
+};
+
+const parseValue = (value: string) => {
+  // Extract just the number from the formatted string
+  return Number(value.replace(/[,$]/g, ''));
+};
+
 export function FinancialSection({ form }: FinancialSectionProps) {
   const showMonetizationOther = form.watch('monetization') === 'other';
 
@@ -58,10 +70,78 @@ export function FinancialSection({ form }: FinancialSectionProps) {
               </FormLabel>
               <FormControl>
                 <Input 
-                  type="number"
                   placeholder="Enter MRR in USD"
-                  {...field}
-                  onChange={e => field.onChange(Number(e.target.value))}
+                  value={field.value ? formatValue(field.value.toString()) : ''}
+                  onChange={(e) => {
+                    const value = parseValue(e.target.value);
+                    field.onChange(value);
+                  }}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="monthlyProfit"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="flex items-center gap-2">
+                Monthly Profit
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="h-4 w-4 text-gray-500 cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-white">
+                      <p>Net profit generated monthly after all expenses</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </FormLabel>
+              <FormControl>
+                <Input 
+                  placeholder="Enter monthly profit in USD"
+                  value={field.value ? formatValue(field.value.toString()) : ''}
+                  onChange={(e) => {
+                    const value = parseValue(e.target.value);
+                    field.onChange(value);
+                  }}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="customerAcquisitionCost"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="flex items-center gap-2">
+                Customer Acquisition Cost (CAC)
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="h-4 w-4 text-gray-500 cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-white">
+                      <p>Average cost to acquire a single customer, including marketing and sales expenses</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </FormLabel>
+              <FormControl>
+                <Input 
+                  placeholder="Enter CAC in USD"
+                  value={field.value ? formatValue(field.value.toString()) : ''}
+                  onChange={(e) => {
+                    const value = parseValue(e.target.value);
+                    field.onChange(value);
+                  }}
                 />
               </FormControl>
               <FormMessage />
@@ -127,37 +207,6 @@ export function FinancialSection({ form }: FinancialSectionProps) {
 
         <FormField
           control={form.control}
-          name="monthlyProfit"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="flex items-center gap-2">
-                Monthly Profit
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Info className="h-4 w-4 text-gray-500 cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="bg-white">
-                      <p>Net profit generated monthly after all expenses</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </FormLabel>
-              <FormControl>
-                <Input 
-                  type="number"
-                  placeholder="Enter monthly profit in USD"
-                  {...field}
-                  onChange={e => field.onChange(Number(e.target.value))}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
           name="grossProfitMargin"
           render={({ field }) => (
             <FormItem>
@@ -209,37 +258,6 @@ export function FinancialSection({ form }: FinancialSectionProps) {
                 <Input 
                   type="number"
                   placeholder="Enter churn rate"
-                  {...field}
-                  onChange={e => field.onChange(Number(e.target.value))}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="customerAcquisitionCost"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="flex items-center gap-2">
-                Customer Acquisition Cost (CAC)
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Info className="h-4 w-4 text-gray-500 cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="bg-white">
-                      <p>Average cost to acquire a single customer, including marketing and sales expenses</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </FormLabel>
-              <FormControl>
-                <Input 
-                  type="number"
-                  placeholder="Enter CAC in USD"
                   {...field}
                   onChange={e => field.onChange(Number(e.target.value))}
                 />
