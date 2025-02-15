@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Database } from "@/integrations/supabase/types";
@@ -91,6 +92,13 @@ export const useNotifications = () => {
 
   const markAsRead = async (notificationId: string) => {
     try {
+      // Find the notification to check if it's already read
+      const notification = notifications.find(n => n.id === notificationId);
+      if (!notification || notification.read) {
+        // If already read, don't do anything
+        return;
+      }
+
       const { error } = await supabase
         .from('notifications')
         .update({ read: true })
@@ -98,11 +106,13 @@ export const useNotifications = () => {
 
       if (error) throw error;
 
+      // Update local state
       setNotifications(prev =>
         prev.map(n =>
           n.id === notificationId ? { ...n, read: true } : n
         )
       );
+      // Decrement unread count
       setUnreadCount(prev => Math.max(0, prev - 1));
     } catch (error) {
       console.error('Error marking notification as read:', error);
