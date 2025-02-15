@@ -49,7 +49,10 @@ export function FormNavigationButtons({
         {currentSection < totalSections - 1 ? (
           <Button
             type="button"
-            onClick={onNext}
+            onClick={(e) => {
+              e.preventDefault();
+              onNext();
+            }}
             className="flex items-center gap-2"
           >
             Next
