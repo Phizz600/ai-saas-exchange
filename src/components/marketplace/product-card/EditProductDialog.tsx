@@ -1,43 +1,21 @@
 
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { handleProductUpdate } from "../list-product/utils/formSubmissionHandler";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { ListProductFormData } from "../list-product/types";
+import { BasicInfoSection } from "./edit-form/BasicInfoSection";
+import { MonetizationSection } from "./edit-form/MonetizationSection";
+import { FinancialSection } from "./edit-form/FinancialSection";
 
 interface EditProductDialogProps {
   product: any;
   isOpen: boolean;
   onClose: () => void;
 }
-
-const MONETIZATION_OPTIONS = [
-  'subscription',
-  'pay_per_use',
-  'freemium',
-  'one_time_purchase',
-  'usage_based',
-  'tiered_pricing',
-  'enterprise_licensing',
-  'marketplace_commission',
-  'advertising',
-  'data_monetization',
-  'affiliate',
-  'other'
-] as const;
 
 export const EditProductDialog = ({ product, isOpen, onClose }: EditProductDialogProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -80,8 +58,6 @@ export const EditProductDialog = ({ product, isOpen, onClose }: EditProductDialo
     }
   };
 
-  const showMonetizationOther = form.watch('monetization') === 'other';
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
@@ -91,128 +67,9 @@ export const EditProductDialog = ({ product, isOpen, onClose }: EditProductDialo
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Title</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="price"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Price</FormLabel>
-                    <FormControl>
-                      <Input 
-                        type="number" 
-                        {...field}
-                        onChange={(e) => field.onChange(parseFloat(e.target.value))}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem className="col-span-2">
-                    <FormLabel>Description</FormLabel>
-                    <FormControl>
-                      <Textarea {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="monetization"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Monetization Strategy</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select monetization strategy" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent position="item-aligned" className="bg-white">
-                        {MONETIZATION_OPTIONS.map((option) => (
-                          <SelectItem key={option} value={option}>
-                            {option.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {showMonetizationOther && (
-                <FormField
-                  control={form.control}
-                  name="monetizationOther"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Other Monetization Strategy</FormLabel>
-                      <FormControl>
-                        <Input {...field} placeholder="Describe your monetization strategy" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              )}
-
-              <FormField
-                control={form.control}
-                name="monthlyRevenue"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Monthly Revenue</FormLabel>
-                    <FormControl>
-                      <Input 
-                        type="number" 
-                        {...field}
-                        onChange={(e) => field.onChange(parseFloat(e.target.value))}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="monthlyProfit"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Monthly Profit</FormLabel>
-                    <FormControl>
-                      <Input 
-                        type="number" 
-                        {...field}
-                        onChange={(e) => field.onChange(parseFloat(e.target.value))}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <BasicInfoSection form={form} />
+              <MonetizationSection form={form} />
+              <FinancialSection form={form} />
             </div>
 
             <div className="flex justify-end gap-2">
@@ -228,4 +85,4 @@ export const EditProductDialog = ({ product, isOpen, onClose }: EditProductDialo
       </DialogContent>
     </Dialog>
   );
-}
+};
