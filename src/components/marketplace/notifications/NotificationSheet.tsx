@@ -1,4 +1,3 @@
-
 import { Bell } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -76,7 +75,9 @@ export const NotificationSheet = ({
                     }`}
                     onClick={() => onMarkAsRead(notification.id)}
                   >
-                    <h4 className="font-semibold text-black">{notification.title}</h4>
+                    <h4 className="font-semibold text-black hover:text-white transition-colors">
+                      {notification.title}
+                    </h4>
                     <p className="text-sm text-[#0EA4E9] mt-1">
                       {notification.message}
                     </p>
