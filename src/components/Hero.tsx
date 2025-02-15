@@ -1,4 +1,3 @@
-
 import { lazy, Suspense, useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
@@ -31,21 +30,21 @@ const Hero = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentWordIndex((prevIndex) => (prevIndex + 1) % words.length);
-    }, 2500); // 2.5 seconds interval
+    }, 2500);
 
     return () => clearInterval(interval);
   }, []);
 
   const handleListProduct = () => {
-    if (session) {
-      navigate('/list-product');
-    } else {
+    if (!session?.user) {
       toast({
         title: "Authentication Required",
         description: "Please sign in to list your AI product",
         variant: "destructive",
       });
       navigate('/auth');
+    } else {
+      navigate('/list-product');
     }
   };
 
