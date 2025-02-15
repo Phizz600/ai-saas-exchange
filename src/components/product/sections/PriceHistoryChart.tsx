@@ -22,8 +22,8 @@ export function PriceHistoryChart({ productId }: PriceHistoryChartProps) {
                          timeRange === "3M" ? 90 : 30;
 
       const { data, error } = await supabase
-        .from('bids')
-        .select('amount, created_at')
+        .from('price_history')
+        .select('price, created_at')
         .eq('product_id', productId)
         .gte('created_at', new Date(Date.now() - rangeInDays * 24 * 60 * 60 * 1000).toISOString())
         .order('created_at', { ascending: true });
@@ -32,7 +32,7 @@ export function PriceHistoryChart({ productId }: PriceHistoryChartProps) {
 
       return data.map(bid => ({
         date: format(new Date(bid.created_at), 'MMM dd'),
-        price: bid.amount
+        price: bid.price
       }));
     }
   });
