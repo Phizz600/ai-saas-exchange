@@ -41,7 +41,7 @@ export const useMarketplaceProducts = ({
         .from('products')
         .select(`
           *,
-          seller:profiles (
+          seller:profiles!fk_seller_profile (
             id,
             full_name,
             avatar_url
