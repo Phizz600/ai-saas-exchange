@@ -31,22 +31,16 @@ export function ProductPage() {
           return;
         }
 
-        const { data: product, error } = await supabase
+        // First fetch the product
+        const { data: product, error: productError } = await supabase
           .from('products')
-          .select(`
-            *,
-            seller:profiles (
-              id,
-              full_name,
-              avatar_url
-            )
-          `)
+          .select('*')
           .eq('id', id)
           .maybeSingle();
 
-        if (error) {
-          console.error('Error fetching product:', error);
-          throw error;
+        if (productError) {
+          console.error('Error fetching product:', productError);
+          throw productError;
         }
 
         if (!product) {
@@ -59,8 +53,30 @@ export function ProductPage() {
           return;
         }
 
-        console.log('Fetched product:', product);
-        setProduct(product);
+        // Then fetch the seller profile separately
+        const { data: seller, error: sellerError } = await supabase
+          .from('profiles')
+          .select('id, full_name, avatar_url')
+          .eq('id', product.seller_id)
+          .maybeSingle();
+
+        if (sellerError) {
+          console.error('Error fetching seller:', sellerError);
+          // Don't throw, just use default seller info
+        }
+
+        // Combine product with seller info
+        const productWithSeller = {
+          ...product,
+          seller: seller || {
+            id: product.seller_id,
+            full_name: "Unknown Seller",
+            avatar_url: "/placeholder.svg"
+          }
+        };
+
+        console.log('Fetched product:', productWithSeller);
+        setProduct(productWithSeller);
 
         // Subscribe to real-time changes
         const channel = supabase
