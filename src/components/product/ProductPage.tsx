@@ -49,49 +49,43 @@ export function ProductPage() {
           return;
         }
 
-        // Set initial product data with default seller info
-        const initialProductData = {
+        // Set initial product data
+        setProduct({
           ...product,
           seller: {
             id: product.seller_id,
-            full_name: "Unknown Seller",
+            full_name: "Loading...",
             avatar_url: "/placeholder.svg"
           }
-        };
+        });
+
+        // Then fetch seller profile in parallel with liked status
+        const { data: { user } } = await supabase.auth.getUser();
         
-        setProduct(initialProductData);
+        const [sellerResponse, likedResponse] = await Promise.all([
+          supabase
+            .from('profiles')
+            .select('id, full_name, avatar_url')
+            .eq('id', product.seller_id)
+            .maybeSingle(),
+          user ? supabase.rpc('check_product_liked', {
+            check_user_id: user.id,
+            check_product_id: id
+          }) : Promise.resolve({ data: false })
+        ]);
 
-        // Then fetch seller profile
-        const { data: seller } = await supabase
-          .from('profiles')
-          .select('id, full_name, avatar_url')
-          .eq('id', product.seller_id)
-          .maybeSingle();
-
-        if (seller) {
+        // Update seller info if available
+        if (sellerResponse.data) {
           setProduct(current => ({
             ...current,
-            seller
+            seller: sellerResponse.data
           }));
         }
 
-        // Check if user is authenticated
-        const { data: { user } } = await supabase.auth.getUser();
-        
-        if (user) {
-          // Use the new function to check liked status
-          const { data: isLiked, error: likedError } = await supabase
-            .rpc('check_product_liked', {
-              check_user_id: user.id,
-              check_product_id: id
-            });
+        // Update liked status
+        setIsLiked(!!likedResponse.data);
 
-          if (!likedError) {
-            setIsLiked(!!isLiked);
-          }
-        }
-
-        // Set up realtime subscription
+        // Set up realtime subscription for product updates
         const channel = supabase
           .channel('product-updates')
           .on(
@@ -106,7 +100,11 @@ export function ProductPage() {
               console.log('Product updated:', payload);
               setProduct(current => ({
                 ...payload.new,
-                seller: current.seller
+                seller: current?.seller || {
+                  id: payload.new.seller_id,
+                  full_name: "Unknown Seller",
+                  avatar_url: "/placeholder.svg"
+                }
               }));
             }
           )
