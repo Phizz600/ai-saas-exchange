@@ -37,10 +37,16 @@ export const useMarketplaceProducts = ({
     });
 
     try {
-      // First, fetch the products
       let query = supabase
         .from('products')
-        .select('*')
+        .select(`
+          *,
+          seller:profiles (
+            id,
+            full_name,
+            avatar_url
+          )
+        `, { count: 'exact' })
         .eq('status', 'active');
 
       // Apply filters
@@ -82,36 +88,19 @@ export const useMarketplaceProducts = ({
       const start = (currentPage - 1) * itemsPerPage;
       query = query.range(start, start + itemsPerPage - 1);
 
-      const { data: products, error: productsError, count } = await query;
+      const { data: products, error, count } = await query;
 
-      if (productsError) {
-        console.error('Error fetching products:', productsError);
-        throw productsError;
+      if (error) {
+        console.error('Supabase query error:', error);
+        throw error;
       }
 
-      // Then fetch the seller profiles for these products
-      if (products && products.length > 0) {
-        const sellerIds = [...new Set(products.map(p => p.seller_id))];
-        const { data: sellers, error: sellersError } = await supabase
-          .from('profiles')
-          .select('id, full_name, avatar_url')
-          .in('id', sellerIds);
+      console.log('Products fetched successfully:', {
+        count,
+        productsLength: products?.length
+      });
 
-        if (sellersError) {
-          console.error('Error fetching sellers:', sellersError);
-          throw sellersError;
-        }
-
-        // Combine the data
-        const productsWithSellers = products.map(product => ({
-          ...product,
-          seller: sellers?.find(s => s.id === product.seller_id) || null
-        }));
-
-        return { products: productsWithSellers, count };
-      }
-
-      return { products: products || [], count };
+      return { products, count };
 
     } catch (error) {
       console.error('Error in fetchProducts:', error);
