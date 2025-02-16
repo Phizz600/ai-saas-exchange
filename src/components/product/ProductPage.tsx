@@ -43,6 +43,10 @@ interface Product {
   seller: Seller;
 }
 
+type DatabaseProduct = Omit<Product, 'seller' | 'description'> & {
+  description: string | null;
+};
+
 export function ProductPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -82,13 +86,13 @@ export function ProductPage() {
         // Set initial product data with required fields
         setProduct({
           ...productData,
-          description: productData.description || '',  // Ensure description is never undefined
+          description: productData.description || '',
           seller: {
             id: productData.seller_id,
             full_name: "Loading...",
             avatar_url: "/placeholder.svg"
           }
-        });
+        } as Product);
 
         // Then fetch seller profile in parallel with liked status
         const { data: { user } } = await supabase.auth.getUser();
@@ -130,15 +134,17 @@ export function ProductPage() {
               table: 'products',
               filter: `id=eq.${id}`
             },
-            (payload: RealtimePostgresChangesPayload<Product>) => {
+            (payload: RealtimePostgresChangesPayload<DatabaseProduct>) => {
               console.log('Product updated:', payload);
+              if (!payload.new) return;
+              
               setProduct(current => {
-                if (!current || !payload.new) return current;
+                if (!current) return null;
                 return {
                   ...payload.new,
                   description: payload.new.description || '',
-                  seller: current.seller // Keep existing seller info
-                };
+                  seller: current.seller
+                } as Product;
               });
             }
           )
