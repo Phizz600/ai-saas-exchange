@@ -44,8 +44,7 @@ export const useMarketplaceProducts = ({
           full_name,
           avatar_url
         )
-      `)
-      .eq('status', 'active'); // Only fetch active listings
+      `);
 
     // Apply filters
     if (searchQuery) {
