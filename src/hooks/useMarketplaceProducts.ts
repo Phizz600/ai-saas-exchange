@@ -41,7 +41,7 @@ export const useMarketplaceProducts = ({
         .from('products')
         .select(`
           *,
-          profiles!inner (
+          seller:profiles (
             id,
             full_name,
             avatar_url
@@ -101,13 +101,7 @@ export const useMarketplaceProducts = ({
         firstProduct: products?.[0]
       });
 
-      // Transform the data to match the expected format
-      const transformedProducts = products?.map(product => ({
-        ...product,
-        seller: product.profiles
-      }));
-
-      return { products: transformedProducts, count };
+      return { products, count };
 
     } catch (error) {
       console.error('Error in fetchProducts:', error);
