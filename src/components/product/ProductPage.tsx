@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -12,11 +13,32 @@ import { ProductReviews } from "./sections/ProductReviews";
 import { RelatedProducts } from "../marketplace/product-card/RelatedProducts";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
+
+interface Seller {
+  id: string;
+  full_name: string;
+  avatar_url: string;
+}
+
+interface Product {
+  id: string;
+  seller_id: string;
+  title: string;
+  description?: string;
+  price: number;
+  category: string;
+  stage: string;
+  monthly_revenue?: number;
+  special_notes?: string;
+  image_url?: string;
+  seller?: Seller;
+}
 
 export function ProductPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [product, setProduct] = useState<any>(null);
+  const [product, setProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isLiked, setIsLiked] = useState(false);
   const { toast } = useToast();
@@ -76,10 +98,10 @@ export function ProductPage() {
 
         // Update seller info if available
         if (sellerResponse.data) {
-          setProduct(current => ({
+          setProduct(current => current ? ({
             ...current,
             seller: sellerResponse.data
-          }));
+          }) : null);
         }
 
         // Update liked status
@@ -96,16 +118,19 @@ export function ProductPage() {
               table: 'products',
               filter: `id=eq.${id}`
             },
-            (payload) => {
+            (payload: RealtimePostgresChangesPayload<Product>) => {
               console.log('Product updated:', payload);
-              setProduct(current => ({
-                ...payload.new,
-                seller: current?.seller || {
-                  id: payload.new.seller_id,
-                  full_name: "Unknown Seller",
-                  avatar_url: "/placeholder.svg"
-                }
-              }));
+              setProduct(current => {
+                if (!current || !payload.new) return current;
+                return {
+                  ...payload.new,
+                  seller: current.seller || {
+                    id: payload.new.seller_id,
+                    full_name: "Unknown Seller",
+                    avatar_url: "/placeholder.svg"
+                  }
+                };
+              });
             }
           )
           .subscribe();
