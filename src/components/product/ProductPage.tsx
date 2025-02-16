@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -24,14 +23,13 @@ export function ProductPage() {
 
   useEffect(() => {
     const fetchProduct = async () => {
-      try {
-        console.log('Fetching product with ID:', id);
-        if (!id) {
-          console.error('No product ID provided');
-          navigate('/marketplace');
-          return;
-        }
+      if (!id) {
+        console.error('No product ID provided');
+        navigate('/marketplace');
+        return;
+      }
 
+      try {
         // First fetch the product
         const { data: product, error: productError } = await supabase
           .from('products')
@@ -39,10 +37,7 @@ export function ProductPage() {
           .eq('id', id)
           .maybeSingle();
 
-        if (productError) {
-          console.error('Error fetching product:', productError);
-          throw productError;
-        }
+        if (productError) throw productError;
 
         if (!product) {
           toast({
@@ -54,8 +49,8 @@ export function ProductPage() {
           return;
         }
 
-        // Set default seller info first
-        let productWithSeller = {
+        // Set initial product data with default seller info
+        const initialProductData = {
           ...product,
           seller: {
             id: product.seller_id,
@@ -63,30 +58,40 @@ export function ProductPage() {
             avatar_url: "/placeholder.svg"
           }
         };
+        
+        setProduct(initialProductData);
 
-        setProduct(productWithSeller);
+        // Then fetch seller profile
+        const { data: seller } = await supabase
+          .from('profiles')
+          .select('id, full_name, avatar_url')
+          .eq('id', product.seller_id)
+          .maybeSingle();
 
-        try {
-          // Then try to fetch the seller profile
-          const { data: seller } = await supabase
-            .from('profiles')
-            .select('id, full_name, avatar_url')
-            .eq('id', product.seller_id)
-            .maybeSingle();
-
-          if (seller) {
-            productWithSeller = {
-              ...productWithSeller,
-              seller
-            };
-            setProduct(productWithSeller);
-          }
-        } catch (sellerError) {
-          console.error('Error fetching seller:', sellerError);
-          // Continue with default seller info
+        if (seller) {
+          setProduct(current => ({
+            ...current,
+            seller
+          }));
         }
 
-        // Subscribe to real-time changes
+        // Check if user is authenticated
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (user) {
+          // Use the new function to check liked status
+          const { data: isLiked, error: likedError } = await supabase
+            .rpc('check_product_liked', {
+              check_user_id: user.id,
+              check_product_id: id
+            });
+
+          if (!likedError) {
+            setIsLiked(!!isLiked);
+          }
+        }
+
+        // Set up realtime subscription
         const channel = supabase
           .channel('product-updates')
           .on(
@@ -107,33 +112,10 @@ export function ProductPage() {
           )
           .subscribe();
 
-        // Check if product is liked by current user
-        try {
-          const { data: { user } } = await supabase.auth.getUser();
-          if (user) {
-            const { data: profile, error: profileError } = await supabase
-              .from('profiles')
-              .select('id')
-              .eq('id', user.id)
-              .maybeSingle();
-
-            if (!profileError && profile) {
-              const { data: likedData, error: likedError } = await supabase
-                .rpc('is_product_liked', { user_id: user.id, product_id: id });
-
-              if (!likedError && likedData !== null) {
-                setIsLiked(likedData);
-              }
-            }
-          }
-        } catch (likedError) {
-          console.error('Error checking liked status:', likedError);
-          // Continue without liked status
-        }
-
         return () => {
           supabase.removeChannel(channel);
         };
+
       } catch (error) {
         console.error('Error:', error);
         toast({
