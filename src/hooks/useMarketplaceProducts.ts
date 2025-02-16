@@ -89,23 +89,38 @@ export const useMarketplaceProducts = ({
         throw error;
       }
 
-      // If we have products, fetch their seller profiles
+      // If we have products, fetch their seller profiles one by one to avoid IN clause
       if (products && products.length > 0) {
-        const sellerIds = products.map(product => product.seller_id);
-        const { data: sellers } = await supabase
-          .from('profiles')
-          .select('id, full_name, avatar_url')
-          .in('id', sellerIds);
-
-        // Combine products with seller data
-        const productsWithSellers = products.map(product => ({
-          ...product,
-          seller: sellers?.find(s => s.id === product.seller_id) || {
-            id: product.seller_id,
-            full_name: "Unknown",
-            avatar_url: "/placeholder.svg"
-          }
-        }));
+        const productsWithSellers = await Promise.all(
+          products.map(async (product) => {
+            try {
+              const { data: seller } = await supabase
+                .from('profiles')
+                .select('id, full_name, avatar_url')
+                .eq('id', product.seller_id)
+                .single();
+              
+              return {
+                ...product,
+                seller: seller || {
+                  id: product.seller_id,
+                  full_name: "Unknown",
+                  avatar_url: "/placeholder.svg"
+                }
+              };
+            } catch (error) {
+              console.error(`Error fetching seller for product ${product.id}:`, error);
+              return {
+                ...product,
+                seller: {
+                  id: product.seller_id,
+                  full_name: "Unknown",
+                  avatar_url: "/placeholder.svg"
+                }
+              };
+            }
+          })
+        );
 
         console.log('Products fetched successfully:', {
           count,
