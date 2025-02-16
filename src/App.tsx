@@ -13,7 +13,6 @@ import { ComingSoon } from "@/pages/ComingSoon";
 import { ListingThankYou } from "@/pages/ListingThankYou";
 import { FeesPricing } from "@/pages/FeesPricing";
 import { Policies } from "@/pages/Policies";
-import { AdminDashboard } from "@/pages/AdminDashboard";
 import "./App.css";
 
 function App() {
@@ -27,14 +26,6 @@ function App() {
         <Route path="/coming-soon" element={<ComingSoon />} />
         <Route path="/fees-pricing" element={<FeesPricing />} />
         <Route path="/policies" element={<Policies />} />
-        <Route 
-          path="/admin" 
-          element={
-            <AuthGuard requireAdmin>
-              <AdminDashboard />
-            </AuthGuard>
-          } 
-        />
         <Route 
           path="/profile" 
           element={
