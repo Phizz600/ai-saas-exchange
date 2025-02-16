@@ -25,14 +25,22 @@ interface Product {
   id: string;
   seller_id: string;
   title: string;
-  description?: string;
+  description: string;
   price: number;
   category: string;
   stage: string;
   monthly_revenue?: number;
+  monthly_profit?: number;
+  gross_profit_margin?: number;
+  monthly_churn_rate?: number;
+  monthly_traffic?: number;
   special_notes?: string;
   image_url?: string;
-  seller?: Seller;
+  active_users?: string;
+  is_verified?: boolean;
+  is_revenue_verified?: boolean;
+  is_traffic_verified?: boolean;
+  seller: Seller;
 }
 
 export function ProductPage() {
@@ -53,7 +61,7 @@ export function ProductPage() {
 
       try {
         // First fetch the product
-        const { data: product, error: productError } = await supabase
+        const { data: productData, error: productError } = await supabase
           .from('products')
           .select('*')
           .eq('id', id)
@@ -61,7 +69,7 @@ export function ProductPage() {
 
         if (productError) throw productError;
 
-        if (!product) {
+        if (!productData) {
           toast({
             title: "Product not found",
             description: "The product you're looking for doesn't exist or has been removed.",
@@ -71,11 +79,12 @@ export function ProductPage() {
           return;
         }
 
-        // Set initial product data
+        // Set initial product data with required fields
         setProduct({
-          ...product,
+          ...productData,
+          description: productData.description || '',  // Ensure description is never undefined
           seller: {
-            id: product.seller_id,
+            id: productData.seller_id,
             full_name: "Loading...",
             avatar_url: "/placeholder.svg"
           }
@@ -88,7 +97,7 @@ export function ProductPage() {
           supabase
             .from('profiles')
             .select('id, full_name, avatar_url')
-            .eq('id', product.seller_id)
+            .eq('id', productData.seller_id)
             .maybeSingle(),
           user ? supabase.rpc('check_product_liked', {
             check_user_id: user.id,
@@ -98,10 +107,13 @@ export function ProductPage() {
 
         // Update seller info if available
         if (sellerResponse.data) {
-          setProduct(current => current ? ({
-            ...current,
-            seller: sellerResponse.data
-          }) : null);
+          setProduct(current => {
+            if (!current) return null;
+            return {
+              ...current,
+              seller: sellerResponse.data
+            };
+          });
         }
 
         // Update liked status
@@ -124,11 +136,8 @@ export function ProductPage() {
                 if (!current || !payload.new) return current;
                 return {
                   ...payload.new,
-                  seller: current.seller || {
-                    id: payload.new.seller_id,
-                    full_name: "Unknown Seller",
-                    avatar_url: "/placeholder.svg"
-                  }
+                  description: payload.new.description || '',
+                  seller: current.seller // Keep existing seller info
                 };
               });
             }
@@ -210,7 +219,6 @@ export function ProductPage() {
       <Header />
       <div className="container mx-auto px-4 py-8 mt-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Left Column - Product Image */}
           <div className="space-y-6">
             <ProductGallery images={[product.image_url]} />
             <Card className="p-6">
@@ -241,10 +249,13 @@ export function ProductPage() {
             <PriceHistoryChart productId={product.id} />
           </div>
 
-          {/* Right Column - Product Info */}
           <div className="space-y-6">
             <ProductHeader 
-              product={product}
+              product={{
+                id: product.id,
+                title: product.title,
+                description: product.description
+              }}
               isLiked={isLiked}
               setIsLiked={setIsLiked}
             />
