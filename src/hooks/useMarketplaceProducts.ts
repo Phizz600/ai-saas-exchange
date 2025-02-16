@@ -36,65 +36,75 @@ export const useMarketplaceProducts = ({
       showVerifiedOnly
     });
 
-    let query = supabase
-      .from('products')
-      .select(`
-        *,
-        seller:profiles (
-          id,
-          full_name,
-          avatar_url
-        )
-      `)
-      .eq('status', 'active'); // Only show active listings
+    try {
+      let query = supabase
+        .from('products')
+        .select(`
+          *,
+          seller:profiles!products_seller_id_fkey (
+            id,
+            full_name,
+            avatar_url
+          )
+        `, { count: 'exact' })
+        .eq('status', 'active');
 
-    // Apply filters
-    if (searchQuery) {
-      query = query.ilike('title', `%${searchQuery}%`);
-    }
-    if (industryFilter !== 'all') {
-      query = query.eq('category', industryFilter);
-    }
-    if (stageFilter !== 'all') {
-      query = query.eq('stage', stageFilter);
-    }
-    if (priceFilter !== 'all') {
-      const [min, max] = priceFilter.split('-').map(Number);
-      query = query.gte('price', min).lte('price', max);
-    }
+      // Apply filters
+      if (searchQuery) {
+        query = query.ilike('title', `%${searchQuery}%`);
+      }
+      if (industryFilter !== 'all') {
+        query = query.eq('category', industryFilter);
+      }
+      if (stageFilter !== 'all') {
+        query = query.eq('stage', stageFilter);
+      }
+      if (priceFilter !== 'all') {
+        const [min, max] = priceFilter.split('-').map(Number);
+        query = query.gte('price', min).lte('price', max);
+      }
 
-    // Apply verification filter
-    if (showVerifiedOnly) {
-      query = query.or('is_revenue_verified.eq.true,is_code_audited.eq.true,is_traffic_verified.eq.true');
-    }
+      // Apply verification filter
+      if (showVerifiedOnly) {
+        query = query.or('is_revenue_verified.eq.true,is_code_audited.eq.true,is_traffic_verified.eq.true');
+      }
 
-    // Apply sorting
-    switch (sortBy) {
-      case 'price_asc':
-        query = query.order('price', { ascending: true });
-        break;
-      case 'price_desc':
-        query = query.order('price', { ascending: false });
-        break;
-      case 'recent':
-        query = query.order('created_at', { ascending: false });
-        break;
-      default:
-        query = query.order('created_at', { ascending: false });
-    }
+      // Apply sorting
+      switch (sortBy) {
+        case 'price_asc':
+          query = query.order('price', { ascending: true });
+          break;
+        case 'price_desc':
+          query = query.order('price', { ascending: false });
+          break;
+        case 'recent':
+          query = query.order('created_at', { ascending: false });
+          break;
+        default:
+          query = query.order('created_at', { ascending: false });
+      }
 
-    // Apply pagination
-    const start = (currentPage - 1) * itemsPerPage;
-    query = query.range(start, start + itemsPerPage - 1);
+      // Apply pagination
+      const start = (currentPage - 1) * itemsPerPage;
+      query = query.range(start, start + itemsPerPage - 1);
 
-    const { data: products, error, count } = await query;
+      const { data: products, error, count } = await query;
 
-    if (error) {
-      console.error('Error fetching products:', error);
+      if (error) {
+        console.error('Supabase query error:', error);
+        throw error;
+      }
+
+      console.log('Products fetched successfully:', {
+        count,
+        productsLength: products?.length
+      });
+
+      return { products, count };
+    } catch (error) {
+      console.error('Error in fetchProducts:', error);
       throw error;
     }
-
-    return { products, count };
   };
 
   const { data, isLoading, error } = useQuery({
@@ -109,6 +119,7 @@ export const useMarketplaceProducts = ({
       const { data, error } = await supabase
         .from('products')
         .select('category')
+        .eq('status', 'active')
         .not('category', 'is', null);
 
       if (error) throw error;
@@ -130,4 +141,3 @@ export const useMarketplaceProducts = ({
     categoriesOverview: categoriesData || [],
   };
 };
-
