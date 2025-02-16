@@ -100,16 +100,22 @@ export function ProductPage() {
           )
           .subscribe();
 
+        // Check if product is liked by current user
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
-          const { data: profile } = await supabase
+          const { data: profile, error: profileError } = await supabase
             .from('profiles')
-            .select('liked_products')
+            .select('id')
             .eq('id', user.id)
             .maybeSingle();
-          
-          if (profile?.liked_products) {
-            setIsLiked(profile.liked_products.includes(id));
+
+          if (!profileError && profile) {
+            const { data: likedData, error: likedError } = await supabase
+              .rpc('is_product_liked', { user_id: user.id, product_id: id });
+
+            if (!likedError && likedData !== null) {
+              setIsLiked(likedData);
+            }
           }
         }
 
