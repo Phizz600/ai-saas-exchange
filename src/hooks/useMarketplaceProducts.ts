@@ -41,7 +41,7 @@ export const useMarketplaceProducts = ({
         .from('products')
         .select(`
           *,
-          seller:profiles (
+          seller:profiles!products_seller_id_fkey (
             id,
             full_name,
             avatar_url
@@ -97,7 +97,8 @@ export const useMarketplaceProducts = ({
 
       console.log('Products fetched successfully:', {
         count,
-        productsLength: products?.length
+        productsLength: products?.length,
+        firstProduct: products?.[0]
       });
 
       return { products, count };

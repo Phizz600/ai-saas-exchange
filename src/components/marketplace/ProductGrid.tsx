@@ -28,7 +28,7 @@ export const ProductGrid = ({ products, isLoading = false, onProductView }: Prod
     );
   }
 
-  if (products.length === 0) {
+  if (!products || products.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center px-4">
         <div className="bg-gray-50 rounded-full p-4 mb-4">
@@ -49,11 +49,11 @@ export const ProductGrid = ({ products, isLoading = false, onProductView }: Prod
           key={product.id}
           product={{
             id: product.id,
-            title: product.title,
+            title: product.title || "",
             description: product.description || "",
-            price: product.current_price || Number(product.price),
-            category: product.category,
-            stage: product.stage,
+            price: product.price || 0,
+            category: product.category || "",
+            stage: product.stage || "",
             monthlyRevenue: Number(product.monthly_revenue || 0),
             image: product.image_url || "/placeholder.svg",
             auction_end_time: product.auction_end_time,
