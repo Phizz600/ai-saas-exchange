@@ -13,8 +13,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   },
   global: {
     headers: {
-      'X-Client-Info': 'supabase-js-web',
-      'Access-Control-Allow-Origin': '*'
+      'X-Client-Info': 'supabase-js-web'
     }
   }
 });
