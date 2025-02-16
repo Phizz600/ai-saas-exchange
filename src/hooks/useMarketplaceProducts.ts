@@ -18,6 +18,7 @@ export const useMarketplaceProducts = ({
   industryFilter,
   stageFilter,
   priceFilter,
+  timeFilter,
   sortBy,
   currentPage,
   showVerifiedOnly = false,
@@ -44,7 +45,8 @@ export const useMarketplaceProducts = ({
           full_name,
           avatar_url
         )
-      `);
+      `)
+      .eq('status', 'active'); // Only show active listings
 
     // Apply filters
     if (searchQuery) {
@@ -128,3 +130,4 @@ export const useMarketplaceProducts = ({
     categoriesOverview: categoriesData || [],
   };
 };
+
