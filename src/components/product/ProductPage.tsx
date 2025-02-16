@@ -12,6 +12,7 @@ import { PriceHistoryChart } from "./sections/PriceHistoryChart";
 import { ProductReviews } from "./sections/ProductReviews";
 import { RelatedProducts } from "../marketplace/product-card/RelatedProducts";
 import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function ProductPage() {
   const { id } = useParams<{ id: string }>();
@@ -53,30 +54,37 @@ export function ProductPage() {
           return;
         }
 
-        // Then fetch the seller profile separately
-        const { data: seller, error: sellerError } = await supabase
-          .from('profiles')
-          .select('id, full_name, avatar_url')
-          .eq('id', product.seller_id)
-          .maybeSingle();
-
-        if (sellerError) {
-          console.error('Error fetching seller:', sellerError);
-          // Don't throw, just use default seller info
-        }
-
-        // Combine product with seller info
-        const productWithSeller = {
+        // Set default seller info first
+        let productWithSeller = {
           ...product,
-          seller: seller || {
+          seller: {
             id: product.seller_id,
             full_name: "Unknown Seller",
             avatar_url: "/placeholder.svg"
           }
         };
 
-        console.log('Fetched product:', productWithSeller);
         setProduct(productWithSeller);
+
+        try {
+          // Then try to fetch the seller profile
+          const { data: seller } = await supabase
+            .from('profiles')
+            .select('id, full_name, avatar_url')
+            .eq('id', product.seller_id)
+            .maybeSingle();
+
+          if (seller) {
+            productWithSeller = {
+              ...productWithSeller,
+              seller
+            };
+            setProduct(productWithSeller);
+          }
+        } catch (sellerError) {
+          console.error('Error fetching seller:', sellerError);
+          // Continue with default seller info
+        }
 
         // Subscribe to real-time changes
         const channel = supabase
@@ -91,7 +99,6 @@ export function ProductPage() {
             },
             (payload) => {
               console.log('Product updated:', payload);
-              // Merge the new data with existing seller info
               setProduct(current => ({
                 ...payload.new,
                 seller: current.seller
@@ -101,22 +108,27 @@ export function ProductPage() {
           .subscribe();
 
         // Check if product is liked by current user
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-          const { data: profile, error: profileError } = await supabase
-            .from('profiles')
-            .select('id')
-            .eq('id', user.id)
-            .maybeSingle();
+        try {
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user) {
+            const { data: profile, error: profileError } = await supabase
+              .from('profiles')
+              .select('id')
+              .eq('id', user.id)
+              .maybeSingle();
 
-          if (!profileError && profile) {
-            const { data: likedData, error: likedError } = await supabase
-              .rpc('is_product_liked', { user_id: user.id, product_id: id });
+            if (!profileError && profile) {
+              const { data: likedData, error: likedError } = await supabase
+                .rpc('is_product_liked', { user_id: user.id, product_id: id });
 
-            if (!likedError && likedData !== null) {
-              setIsLiked(likedData);
+              if (!likedError && likedData !== null) {
+                setIsLiked(likedData);
+              }
             }
           }
+        } catch (likedError) {
+          console.error('Error checking liked status:', likedError);
+          // Continue without liked status
         }
 
         return () => {
@@ -142,11 +154,32 @@ export function ProductPage() {
       <>
         <Header />
         <div className="container mx-auto px-4 py-8 mt-16">
-          <div className="animate-pulse">
-            <div className="h-64 bg-gray-200 rounded-lg mb-4"></div>
-            <div className="h-8 bg-gray-200 rounded w-1/3 mb-4"></div>
-            <div className="h-4 bg-gray-200 rounded w-2/3 mb-2"></div>
-            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="space-y-6">
+              <Skeleton className="h-[400px] w-full rounded-lg" />
+              <Card className="p-6">
+                <Skeleton className="h-6 w-48 mb-4" />
+                <div className="space-y-4">
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-3/4" />
+                  <Skeleton className="h-4 w-5/6" />
+                </div>
+              </Card>
+            </div>
+            <div className="space-y-6">
+              <Card className="p-6">
+                <Skeleton className="h-8 w-3/4 mb-4" />
+                <Skeleton className="h-6 w-full" />
+                <Skeleton className="h-6 w-5/6 mt-2" />
+              </Card>
+              <Card className="p-6">
+                <Skeleton className="h-6 w-48 mb-4" />
+                <div className="space-y-4">
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-3/4" />
+                </div>
+              </Card>
+            </div>
           </div>
         </div>
       </>
