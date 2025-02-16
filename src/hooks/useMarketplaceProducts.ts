@@ -41,7 +41,7 @@ export const useMarketplaceProducts = ({
         .from('products')
         .select(`
           *,
-          seller:profiles!products_seller_id_fkey (
+          profiles!inner (
             id,
             full_name,
             avatar_url
@@ -101,7 +101,13 @@ export const useMarketplaceProducts = ({
         firstProduct: products?.[0]
       });
 
-      return { products, count };
+      // Transform the data to match the expected format
+      const transformedProducts = products?.map(product => ({
+        ...product,
+        seller: product.profiles
+      }));
+
+      return { products: transformedProducts, count };
 
     } catch (error) {
       console.error('Error in fetchProducts:', error);
@@ -143,4 +149,3 @@ export const useMarketplaceProducts = ({
     categoriesOverview: categoriesData || [],
   };
 };
-
