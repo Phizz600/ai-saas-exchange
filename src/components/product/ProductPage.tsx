@@ -40,28 +40,28 @@ interface Product {
   is_verified?: boolean;
   is_revenue_verified?: boolean;
   is_traffic_verified?: boolean;
+  tech_stack?: string[];
+  tech_stack_other?: string;
+  llm_type?: string;
+  llm_type_other?: string;
+  integrations_other?: string;
+  team_size?: string;
+  has_patents?: boolean;
+  competitors?: string;
+  demo_url?: string;
+  product_age?: string;
+  business_location?: string;
+  number_of_employees?: string;
+  customer_acquisition_cost?: number;
+  monetization?: string;
+  monetization_other?: string;
+  business_model?: string;
+  investment_timeline?: string;
   seller: Seller;
 }
 
-type DatabaseProduct = {
-  id: string;
-  seller_id: string;
-  title: string;
+type DatabaseProduct = Omit<Product, 'seller'> & {
   description: string | null;
-  price: number;
-  category: string;
-  stage: string;
-  monthly_revenue?: number;
-  monthly_profit?: number;
-  gross_profit_margin?: number;
-  monthly_churn_rate?: number;
-  monthly_traffic?: number;
-  special_notes?: string;
-  image_url?: string;
-  active_users?: string;
-  is_verified?: boolean;
-  is_revenue_verified?: boolean;
-  is_traffic_verified?: boolean;
 };
 
 export function ProductPage() {

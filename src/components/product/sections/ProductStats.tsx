@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+
 interface ProductStatsProps {
   product: {
     id: string;
@@ -24,6 +25,8 @@ interface ProductStatsProps {
     active_users?: string;
     tech_stack?: string[];
     tech_stack_other?: string;
+    llm_type?: string;
+    llm_type_other?: string;
     integrations_other?: string;
     team_size?: string;
     business_location?: string;
@@ -37,19 +40,12 @@ interface ProductStatsProps {
     is_revenue_verified?: boolean;
     is_code_audited?: boolean;
     is_traffic_verified?: boolean;
+    business_model?: string;
+    investment_timeline?: string;
   };
 }
-interface Bid {
-  id: string;
-  amount: number;
-  created_at: string;
-  bidder: {
-    full_name: string | null;
-  };
-}
-export function ProductStats({
-  product
-}: ProductStatsProps) {
+
+export function ProductStats({ product }: ProductStatsProps) {
   const [analytics, setAnalytics] = useState<{
     views: number;
     clicks: number;
@@ -60,7 +56,6 @@ export function ProductStats({
     saves: 0
   });
 
-  // Query to fetch complete product details
   const {
     data: productDetails
   } = useQuery({
@@ -78,7 +73,6 @@ export function ProductStats({
     }
   });
 
-  // Query to fetch bid history
   const {
     data: bids
   } = useQuery({
@@ -100,7 +94,6 @@ export function ProductStats({
     }
   });
 
-  // Initial fetch of analytics
   useEffect(() => {
     const fetchAnalytics = async () => {
       const data = await getProductAnalytics(product.id);
@@ -109,7 +102,6 @@ export function ProductStats({
     fetchAnalytics();
   }, [product.id]);
 
-  // Subscribe to real-time updates
   useEffect(() => {
     const channel = supabase.channel('analytics-changes').on('postgres_changes', {
       event: '*',
@@ -126,28 +118,32 @@ export function ProductStats({
     };
   }, [product.id]);
 
-  // If product details haven't loaded yet, show loading state
   if (!productDetails) {
     return <Card className="p-6"><div>Loading product details...</div></Card>;
   }
+
   const isHighTraffic = analytics && (analytics.views >= 100 || analytics.clicks >= 50 || analytics.saves >= 25);
   const formattedRevenue = product.monthly_revenue ? formatCurrency(product.monthly_revenue) : '$0';
   const formattedProfit = product.monthly_profit ? formatCurrency(product.monthly_profit) : 'Not disclosed';
+
   const getRevenueStatus = () => {
     if (!product.monthly_revenue || product.monthly_revenue === 0) {
       return `Beta: Revenue starts ${product.stage === 'MVP' ? 'Q3 2024' : 'Q3 2025'}`;
     }
     return `Monthly Profit: ${formattedProfit}`;
   };
+
   const getTechStack = () => {
     if (product.tech_stack_other) {
       return product.tech_stack_other;
     }
     return product.tech_stack && product.tech_stack.length > 0 ? `Built with ${product.tech_stack.join(', ')}` : "Tech stack details coming soon";
   };
+
   const getTeamComposition = () => {
     return product.team_size ? `Core Team: ${product.team_size}` : "Team details coming soon";
   };
+
   const formatBidderName = (fullName: string | null) => {
     if (!fullName) return "Anonymous";
     const nameParts = fullName.split(' ');
@@ -156,7 +152,16 @@ export function ProductStats({
     const lastInitial = nameParts.length > 1 ? nameParts[nameParts.length - 1].charAt(0).toUpperCase() : '';
     return `${firstInitial}${lastInitial}****`;
   };
+
   const lastBid = bids && bids.length > 0 ? bids[0] : null;
+
+  const getLLMInfo = () => {
+    if (product.llm_type_other) {
+      return product.llm_type_other;
+    }
+    return product.llm_type || "LLM details coming soon";
+  };
+
   return <Card className="p-6">
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-lg font-semibold">Critical Buyer Details</h3>
@@ -306,11 +311,10 @@ export function ProductStats({
         <div>
           <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
             <Zap className="h-4 w-4" />
-            <span>Tech Stack</span>
+            <span>LLM Model</span>
           </div>
-          <p className="text-lg font-semibold">Technology</p>
-          <p className="text-sm text-gray-600">{getTechStack()}</p>
-          {product.integrations_other && <p className="text-sm text-gray-600 mt-1">Integrations: {product.integrations_other}</p>}
+          <p className="text-lg font-semibold">AI Technology</p>
+          <p className="text-sm text-gray-600">{getLLMInfo()}</p>
         </div>
 
         <div>
