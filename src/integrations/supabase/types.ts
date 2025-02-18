@@ -840,6 +840,13 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
+      check_product_liked: {
+        Args: {
+          check_user_id: string
+          check_product_id: string
+        }
+        Returns: boolean
+      }
       get_daily_views_count: {
         Args: {
           user_uuid: string
