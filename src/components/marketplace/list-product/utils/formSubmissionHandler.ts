@@ -82,6 +82,8 @@ export const handleProductSubmission = async (
       customer_acquisition_cost: data.customerAcquisitionCost || 0,
       monetization: data.monetization === 'other' ? data.monetizationOther : data.monetization,
       monetization_other: data.monetization === 'other' ? data.monetizationOther : null,
+      business_model: data.businessModel,
+      investment_timeline: data.investmentTimeline,
       updated_at: new Date().toISOString(),
       ...(data.isAuction && {
         auction_end_time: auctionEndTime,
@@ -95,7 +97,10 @@ export const handleProductSubmission = async (
 
     const { error } = await supabase.from('products').insert(productData);
 
-    if (error) throw error;
+    if (error) {
+      console.error('Supabase error:', error);
+      throw error;
+    }
 
     toast({
       title: "Product Submitted Successfully!",

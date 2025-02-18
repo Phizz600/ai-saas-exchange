@@ -44,4 +44,6 @@ export interface ListProductFormData {
   customerAcquisitionCost?: number;
   monetization?: string;
   monetizationOther?: string;
+  businessModel?: string;
+  investmentTimeline?: string;
 }

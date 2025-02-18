@@ -534,6 +534,8 @@ export type Database = {
           is_revenue_verified: boolean | null
           is_traffic_verified: boolean | null
           is_verified: boolean | null
+          llm_type: string | null
+          llm_type_other: string | null
           min_price: number | null
           monetization: string | null
           monetization_other: string | null
@@ -554,7 +556,7 @@ export type Database = {
           starting_price: number | null
           status: string | null
           team_size: string | null
-          tech_stack: string[] | null
+          tech_stack: string[]
           tech_stack_other: string | null
           title: string
           updated_at: string
@@ -587,6 +589,8 @@ export type Database = {
           is_revenue_verified?: boolean | null
           is_traffic_verified?: boolean | null
           is_verified?: boolean | null
+          llm_type?: string | null
+          llm_type_other?: string | null
           min_price?: number | null
           monetization?: string | null
           monetization_other?: string | null
@@ -607,7 +611,7 @@ export type Database = {
           starting_price?: number | null
           status?: string | null
           team_size?: string | null
-          tech_stack?: string[] | null
+          tech_stack?: string[]
           tech_stack_other?: string | null
           title: string
           updated_at?: string
@@ -640,6 +644,8 @@ export type Database = {
           is_revenue_verified?: boolean | null
           is_traffic_verified?: boolean | null
           is_verified?: boolean | null
+          llm_type?: string | null
+          llm_type_other?: string | null
           min_price?: number | null
           monetization?: string | null
           monetization_other?: string | null
@@ -660,7 +666,7 @@ export type Database = {
           starting_price?: number | null
           status?: string | null
           team_size?: string | null
-          tech_stack?: string[] | null
+          tech_stack?: string[]
           tech_stack_other?: string | null
           title?: string
           updated_at?: string
