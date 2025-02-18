@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { UserTypeSelector } from "./UserTypeSelector";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
 
 export const AuthForm = () => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -18,6 +19,8 @@ export const AuthForm = () => {
   const [isBuilder, setIsBuilder] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     if (isSignUp) {
@@ -35,6 +38,7 @@ export const AuthForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage("");
+    setIsLoading(true);
 
     try {
       if (isSignUp) {
@@ -55,7 +59,7 @@ export const AuthForm = () => {
         });
 
         if (error) {
-          // Parse the error message to check for specific error codes
+          console.error("Signup error:", error);
           if (error.message.includes("User already registered")) {
             setErrorMessage("This email is already registered. Please sign in instead.");
             setIsSignUp(false);
@@ -64,15 +68,27 @@ export const AuthForm = () => {
           }
           return;
         }
+
+        toast({
+          title: "Welcome!",
+          description: "Your account has been created successfully.",
+        });
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
+        
         if (error) {
+          console.error("Sign in error:", error);
           setErrorMessage(error.message);
           return;
         }
+
+        toast({
+          title: "Welcome back!",
+          description: "You've been successfully logged in.",
+        });
       }
     } catch (error: any) {
       console.error("Auth error:", error);
@@ -82,6 +98,8 @@ export const AuthForm = () => {
       } else {
         setErrorMessage(error.message || "An error occurred during authentication.");
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -152,15 +170,15 @@ export const AuthForm = () => {
 
       <Button 
         type="submit" 
-        disabled={isSignUp && !isFormValid}
+        disabled={isSignUp ? !isFormValid : false || isLoading}
         className={cn(
           "w-full transition-all duration-300 text-white",
-          isSignUp && !isFormValid
+          (isSignUp && !isFormValid) || isLoading
             ? "bg-gray-300 cursor-not-allowed"
             : "bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 shadow-lg hover:shadow-xl"
         )}
       >
-        {isSignUp ? "Sign Up" : "Sign In"}
+        {isLoading ? "Please wait..." : (isSignUp ? "Sign Up" : "Sign In")}
       </Button>
 
       <p className="text-center text-sm">
