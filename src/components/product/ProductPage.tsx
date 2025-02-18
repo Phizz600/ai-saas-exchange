@@ -83,12 +83,15 @@ export function ProductPage() {
           return;
         }
 
+        // Ensure productData is of type DatabaseProduct
+        const dbProduct = productData as DatabaseProduct;
+
         // Set initial product data with required fields
         setProduct({
-          ...productData,
-          description: productData.description || '',
+          ...dbProduct,
+          description: dbProduct.description || '', // Handle null description
           seller: {
-            id: productData.seller_id,
+            id: dbProduct.seller_id,
             full_name: "Loading...",
             avatar_url: "/placeholder.svg"
           }
@@ -101,7 +104,7 @@ export function ProductPage() {
           supabase
             .from('profiles')
             .select('id, full_name, avatar_url')
-            .eq('id', productData.seller_id)
+            .eq('id', dbProduct.seller_id)
             .maybeSingle(),
           user ? supabase.rpc('check_product_liked', {
             check_user_id: user.id,
@@ -141,8 +144,9 @@ export function ProductPage() {
               setProduct(current => {
                 if (!current) return null;
                 return {
+                  ...current,
                   ...payload.new,
-                  description: payload.new.description || '',
+                  description: payload.new.description || '', // Handle null description
                   seller: current.seller
                 } as Product;
               });
