@@ -5,6 +5,7 @@ import { TechStackField } from "./technical/TechStackField";
 import { StageField } from "./technical/StageField";
 import { DemoUrlField } from "./technical/DemoUrlField";
 import { IntegrationsField } from "./technical/IntegrationsField";
+import { LLMField } from "./technical/LLMField";
 
 interface TechnicalSectionProps {
   form: UseFormReturn<ListProductFormData>;
@@ -17,6 +18,7 @@ export function TechnicalSection({ form }: TechnicalSectionProps) {
       
       <div className="space-y-4">
         <TechStackField form={form} />
+        <LLMField form={form} />
         <StageField form={form} />
         <DemoUrlField form={form} />
         <IntegrationsField form={form} />

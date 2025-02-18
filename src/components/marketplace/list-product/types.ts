@@ -14,6 +14,8 @@ export interface ListProductFormData {
   monthlyChurnRate?: number;
   techStack?: string;
   techStackOther?: string;
+  llmType?: string;
+  llmTypeOther?: string;
   grossProfitMargin?: number;
   activeUsers?: string;
   image: File | null;
