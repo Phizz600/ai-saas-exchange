@@ -43,8 +43,25 @@ interface Product {
   seller: Seller;
 }
 
-type DatabaseProduct = Omit<Product, 'seller' | 'description'> & {
+type DatabaseProduct = {
+  id: string;
+  seller_id: string;
+  title: string;
   description: string | null;
+  price: number;
+  category: string;
+  stage: string;
+  monthly_revenue?: number;
+  monthly_profit?: number;
+  gross_profit_margin?: number;
+  monthly_churn_rate?: number;
+  monthly_traffic?: number;
+  special_notes?: string;
+  image_url?: string;
+  active_users?: string;
+  is_verified?: boolean;
+  is_revenue_verified?: boolean;
+  is_traffic_verified?: boolean;
 };
 
 export function ProductPage() {
@@ -64,8 +81,7 @@ export function ProductPage() {
       }
 
       try {
-        // First fetch the product
-        const { data: productData, error: productError } = await supabase
+        const { data, error: productError } = await supabase
           .from('products')
           .select('*')
           .eq('id', id)
@@ -73,7 +89,7 @@ export function ProductPage() {
 
         if (productError) throw productError;
 
-        if (!productData) {
+        if (!data) {
           toast({
             title: "Product not found",
             description: "The product you're looking for doesn't exist or has been removed.",
@@ -83,19 +99,19 @@ export function ProductPage() {
           return;
         }
 
-        // Ensure productData is of type DatabaseProduct
-        const dbProduct = productData as DatabaseProduct;
-
+        // Type assertion and null check
+        const productData = data as DatabaseProduct;
+        
         // Set initial product data with required fields
         setProduct({
-          ...dbProduct,
-          description: dbProduct.description || '', // Handle null description
+          ...productData,
+          description: productData.description || '', // Handle null description
           seller: {
-            id: dbProduct.seller_id,
+            id: productData.seller_id,
             full_name: "Loading...",
             avatar_url: "/placeholder.svg"
           }
-        } as Product);
+        });
 
         // Then fetch seller profile in parallel with liked status
         const { data: { user } } = await supabase.auth.getUser();
@@ -104,7 +120,7 @@ export function ProductPage() {
           supabase
             .from('profiles')
             .select('id, full_name, avatar_url')
-            .eq('id', dbProduct.seller_id)
+            .eq('id', productData.seller_id)
             .maybeSingle(),
           user ? supabase.rpc('check_product_liked', {
             check_user_id: user.id,
@@ -148,7 +164,7 @@ export function ProductPage() {
                   ...payload.new,
                   description: payload.new.description || '', // Handle null description
                   seller: current.seller
-                } as Product;
+                };
               });
             }
           )
