@@ -11,6 +11,15 @@ import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
+interface Bid {
+  id: string;
+  amount: number;
+  created_at: string;
+  bidder: {
+    full_name: string | null;
+  };
+}
+
 interface ProductStatsProps {
   product: {
     id: string;
