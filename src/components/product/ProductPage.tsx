@@ -81,16 +81,6 @@ export function ProductPage() {
         .eq('id', id)
         .maybeSingle();
 
-      if (error) throw error;
-      if (!data) throw new Error('Product not found');
-      
-      return data as Product;
-    },
-    retry: false,
-    meta: {
-      errorMessage: "Failed to load product details"
-    },
-    onSettled: (data, error) => {
       if (error) {
         console.error('Error fetching product:', error);
         toast({
@@ -99,8 +89,22 @@ export function ProductPage() {
           variant: "destructive",
         });
         navigate('/marketplace');
+        throw error;
       }
-    }
+      if (!data) {
+        toast({
+          title: "Error",
+          description: "Product not found",
+          variant: "destructive",
+        });
+        navigate('/marketplace');
+        throw new Error('Product not found');
+      }
+      
+      return data as Product;
+    },
+    retry: false,
+    gcTime: 0
   });
 
   useEffect(() => {
