@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -67,43 +66,36 @@ export function ProductPage() {
   const { data: product, isLoading, error } = useQuery({
     queryKey: ['product', id],
     queryFn: async () => {
-      console.log('Fetching product with ID:', id);
-      
       if (!id) {
         throw new Error('No product ID provided');
       }
 
-      try {
-        const { data, error } = await supabase
-          .from('products')
-          .select(`
-            *,
-            seller:profiles!products_seller_id_fkey (
-              id,
-              full_name,
-              avatar_url
-            )
-          `)
-          .eq('id', id)
-          .maybeSingle();
+      const { data, error } = await supabase
+        .from('products')
+        .select(`
+          *,
+          seller:seller_id(
+            id,
+            full_name,
+            avatar_url
+          )
+        `)
+        .eq('id', id)
+        .single();
 
-        console.log('Supabase response:', { data, error });
-
-        if (error) {
-          throw error;
-        }
-
-        if (!data) {
-          throw new Error('Product not found');
-        }
-
-        return data as Product;
-      } catch (error) {
-        console.error('Error in queryFn:', error);
+      if (error) {
+        console.error('Error fetching product:', error);
         throw error;
       }
+
+      if (!data) {
+        throw new Error('Product not found');
+      }
+
+      return data as Product;
     },
-    retry: 1
+    retry: 1,
+    gcTime: 0
   });
 
   useEffect(() => {
