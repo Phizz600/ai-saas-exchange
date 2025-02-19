@@ -81,15 +81,26 @@ export function ProductPage() {
       }
 
       try {
-        const { data, error: productError } = await supabase
+        console.log('Fetching product with ID:', id);
+        const { data: productData, error: productError } = await supabase
           .from('products')
-          .select('*')
+          .select(`
+            *,
+            seller:profiles(
+              id,
+              full_name,
+              avatar_url
+            )
+          `)
           .eq('id', id)
           .maybeSingle();
 
-        if (productError) throw productError;
+        if (productError) {
+          console.error('Error fetching product:', productError);
+          throw productError;
+        }
 
-        if (!data) {
+        if (!productData) {
           toast({
             title: "Product not found",
             description: "The product you're looking for doesn't exist or has been removed.",
@@ -99,48 +110,32 @@ export function ProductPage() {
           return;
         }
 
-        // Type assertion and null check
-        const productData = data as DatabaseProduct;
-        
-        // Set initial product data with required fields
+        console.log('Fetched product data:', productData);
+
+        // Get seller data from the joined profiles table
+        const seller = {
+          id: productData.seller.id,
+          full_name: productData.seller.full_name || "Unknown Seller",
+          avatar_url: productData.seller.avatar_url || "/placeholder.svg"
+        };
+
+        // Set product with seller information
         setProduct({
           ...productData,
-          description: productData.description || '', // Handle null description
-          seller: {
-            id: productData.seller_id,
-            full_name: "Loading...",
-            avatar_url: "/placeholder.svg"
-          }
+          description: productData.description || '',
+          seller
         });
 
-        // Then fetch seller profile in parallel with liked status
+        // Check if product is liked by current user
         const { data: { user } } = await supabase.auth.getUser();
         
-        const [sellerResponse, likedResponse] = await Promise.all([
-          supabase
-            .from('profiles')
-            .select('id, full_name, avatar_url')
-            .eq('id', productData.seller_id)
-            .maybeSingle(),
-          user ? supabase.rpc('check_product_liked', {
+        if (user) {
+          const { data: likedStatus } = await supabase.rpc('check_product_liked', {
             check_user_id: user.id,
             check_product_id: id
-          }) : Promise.resolve({ data: false })
-        ]);
-
-        // Update seller info if available
-        if (sellerResponse.data) {
-          setProduct(current => {
-            if (!current) return null;
-            return {
-              ...current,
-              seller: sellerResponse.data
-            };
           });
+          setIsLiked(!!likedStatus);
         }
-
-        // Update liked status
-        setIsLiked(!!likedResponse.data);
 
         // Set up realtime subscription for product updates
         const channel = supabase
@@ -162,7 +157,7 @@ export function ProductPage() {
                 return {
                   ...current,
                   ...payload.new,
-                  description: payload.new.description || '', // Handle null description
+                  description: payload.new.description || '',
                   seller: current.seller
                 };
               });
@@ -175,7 +170,7 @@ export function ProductPage() {
         };
 
       } catch (error) {
-        console.error('Error:', error);
+        console.error('Error fetching product:', error);
         toast({
           title: "Error",
           description: "Failed to load product details",
@@ -246,25 +241,25 @@ export function ProductPage() {
       <div className="container mx-auto px-4 py-8 mt-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div className="space-y-6">
-            <ProductGallery images={[product.image_url]} />
+            <ProductGallery images={[product?.image_url]} />
             <Card className="p-6">
               <h3 className="text-lg font-semibold mb-4">Product Details</h3>
               <div className="space-y-3">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Category</span>
-                  <span className="font-medium">{product.category}</span>
+                  <span className="font-medium">{product?.category}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Stage</span>
-                  <span className="font-medium">{product.stage}</span>
+                  <span className="font-medium">{product?.stage}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Monthly Revenue</span>
                   <span className="font-medium">
-                    ${product.monthly_revenue ? product.monthly_revenue.toLocaleString() : '0'}
+                    ${product?.monthly_revenue ? product.monthly_revenue.toLocaleString() : '0'}
                   </span>
                 </div>
-                {product.special_notes && (
+                {product?.special_notes && (
                   <div className="mt-4 border-t pt-4">
                     <h4 className="text-base font-semibold mb-2">Special Notes</h4>
                     <p className="text-gray-600 whitespace-pre-wrap">{product.special_notes}</p>
@@ -272,30 +267,38 @@ export function ProductPage() {
                 )}
               </div>
             </Card>
-            <PriceHistoryChart productId={product.id} />
+            <PriceHistoryChart productId={product?.id || ''} />
           </div>
 
           <div className="space-y-6">
-            <ProductHeader 
-              product={{
-                id: product.id,
-                title: product.title,
-                description: product.description
-              }}
-              isLiked={isLiked}
-              setIsLiked={setIsLiked}
-            />
-            <ProductPricing product={product} />
-            <ProductStats product={product} />
+            {product && (
+              <>
+                <ProductHeader 
+                  product={{
+                    id: product.id,
+                    title: product.title,
+                    description: product.description
+                  }}
+                  isLiked={isLiked}
+                  setIsLiked={setIsLiked}
+                />
+                <ProductPricing product={product} />
+                <ProductStats product={product} />
+              </>
+            )}
           </div>
         </div>
 
         <div className="mt-12 space-y-8">
-          <ProductReviews productId={product.id} />
-          <RelatedProducts 
-            currentProductCategory={product.category}
-            currentProductId={product.id}
-          />
+          {product && (
+            <>
+              <ProductReviews productId={product.id} />
+              <RelatedProducts 
+                currentProductCategory={product.category}
+                currentProductId={product.id}
+              />
+            </>
+          )}
         </div>
       </div>
     </>
