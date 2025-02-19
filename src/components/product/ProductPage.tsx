@@ -12,7 +12,7 @@ import { ProductReviews } from "./sections/ProductReviews";
 import { RelatedProducts } from "../marketplace/product-card/RelatedProducts";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
 interface Product {
   id: string;
