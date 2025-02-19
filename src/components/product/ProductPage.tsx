@@ -84,17 +84,22 @@ export function ProductPage() {
       if (error) throw error;
       if (!data) throw new Error('Product not found');
       
-      return data;
+      return data as Product;
     },
     retry: false,
-    onError: (error) => {
-      console.error('Error fetching product:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load product details",
-        variant: "destructive",
-      });
-      navigate('/marketplace');
+    meta: {
+      errorMessage: "Failed to load product details"
+    },
+    onSettled: (data, error) => {
+      if (error) {
+        console.error('Error fetching product:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load product details",
+          variant: "destructive",
+        });
+        navigate('/marketplace');
+      }
     }
   });
 
