@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -13,6 +12,7 @@ import { ProductReviews } from "./sections/ProductReviews";
 import { RelatedProducts } from "../marketplace/product-card/RelatedProducts";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useQuery } from "react-query";
 
 interface Product {
   id: string;
@@ -60,75 +60,60 @@ interface Product {
 export function ProductPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [product, setProduct] = useState<Product | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [isLiked, setIsLiked] = useState(false);
   const { toast } = useToast();
 
+  const { data: product, isLoading, error } = useQuery({
+    queryKey: ['product', id],
+    queryFn: async () => {
+      if (!id) throw new Error('No product ID provided');
+
+      const { data, error } = await supabase
+        .from('products')
+        .select(`
+          *,
+          seller:seller_id (
+            id,
+            full_name,
+            avatar_url
+          )
+        `)
+        .eq('id', id)
+        .maybeSingle();
+
+      if (error) throw error;
+      if (!data) throw new Error('Product not found');
+      
+      return data;
+    },
+    retry: false,
+    onError: (error) => {
+      console.error('Error fetching product:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load product details",
+        variant: "destructive",
+      });
+      navigate('/marketplace');
+    }
+  });
+
   useEffect(() => {
-    const fetchProduct = async () => {
-      if (!id) {
-        console.error('No product ID provided');
-        navigate('/marketplace');
-        return;
-      }
+    const checkIfLiked = async () => {
+      if (!id) return;
+      
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
 
-      try {
-        const { data: productData, error: productError } = await supabase
-          .from('products')
-          .select(`
-            *,
-            seller:profiles(
-              id,
-              full_name,
-              avatar_url
-            )
-          `)
-          .eq('id', id)
-          .maybeSingle();
-
-        if (productError) {
-          console.error('Error fetching product:', productError);
-          throw productError;
-        }
-
-        if (!productData) {
-          toast({
-            title: "Product not found",
-            description: "The product you're looking for doesn't exist or has been removed.",
-            variant: "destructive",
-          });
-          navigate('/marketplace');
-          return;
-        }
-
-        // Check if product is liked by current user
-        const { data: { user } } = await supabase.auth.getUser();
-        
-        if (user) {
-          const { data: likedStatus } = await supabase.rpc('check_product_liked', {
-            check_user_id: user.id,
-            check_product_id: id
-          });
-          setIsLiked(!!likedStatus);
-        }
-
-        setProduct(productData as Product);
-        setIsLoading(false);
-
-      } catch (error) {
-        console.error('Error fetching product:', error);
-        toast({
-          title: "Error",
-          description: "Failed to load product details",
-          variant: "destructive",
-        });
-        setIsLoading(false);
-      }
+      const { data: likedStatus } = await supabase.rpc('check_product_liked', {
+        check_user_id: user.id,
+        check_product_id: id
+      });
+      setIsLiked(!!likedStatus);
     };
 
-    fetchProduct();
-  }, [id, toast, navigate]);
+    checkIfLiked();
+  }, [id]);
 
   if (isLoading) {
     return (
