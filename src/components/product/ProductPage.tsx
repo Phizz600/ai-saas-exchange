@@ -13,19 +13,12 @@ import { ProductReviews } from "./sections/ProductReviews";
 import { RelatedProducts } from "../marketplace/product-card/RelatedProducts";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
-
-interface Seller {
-  id: string;
-  full_name: string;
-  avatar_url: string;
-}
 
 interface Product {
   id: string;
   seller_id: string;
   title: string;
-  description: string;
+  description: string | null;
   price: number;
   category: string;
   stage: string;
@@ -57,12 +50,12 @@ interface Product {
   monetization_other?: string;
   business_model?: string;
   investment_timeline?: string;
-  seller: Seller;
+  seller: {
+    id: string;
+    full_name: string | null;
+    avatar_url: string | null;
+  };
 }
-
-type DatabaseProduct = Omit<Product, 'seller'> & {
-  description: string | null;
-};
 
 export function ProductPage() {
   const { id } = useParams<{ id: string }>();
@@ -81,7 +74,6 @@ export function ProductPage() {
       }
 
       try {
-        console.log('Fetching product with ID:', id);
         const { data: productData, error: productError } = await supabase
           .from('products')
           .select(`
@@ -110,22 +102,6 @@ export function ProductPage() {
           return;
         }
 
-        console.log('Fetched product data:', productData);
-
-        // Get seller data from the joined profiles table
-        const seller = {
-          id: productData.seller.id,
-          full_name: productData.seller.full_name || "Unknown Seller",
-          avatar_url: productData.seller.avatar_url || "/placeholder.svg"
-        };
-
-        // Set product with seller information
-        setProduct({
-          ...productData,
-          description: productData.description || '',
-          seller
-        });
-
         // Check if product is liked by current user
         const { data: { user } } = await supabase.auth.getUser();
         
@@ -137,37 +113,8 @@ export function ProductPage() {
           setIsLiked(!!likedStatus);
         }
 
-        // Set up realtime subscription for product updates
-        const channel = supabase
-          .channel('product-updates')
-          .on(
-            'postgres_changes',
-            {
-              event: '*',
-              schema: 'public',
-              table: 'products',
-              filter: `id=eq.${id}`
-            },
-            (payload: RealtimePostgresChangesPayload<DatabaseProduct>) => {
-              console.log('Product updated:', payload);
-              if (!payload.new) return;
-              
-              setProduct(current => {
-                if (!current) return null;
-                return {
-                  ...current,
-                  ...payload.new,
-                  description: payload.new.description || '',
-                  seller: current.seller
-                };
-              });
-            }
-          )
-          .subscribe();
-
-        return () => {
-          supabase.removeChannel(channel);
-        };
+        setProduct(productData as Product);
+        setIsLoading(false);
 
       } catch (error) {
         console.error('Error fetching product:', error);
@@ -176,7 +123,6 @@ export function ProductPage() {
           description: "Failed to load product details",
           variant: "destructive",
         });
-      } finally {
         setIsLoading(false);
       }
     };
@@ -241,25 +187,25 @@ export function ProductPage() {
       <div className="container mx-auto px-4 py-8 mt-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div className="space-y-6">
-            <ProductGallery images={[product?.image_url]} />
+            <ProductGallery images={[product.image_url]} />
             <Card className="p-6">
               <h3 className="text-lg font-semibold mb-4">Product Details</h3>
               <div className="space-y-3">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Category</span>
-                  <span className="font-medium">{product?.category}</span>
+                  <span className="font-medium">{product.category}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Stage</span>
-                  <span className="font-medium">{product?.stage}</span>
+                  <span className="font-medium">{product.stage}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Monthly Revenue</span>
                   <span className="font-medium">
-                    ${product?.monthly_revenue ? product.monthly_revenue.toLocaleString() : '0'}
+                    ${product.monthly_revenue ? product.monthly_revenue.toLocaleString() : '0'}
                   </span>
                 </div>
-                {product?.special_notes && (
+                {product.special_notes && (
                   <div className="mt-4 border-t pt-4">
                     <h4 className="text-base font-semibold mb-2">Special Notes</h4>
                     <p className="text-gray-600 whitespace-pre-wrap">{product.special_notes}</p>
@@ -267,38 +213,30 @@ export function ProductPage() {
                 )}
               </div>
             </Card>
-            <PriceHistoryChart productId={product?.id || ''} />
+            <PriceHistoryChart productId={product.id} />
           </div>
 
           <div className="space-y-6">
-            {product && (
-              <>
-                <ProductHeader 
-                  product={{
-                    id: product.id,
-                    title: product.title,
-                    description: product.description
-                  }}
-                  isLiked={isLiked}
-                  setIsLiked={setIsLiked}
-                />
-                <ProductPricing product={product} />
-                <ProductStats product={product} />
-              </>
-            )}
+            <ProductHeader 
+              product={{
+                id: product.id,
+                title: product.title,
+                description: product.description || ''
+              }}
+              isLiked={isLiked}
+              setIsLiked={setIsLiked}
+            />
+            <ProductPricing product={product} />
+            <ProductStats product={product} />
           </div>
         </div>
 
         <div className="mt-12 space-y-8">
-          {product && (
-            <>
-              <ProductReviews productId={product.id} />
-              <RelatedProducts 
-                currentProductCategory={product.category}
-                currentProductId={product.id}
-              />
-            </>
-          )}
+          <ProductReviews productId={product.id} />
+          <RelatedProducts 
+            currentProductCategory={product.category}
+            currentProductId={product.id}
+          />
         </div>
       </div>
     </>
