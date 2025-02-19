@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -59,14 +60,9 @@ interface Product {
   seller: Seller;
 }
 
-interface DatabaseProduct extends Omit<Product, 'seller'> {
+type DatabaseProduct = Omit<Product, 'seller'> & {
   description: string | null;
-  seller: {
-    id: string;
-    full_name: string | null;
-    avatar_url: string | null;
-  };
-}
+};
 
 export function ProductPage() {
   const { id } = useParams<{ id: string }>();
