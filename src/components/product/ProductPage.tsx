@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -66,46 +67,56 @@ export function ProductPage() {
   const { data: product, isLoading, error } = useQuery({
     queryKey: ['product', id],
     queryFn: async () => {
-      if (!id) throw new Error('No product ID provided');
+      console.log('Fetching product with ID:', id);
+      
+      if (!id) {
+        throw new Error('No product ID provided');
+      }
 
-      const { data, error } = await supabase
-        .from('products')
-        .select(`
-          *,
-          seller:seller_id (
-            id,
-            full_name,
-            avatar_url
-          )
-        `)
-        .eq('id', id)
-        .maybeSingle();
+      try {
+        const { data, error } = await supabase
+          .from('products')
+          .select(`
+            *,
+            seller:profiles!products_seller_id_fkey (
+              id,
+              full_name,
+              avatar_url
+            )
+          `)
+          .eq('id', id)
+          .maybeSingle();
 
-      if (error) {
-        console.error('Error fetching product:', error);
-        toast({
-          title: "Error",
-          description: "Failed to load product details",
-          variant: "destructive",
-        });
-        navigate('/marketplace');
+        console.log('Supabase response:', { data, error });
+
+        if (error) {
+          throw error;
+        }
+
+        if (!data) {
+          throw new Error('Product not found');
+        }
+
+        return data as Product;
+      } catch (error) {
+        console.error('Error in queryFn:', error);
         throw error;
       }
-      if (!data) {
-        toast({
-          title: "Error",
-          description: "Product not found",
-          variant: "destructive",
-        });
-        navigate('/marketplace');
-        throw new Error('Product not found');
-      }
-      
-      return data as Product;
     },
-    retry: false,
-    gcTime: 0
+    retry: 1
   });
+
+  useEffect(() => {
+    if (error) {
+      console.error('Query error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load product details",
+        variant: "destructive",
+      });
+      navigate('/marketplace');
+    }
+  }, [error, toast, navigate]);
 
   useEffect(() => {
     const checkIfLiked = async () => {
