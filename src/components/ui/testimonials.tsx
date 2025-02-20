@@ -44,7 +44,7 @@ export function Testimonials({ testimonials, className }: TestimonialsProps) {
           {testimonials.map((testimonial, index) => (
             <CarouselItem key={index} className="pl-1 md:basis-1/2 lg:basis-1/3">
               <div className="p-4">
-                <div className="flex flex-col rounded-lg border bg-card p-6 shadow-sm">
+                <div className="flex flex-col rounded-lg border bg-[#EEF7FF] p-6 shadow-sm">
                   <div className="flex items-center gap-4">
                     <img
                       alt={`${testimonial.name}'s profile picture`}
@@ -52,13 +52,13 @@ export function Testimonials({ testimonials, className }: TestimonialsProps) {
                       src={testimonial.image}
                     />
                     <div>
-                      <div className="text-sm font-semibold">{testimonial.name}</div>
-                      <div className="text-sm text-muted-foreground">
+                      <div className="text-sm font-semibold text-[#13293D]">{testimonial.name}</div>
+                      <div className="text-sm text-[#2A628F]">
                         {testimonial.username}
                       </div>
                     </div>
                   </div>
-                  <div className="mt-4 flex-grow text-sm text-muted-foreground">
+                  <div className="mt-4 flex-grow text-sm text-[#2A628F]">
                     "{testimonial.text}"
                   </div>
                 </div>

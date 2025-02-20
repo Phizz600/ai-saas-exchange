@@ -111,12 +111,14 @@ const Index = () => {
       <Suspense fallback={<LoadingHero />}>
         <Hero />
       </Suspense>
-      <div className="container mx-auto px-4 py-16">
-        <div className="mb-8 text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">What Our Users Say</h2>
-          <p className="text-gray-300">Hear from our community of AI innovators and investors</p>
+      <div className="bg-white py-16">
+        <div className="container mx-auto px-4">
+          <div className="mb-8 text-center">
+            <h2 className="text-3xl font-bold text-[#13293D] mb-4">What Our Users Say</h2>
+            <p className="text-[#2A628F]">Hear from our community of AI innovators and investors</p>
+          </div>
+          <Testimonials testimonials={testimonials} />
         </div>
-        <Testimonials testimonials={testimonials} />
       </div>
       <Footer />
     </div>
