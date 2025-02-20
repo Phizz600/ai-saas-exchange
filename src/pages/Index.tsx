@@ -4,6 +4,11 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Testimonials } from "@/components/ui/testimonials";
+import { Button } from "@/components/ui/button";
+import { LogOut } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const Hero = lazy(() => import("@/components/Hero"));
 
@@ -105,8 +110,39 @@ const LoadingHero = () => (
 );
 
 const Index = () => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleSignOut = async () => {
+    try {
+      await supabase.auth.signOut();
+      toast({
+        title: "Signed out successfully",
+        description: "You have been signed out of your account",
+      });
+      navigate('/');
+    } catch (error) {
+      console.error('Error signing out:', error);
+      toast({
+        title: "Error signing out",
+        description: "There was a problem signing out of your account",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-accent">
+      <div className="absolute top-4 right-4 z-50">
+        <Button 
+          onClick={handleSignOut}
+          variant="outline"
+          className="bg-white/10 hover:bg-white/20 text-white border-white/20"
+        >
+          <LogOut className="h-4 w-4 mr-2" />
+          Sign Out
+        </Button>
+      </div>
       <Navbar />
       <Suspense fallback={<LoadingHero />}>
         <Hero />
