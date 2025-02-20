@@ -1,10 +1,19 @@
 
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Home, Users, Timer, Youtube, Twitter, Instagram, Rss } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 
 export const ListingThankYou = () => {
+  const [queueNumber, setQueueNumber] = useState(0);
+
+  useEffect(() => {
+    // Generate a random number between 1 and 207
+    const randomNumber = Math.floor(Math.random() * 207) + 1;
+    setQueueNumber(randomNumber);
+  }, []); // Empty dependency array means this runs once when component mounts
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#9b87f5] via-[#D946EF] to-[#0EA5E9]">
       <div className="container mx-auto px-4 py-8">
@@ -38,7 +47,7 @@ export const ListingThankYou = () => {
                   <Timer className="h-5 w-5 text-[#8B5CF6]" />
                   <span className="text-lg font-semibold text-gray-700">Review Queue Status</span>
                 </div>
-                <span className="text-2xl font-bold text-[#D946EF]">#127</span>
+                <span className="text-2xl font-bold text-[#D946EF]">#{queueNumber}</span>
               </div>
               <p className="text-sm text-gray-600 mb-3">Estimated review time: 24-48 hours</p>
             </div>
@@ -116,4 +125,4 @@ export const ListingThankYou = () => {
       </div>
     </div>
   );
-};
+}
