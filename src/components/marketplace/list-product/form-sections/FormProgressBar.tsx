@@ -42,19 +42,19 @@ export function FormProgressBar({ currentSection, onSectionClick }: FormProgress
               onClick={handleClick(index)}
               type="button" // Explicitly set button type to prevent form submission
               className={cn(
-                "flex flex-col items-center gap-1 md:gap-2 relative z-10",
+                "flex flex-col items-center gap-2 relative z-10",
                 isActive ? "text-[#8B5CF6]" : "text-gray-400"
               )}
             >
-              {/* Circle indicator - smaller on mobile */}
+              {/* Circle indicator */}
               <div
                 className={cn(
-                  "w-6 h-6 md:w-8 md:h-8 rounded-full flex items-center justify-center transition-all",
+                  "w-8 h-8 rounded-full flex items-center justify-center transition-all",
                   isActive ? "bg-[#8B5CF6] text-white" : "bg-gray-200"
                 )}
               >
-                {/* Show icon for both mobile and desktop, but smaller on mobile */}
-                <IconComponent className="w-3 h-3 md:w-4 md:h-4" />
+                {/* Show icon for both mobile and desktop, but hide text on mobile */}
+                <IconComponent className="w-4 h-4" />
               </div>
               
               {/* Title - hidden on mobile */}
@@ -66,8 +66,8 @@ export function FormProgressBar({ currentSection, onSectionClick }: FormProgress
         })}
       </div>
 
-      {/* Progress bar - adjusted for mobile */}
-      <div className="absolute top-3 md:top-4 left-0 right-0 h-0.5 bg-gray-200 -z-10">
+      {/* Progress bar */}
+      <div className="absolute top-4 left-0 right-0 h-0.5 bg-gray-200 -z-10">
         <div
           className="h-full bg-[#8B5CF6] transition-all duration-300"
           style={{
