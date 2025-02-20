@@ -23,6 +23,12 @@ const sections: Section[] = [
 ];
 
 export function FormProgressBar({ currentSection, onSectionClick }: FormProgressBarProps) {
+  const handleClick = (index: number) => (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent any form submission
+    e.stopPropagation(); // Stop event bubbling
+    onSectionClick(index);
+  };
+
   return (
     <div className="relative">
       <div className="flex items-center justify-between">
@@ -33,7 +39,8 @@ export function FormProgressBar({ currentSection, onSectionClick }: FormProgress
           return (
             <button
               key={section.id}
-              onClick={() => onSectionClick(index)}
+              onClick={handleClick(index)}
+              type="button" // Explicitly set button type to prevent form submission
               className={cn(
                 "flex flex-col items-center gap-2 relative z-10",
                 isActive ? "text-[#8B5CF6]" : "text-gray-400"
