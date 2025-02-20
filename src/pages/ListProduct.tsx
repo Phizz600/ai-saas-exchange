@@ -26,6 +26,9 @@ export const ListProduct = () => {
             <p className="text-base text-gray-600 text-center">
               Share your AI innovation with potential buyers and investors. Only select information will be publicly displayed for your protection.
             </p>
+            <p className="text-sm text-gray-600 text-center leading-relaxed border-l-4 border-[#8B5CF6] pl-4 italic bg-gray-50 p-3 rounded-r">
+              Please complete this form thoroughly and accurately to the best of your ability. Comprehensive and precise information significantly enhances your listing's credibility and increases the likelihood of attracting serious buyers and investors.
+            </p>
           </div>
           <ListProductForm />
         </div>
