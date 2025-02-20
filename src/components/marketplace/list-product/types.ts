@@ -26,4 +26,26 @@ export interface ListProductFormData {
   specialNotes: string;
   accuracyAgreement: boolean;
   termsAgreement: boolean;
+  
+  // Additional fields for extended functionality
+  monthlyProfit?: number;
+  monthlyChurnRate?: number;
+  customerAcquisitionCost?: number;
+  monetization?: string;
+  monetizationOther?: string;
+  businessModel?: string;
+  investmentTimeline?: string;
+  auctionEndTime?: Date;
+  llmType?: string;
+  llmTypeOther?: string;
+  integrations_other?: string;
+  isGoogleAnalyticsVerified?: boolean;
+  isRevenueVerified?: boolean;
+  isCodeAudited?: boolean;
+  isTrafficVerified?: boolean;
+  productAge?: string;
+  businessLocation?: string;
+  numberOfEmployees?: string;
+  industryOther?: string;
+  categoryOther?: string;
 }
