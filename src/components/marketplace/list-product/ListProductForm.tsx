@@ -30,7 +30,7 @@ export function ListProductForm() {
     { id: 2, title: "Technical", component: TechnicalSection },
     { id: 3, title: "Traffic", component: TrafficSection },
     { id: 4, title: "Special Notes", component: SpecialNotesSection },
-    { id: 5, title: "Dutch Auction", component: AuctionSection },
+    { id: 5, title: "Selling Method", component: AuctionSection },
   ];
 
   const form = useForm<ListProductFormData>({
@@ -111,6 +111,7 @@ export function ListProductForm() {
   }
 
   const CurrentSectionComponent = sections[currentSection].component;
+  const showAgreements = currentSection === 5; // Only show agreements in Selling Method section
 
   return (
     <Form {...form}>
@@ -122,9 +123,8 @@ export function ListProductForm() {
         
         <div className="space-y-8 min-h-[400px]">
           <CurrentSectionComponent form={form} />
+          {showAgreements && <SubmissionAgreements form={form} />}
         </div>
-
-        <SubmissionAgreements form={form} />
 
         <FormNavigationButtons
           currentSection={currentSection}

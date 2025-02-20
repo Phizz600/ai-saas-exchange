@@ -21,13 +21,14 @@ export function SubmissionAgreements({ form }: SubmissionAgreementsProps) {
         render={({ field }) => (
           <FormItem className="space-y-2">
             <FormControl>
-              <div className="flex items-center space-x-2">
+              <div className="flex items-start space-x-2">
                 <Checkbox
                   checked={field.value}
                   onCheckedChange={field.onChange}
                   id="accuracyAgreement"
+                  className="mt-1"
                 />
-                <FormLabel htmlFor="accuracyAgreement" className="text-sm leading-relaxed text-gray-600">
+                <FormLabel htmlFor="accuracyAgreement" className="text-sm leading-relaxed text-gray-600 text-left">
                   I confirm that I will complete this form thoroughly and accurately to the best of my ability. I understand that comprehensive and precise information significantly enhances my listing's credibility and increases the likelihood of attracting serious buyers and investors.
                 </FormLabel>
               </div>
@@ -43,13 +44,14 @@ export function SubmissionAgreements({ form }: SubmissionAgreementsProps) {
         render={({ field }) => (
           <FormItem className="space-y-2">
             <FormControl>
-              <div className="flex items-center space-x-2">
+              <div className="flex items-start space-x-2">
                 <Checkbox
                   checked={field.value}
                   onCheckedChange={field.onChange}
                   id="termsAgreement"
+                  className="mt-1"
                 />
-                <FormLabel htmlFor="termsAgreement" className="text-sm leading-relaxed text-gray-600 flex items-center space-x-1">
+                <FormLabel htmlFor="termsAgreement" className="text-sm leading-relaxed text-gray-600 text-left flex items-center space-x-1">
                   <span>I agree to the</span>
                   <Dialog>
                     <DialogTrigger asChild>
