@@ -23,19 +23,19 @@ export function ImageSection({ form }: ImageSectionProps) {
       render={({ field }) => (
         <FormItem>
           <FormLabel className="flex items-center gap-2">
-            Product Image
+            Product Logo
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Info className="h-4 w-4 text-gray-500 cursor-help" />
                 </TooltipTrigger>
                 <TooltipContent className="max-w-xs bg-white">
-                  <p>Recommended image specifications:</p>
+                  <p>Recommended logo specifications:</p>
                   <ul className="list-disc ml-4 mt-1">
                     <li>Maximum size: 5MB</li>
-                    <li>Optimal dimensions: 1200x630 pixels</li>
+                    <li>Optimal dimensions: 512x512 pixels</li>
                     <li>Accepted formats: JPG, PNG, WebP</li>
-                    <li>You can use a screenshot of your product's homepage or landing page</li>
+                    <li>Square aspect ratio recommended</li>
                   </ul>
                 </TooltipContent>
               </Tooltip>

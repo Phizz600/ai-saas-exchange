@@ -41,8 +41,8 @@ export function ImageUpload({ value, onChange }: ImageUploadProps) {
           <div className="relative">
             <img
               src={preview}
-              alt="Preview"
-              className="w-full h-48 object-cover rounded-lg"
+              alt="Logo Preview"
+              className="w-32 h-32 object-contain mx-auto"
             />
             <Button
               type="button"
@@ -55,10 +55,10 @@ export function ImageUpload({ value, onChange }: ImageUploadProps) {
             </Button>
           </div>
         ) : (
-          <label className="flex flex-col items-center justify-center h-48 cursor-pointer">
+          <label className="flex flex-col items-center justify-center h-32 cursor-pointer">
             <ImagePlus className="h-8 w-8 text-gray-400" />
             <span className="mt-2 text-sm text-gray-500">
-              Click to upload an image
+              Click to upload your logo
             </span>
             <input
               type="file"
