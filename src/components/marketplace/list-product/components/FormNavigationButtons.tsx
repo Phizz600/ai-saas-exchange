@@ -20,14 +20,14 @@ export function FormNavigationButtons({
   isSubmitting
 }: FormNavigationButtonsProps) {
   return (
-    <div className="flex justify-between items-center pt-6 border-t">
-      <div className="flex items-center gap-2">
+    <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-2 sm:gap-0 pt-6 border-t">
+      <div className="flex items-center">
         {currentSection > 0 && (
           <Button
             type="button"
             variant="outline"
             onClick={onPrevious}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 w-full sm:w-auto"
           >
             <ArrowLeft className="h-4 w-4" />
             Back
@@ -35,12 +35,12 @@ export function FormNavigationButtons({
         )}
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
         <Button
           type="button"
           variant="outline"
           onClick={onSaveForLater}
-          className="flex items-center gap-2"
+          className="flex items-center justify-center gap-2 w-full sm:w-auto"
         >
           <Save className="h-4 w-4" />
           Save for later
@@ -53,7 +53,7 @@ export function FormNavigationButtons({
               e.preventDefault();
               onNext();
             }}
-            className="flex items-center gap-2"
+            className="flex items-center justify-center gap-2 w-full sm:w-auto"
           >
             Next
             <ArrowRight className="h-4 w-4" />
@@ -61,7 +61,7 @@ export function FormNavigationButtons({
         ) : (
           <Button 
             type="submit"
-            className="bg-gradient-to-r from-[#8B5CF6] via-[#D946EE] to-[#0EA4E9] text-white font-semibold py-3 px-6 rounded-lg hover:opacity-90"
+            className="w-full sm:w-auto bg-gradient-to-r from-[#8B5CF6] via-[#D946EE] to-[#0EA4E9] text-white font-semibold py-3 px-6 rounded-lg hover:opacity-90"
             disabled={isSubmitting}
           >
             {isSubmitting ? "Submitting Product..." : "Submit Product"}
