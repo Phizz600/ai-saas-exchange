@@ -8,6 +8,7 @@ import { TechnicalSection } from "./form-sections/TechnicalSection";
 import { TrafficSection } from "./form-sections/TrafficSection";
 import { AuctionSection } from "./form-sections/AuctionSection";
 import { SpecialNotesSection } from "./form-sections/SpecialNotesSection";
+import { SubmissionAgreements } from "./form-sections/SubmissionAgreements";
 import { FormProgressBar } from "./form-sections/FormProgressBar";
 import { FormNavigationButtons } from "./components/FormNavigationButtons";
 import { useFormNavigation } from "./hooks/useFormNavigation";
@@ -17,6 +18,7 @@ import { ListProductFormData } from "./types";
 import { useAutosave } from "./hooks/useAutosave";
 import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
 
 export function ListProductForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -57,6 +59,8 @@ export function ListProductForm() {
       demoUrl: "",
       isVerified: false,
       specialNotes: "",
+      accuracyAgreement: false,
+      termsAgreement: false,
     },
   });
 
@@ -66,6 +70,15 @@ export function ListProductForm() {
   const { isLoading, saveForLater } = useAutosave(form, currentSection);
 
   const onSubmit = async (data: ListProductFormData) => {
+    if (!data.accuracyAgreement || !data.termsAgreement) {
+      toast({
+        title: "Agreement Required",
+        description: "Please accept both the accuracy statement and terms & conditions before submitting.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     if (currentSection === sections.length - 1) {
       setIsSubmitting(true);
       try {
@@ -110,6 +123,8 @@ export function ListProductForm() {
         <div className="space-y-8 min-h-[400px]">
           <CurrentSectionComponent form={form} />
         </div>
+
+        <SubmissionAgreements form={form} />
 
         <FormNavigationButtons
           currentSection={currentSection}
