@@ -21,7 +21,7 @@ export function SubmissionAgreements({ form }: SubmissionAgreementsProps) {
         render={({ field }) => (
           <FormItem className="space-y-2">
             <FormControl>
-              <div className="flex items-start space-x-2">
+              <div className="flex items-start gap-2">
                 <Checkbox
                   checked={field.value}
                   onCheckedChange={field.onChange}
@@ -44,14 +44,14 @@ export function SubmissionAgreements({ form }: SubmissionAgreementsProps) {
         render={({ field }) => (
           <FormItem className="space-y-2">
             <FormControl>
-              <div className="flex flex-wrap items-start space-x-2">
+              <div className="flex items-start gap-2">
                 <Checkbox
                   checked={field.value}
                   onCheckedChange={field.onChange}
                   id="termsAgreement"
                   className="mt-1"
                 />
-                <FormLabel htmlFor="termsAgreement" className="text-sm leading-relaxed text-gray-600 text-left flex flex-wrap items-center gap-1">
+                <FormLabel htmlFor="termsAgreement" className="text-sm leading-relaxed text-gray-600 text-left flex items-center gap-1">
                   I agree to the
                   <Dialog>
                     <DialogTrigger asChild>
