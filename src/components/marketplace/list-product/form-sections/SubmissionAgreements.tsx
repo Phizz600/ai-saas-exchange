@@ -125,7 +125,7 @@ export function SubmissionAgreements({ form }: SubmissionAgreementsProps) {
                           <ul className="list-disc pl-6 mb-4">
                             <li>Payment Processing: 2.9% + $0.30 (charged by Stripe)</li>
                             <li>Escrow fees</li>
-                            <li>Listing Fee: $10 per listing (Reduced to $5 for early adopters)</li>
+                            <li>Listing Fee: $100 per listing (Reduced to $10 for early adopters)</li>
                           </ul>
 
                           <h2 className="text-lg font-semibold mt-6 mb-2">7. Intellectual Property (IP)</h2>
