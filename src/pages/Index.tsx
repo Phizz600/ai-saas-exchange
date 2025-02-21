@@ -133,7 +133,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-accent">
-      <div className="fixed top-4 right-4 z-[60]">
+      <div className="fixed top-4 right-4 z-[100]">
         <Button 
           onClick={handleSignOut}
           variant="outline"
