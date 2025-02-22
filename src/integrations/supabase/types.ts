@@ -166,12 +166,15 @@ export type Database = {
           created_at: string
           current_question: number | null
           id: string
+          investment_goals: string[] | null
           investment_stage:
             | Database["public"]["Enums"]["investment_preference"][]
             | null
           investment_timeline: string | null
+          llm_preferences: string[] | null
           max_investment: number | null
           min_investment: number | null
+          monetization_preferences: string[] | null
           preferred_categories: string[] | null
           preferred_industries: string[] | null
           required_integrations: string[] | null
@@ -182,6 +185,7 @@ export type Database = {
             | Database["public"]["Enums"]["investment_preference"][]
             | null
           technical_expertise: string | null
+          traffic_importance: string | null
           updated_at: string
           user_id: string
         }
@@ -190,12 +194,15 @@ export type Database = {
           created_at?: string
           current_question?: number | null
           id?: string
+          investment_goals?: string[] | null
           investment_stage?:
             | Database["public"]["Enums"]["investment_preference"][]
             | null
           investment_timeline?: string | null
+          llm_preferences?: string[] | null
           max_investment?: number | null
           min_investment?: number | null
+          monetization_preferences?: string[] | null
           preferred_categories?: string[] | null
           preferred_industries?: string[] | null
           required_integrations?: string[] | null
@@ -206,6 +213,7 @@ export type Database = {
             | Database["public"]["Enums"]["investment_preference"][]
             | null
           technical_expertise?: string | null
+          traffic_importance?: string | null
           updated_at?: string
           user_id: string
         }
@@ -214,12 +222,15 @@ export type Database = {
           created_at?: string
           current_question?: number | null
           id?: string
+          investment_goals?: string[] | null
           investment_stage?:
             | Database["public"]["Enums"]["investment_preference"][]
             | null
           investment_timeline?: string | null
+          llm_preferences?: string[] | null
           max_investment?: number | null
           min_investment?: number | null
+          monetization_preferences?: string[] | null
           preferred_categories?: string[] | null
           preferred_industries?: string[] | null
           required_integrations?: string[] | null
@@ -230,6 +241,7 @@ export type Database = {
             | Database["public"]["Enums"]["investment_preference"][]
             | null
           technical_expertise?: string | null
+          traffic_importance?: string | null
           updated_at?: string
           user_id?: string
         }
