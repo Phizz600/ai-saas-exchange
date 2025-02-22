@@ -13,23 +13,33 @@ export const WatchedProducts = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return [];
 
-      // Get products that have been saved by the current user
-      const { data, error } = await supabase
-        .from('product_analytics')
+      // First get the user's saved product IDs from their profile
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('saved_products')
+        .eq('id', user.id)
+        .single();
+
+      if (!profile?.saved_products?.length) {
+        return [];
+      }
+
+      // Then fetch the actual product details for the saved products
+      const { data: products, error } = await supabase
+        .from('products')
         .select(`
-          *,
-          product:products (
-            id,
-            title,
-            price,
-            image_url,
-            category,
-            stage
+          id,
+          title,
+          price,
+          image_url,
+          category,
+          stage,
+          product_analytics (
+            saves
           )
         `)
-        .eq('user_id', user.id) // Only get saves for the current user
-        .gt('saves', 0) // Products that have been saved
-        .order('saves', { ascending: false })
+        .in('id', profile.saved_products)
+        .order('created_at', { ascending: false })
         .limit(4);
 
       if (error) {
@@ -37,7 +47,18 @@ export const WatchedProducts = () => {
         throw error;
       }
 
-      return data || [];
+      return products.map(product => ({
+        id: product.id,
+        product: {
+          id: product.id,
+          title: product.title,
+          price: product.price,
+          image_url: product.image_url,
+          category: product.category,
+          stage: product.stage
+        },
+        saves: product.product_analytics?.[0]?.saves || 0
+      }));
     },
   });
 
@@ -86,4 +107,3 @@ export const WatchedProducts = () => {
     </div>
   );
 };
-
