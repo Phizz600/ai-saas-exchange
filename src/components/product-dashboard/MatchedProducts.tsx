@@ -1,4 +1,3 @@
-
 import { useQuery } from "@tanstack/react-query";
 import { ProductCard } from "@/components/ProductCard";
 import { getMatchedProducts } from "@/integrations/supabase/functions";
@@ -167,8 +166,8 @@ export const MatchedProducts = () => {
     enabled: hasCompletedQuestionnaire === true
   });
 
-  const handleNextQuestion = async () => {
-    const currentAnswer = form.getValues(`question_${currentQuestion}`);
+  const handleOptionSelect = async (value: string) => {
+    const currentAnswer = value;
     if (!currentAnswer) return;
 
     const { data: { user } } = await supabase.auth.getUser();
@@ -186,12 +185,15 @@ export const MatchedProducts = () => {
       })
       .eq('user_id', user.id);
 
-    if (currentQuestion < questions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-    } else {
-      setHasCompletedQuestionnaire(true);
-      setShowQuestionnaire(false);
-    }
+    // Automatically advance to next question after a short delay
+    setTimeout(() => {
+      if (currentQuestion < questions.length - 1) {
+        setCurrentQuestion(currentQuestion + 1);
+      } else {
+        setHasCompletedQuestionnaire(true);
+        setShowQuestionnaire(false);
+      }
+    }, 500); // 500ms delay for visual feedback
   };
 
   const handlePreviousQuestion = () => {
@@ -237,7 +239,10 @@ export const MatchedProducts = () => {
                   <FormItem className="space-y-3">
                     <FormControl>
                       <RadioGroup
-                        onValueChange={field.onChange}
+                        onValueChange={(value) => {
+                          field.onChange(value);
+                          handleOptionSelect(value);
+                        }}
                         defaultValue={field.value}
                         className="grid grid-cols-1 md:grid-cols-2 gap-4"
                       >
@@ -250,7 +255,7 @@ export const MatchedProducts = () => {
                             />
                             <Label
                               htmlFor={option.value}
-                              className="flex flex-col items-center justify-center p-4 border-2 rounded-lg cursor-pointer hover:bg-gray-50 peer-checked:border-[#8B5CF6] peer-checked:bg-purple-50 transition-all"
+                              className="flex flex-col items-center justify-center p-4 border-2 rounded-lg cursor-pointer hover:bg-gray-50 peer-checked:border-[#8B5CF6] peer-checked:bg-purple-50 transition-all duration-300"
                             >
                               <span className="font-medium">{option.label}</span>
                             </Label>
@@ -277,7 +282,10 @@ export const MatchedProducts = () => {
                 Question {currentQuestion + 1} of {questions.length}
               </div>
               <Button
-                onClick={handleNextQuestion}
+                onClick={() => {
+                  const currentAnswer = form.getValues(`question_${currentQuestion}`);
+                  if (currentAnswer) handleOptionSelect(currentAnswer);
+                }}
                 disabled={!form.getValues(`question_${currentQuestion}`)}
                 className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 transition-opacity flex items-center gap-2"
               >
