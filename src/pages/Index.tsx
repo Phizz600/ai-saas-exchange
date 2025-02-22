@@ -1,13 +1,8 @@
-
-import { Suspense, lazy, useEffect, useState } from "react";
+import { Suspense, lazy } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Testimonials } from "@/components/ui/testimonials";
-import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
 
 const Hero = lazy(() => import("@/components/Hero"));
 
@@ -109,64 +104,9 @@ const LoadingHero = () => (
 );
 
 const Index = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const navigate = useNavigate();
-  const { toast } = useToast();
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setIsAuthenticated(!!session);
-    };
-
-    checkAuth();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setIsAuthenticated(!!session);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  const handleSignOut = async () => {
-    try {
-      await supabase.auth.signOut();
-      toast({
-        title: "Signed out successfully",
-        description: "You have been signed out of your account",
-      });
-    } catch (error) {
-      console.error('Error signing out:', error);
-      toast({
-        title: "Error signing out",
-        description: "There was a problem signing out of your account",
-        variant: "destructive",
-      });
-    }
-  };
-
   return (
     <div className="min-h-screen bg-accent">
-      <div className="relative">
-        <Navbar />
-        <div className="absolute top-4 right-4 z-50 flex gap-4">
-          {isAuthenticated ? (
-            <Button 
-              onClick={handleSignOut}
-              className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white hover:opacity-90"
-            >
-              Sign Out
-            </Button>
-          ) : (
-            <Button 
-              onClick={() => navigate("/auth")}
-              className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white hover:opacity-90"
-            >
-              Sign In
-            </Button>
-          )}
-        </div>
-      </div>
+      <Navbar />
       <Suspense fallback={<LoadingHero />}>
         <Hero />
       </Suspense>
