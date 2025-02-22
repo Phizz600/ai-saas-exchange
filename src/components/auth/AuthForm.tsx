@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -37,7 +36,6 @@ export const AuthForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     if (isLoading) return;
     
     setErrorMessage("");
@@ -51,7 +49,7 @@ export const AuthForm = () => {
           return;
         }
 
-        const { data: { user }, error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -74,7 +72,7 @@ export const AuthForm = () => {
           return;
         }
 
-        if (user) {
+        if (data?.user) {
           toast({
             title: "Welcome!",
             description: "Your account has been created successfully.",
@@ -101,8 +99,6 @@ export const AuthForm = () => {
     } catch (error: any) {
       console.error("Auth error:", error);
       setErrorMessage(error.message || "An unexpected error occurred.");
-    } finally {
-      // Always make sure to reset loading state
       setIsLoading(false);
     }
   };
