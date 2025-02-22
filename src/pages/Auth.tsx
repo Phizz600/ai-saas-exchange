@@ -15,32 +15,29 @@ const Auth = () => {
     
     const checkSession = async () => {
       try {
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-        
-        if (sessionError) {
-          console.error("Session error:", sessionError);
-          return;
-        }
+        const { data: { session } } = await supabase.auth.getSession();
         
         if (session) {
           console.log("Auth: User already logged in, checking user type");
+          // Use sleep to ensure profile has been created
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          
           const { data: profile, error: profileError } = await supabase
             .from('profiles')
             .select('user_type')
             .eq('id', session.user.id)
-            .single();
+            .maybeSingle();
           
-          if (profileError) {
-            console.error("Profile error:", profileError);
-            // Navigate to a default route if we can't determine the user type
+          if (profileError || !profile) {
+            console.log("No profile found or error occurred, redirecting to marketplace");
             navigate("/marketplace");
             return;
           }
 
           // Navigate based on user type
-          if (profile?.user_type === 'ai_investor') {
+          if (profile.user_type === 'ai_investor') {
             navigate("/coming-soon");
-          } else if (profile?.user_type === 'ai_builder') {
+          } else if (profile.user_type === 'ai_builder') {
             navigate("/list-product");
           } else {
             navigate("/marketplace");
@@ -62,16 +59,18 @@ const Auth = () => {
       console.log("Auth: Auth state changed:", event);
       
       if (event === "SIGNED_IN" && session) {
-        console.log("Auth: User signed in, navigating based on user type");
+        console.log("Auth: User signed in, waiting for profile creation...");
+        
         try {
+          // Add a small delay to ensure the profile has been created
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          
           const { data: profile, error: profileError } = await supabase
             .from('profiles')
             .select('user_type')
             .eq('id', session.user.id)
-            .maybeSingle(); // Using maybeSingle instead of single to handle cases where profile might not exist yet
+            .maybeSingle();
 
-          // If there's no profile yet (which can happen right after signup), 
-          // or if there's an error, redirect to marketplace
           if (profileError || !profile) {
             console.log("No profile found or error occurred, redirecting to marketplace");
             navigate("/marketplace");

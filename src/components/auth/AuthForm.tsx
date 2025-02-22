@@ -51,7 +51,7 @@ export const AuthForm = () => {
           return;
         }
 
-        const { data, error } = await supabase.auth.signUp({
+        const { data: { user }, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -74,7 +74,7 @@ export const AuthForm = () => {
           return;
         }
 
-        if (data?.user) {
+        if (user) {
           toast({
             title: "Welcome!",
             description: "Your account has been created successfully.",
@@ -101,6 +101,8 @@ export const AuthForm = () => {
     } catch (error: any) {
       console.error("Auth error:", error);
       setErrorMessage(error.message || "An unexpected error occurred.");
+    } finally {
+      // Always make sure to reset loading state
       setIsLoading(false);
     }
   };
@@ -194,6 +196,7 @@ export const AuthForm = () => {
           onClick={() => {
             setIsSignUp(!isSignUp);
             setErrorMessage("");
+            setIsLoading(false);
           }}
           className="text-primary hover:underline"
           disabled={isLoading}
