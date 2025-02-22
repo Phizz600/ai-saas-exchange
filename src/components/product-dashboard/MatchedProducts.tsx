@@ -69,10 +69,10 @@ const questions = [
     description: "Select the business model you're most interested in",
     icon: CreditCard,
     options: [
-      { value: "saas", label: "SaaS Subscription" },
-      { value: "marketplace", label: "Marketplace" },
-      { value: "api", label: "API Services" },
-      { value: "license", label: "License/Enterprise" }
+      { value: "subscription", label: "Subscription" },
+      { value: "pay_per_use", label: "Pay Per Use" },
+      { value: "freemium", label: "Freemium" },
+      { value: "one_time", label: "One Time Purchase" }
     ]
   },
   {
