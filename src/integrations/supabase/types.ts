@@ -690,7 +690,6 @@ export type Database = {
           full_name: string | null
           id: string
           liked_products: string[] | null
-          role: string | null
           saved_products: string[] | null
           updated_at: string
           user_type: Database["public"]["Enums"]["user_type"] | null
@@ -704,7 +703,6 @@ export type Database = {
           full_name?: string | null
           id: string
           liked_products?: string[] | null
-          role?: string | null
           saved_products?: string[] | null
           updated_at?: string
           user_type?: Database["public"]["Enums"]["user_type"] | null
@@ -718,7 +716,6 @@ export type Database = {
           full_name?: string | null
           id?: string
           liked_products?: string[] | null
-          role?: string | null
           saved_products?: string[] | null
           updated_at?: string
           user_type?: Database["public"]["Enums"]["user_type"] | null
