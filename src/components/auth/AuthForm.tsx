@@ -37,6 +37,9 @@ export const AuthForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (isLoading) return; // Prevent multiple submissions
+    
     setErrorMessage("");
     setIsLoading(true);
 
@@ -44,10 +47,11 @@ export const AuthForm = () => {
       if (isSignUp) {
         if (!isFormValid) {
           setErrorMessage("Please fill in all fields and agree to the terms of service.");
+          setIsLoading(false);
           return;
         }
 
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -69,10 +73,12 @@ export const AuthForm = () => {
           return;
         }
 
-        toast({
-          title: "Welcome!",
-          description: "Your account has been created successfully.",
-        });
+        if (data?.user) {
+          toast({
+            title: "Welcome!",
+            description: "Your account has been created successfully.",
+          });
+        }
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email,
@@ -92,12 +98,7 @@ export const AuthForm = () => {
       }
     } catch (error: any) {
       console.error("Auth error:", error);
-      if (error.message?.includes("User already registered")) {
-        setErrorMessage("This email is already registered. Please sign in instead.");
-        setIsSignUp(false);
-      } else {
-        setErrorMessage(error.message || "An error occurred during authentication.");
-      }
+      setErrorMessage(error.message || "An unexpected error occurred.");
     } finally {
       setIsLoading(false);
     }
@@ -121,6 +122,7 @@ export const AuthForm = () => {
             onChange={(e) => setFirstName(e.target.value)}
             required
             className="bg-white"
+            disabled={isLoading}
           />
         </div>
       )}
@@ -134,6 +136,7 @@ export const AuthForm = () => {
           onChange={(e) => setEmail(e.target.value)}
           required
           className="bg-white"
+          disabled={isLoading}
         />
       </div>
 
@@ -146,6 +149,7 @@ export const AuthForm = () => {
           onChange={(e) => setPassword(e.target.value)}
           required
           className="bg-white"
+          disabled={isLoading}
         />
       </div>
       
@@ -158,6 +162,7 @@ export const AuthForm = () => {
             checked={agreedToTerms}
             onCheckedChange={(checked) => setAgreedToTerms(checked as boolean)}
             className="bg-white"
+            disabled={isLoading}
           />
           <label
             htmlFor="terms"
@@ -190,6 +195,7 @@ export const AuthForm = () => {
             setErrorMessage("");
           }}
           className="text-primary hover:underline"
+          disabled={isLoading}
         >
           {isSignUp ? "Sign In" : "Sign Up"}
         </button>
