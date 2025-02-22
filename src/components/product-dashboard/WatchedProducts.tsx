@@ -10,11 +10,10 @@ export const WatchedProducts = () => {
   const { data: savedProducts, isLoading } = useQuery({
     queryKey: ['saved-products'],
     queryFn: async () => {
-      console.log('Fetching saved products');
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return [];
 
-      // Get products that have been saved by the user
+      // Get products that have been saved by the current user
       const { data, error } = await supabase
         .from('product_analytics')
         .select(`
@@ -28,6 +27,7 @@ export const WatchedProducts = () => {
             stage
           )
         `)
+        .eq('user_id', user.id) // Only get saves for the current user
         .gt('saves', 0) // Products that have been saved
         .order('saves', { ascending: false })
         .limit(4);
@@ -37,7 +37,7 @@ export const WatchedProducts = () => {
         throw error;
       }
 
-      return data;
+      return data || [];
     },
   });
 
@@ -86,3 +86,4 @@ export const WatchedProducts = () => {
     </div>
   );
 };
+
