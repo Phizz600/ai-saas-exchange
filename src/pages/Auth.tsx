@@ -19,23 +19,25 @@ const Auth = () => {
       try {
         const { data: profile, error: profileError } = await supabase
           .from('profiles')
-          .select('user_type')
+          .select('user_type, id')
           .eq('id', userId)
-          .maybeSingle();
+          .single();
         
+        console.log("Auth: Profile check response:", { profile, profileError });
+
         if (profileError) {
           console.error("Auth: Error fetching profile:", profileError);
           throw profileError;
         }
 
-        if (!profile && retryCount < 3) {
-          console.log(`Auth: No profile found, retrying in 2s (attempt ${retryCount + 1})`);
-          await new Promise(resolve => setTimeout(resolve, 2000));
+        if (!profile && retryCount < 5) {
+          console.log(`Auth: No profile found, waiting 1s before retry (attempt ${retryCount + 1})`);
+          await new Promise(resolve => setTimeout(resolve, 1000));
           return checkProfileAndRedirect(userId, retryCount + 1);
         }
 
-        if (!profile || !profile.user_type) {
-          console.error("Auth: No profile or user_type found after retries");
+        if (!profile) {
+          console.error("Auth: No profile found after retries");
           toast({
             variant: "destructive",
             title: "Error",
@@ -45,25 +47,30 @@ const Auth = () => {
           return;
         }
 
-        console.log("Auth: Found user type:", profile.user_type);
+        console.log("Auth: Found profile:", profile);
 
         // Navigate based on user type
         switch (profile.user_type) {
           case 'ai_investor':
-            console.log("Auth: Redirecting investor to coming-soon");
-            navigate("/coming-soon");
+            console.log("Auth: Redirecting investor to marketplace");
+            navigate("/marketplace");
             break;
           case 'ai_builder':
             console.log("Auth: Redirecting builder to list-product");
             navigate("/list-product");
             break;
           default:
-            console.log("Auth: Redirecting to marketplace");
+            console.log("Auth: Invalid user type, redirecting to marketplace");
             navigate("/marketplace");
             break;
         }
       } catch (error) {
         console.error("Auth: Error in profile check:", error);
+        if (retryCount < 5) {
+          console.log("Auth: Retrying profile check...");
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          return checkProfileAndRedirect(userId, retryCount + 1);
+        }
         toast({
           variant: "destructive",
           title: "Error",
@@ -96,10 +103,9 @@ const Auth = () => {
 
     // Subscribe to auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("Auth: Auth state changed:", event);
+      console.log("Auth: Auth state changed:", event, session?.user?.id);
       
       if (event === "SIGNED_IN" && session?.user) {
-        console.log("Auth: User signed in with ID:", session.user.id);
         await checkProfileAndRedirect(session.user.id);
       }
     });

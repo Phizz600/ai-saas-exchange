@@ -12,7 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 
 export const AuthForm = () => {
   const [errorMessage, setErrorMessage] = useState("");
-  const [isSignUp, setIsSignUp] = useState(false);
+  const [isSignUp, setIsSignUp] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -46,19 +46,14 @@ export const AuthForm = () => {
 
     try {
       if (isSignUp) {
+        console.log("AuthForm: Starting signup process");
         if (!isFormValid) {
           setErrorMessage("Please fill in all fields and agree to the terms of service.");
           setIsLoading(false);
           return;
         }
 
-        // Validate user type before submission
-        if (!['ai_builder', 'ai_investor'].includes(userType)) {
-          setErrorMessage("Invalid user type selected.");
-          setIsLoading(false);
-          return;
-        }
-
+        console.log("AuthForm: Attempting signup with user type:", userType);
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
@@ -71,12 +66,10 @@ export const AuthForm = () => {
         });
 
         if (error) {
-          console.error("Signup error:", error);
+          console.error("AuthForm: Signup error:", error);
           if (error.message.includes("User already registered")) {
             setErrorMessage("This email is already registered. Please sign in instead.");
             setIsSignUp(false);
-          } else if (error.message.includes("Invalid user_type")) {
-            setErrorMessage("Invalid user type selected. Please choose either AI Builder or AI Investor.");
           } else {
             setErrorMessage(error.message);
           }
@@ -84,20 +77,20 @@ export const AuthForm = () => {
           return;
         }
 
-        if (data?.user) {
-          toast({
-            title: "Welcome!",
-            description: "Your account has been created successfully.",
-          });
-        }
+        console.log("AuthForm: Signup successful:", data);
+        toast({
+          title: "Welcome!",
+          description: "Your account has been created successfully.",
+        });
       } else {
+        console.log("AuthForm: Starting signin process");
         const { error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
         
         if (error) {
-          console.error("Sign in error:", error);
+          console.error("AuthForm: Sign in error:", error);
           if (error.message.includes("Invalid login credentials")) {
             setErrorMessage("Invalid email or password.");
           } else {
@@ -107,13 +100,14 @@ export const AuthForm = () => {
           return;
         }
 
+        console.log("AuthForm: Signin successful");
         toast({
           title: "Welcome back!",
           description: "You've been successfully logged in.",
         });
       }
     } catch (error: any) {
-      console.error("Auth error:", error);
+      console.error("AuthForm: Unexpected error:", error);
       setErrorMessage(error.message || "An unexpected error occurred.");
       setIsLoading(false);
     }
