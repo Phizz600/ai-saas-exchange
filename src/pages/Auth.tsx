@@ -14,8 +14,8 @@ const Auth = () => {
     console.log("Auth: Component mounted");
     
     // Function to check profile and redirect
-    const checkProfileAndRedirect = async (userId: string) => {
-      console.log("Auth: Checking profile for user:", userId);
+    const checkProfileAndRedirect = async (userId: string, retryCount = 0) => {
+      console.log(`Auth: Checking profile for user: ${userId} (attempt ${retryCount + 1})`);
       
       try {
         const { data: profile, error: profileError } = await supabase
@@ -29,11 +29,23 @@ const Auth = () => {
           throw profileError;
         }
 
-        if (!profile) {
-          console.log("Auth: No profile found, waiting and retrying...");
-          // Wait 2 seconds and try again
+        // If no profile found and we haven't exceeded retries
+        if (!profile && retryCount < 3) {
+          console.log(`Auth: No profile found, retrying in 2s (attempt ${retryCount + 1})`);
           await new Promise(resolve => setTimeout(resolve, 2000));
-          return checkProfileAndRedirect(userId);
+          return checkProfileAndRedirect(userId, retryCount + 1);
+        }
+
+        // If we've exceeded retries or still no profile
+        if (!profile || !profile.user_type) {
+          console.error("Auth: No profile or user_type found after retries");
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: "Could not load your profile. Please try logging out and back in.",
+          });
+          navigate("/marketplace");
+          return;
         }
 
         console.log("Auth: Found user type:", profile.user_type);
