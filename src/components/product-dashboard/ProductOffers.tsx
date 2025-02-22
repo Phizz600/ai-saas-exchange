@@ -1,11 +1,12 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Check, X } from "lucide-react";
+import { Check, X, StoreIcon } from "lucide-react";
 import { getProductOffers, updateOfferStatus } from "@/integrations/supabase/functions";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { Link } from "react-router-dom";
 
 export const ProductOffers = () => {
   const { toast } = useToast();
@@ -50,10 +51,20 @@ export const ProductOffers = () => {
   if (!offers.length) {
     return (
       <Card className="p-6 text-center">
-        <h3 className="text-lg font-semibold mb-2">No Offers Yet</h3>
-        <p className="text-gray-600">
-          When buyers make offers on your products, they'll appear here.
-        </p>
+        <div className="flex flex-col items-center gap-4">
+          <StoreIcon className="h-12 w-12 text-gray-400" />
+          <div>
+            <h3 className="text-lg font-semibold mb-2">No Offers Yet</h3>
+            <p className="text-gray-600 mb-4">
+              When you list products and receive offers from buyers, they'll appear here.
+            </p>
+            <Button asChild>
+              <Link to="/list-product" className="inline-flex items-center gap-2">
+                List Your First Product
+              </Link>
+            </Button>
+          </div>
+        </div>
       </Card>
     );
   }

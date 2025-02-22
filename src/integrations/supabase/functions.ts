@@ -139,6 +139,17 @@ export const getProductOffers = async () => {
       return [];
     }
 
+    const { data: userProducts } = await supabase
+      .from('products')
+      .select('id')
+      .eq('seller_id', user.id);
+
+    if (!userProducts?.length) {
+      return [];
+    }
+
+    const productIds = userProducts.map(product => product.id);
+
     const { data, error } = await supabase
       .from('offers')
       .select(`
@@ -152,6 +163,7 @@ export const getProductOffers = async () => {
           avatar_url
         )
       `)
+      .in('product_id', productIds)
       .order('created_at', { ascending: false });
 
     if (error) {
