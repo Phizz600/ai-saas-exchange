@@ -29,12 +29,13 @@ export const AuthForm = () => {
         email !== "" &&
         password !== "" &&
         firstName !== "" &&
-        agreedToTerms
+        agreedToTerms &&
+        ['ai_builder', 'ai_investor'].includes(userType)
       );
     } else {
       setIsFormValid(email !== "" && password !== "");
     }
-  }, [email, password, firstName, agreedToTerms, isSignUp]);
+  }, [email, password, firstName, agreedToTerms, isSignUp, userType]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,13 +52,20 @@ export const AuthForm = () => {
           return;
         }
 
+        // Validate user type before submission
+        if (!['ai_builder', 'ai_investor'].includes(userType)) {
+          setErrorMessage("Invalid user type selected.");
+          setIsLoading(false);
+          return;
+        }
+
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
             data: {
               first_name: firstName,
-              user_type: userType, // This is now guaranteed to be either 'ai_builder' or 'ai_investor'
+              user_type: userType,
             },
           },
         });
@@ -67,6 +75,8 @@ export const AuthForm = () => {
           if (error.message.includes("User already registered")) {
             setErrorMessage("This email is already registered. Please sign in instead.");
             setIsSignUp(false);
+          } else if (error.message.includes("Invalid user_type")) {
+            setErrorMessage("Invalid user type selected. Please choose either AI Builder or AI Investor.");
           } else {
             setErrorMessage(error.message);
           }
@@ -88,7 +98,11 @@ export const AuthForm = () => {
         
         if (error) {
           console.error("Sign in error:", error);
-          setErrorMessage(error.message);
+          if (error.message.includes("Invalid login credentials")) {
+            setErrorMessage("Invalid email or password.");
+          } else {
+            setErrorMessage(error.message);
+          }
           setIsLoading(false);
           return;
         }
