@@ -57,7 +57,6 @@ const Auth = () => {
             console.log("Auth: Redirecting builder to list-product");
             navigate("/list-product");
             break;
-          case 'regular_user':
           default:
             console.log("Auth: Redirecting to marketplace");
             navigate("/marketplace");

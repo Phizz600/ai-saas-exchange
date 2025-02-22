@@ -12,8 +12,8 @@ import {
 interface UserTypeSelectorProps {
   isBuilder: boolean;
   setIsBuilder: (value: boolean) => void;
-  userType: 'ai_builder' | 'ai_investor' | 'regular_user';
-  setUserType: (type: 'ai_builder' | 'ai_investor' | 'regular_user') => void;
+  userType: 'ai_builder' | 'ai_investor';
+  setUserType: (type: 'ai_builder' | 'ai_investor') => void;
 }
 
 export const UserTypeSelector = ({ isBuilder, setIsBuilder, userType, setUserType }: UserTypeSelectorProps) => {
@@ -32,23 +32,12 @@ export const UserTypeSelector = ({ isBuilder, setIsBuilder, userType, setUserTyp
                   Choose how you'll use the marketplace:
                   <br />- As an Investor to buy AI products
                   <br />- As a Builder to sell AI products
-                  <br />- As a Regular User to browse and explore
                 </p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
         </div>
         <div className="flex items-center space-x-4">
-          <button
-            onClick={() => setUserType('regular_user')}
-            className={`text-sm px-3 py-1 rounded-full transition-colors ${
-              userType === 'regular_user'
-                ? 'bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white'
-                : 'text-gray-500 hover:bg-gray-100'
-            }`}
-          >
-            Regular User
-          </button>
           <div className="flex items-center space-x-2">
             <span className={`text-sm ${userType === 'ai_investor' ? 'text-primary font-medium' : 'text-muted-foreground'}`}>
               Investor
@@ -57,7 +46,6 @@ export const UserTypeSelector = ({ isBuilder, setIsBuilder, userType, setUserTyp
               id="userType"
               checked={userType === 'ai_builder'}
               onCheckedChange={(checked) => setUserType(checked ? 'ai_builder' : 'ai_investor')}
-              disabled={userType === 'regular_user'}
               className={`relative h-6 w-11 cursor-pointer rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${
                 userType === 'ai_builder'
                   ? 'bg-[#8B5CF6]'
