@@ -1,4 +1,3 @@
-
 import { useQuery } from "@tanstack/react-query";
 import { ProductCard } from "@/components/ProductCard";
 import { getMatchedProducts } from "@/integrations/supabase/functions";
@@ -107,13 +106,15 @@ const questions = [
   {
     id: 7,
     question: "LLM Integration Preferences?",
-    description: "Select your preferred LLM integration approach",
+    description: "Select your preferred LLM provider",
     icon: Bot,
     options: [
-      { value: "proprietary", label: "Proprietary LLM" },
-      { value: "openai", label: "OpenAI Integration" },
-      { value: "hybrid", label: "Hybrid Approach" },
-      { value: "any", label: "Any Integration" }
+      { value: "openai", label: "OpenAI" },
+      { value: "claude", label: "Claude" },
+      { value: "deepseek", label: "DeepSeek" },
+      { value: "mistral", label: "Mistral AI" },
+      { value: "gemini", label: "Gemini" },
+      { value: "llama", label: "Llama" }
     ]
   },
   {
