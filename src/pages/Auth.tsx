@@ -32,10 +32,12 @@ const Auth = () => {
           
           if (profileError) {
             console.error("Profile error:", profileError);
-            // Don't return early, try to navigate to a default route
+            // Navigate to a default route if we can't determine the user type
+            navigate("/marketplace");
+            return;
           }
 
-          // Navigate based on user type, default to marketplace if type is unknown
+          // Navigate based on user type
           if (profile?.user_type === 'ai_investor') {
             navigate("/coming-soon");
           } else if (profile?.user_type === 'ai_builder') {
@@ -60,28 +62,26 @@ const Auth = () => {
       console.log("Auth: Auth state changed:", event);
       
       if (event === "SIGNED_IN" && session) {
-        console.log("Auth: User signed in, checking user type");
+        console.log("Auth: User signed in, navigating based on user type");
         try {
           const { data: profile, error: profileError } = await supabase
             .from('profiles')
             .select('user_type')
             .eq('id', session.user.id)
-            .single();
+            .maybeSingle(); // Using maybeSingle instead of single to handle cases where profile might not exist yet
 
-          if (profileError) {
-            console.error("Profile error:", profileError);
-            toast({
-              variant: "destructive",
-              title: "Profile Error",
-              description: "There was a problem loading your profile. You'll be redirected to the marketplace.",
-            });
+          // If there's no profile yet (which can happen right after signup), 
+          // or if there's an error, redirect to marketplace
+          if (profileError || !profile) {
+            console.log("No profile found or error occurred, redirecting to marketplace");
             navigate("/marketplace");
             return;
           }
 
-          if (profile?.user_type === 'ai_investor') {
+          // Navigate based on user type
+          if (profile.user_type === 'ai_investor') {
             navigate("/coming-soon");
-          } else if (profile?.user_type === 'ai_builder') {
+          } else if (profile.user_type === 'ai_builder') {
             navigate("/list-product");
           } else {
             navigate("/marketplace");

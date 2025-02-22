@@ -38,7 +38,7 @@ export const AuthForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (isLoading) return; // Prevent multiple submissions
+    if (isLoading) return;
     
     setErrorMessage("");
     setIsLoading(true);
@@ -70,6 +70,7 @@ export const AuthForm = () => {
           } else {
             setErrorMessage(error.message);
           }
+          setIsLoading(false);
           return;
         }
 
@@ -88,6 +89,7 @@ export const AuthForm = () => {
         if (error) {
           console.error("Sign in error:", error);
           setErrorMessage(error.message);
+          setIsLoading(false);
           return;
         }
 
@@ -99,7 +101,6 @@ export const AuthForm = () => {
     } catch (error: any) {
       console.error("Auth error:", error);
       setErrorMessage(error.message || "An unexpected error occurred.");
-    } finally {
       setIsLoading(false);
     }
   };
