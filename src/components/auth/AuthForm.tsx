@@ -17,7 +17,7 @@ export const AuthForm = () => {
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [isBuilder, setIsBuilder] = useState(false);
-  const [userType, setUserType] = useState<'ai_builder' | 'ai_investor' | 'regular_user'>('regular_user');
+  const [userType, setUserType] = useState<'ai_builder' | 'ai_investor'>('ai_investor');
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -57,7 +57,7 @@ export const AuthForm = () => {
           options: {
             data: {
               first_name: firstName,
-              user_type: userType,
+              user_type: userType, // This is now guaranteed to be either 'ai_builder' or 'ai_investor'
             },
           },
         });
