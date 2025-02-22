@@ -60,7 +60,12 @@ const Auth = () => {
             navigate("/list-product");
             break;
           default:
-            console.log("Auth: Invalid user type, redirecting to marketplace");
+            console.error("Auth: Invalid user type detected:", profile.user_type);
+            toast({
+              variant: "destructive",
+              title: "Error",
+              description: "Invalid user type detected. Please contact support.",
+            });
             navigate("/marketplace");
             break;
         }
