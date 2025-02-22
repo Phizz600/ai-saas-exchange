@@ -13,13 +13,16 @@ export const ProductDashboardContent = ({ showVerifiedOnly }: ProductDashboardCo
     queryKey: ['seller-products', showVerifiedOnly],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('No user found');
+      if (!user) {
+        console.error('No authenticated user found');
+        return [];
+      }
 
       console.log('Fetching products for seller:', user.id);
       
       let query = supabase
         .from('products')
-        .select('*')
+        .select('*, product_analytics(*)')
         .eq('seller_id', user.id)
         .order('created_at', { ascending: false });
 

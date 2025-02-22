@@ -15,7 +15,10 @@ export const useSellerStats = () => {
     queryFn: async (): Promise<SellerStats | null> => {
       console.log('Fetching seller dashboard stats');
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return null;
+      if (!user) {
+        console.log('No authenticated user found');
+        return null;
+      }
 
       const { data: products, error } = await supabase
         .from('products')
@@ -35,8 +38,10 @@ export const useSellerStats = () => {
 
       if (!products) return null;
 
+      // Calculate total revenue from the seller's products
       const totalRevenue = products.reduce((sum, product) => sum + (product.price || 0), 0);
       
+      // Calculate total views and bids across all products
       const analytics = products.reduce((acc, product) => {
         const productAnalytics = product.product_analytics?.[0] || { views: 0, bids: 0 };
         return {
