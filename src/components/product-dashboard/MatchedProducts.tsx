@@ -300,17 +300,19 @@ export const MatchedProducts = () => {
 
     return (
       <Card className="p-6 text-center">
-        <h3 className="text-2xl font-semibold mb-2 exo-2-heading">Complete Your Buyer Profile</h3>
-        <p className="text-gray-600 mb-4">
-          Please complete the buyer profile questionnaire to see your matched products.
-        </p>
-        <Button 
-          onClick={() => setShowQuestionnaire(true)}
-          className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 transition-opacity flex items-center gap-2"
-        >
-          <ClipboardList className="h-4 w-4" />
-          Complete Questionnaire
-        </Button>
+        <div className="flex flex-col items-center space-y-4">
+          <h3 className="text-2xl font-semibold mb-2 exo-2-heading">Complete Your Buyer Profile</h3>
+          <p className="text-gray-600">
+            Please complete the buyer profile questionnaire to see your matched products.
+          </p>
+          <Button 
+            onClick={() => setShowQuestionnaire(true)}
+            className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 transition-opacity flex items-center gap-2"
+          >
+            <ClipboardList className="h-4 w-4" />
+            Complete Questionnaire
+          </Button>
+        </div>
       </Card>
     );
   }
