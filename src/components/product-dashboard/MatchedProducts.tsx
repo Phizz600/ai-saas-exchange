@@ -1,3 +1,4 @@
+
 import { useQuery } from "@tanstack/react-query";
 import { ProductCard } from "@/components/ProductCard";
 import { getMatchedProducts } from "@/integrations/supabase/functions";
@@ -89,14 +90,18 @@ const questions = [
   },
   {
     id: 6,
-    question: "Which industries interest you?",
-    description: "Select the industries you'd like to invest in",
+    question: "Which AI capabilities interest you?",
+    description: "Select the AI capabilities you'd like to invest in",
     icon: Building2,
     options: [
-      { value: "enterprise", label: "Enterprise Software" },
-      { value: "consumer", label: "Consumer Applications" },
-      { value: "developer", label: "Developer Tools" },
-      { value: "vertical", label: "Vertical Solutions" }
+      { value: "nlp", label: "Natural Language Processing" },
+      { value: "ml", label: "Machine Learning" },
+      { value: "content_gen", label: "Content Generation" },
+      { value: "computer_vision", label: "Computer Vision" },
+      { value: "voice_speech", label: "Voice & Speech" },
+      { value: "data_analytics", label: "Data Analytics" },
+      { value: "automation", label: "Automation" },
+      { value: "recommendation", label: "Recommendation Systems" }
     ]
   },
   {
