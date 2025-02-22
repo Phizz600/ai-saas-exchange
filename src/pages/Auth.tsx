@@ -20,7 +20,7 @@ const Auth = () => {
         if (session) {
           console.log("Auth: User already logged in, checking user type");
           // Use sleep to ensure profile has been created
-          await new Promise(resolve => setTimeout(resolve, 1000));
+          await new Promise(resolve => setTimeout(resolve, 2000));
           
           const { data: profile, error: profileError } = await supabase
             .from('profiles')
@@ -34,12 +34,17 @@ const Auth = () => {
             return;
           }
 
+          console.log("Auth: Found user type:", profile.user_type);
+
           // Navigate based on user type
           if (profile.user_type === 'ai_investor') {
+            console.log("Auth: Redirecting investor to coming-soon");
             navigate("/coming-soon");
           } else if (profile.user_type === 'ai_builder') {
+            console.log("Auth: Redirecting builder to list-product");
             navigate("/list-product");
           } else {
+            console.log("Auth: Redirecting to marketplace (default)");
             navigate("/marketplace");
           }
         }
@@ -62,8 +67,8 @@ const Auth = () => {
         console.log("Auth: User signed in, waiting for profile creation...");
         
         try {
-          // Add a small delay to ensure the profile has been created
-          await new Promise(resolve => setTimeout(resolve, 1000));
+          // Increase delay to ensure the profile has been created
+          await new Promise(resolve => setTimeout(resolve, 2000));
           
           const { data: profile, error: profileError } = await supabase
             .from('profiles')
@@ -77,12 +82,17 @@ const Auth = () => {
             return;
           }
 
+          console.log("Auth: Found user type after sign in:", profile.user_type);
+
           // Navigate based on user type
           if (profile.user_type === 'ai_investor') {
+            console.log("Auth: Redirecting investor to coming-soon");
             navigate("/coming-soon");
           } else if (profile.user_type === 'ai_builder') {
+            console.log("Auth: Redirecting builder to list-product");
             navigate("/list-product");
           } else {
+            console.log("Auth: Redirecting to marketplace (default)");
             navigate("/marketplace");
           }
         } catch (error) {
