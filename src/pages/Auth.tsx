@@ -13,7 +13,6 @@ const Auth = () => {
   useEffect(() => {
     console.log("Auth: Component mounted");
     
-    // Function to check profile and redirect
     const checkProfileAndRedirect = async (userId: string, retryCount = 0) => {
       console.log(`Auth: Checking profile for user: ${userId} (attempt ${retryCount + 1})`);
       
@@ -29,14 +28,12 @@ const Auth = () => {
           throw profileError;
         }
 
-        // If no profile found and we haven't exceeded retries
         if (!profile && retryCount < 3) {
           console.log(`Auth: No profile found, retrying in 2s (attempt ${retryCount + 1})`);
           await new Promise(resolve => setTimeout(resolve, 2000));
           return checkProfileAndRedirect(userId, retryCount + 1);
         }
 
-        // If we've exceeded retries or still no profile
         if (!profile || !profile.user_type) {
           console.error("Auth: No profile or user_type found after retries");
           toast({
@@ -51,15 +48,20 @@ const Auth = () => {
         console.log("Auth: Found user type:", profile.user_type);
 
         // Navigate based on user type
-        if (profile.user_type === 'ai_investor') {
-          console.log("Auth: Redirecting investor to coming-soon");
-          navigate("/coming-soon");
-        } else if (profile.user_type === 'ai_builder') {
-          console.log("Auth: Redirecting builder to list-product");
-          navigate("/list-product");
-        } else {
-          console.log("Auth: Redirecting to marketplace (default)");
-          navigate("/marketplace");
+        switch (profile.user_type) {
+          case 'ai_investor':
+            console.log("Auth: Redirecting investor to coming-soon");
+            navigate("/coming-soon");
+            break;
+          case 'ai_builder':
+            console.log("Auth: Redirecting builder to list-product");
+            navigate("/list-product");
+            break;
+          case 'regular_user':
+          default:
+            console.log("Auth: Redirecting to marketplace");
+            navigate("/marketplace");
+            break;
         }
       } catch (error) {
         console.error("Auth: Error in profile check:", error);

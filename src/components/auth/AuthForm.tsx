@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -16,6 +17,7 @@ export const AuthForm = () => {
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [isBuilder, setIsBuilder] = useState(false);
+  const [userType, setUserType] = useState<'ai_builder' | 'ai_investor' | 'regular_user'>('regular_user');
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -55,7 +57,7 @@ export const AuthForm = () => {
           options: {
             data: {
               first_name: firstName,
-              user_type: isBuilder ? 'ai_builder' : 'ai_investor'
+              user_type: userType,
             },
           },
         });
@@ -152,7 +154,14 @@ export const AuthForm = () => {
         />
       </div>
       
-      {isSignUp && <UserTypeSelector isBuilder={isBuilder} setIsBuilder={setIsBuilder} />}
+      {isSignUp && (
+        <UserTypeSelector 
+          isBuilder={isBuilder} 
+          setIsBuilder={setIsBuilder}
+          userType={userType}
+          setUserType={setUserType}
+        />
+      )}
 
       {isSignUp && (
         <div className="flex items-center space-x-2">
