@@ -16,38 +16,51 @@ const Auth = () => {
     const checkProfileAndRedirect = async (userId: string, retryCount = 0) => {
       console.log(`Auth: Checking profile for user: ${userId} (attempt ${retryCount + 1})`);
       
+      // Add delay for the first attempt to allow the profile creation to complete
+      if (retryCount === 0) {
+        console.log("Auth: Initial delay to allow profile creation");
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+
       try {
         const { data: profile, error: profileError } = await supabase
           .from('profiles')
           .select('user_type, id')
           .eq('id', userId)
-          .single();
+          .maybeSingle();
         
         console.log("Auth: Profile check response:", { profile, profileError });
 
         if (profileError) {
           console.error("Auth: Error fetching profile:", profileError);
+          if (retryCount < 3) {
+            console.log(`Auth: Will retry after error (attempt ${retryCount + 1})`);
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            return checkProfileAndRedirect(userId, retryCount + 1);
+          }
           throw profileError;
         }
 
-        if (!profile && retryCount < 5) {
-          console.log(`Auth: No profile found, waiting 1s before retry (attempt ${retryCount + 1})`);
-          await new Promise(resolve => setTimeout(resolve, 1000));
-          return checkProfileAndRedirect(userId, retryCount + 1);
-        }
-
         if (!profile) {
-          console.error("Auth: No profile found after retries");
-          toast({
-            variant: "destructive",
-            title: "Error",
-            description: "Could not load your profile. Please try logging out and back in.",
-          });
-          navigate("/marketplace");
-          return;
+          if (retryCount < 3) {
+            console.log(`Auth: No profile found, retrying in 2s (attempt ${retryCount + 1})`);
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            return checkProfileAndRedirect(userId, retryCount + 1);
+          }
+          throw new Error("Profile not found after multiple retries");
         }
 
         console.log("Auth: Found profile:", profile);
+
+        if (!profile.user_type) {
+          console.error("Auth: Profile found but missing user_type");
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: "Your profile is incomplete. Please try logging out and back in.",
+          });
+          return;
+        }
 
         // Navigate based on user type
         switch (profile.user_type) {
@@ -71,17 +84,16 @@ const Auth = () => {
         }
       } catch (error) {
         console.error("Auth: Error in profile check:", error);
-        if (retryCount < 5) {
-          console.log("Auth: Retrying profile check...");
-          await new Promise(resolve => setTimeout(resolve, 1000));
-          return checkProfileAndRedirect(userId, retryCount + 1);
-        }
         toast({
           variant: "destructive",
           title: "Error",
-          description: "There was a problem loading your profile. Please try again.",
+          description: "There was a problem loading your profile. Please try logging out and back in.",
         });
-        navigate("/marketplace");
+        // Sign out the user if we can't load their profile after all retries
+        if (retryCount >= 3) {
+          console.log("Auth: Signing out user after multiple failed attempts");
+          await supabase.auth.signOut();
+        }
       }
     };
 
@@ -129,3 +141,4 @@ const Auth = () => {
 };
 
 export default Auth;
+
