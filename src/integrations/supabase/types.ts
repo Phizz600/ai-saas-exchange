@@ -877,6 +877,12 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_valid_user_type: {
+        Args: {
+          user_type: string
+        }
+        Returns: boolean
+      }
       truncate_to_date: {
         Args: {
           ts: string
