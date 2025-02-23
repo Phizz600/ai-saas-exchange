@@ -21,7 +21,7 @@ export const MarketplaceContent = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [showVerifiedOnly, setShowVerifiedOnly] = useState(false);
   
-  const { currentItems: products, totalPages, isLoading, categoriesOverview } = useMarketplaceProducts({
+  const { currentItems: products, totalPages, isLoading } = useMarketplaceProducts({
     searchQuery,
     industryFilter,
     stageFilter,
@@ -58,7 +58,7 @@ export const MarketplaceContent = () => {
             className="flex items-center gap-2 text-sm font-medium cursor-pointer"
           >
             <CheckCircle className="h-4 w-4" />
-            Show Verified Only
+            Show Verified Listings Only
           </Label>
         </div>
       </div>
@@ -80,7 +80,6 @@ export const MarketplaceContent = () => {
         notifications={notifications}
         unreadCount={unreadCount}
         onMarkAsRead={markAsRead}
-        categoriesOverview={categoriesOverview}
       />
 
       {isLoading ? (
