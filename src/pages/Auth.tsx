@@ -62,11 +62,11 @@ const Auth = () => {
           return;
         }
 
-        // Navigate based on user type
+        // Updated navigation logic based on user type
         switch (profile.user_type) {
           case 'ai_investor':
-            console.log("Auth: Redirecting investor to marketplace");
-            navigate("/marketplace");
+            console.log("Auth: Redirecting investor to coming-soon page");
+            navigate("/coming-soon");
             break;
           case 'ai_builder':
             console.log("Auth: Redirecting builder to list-product");
@@ -79,7 +79,8 @@ const Auth = () => {
               title: "Error",
               description: "Invalid user type detected. Please contact support.",
             });
-            navigate("/marketplace");
+            // Redirect to coming-soon as a fallback
+            navigate("/coming-soon");
             break;
         }
       } catch (error) {
@@ -141,4 +142,3 @@ const Auth = () => {
 };
 
 export default Auth;
-
