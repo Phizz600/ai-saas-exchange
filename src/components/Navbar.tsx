@@ -3,11 +3,14 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { LogOut } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 export const Navbar = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const isProfilePage = location.pathname === '/profile';
 
   useEffect(() => {
@@ -41,6 +44,24 @@ export const Navbar = () => {
     }
   };
 
+  const handleSignOut = async () => {
+    try {
+      await supabase.auth.signOut();
+      toast({
+        title: "Signed out successfully",
+        description: "You have been signed out of your account",
+      });
+      navigate('/');
+    } catch (error) {
+      console.error('Error signing out:', error);
+      toast({
+        title: "Error signing out",
+        description: "There was a problem signing out of your account",
+        variant: "destructive",
+      });
+    }
+  };
+
   return <nav className={`${isProfilePage ? '' : 'fixed'} top-0 left-0 right-0 z-50 backdrop-blur-sm`}>
     <div className="container mx-auto px-4">
       <div className="flex items-center justify-between h-24">
@@ -49,11 +70,22 @@ export const Navbar = () => {
         </Link>
         
         <div className="flex items-center space-x-6">
-          {!isAuthenticated && <Link to="/auth">
-            <Button variant="secondary" className="bg-secondary hover:bg-secondary/90">
-              Sign In
+          {!isAuthenticated ? (
+            <Link to="/auth">
+              <Button variant="secondary" className="bg-secondary hover:bg-secondary/90">
+                Sign In
+              </Button>
+            </Link>
+          ) : (
+            <Button 
+              variant="ghost" 
+              onClick={handleSignOut}
+              className="flex items-center gap-2"
+            >
+              <LogOut className="h-4 w-4" />
+              Sign Out
             </Button>
-          </Link>}
+          )}
         </div>
       </div>
     </div>
