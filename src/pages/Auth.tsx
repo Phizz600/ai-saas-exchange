@@ -17,6 +17,20 @@ const Auth = () => {
       console.log(`Auth: Checking profile for user: ${userId} (attempt ${retryCount + 1})`);
       
       try {
+        // First, check if the user exists in auth.users
+        const { data: { user }, error: userError } = await supabase.auth.getUser();
+        
+        if (userError) {
+          console.error("Auth: Error getting user:", userError);
+          throw userError;
+        }
+
+        if (!user) {
+          console.error("Auth: No user found in auth.users");
+          throw new Error("User not found");
+        }
+
+        // Then check for profile
         const { data: profile, error: profileError } = await supabase
           .from('profiles')
           .select('user_type, id')
@@ -26,6 +40,7 @@ const Auth = () => {
         console.log("Auth: Profile check response:", { profile, profileError });
 
         if (profileError) {
+          console.error("Auth: Profile check error:", profileError);
           throw profileError;
         }
 
@@ -36,6 +51,7 @@ const Auth = () => {
             await new Promise(resolve => setTimeout(resolve, 1000));
             return await checkProfileAndRedirect(userId, retryCount + 1);
           }
+          console.error("Auth: Profile not found after multiple retries");
           throw new Error("Profile not found after multiple retries");
         }
 
@@ -63,29 +79,28 @@ const Auth = () => {
             navigate("/user-type-selection");
             break;
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error("Auth: Error in profile check:", error);
-        // Only show error and sign out on final retry
-        if (retryCount >= 3) {
-          toast({
-            variant: "destructive",
-            title: "Error",
-            description: "There was a problem loading your profile. Please try again.",
-          });
-          await supabase.auth.signOut();
-          return;
-        }
-        // Wait 1 second before retrying
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        return await checkProfileAndRedirect(userId, retryCount + 1);
+        toast({
+          variant: "destructive",
+          title: "Error Creating Account",
+          description: "There was a problem setting up your profile. Please try again.",
+        });
+        // Sign out the user and redirect to auth page
+        await supabase.auth.signOut();
       }
     };
 
     // Check initial session
     const checkSession = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
         
+        if (sessionError) {
+          console.error("Auth: Session check error:", sessionError);
+          throw sessionError;
+        }
+
         if (session?.user) {
           console.log("Auth: User already logged in with ID:", session.user.id);
           await checkProfileAndRedirect(session.user.id);

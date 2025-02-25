@@ -77,6 +77,12 @@ export const AuthForm = () => {
           return;
         }
 
+        if (!data.user) {
+          setErrorMessage("An unexpected error occurred during signup.");
+          setIsLoading(false);
+          return;
+        }
+
         console.log("AuthForm: Signup successful:", data);
         toast({
           title: "Welcome!",
@@ -91,7 +97,7 @@ export const AuthForm = () => {
         
         if (error) {
           console.error("AuthForm: Sign in error:", error);
-          setErrorMessage("Invalid email or password.");
+          setErrorMessage(error.message || "Invalid email or password.");
           setIsLoading(false);
           return;
         }
@@ -155,6 +161,7 @@ export const AuthForm = () => {
           required
           className="bg-white"
           disabled={isLoading}
+          minLength={6}
         />
       </div>
       
