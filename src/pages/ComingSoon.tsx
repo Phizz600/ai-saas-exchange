@@ -66,15 +66,15 @@ export const ComingSoon = () => {
 
             {/* Newsletter Benefits */}
             <div className="space-y-3 bg-purple-50 p-6 rounded-lg">
-              <h3 className="font-semibold text-gray-800">Why Join as an Investor?</h3>
-              <ul className="space-y-2 text-gray-700">
+              <h3 className="font-semibold text-gray-800 text-left">Why Join as an Investor?</h3>
+              <ul className="space-y-2 text-gray-700 text-left">
                 <li className="flex items-start gap-2">
                   <span className="text-[#8B5CF6] font-bold">→</span>
                   <span>First access to vetted AI companies before public launch</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-[#8B5CF6] font-bold">→</span>
-                  <span>Exclusive deals and preferential pricing through Dutch auctions</span>
+                  <span>Exclusive deals and preferential pricing through auctions</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-[#8B5CF6] font-bold">→</span>
