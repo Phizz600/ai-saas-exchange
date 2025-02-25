@@ -6,11 +6,10 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Timer, TrendingDown } from "lucide-react";
+import { Timer, TrendingDown, Users } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
-// Lazy load components
 const NewsletterSubscription = lazy(() => import("@/components/hero/NewsletterSubscription"));
 const FeatureHighlights = lazy(() => import("@/components/hero/FeatureHighlights"));
 const AnimatedBackground = lazy(() => import("@/components/hero/AnimatedBackground"));
@@ -28,6 +27,7 @@ const placeholderProducts = [
     category: "Content Generation",
     stage: "Revenue",
     monthlyRevenue: 8500,
+    monthlyTraffic: 15000,
     image: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7",
   },
   {
@@ -40,6 +40,7 @@ const placeholderProducts = [
     timeLeft: "2d 4h",
     category: "Customer Service",
     stage: "Scale",
+    monthlyTraffic: 25000,
     image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e",
   },
   {
@@ -50,6 +51,7 @@ const placeholderProducts = [
     category: "Image Generation",
     stage: "Growth",
     monthlyRevenue: 5200,
+    monthlyTraffic: 8000,
     image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158",
   },
   {
@@ -62,6 +64,7 @@ const placeholderProducts = [
     timeLeft: "3d 12h",
     category: "Development",
     stage: "Mature",
+    monthlyTraffic: 45000,
     image: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b",
   },
   {
@@ -72,6 +75,7 @@ const placeholderProducts = [
     category: "Audio Processing",
     stage: "Revenue",
     monthlyRevenue: 6800,
+    monthlyTraffic: 12000,
     image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6",
   },
   {
@@ -84,6 +88,7 @@ const placeholderProducts = [
     timeLeft: "1d 8h",
     category: "Finance",
     stage: "Scale",
+    monthlyTraffic: 30000,
     image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d",
   },
   {
@@ -94,6 +99,7 @@ const placeholderProducts = [
     category: "Video Processing",
     stage: "Growth",
     monthlyRevenue: 9200,
+    monthlyTraffic: 18000,
     image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5",
   },
   {
@@ -106,6 +112,7 @@ const placeholderProducts = [
     timeLeft: "4d 6h",
     category: "Analytics",
     stage: "Revenue",
+    monthlyTraffic: 22000,
     image: "https://images.unsplash.com/photo-1531297484001-80022131f5a1",
   },
   {
@@ -116,6 +123,7 @@ const placeholderProducts = [
     category: "Development",
     stage: "Growth",
     monthlyRevenue: 4500,
+    monthlyTraffic: 10000,
     image: "https://images.unsplash.com/photo-1518770660439-4636190af475",
   }
 ];
@@ -248,13 +256,18 @@ const Hero = () => {
                               ? formatCurrency(product.currentPrice || 0)
                               : formatCurrency(product.price || 0)}
                           </span>
-                          {product.isAuction && product.timeLeft && (
-                            <Badge variant="outline" className="ml-2">
-                              <Timer className="w-4 h-4 mr-1" />
-                              {product.timeLeft}
-                            </Badge>
+                          {product.isAuction && product.minPrice && (
+                            <span className="text-sm text-gray-500">
+                              (Min: {formatCurrency(product.minPrice)})
+                            </span>
                           )}
                         </div>
+
+                        <div className="flex items-center gap-2 text-gray-600">
+                          <Users className="w-4 h-4" />
+                          <span>{product.monthlyTraffic?.toLocaleString()} monthly visitors</span>
+                        </div>
+
                         {product.monthlyRevenue && (
                           <div className="text-sm text-gray-600">
                             MRR: {formatCurrency(product.monthlyRevenue)}
