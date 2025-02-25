@@ -17,7 +17,7 @@ export const ComingSoon = () => {
             <img 
               src="/lovable-uploads/f74b20e6-6798-4aeb-badd-2da6c2dce40b.png"
               alt="AI Exchange Logo"
-              className="w-24 h-24 mx-auto mb-8 object-contain animate-float cursor-pointer hover:opacity-80 transition-opacity"
+              className="h-24 w-24 mx-auto mb-8 object-contain animate-float cursor-pointer hover:opacity-80 transition-opacity"
             />
           </Link>
 
@@ -26,7 +26,7 @@ export const ComingSoon = () => {
               The Future of AI Asset Investment
             </h1>
             <p className="text-xl text-gray-700 max-w-2xl mx-auto">
-              Join an exclusive network of investors gaining early access to cutting-edge AI products, tools, and companies through our innovative Dutch auction marketplace.
+              Join an exclusive network of investors gaining early access to cutting-edge AI products, tools, and companies through our innovative auction marketplace.
             </p>
           </div>
 
