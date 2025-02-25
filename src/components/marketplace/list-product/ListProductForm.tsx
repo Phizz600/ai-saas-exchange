@@ -61,6 +61,7 @@ export function ListProductForm() {
       specialNotes: "",
       accuracyAgreement: false,
       termsAgreement: false,
+      deliverables: [],
     },
   });
 
