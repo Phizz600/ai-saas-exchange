@@ -91,11 +91,11 @@ export const Navbar = () => {
                   <Menu className="h-6 w-6" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-[300px] bg-[#EBEFF1]">
+              <SheetContent side="left" className="w-[300px] bg-[#EBEFF1] flex flex-col">
                 <SheetHeader className="flex justify-center items-center">
                   <img alt="AI Exchange Club" src="/lovable-uploads/da2f8a76-47e6-4112-8900-111cd146ace8.png" className="h-16 w-auto" />
                 </SheetHeader>
-                <div className="flex flex-col gap-4 mt-8">
+                <div className="flex flex-col gap-4 mt-8 flex-grow">
                   {navigationItems.map(item => (
                     <Link
                       key={item.title}
@@ -115,6 +115,16 @@ export const Navbar = () => {
                       Sign Out
                     </Button>
                   )}
+                </div>
+                <div className="mt-auto mb-6">
+                  <Link to="/listproduct">
+                    <Button 
+                      className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white hover:opacity-90"
+                      variant="secondary"
+                    >
+                      Sell Your AI Business
+                    </Button>
+                  </Link>
                 </div>
               </SheetContent>
             </Sheet>
