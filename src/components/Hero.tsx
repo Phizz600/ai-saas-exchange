@@ -1,4 +1,3 @@
-
 import { lazy, Suspense, useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
@@ -14,7 +13,6 @@ const HeroTitle = lazy(() => import("./hero/HeroTitle"));
 const HowItWorks = lazy(() => import("./hero/HowItWorks"));
 const SecurityFeatures = lazy(() => import("./hero/SecurityFeatures"));
 const RoleInfo = lazy(() => import("./hero/RoleInfo"));
-
 const Hero = () => {
   const navigate = useNavigate();
   const [newsletterEmail, setNewsletterEmail] = useState("");
@@ -22,66 +20,61 @@ const Hero = () => {
   const [subscriberCount, setSubscriberCount] = useState(342);
   const [isSellerOpen, setIsSellerOpen] = useState(false);
   const [isBuyerOpen, setIsBuyerOpen] = useState(false);
-  
   const words = ["SaaS", "Bots", "Apps", "Tools", "Startups", "APIs", "Products", "Solutions", "Algorithms", "Models", "Agents", "Platforms"];
-
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentWordIndex((prevIndex) => (prevIndex + 1) % words.length);
+      setCurrentWordIndex(prevIndex => (prevIndex + 1) % words.length);
     }, 2500); // 2.5 seconds interval
 
     return () => clearInterval(interval);
   }, []);
-
   const handleListProductClick = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
+    const {
+      data: {
+        session
+      }
+    } = await supabase.auth.getSession();
     if (session) {
       navigate("/list-product");
     } else {
       navigate("/auth");
     }
   };
-
-  return (
-    <div className="min-h-screen relative overflow-hidden">
+  return <div className="min-h-screen relative overflow-hidden">
       <Suspense fallback={<div className="absolute inset-0 bg-gradient-to-br from-accent via-accent2 to-accent3" />}>
         <AnimatedBackground />
       </Suspense>
 
       <div className="relative container mx-auto px-4 py-24">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="space-y-8"
-        >
+        <motion.div initial={{
+        opacity: 0,
+        y: 20
+      }} animate={{
+        opacity: 1,
+        y: 0
+      }} transition={{
+        duration: 0.5
+      }} className="space-y-8">
           <Suspense fallback={<Skeleton className="h-48" />}>
             <HeroTitle currentWordIndex={currentWordIndex} words={words} />
           </Suspense>
 
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.3 }}
-            className="text-xl text-gray-200 mb-12 max-w-2xl mx-auto text-center"
-          >
+          <motion.p initial={{
+          opacity: 0
+        }} animate={{
+          opacity: 1
+        }} transition={{
+          duration: 0.3
+        }} className="text-xl text-gray-200 mb-12 max-w-2xl mx-auto text-center">
             The eBay of AI SaaS Businesses - A trusted platform for buying and selling cutting-edge AI solutions.
           </motion.p>
 
           <div className="flex flex-col gap-6 items-center">
-            <RainbowButton 
-              onClick={handleListProductClick}
-              className="text-lg py-6 px-12"
-            >
+            <RainbowButton onClick={handleListProductClick} className="text-lg py-6 px-12">
               List your AI Product Now
             </RainbowButton>
             <Suspense fallback={<Skeleton className="w-full max-w-md h-32" />}>
-              <NewsletterSubscription
-                newsletterEmail={newsletterEmail}
-                setNewsletterEmail={setNewsletterEmail}
-                subscriberCount={subscriberCount}
-                setSubscriberCount={setSubscriberCount}
-              />
+              <NewsletterSubscription newsletterEmail={newsletterEmail} setNewsletterEmail={setNewsletterEmail} subscriberCount={subscriberCount} setSubscriberCount={setSubscriberCount} />
             </Suspense>
           </div>
 
@@ -90,7 +83,7 @@ const Hero = () => {
           </Suspense>
 
           <div className="mt-24 mb-16">
-            <h2 className="text-4xl font-bold text-white text-center mb-4 exo-2-heading">
+            <h2 className="font-bold text-white text-center mb-4 exo-2-heading text-3xl">
               AI SaaS Businesses for Sale
             </h2>
             <p className="text-xl text-gray-200 max-w-3xl mx-auto text-center">
@@ -107,12 +100,7 @@ const Hero = () => {
           </Suspense>
 
           <Suspense fallback={<Skeleton className="h-64" />}>
-            <RoleInfo
-              isSellerOpen={isSellerOpen}
-              setIsSellerOpen={setIsSellerOpen}
-              isBuyerOpen={isBuyerOpen}
-              setIsBuyerOpen={setIsBuyerOpen}
-            />
+            <RoleInfo isSellerOpen={isSellerOpen} setIsSellerOpen={setIsSellerOpen} isBuyerOpen={isBuyerOpen} setIsBuyerOpen={setIsBuyerOpen} />
           </Suspense>
 
           <div className="mt-8 text-sm text-gray-200">
@@ -120,9 +108,6 @@ const Hero = () => {
           </div>
         </motion.div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default Hero;
-
