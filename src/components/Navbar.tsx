@@ -3,15 +3,13 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Menu, X } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Menu } from "lucide-react";
+import { Sheet, SheetContent, SheetHeader } from "@/components/ui/sheet";
 
 export const Navbar = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const { toast } = useToast();
   const isProfilePage = location.pathname === '/profile';
 
   useEffect(() => {
@@ -27,24 +25,6 @@ export const Navbar = () => {
 
     return () => subscription.unsubscribe();
   }, []);
-
-  const handleSignOut = async () => {
-    try {
-      await supabase.auth.signOut();
-      toast({
-        title: "Signed out successfully",
-        description: "You have been signed out of your account"
-      });
-      navigate('/');
-    } catch (error) {
-      console.error('Error signing out:', error);
-      toast({
-        title: "Error signing out",
-        description: "There was a problem signing out of your account",
-        variant: "destructive"
-      });
-    }
-  };
 
   const handleNavigationClick = (e: React.MouseEvent, path: string) => {
     e.preventDefault();
@@ -106,15 +86,6 @@ export const Navbar = () => {
                       {item.title}
                     </Link>
                   ))}
-                  {isAuthenticated && (
-                    <Button
-                      onClick={handleSignOut}
-                      variant="secondary"
-                      className="mt-4 bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white hover:opacity-90"
-                    >
-                      Sign Out
-                    </Button>
-                  )}
                 </div>
                 <div className="mt-auto mb-6">
                   <Button 
@@ -139,15 +110,10 @@ export const Navbar = () => {
                   Sign In
                 </Button>
               </Link>
-            ) : (
-              <Button variant="ghost" onClick={handleSignOut} className="flex items-center gap-2">
-                Sign Out
-              </Button>
-            )}
+            ) : null}
           </div>
         </div>
       </div>
     </nav>
   );
 };
-
