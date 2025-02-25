@@ -1,4 +1,3 @@
-
 import { lazy, Suspense, useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
@@ -9,6 +8,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Timer, TrendingDown } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 // Lazy load components
 const NewsletterSubscription = lazy(() => import("@/components/hero/NewsletterSubscription"));
@@ -260,6 +260,41 @@ const Hero = () => {
                             MRR: {formatCurrency(product.monthlyRevenue)}
                           </div>
                         )}
+                      </div>
+
+                      {/* Action Buttons */}
+                      <div className="pt-4 space-y-2">
+                        {product.isAuction ? (
+                          <Button 
+                            className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 text-white"
+                            onClick={handleListProductClick}
+                          >
+                            Place Bid
+                          </Button>
+                        ) : (
+                          <Button 
+                            className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 text-white"
+                            onClick={handleListProductClick}
+                          >
+                            Buy Now
+                          </Button>
+                        )}
+                        
+                        <Button 
+                          variant="outline"
+                          className="w-full border-2 hover:bg-gray-50"
+                          onClick={handleListProductClick}
+                        >
+                          Make an Offer
+                        </Button>
+
+                        <Button
+                          variant="ghost"
+                          className="w-full hover:bg-gray-50"
+                          onClick={handleListProductClick}
+                        >
+                          View Details
+                        </Button>
                       </div>
                     </div>
                   </Card>
