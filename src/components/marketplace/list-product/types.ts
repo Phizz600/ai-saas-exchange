@@ -26,6 +26,7 @@ export interface ListProductFormData {
   specialNotes: string;
   accuracyAgreement: boolean;
   termsAgreement: boolean;
+  businessType: "B2B" | "B2C";
   
   // Additional fields for extended functionality
   monthlyProfit?: number;

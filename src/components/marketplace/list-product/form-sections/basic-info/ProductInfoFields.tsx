@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Tooltip,
   TooltipContent,
@@ -53,6 +54,49 @@ export function ProductInfoFields({ form }: ProductInfoFieldsProps) {
 
   return (
     <>
+      <FormField
+        control={form.control}
+        name="businessType"
+        render={({ field }) => (
+          <FormItem className="space-y-3">
+            <FormLabel className="flex items-center gap-2">
+              Business Type
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Info className="h-4 w-4 text-gray-500 cursor-help" />
+                  </TooltipTrigger>
+                  <TooltipContent className="bg-white">
+                    <p>Select whether your product primarily serves businesses (B2B) or consumers (B2C)</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </FormLabel>
+            <FormControl>
+              <RadioGroup
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+                className="flex gap-8"
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="B2B" id="b2b" />
+                  <label htmlFor="b2b" className="text-sm font-medium leading-none cursor-pointer">
+                    B2B (Business to Business)
+                  </label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="B2C" id="b2c" />
+                  <label htmlFor="b2c" className="text-sm font-medium leading-none cursor-pointer">
+                    B2C (Business to Consumer)
+                  </label>
+                </div>
+              </RadioGroup>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
       <FormField
         control={form.control}
         name="title"
