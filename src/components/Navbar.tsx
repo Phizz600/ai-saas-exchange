@@ -94,7 +94,7 @@ export const Navbar = () => {
                 </div>
                 <div className="mt-auto mb-6">
                   <Button
-                    onClick={e => handleNavigationClick(e, '/listproduct')}
+                    onClick={(e) => handleNavigationClick(e, '/list-product')}
                     className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white hover:opacity-90"
                     variant="secondary"
                   >
@@ -109,3 +109,4 @@ export const Navbar = () => {
     </nav>
   );
 };
+
