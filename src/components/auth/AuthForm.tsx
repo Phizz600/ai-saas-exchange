@@ -80,7 +80,7 @@ export const AuthForm = () => {
         console.log("AuthForm: Signup successful:", data);
         toast({
           title: "Welcome!",
-          description: "Your account has been created successfully.",
+          description: "Your account has been created. Please wait while we set up your profile...",
         });
       } else {
         console.log("AuthForm: Starting signin process");
@@ -105,7 +105,6 @@ export const AuthForm = () => {
     } catch (error: any) {
       console.error("AuthForm: Unexpected error:", error);
       setErrorMessage(error.message || "An unexpected error occurred.");
-    } finally {
       setIsLoading(false);
     }
   };

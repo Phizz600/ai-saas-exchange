@@ -29,14 +29,13 @@ const Auth = () => {
           throw profileError;
         }
 
-        // Handle case where profile doesn't exist
-        if (!profile && retryCount < 3) {
-          console.log(`Auth: No profile found, retrying in 2s (attempt ${retryCount + 1})`);
-          await new Promise(resolve => setTimeout(resolve, 2000));
-          return checkProfileAndRedirect(userId, retryCount + 1);
-        }
-
+        // If no profile exists and we haven't exceeded retries
         if (!profile) {
+          if (retryCount < 3) {
+            console.log(`Auth: No profile found, retrying in 1s (attempt ${retryCount + 1})`);
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            return await checkProfileAndRedirect(userId, retryCount + 1);
+          }
           throw new Error("Profile not found after multiple retries");
         }
 
@@ -66,19 +65,19 @@ const Auth = () => {
         }
       } catch (error) {
         console.error("Auth: Error in profile check:", error);
+        // Only show error and sign out on final retry
         if (retryCount >= 3) {
           toast({
             variant: "destructive",
             title: "Error",
-            description: "There was a problem loading your profile. Please try logging out and back in.",
+            description: "There was a problem loading your profile. Please try again.",
           });
           await supabase.auth.signOut();
-          navigate("/auth");
-        } else {
-          // Wait 2 seconds before retrying
-          await new Promise(resolve => setTimeout(resolve, 2000));
-          return checkProfileAndRedirect(userId, retryCount + 1);
+          return;
         }
+        // Wait 1 second before retrying
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        return await checkProfileAndRedirect(userId, retryCount + 1);
       }
     };
 
