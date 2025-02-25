@@ -65,7 +65,7 @@ const Hero = () => {
             transition={{ duration: 0.3 }}
             className="text-xl text-gray-200 mb-12 max-w-2xl mx-auto text-center"
           >
-            The eBay of AI Businesses - A trusted platform for buying and selling cutting-edge AI solutions.
+            The eBay of AI SaaS Businesses - A trusted platform for buying and selling cutting-edge AI solutions.
           </motion.p>
 
           <div className="flex flex-col gap-6 items-center">
