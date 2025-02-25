@@ -30,42 +30,7 @@ export const ComingSoon = () => {
             </p>
           </div>
 
-          {/* Benefits Grid */}
-          <div className="grid md:grid-cols-2 gap-6 my-12">
-            <div className="bg-white/50 p-6 rounded-lg border border-purple-100">
-              <div className="flex items-center gap-3 mb-4">
-                <ShieldCheck className="w-8 h-8 text-[#8B5CF6]" />
-                <h3 className="text-xl font-semibold text-gray-800">Premium Deals</h3>
-              </div>
-              <p className="text-gray-600">Get exclusive first access to vetted AI companies and products before they hit the public market.</p>
-            </div>
-
-            <div className="bg-white/50 p-6 rounded-lg border border-purple-100">
-              <div className="flex items-center gap-3 mb-4">
-                <LineChart className="w-8 h-8 text-[#D946EF]" />
-                <h3 className="text-xl font-semibold text-gray-800">Market Advantage</h3>
-              </div>
-              <p className="text-gray-600">Leverage our Dutch auction system to acquire valuable AI assets at optimal prices.</p>
-            </div>
-
-            <div className="bg-white/50 p-6 rounded-lg border border-purple-100">
-              <div className="flex items-center gap-3 mb-4">
-                <Users className="w-8 h-8 text-[#0EA5E9]" />
-                <h3 className="text-xl font-semibold text-gray-800">Elite Network</h3>
-              </div>
-              <p className="text-gray-600">Connect with fellow AI investors and founders in our exclusive community.</p>
-            </div>
-
-            <div className="bg-white/50 p-6 rounded-lg border border-purple-100">
-              <div className="flex items-center gap-3 mb-4">
-                <Rocket className="w-8 h-8 text-emerald-500" />
-                <h3 className="text-xl font-semibold text-gray-800">Early Mover</h3>
-              </div>
-              <p className="text-gray-600">Be among the first to capitalize on emerging AI opportunities and trends.</p>
-            </div>
-          </div>
-
-          {/* Newsletter Signup */}
+          {/* Newsletter Signup - Moved up */}
           <div className="max-w-xl mx-auto space-y-6">
             <div className="text-center space-y-4">
               <div className="space-y-6">
@@ -123,6 +88,41 @@ export const ComingSoon = () => {
             </div>
           </div>
 
+          {/* Benefits Grid */}
+          <div className="grid md:grid-cols-2 gap-6 my-12">
+            <div className="bg-white/50 p-6 rounded-lg border border-purple-100">
+              <div className="flex items-center gap-3 mb-4">
+                <ShieldCheck className="w-8 h-8 text-[#8B5CF6]" />
+                <h3 className="text-xl font-semibold text-gray-800">Premium Deals</h3>
+              </div>
+              <p className="text-gray-600">Get exclusive first access to vetted AI companies and products before they hit the public market.</p>
+            </div>
+
+            <div className="bg-white/50 p-6 rounded-lg border border-purple-100">
+              <div className="flex items-center gap-3 mb-4">
+                <LineChart className="w-8 h-8 text-[#D946EF]" />
+                <h3 className="text-xl font-semibold text-gray-800">Market Advantage</h3>
+              </div>
+              <p className="text-gray-600">Leverage our Dutch auction system to acquire valuable AI assets at optimal prices.</p>
+            </div>
+
+            <div className="bg-white/50 p-6 rounded-lg border border-purple-100">
+              <div className="flex items-center gap-3 mb-4">
+                <Users className="w-8 h-8 text-[#0EA5E9]" />
+                <h3 className="text-xl font-semibold text-gray-800">Elite Network</h3>
+              </div>
+              <p className="text-gray-600">Connect with fellow AI investors and founders in our exclusive community.</p>
+            </div>
+
+            <div className="bg-white/50 p-6 rounded-lg border border-purple-100">
+              <div className="flex items-center gap-3 mb-4">
+                <Rocket className="w-8 h-8 text-emerald-500" />
+                <h3 className="text-xl font-semibold text-gray-800">Early Mover</h3>
+              </div>
+              <p className="text-gray-600">Be among the first to capitalize on emerging AI opportunities and trends.</p>
+            </div>
+          </div>
+
           <div className="text-center text-gray-500 text-sm">
             Already have an AI product to list?{" "}
             <Link to="/list-product" className="text-[#8B5CF6] hover:underline">
@@ -135,4 +135,3 @@ export const ComingSoon = () => {
     </div>
   );
 };
-
