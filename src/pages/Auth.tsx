@@ -52,13 +52,10 @@ const Auth = () => {
 
         console.log("Auth: Found profile:", profile);
 
+        // If user type is not set, redirect to user type selection
         if (!profile.user_type) {
-          console.error("Auth: Profile found but missing user_type");
-          toast({
-            variant: "destructive",
-            title: "Error",
-            description: "Your profile is incomplete. Please try logging out and back in.",
-          });
+          console.log("Auth: Profile missing user_type, redirecting to user type selection");
+          navigate("/user-type-selection");
           return;
         }
 
@@ -79,8 +76,8 @@ const Auth = () => {
               title: "Error",
               description: "Invalid user type detected. Please contact support.",
             });
-            // Redirect to coming-soon as a fallback
-            navigate("/coming-soon");
+            // Redirect to user type selection as a fallback
+            navigate("/user-type-selection");
             break;
         }
       } catch (error) {
@@ -94,6 +91,7 @@ const Auth = () => {
         if (retryCount >= 3) {
           console.log("Auth: Signing out user after multiple failed attempts");
           await supabase.auth.signOut();
+          navigate("/auth");
         }
       }
     };
