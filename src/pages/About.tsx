@@ -9,9 +9,11 @@ export const About = () => {
             About AI Exchange Club
           </h1>
           <div className="space-y-6 text-gray-700">
-            <p className="text-lg">AI Exchange Club is the premier marketplace for buying and selling AI-powered businesses. 
+            <p className="text-lg">AI Exchange Club is the premier marketplace for buying and selling AI-powered SaaS businesses. 
 
-We connect innovative AI entrepreneurs with forward-thinking investors, creating opportunities for both sellers to realize the value of their creation and buyers to acquire cutting-edge AI technology businesses.</p>
+
+We connect innovative AI entrepreneurs with forward-thinking investors, creating opportunities for both sellers to realize the value of their creation and buyers to acquire cutting-edge AI technology businesses.
+          </p>
             <p className="text-lg">
               Our platform provides a secure, transparent, and efficient marketplace where:
             </p>
