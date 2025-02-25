@@ -1,6 +1,6 @@
 
 import { Navbar } from "@/components/Navbar";
-import { Hero } from "@/components/Hero";
+import Hero from "@/components/Hero";
 import { ExitIntentDialog } from "@/components/ExitIntentDialog";
 
 export const Index = () => {
