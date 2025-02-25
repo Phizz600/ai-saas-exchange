@@ -117,14 +117,13 @@ export const Navbar = () => {
                   )}
                 </div>
                 <div className="mt-auto mb-6">
-                  <Link to="/listproduct">
-                    <Button 
-                      className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white hover:opacity-90"
-                      variant="secondary"
-                    >
-                      Sell Your AI Business
-                    </Button>
-                  </Link>
+                  <Button 
+                    onClick={(e) => handleNavigationClick(e, '/listproduct')}
+                    className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white hover:opacity-90"
+                    variant="secondary"
+                  >
+                    Sell Your AI Business
+                  </Button>
                 </div>
               </SheetContent>
             </Sheet>
@@ -151,3 +150,4 @@ export const Navbar = () => {
     </nav>
   );
 };
+
