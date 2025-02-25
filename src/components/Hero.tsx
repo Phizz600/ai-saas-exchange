@@ -89,6 +89,15 @@ const Hero = () => {
             <SecurityFeatures />
           </Suspense>
 
+          <div className="mt-24 mb-16">
+            <h2 className="text-4xl font-bold text-white text-center mb-4 exo-2-heading">
+              AI SaaS Businesses for Sale
+            </h2>
+            <p className="text-xl text-gray-200 max-w-3xl mx-auto text-center">
+              We manually verify, audit & filter AI SaaS products before listing them here. Interested in buying one? Reach out we'll guide you through a smooth, secured purchasing process!
+            </p>
+          </div>
+
           <Suspense fallback={<Skeleton className="h-64" />}>
             <HowItWorks />
           </Suspense>
