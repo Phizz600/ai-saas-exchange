@@ -64,12 +64,10 @@ export const Navbar = () => {
 
   return <nav className={`${isProfilePage ? '' : 'fixed'} top-0 left-0 right-0 z-50 backdrop-blur-sm`}>
     <div className="container mx-auto px-4">
-      <div className="flex items-center justify-between md:justify-between h-24">
-        <div className="w-full md:w-auto flex justify-center md:justify-start">
-          <Link to="/" className="flex items-center">
-            <img src="/lovable-uploads/0283f7d5-13a6-40c9-b40a-69868474cec9.png" alt="AI Exchange Club" className="h-40 w-auto rounded-none pt-4" />
-          </Link>
-        </div>
+      <div className="flex items-center justify-between h-24">
+        <Link to="/" className="flex items-center">
+          <img src="/lovable-uploads/0283f7d5-13a6-40c9-b40a-69868474cec9.png" alt="AI Exchange Club" className="h-40 w-auto rounded-none pt-4" />
+        </Link>
         
         <div className="flex items-center space-x-6">
           {!isAuthenticated ? (
