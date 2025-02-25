@@ -67,7 +67,7 @@ export const Navbar = () => {
             <Sheet>
               <SheetTrigger asChild className="md:hidden">
                 <Button variant="ghost" size="icon" className="text-white font-extrabold">
-                  <Menu className="h-10 w-10 stroke-[3]" />
+                  <Menu className="h-14 w-14 stroke-[3]" />
                 </Button>
               </SheetTrigger>
               <SheetContent side="left" className="w-[300px] bg-[#EBEFF1] flex flex-col">
