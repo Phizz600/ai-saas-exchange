@@ -90,7 +90,7 @@ export const Navbar = () => {
                   <Menu className="h-6 w-6" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-[300px] bg-gradient-to-br from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9]">
+              <SheetContent side="left" className="w-[300px] bg-black">
                 <SheetHeader className="flex justify-center items-center">
                   <img alt="AI Exchange Club" src="/lovable-uploads/b28ada26-b74c-49aa-bb25-5908300ec35c.png" className="h-16 w-auto" />
                 </SheetHeader>
@@ -109,7 +109,7 @@ export const Navbar = () => {
                     <Button 
                       onClick={handleSignOut} 
                       variant="secondary" 
-                      className="mt-4 bg-white text-[#8B5CF6] hover:bg-white/90"
+                      className="mt-4 bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white hover:opacity-90"
                     >
                       Sign Out
                     </Button>
@@ -139,3 +139,4 @@ export const Navbar = () => {
       </div>
     </nav>;
 };
+
