@@ -91,11 +91,7 @@ export const AuthForm = () => {
         
         if (error) {
           console.error("AuthForm: Sign in error:", error);
-          if (error.message.includes("Invalid login credentials")) {
-            setErrorMessage("Invalid email or password.");
-          } else {
-            setErrorMessage(error.message);
-          }
+          setErrorMessage("Invalid email or password.");
           setIsLoading(false);
           return;
         }
@@ -109,6 +105,7 @@ export const AuthForm = () => {
     } catch (error: any) {
       console.error("AuthForm: Unexpected error:", error);
       setErrorMessage(error.message || "An unexpected error occurred.");
+    } finally {
       setIsLoading(false);
     }
   };

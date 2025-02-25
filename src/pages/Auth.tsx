@@ -16,12 +16,6 @@ const Auth = () => {
     const checkProfileAndRedirect = async (userId: string, retryCount = 0) => {
       console.log(`Auth: Checking profile for user: ${userId} (attempt ${retryCount + 1})`);
       
-      // Add delay for the first attempt to allow the profile creation to complete
-      if (retryCount === 0) {
-        console.log("Auth: Initial delay to allow profile creation");
-        await new Promise(resolve => setTimeout(resolve, 1000));
-      }
-
       try {
         const { data: profile, error: profileError } = await supabase
           .from('profiles')
@@ -32,25 +26,19 @@ const Auth = () => {
         console.log("Auth: Profile check response:", { profile, profileError });
 
         if (profileError) {
-          console.error("Auth: Error fetching profile:", profileError);
-          if (retryCount < 3) {
-            console.log(`Auth: Will retry after error (attempt ${retryCount + 1})`);
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            return checkProfileAndRedirect(userId, retryCount + 1);
-          }
           throw profileError;
         }
 
-        if (!profile) {
-          if (retryCount < 3) {
-            console.log(`Auth: No profile found, retrying in 2s (attempt ${retryCount + 1})`);
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            return checkProfileAndRedirect(userId, retryCount + 1);
-          }
-          throw new Error("Profile not found after multiple retries");
+        // Handle case where profile doesn't exist
+        if (!profile && retryCount < 3) {
+          console.log(`Auth: No profile found, retrying in 2s (attempt ${retryCount + 1})`);
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          return checkProfileAndRedirect(userId, retryCount + 1);
         }
 
-        console.log("Auth: Found profile:", profile);
+        if (!profile) {
+          throw new Error("Profile not found after multiple retries");
+        }
 
         // If user type is not set, redirect to user type selection
         if (!profile.user_type) {
@@ -59,7 +47,9 @@ const Auth = () => {
           return;
         }
 
-        // Updated navigation logic based on user type
+        console.log("Auth: Found profile with user_type:", profile.user_type);
+
+        // Redirect based on user type
         switch (profile.user_type) {
           case 'ai_investor':
             console.log("Auth: Redirecting investor to coming-soon page");
@@ -71,27 +61,23 @@ const Auth = () => {
             break;
           default:
             console.error("Auth: Invalid user type detected:", profile.user_type);
-            toast({
-              variant: "destructive",
-              title: "Error",
-              description: "Invalid user type detected. Please contact support.",
-            });
-            // Redirect to user type selection as a fallback
             navigate("/user-type-selection");
             break;
         }
       } catch (error) {
         console.error("Auth: Error in profile check:", error);
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "There was a problem loading your profile. Please try logging out and back in.",
-        });
-        // Sign out the user if we can't load their profile after all retries
         if (retryCount >= 3) {
-          console.log("Auth: Signing out user after multiple failed attempts");
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: "There was a problem loading your profile. Please try logging out and back in.",
+          });
           await supabase.auth.signOut();
           navigate("/auth");
+        } else {
+          // Wait 2 seconds before retrying
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          return checkProfileAndRedirect(userId, retryCount + 1);
         }
       }
     };
