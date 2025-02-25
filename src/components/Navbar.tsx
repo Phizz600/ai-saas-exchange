@@ -47,6 +47,15 @@ export const Navbar = () => {
     }
   };
 
+  const handleDashboardClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!isAuthenticated) {
+      navigate("/auth");
+    } else {
+      navigate("/dashboard");
+    }
+  };
+
   const handleSignOut = async () => {
     try {
       await supabase.auth.signOut();
@@ -66,10 +75,10 @@ export const Navbar = () => {
   };
 
   const navigationItems = [
-    { title: "Buy a Newsletter", href: "/marketplace" },
-    { title: "Newsletter valuation", href: "/listproduct" },
+    { title: "Buy an AI Business", href: "/marketplace" },
+    { title: "AI Business Valuation", href: "/listproduct" },
     { title: "About", href: "/about" },
-    { title: "Dashboard", href: "/dashboard" },
+    { title: "Dashboard", href: "/dashboard", onClick: handleDashboardClick },
   ];
 
   return (
@@ -87,14 +96,19 @@ export const Navbar = () => {
                 side="left" 
                 className="w-[300px] bg-gradient-to-br from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9]"
               >
-                <SheetHeader>
-                  <SheetTitle className="text-white font-exo">Menu</SheetTitle>
+                <SheetHeader className="flex justify-center items-center">
+                  <img 
+                    src="/lovable-uploads/a42960e3-6166-4231-aca1-e35decb81647.png" 
+                    alt="AI Exchange Club" 
+                    className="h-12 w-auto"
+                  />
                 </SheetHeader>
                 <div className="flex flex-col gap-4 mt-8">
                   {navigationItems.map((item) => (
                     <Link
                       key={item.title}
                       to={item.href}
+                      onClick={item.onClick}
                       className="text-white hover:text-white/80 font-exo text-lg py-2 px-4 rounded-lg hover:bg-white/10 transition-colors"
                     >
                       {item.title}
@@ -143,3 +157,4 @@ export const Navbar = () => {
     </nav>
   );
 };
+
