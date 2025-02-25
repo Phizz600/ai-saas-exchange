@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Timer, TrendingDown, Users } from "lucide-react";
+import { Timer, TrendingDown, Users, Star, History } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
@@ -28,6 +28,8 @@ const placeholderProducts = [
     stage: "Revenue",
     monthlyRevenue: 8500,
     monthlyTraffic: 15000,
+    grossProfitMargin: 75,
+    monthlyChurnRate: 2.5,
     image: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7",
   },
   {
@@ -41,6 +43,8 @@ const placeholderProducts = [
     category: "Customer Service",
     stage: "Scale",
     monthlyTraffic: 25000,
+    grossProfitMargin: 82,
+    monthlyChurnRate: 1.8,
     image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e",
   },
   {
@@ -271,6 +275,20 @@ const Hero = () => {
                         {product.monthlyRevenue && (
                           <div className="text-sm text-gray-600">
                             MRR: {formatCurrency(product.monthlyRevenue)}
+                          </div>
+                        )}
+                        
+                        {product.grossProfitMargin && (
+                          <div className="flex items-center gap-2 text-gray-600">
+                            <Star className="w-4 h-4" />
+                            <span>{product.grossProfitMargin}% profit margin</span>
+                          </div>
+                        )}
+
+                        {typeof product.monthlyChurnRate === 'number' && (
+                          <div className="flex items-center gap-2 text-gray-600">
+                            <History className="w-4 h-4" />
+                            <span>{product.monthlyChurnRate}% monthly churn</span>
                           </div>
                         )}
                       </div>
