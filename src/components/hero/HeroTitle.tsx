@@ -23,7 +23,7 @@ const HeroTitle = ({
         <span className="text-gray-200">({312} reviews)</span>
       </div>
 
-      <h1 className="font-exo text-3xl font-bold leading-tight text-white text-center mx-0 my-0 py-0 px-0 md:text-6xl">
+      <h1 className="font-exo font-bold leading-tight text-white text-center mx-0 my-0 py-0 px-0 md:text-6xl text-3xl">
         The #1 Marketplace
         <br />
         for AI{" "}
