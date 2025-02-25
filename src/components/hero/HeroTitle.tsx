@@ -29,7 +29,7 @@ const HeroTitle = ({ currentWordIndex, words }: HeroTitleProps) => {
       </div>
 
       <h1 className="font-exo text-5xl md:text-7xl font-bold leading-tight text-white text-center">
-        The Dutch Auction Marketplace
+        The #1 Marketplace
         <br />
         for AI{" "}
         <AnimatePresence mode="wait">
