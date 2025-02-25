@@ -3,8 +3,15 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 export const Navbar = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -16,17 +23,13 @@ export const Navbar = () => {
   useEffect(() => {
     const checkAuth = async () => {
       const {
-        data: {
-          session
-        }
+        data: { session }
       } = await supabase.auth.getSession();
       setIsAuthenticated(!!session);
     };
     checkAuth();
     const {
-      data: {
-        subscription
-      }
+      data: { subscription }
     } = supabase.auth.onAuthStateChange((event, session) => {
       setIsAuthenticated(!!session);
     });
@@ -62,32 +65,81 @@ export const Navbar = () => {
     }
   };
 
-  return <nav className={`${isProfilePage ? '' : 'fixed'} top-0 left-0 right-0 z-50 backdrop-blur-sm`}>
-    <div className="container mx-auto px-4">
-      <div className="flex items-center justify-between h-24">
-        <Link to="/" className="flex items-center">
-          <img src="/lovable-uploads/0283f7d5-13a6-40c9-b40a-69868474cec9.png" alt="AI Exchange Club" className="h-40 w-auto rounded-none pt-4" />
-        </Link>
-        
-        <div className="flex items-center space-x-6">
-          {!isAuthenticated ? (
-            <Link to="/auth">
-              <Button variant="secondary" className="bg-secondary hover:bg-secondary/90">
-                Sign In
-              </Button>
+  const navigationItems = [
+    { title: "Buy a Newsletter", href: "/marketplace" },
+    { title: "Newsletter valuation", href: "/listproduct" },
+    { title: "About", href: "/about" },
+    { title: "Dashboard", href: "/dashboard" },
+  ];
+
+  return (
+    <nav className={`${isProfilePage ? '' : 'fixed'} top-0 left-0 right-0 z-50 backdrop-blur-sm`}>
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-between h-24">
+          <div className="flex items-center">
+            <Sheet>
+              <SheetTrigger asChild className="md:hidden">
+                <Button variant="ghost" size="icon" className="mr-4">
+                  <Menu className="h-6 w-6" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent 
+                side="left" 
+                className="w-[300px] bg-gradient-to-br from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9]"
+              >
+                <SheetHeader>
+                  <SheetTitle className="text-white font-exo">Menu</SheetTitle>
+                </SheetHeader>
+                <div className="flex flex-col gap-4 mt-8">
+                  {navigationItems.map((item) => (
+                    <Link
+                      key={item.title}
+                      to={item.href}
+                      className="text-white hover:text-white/80 font-exo text-lg py-2 px-4 rounded-lg hover:bg-white/10 transition-colors"
+                    >
+                      {item.title}
+                    </Link>
+                  ))}
+                  {isAuthenticated && (
+                    <Button
+                      onClick={handleSignOut}
+                      variant="secondary"
+                      className="mt-4 bg-white text-[#8B5CF6] hover:bg-white/90"
+                    >
+                      Sign Out
+                    </Button>
+                  )}
+                </div>
+              </SheetContent>
+            </Sheet>
+            <Link to="/" className="flex items-center">
+              <img 
+                src="/lovable-uploads/0283f7d5-13a6-40c9-b40a-69868474cec9.png" 
+                alt="AI Exchange Club" 
+                className="h-40 w-auto rounded-none pt-4" 
+              />
             </Link>
-          ) : (
-            <Button 
-              variant="ghost" 
-              onClick={handleSignOut}
-              className="flex items-center gap-2"
-            >
-              <LogOut className="h-4 w-4" />
-              Sign Out
-            </Button>
-          )}
+          </div>
+          
+          <div className="hidden md:flex items-center space-x-6">
+            {!isAuthenticated ? (
+              <Link to="/auth">
+                <Button variant="secondary" className="bg-secondary hover:bg-secondary/90">
+                  Sign In
+                </Button>
+              </Link>
+            ) : (
+              <Button 
+                variant="ghost" 
+                onClick={handleSignOut}
+                className="flex items-center gap-2"
+              >
+                Sign Out
+              </Button>
+            )}
+          </div>
         </div>
       </div>
-    </div>
-  </nav>;
+    </nav>
+  );
 };
