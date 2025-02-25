@@ -84,6 +84,8 @@ export const handleProductSubmission = async (
       monetization_other: data.monetization === 'other' ? data.monetizationOther : null,
       business_model: data.businessModel,
       investment_timeline: data.investmentTimeline,
+      business_type: data.businessType,
+      deliverables: data.deliverables,
       updated_at: new Date().toISOString(),
       ...(data.isAuction && {
         auction_end_time: auctionEndTime,
@@ -190,6 +192,8 @@ export const handleProductUpdate = async (
         monetization: data.monetization === 'other' ? data.monetizationOther : data.monetization,
         monetization_other: data.monetization === 'other' ? data.monetizationOther : null
       }),
+      ...(data.businessType && { business_type: data.businessType }),
+      ...(data.deliverables && { deliverables: data.deliverables }),
       updated_at: new Date().toISOString()
     };
 

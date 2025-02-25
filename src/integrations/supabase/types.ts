@@ -525,11 +525,13 @@ export type Database = {
           auction_status: string | null
           business_location: string | null
           business_model: string | null
+          business_type: string | null
           category: string
           competitors: string | null
           created_at: string
           current_price: number | null
           customer_acquisition_cost: number | null
+          deliverables: string[] | null
           demo_url: string | null
           description: string | null
           gross_profit_margin: number | null
@@ -580,11 +582,13 @@ export type Database = {
           auction_status?: string | null
           business_location?: string | null
           business_model?: string | null
+          business_type?: string | null
           category: string
           competitors?: string | null
           created_at?: string
           current_price?: number | null
           customer_acquisition_cost?: number | null
+          deliverables?: string[] | null
           demo_url?: string | null
           description?: string | null
           gross_profit_margin?: number | null
@@ -635,11 +639,13 @@ export type Database = {
           auction_status?: string | null
           business_location?: string | null
           business_model?: string | null
+          business_type?: string | null
           category?: string
           competitors?: string | null
           created_at?: string
           current_price?: number | null
           customer_acquisition_cost?: number | null
+          deliverables?: string[] | null
           demo_url?: string | null
           description?: string | null
           gross_profit_margin?: number | null
