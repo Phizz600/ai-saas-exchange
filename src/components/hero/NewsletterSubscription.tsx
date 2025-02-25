@@ -16,7 +16,7 @@ const NewsletterSubscription = ({
           Be the first 1,000 to join the AI Exchange Club waitlist. Receive a{' '}
           <span className="text-[#D946EF] font-semibold">free valuation</span>,{' '}
           <span className="text-[#0EA5E9] font-semibold">lifetime membership</span>, and{' '}
-          <span className="text-purple-400 font-semibold">discounted listing fees for life</span>. Buyers: Enjoy{' '}
+          <span className="text-purple-400 font-semibold">90% off listing fees for life</span>. Buyers: Enjoy{' '}
           <span className="text-emerald-400 font-semibold">early access to exclusive deals</span> and connect with top AI innovators.
         </p>
         <div className="space-y-2">
