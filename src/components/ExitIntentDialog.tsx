@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { Briefcase, UserCog } from "lucide-react";
 
 export function ExitIntentDialog() {
   const [isOpen, setIsOpen] = useState(false);
@@ -59,12 +60,26 @@ export function ExitIntentDialog() {
             Don't Miss Out on AI Opportunities!
           </DialogTitle>
         </DialogHeader>
-        <div className="text-center space-y-4 p-4">
+        <div className="text-center space-y-6 p-4">
+          <div className="flex justify-center gap-12 items-center">
+            <div className="flex flex-col items-center gap-2">
+              <div className="bg-white/20 p-3 rounded-full">
+                <Briefcase className="h-8 w-8 text-white" />
+              </div>
+              <span className="text-white text-sm">For Investors</span>
+            </div>
+            <div className="flex flex-col items-center gap-2">
+              <div className="bg-white/20 p-3 rounded-full">
+                <UserCog className="h-8 w-8 text-white" />
+              </div>
+              <span className="text-white text-sm">For Builders</span>
+            </div>
+          </div>
           <p className="text-white text-lg">
             Join thousands of AI entrepreneurs and investors getting exclusive deals and insights.
           </p>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <Input
+            <Input 
               type="email"
               placeholder="Enter your email"
               value={email}
@@ -72,9 +87,16 @@ export function ExitIntentDialog() {
               className="w-full"
               required
             />
-            <Button type="submit" className="w-full bg-white text-purple-600 hover:bg-gray-100">
+            <Button 
+              type="submit" 
+              className="w-full bg-[#F97316] hover:bg-[#EA580C] text-white font-medium"
+            >
               Get Exclusive Updates
             </Button>
+            <div className="flex items-center justify-center gap-2 text-white/80 text-sm">
+              <span>🔒</span>
+              <p>Join 10,000+ AI professionals • No spam, ever</p>
+            </div>
           </form>
         </div>
       </DialogContent>
