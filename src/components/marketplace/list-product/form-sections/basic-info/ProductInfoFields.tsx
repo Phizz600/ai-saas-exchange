@@ -33,6 +33,21 @@ export function ProductInfoFields({ form }: ProductInfoFieldsProps) {
     "Data Analytics",
     "Automation",
     "Recommendation Systems",
+    "Image Generation",
+    "Generative AI",
+    "Chatbots",
+    "AI Agents",
+    "Decision Support",
+    "Edge AI",
+    "AI Infrastructure",
+    "AI Research Tools",
+    "Language Translation",
+    "AI Security",
+    "Robotics",
+    "AI Testing & QA",
+    "AI Healthcare",
+    "AI Education",
+    "AI Finance",
     "Other"
   ];
 
