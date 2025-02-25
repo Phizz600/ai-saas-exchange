@@ -12,7 +12,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Tooltip,
   TooltipContent,
@@ -180,12 +179,11 @@ export function ProductInfoFields({ form }: ProductInfoFieldsProps) {
         )}
       />
 
-      {/* Moving the Business Type field after industry fields and before product logo */}
       <FormField
         control={form.control}
         name="businessType"
         render={({ field }) => (
-          <FormItem className="space-y-3">
+          <FormItem>
             <FormLabel className="flex items-center gap-2">
               Business Type
               <TooltipProvider>
@@ -199,26 +197,21 @@ export function ProductInfoFields({ form }: ProductInfoFieldsProps) {
                 </Tooltip>
               </TooltipProvider>
             </FormLabel>
-            <FormControl>
-              <RadioGroup
-                onValueChange={field.onChange}
-                defaultValue={field.value}
-                className="flex gap-8"
-              >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="B2B" id="b2b" />
-                  <label htmlFor="b2b" className="text-sm font-medium leading-none cursor-pointer">
-                    B2B (Business to Business)
-                  </label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="B2C" id="b2c" />
-                  <label htmlFor="b2c" className="text-sm font-medium leading-none cursor-pointer">
-                    B2C (Business to Consumer)
-                  </label>
-                </div>
-              </RadioGroup>
-            </FormControl>
+            <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <FormControl>
+                <SelectTrigger className="bg-white">
+                  <SelectValue placeholder="Select business type" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent className="bg-white">
+                <SelectItem value="B2B" className="bg-white hover:bg-gray-100">
+                  B2B (Business to Business)
+                </SelectItem>
+                <SelectItem value="B2C" className="bg-white hover:bg-gray-100">
+                  B2C (Business to Consumer)
+                </SelectItem>
+              </SelectContent>
+            </Select>
             <FormMessage />
           </FormItem>
         )}
