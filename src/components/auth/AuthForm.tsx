@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
@@ -61,6 +61,7 @@ export const AuthForm = () => {
             data: {
               first_name: firstName,
               user_type: userType,
+              email_verified: true // This helps with testing
             },
           },
         });
@@ -78,16 +79,18 @@ export const AuthForm = () => {
         }
 
         if (!data.user) {
+          console.error("AuthForm: No user data returned from signup");
           setErrorMessage("An unexpected error occurred during signup.");
           setIsLoading(false);
           return;
         }
 
-        console.log("AuthForm: Signup successful:", data);
+        console.log("AuthForm: Signup successful. User ID:", data.user.id);
         toast({
           title: "Welcome!",
-          description: "Your account has been created. Please wait while we set up your profile...",
+          description: "Your account has been created. Setting up your profile...",
         });
+        
       } else {
         console.log("AuthForm: Starting signin process");
         const { error } = await supabase.auth.signInWithPassword({

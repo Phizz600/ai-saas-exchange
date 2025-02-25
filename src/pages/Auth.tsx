@@ -30,7 +30,11 @@ const Auth = () => {
           throw new Error("User not found");
         }
 
-        // Then check for profile
+        // Then check for profile with exponential backoff
+        const waitTime = Math.min(1000 * Math.pow(2, retryCount), 5000); // Cap at 5 seconds
+        console.log(`Auth: Waiting ${waitTime}ms before checking profile...`);
+        await new Promise(resolve => setTimeout(resolve, waitTime));
+
         const { data: profile, error: profileError } = await supabase
           .from('profiles')
           .select('user_type, id')
@@ -46,9 +50,8 @@ const Auth = () => {
 
         // If no profile exists and we haven't exceeded retries
         if (!profile) {
-          if (retryCount < 3) {
-            console.log(`Auth: No profile found, retrying in 1s (attempt ${retryCount + 1})`);
-            await new Promise(resolve => setTimeout(resolve, 1000));
+          if (retryCount < 5) { // Increase max retries to 5
+            console.log(`Auth: No profile found, retrying... (attempt ${retryCount + 1})`);
             return await checkProfileAndRedirect(userId, retryCount + 1);
           }
           console.error("Auth: Profile not found after multiple retries");
@@ -84,9 +87,9 @@ const Auth = () => {
         toast({
           variant: "destructive",
           title: "Error Creating Account",
-          description: "There was a problem setting up your profile. Please try again.",
+          description: "There was a problem setting up your profile. Please try signing in again.",
         });
-        // Sign out the user and redirect to auth page
+        // Sign out the user and stay on auth page
         await supabase.auth.signOut();
       }
     };
