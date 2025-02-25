@@ -1,3 +1,4 @@
+
 import { Suspense, lazy } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
@@ -120,6 +121,9 @@ const Index = () => {
         </div>
       </div>
       <Footer />
+      <p className="text-xl text-gray-200 mb-12 max-w-2xl mx-auto text-center">
+        The eBay of AI SaaS Businesses - A trusted platform for buying and selling cutting-edge AI solutions.
+      </p>
     </div>
   );
 };
