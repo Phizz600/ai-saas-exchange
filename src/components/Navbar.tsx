@@ -100,7 +100,7 @@ export const Navbar = () => {
                       key={item.title}
                       to={item.href}
                       onClick={(e) => item.requiresAuth ? handleNavigationClick(e, item.href) : null}
-                      className="text-white hover:text-white/80 font-exo text-lg py-2 px-4 rounded-lg hover:bg-white/10 transition-colors"
+                      className="text-black hover:text-black/80 font-exo text-lg py-2 px-4 rounded-lg hover:bg-white/10 transition-colors"
                     >
                       {item.title}
                     </Link>
@@ -139,3 +139,4 @@ export const Navbar = () => {
       </div>
     </nav>;
 };
+
