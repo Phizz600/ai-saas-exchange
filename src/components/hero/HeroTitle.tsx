@@ -28,7 +28,7 @@ const HeroTitle = ({ currentWordIndex, words }: HeroTitleProps) => {
         <span className="text-gray-200">({312} reviews)</span>
       </div>
 
-      <h1 className="font-exo text-5xl md:text-7xl font-bold leading-tight text-white text-center">
+      <h1 className="font-exo text-3xl md:text-7xl font-bold leading-tight text-white text-center">
         The #1 Marketplace
         <br />
         for AI{" "}
