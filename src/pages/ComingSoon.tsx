@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ShieldCheck, Rocket, LineChart, Users } from "lucide-react";
@@ -22,7 +23,7 @@ export const ComingSoon = () => {
 
           <div className="text-center space-y-6">
             <h1 className="text-4xl md:text-5xl font-exo font-bold bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] text-transparent bg-clip-text">
-              Be First to Discover High-Growth AI Opportunities
+              Unlock the Future of AI Investing
             </h1>
             <p className="text-xl text-gray-700 max-w-2xl mx-auto">
               Join an exclusive network of investors gaining early access to cutting-edge AI products, tools, and companies through our innovative auction marketplace.
@@ -134,3 +135,4 @@ export const ComingSoon = () => {
     </div>
   );
 };
+
