@@ -1,31 +1,33 @@
-
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTrigger } from "@/components/ui/sheet";
-
 export const Navbar = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const isProfilePage = location.pathname === '/profile';
-
   useEffect(() => {
     const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: {
+          session
+        }
+      } = await supabase.auth.getSession();
       setIsAuthenticated(!!session);
     };
     checkAuth();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const {
+      data: {
+        subscription
+      }
+    } = supabase.auth.onAuthStateChange((event, session) => {
       setIsAuthenticated(!!session);
     });
-
     return () => subscription.unsubscribe();
   }, []);
-
   const handleNavigationClick = (e: React.MouseEvent, path: string) => {
     e.preventDefault();
     if (!isAuthenticated) {
@@ -36,32 +38,24 @@ export const Navbar = () => {
       navigate(path);
     }
   };
-
-  const navigationItems = [
-    {
-      title: "Buy an AI Business",
-      href: "/auth",
-      requiresAuth: false
-    },
-    {
-      title: "AI Business Valuation",
-      href: "/listproduct",
-      requiresAuth: true
-    },
-    {
-      title: "About",
-      href: "/about",
-      requiresAuth: false
-    },
-    {
-      title: "Dashboard",
-      href: "/product-dashboard",
-      requiresAuth: true
-    }
-  ];
-
-  return (
-    <nav className={`${isProfilePage ? '' : 'fixed'} top-0 left-0 right-0 z-50 backdrop-blur-sm`}>
+  const navigationItems = [{
+    title: "Buy an AI Business",
+    href: "/auth",
+    requiresAuth: false
+  }, {
+    title: "AI Business Valuation",
+    href: "/listproduct",
+    requiresAuth: true
+  }, {
+    title: "About",
+    href: "/about",
+    requiresAuth: false
+  }, {
+    title: "Dashboard",
+    href: "/product-dashboard",
+    requiresAuth: true
+  }];
+  return <nav className={`${isProfilePage ? '' : 'fixed'} top-0 left-0 right-0 z-50 backdrop-blur-sm`}>
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-24">
           <Link to="/" className="flex items-center">
@@ -69,16 +63,14 @@ export const Navbar = () => {
           </Link>
           
           <div className="flex items-center space-x-6">
-            {!isAuthenticated ? (
-              <Link to="/auth">
+            {!isAuthenticated ? <Link to="/auth">
                 <Button variant="secondary" className="bg-secondary hover:bg-secondary/90">
                   Sign In
                 </Button>
-              </Link>
-            ) : null}
+              </Link> : null}
             <Sheet>
               <SheetTrigger asChild className="md:hidden">
-                <Button variant="ghost" size="icon" className="text-white">
+                <Button variant="ghost" size="icon" className="text-white font-extrabold">
                   <Menu className="h-8 w-8" />
                 </Button>
               </SheetTrigger>
@@ -87,23 +79,12 @@ export const Navbar = () => {
                   <img alt="AI Exchange Club" src="/lovable-uploads/da2f8a76-47e6-4112-8900-111cd146ace8.png" className="h-16 w-auto mx-auto" />
                 </SheetHeader>
                 <div className="flex flex-col gap-4 mt-8 flex-grow">
-                  {navigationItems.map(item => (
-                    <Link
-                      key={item.title}
-                      to={item.requiresAuth && !isAuthenticated ? "/auth" : item.href}
-                      onClick={e => item.requiresAuth ? handleNavigationClick(e, item.href) : null}
-                      className="text-black hover:text-black/80 font-exo text-lg px-4 rounded-lg hover:bg-white/10 transition-colors py-0"
-                    >
+                  {navigationItems.map(item => <Link key={item.title} to={item.requiresAuth && !isAuthenticated ? "/auth" : item.href} onClick={e => item.requiresAuth ? handleNavigationClick(e, item.href) : null} className="text-black hover:text-black/80 font-exo text-lg px-4 rounded-lg hover:bg-white/10 transition-colors py-0">
                       {item.title}
-                    </Link>
-                  ))}
+                    </Link>)}
                 </div>
                 <div className="mt-auto mb-6">
-                  <Button 
-                    onClick={(e) => handleNavigationClick(e, '/listproduct')}
-                    className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white hover:opacity-90"
-                    variant="secondary"
-                  >
+                  <Button onClick={e => handleNavigationClick(e, '/listproduct')} className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white hover:opacity-90" variant="secondary">
                     Sell Your AI Business
                   </Button>
                 </div>
@@ -112,6 +93,5 @@ export const Navbar = () => {
           </div>
         </div>
       </div>
-    </nav>
-  );
+    </nav>;
 };
