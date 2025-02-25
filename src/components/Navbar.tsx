@@ -92,7 +92,7 @@ export const Navbar = () => {
               </SheetTrigger>
               <SheetContent side="left" className="w-[300px] bg-[#EBEFF1]">
                 <SheetHeader className="flex justify-center items-center">
-                  <img alt="AI Exchange Club" src="/lovable-uploads/b28ada26-b74c-49aa-bb25-5908300ec35c.png" className="h-16 w-auto" />
+                  <img alt="AI Exchange Club" src="/lovable-uploads/da2f8a76-47e6-4112-8900-111cd146ace8.png" className="h-16 w-auto" />
                 </SheetHeader>
                 <div className="flex flex-col gap-4 mt-8">
                   {navigationItems.map(item => (
@@ -100,7 +100,7 @@ export const Navbar = () => {
                       key={item.title}
                       to={item.href}
                       onClick={(e) => item.requiresAuth ? handleNavigationClick(e, item.href) : null}
-                      className="text-black hover:text-black/80 font-exo text-lg py-2 px-4 rounded-lg hover:bg-white/10 transition-colors"
+                      className="text-black hover:text-black/80 font-exo text-lg font-bold py-2 px-4 rounded-lg hover:bg-white/10 transition-colors"
                     >
                       {item.title}
                     </Link>
