@@ -90,7 +90,7 @@ export const Navbar = () => {
                   <Menu className="h-6 w-6" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-[300px] bg-black">
+              <SheetContent side="left" className="w-[300px] bg-[#EBEFF1]">
                 <SheetHeader className="flex justify-center items-center">
                   <img alt="AI Exchange Club" src="/lovable-uploads/b28ada26-b74c-49aa-bb25-5908300ec35c.png" className="h-16 w-auto" />
                 </SheetHeader>
@@ -139,4 +139,3 @@ export const Navbar = () => {
       </div>
     </nav>;
 };
-
