@@ -1,4 +1,3 @@
-
 import { Suspense, lazy } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
@@ -107,11 +106,6 @@ const LoadingHero = () => (
 const Index = () => {
   return (
     <div className="min-h-screen bg-accent">
-      <div className="text-center pt-8">
-        <h1 className="text-2xl text-gray-200 font-bold mb-8">
-          The eBay of AI SaaS Businesses - A trusted platform for buying and selling cutting-edge AI solutions.
-        </h1>
-      </div>
       <Navbar />
       <Suspense fallback={<LoadingHero />}>
         <Hero />
