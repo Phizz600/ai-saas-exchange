@@ -262,19 +262,18 @@ const Hero = () => {
                         )}
                       </div>
 
-                      {/* Action Buttons */}
                       <div className="pt-4 space-y-2">
                         {product.isAuction ? (
                           <Button 
-                            className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 text-white"
-                            onClick={handleListProductClick}
+                            className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] opacity-75 text-white cursor-not-allowed"
+                            disabled
                           >
                             Place Bid
                           </Button>
                         ) : (
                           <Button 
-                            className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 text-white"
-                            onClick={handleListProductClick}
+                            className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] opacity-75 text-white cursor-not-allowed"
+                            disabled
                           >
                             Buy Now
                           </Button>
@@ -282,16 +281,16 @@ const Hero = () => {
                         
                         <Button 
                           variant="outline"
-                          className="w-full border-2 hover:bg-gray-50"
-                          onClick={handleListProductClick}
+                          className="w-full border-2 opacity-75 cursor-not-allowed"
+                          disabled
                         >
                           Make an Offer
                         </Button>
 
                         <Button
                           variant="ghost"
-                          className="w-full hover:bg-gray-50"
-                          onClick={handleListProductClick}
+                          className="w-full opacity-75 cursor-not-allowed"
+                          disabled
                         >
                           View Details
                         </Button>
