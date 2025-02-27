@@ -3,6 +3,7 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/comp
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Info, Link } from "lucide-react";
+import { useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { ListProductFormData } from "../../types";
 import {
@@ -24,6 +25,10 @@ interface ProductInfoFieldsProps {
 }
 
 export function ProductInfoFields({ form }: ProductInfoFieldsProps) {
+  const [descriptionLength, setDescriptionLength] = useState(
+    form.getValues("description")?.length || 0
+  );
+  
   const categories = [
     "Natural Language Processing",
     "Machine Learning",
@@ -134,13 +139,25 @@ export function ProductInfoFields({ form }: ProductInfoFieldsProps) {
                 </Tooltip>
               </TooltipProvider>
             </FormLabel>
-            <FormControl>
-              <Textarea 
-                placeholder="Describe your AI product..."
-                className="min-h-[100px]"
-                {...field}
-              />
-            </FormControl>
+            <div className="space-y-1">
+              <FormControl>
+                <Textarea 
+                  placeholder="Describe your AI product..."
+                  className="min-h-[100px]"
+                  maxLength={75}
+                  {...field}
+                  onChange={(e) => {
+                    field.onChange(e);
+                    setDescriptionLength(e.target.value.length);
+                  }}
+                />
+              </FormControl>
+              <div className="text-xs text-gray-500 text-right">
+                <span className={descriptionLength > 65 ? "text-amber-600" : ""}>
+                  {descriptionLength}
+                </span>/75 characters
+              </div>
+            </div>
             <FormMessage />
           </FormItem>
         )}
