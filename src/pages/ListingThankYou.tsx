@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -19,11 +18,13 @@ export const ListingThankYou = () => {
       <div className="container mx-auto px-4 py-4 sm:py-8">
         <div className="max-w-3xl mx-auto space-y-6 sm:space-y-8 bg-white/90 rounded-xl shadow-xl p-4 sm:p-8 backdrop-blur-sm">
           <div className="flex flex-col items-center space-y-4 sm:space-y-6">
-            <img 
-              src="/lovable-uploads/f74b20e6-6798-4aeb-badd-2da6c2dce40b.png"
-              alt="AI Exchange Logo"
-              className="w-16 h-16 sm:w-24 sm:h-24 object-contain animate-float"
-            />
+            <Link to="/">
+              <img 
+                src="/lovable-uploads/f74b20e6-6798-4aeb-badd-2da6c2dce40b.png"
+                alt="AI Exchange Logo"
+                className="w-16 h-16 sm:w-24 sm:h-24 object-contain animate-float hover:opacity-80 transition-opacity"
+              />
+            </Link>
             <h1 className="text-2xl sm:text-4xl font-exo font-bold bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] text-transparent bg-clip-text text-center px-2">
               Thank You for Your Submission!
             </h1>
