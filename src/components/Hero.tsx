@@ -9,7 +9,6 @@ import { Badge } from "@/components/ui/badge";
 import { Timer, TrendingDown, Users, Star, History, MousePointerClick } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-
 const NewsletterSubscription = lazy(() => import("@/components/hero/NewsletterSubscription"));
 const FeatureHighlights = lazy(() => import("@/components/hero/FeatureHighlights"));
 const AnimatedBackground = lazy(() => import("@/components/hero/AnimatedBackground"));
@@ -17,7 +16,6 @@ const HeroTitle = lazy(() => import("@/components/hero/HeroTitle"));
 const HowItWorks = lazy(() => import("@/components/hero/HowItWorks"));
 const SecurityFeatures = lazy(() => import("@/components/hero/SecurityFeatures"));
 const RoleInfo = lazy(() => import("@/components/hero/RoleInfo"));
-
 const placeholderProducts = [{
   id: 1,
   title: "AI Content Generator Pro",
@@ -89,7 +87,6 @@ const placeholderProducts = [{
   monthlyTraffic: 30000,
   image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d"
 }];
-
 const Hero = () => {
   const navigate = useNavigate();
   const [newsletterEmail, setNewsletterEmail] = useState("");
@@ -98,14 +95,12 @@ const Hero = () => {
   const [isSellerOpen, setIsSellerOpen] = useState(false);
   const [isBuyerOpen, setIsBuyerOpen] = useState(false);
   const words = ["SaaS", "Bots", "Apps", "Tools", "Startups", "APIs", "Products", "Solutions", "Algorithms", "Models", "Agents", "Platforms"];
-
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentWordIndex(prevIndex => (prevIndex + 1) % words.length);
     }, 2500);
     return () => clearInterval(interval);
   }, []);
-
   const handleListProductClick = async () => {
     const {
       data: {
@@ -118,7 +113,6 @@ const Hero = () => {
       navigate("/auth");
     }
   };
-
   return <div className="min-h-screen relative overflow-hidden">
       <Suspense fallback={<div className="absolute inset-0 bg-gradient-to-br from-accent via-accent2 to-accent3" />}>
         <AnimatedBackground />
@@ -149,7 +143,7 @@ const Hero = () => {
           </motion.p>
 
           <div className="flex flex-col gap-6 items-center">
-            <RainbowButton onClick={handleListProductClick} className="text-lg py-6 px-12">
+            <RainbowButton onClick={handleListProductClick} className="py-6 px-12 text-base">
               <MousePointerClick className="mr-2" />
               Sell your AI SaaS Business
             </RainbowButton>
@@ -278,5 +272,4 @@ const Hero = () => {
       </div>
     </div>;
 };
-
 export default Hero;
