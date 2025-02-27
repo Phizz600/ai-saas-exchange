@@ -1,7 +1,6 @@
 
 import { Navbar } from "@/components/Navbar";
 import Hero from "@/components/Hero";
-import { Footer } from "@/components/Footer";
 import { ExitIntentDialog } from "@/components/ExitIntentDialog";
 import { motion } from "framer-motion";
 
@@ -44,7 +43,6 @@ export const Index = () => {
       <div className="relative z-10">
         <Navbar />
         <Hero />
-        <Footer />
         <ExitIntentDialog />
       </div>
     </div>
