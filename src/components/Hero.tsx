@@ -1,4 +1,3 @@
-
 import { lazy, Suspense, useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
@@ -31,7 +30,7 @@ const placeholderProducts = [
     monthlyTraffic: 15000,
     grossProfitMargin: 75,
     monthlyChurnRate: 2.5,
-    image: "/lovable-uploads/f07753e1-1a02-44c4-82cc-0be1047cdf6e.png",
+    image: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7",
   },
   {
     id: 2,
@@ -46,7 +45,7 @@ const placeholderProducts = [
     monthlyTraffic: 25000,
     grossProfitMargin: 82,
     monthlyChurnRate: 1.8,
-    image: "/lovable-uploads/da2f8a76-47e6-4112-8900-111cd146ace8.png",
+    image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e",
   },
   {
     id: 3,
@@ -57,7 +56,7 @@ const placeholderProducts = [
     stage: "Growth",
     monthlyRevenue: 5200,
     monthlyTraffic: 8000,
-    image: "/lovable-uploads/f3cf11c0-ed0e-4867-bb14-08ad64a872a1.png",
+    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158",
   },
   {
     id: 4,
@@ -70,7 +69,7 @@ const placeholderProducts = [
     category: "Development",
     stage: "Mature",
     monthlyTraffic: 45000,
-    image: "/lovable-uploads/aba74b96-cdcd-433e-9493-215d372a0dac.png",
+    image: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b",
   },
   {
     id: 5,
@@ -81,7 +80,7 @@ const placeholderProducts = [
     stage: "Revenue",
     monthlyRevenue: 6800,
     monthlyTraffic: 12000,
-    image: "/lovable-uploads/54b996dc-c141-446c-acf6-43b210b670bc.png",
+    image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6",
   },
   {
     id: 6,
@@ -94,7 +93,7 @@ const placeholderProducts = [
     category: "Finance",
     stage: "Scale",
     monthlyTraffic: 30000,
-    image: "/lovable-uploads/1c11d733-12cc-4955-8b1f-49135cf084c8.png",
+    image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d",
   },
   {
     id: 7,
@@ -105,7 +104,7 @@ const placeholderProducts = [
     stage: "Growth",
     monthlyRevenue: 9200,
     monthlyTraffic: 18000,
-    image: "/lovable-uploads/0283f7d5-13a6-40c9-b40a-69868474cec9.png",
+    image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5",
   },
   {
     id: 8,
@@ -118,7 +117,7 @@ const placeholderProducts = [
     category: "Analytics",
     stage: "Revenue",
     monthlyTraffic: 22000,
-    image: "/lovable-uploads/5947d1a1-1385-49a1-bf8f-3024df268fb6.png",
+    image: "https://images.unsplash.com/photo-1531297484001-80022131f5a1",
   },
   {
     id: 9,
@@ -129,7 +128,7 @@ const placeholderProducts = [
     stage: "Growth",
     monthlyRevenue: 4500,
     monthlyTraffic: 10000,
-    image: "/lovable-uploads/410d1e6b-e7e7-499e-a8f7-9bf6bda5e131.png",
+    image: "https://images.unsplash.com/photo-1518770660439-4636190af475",
   }
 ];
 
