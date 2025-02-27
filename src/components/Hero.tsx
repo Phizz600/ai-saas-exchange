@@ -1,3 +1,4 @@
+
 import { lazy, Suspense, useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
@@ -146,7 +147,7 @@ const Hero = () => {
             transition={{ duration: 0.3 }}
             className="text-xl text-gray-200 mb-12 max-w-2xl mx-auto text-center"
           >
-            The eBay of AI SaaS Businesses - A trusted platform for buying and selling cutting-edge AI solutions.
+            Join an exclusive network of investors gaining early access to cutting-edge AI products, tools, and companies through our innovative auction marketplace.
           </motion.p>
 
           <div className="flex flex-col gap-6 items-center">
