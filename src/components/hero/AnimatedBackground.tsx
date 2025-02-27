@@ -2,15 +2,15 @@
 import { motion } from "framer-motion";
 
 const AnimatedBackground = () => {
-  const particles = Array.from({ length: 30 }).map((_, i) => ({
+  const particles = Array.from({ length: 20 }).map((_, i) => ({
     id: i,
     x: Math.random() * 100,
     y: Math.random() * 100,
-    size: Math.random() * 15 + 5,
-    duration: Math.random() * 20 + 25, // Longer duration for smoother movement
-    delay: Math.random() * -20, // Random start time to prevent synchronization
-    yOffset: Math.random() * 100 - 50, // Random vertical movement range
-    xOffset: Math.random() * 100 - 50, // Random horizontal movement range
+    size: Math.random() * 10 + 3, // Smaller particles
+    duration: Math.random() * 10 + 35, // Longer, more consistent duration
+    delay: i * -1.5, // Staggered delays based on particle index
+    yOffset: (Math.random() * 20) - 10, // More constrained vertical movement
+    xOffset: (Math.random() * 20) - 10, // More constrained horizontal movement
   }));
 
   return (
@@ -20,7 +20,7 @@ const AnimatedBackground = () => {
           {particles.map((particle) => (
             <motion.div
               key={particle.id}
-              className="absolute rounded-full bg-gradient-to-r from-white/30 to-transparent backdrop-blur-sm"
+              className="absolute rounded-full bg-white/20 backdrop-blur-sm"
               style={{
                 left: `${particle.x}%`,
                 top: `${particle.y}%`,
@@ -29,22 +29,22 @@ const AnimatedBackground = () => {
               }}
               animate={{
                 y: [
-                  particle.y, 
-                  particle.y + particle.yOffset, 
+                  particle.y,
+                  particle.y + particle.yOffset,
                   particle.y
                 ],
                 x: [
-                  particle.x, 
-                  particle.x + particle.xOffset, 
+                  particle.x,
+                  particle.x + particle.xOffset,
                   particle.x
                 ],
-                opacity: [0.3, 0.5, 0.3],
+                opacity: [0.2, 0.3, 0.2],
               }}
               transition={{
                 duration: particle.duration,
                 repeat: Infinity,
-                repeatType: "reverse",
-                ease: "easeInOut",
+                repeatType: "mirror",
+                ease: "linear",
                 delay: particle.delay,
               }}
             />
