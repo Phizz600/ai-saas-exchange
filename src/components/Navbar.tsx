@@ -56,12 +56,8 @@ export const Navbar = () => {
       title: "About",
       href: "/about",
       requiresAuth: false
-    },
-    {
-      title: "Dashboard",
-      href: "/product-dashboard",
-      requiresAuth: true
     }
+    // Removed the Dashboard item
   ];
 
   return (
