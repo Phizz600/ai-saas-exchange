@@ -49,7 +49,7 @@ export const Navbar = () => {
     },
     {
       title: "AI Business Valuation",
-      href: "/listproduct",
+      href: isAuthenticated ? "/list-product" : "/auth",
       requiresAuth: true
     },
     {
