@@ -1,8 +1,7 @@
-
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Home, Users, Timer, Youtube, Twitter, Instagram, Rss } from "lucide-react";
+import { Home, Users, Timer, Youtube, Twitter, Instagram, Rss, MousePointerClick } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 
 export const ListingThankYou = () => {
@@ -54,6 +53,7 @@ export const ListingThankYou = () => {
             
             <a href="https://aiexchangeclub.beehiiv.com/subscribe" target="_blank" rel="noopener noreferrer" className="w-full">
               <Button className="w-full mt-8 bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] hover:opacity-90">
+                <MousePointerClick className="w-4 h-4 mr-2" />
                 Join the AI Exchange Club Newsletter
               </Button>
             </a>
