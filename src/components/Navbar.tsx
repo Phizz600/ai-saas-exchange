@@ -44,7 +44,7 @@ export const Navbar = () => {
   const navigationItems = [
     {
       title: "Buy an AI Business",
-      href: "/auth",
+      href: isAuthenticated ? "/coming-soon" : "/auth",
       requiresAuth: false
     },
     {
@@ -101,8 +101,8 @@ export const Navbar = () => {
                   {navigationItems.map(item => (
                     <Link
                       key={item.title}
-                      to={item.requiresAuth && !isAuthenticated ? "/auth" : item.href}
-                      onClick={e => item.requiresAuth ? handleNavigationClick(e, item.href) : null}
+                      to={item.href}
+                      onClick={e => item.requiresAuth && !isAuthenticated ? handleNavigationClick(e, item.href) : null}
                       className="text-black hover:text-black/80 font-exo text-lg px-4 rounded-lg hover:bg-white/10 transition-colors py-0"
                     >
                       {item.title}
