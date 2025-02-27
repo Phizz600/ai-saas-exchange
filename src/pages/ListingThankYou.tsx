@@ -54,9 +54,9 @@ export const ListingThankYou = () => {
             </div>
             
             <a href="https://aiexchangeclub.beehiiv.com/subscribe" target="_blank" rel="noopener noreferrer" className="w-full px-4 sm:px-0">
-              <Button className="w-full mt-6 sm:mt-8 bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] hover:opacity-90 text-sm sm:text-base py-5 sm:py-6">
-                <MousePointerClick className="w-4 h-4 mr-2" />
-                Join the AI Exchange Club Newsletter
+              <Button className="w-full mt-6 sm:mt-8 bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] hover:opacity-90 text-sm sm:text-base py-4 sm:py-6 flex items-center justify-center gap-2 sm:gap-3">
+                <MousePointerClick className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
+                <span className="whitespace-nowrap">Join the AI Exchange Club Newsletter</span>
               </Button>
             </a>
 
