@@ -111,6 +111,9 @@ export const Footer = () => {
                 <Link to="/policies" className="text-white/80 hover:text-white">Policies</Link>
               </li>
               <li className="text-center md:text-left">
+                <Link to="/resolution-center" className="text-white/80 hover:text-white">Resolution Center</Link>
+              </li>
+              <li className="text-center md:text-left">
                 <Link to="/faq" className="text-white/80 hover:text-white">FAQ</Link>
               </li>
               <li className="text-center md:text-left">
@@ -137,4 +140,3 @@ export const Footer = () => {
     </footer>
   );
 };
-
