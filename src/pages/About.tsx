@@ -1,5 +1,6 @@
+
 import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
+
 export const About = () => {
   return <div className="min-h-screen bg-gradient-to-br from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9]">
       <Navbar />
@@ -9,7 +10,7 @@ export const About = () => {
             About AI Exchange Club
           </h1>
           <div className="space-y-6 text-gray-700">
-            <p className="text-lg">AI Exchange Club is the premier marketplace for buying and selling AI-powered SaaS businesses. 
+            <p className="text-lg">AI Exchange Club is the premier marketplace for buying and selling AI-powered SaaS businesses. 
 
 
 We connect innovative AI entrepreneurs with forward-thinking investors, creating opportunities for both sellers to realize the value of their creation and buyers to acquire cutting-edge AI technology businesses.
@@ -30,7 +31,6 @@ We connect innovative AI entrepreneurs with forward-thinking investors, creating
           </div>
         </div>
       </main>
-      <Footer />
     </div>;
 };
 export default About;
