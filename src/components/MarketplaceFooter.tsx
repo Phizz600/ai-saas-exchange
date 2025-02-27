@@ -1,137 +1,80 @@
 
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import { toast } from "sonner";
-import { Mail } from "lucide-react";
 
 export const MarketplaceFooter = () => {
-  const [email, setEmail] = useState("");
-  
-  const particles = Array.from({ length: 20 }).map((_, i) => ({
-    id: i,
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    size: Math.random() * 10 + 5,
-    duration: 3 + Math.random() * 4,
-  }));
-
-  const handleSubscribe = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (email) {
-      toast.success("Thanks for subscribing!", {
-        description: "You'll receive updates about new AI products and features.",
-      });
-      setEmail("");
+  const footerLinks = [
+    {
+      title: "Company",
+      links: [
+        { name: "About", href: "/about" },
+        { name: "Team", href: "/coming-soon" },
+        { name: "Careers", href: "/coming-soon" },
+        { name: "Blog", href: "/coming-soon" },
+        { name: "Press", href: "/coming-soon" }
+      ]
+    },
+    {
+      title: "Resources",
+      links: [
+        { name: "Documentation", href: "/coming-soon" },
+        { name: "FAQ", href: "/coming-soon" },
+        { name: "Tutorials", href: "/coming-soon" },
+        { name: "Resolution Center", href: "/resolution-center" },
+        { name: "Community", href: "/coming-soon" }
+      ]
+    },
+    {
+      title: "Legal",
+      links: [
+        { name: "Terms", href: "/policies" },
+        { name: "Privacy", href: "/policies" },
+        { name: "Cookies", href: "/policies" },
+        { name: "Licenses", href: "/policies" },
+        { name: "Settings", href: "/policies" }
+      ]
+    },
+    {
+      title: "Social",
+      links: [
+        { name: "Twitter", href: "https://twitter.com" },
+        { name: "LinkedIn", href: "https://linkedin.com" },
+        { name: "Facebook", href: "https://facebook.com" },
+        { name: "Instagram", href: "https://instagram.com" },
+        { name: "Github", href: "https://github.com" }
+      ]
     }
-  };
+  ];
 
   return (
-    <footer className="relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-accent via-accent2 to-accent3">
-        {particles.map((particle) => (
-          <motion.div
-            key={particle.id}
-            className="absolute rounded-full bg-white/10 backdrop-blur-sm"
-            style={{
-              left: `${particle.x}%`,
-              top: `${particle.y}%`,
-              width: particle.size,
-              height: particle.size,
-            }}
-            animate={{
-              y: [0, -30, 0],
-              x: [0, Math.random() * 20 - 10, 0],
-              opacity: [0.2, 0.5, 0.2],
-            }}
-            transition={{
-              duration: particle.duration,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-        ))}
-      </div>
-      <div className="container mx-auto px-4 py-12 relative z-10">
-        <div className="grid grid-cols-4 gap-8">
-          <div className="col-span-4 md:col-span-1">
-            <div className="flex flex-col items-center md:items-start">              
-              {/* Email opt-in section */}
-              <div className="w-full max-w-md">
-                <h3 className="text-white font-semibold mb-2 text-center md:text-left">Get Early Access to Off-Market AI Deals</h3>
-                <p className="text-white/80 text-sm mb-4 text-center md:text-left">Join 1,000+ AI founders and investors</p>
-                <form onSubmit={handleSubscribe} className="space-y-4">
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                    <Input
-                      type="email"
-                      placeholder="Enter your email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-gray-400 focus:border-white/20"
-                      required
-                    />
-                  </div>
-                  <Button 
-                    type="submit"
-                    className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 transition-opacity text-white font-semibold"
-                  >
-                    Join the Club
-                  </Button>
-                </form>
-              </div>
+    <footer className="bg-gray-50 border-t border-gray-200">
+      <div className="container mx-auto px-4 py-12">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          {footerLinks.map((column) => (
+            <div key={column.title}>
+              <h3 className="text-sm font-semibold text-gray-900 tracking-wider uppercase">
+                {column.title}
+              </h3>
+              <ul className="mt-4 space-y-4">
+                {column.links.map((link) => (
+                  <li key={link.name}>
+                    <Link 
+                      to={link.href} 
+                      className="text-base text-gray-500 hover:text-gray-900"
+                      target={link.href.startsWith('http') ? '_blank' : undefined}
+                      rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                    >
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </div>
-          </div>
-          <div className="col-span-4 md:col-span-1">
-            <h4 className="font-bold text-white text-center md:text-left">Company</h4>
-            <ul className="mt-4 space-y-2">
-              <li className="text-center md:text-left">
-                <Link to="/about" className="text-white/80 hover:text-white">About Us</Link>
-              </li>
-              <li className="text-center md:text-left">
-                <Link to="/contact" className="text-white/80 hover:text-white">Contact</Link>
-              </li>
-              <li className="text-center md:text-left">
-                <Link to="/careers" className="text-white/80 hover:text-white">Careers</Link>
-              </li>
-            </ul>
-          </div>
-          <div className="col-span-4 md:col-span-1">
-            <h4 className="font-bold text-white text-center md:text-left">Resources</h4>
-            <ul className="mt-4 space-y-2">
-              <li className="text-center md:text-left">
-                <a href="https://aiexchangeclub.beehiiv.com/" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white">Blog</a>
-              </li>
-              <li className="text-center md:text-left">
-                <Link to="/fees-pricing" className="text-white/80 hover:text-white">Fees & Pricing</Link>
-              </li>
-              <li className="text-center md:text-left">
-                <Link to="/policies" className="text-white/80 hover:text-white">Policies</Link>
-              </li>
-              <li className="text-center md:text-left">
-                <Link to="/faq" className="text-white/80 hover:text-white">FAQ</Link>
-              </li>
-              <li className="text-center md:text-left">
-                <Link to="/terms" className="text-white/80 hover:text-white">Terms of Service</Link>
-              </li>
-            </ul>
-          </div>
-          <div className="col-span-4 md:col-span-1">
-            <h4 className="font-bold text-white text-center md:text-left">Follow Us</h4>
-            <ul className="mt-4 space-y-2">
-              <li className="text-center md:text-left">
-                <Link to="#" className="text-white/80 hover:text-white">Facebook</Link>
-              </li>
-              <li className="text-center md:text-left">
-                <Link to="#" className="text-white/80 hover:text-white">Twitter</Link>
-              </li>
-              <li className="text-center md:text-left">
-                <Link to="#" className="text-white/80 hover:text-white">Instagram</Link>
-              </li>
-            </ul>
-          </div>
+          ))}
+        </div>
+        <div className="mt-12 pt-8 border-t border-gray-200">
+          <p className="text-base text-gray-400 text-center">
+            &copy; {new Date().getFullYear()} AI Exchange Club. All rights reserved.
+          </p>
         </div>
       </div>
     </footer>
