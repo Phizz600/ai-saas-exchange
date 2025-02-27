@@ -4,6 +4,7 @@ import Hero from "@/components/Hero";
 import { Footer } from "@/components/Footer";
 import { ExitIntentDialog } from "@/components/ExitIntentDialog";
 import { motion } from "framer-motion";
+import ReviewSection from "@/components/hero/ReviewSection";
 
 export const Index = () => {
   // Create floating particles effect
@@ -44,6 +45,7 @@ export const Index = () => {
       <div className="relative z-10">
         <Navbar />
         <Hero />
+        <ReviewSection />
         <Footer />
         <ExitIntentDialog />
       </div>

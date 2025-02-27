@@ -90,3 +90,11 @@
   font-weight: 700;
   font-style: normal;
 }
+
+.exo-2-review-heading {
+  font-family: "Exo 2", serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+  color: #333333;
+}
