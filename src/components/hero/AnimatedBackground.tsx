@@ -7,7 +7,10 @@ const AnimatedBackground = () => {
     x: Math.random() * 100,
     y: Math.random() * 100,
     size: Math.random() * 15 + 5,
-    duration: 15 + Math.random() * 10, // Increased duration for smoother movement
+    duration: Math.random() * 20 + 25, // Longer duration for smoother movement
+    delay: Math.random() * -20, // Random start time to prevent synchronization
+    yOffset: Math.random() * 100 - 50, // Random vertical movement range
+    xOffset: Math.random() * 100 - 50, // Random horizontal movement range
   }));
 
   return (
@@ -25,16 +28,24 @@ const AnimatedBackground = () => {
                 height: particle.size,
               }}
               animate={{
-                y: [0, -50, 0],
-                x: [0, Math.random() * 30 - 15, 0],
+                y: [
+                  particle.y, 
+                  particle.y + particle.yOffset, 
+                  particle.y
+                ],
+                x: [
+                  particle.x, 
+                  particle.x + particle.xOffset, 
+                  particle.x
+                ],
                 opacity: [0.3, 0.5, 0.3],
-                scale: [1, 1.1, 1],
               }}
               transition={{
                 duration: particle.duration,
                 repeat: Infinity,
+                repeatType: "reverse",
                 ease: "easeInOut",
-                times: [0, 0.5, 1], // Ensure smooth transitions between states
+                delay: particle.delay,
               }}
             />
           ))}
