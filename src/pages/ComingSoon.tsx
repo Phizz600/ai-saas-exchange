@@ -1,29 +1,20 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ShieldCheck, Rocket, LineChart, Users } from "lucide-react";
 import { useState } from "react";
 import { Progress } from "@/components/ui/progress";
-
 export const ComingSoon = () => {
   const [progress] = useState(80); // 800 out of 1000 spots taken
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-[#9b87f5] via-[#D946EF] to-[#0EA5E9]">
+  return <div className="min-h-screen bg-gradient-to-br from-[#9b87f5] via-[#D946EF] to-[#0EA5E9]">
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto space-y-12 bg-white/90 rounded-xl shadow-xl p-8 backdrop-blur-sm">
           <Link to="/">
-            <img 
-              src="/lovable-uploads/f74b20e6-6798-4aeb-badd-2da6c2dce40b.png"
-              alt="AI Exchange Logo"
-              className="h-24 w-24 mx-auto mb-8 object-contain animate-float cursor-pointer hover:opacity-80 transition-opacity"
-            />
+            <img src="/lovable-uploads/f74b20e6-6798-4aeb-badd-2da6c2dce40b.png" alt="AI Exchange Logo" className="h-24 w-24 mx-auto mb-8 object-contain animate-float cursor-pointer hover:opacity-80 transition-opacity" />
           </Link>
 
           <div className="text-center space-y-6">
-            <h1 className="text-4xl md:text-5xl font-exo font-bold bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] text-transparent bg-clip-text">
-              Unlock the Future of AI Investing
-            </h1>
+            <h1 className="text-4xl md:text-5xl font-exo font-bold bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] text-transparent bg-clip-text">Marketplace Launches Soon</h1>
             <p className="text-xl text-gray-700 max-w-2xl mx-auto">
               Join an exclusive network of investors gaining early access to cutting-edge AI products, tools, and companies through our innovative auction marketplace.
             </p>
@@ -49,9 +40,7 @@ export const ComingSoon = () => {
 
             <div className="flex justify-center">
               <a href="https://aiexchangeclub.beehiiv.com/subscribe" target="_blank" rel="noopener noreferrer" className="w-full">
-                <Button 
-                  className="w-full bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] hover:opacity-90 text-white"
-                >
+                <Button className="w-full bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] hover:opacity-90 text-white">
                   Join The AI Exchange Club Newsletter
                 </Button>
               </a>
@@ -130,7 +119,5 @@ export const ComingSoon = () => {
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
