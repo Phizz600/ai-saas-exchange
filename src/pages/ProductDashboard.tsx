@@ -1,4 +1,3 @@
-
 import { DashboardLayout } from "@/components/product-dashboard/DashboardLayout";
 import { MarketplaceStats } from "@/components/product-dashboard/MarketplaceStats";
 import { ProductDashboardContent } from "@/components/product-dashboard/ProductDashboardContent";
@@ -11,12 +10,9 @@ import { MatchedProducts } from "@/components/product-dashboard/MatchedProducts"
 import { ProductOffers } from "@/components/product-dashboard/ProductOffers";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-
 export const ProductDashboard = () => {
   const [showVerifiedOnly, setShowVerifiedOnly] = useState(false);
-
-  return (
-    <DashboardLayout>
+  return <DashboardLayout>
       <Tabs defaultValue="seller" className="space-y-8">
         <TabsList className="grid w-full grid-cols-2 max-w-[400px]">
           <TabsTrigger value="seller" className="flex items-center gap-2">
@@ -32,18 +28,7 @@ export const ProductDashboard = () => {
         <TabsContent value="seller" className="space-y-8">
           <div className="flex justify-between items-center">
             <MarketplaceStats />
-            <Button
-              variant="outline"
-              onClick={() => setShowVerifiedOnly(!showVerifiedOnly)}
-              className="flex items-center gap-2"
-            >
-              {showVerifiedOnly ? (
-                <ToggleRight className="h-4 w-4" />
-              ) : (
-                <ToggleLeft className="h-4 w-4" />
-              )}
-              Show Verified Only
-            </Button>
+            
           </div>
           <div>
             <h2 className="text-xl font-semibold mb-4 font-exo">Offers on Your Products</h2>
@@ -57,30 +42,22 @@ export const ProductDashboard = () => {
 
         <TabsContent value="buyer" className="space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <StatsCard
-              title="Active Bids"
-              value="0"
-              change={{ value: 0, type: 'increase' }}
-              subtitle="vs last month"
-            />
-            <StatsCard
-              title="Won Auctions"
-              value="0"
-              change={{ value: 0, type: 'increase' }}
-              subtitle="vs last month"
-            />
-            <StatsCard
-              title="Total Spent"
-              value="$0"
-              change={{ value: 0, type: 'increase' }}
-              subtitle="vs last month"
-            />
-            <StatsCard
-              title="Watched Products"
-              value="0"
-              change={{ value: 0, type: 'increase' }}
-              subtitle="vs last month"
-            />
+            <StatsCard title="Active Bids" value="0" change={{
+            value: 0,
+            type: 'increase'
+          }} subtitle="vs last month" />
+            <StatsCard title="Won Auctions" value="0" change={{
+            value: 0,
+            type: 'increase'
+          }} subtitle="vs last month" />
+            <StatsCard title="Total Spent" value="$0" change={{
+            value: 0,
+            type: 'increase'
+          }} subtitle="vs last month" />
+            <StatsCard title="Watched Products" value="0" change={{
+            value: 0,
+            type: 'increase'
+          }} subtitle="vs last month" />
           </div>
           <div className="space-y-8">
             <div>
@@ -98,6 +75,5 @@ export const ProductDashboard = () => {
           </div>
         </TabsContent>
       </Tabs>
-    </DashboardLayout>
-  );
+    </DashboardLayout>;
 };
