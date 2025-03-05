@@ -5,7 +5,6 @@ import { Footer } from "@/components/Footer";
 import { ExitIntentDialog } from "@/components/ExitIntentDialog";
 import { motion } from "framer-motion";
 import ReviewSection from "@/components/hero/ReviewSection";
-import VideoSection from "@/components/hero/VideoSection";
 import PricingFees from "@/components/hero/PricingFees";
 
 export const Index = () => {
@@ -49,7 +48,6 @@ export const Index = () => {
         <Hero />
         <PricingFees />
         <ReviewSection />
-        <VideoSection />
         <Footer />
         <ExitIntentDialog />
       </div>
