@@ -1,4 +1,3 @@
-
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
@@ -62,7 +61,7 @@ export const Navbar = () => {
     }
   ];
 
-  return <nav className={`${isProfilePage ? '' : isHomePage ? 'bg-transparent' : 'fixed'} top-0 left-0 right-0 z-50 backdrop-blur-sm`}>
+  return <nav className={`${isProfilePage ? '' : isHomePage ? '' : 'fixed'} top-0 left-0 right-0 z-50 backdrop-blur-sm`}>
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-24">
           <Link to="/" className="flex items-center">
