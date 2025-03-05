@@ -1006,6 +1006,7 @@ export type Database = {
         | "auction_ending_soon"
         | "auction_ended"
         | "new_bid"
+        | "product_status_change"
       user_type: "ai_builder" | "ai_investor"
     }
     CompositeTypes: {

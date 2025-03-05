@@ -4,11 +4,14 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTrigger } from "@/components/ui/sheet";
+
 export const Navbar = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const isProfilePage = location.pathname === '/profile';
+  const isHomePage = location.pathname === '/';
+
   useEffect(() => {
     const checkAuth = async () => {
       const {
@@ -28,6 +31,7 @@ export const Navbar = () => {
     });
     return () => subscription.unsubscribe();
   }, []);
+
   const handleNavigationClick = (e: React.MouseEvent, path: string) => {
     e.preventDefault();
     if (!isAuthenticated) {
@@ -38,22 +42,26 @@ export const Navbar = () => {
       navigate(path);
     }
   };
-  const navigationItems = [{
-    title: "Buy an AI Business",
-    href: isAuthenticated ? "/coming-soon" : "/auth",
-    requiresAuth: false
-  }, {
-    title: "AI Business Valuation",
-    href: isAuthenticated ? "/list-product" : "/auth",
-    requiresAuth: true
-  }, {
-    title: "About",
-    href: "/about",
-    requiresAuth: false
-  }
-  // Removed the Dashboard item
+
+  const navigationItems = [
+    {
+      title: "Buy an AI Business",
+      href: isAuthenticated ? "/coming-soon" : "/auth",
+      requiresAuth: false
+    },
+    {
+      title: "AI Business Valuation",
+      href: isAuthenticated ? "/list-product" : "/auth",
+      requiresAuth: true
+    },
+    {
+      title: "About",
+      href: "/about",
+      requiresAuth: false
+    }
   ];
-  return <nav className={`${isProfilePage ? '' : 'fixed'} top-0 left-0 right-0 z-50 backdrop-blur-sm`}>
+
+  return <nav className={`${isProfilePage ? '' : isHomePage ? '' : 'fixed'} top-0 left-0 right-0 z-50 backdrop-blur-sm`}>
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-24">
           <Link to="/" className="flex items-center">
