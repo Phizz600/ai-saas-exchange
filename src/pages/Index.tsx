@@ -18,7 +18,7 @@ export const Index = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-[#9b87f5] via-[#D946EF] to-[#0EA5E9]">
+      <div className="absolute inset-0 bg-gradient-to-br from-[#13293D] via-[#16324F] to-[#0EA4E9]">
         {particles.map((particle) => (
           <motion.div
             key={particle.id}
