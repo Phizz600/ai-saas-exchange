@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ImagePlus, X } from "lucide-react";
@@ -12,9 +12,23 @@ interface ImageUploadProps {
 export function ImageUpload({ value, onChange }: ImageUploadProps) {
   const [preview, setPreview] = useState<string | null>(null);
 
+  // Load preview if we already have a file
+  useEffect(() => {
+    if (value instanceof File) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result as string);
+      };
+      reader.readAsDataURL(value);
+    } else {
+      setPreview(null);
+    }
+  }, [value]);
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      console.log("File selected:", file.name, file.type, file.size);
       onChange(file);
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -25,6 +39,7 @@ export function ImageUpload({ value, onChange }: ImageUploadProps) {
   };
 
   const handleRemove = () => {
+    console.log("Removing image");
     onChange(null);
     setPreview(null);
   };

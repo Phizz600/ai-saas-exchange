@@ -72,6 +72,8 @@ export function ListProductForm() {
   const { isLoading, saveForLater } = useAutosave(form, currentSection);
 
   const onSubmit = async (data: ListProductFormData) => {
+    console.log("Form submitted with data:", data);
+    
     if (!data.accuracyAgreement || !data.termsAgreement) {
       toast({
         title: "Agreement Required",
@@ -81,9 +83,32 @@ export function ListProductForm() {
       return;
     }
 
+    // Basic validation
+    if (!data.title || !data.description || !data.category) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in all required fields in the Basics section.",
+        variant: "destructive",
+      });
+      handleSectionClick(0); // Go back to the basics section
+      return;
+    }
+
+    // Image validation
+    if (!data.image) {
+      toast({
+        title: "Image Required",
+        description: "Please upload a product logo image.",
+        variant: "destructive",
+      });
+      handleSectionClick(0); // Go back to the basics section
+      return;
+    }
+
     if (currentSection === sections.length - 1) {
       setIsSubmitting(true);
       try {
+        console.log("Proceeding with submission...");
         const success = await handleProductSubmission(data, setIsSubmitting);
         if (success) {
           // Clean up draft after successful submission

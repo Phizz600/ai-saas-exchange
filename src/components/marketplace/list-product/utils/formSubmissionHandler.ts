@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { ListProductFormData } from "../types";
 import { toast } from "@/hooks/use-toast";
@@ -27,20 +28,46 @@ export const handleProductSubmission = async (
 
     let image_url = null;
     if (data.image && data.image instanceof File) {
-      const fileExt = data.image.name.split('.').pop();
-      const filePath = `${crypto.randomUUID()}.${fileExt}`;
+      console.log("Processing image upload:", data.image.name, data.image.type, data.image.size);
       
-      const { error: uploadError } = await supabase.storage
-        .from('product-images')
-        .upload(filePath, data.image);
-
-      if (uploadError) throw uploadError;
-
-      const { data: { publicUrl } } = supabase.storage
-        .from('product-images')
-        .getPublicUrl(filePath);
+      try {
+        const fileExt = data.image.name.split('.').pop();
+        const fileName = `${crypto.randomUUID()}.${fileExt}`;
+        const filePath = fileName;
         
-      image_url = publicUrl;
+        console.log("Uploading to path:", filePath);
+        
+        const { error: uploadError, data: uploadData } = await supabase.storage
+          .from('product-images')
+          .upload(filePath, data.image, {
+            cacheControl: '3600',
+            upsert: true
+          });
+
+        if (uploadError) {
+          console.error("Upload error:", uploadError);
+          throw uploadError;
+        }
+
+        console.log("Upload successful:", uploadData);
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('product-images')
+          .getPublicUrl(filePath);
+          
+        console.log("Generated public URL:", publicUrl);
+        image_url = publicUrl;
+      } catch (uploadError) {
+        console.error("Image upload failed:", uploadError);
+        toast({
+          title: "Image Upload Failed",
+          description: "There was a problem uploading your image. Please try again with a smaller image or different format.",
+          variant: "destructive"
+        });
+        return false;
+      }
+    } else {
+      console.log("No image to upload");
     }
 
     const monthlyTrafficValue = data.monthlyTraffic ? getTrafficValue(data.monthlyTraffic) : 0;
@@ -96,6 +123,7 @@ export const handleProductSubmission = async (
       business_type: data.businessType,
       deliverables: data.deliverables,
       payment_status: 'pending',
+      status: 'pending',
       updated_at: new Date().toISOString(),
       ...(data.isAuction && {
         auction_end_time: auctionEndTime,
@@ -117,6 +145,11 @@ export const handleProductSubmission = async (
 
     if (error) {
       console.error('Supabase error:', error);
+      toast({
+        title: "Submission Failed",
+        description: `Error: ${error.message}`,
+        variant: "destructive",
+      });
       throw error;
     }
 
