@@ -30,6 +30,7 @@ export interface ListProductFormData {
   termsAgreement: boolean;
   businessType: "B2B" | "B2C";
   deliverables: string[];
+  productLink?: string;
   
   // Additional fields for extended functionality
   monthlyProfit?: number;

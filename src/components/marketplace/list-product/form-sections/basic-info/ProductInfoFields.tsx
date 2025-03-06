@@ -72,6 +72,24 @@ export function ProductInfoFields({
       
       <FormField 
         control={form.control} 
+        name="productLink" 
+        render={({ field }) => (
+          <FormItem className="text-left">
+            <FormLabel className="text-left">Product Link</FormLabel>
+            <FormControl>
+              <Input 
+                placeholder="https://your-product-website.com" 
+                type="url" 
+                {...field} 
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )} 
+      />
+      
+      <FormField 
+        control={form.control} 
         name="category" 
         render={({ field }) => (
           <FormItem className="text-left">

@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { ListProductFormData } from "../types";
 import { toast } from "@/hooks/use-toast";
@@ -81,6 +80,7 @@ export const handleProductSubmission = async (
       has_patents: data.hasPatents,
       competitors: data.competitors,
       demo_url: data.demoUrl,
+      product_link: data.productLink || null,
       is_revenue_verified: data.isRevenueVerified || false,
       is_code_audited: data.isCodeAudited || false,
       is_traffic_verified: data.isTrafficVerified || false,
@@ -209,6 +209,7 @@ export const handleProductUpdate = async (
       ...(data.title && { title: data.title }),
       ...(data.description && { description: data.description }),
       ...(data.price && { price: data.price }),
+      ...(data.productLink !== undefined && { product_link: data.productLink }),
       ...categoryUpdate,
       ...industryUpdate,
       ...(data.stage && { stage: data.stage }),

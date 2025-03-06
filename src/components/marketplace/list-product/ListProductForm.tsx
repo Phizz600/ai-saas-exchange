@@ -62,6 +62,7 @@ export function ListProductForm() {
       accuracyAgreement: false,
       termsAgreement: false,
       deliverables: [],
+      productLink: "",
     },
   });
 

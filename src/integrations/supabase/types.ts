@@ -564,6 +564,7 @@ export type Database = {
           price_decrement: number | null
           price_decrement_interval: string | null
           product_age: string | null
+          product_link: string | null
           reviewed_at: string | null
           reviewed_by: string | null
           seller_id: string
@@ -623,6 +624,7 @@ export type Database = {
           price_decrement?: number | null
           price_decrement_interval?: string | null
           product_age?: string | null
+          product_link?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
           seller_id: string
@@ -682,6 +684,7 @@ export type Database = {
           price_decrement?: number | null
           price_decrement_interval?: string | null
           product_age?: string | null
+          product_link?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
           seller_id?: string
