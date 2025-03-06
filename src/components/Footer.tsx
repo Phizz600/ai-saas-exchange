@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
@@ -6,54 +5,44 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Mail } from "lucide-react";
-
 export const Footer = () => {
   const [email, setEmail] = useState("");
-  
+
   // Create floating particles effect
-  const particles = Array.from({ length: 20 }).map((_, i) => ({
+  const particles = Array.from({
+    length: 20
+  }).map((_, i) => ({
     id: i,
     x: Math.random() * 100,
     y: Math.random() * 100,
     size: Math.random() * 10 + 5,
-    duration: 3 + Math.random() * 4,
+    duration: 3 + Math.random() * 4
   }));
-
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
     if (email) {
       toast.success("Thanks for subscribing!", {
-        description: "You'll receive updates about new AI products and features.",
+        description: "You'll receive updates about new AI products and features."
       });
       setEmail("");
     }
   };
-
-  return (
-    <footer className="relative overflow-hidden">
+  return <footer className="relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-accent via-accent2 to-accent3">
-        {particles.map((particle) => (
-          <motion.div
-            key={particle.id}
-            className="absolute rounded-full bg-white/10 backdrop-blur-sm"
-            style={{
-              left: `${particle.x}%`,
-              top: `${particle.y}%`,
-              width: particle.size,
-              height: particle.size,
-            }}
-            animate={{
-              y: [0, -30, 0],
-              x: [0, Math.random() * 20 - 10, 0],
-              opacity: [0.2, 0.5, 0.2],
-            }}
-            transition={{
-              duration: particle.duration,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-        ))}
+        {particles.map(particle => <motion.div key={particle.id} className="absolute rounded-full bg-white/10 backdrop-blur-sm" style={{
+        left: `${particle.x}%`,
+        top: `${particle.y}%`,
+        width: particle.size,
+        height: particle.size
+      }} animate={{
+        y: [0, -30, 0],
+        x: [0, Math.random() * 20 - 10, 0],
+        opacity: [0.2, 0.5, 0.2]
+      }} transition={{
+        duration: particle.duration,
+        repeat: Infinity,
+        ease: "easeInOut"
+      }} />)}
       </div>
       <div className="container mx-auto px-4 py-12 relative z-10">
         <div className="grid grid-cols-4 gap-8">
@@ -65,19 +54,9 @@ export const Footer = () => {
                 <form onSubmit={handleSubscribe} className="space-y-4">
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                    <Input
-                      type="email"
-                      placeholder="Enter your email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-gray-400 focus:border-white/20"
-                      required
-                    />
+                    
                   </div>
-                  <Button 
-                    type="submit"
-                    className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 transition-opacity text-white font-semibold"
-                  >
+                  <Button type="submit" className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 transition-opacity text-white font-semibold">
                     Join the Club
                   </Button>
                 </form>
@@ -137,6 +116,5 @@ export const Footer = () => {
           </div>
         </div>
       </div>
-    </footer>
-  );
+    </footer>;
 };
