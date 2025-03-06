@@ -164,11 +164,7 @@ export const handleProductSubmission = async (
     });
 
     // Small delay to ensure toast is displayed before redirect
-    setTimeout(() => {
-      // Redirect to Stripe payment page with product ID
-      window.location.href = `https://buy.stripe.com/9AQ3dz3lmf2yccE288?client_reference_id=${insertedProduct?.id || ''}`;
-    }, 1500);
-
+    // This is the critical fix - proceed with redirect only after product is saved
     return true;
   } catch (error) {
     console.error('Error submitting product:', error);

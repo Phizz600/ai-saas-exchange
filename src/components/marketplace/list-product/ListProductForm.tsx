@@ -22,6 +22,7 @@ import { toast } from "@/hooks/use-toast";
 
 export function ListProductForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [redirecting, setRedirecting] = useState(false);
   const navigate = useNavigate();
 
   const sections = [
@@ -71,6 +72,19 @@ export function ListProductForm() {
 
   const { isLoading, saveForLater } = useAutosave(form, currentSection);
 
+  const handleRedirectToPayment = (productId: string) => {
+    setRedirecting(true);
+    toast({
+      title: "Redirecting to payment",
+      description: "You'll be redirected to the payment page in a moment...",
+    });
+    
+    // Proceed to Stripe payment page with product ID
+    setTimeout(() => {
+      window.location.href = `https://buy.stripe.com/9AQ3dz3lmf2yccE288?client_reference_id=${productId || ''}`;
+    }, 1500);
+  };
+
   const onSubmit = async (data: ListProductFormData) => {
     console.log("Form submitted with data:", data);
     
@@ -110,6 +124,7 @@ export function ListProductForm() {
       try {
         console.log("Proceeding with submission...");
         const success = await handleProductSubmission(data, setIsSubmitting);
+        
         if (success) {
           // Clean up draft after successful submission
           const { data: { user } } = await supabase.auth.getUser();
@@ -119,10 +134,20 @@ export function ListProductForm() {
               .delete()
               .eq('user_id', user.id);
           }
-          navigate("/listing-thank-you");
+          
+          // Get product ID from session storage and redirect to payment
+          const productId = sessionStorage.getItem('pendingProductId');
+          if (productId) {
+            handleRedirectToPayment(productId);
+          } else {
+            // Fallback if ID is not found
+            navigate("/listing-thank-you");
+          }
         }
       } finally {
-        setIsSubmitting(false);
+        if (!redirecting) {
+          setIsSubmitting(false);
+        }
       }
     }
   };
@@ -159,7 +184,7 @@ export function ListProductForm() {
           onPrevious={previousSection}
           onNext={nextSection}
           onSaveForLater={saveForLater}
-          isSubmitting={isSubmitting}
+          isSubmitting={isSubmitting || redirecting}
         />
       </form>
     </Form>
