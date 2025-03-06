@@ -7,6 +7,7 @@ export interface ListProductFormData {
   categoryOther?: string;
   stage: string;
   industry: string;
+  industryOther?: string;
   monthlyRevenue?: number;
   monthlyTraffic: string;
   activeUsers: string;

@@ -48,10 +48,12 @@ export const handleProductSubmission = async (
 
     const auctionEndTime = data.auctionEndTime ? new Date(data.auctionEndTime).toISOString() : null;
 
-    // Handle the category and categoryOther fields
-    const finalCategory = data.category === 'other' && data.categoryOther 
-      ? data.categoryOther.toLowerCase().replace(/\s+/g, '_') // Convert "Other Category" to "other_category"
-      : data.category;
+    // Handle all "Other" fields
+    const finalCategory = data.category === 'other' ? data.categoryOther?.toLowerCase().replace(/\s+/g, '_') : data.category;
+    const finalIndustry = data.industry === 'Other' ? data.industryOther : data.industry;
+    const finalTechStack = data.techStack === 'Other' ? [] : [data.techStack];
+    const finalLlmType = data.llmType === 'Other' ? null : data.llmType;
+    const finalMonetization = data.monetization === 'other' ? data.monetizationOther : data.monetization;
 
     const productData = {
       title: data.title,
@@ -60,7 +62,8 @@ export const handleProductSubmission = async (
       category: finalCategory,
       category_other: data.category === 'other' ? data.categoryOther : null,
       stage: data.stage,
-      industry: data.industry,
+      industry: finalIndustry,
+      industry_other: data.industry === 'Other' ? data.industryOther : null,
       monthly_revenue: data.monthlyRevenue || 0,
       monthly_profit: data.monthlyProfit || 0,
       gross_profit_margin: data.grossProfitMargin || 0,
@@ -69,9 +72,9 @@ export const handleProductSubmission = async (
       active_users: data.activeUsers,
       image_url,
       seller_id: user.id,
-      tech_stack: data.techStack === 'Other' ? [] : [data.techStack],
+      tech_stack: finalTechStack,
       tech_stack_other: data.techStack === 'Other' ? data.techStackOther : null,
-      llm_type: data.llmType === 'Other' ? null : data.llmType,
+      llm_type: finalLlmType,
       llm_type_other: data.llmType === 'Other' ? data.llmTypeOther : null,
       integrations_other: data.integrations_other,
       team_size: data.teamSize,
@@ -86,7 +89,7 @@ export const handleProductSubmission = async (
       special_notes: data.specialNotes,
       number_of_employees: data.numberOfEmployees,
       customer_acquisition_cost: data.customerAcquisitionCost || 0,
-      monetization: data.monetization === 'other' ? data.monetizationOther : data.monetization,
+      monetization: finalMonetization,
       monetization_other: data.monetization === 'other' ? data.monetizationOther : null,
       business_model: data.businessModel,
       investment_timeline: data.investmentTimeline,
@@ -176,23 +179,47 @@ export const handleProductUpdate = async (
 
     const monthlyTrafficValue = data.monthlyTraffic ? getTrafficValue(data.monthlyTraffic) : undefined;
 
+    // Process "Other" fields for the update
+    const categoryUpdate = data.category ? {
+      category: data.category === 'other' ? data.categoryOther?.toLowerCase().replace(/\s+/g, '_') : data.category,
+      category_other: data.category === 'other' ? data.categoryOther : null
+    } : {};
+
+    const industryUpdate = data.industry ? {
+      industry: data.industry === 'Other' ? data.industryOther : data.industry,
+      industry_other: data.industry === 'Other' ? data.industryOther : null
+    } : {};
+
+    const techStackUpdate = data.techStack ? {
+      tech_stack: data.techStack === 'Other' ? [] : [data.techStack],
+      tech_stack_other: data.techStack === 'Other' ? data.techStackOther : null
+    } : {};
+
+    const llmTypeUpdate = data.llmType ? {
+      llm_type: data.llmType === 'Other' ? null : data.llmType,
+      llm_type_other: data.llmType === 'Other' ? data.llmTypeOther : null
+    } : {};
+
+    const monetizationUpdate = data.monetization ? {
+      monetization: data.monetization === 'other' ? data.monetizationOther : data.monetization,
+      monetization_other: data.monetization === 'other' ? data.monetizationOther : null
+    } : {};
+
     const updateData = {
       ...(data.title && { title: data.title }),
       ...(data.description && { description: data.description }),
       ...(data.price && { price: data.price }),
-      ...(data.category && { category: data.category }),
+      ...categoryUpdate,
+      ...industryUpdate,
       ...(data.stage && { stage: data.stage }),
-      ...(data.industry && { industry: data.industry }),
       ...(data.monthlyRevenue && { monthly_revenue: data.monthlyRevenue }),
       ...(data.monthlyProfit && { monthly_profit: data.monthlyProfit }),
       ...(data.grossProfitMargin && { gross_profit_margin: data.grossProfitMargin }),
       ...(data.monthlyChurnRate && { monthly_churn_rate: data.monthlyChurnRate }),
       ...(monthlyTrafficValue && { monthly_traffic: monthlyTrafficValue }),
       ...(data.activeUsers && { active_users: data.activeUsers }),
-      ...(data.techStack && { 
-        tech_stack: data.techStack === 'Other' ? null : [data.techStack],
-        tech_stack_other: data.techStack === 'Other' ? data.techStackOther : null 
-      }),
+      ...techStackUpdate,
+      ...llmTypeUpdate,
       ...(data.integrations_other && { integrations_other: data.integrations_other }),
       ...(data.teamSize && { team_size: data.teamSize }),
       ...(typeof data.hasPatents !== 'undefined' && { has_patents: data.hasPatents }),
@@ -203,10 +230,7 @@ export const handleProductUpdate = async (
       ...(data.specialNotes && { special_notes: data.specialNotes }),
       ...(data.numberOfEmployees && { number_of_employees: data.numberOfEmployees }),
       ...(data.customerAcquisitionCost && { customer_acquisition_cost: data.customerAcquisitionCost }),
-      ...(data.monetization && { 
-        monetization: data.monetization === 'other' ? data.monetizationOther : data.monetization,
-        monetization_other: data.monetization === 'other' ? data.monetizationOther : null
-      }),
+      ...monetizationUpdate,
       ...(data.businessType && { business_type: data.businessType }),
       ...(data.deliverables && { deliverables: data.deliverables }),
       updated_at: new Date().toISOString()
