@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { DollarSign, PercentIcon, CheckCircle, Clock } from "lucide-react";
@@ -155,8 +154,7 @@ const PricingFees = () => {
                   <h4 className="font-semibold text-white text-sm mb-2">How We Compare</h4>
                   <p className="text-gray-300 text-xs">
                     Many marketplaces charge <span className="text-white font-bold">$50-$300</span> listing fees 
-                    with no guarantee of a sale. Our early adopter rate is <span className="text-[#0EA4E9] font-bold">80-97% lower</span> 
-                    than competitors.
+                    with no guarantee of a sale. Our early adopter rate is <span className="text-[#0EA4E9] font-bold">80-97% lower</span>than competitors.
                   </p>
                 </div>
               </div>
