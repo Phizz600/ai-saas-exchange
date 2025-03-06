@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { ListProductFormData } from "../types";
 import { toast } from "@/hooks/use-toast";
@@ -11,21 +10,34 @@ const getTrafficValue = (range: string): number => {
 export const handleProductSubmission = async (
   data: ListProductFormData,
   setIsLoading: (loading: boolean) => void
-): Promise<boolean> => {
+): Promise<{ success: boolean; productId?: string; error?: string }> => {
   try {
     setIsLoading(true);
     console.log('Submitting product data:', data);
 
-    const { data: { user } } = await supabase.auth.getUser();
+    // Check authentication first
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError) {
+      console.error('Authentication error:', authError);
+      return { 
+        success: false,
+        error: "Authentication failed. Please log in again."
+      };
+    }
+    
     if (!user) {
       toast({
         title: "Authentication required",
         description: "Please log in to list a product",
         variant: "destructive"
       });
-      return false;
+      return { 
+        success: false,
+        error: "Authentication required. Please log in to list a product." 
+      };
     }
 
+    // Process image upload
     let image_url = null;
     if (data.image && data.image instanceof File) {
       console.log("Processing image upload:", data.image.name, data.image.type, data.image.size);
@@ -46,7 +58,10 @@ export const handleProductSubmission = async (
 
         if (uploadError) {
           console.error("Upload error:", uploadError);
-          throw uploadError;
+          return { 
+            success: false,
+            error: `Image upload failed: ${uploadError.message}`
+          };
         }
 
         console.log("Upload successful:", uploadData);
@@ -64,14 +79,20 @@ export const handleProductSubmission = async (
           description: "There was a problem uploading your image. Please try again with a smaller image or different format.",
           variant: "destructive"
         });
-        return false;
+        return { 
+          success: false,
+          error: "Image upload failed. Please try with a smaller image or different format."
+        };
       }
     } else {
       console.log("No image to upload");
+      return { 
+        success: false,
+        error: "Product image is required."
+      };
     }
 
     const monthlyTrafficValue = data.monthlyTraffic ? getTrafficValue(data.monthlyTraffic) : 0;
-
     const auctionEndTime = data.auctionEndTime ? new Date(data.auctionEndTime).toISOString() : null;
 
     // Handle all "Other" fields
@@ -146,37 +167,43 @@ export const handleProductSubmission = async (
 
       if (error) {
         console.error('Supabase error:', error);
-        toast({
-          title: "Submission Failed",
-          description: `Error: ${error.message}`,
-          variant: "destructive",
-        });
-        throw error;
+        return { 
+          success: false,
+          error: `Database error: ${error.message}`
+        };
       }
       
       console.log("Product inserted successfully:", insertedProduct);
 
-      // Store the product ID in session storage for retrieval after payment
-      if (insertedProduct && insertedProduct.id) {
-        sessionStorage.setItem('pendingProductId', insertedProduct.id);
-        console.log("Saved product ID to session storage:", insertedProduct.id);
-      } else {
+      if (!insertedProduct || !insertedProduct.id) {
         console.error("Missing product ID from inserted product");
+        return { 
+          success: false,
+          error: "Product was created but ID is missing. Please contact support."
+        };
       }
 
-      return true;
+      // Store the product ID in session storage for retrieval after payment
+      sessionStorage.setItem('pendingProductId', insertedProduct.id);
+      console.log("Saved product ID to session storage:", insertedProduct.id);
+
+      return {
+        success: true,
+        productId: insertedProduct.id
+      };
     } catch (dbError) {
       console.error('Database error:', dbError);
-      throw dbError;
+      return { 
+        success: false,
+        error: "Database error. Please try again or contact support."
+      };
     }
   } catch (error) {
     console.error('Error submitting product:', error);
-    toast({
-      title: "Error",
-      description: "Failed to list your product. Please try again.",
-      variant: "destructive",
-    });
-    return false;
+    return { 
+      success: false,
+      error: "An unexpected error occurred. Please try again or contact support."
+    };
   } finally {
     setIsLoading(false);
   }

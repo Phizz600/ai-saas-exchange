@@ -77,34 +77,43 @@ export function ListProductForm() {
   const { isLoading, saveForLater } = useAutosave(form, currentSection);
 
   const handleRedirectToPayment = (productId: string) => {
-    setRedirecting(true);
-    setSubmissionSuccess(true);
-    
-    toast({
-      title: "Product submitted successfully!",
-      description: "Redirecting to payment page in a moment...",
-    });
-    
-    // Ensure we properly delay the redirect to allow for state updates and toast display
-    setTimeout(() => {
-      // Clear localStorage/sessionStorage to avoid confusion on future submissions
-      try {
-        console.log("Redirecting to payment for product:", productId);
-        window.location.href = `https://buy.stripe.com/9AQ3dz3lmf2yccE288?client_reference_id=${productId}`;
-      } catch (error) {
-        console.error("Redirect error:", error);
-        // Fallback if redirect fails
-        navigate("/listing-thank-you?payment_needed=true");
-      }
-    }, 2000);
+    try {
+      setRedirecting(true);
+      setSubmissionSuccess(true);
+      
+      toast({
+        title: "Product submitted successfully!",
+        description: "Redirecting to payment page in a moment...",
+      });
+      
+      // Use a longer delay to ensure state updates and toast display
+      setTimeout(() => {
+        try {
+          console.log("Redirecting to payment for product:", productId);
+          window.location.href = `https://buy.stripe.com/9AQ3dz3lmf2yccE288?client_reference_id=${productId}`;
+        } catch (error) {
+          console.error("Redirect error:", error);
+          // Fallback if redirect fails
+          navigate("/listing-thank-you?payment_needed=true&product_id=" + productId);
+        }
+      }, 3000);
+    } catch (error) {
+      console.error("Error in redirect handler:", error);
+      toast({
+        title: "Redirect Error",
+        description: "There was a problem redirecting to the payment page. Please try again.",
+        variant: "destructive",
+      });
+      setRedirecting(false);
+      setSubmissionSuccess(false);
+    }
   };
 
   const onSubmit = async (data: ListProductFormData) => {
-    console.log("Form submitted with data:", data);
-    
-    // Reset error state on new submission
+    // Reset states
     setSubmissionError(null);
     
+    // Validate agreements
     if (!data.accuracyAgreement || !data.termsAgreement) {
       toast({
         title: "Agreement Required",
@@ -137,45 +146,66 @@ export function ListProductForm() {
     }
 
     if (currentSection === sections.length - 1) {
+      // Set loading state first to prevent multiple submissions
       setIsSubmitting(true);
       
       try {
-        console.log("Proceeding with submission...");
-        const success = await handleProductSubmission(data, setIsSubmitting);
+        console.log("Starting product submission process...");
         
-        if (success) {
+        // Submit product data and handle response
+        const { success, productId, error } = await handleProductSubmission(data, setIsSubmitting);
+        
+        if (success && productId) {
+          console.log("Product submitted successfully with ID:", productId);
+          
           // Clean up draft after successful submission
-          const { data: { user } } = await supabase.auth.getUser();
-          if (user) {
-            await supabase
-              .from('draft_products')
-              .delete()
-              .eq('user_id', user.id);
-            
-            console.log("Cleaned up draft products");
+          try {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+              await supabase
+                .from('draft_products')
+                .delete()
+                .eq('user_id', user.id);
+              
+              console.log("Cleaned up draft products");
+            }
+          } catch (cleanupError) {
+            console.error("Error cleaning up draft:", cleanupError);
+            // Non-critical error, don't block the flow
           }
           
-          // Get product ID from session storage and redirect to payment
-          const productId = sessionStorage.getItem('pendingProductId');
-          console.log("Retrieved product ID from session storage:", productId);
+          // Set product ID in session storage as a backup
+          sessionStorage.setItem('pendingProductId', productId);
+          console.log("Session storage updated with product ID:", productId);
           
-          if (productId) {
-            handleRedirectToPayment(productId);
-          } else {
-            // Fallback if ID is not found
-            console.error("No product ID found in session storage");
-            setSubmissionError("Product was saved but ID is missing. Please contact support.");
-            setIsSubmitting(false);
-          }
+          // Trigger the payment redirect
+          handleRedirectToPayment(productId);
         } else {
-          setSubmissionError("Failed to submit your product. Please try again.");
+          // Handle submission failure
+          console.error("Product submission failed:", error);
+          setSubmissionError(error || "Failed to submit your product. Please try again.");
           setIsSubmitting(false);
+          
+          toast({
+            title: "Submission Failed",
+            description: error || "There was a problem submitting your product. Please try again.",
+            variant: "destructive",
+          });
         }
       } catch (error) {
-        console.error("Submission error:", error);
+        console.error("Unexpected error during submission:", error);
         setSubmissionError("An unexpected error occurred. Please try again or contact support.");
         setIsSubmitting(false);
+        
+        toast({
+          title: "Error",
+          description: "An unexpected error occurred. Please try again or contact support.",
+          variant: "destructive",
+        });
       }
+    } else {
+      // Not on the last section, proceed to next section
+      nextSection();
     }
   };
 
@@ -195,7 +225,17 @@ export function ListProductForm() {
       <Alert variant="destructive" className="mb-6">
         <AlertTriangle className="h-4 w-4" />
         <AlertTitle>Error</AlertTitle>
-        <AlertDescription>{submissionError}</AlertDescription>
+        <AlertDescription>
+          {submissionError}
+          <div className="mt-4">
+            <button 
+              onClick={() => setSubmissionError(null)} 
+              className="bg-white text-destructive px-4 py-2 rounded font-medium hover:bg-gray-100"
+            >
+              Try Again
+            </button>
+          </div>
+        </AlertDescription>
       </Alert>
     );
   }
@@ -206,7 +246,12 @@ export function ListProductForm() {
       <Alert className="mb-6 bg-green-50 border-green-200">
         <CheckCircle2 className="h-4 w-4 text-green-500" />
         <AlertTitle>Success!</AlertTitle>
-        <AlertDescription>Your product has been submitted successfully. Redirecting to payment page...</AlertDescription>
+        <AlertDescription className="space-y-4">
+          <p>Your product has been submitted successfully. Redirecting to payment page...</p>
+          <div className="h-1.5 w-full bg-gray-200 rounded-full overflow-hidden">
+            <div className="h-full bg-green-500 animate-progress rounded-full"></div>
+          </div>
+        </AlertDescription>
       </Alert>
     );
   }
