@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { ListProductFormData } from "../types";
 import { toast } from "@/hooks/use-toast";
@@ -98,15 +97,15 @@ export const handleProductSubmission = async (
 
     // Handle "Other" field values properly
     const finalCategory = data.category === 'other' ? data.categoryOther?.toLowerCase().replace(/\s+/g, '_') : data.category;
-    // Only set industry_other if the industry is "Other" and industryOther has a value
-    const industry = data.industry === 'Other' ? data.industry : data.industry;
-    const industryOther = data.industry === 'Other' ? data.industryOther : null;
+    
+    // Important: Remove the industry_other column usage as it seems to not exist in the schema
+    const industryValue = data.industry === 'Other' ? data.industryOther : data.industry;
     
     const finalTechStack = data.techStack === 'Other' ? [] : [data.techStack];
     const finalLlmType = data.llmType === 'Other' ? null : data.llmType;
     const finalMonetization = data.monetization === 'other' ? data.monetizationOther : data.monetization;
 
-    // Build the product data object with careful attention to null/undefined values
+    // Build the product data object without industry_other field
     const productData = {
       title: data.title,
       description: data.description,
@@ -114,8 +113,7 @@ export const handleProductSubmission = async (
       category: finalCategory,
       category_other: data.category === 'other' ? data.categoryOther : null,
       stage: data.stage,
-      industry: industry,
-      industry_other: industryOther,
+      industry: industryValue, // Use single field for industry
       monthly_revenue: data.monthlyRevenue || 0,
       monthly_profit: data.monthlyProfit || 0,
       gross_profit_margin: data.grossProfitMargin || 0,
@@ -261,9 +259,9 @@ export const handleProductUpdate = async (
       category_other: data.category === 'other' ? data.categoryOther : null
     } : {};
 
+    // Update industry handling to avoid industry_other column
     const industryUpdate = data.industry ? {
-      industry: data.industry === 'Other' ? data.industryOther : data.industry,
-      industry_other: data.industry === 'Other' ? data.industryOther : null
+      industry: data.industry === 'Other' ? data.industryOther : data.industry
     } : {};
 
     const techStackUpdate = data.techStack ? {
