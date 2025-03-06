@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { ListProductFormData } from "../types";
 import { toast } from "@/hooks/use-toast";
@@ -6,22 +5,6 @@ import { toast } from "@/hooks/use-toast";
 const getTrafficValue = (range: string): number => {
   const upperBound = range.split('-')[1] || range;
   return parseInt(upperBound.replace(/,/g, ''));
-};
-
-// Map frontend category values to valid database values
-const getCategoryValue = (category: string): string => {
-  // This mapping should be aligned with your database constraints
-  const categoryMapping: Record<string, string> = {
-    "AI Agents": "ai_agent", 
-    "AI Applications": "ai_application",
-    "AI Tools": "ai_tool",
-    "LLM": "llm",
-    "Chatbots": "chatbot",
-    "Training Data": "training_data",
-    "Other": "other"
-  };
-  
-  return categoryMapping[category] || "other";
 };
 
 export const handleProductSubmission = async (
@@ -64,14 +47,11 @@ export const handleProductSubmission = async (
 
     const auctionEndTime = data.auctionEndTime ? new Date(data.auctionEndTime).toISOString() : null;
 
-    // Use the mapping function to ensure valid category value
-    const validCategory = getCategoryValue(data.category);
-
     const productData = {
       title: data.title,
       description: data.description,
       price: data.isAuction ? data.startingPrice : data.price || 0,
-      category: validCategory, // Use validated category
+      category: data.category,
       stage: data.stage,
       industry: data.industry,
       monthly_revenue: data.monthlyRevenue || 0,
@@ -172,7 +152,6 @@ export const handleProductUpdate = async (
       return false;
     }
 
-    // First verify that the user owns this product
     const { data: existingProduct } = await supabase
       .from('products')
       .select('seller_id')
