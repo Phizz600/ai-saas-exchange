@@ -8,6 +8,22 @@ const getTrafficValue = (range: string): number => {
   return parseInt(upperBound.replace(/,/g, ''));
 };
 
+// Map frontend category values to valid database values
+const getCategoryValue = (category: string): string => {
+  // This mapping should be aligned with your database constraints
+  const categoryMapping: Record<string, string> = {
+    "AI Agents": "ai_agent", 
+    "AI Applications": "ai_application",
+    "AI Tools": "ai_tool",
+    "LLM": "llm",
+    "Chatbots": "chatbot",
+    "Training Data": "training_data",
+    "Other": "other"
+  };
+  
+  return categoryMapping[category] || "other";
+};
+
 export const handleProductSubmission = async (
   data: ListProductFormData,
   setIsLoading: (loading: boolean) => void
@@ -48,11 +64,14 @@ export const handleProductSubmission = async (
 
     const auctionEndTime = data.auctionEndTime ? new Date(data.auctionEndTime).toISOString() : null;
 
+    // Use the mapping function to ensure valid category value
+    const validCategory = getCategoryValue(data.category);
+
     const productData = {
       title: data.title,
       description: data.description,
       price: data.isAuction ? data.startingPrice : data.price || 0,
-      category: data.category,
+      category: validCategory, // Use validated category
       stage: data.stage,
       industry: data.industry,
       monthly_revenue: data.monthlyRevenue || 0,
@@ -97,6 +116,8 @@ export const handleProductSubmission = async (
         price_decrement_interval: data.priceDecrementInterval
       })
     };
+
+    console.log('Product data being sent to Supabase:', productData);
 
     const { data: insertedProduct, error } = await supabase
       .from('products')

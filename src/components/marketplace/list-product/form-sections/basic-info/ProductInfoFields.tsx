@@ -1,238 +1,82 @@
 
+import { UseFormReturn } from "react-hook-form";
+import { ListProductFormData } from "../../types";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Info, Link } from "lucide-react";
-import { useState } from "react";
-import { UseFormReturn } from "react-hook-form";
-import { ListProductFormData } from "../../types";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface ProductInfoFieldsProps {
   form: UseFormReturn<ListProductFormData>;
 }
 
 export function ProductInfoFields({ form }: ProductInfoFieldsProps) {
-  const [descriptionLength, setDescriptionLength] = useState(
-    form.getValues("description")?.length || 0
-  );
-  
-  const categories = [
-    "Natural Language Processing",
-    "Machine Learning",
-    "Content Generation",
-    "Computer Vision",
-    "Voice & Speech",
-    "Data Analytics",
-    "Automation",
-    "Recommendation Systems",
-    "Image Generation",
-    "Generative AI",
-    "Chatbots",
-    "AI Agents",
-    "Decision Support",
-    "Edge AI",
-    "AI Infrastructure",
-    "AI Research Tools",
-    "Language Translation",
-    "AI Security",
-    "Robotics",
-    "AI Testing & QA",
-    "AI Healthcare",
-    "AI Education",
-    "AI Finance",
-    "Other"
-  ];
-
   return (
-    <>
+    <div className="space-y-4">
+      <h3 className="text-lg font-medium">Product Information</h3>
+      
       <FormField
         control={form.control}
         name="title"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="flex items-center gap-2">
-              Product Title
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Info className="h-4 w-4 text-gray-500 cursor-help" />
-                  </TooltipTrigger>
-                  <TooltipContent className="bg-white">
-                    <p>Choose a clear, descriptive title that highlights your AI product's main feature or purpose</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </FormLabel>
+            <FormLabel>Product Name <span className="text-red-500">*</span></FormLabel>
             <FormControl>
-              <Input placeholder="Enter your product title" {...field} />
+              <Input placeholder="Enter your product name" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
         )}
       />
-
-      <FormField
-        control={form.control}
-        name="category"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel className="flex items-center gap-2">
-              AI Category
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Info className="h-4 w-4 text-gray-500 cursor-help" />
-                  </TooltipTrigger>
-                  <TooltipContent className="bg-white">
-                    <p>Select the primary category that best describes your AI tool's functionality</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
-              <FormControl>
-                <SelectTrigger className="bg-white">
-                  <SelectValue placeholder="Select AI category" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent className="bg-white">
-                {categories.map((category) => (
-                  <SelectItem key={category} value={category} className="bg-white hover:bg-gray-100">
-                    {category}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
+      
       <FormField
         control={form.control}
         name="description"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="flex items-center gap-2">
-              Description
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Info className="h-4 w-4 text-gray-500 cursor-help" />
-                  </TooltipTrigger>
-                  <TooltipContent className="bg-white">
-                    <p>Summarize your AI product's features, capabilities, and use cases</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </FormLabel>
-            <div className="space-y-1">
-              <FormControl>
-                <Textarea 
-                  placeholder="Describe your AI product..."
-                  className="min-h-[100px]"
-                  maxLength={75}
-                  {...field}
-                  onChange={(e) => {
-                    field.onChange(e);
-                    setDescriptionLength(e.target.value.length);
-                  }}
-                />
-              </FormControl>
-              <div className="text-xs text-gray-500 text-right">
-                <span className={descriptionLength > 65 ? "text-amber-600" : ""}>
-                  {descriptionLength}
-                </span>/75 characters
-              </div>
-            </div>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="demoUrl"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel className="flex items-center gap-2">
-              Link to Product
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Info className="h-4 w-4 text-gray-500 cursor-help" />
-                  </TooltipTrigger>
-                  <TooltipContent className="bg-white">
-                    <p>Provide a link to your product's website or demo</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </FormLabel>
+            <FormLabel>Description <span className="text-red-500">*</span></FormLabel>
             <FormControl>
-              <div className="relative">
-                <Input 
-                  placeholder="https://your-product.com" 
-                  {...field}
-                  className="pl-9"
-                />
-                <Link className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
-              </div>
+              <Textarea 
+                placeholder="Describe your product in detail" 
+                className="resize-none min-h-[100px]" 
+                {...field} 
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
         )}
       />
-
+      
       <FormField
         control={form.control}
-        name="businessType"
+        name="category"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="flex items-center gap-2">
-              Business Type
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Info className="h-4 w-4 text-gray-500 cursor-help" />
-                  </TooltipTrigger>
-                  <TooltipContent className="bg-white">
-                    <p>Select whether your product primarily serves businesses (B2B) or consumers (B2C)</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
+            <FormLabel>Category <span className="text-red-500">*</span></FormLabel>
+            <Select
+              onValueChange={field.onChange}
+              defaultValue={field.value}
+            >
               <FormControl>
-                <SelectTrigger className="bg-white">
-                  <SelectValue placeholder="Select business type" />
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a category" />
                 </SelectTrigger>
               </FormControl>
-              <SelectContent className="bg-white">
-                <SelectItem value="B2B" className="bg-white hover:bg-gray-100">
-                  B2B (Business to Business)
-                </SelectItem>
-                <SelectItem value="B2C" className="bg-white hover:bg-gray-100">
-                  B2C (Business to Consumer)
-                </SelectItem>
+              <SelectContent>
+                {/* Ensure these options match the mapping in formSubmissionHandler.ts */}
+                <SelectItem value="AI Agents">AI Agents</SelectItem>
+                <SelectItem value="AI Applications">AI Applications</SelectItem>
+                <SelectItem value="AI Tools">AI Tools</SelectItem>
+                <SelectItem value="LLM">LLM</SelectItem>
+                <SelectItem value="Chatbots">Chatbots</SelectItem>
+                <SelectItem value="Training Data">Training Data</SelectItem>
+                <SelectItem value="Other">Other</SelectItem>
               </SelectContent>
             </Select>
             <FormMessage />
           </FormItem>
         )}
       />
-    </>
+    </div>
   );
 }
