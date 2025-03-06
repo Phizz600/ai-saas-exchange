@@ -20,12 +20,11 @@ export const Footer = () => {
   }));
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) {
-      toast.success("Thanks for subscribing!", {
-        description: "You'll receive updates about new AI products and features."
-      });
-      setEmail("");
-    }
+    // Open the subscription URL in a new tab
+    window.open("https://aiexchangeclub.beehiiv.com/subscribe", "_blank");
+    toast.success("Redirecting you to our newsletter!", {
+      description: "You'll be able to subscribe to updates about new AI products and features."
+    });
   };
   return <footer className="relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-accent via-accent2 to-accent3">
@@ -56,7 +55,11 @@ export const Footer = () => {
                     <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                     
                   </div>
-                  <Button type="submit" className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 transition-opacity text-white font-semibold">
+                  <Button 
+                    type="submit" 
+                    className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 transition-opacity text-white font-semibold"
+                    onClick={() => window.open("https://aiexchangeclub.beehiiv.com/subscribe", "_blank")}
+                  >
                     Join the Club
                   </Button>
                 </form>
