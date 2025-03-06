@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { ListProductFormData } from "../types";
 import { toast } from "@/hooks/use-toast";
@@ -153,14 +152,22 @@ export const handleProductSubmission = async (
       throw error;
     }
 
+    // Store the product ID in session storage for retrieval after payment
+    if (insertedProduct && insertedProduct.id) {
+      sessionStorage.setItem('pendingProductId', insertedProduct.id);
+    }
+
     toast({
       title: "Product Submitted Successfully!",
       description: "Proceeding to payment page...",
       duration: 3000,
     });
 
-    // Redirect to Stripe payment page
-    window.location.href = "https://buy.stripe.com/9AQ3dz3lmf2yccE288";
+    // Small delay to ensure toast is displayed before redirect
+    setTimeout(() => {
+      // Redirect to Stripe payment page with product ID
+      window.location.href = `https://buy.stripe.com/9AQ3dz3lmf2yccE288?client_reference_id=${insertedProduct?.id || ''}`;
+    }, 1500);
 
     return true;
   } catch (error) {

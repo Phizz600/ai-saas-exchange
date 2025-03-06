@@ -1,26 +1,85 @@
 
 import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Home, Users, Timer, Youtube, Twitter, Instagram, Rss, MousePointerClick, AlertCircle } from "lucide-react";
+import { Home, Users, Timer, Youtube, Twitter, Instagram, Rss, MousePointerClick, AlertCircle, CheckCircle } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
 
 export const ListingThankYou = () => {
   const [queueNumber, setQueueNumber] = useState(0);
+  const [isProcessing, setIsProcessing] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const [isPaid, setIsPaid] = useState(false);
+  const [productId, setProductId] = useState<string | null>(null);
 
   useEffect(() => {
+    // Check for product ID in session storage
+    const pendingProductId = sessionStorage.getItem('pendingProductId');
+    if (pendingProductId) {
+      setProductId(pendingProductId);
+      console.log("Found pending product ID:", pendingProductId);
+    }
+
     // Check if redirected from payment success
     const params = new URLSearchParams(location.search);
-    if (params.get('payment_status') === 'success') {
+    const paymentStatus = params.get('payment_status');
+    
+    if (paymentStatus === 'success') {
       setIsPaid(true);
+      
+      // If we have both payment success and a product ID, update the payment status
+      if (pendingProductId) {
+        updatePaymentStatus(pendingProductId);
+      }
     }
 
     // Generate a random number between 1 and 207
     const randomNumber = Math.floor(Math.random() * 207) + 1;
     setQueueNumber(randomNumber);
   }, [location.search]); // Update when location search changes
+
+  const updatePaymentStatus = async (productId: string) => {
+    setIsProcessing(true);
+    try {
+      const { error } = await supabase
+        .from('products')
+        .update({ payment_status: 'paid' })
+        .eq('id', productId);
+      
+      if (error) {
+        console.error("Error updating payment status:", error);
+        toast({
+          title: "Payment Verification Error",
+          description: "We couldn't verify your payment status. Please contact support.",
+          variant: "destructive"
+        });
+      } else {
+        console.log("Payment status updated successfully for product:", productId);
+        // Clear from session storage after successful update
+        sessionStorage.removeItem('pendingProductId');
+      }
+    } catch (error) {
+      console.error("Error updating payment status:", error);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const retryPayment = () => {
+    if (productId) {
+      window.location.href = `https://buy.stripe.com/9AQ3dz3lmf2yccE288?client_reference_id=${productId}`;
+    } else {
+      toast({
+        title: "Product Information Missing",
+        description: "We couldn't find your product information. Please try submitting again.",
+        variant: "destructive"
+      });
+      navigate('/list-product');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#9b87f5] via-[#D946EF] to-[#0EA5E9]">
@@ -44,7 +103,19 @@ export const ListingThankYou = () => {
               </p>
             </div>
             
-            {!isPaid && (
+            {isProcessing && (
+              <div className="w-full max-w-md bg-blue-50 rounded-lg p-4 sm:p-6 border border-blue-200 flex items-start space-x-3">
+                <CheckCircle className="text-blue-500 h-5 w-5 flex-shrink-0 mt-0.5 animate-pulse" />
+                <div>
+                  <h3 className="font-medium text-blue-800">Processing Payment</h3>
+                  <p className="text-sm text-blue-700 mt-1">
+                    We're confirming your payment status. This may take a moment...
+                  </p>
+                </div>
+              </div>
+            )}
+            
+            {!isPaid && !isProcessing && (
               <div className="w-full max-w-md bg-amber-50 rounded-lg p-4 sm:p-6 border border-amber-200 flex items-start space-x-3">
                 <AlertCircle className="text-amber-500 h-5 w-5 flex-shrink-0 mt-0.5" />
                 <div>
@@ -52,16 +123,17 @@ export const ListingThankYou = () => {
                   <p className="text-sm text-amber-700 mt-1">
                     Please complete your payment to finalize your listing. If you were redirected from payment and see this message, please contact support.
                   </p>
-                  <a href="https://buy.stripe.com/9AQ3dz3lmf2yccE288" className="mt-3 inline-block">
-                    <Button variant="default" className="bg-amber-600 hover:bg-amber-700">
-                      Complete Payment
-                    </Button>
-                  </a>
+                  <button 
+                    onClick={retryPayment}
+                    className="mt-3 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-amber-600 hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
+                  >
+                    Complete Payment
+                  </button>
                 </div>
               </div>
             )}
 
-            {isPaid && (
+            {isPaid && !isProcessing && (
               <div className="w-full max-w-md bg-green-50 rounded-lg p-4 sm:p-6 border border-green-200 flex items-start space-x-3">
                 <div className="bg-green-100 p-1 rounded-full">
                   <svg className="h-5 w-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
