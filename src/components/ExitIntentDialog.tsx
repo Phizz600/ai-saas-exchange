@@ -1,16 +1,16 @@
+
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Briefcase, UserCog } from "lucide-react";
+
 export function ExitIntentDialog() {
-  // Set isOpen to true by default to display the dialog immediately
+  // Set isOpen to true to display the dialog immediately
   const [isOpen, setIsOpen] = useState(true);
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
   const [email, setEmail] = useState("");
+
   useEffect(() => {
     const shouldShow = () => {
       const lastShown = localStorage.getItem("exitIntentShown");
@@ -23,20 +23,24 @@ export function ExitIntentDialog() {
       }
       return true;
     };
+
     const handleMouseLeave = (e: MouseEvent) => {
-      if (e.clientY <= 0 &&
-      // User's mouse is at the top of the viewport
-      shouldShow() && window.innerWidth >= 1024 // Only show on desktop
+      if (
+        e.clientY <= 0 && // User's mouse is at the top of the viewport
+        shouldShow() &&
+        window.innerWidth >= 1024 // Only show on desktop
       ) {
         setIsOpen(true);
         localStorage.setItem("exitIntentShown", Date.now().toString());
       }
     };
+
     document.addEventListener("mouseleave", handleMouseLeave);
     return () => {
       document.removeEventListener("mouseleave", handleMouseLeave);
     };
   }, []);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Here you would typically handle the email subscription
@@ -47,10 +51,14 @@ export function ExitIntentDialog() {
     });
     setIsOpen(false);
   };
-  return <Dialog open={isOpen} onOpenChange={setIsOpen}>
+
+  return (
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent className="sm:max-w-[425px] bg-gradient-to-br from-[#9b87f5] via-[#D946EF] to-[#0EA5E9]">
         <DialogHeader>
-          <DialogTitle className="text-white exo-2-heading text-center text-xl">Unlock Exclusive AI Deals &amp; Insights</DialogTitle>
+          <DialogTitle className="text-white exo-2-heading text-center text-xl">
+            Unlock Exclusive AI Deals &amp; Insights
+          </DialogTitle>
         </DialogHeader>
         <div className="text-center space-y-6 p-4">
           <div className="flex justify-center gap-12 items-center">
@@ -67,10 +75,14 @@ export function ExitIntentDialog() {
               <span className="text-white text-sm">For Builders</span>
             </div>
           </div>
-          <p className="text-white text-lg">Get early access to premium AI tools, off-market deals, and actionable insights—before anyone else.</p>
+          <p className="text-white text-lg">
+            Get early access to premium AI tools, off-market deals, and actionable insights—before anyone else.
+          </p>
           <form onSubmit={handleSubmit} className="space-y-4">
-            
-            <Button type="submit" className="w-full bg-[#F97316] hover:bg-[#EA580C] text-white font-medium">
+            <Button
+              type="submit"
+              className="w-full bg-[#F97316] hover:bg-[#EA580C] text-white font-medium"
+            >
               Get Exclusive Updates
             </Button>
             <div className="flex items-center justify-center gap-2 text-white/80 text-sm">
@@ -80,5 +92,6 @@ export function ExitIntentDialog() {
           </form>
         </div>
       </DialogContent>
-    </Dialog>;
+    </Dialog>
+  );
 }
