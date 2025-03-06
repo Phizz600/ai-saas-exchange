@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -15,7 +14,6 @@ export function ExitIntentDialog() {
   // Function to redirect to beehiiv subscription page
   const handleRedirect = () => {
     window.open("https://aiexchangeclub.beehiiv.com/subscribe", "_blank");
-    setIsOpen(false);
   };
 
   return <Dialog open={isOpen} onOpenChange={setIsOpen}>
