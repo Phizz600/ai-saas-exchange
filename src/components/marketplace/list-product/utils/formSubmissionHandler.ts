@@ -106,12 +106,8 @@ export const handleProductSubmission = async (
     const monthlyTrafficValue = data.monthlyTraffic ? getTrafficValue(data.monthlyTraffic) : 0;
     const auctionEndTime = data.auctionEndTime ? new Date(data.auctionEndTime).toISOString() : null;
 
-    // Keep category as-is (no longer convert to snake_case)
-    const finalCategory = data.category === 'Other' ? data.categoryOther : data.category;
-    
-    // Important: Remove the industry_other column usage as it seems to not exist in the schema
-    const industryValue = data.industry === 'Other' ? data.industryOther : data.industry;
-    
+    // FIX: Keep category as "Other" when selected, and store the custom category in category_other
+    // This ensures we don't violate the database constraint
     const finalTechStack = data.techStack === 'Other' ? [] : [data.techStack];
     const finalLlmType = data.llmType === 'Other' ? null : data.llmType;
     const finalMonetization = data.monetization === 'other' ? data.monetizationOther : data.monetization;
@@ -156,10 +152,10 @@ export const handleProductSubmission = async (
       title: data.title,
       description: data.description,
       price: data.isAuction ? startingPrice : price || 0,
-      category: finalCategory,
-      category_other: data.category === 'Other' ? data.categoryOther : null,
+      category: data.category, // Keep the original category, including "Other"
+      category_other: data.category === 'Other' ? data.categoryOther : null, // Store custom category when "Other" is selected
       stage: data.stage,
-      industry: industryValue, // Use single field for industry
+      industry: data.industry === 'Other' ? data.industryOther : data.industry,
       monthly_revenue: validatePrice(data.monthlyRevenue) || 0,
       monthly_profit: validatePrice(data.monthlyProfit) || 0,
       gross_profit_margin: validatePrice(data.grossProfitMargin) || 0,
@@ -301,8 +297,8 @@ export const handleProductUpdate = async (
 
     // Process "Other" fields for the update
     const categoryUpdate = data.category ? {
-      category: data.category === 'Other' ? data.categoryOther : data.category,
-      category_other: data.category === 'Other' ? data.categoryOther : null
+      category: data.category, // Keep original category including "Other"
+      category_other: data.category === 'Other' ? data.categoryOther : null // Store custom category
     } : {};
 
     // Update industry handling to avoid industry_other column

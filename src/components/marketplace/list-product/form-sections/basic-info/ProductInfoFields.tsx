@@ -112,7 +112,7 @@ export function ProductInfoFields({
         render={({ field }) => (
           <FormItem className="text-left">
             <FormLabel className="text-left">Category <span className="text-red-500">*</span></FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
+            <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
               <FormControl>
                 <SelectTrigger>
                   <SelectValue placeholder="Select a category" />
