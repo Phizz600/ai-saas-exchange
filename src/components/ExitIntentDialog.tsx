@@ -7,7 +7,8 @@ import { useToast } from "@/hooks/use-toast";
 import { Briefcase, UserCog } from "lucide-react";
 
 export function ExitIntentDialog() {
-  const [isOpen, setIsOpen] = useState(false);
+  // Set isOpen to true by default to display the dialog immediately
+  const [isOpen, setIsOpen] = useState(true);
   const { toast } = useToast();
   const [email, setEmail] = useState("");
 
