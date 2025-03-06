@@ -1,16 +1,15 @@
-
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Briefcase, UserCog, Sparkles, BrainCircuit } from "lucide-react";
-
+import { Briefcase, UserCog } from "lucide-react";
 export function ExitIntentDialog() {
   // Set isOpen to true to display the dialog immediately
   const [isOpen, setIsOpen] = useState(true);
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
   const [email, setEmail] = useState("");
-
   useEffect(() => {
     const shouldShow = () => {
       const lastShown = localStorage.getItem("exitIntentShown");
@@ -37,7 +36,6 @@ export function ExitIntentDialog() {
       document.removeEventListener("mouseleave", handleMouseLeave);
     };
   }, []);
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Here you would typically handle the email subscription
@@ -48,25 +46,14 @@ export function ExitIntentDialog() {
     });
     setIsOpen(false);
   };
-
   return <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="sm:max-w-[425px] bg-gradient-to-br from-[#9b87f5] via-[#D946EF] to-[#0EA5E9] relative overflow-hidden">
-        {/* AI-related decorative elements */}
-        <div className="absolute -top-8 -right-8 text-white/20 rotate-12">
-          <BrainCircuit size={80} />
-        </div>
-        <div className="absolute -bottom-8 -left-8 text-white/20 -rotate-12">
-          <BrainCircuit size={80} />
-        </div>
-        
-        <DialogHeader className="relative z-10">
-          <DialogTitle className="text-white exo-2-heading text-center text-xl flex items-center justify-center gap-2">
-            <Sparkles className="h-5 w-5 text-yellow-300 animate-pulse" />
+      <DialogContent className="sm:max-w-[425px] bg-gradient-to-br from-[#9b87f5] via-[#D946EF] to-[#0EA5E9]">
+        <DialogHeader>
+          <DialogTitle className="text-white exo-2-heading text-center text-xl">
             Unlock Exclusive AI Deals &amp; Insights
-            <Sparkles className="h-5 w-5 text-yellow-300 animate-pulse" />
           </DialogTitle>
         </DialogHeader>
-        <div className="text-center space-y-6 p-4 relative z-10">
+        <div className="text-center space-y-6 p-4">
           <div className="flex justify-center gap-12 items-center">
             <div className="flex flex-col items-center gap-2">
               <div className="bg-white/20 p-3 rounded-full">
@@ -85,16 +72,7 @@ export function ExitIntentDialog() {
             Get early access to premium AI tools, off-market deals, and actionable insights—before anyone else.
           </p>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <Button 
-              type="submit" 
-              className="w-full bg-[#F97316] hover:bg-[#EA580C] text-white font-medium relative group"
-            >
-              <span className="relative z-10 flex items-center justify-center gap-2">
-                Join the Club
-                <Sparkles className="h-4 w-4" />
-              </span>
-              <span className="absolute inset-0 rounded-md bg-orange-500 opacity-0 group-hover:opacity-100 group-hover:animate-pulse blur-md transition-all duration-500 ease-in-out"></span>
-            </Button>
+            <Button type="submit" className="w-full bg-[#F97316] hover:bg-[#EA580C] text-white font-medium">Join the Club</Button>
             <div className="flex items-center justify-center gap-2 text-white/80 text-sm">
               <span>🔒</span>
               <p>Join 10,000+ AI professionals • No spam, ever</p>
