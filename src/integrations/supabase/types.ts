@@ -558,6 +558,7 @@ export type Database = {
           monthly_revenue: number | null
           monthly_traffic: number | null
           number_of_employees: string | null
+          payment_status: string | null
           price: number
           price_decrement: number | null
           price_decrement_interval: string | null
@@ -615,6 +616,7 @@ export type Database = {
           monthly_revenue?: number | null
           monthly_traffic?: number | null
           number_of_employees?: string | null
+          payment_status?: string | null
           price: number
           price_decrement?: number | null
           price_decrement_interval?: string | null
@@ -672,6 +674,7 @@ export type Database = {
           monthly_revenue?: number | null
           monthly_traffic?: number | null
           number_of_employees?: string | null
+          payment_status?: string | null
           price?: number
           price_decrement?: number | null
           price_decrement_interval?: string | null
