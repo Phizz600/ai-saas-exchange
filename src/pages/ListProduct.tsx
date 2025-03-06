@@ -19,7 +19,7 @@ export const ListProduct = () => {
             <Link to="/">
               <img src="/lovable-uploads/f74b20e6-6798-4aeb-badd-2da6c2dce40b.png" alt="AI Exchange Logo" className="w-20 h-20 object-contain animate-float" />
             </Link>
-            <h1 className="text-4xl font-exo font-bold bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] text-transparent bg-clip-text">
+            <h1 className="text-4xl exo-2-heading font-bold bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] text-transparent bg-clip-text">
               List Your AI Product
             </h1>
             <p className="text-gray-600 text-center max-w-xl">
