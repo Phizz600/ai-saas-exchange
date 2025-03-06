@@ -1,24 +1,53 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Briefcase, UserCog } from "lucide-react";
 
 export function ExitIntentDialog() {
-  // Force the dialog to be open
-  const [isOpen, setIsOpen] = useState(true);
-  const {
-    toast
-  } = useToast();
+  const [isOpen, setIsOpen] = useState(false);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    // Check if we should show the dialog (once per day)
+    const shouldShowDialog = () => {
+      const lastShown = localStorage.getItem('exitIntentLastShown');
+      
+      if (!lastShown) return true;
+      
+      const lastShownDate = new Date(lastShown);
+      const currentDate = new Date();
+      
+      // Check if it's been more than 24 hours since last shown
+      return currentDate.getTime() - lastShownDate.getTime() > 24 * 60 * 60 * 1000;
+    };
+
+    // Only show if we should based on last shown time
+    if (shouldShowDialog()) {
+      // Show dialog after 30 seconds
+      const timer = setTimeout(() => {
+        setIsOpen(true);
+        // Update the last shown time in localStorage
+        localStorage.setItem('exitIntentLastShown', new Date().toISOString());
+      }, 30000); // 30 seconds
+      
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   // Function to redirect to beehiiv subscription page
   const handleRedirect = () => {
     window.open("https://aiexchangeclub.beehiiv.com/subscribe", "_blank");
   };
 
-  // Removing onOpenChange to prevent the dialog from closing when clicking outside
-  return <Dialog open={isOpen}>
+  // Allow closing the dialog
+  const handleCloseDialog = () => {
+    setIsOpen(false);
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={handleCloseDialog}>
       <DialogContent className="sm:max-w-[425px] bg-gradient-to-br from-[#9b87f5] via-[#D946EF] to-[#0EA5E9]">
         <DialogHeader>
           <DialogTitle className="text-white exo-2-heading text-center text-xl">
@@ -57,5 +86,6 @@ export function ExitIntentDialog() {
           </div>
         </div>
       </DialogContent>
-    </Dialog>;
+    </Dialog>
+  );
 }
