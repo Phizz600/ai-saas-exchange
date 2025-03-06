@@ -157,7 +157,7 @@ const Hero = () => {
           </Suspense>
 
           <div className="mt-24 mb-16">
-            <h2 className="font-bold text-white text-center mb-4 exo-2-heading text-3xl">
+            <h2 className="font-bold text-white text-center mb-4 exo-2-heading text-2xl">
               AI SaaS Businesses for Sale
             </h2>
             <p className="text-gray-200 max-w-3xl mx-auto text-center text-xl mb-12">
