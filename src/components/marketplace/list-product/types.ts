@@ -4,6 +4,7 @@ export interface ListProductFormData {
   description: string;
   price?: number;
   category: string;
+  categoryOther?: string;
   stage: string;
   industry: string;
   monthlyRevenue?: number;
@@ -49,5 +50,4 @@ export interface ListProductFormData {
   businessLocation?: string;
   numberOfEmployees?: string;
   industryOther?: string;
-  categoryOther?: string;
 }

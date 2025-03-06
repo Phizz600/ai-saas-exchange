@@ -5,12 +5,22 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/comp
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useEffect } from "react";
 
 interface ProductInfoFieldsProps {
   form: UseFormReturn<ListProductFormData>;
 }
 
 export function ProductInfoFields({ form }: ProductInfoFieldsProps) {
+  const categoryValue = form.watch("category");
+  
+  // Set categoryOther field value to null when category is not "other"
+  useEffect(() => {
+    if (categoryValue !== "other") {
+      form.setValue("categoryOther", "");
+    }
+  }, [categoryValue, form]);
+
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-medium exo-2-heading">Product Information</h3>
@@ -83,6 +93,26 @@ export function ProductInfoFields({ form }: ProductInfoFieldsProps) {
           </FormItem>
         )}
       />
+      
+      {/* Show "Other Category" input field when "other" is selected */}
+      {categoryValue === "other" && (
+        <FormField
+          control={form.control}
+          name="categoryOther"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Other Category <span className="text-red-500">*</span></FormLabel>
+              <FormControl>
+                <Input 
+                  placeholder="Please specify your category" 
+                  {...field} 
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      )}
     </div>
   );
 }

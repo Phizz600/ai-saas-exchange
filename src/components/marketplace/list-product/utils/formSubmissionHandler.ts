@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { ListProductFormData } from "../types";
 import { toast } from "@/hooks/use-toast";
@@ -47,11 +48,17 @@ export const handleProductSubmission = async (
 
     const auctionEndTime = data.auctionEndTime ? new Date(data.auctionEndTime).toISOString() : null;
 
+    // Handle the category and categoryOther fields
+    const finalCategory = data.category === 'other' && data.categoryOther 
+      ? data.categoryOther.toLowerCase().replace(/\s+/g, '_') // Convert "Other Category" to "other_category"
+      : data.category;
+
     const productData = {
       title: data.title,
       description: data.description,
       price: data.isAuction ? data.startingPrice : data.price || 0,
-      category: data.category,
+      category: finalCategory,
+      category_other: data.category === 'other' ? data.categoryOther : null,
       stage: data.stage,
       industry: data.industry,
       monthly_revenue: data.monthlyRevenue || 0,
