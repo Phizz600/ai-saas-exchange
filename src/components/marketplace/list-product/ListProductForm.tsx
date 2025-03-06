@@ -19,10 +19,14 @@ import { useAutosave } from "./hooks/useAutosave";
 import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert"; 
+import { CheckCircle2, AlertTriangle } from "lucide-react";
 
 export function ListProductForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
+  const [submissionError, setSubmissionError] = useState<string | null>(null);
+  const [submissionSuccess, setSubmissionSuccess] = useState(false);
   const navigate = useNavigate();
 
   const sections = [
@@ -74,19 +78,32 @@ export function ListProductForm() {
 
   const handleRedirectToPayment = (productId: string) => {
     setRedirecting(true);
+    setSubmissionSuccess(true);
+    
     toast({
-      title: "Redirecting to payment",
-      description: "You'll be redirected to the payment page in a moment...",
+      title: "Product submitted successfully!",
+      description: "Redirecting to payment page in a moment...",
     });
     
-    // Proceed to Stripe payment page with product ID
+    // Ensure we properly delay the redirect to allow for state updates and toast display
     setTimeout(() => {
-      window.location.href = `https://buy.stripe.com/9AQ3dz3lmf2yccE288?client_reference_id=${productId || ''}`;
-    }, 1500);
+      // Clear localStorage/sessionStorage to avoid confusion on future submissions
+      try {
+        console.log("Redirecting to payment for product:", productId);
+        window.location.href = `https://buy.stripe.com/9AQ3dz3lmf2yccE288?client_reference_id=${productId}`;
+      } catch (error) {
+        console.error("Redirect error:", error);
+        // Fallback if redirect fails
+        navigate("/listing-thank-you?payment_needed=true");
+      }
+    }, 2000);
   };
 
   const onSubmit = async (data: ListProductFormData) => {
     console.log("Form submitted with data:", data);
+    
+    // Reset error state on new submission
+    setSubmissionError(null);
     
     if (!data.accuracyAgreement || !data.termsAgreement) {
       toast({
@@ -121,6 +138,7 @@ export function ListProductForm() {
 
     if (currentSection === sections.length - 1) {
       setIsSubmitting(true);
+      
       try {
         console.log("Proceeding with submission...");
         const success = await handleProductSubmission(data, setIsSubmitting);
@@ -133,21 +151,30 @@ export function ListProductForm() {
               .from('draft_products')
               .delete()
               .eq('user_id', user.id);
+            
+            console.log("Cleaned up draft products");
           }
           
           // Get product ID from session storage and redirect to payment
           const productId = sessionStorage.getItem('pendingProductId');
+          console.log("Retrieved product ID from session storage:", productId);
+          
           if (productId) {
             handleRedirectToPayment(productId);
           } else {
             // Fallback if ID is not found
-            navigate("/listing-thank-you");
+            console.error("No product ID found in session storage");
+            setSubmissionError("Product was saved but ID is missing. Please contact support.");
+            setIsSubmitting(false);
           }
-        }
-      } finally {
-        if (!redirecting) {
+        } else {
+          setSubmissionError("Failed to submit your product. Please try again.");
           setIsSubmitting(false);
         }
+      } catch (error) {
+        console.error("Submission error:", error);
+        setSubmissionError("An unexpected error occurred. Please try again or contact support.");
+        setIsSubmitting(false);
       }
     }
   };
@@ -159,6 +186,28 @@ export function ListProductForm() {
         <Skeleton className="h-96 w-full" />
         <Skeleton className="h-12 w-full" />
       </div>
+    );
+  }
+
+  // Display error alert if there's a submission error
+  if (submissionError) {
+    return (
+      <Alert variant="destructive" className="mb-6">
+        <AlertTriangle className="h-4 w-4" />
+        <AlertTitle>Error</AlertTitle>
+        <AlertDescription>{submissionError}</AlertDescription>
+      </Alert>
+    );
+  }
+
+  // Display success message if submission was successful but we're waiting for redirect
+  if (submissionSuccess) {
+    return (
+      <Alert className="mb-6 bg-green-50 border-green-200">
+        <CheckCircle2 className="h-4 w-4 text-green-500" />
+        <AlertTitle>Success!</AlertTitle>
+        <AlertDescription>Your product has been submitted successfully. Redirecting to payment page...</AlertDescription>
+      </Alert>
     );
   }
 

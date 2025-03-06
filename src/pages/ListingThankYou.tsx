@@ -6,6 +6,7 @@ import { Home, Users, Timer, Youtube, Twitter, Instagram, Rss, MousePointerClick
 import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 
 export const ListingThankYou = () => {
   const [queueNumber, setQueueNumber] = useState(0);
@@ -14,6 +15,7 @@ export const ListingThankYou = () => {
   const navigate = useNavigate();
   const [isPaid, setIsPaid] = useState(false);
   const [productId, setProductId] = useState<string | null>(null);
+  const [paymentNeeded, setPaymentNeeded] = useState(false);
 
   useEffect(() => {
     // Check for product ID in session storage
@@ -26,6 +28,7 @@ export const ListingThankYou = () => {
     // Check if redirected from payment success
     const params = new URLSearchParams(location.search);
     const paymentStatus = params.get('payment_status');
+    const paymentNeededParam = params.get('payment_needed');
     
     if (paymentStatus === 'success') {
       setIsPaid(true);
@@ -34,6 +37,11 @@ export const ListingThankYou = () => {
       if (pendingProductId) {
         updatePaymentStatus(pendingProductId);
       }
+    }
+
+    // Check if payment is still needed
+    if (paymentNeededParam === 'true') {
+      setPaymentNeeded(true);
     }
 
     // Generate a random number between 1 and 207
@@ -104,49 +112,41 @@ export const ListingThankYou = () => {
             </div>
             
             {isProcessing && (
-              <div className="w-full max-w-md bg-blue-50 rounded-lg p-4 sm:p-6 border border-blue-200 flex items-start space-x-3">
-                <CheckCircle className="text-blue-500 h-5 w-5 flex-shrink-0 mt-0.5 animate-pulse" />
-                <div>
-                  <h3 className="font-medium text-blue-800">Processing Payment</h3>
-                  <p className="text-sm text-blue-700 mt-1">
-                    We're confirming your payment status. This may take a moment...
-                  </p>
-                </div>
-              </div>
+              <Alert className="w-full max-w-md">
+                <CheckCircle className="h-5 w-5 text-blue-500 animate-pulse" />
+                <AlertTitle>Processing Payment</AlertTitle>
+                <AlertDescription>
+                  We're confirming your payment status. This may take a moment...
+                </AlertDescription>
+              </Alert>
             )}
             
-            {!isPaid && !isProcessing && (
-              <div className="w-full max-w-md bg-amber-50 rounded-lg p-4 sm:p-6 border border-amber-200 flex items-start space-x-3">
-                <AlertCircle className="text-amber-500 h-5 w-5 flex-shrink-0 mt-0.5" />
-                <div>
-                  <h3 className="font-medium text-amber-800">Payment Required</h3>
-                  <p className="text-sm text-amber-700 mt-1">
+            {(paymentNeeded || (!isPaid && !isProcessing)) && (
+              <Alert variant="destructive" className="w-full max-w-md">
+                <AlertCircle className="h-5 w-5" />
+                <AlertTitle>Payment Required</AlertTitle>
+                <AlertDescription className="space-y-2">
+                  <p>
                     Please complete your payment to finalize your listing. If you were redirected from payment and see this message, please contact support.
                   </p>
-                  <button 
+                  <Button 
                     onClick={retryPayment}
-                    className="mt-3 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-amber-600 hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
+                    className="mt-3 bg-gradient-to-r from-[#8B5CF6] to-[#D946EF]"
                   >
                     Complete Payment
-                  </button>
-                </div>
-              </div>
+                  </Button>
+                </AlertDescription>
+              </Alert>
             )}
 
             {isPaid && !isProcessing && (
-              <div className="w-full max-w-md bg-green-50 rounded-lg p-4 sm:p-6 border border-green-200 flex items-start space-x-3">
-                <div className="bg-green-100 p-1 rounded-full">
-                  <svg className="h-5 w-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="font-medium text-green-800">Payment Successful</h3>
-                  <p className="text-sm text-green-700 mt-1">
-                    Thank you for your payment! Your listing is now complete and will be reviewed by our team.
-                  </p>
-                </div>
-              </div>
+              <Alert className="w-full max-w-md bg-green-50 border-green-200">
+                <CheckCircle className="h-5 w-5 text-green-500" />
+                <AlertTitle>Payment Successful</AlertTitle>
+                <AlertDescription>
+                  Thank you for your payment! Your listing is now complete and will be reviewed by our team.
+                </AlertDescription>
+              </Alert>
             )}
             
             <div className="space-y-4 text-center max-w-xl px-2">

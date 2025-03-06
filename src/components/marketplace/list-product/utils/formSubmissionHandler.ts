@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { ListProductFormData } from "../types";
 import { toast } from "@/hooks/use-toast";
@@ -136,36 +137,38 @@ export const handleProductSubmission = async (
 
     console.log('Product data being sent to Supabase:', productData);
 
-    const { data: insertedProduct, error } = await supabase
-      .from('products')
-      .insert(productData)
-      .select('id')
-      .single();
+    try {
+      const { data: insertedProduct, error } = await supabase
+        .from('products')
+        .insert(productData)
+        .select('id')
+        .single();
 
-    if (error) {
-      console.error('Supabase error:', error);
-      toast({
-        title: "Submission Failed",
-        description: `Error: ${error.message}`,
-        variant: "destructive",
-      });
-      throw error;
+      if (error) {
+        console.error('Supabase error:', error);
+        toast({
+          title: "Submission Failed",
+          description: `Error: ${error.message}`,
+          variant: "destructive",
+        });
+        throw error;
+      }
+      
+      console.log("Product inserted successfully:", insertedProduct);
+
+      // Store the product ID in session storage for retrieval after payment
+      if (insertedProduct && insertedProduct.id) {
+        sessionStorage.setItem('pendingProductId', insertedProduct.id);
+        console.log("Saved product ID to session storage:", insertedProduct.id);
+      } else {
+        console.error("Missing product ID from inserted product");
+      }
+
+      return true;
+    } catch (dbError) {
+      console.error('Database error:', dbError);
+      throw dbError;
     }
-
-    // Store the product ID in session storage for retrieval after payment
-    if (insertedProduct && insertedProduct.id) {
-      sessionStorage.setItem('pendingProductId', insertedProduct.id);
-    }
-
-    toast({
-      title: "Product Submitted Successfully!",
-      description: "Proceeding to payment page...",
-      duration: 3000,
-    });
-
-    // Small delay to ensure toast is displayed before redirect
-    // This is the critical fix - proceed with redirect only after product is saved
-    return true;
   } catch (error) {
     console.error('Error submitting product:', error);
     toast({
