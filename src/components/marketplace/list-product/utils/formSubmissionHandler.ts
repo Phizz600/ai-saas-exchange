@@ -8,20 +8,20 @@ const getTrafficValue = (range: string): number => {
   return parseInt(upperBound.replace(/,/g, ''));
 };
 
-// Map frontend display values to database values if needed
-const getCategoryDisplayName = (categoryValue: string): string => {
-  // This mapping should be aligned with the SelectItem values in ProductInfoFields.tsx
-  const categoryDisplayMapping: Record<string, string> = {
-    "ai_agent": "AI Agents",
-    "ai_application": "AI Applications", 
-    "ai_tool": "AI Tools",
-    "llm": "LLM",
-    "chatbot": "Chatbots",
-    "training_data": "Training Data",
-    "other": "Other"
+// Map frontend category values to valid database values
+const getCategoryValue = (category: string): string => {
+  // This mapping should be aligned with your database constraints
+  const categoryMapping: Record<string, string> = {
+    "AI Agents": "ai_agent", 
+    "AI Applications": "ai_application",
+    "AI Tools": "ai_tool",
+    "LLM": "llm",
+    "Chatbots": "chatbot",
+    "Training Data": "training_data",
+    "Other": "other"
   };
   
-  return categoryDisplayMapping[categoryValue] || categoryValue;
+  return categoryMapping[category] || "other";
 };
 
 export const handleProductSubmission = async (
@@ -64,17 +64,14 @@ export const handleProductSubmission = async (
 
     const auctionEndTime = data.auctionEndTime ? new Date(data.auctionEndTime).toISOString() : null;
 
-    // The category is already in the correct format for the database
-    // since we're using the database values directly in the form
-    const category = data.category;
-    
-    console.log('Using category value:', category);
+    // Use the mapping function to ensure valid category value
+    const validCategory = getCategoryValue(data.category);
 
     const productData = {
       title: data.title,
       description: data.description,
       price: data.isAuction ? data.startingPrice : data.price || 0,
-      category, // Use the category directly
+      category: validCategory, // Use validated category
       stage: data.stage,
       industry: data.industry,
       monthly_revenue: data.monthlyRevenue || 0,
