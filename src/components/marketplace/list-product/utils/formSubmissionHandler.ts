@@ -95,8 +95,8 @@ export const handleProductSubmission = async (
     const monthlyTrafficValue = data.monthlyTraffic ? getTrafficValue(data.monthlyTraffic) : 0;
     const auctionEndTime = data.auctionEndTime ? new Date(data.auctionEndTime).toISOString() : null;
 
-    // Handle "Other" field values properly
-    const finalCategory = data.category === 'other' ? data.categoryOther?.toLowerCase().replace(/\s+/g, '_') : data.category;
+    // Keep category as-is (no longer convert to snake_case)
+    const finalCategory = data.category === 'other' ? data.categoryOther : data.category;
     
     // Important: Remove the industry_other column usage as it seems to not exist in the schema
     const industryValue = data.industry === 'Other' ? data.industryOther : data.industry;
@@ -255,7 +255,7 @@ export const handleProductUpdate = async (
 
     // Process "Other" fields for the update
     const categoryUpdate = data.category ? {
-      category: data.category === 'other' ? data.categoryOther?.toLowerCase().replace(/\s+/g, '_') : data.category,
+      category: data.category === 'other' ? data.categoryOther : data.category,
       category_other: data.category === 'other' ? data.categoryOther : null
     } : {};
 

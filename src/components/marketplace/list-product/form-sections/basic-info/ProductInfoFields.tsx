@@ -101,19 +101,19 @@ export function ProductInfoFields({
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                <SelectItem value="natural_language_processing">Natural Language Processing</SelectItem>
-                <SelectItem value="machine_learning">Machine Learning</SelectItem>
-                <SelectItem value="content_generation">Content Generation</SelectItem>
-                <SelectItem value="computer_vision">Computer Vision</SelectItem>
-                <SelectItem value="voice_speech">Voice & Speech</SelectItem>
-                <SelectItem value="data_analytics">Data Analytics</SelectItem>
-                <SelectItem value="automation">Automation</SelectItem>
-                <SelectItem value="recommendation_systems">Recommendation Systems</SelectItem>
-                <SelectItem value="ai_application">AI Applications</SelectItem>
-                <SelectItem value="ai_tool">AI Tools</SelectItem>
-                <SelectItem value="llm">LLM</SelectItem>
-                <SelectItem value="chatbot">Chatbots</SelectItem>
-                <SelectItem value="training_data">Training Data</SelectItem>
+                <SelectItem value="Natural Language Processing">Natural Language Processing</SelectItem>
+                <SelectItem value="Machine Learning">Machine Learning</SelectItem>
+                <SelectItem value="Content Generation">Content Generation</SelectItem>
+                <SelectItem value="Computer Vision">Computer Vision</SelectItem>
+                <SelectItem value="Voice & Speech">Voice & Speech</SelectItem>
+                <SelectItem value="Data Analytics">Data Analytics</SelectItem>
+                <SelectItem value="Automation">Automation</SelectItem>
+                <SelectItem value="Recommendation Systems">Recommendation Systems</SelectItem>
+                <SelectItem value="AI Applications">AI Applications</SelectItem>
+                <SelectItem value="AI Tools">AI Tools</SelectItem>
+                <SelectItem value="LLM">LLM</SelectItem>
+                <SelectItem value="Chatbots">Chatbots</SelectItem>
+                <SelectItem value="Training Data">Training Data</SelectItem>
                 <SelectItem value="other">Other</SelectItem>
               </SelectContent>
             </Select>
