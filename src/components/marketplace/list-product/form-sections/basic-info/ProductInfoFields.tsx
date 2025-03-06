@@ -11,6 +11,24 @@ interface ProductInfoFieldsProps {
   form: UseFormReturn<ListProductFormData>;
 }
 
+// Define all allowed categories (matching our database constraint)
+const ALLOWED_CATEGORIES = [
+  'Natural Language Processing',
+  'Machine Learning',
+  'Content Generation',
+  'Computer Vision',
+  'Voice & Speech',
+  'Data Analytics',
+  'Automation',
+  'Recommendation Systems',
+  'AI Applications',
+  'AI Tools',
+  'LLM',
+  'Chatbots',
+  'Training Data',
+  'Other'
+];
+
 export function ProductInfoFields({
   form
 }: ProductInfoFieldsProps) {
@@ -20,7 +38,7 @@ export function ProductInfoFields({
 
   // Set categoryOther field value to null when category is not "other"
   useEffect(() => {
-    if (categoryValue !== "other") {
+    if (categoryValue !== "Other") {
       form.setValue("categoryOther", "");
     }
   }, [categoryValue, form]);
@@ -101,20 +119,11 @@ export function ProductInfoFields({
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                <SelectItem value="Natural Language Processing">Natural Language Processing</SelectItem>
-                <SelectItem value="Machine Learning">Machine Learning</SelectItem>
-                <SelectItem value="Content Generation">Content Generation</SelectItem>
-                <SelectItem value="Computer Vision">Computer Vision</SelectItem>
-                <SelectItem value="Voice & Speech">Voice & Speech</SelectItem>
-                <SelectItem value="Data Analytics">Data Analytics</SelectItem>
-                <SelectItem value="Automation">Automation</SelectItem>
-                <SelectItem value="Recommendation Systems">Recommendation Systems</SelectItem>
-                <SelectItem value="AI Applications">AI Applications</SelectItem>
-                <SelectItem value="AI Tools">AI Tools</SelectItem>
-                <SelectItem value="LLM">LLM</SelectItem>
-                <SelectItem value="Chatbots">Chatbots</SelectItem>
-                <SelectItem value="Training Data">Training Data</SelectItem>
-                <SelectItem value="other">Other</SelectItem>
+                {ALLOWED_CATEGORIES.map((category) => (
+                  <SelectItem key={category} value={category}>
+                    {category}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
             <FormMessage />
@@ -122,8 +131,8 @@ export function ProductInfoFields({
         )} 
       />
       
-      {/* Show "Other Category" input field when "other" is selected */}
-      {categoryValue === "other" && (
+      {/* Show "Other Category" input field when "Other" is selected */}
+      {categoryValue === "Other" && (
         <FormField 
           control={form.control} 
           name="categoryOther" 

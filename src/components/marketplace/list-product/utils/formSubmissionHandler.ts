@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { ListProductFormData } from "../types";
 import { toast } from "@/hooks/use-toast";
@@ -108,7 +107,7 @@ export const handleProductSubmission = async (
     const auctionEndTime = data.auctionEndTime ? new Date(data.auctionEndTime).toISOString() : null;
 
     // Keep category as-is (no longer convert to snake_case)
-    const finalCategory = data.category === 'other' ? data.categoryOther : data.category;
+    const finalCategory = data.category === 'Other' ? data.categoryOther : data.category;
     
     // Important: Remove the industry_other column usage as it seems to not exist in the schema
     const industryValue = data.industry === 'Other' ? data.industryOther : data.industry;
@@ -158,7 +157,7 @@ export const handleProductSubmission = async (
       description: data.description,
       price: data.isAuction ? startingPrice : price || 0,
       category: finalCategory,
-      category_other: data.category === 'other' ? data.categoryOther : null,
+      category_other: data.category === 'Other' ? data.categoryOther : null,
       stage: data.stage,
       industry: industryValue, // Use single field for industry
       monthly_revenue: validatePrice(data.monthlyRevenue) || 0,
@@ -302,8 +301,8 @@ export const handleProductUpdate = async (
 
     // Process "Other" fields for the update
     const categoryUpdate = data.category ? {
-      category: data.category === 'other' ? data.categoryOther : data.category,
-      category_other: data.category === 'other' ? data.categoryOther : null
+      category: data.category === 'Other' ? data.categoryOther : data.category,
+      category_other: data.category === 'Other' ? data.categoryOther : null
     } : {};
 
     // Update industry handling to avoid industry_other column
