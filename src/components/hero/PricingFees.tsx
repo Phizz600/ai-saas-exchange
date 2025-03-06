@@ -84,6 +84,16 @@ const PricingFees = () => {
                     <span>No hidden fees or surprises</span>
                   </li>
                 </ul>
+                
+                {/* Market comparison section */}
+                <div className="mt-6 p-3 bg-[#0EA4E9]/10 rounded-md border border-[#0EA4E9]/20">
+                  <h4 className="font-semibold text-white text-sm mb-2">How We Compare</h4>
+                  <p className="text-gray-300 text-xs">
+                    Other marketplaces like Flippa charge <span className="text-white font-bold">15%+</span> on sales, 
+                    with some reaching <span className="text-white font-bold">20%</span> for smaller deals. 
+                    Our fees are <span className="text-[#0EA4E9] font-bold">up to 67% lower</span> than industry standards.
+                  </p>
+                </div>
               </div>
             </Card>
           </motion.div>
@@ -139,6 +149,16 @@ const PricingFees = () => {
                     <span>Lifetime pricing guarantee</span>
                   </li>
                 </ul>
+                
+                {/* Market comparison section */}
+                <div className="mt-6 p-3 bg-[#0EA4E9]/10 rounded-md border border-[#0EA4E9]/20">
+                  <h4 className="font-semibold text-white text-sm mb-2">How We Compare</h4>
+                  <p className="text-gray-300 text-xs">
+                    Many marketplaces charge <span className="text-white font-bold">$50-$300</span> listing fees 
+                    with no guarantee of a sale. Our early adopter rate is <span className="text-[#0EA4E9] font-bold">80-97% lower</span> 
+                    than competitors.
+                  </p>
+                </div>
               </div>
             </Card>
           </motion.div>
