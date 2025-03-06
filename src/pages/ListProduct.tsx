@@ -22,6 +22,9 @@ export const ListProduct = () => {
             <h1 className="text-4xl font-exo font-bold bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] text-transparent bg-clip-text">
               List Your AI Product
             </h1>
+            <p className="text-gray-600 text-center max-w-xl">
+              Complete this form with thorough and accurate information to showcase your product's true value and significantly increase buyer interest.
+            </p>
             <p className="text-gray-600 text-center text-xs">Estimated completion time: 5-10 minutes</p>
           </div>
           <ListProductForm />
