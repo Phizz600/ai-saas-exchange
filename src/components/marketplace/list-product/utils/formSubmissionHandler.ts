@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { ListProductFormData } from "../types";
 import { toast } from "@/hooks/use-toast";
@@ -5,6 +6,17 @@ import { toast } from "@/hooks/use-toast";
 const getTrafficValue = (range: string): number => {
   const upperBound = range.split('-')[1] || range;
   return parseInt(upperBound.replace(/,/g, ''));
+};
+
+// Ensure price is a valid number
+const validatePrice = (price: any): number | undefined => {
+  if (price === undefined || price === null) return undefined;
+  
+  const numericPrice = typeof price === 'number' ? price : 
+                       typeof price === 'string' ? parseFloat(price.replace(/[$,]/g, '')) : 
+                       undefined;
+                       
+  return numericPrice && !isNaN(numericPrice) && numericPrice > 0 ? numericPrice : undefined;
 };
 
 export const handleProductSubmission = async (
@@ -105,19 +117,54 @@ export const handleProductSubmission = async (
     const finalLlmType = data.llmType === 'Other' ? null : data.llmType;
     const finalMonetization = data.monetization === 'other' ? data.monetizationOther : data.monetization;
 
+    // Validate and process price fields
+    const price = validatePrice(data.isAuction ? undefined : data.price);
+    const startingPrice = validatePrice(data.isAuction ? data.startingPrice : undefined);
+    const minPrice = validatePrice(data.isAuction ? data.minPrice : undefined);
+    const priceDecrement = validatePrice(data.isAuction ? data.priceDecrement : undefined);
+    
+    // Price validation checks
+    if (data.isAuction) {
+      if (!startingPrice) {
+        return {
+          success: false,
+          error: "Please provide a valid starting price for the auction."
+        };
+      }
+      if (!minPrice) {
+        return {
+          success: false,
+          error: "Please provide a valid minimum price for the auction."
+        };
+      }
+      if (!priceDecrement) {
+        return {
+          success: false,
+          error: "Please provide a valid price decrement amount."
+        };
+      }
+    } else {
+      if (!price) {
+        return {
+          success: false,
+          error: "Please provide a valid price for your product."
+        };
+      }
+    }
+
     // Build the product data object without industry_other field
     const productData = {
       title: data.title,
       description: data.description,
-      price: data.isAuction ? data.startingPrice : data.price || 0,
+      price: data.isAuction ? startingPrice : price || 0,
       category: finalCategory,
       category_other: data.category === 'other' ? data.categoryOther : null,
       stage: data.stage,
       industry: industryValue, // Use single field for industry
-      monthly_revenue: data.monthlyRevenue || 0,
-      monthly_profit: data.monthlyProfit || 0,
-      gross_profit_margin: data.grossProfitMargin || 0,
-      monthly_churn_rate: data.monthlyChurnRate || 0,
+      monthly_revenue: validatePrice(data.monthlyRevenue) || 0,
+      monthly_profit: validatePrice(data.monthlyProfit) || 0,
+      gross_profit_margin: validatePrice(data.grossProfitMargin) || 0,
+      monthly_churn_rate: validatePrice(data.monthlyChurnRate) || 0,
       monthly_traffic: monthlyTrafficValue,
       active_users: data.activeUsers,
       image_url,
@@ -139,7 +186,7 @@ export const handleProductSubmission = async (
       business_location: data.businessLocation,
       special_notes: data.specialNotes,
       number_of_employees: data.numberOfEmployees,
-      customer_acquisition_cost: data.customerAcquisitionCost || 0,
+      customer_acquisition_cost: validatePrice(data.customerAcquisitionCost) || 0,
       monetization: finalMonetization,
       monetization_other: data.monetization === 'other' ? data.monetizationOther : null,
       business_model: data.businessModel,
@@ -155,10 +202,10 @@ export const handleProductSubmission = async (
     if (data.isAuction) {
       Object.assign(productData, {
         auction_end_time: auctionEndTime,
-        starting_price: data.startingPrice || 0,
-        current_price: data.startingPrice || 0,
-        min_price: data.minPrice || 0,
-        price_decrement: data.priceDecrement || 0,
+        starting_price: startingPrice || 0,
+        current_price: startingPrice || 0,
+        min_price: minPrice || 0,
+        price_decrement: priceDecrement || 0,
         price_decrement_interval: data.priceDecrementInterval
       });
     }
@@ -279,18 +326,26 @@ export const handleProductUpdate = async (
       monetization_other: data.monetization === 'other' ? data.monetizationOther : null
     } : {};
 
+    // Validate price fields
+    const price = validatePrice(data.price);
+    const monthlyRevenue = validatePrice(data.monthlyRevenue);
+    const monthlyProfit = validatePrice(data.monthlyProfit);
+    const grossProfitMargin = validatePrice(data.grossProfitMargin);
+    const monthlyChurnRate = validatePrice(data.monthlyChurnRate);
+    const customerAcquisitionCost = validatePrice(data.customerAcquisitionCost);
+
     const updateData = {
       ...(data.title && { title: data.title }),
       ...(data.description && { description: data.description }),
-      ...(data.price && { price: data.price }),
+      ...(price !== undefined && { price }),
       ...(data.productLink !== undefined && { product_link: data.productLink }),
       ...categoryUpdate,
       ...industryUpdate,
       ...(data.stage && { stage: data.stage }),
-      ...(data.monthlyRevenue && { monthly_revenue: data.monthlyRevenue }),
-      ...(data.monthlyProfit && { monthly_profit: data.monthlyProfit }),
-      ...(data.grossProfitMargin && { gross_profit_margin: data.grossProfitMargin }),
-      ...(data.monthlyChurnRate && { monthly_churn_rate: data.monthlyChurnRate }),
+      ...(monthlyRevenue !== undefined && { monthly_revenue: monthlyRevenue }),
+      ...(monthlyProfit !== undefined && { monthly_profit: monthlyProfit }),
+      ...(grossProfitMargin !== undefined && { gross_profit_margin: grossProfitMargin }),
+      ...(monthlyChurnRate !== undefined && { monthly_churn_rate: monthlyChurnRate }),
       ...(monthlyTrafficValue && { monthly_traffic: monthlyTrafficValue }),
       ...(data.activeUsers && { active_users: data.activeUsers }),
       ...techStackUpdate,
@@ -304,7 +359,7 @@ export const handleProductUpdate = async (
       ...(data.businessLocation && { business_location: data.businessLocation }),
       ...(data.specialNotes && { special_notes: data.specialNotes }),
       ...(data.numberOfEmployees && { number_of_employees: data.numberOfEmployees }),
-      ...(data.customerAcquisitionCost && { customer_acquisition_cost: data.customerAcquisitionCost }),
+      ...(customerAcquisitionCost !== undefined && { customer_acquisition_cost: customerAcquisitionCost }),
       ...monetizationUpdate,
       ...(data.businessType && { business_type: data.businessType }),
       ...(data.deliverables && { deliverables: data.deliverables }),

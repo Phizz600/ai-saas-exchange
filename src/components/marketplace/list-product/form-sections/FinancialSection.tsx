@@ -46,7 +46,8 @@ const formatValue = (value: string) => {
 
 const parseValue = (value: string) => {
   // Extract just the number from the formatted string, preserving decimals
-  return Number(value.replace(/[,$]/g, ''));
+  const numericValue = Number(value.replace(/[,$]/g, ''));
+  return isNaN(numericValue) ? 0 : numericValue;
 };
 
 export function FinancialSection({ form }: FinancialSectionProps) {
@@ -80,7 +81,7 @@ export function FinancialSection({ form }: FinancialSectionProps) {
                   value={field.value ? formatValue(field.value.toString()) : ''}
                   onChange={(e) => {
                     const value = parseValue(e.target.value);
-                    if (!isNaN(value)) {
+                    if (value >= 0) {
                       field.onChange(value);
                     }
                   }}
@@ -115,7 +116,7 @@ export function FinancialSection({ form }: FinancialSectionProps) {
                   value={field.value ? formatValue(field.value.toString()) : ''}
                   onChange={(e) => {
                     const value = parseValue(e.target.value);
-                    if (!isNaN(value)) {
+                    if (value >= 0) {
                       field.onChange(value);
                     }
                   }}
@@ -150,7 +151,7 @@ export function FinancialSection({ form }: FinancialSectionProps) {
                   value={field.value ? formatValue(field.value.toString()) : ''}
                   onChange={(e) => {
                     const value = parseValue(e.target.value);
-                    if (!isNaN(value)) {
+                    if (value >= 0) {
                       field.onChange(value);
                     }
                   }}
@@ -239,8 +240,13 @@ export function FinancialSection({ form }: FinancialSectionProps) {
                 <Input 
                   type="number"
                   placeholder="Enter profit margin"
-                  {...field}
-                  onChange={e => field.onChange(Number(e.target.value))}
+                  value={field.value ?? ''}
+                  onChange={e => {
+                    const value = Number(e.target.value);
+                    field.onChange(isNaN(value) ? undefined : value);
+                  }}
+                  min="0"
+                  max="100"
                 />
               </FormControl>
               <FormMessage />
@@ -270,8 +276,13 @@ export function FinancialSection({ form }: FinancialSectionProps) {
                 <Input 
                   type="number"
                   placeholder="Enter churn rate"
-                  {...field}
-                  onChange={e => field.onChange(Number(e.target.value))}
+                  value={field.value ?? ''}
+                  onChange={e => {
+                    const value = Number(e.target.value);
+                    field.onChange(isNaN(value) ? undefined : value);
+                  }}
+                  min="0"
+                  max="100"
                 />
               </FormControl>
               <FormMessage />

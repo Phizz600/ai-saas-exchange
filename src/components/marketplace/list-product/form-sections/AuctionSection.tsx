@@ -35,7 +35,6 @@ export function AuctionSection({ form }: AuctionSectionProps) {
   const monthlyRevenue = form.watch("monthlyRevenue");
   const isAuction = form.watch("isAuction");
 
-  // Auto-fill starting price as 10x monthly revenue if available
   if (monthlyRevenue && !form.getValues("startingPrice")) {
     form.setValue("startingPrice", monthlyRevenue * 10);
   }
@@ -69,11 +68,12 @@ export function AuctionSection({ form }: AuctionSectionProps) {
   };
 
   const parseCurrencyValue = (value: string) => {
-    return parseFloat(value.replace(/[$,]/g, '')) || 0;
+    const numericValue = parseFloat(value.replace(/[$,]/g, ''));
+    return isNaN(numericValue) ? 0 : numericValue;
   };
 
   const handleValuationClick = (e: React.MouseEvent, value: number, isHigh: boolean) => {
-    e.preventDefault(); // Prevent form submission
+    e.preventDefault();
     if (isAuction) {
       if (isHigh) {
         form.setValue("startingPrice", value);
@@ -152,7 +152,10 @@ export function AuctionSection({ form }: AuctionSectionProps) {
                       type="text"
                       placeholder="Enter starting price"
                       value={formatCurrencyInput(field.value?.toString() || '')}
-                      onChange={(e) => field.onChange(parseCurrencyValue(e.target.value))}
+                      onChange={(e) => {
+                        const value = parseCurrencyValue(e.target.value);
+                        field.onChange(value > 0 ? value : undefined);
+                      }}
                       className="font-mono"
                     />
                   </FormControl>
@@ -184,7 +187,10 @@ export function AuctionSection({ form }: AuctionSectionProps) {
                       type="text"
                       placeholder="Enter minimum price"
                       value={formatCurrencyInput(field.value?.toString() || '')}
-                      onChange={(e) => field.onChange(parseCurrencyValue(e.target.value))}
+                      onChange={(e) => {
+                        const value = parseCurrencyValue(e.target.value);
+                        field.onChange(value > 0 ? value : undefined);
+                      }}
                       className="font-mono"
                     />
                   </FormControl>
@@ -218,7 +224,10 @@ export function AuctionSection({ form }: AuctionSectionProps) {
                       type="text"
                       placeholder="Enter price decrement"
                       value={formatCurrencyInput(field.value?.toString() || '')}
-                      onChange={(e) => field.onChange(parseCurrencyValue(e.target.value))}
+                      onChange={(e) => {
+                        const value = parseCurrencyValue(e.target.value);
+                        field.onChange(value > 0 ? value : undefined);
+                      }}
                       className="font-mono"
                     />
                   </FormControl>
@@ -344,7 +353,10 @@ export function AuctionSection({ form }: AuctionSectionProps) {
                     type="text"
                     placeholder="Enter price"
                     value={formatCurrencyInput(field.value?.toString() || '')}
-                    onChange={(e) => field.onChange(parseCurrencyValue(e.target.value))}
+                    onChange={(e) => {
+                      const value = parseCurrencyValue(e.target.value);
+                      field.onChange(value > 0 ? value : undefined);
+                    }}
                     className="font-mono"
                   />
                 </FormControl>
@@ -355,7 +367,6 @@ export function AuctionSection({ form }: AuctionSectionProps) {
         </div>
       )}
 
-      {/* Valuation Card */}
       <Card className="p-6 bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] text-white">
         <h3 className="text-xl font-semibold mb-4 flex items-center justify-center gap-2">
           <Sparkle className="h-5 w-5" />
