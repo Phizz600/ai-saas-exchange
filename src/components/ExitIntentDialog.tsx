@@ -4,13 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Briefcase, UserCog } from "lucide-react";
-
 export function ExitIntentDialog() {
   // Set isOpen to true by default to display the dialog immediately
   const [isOpen, setIsOpen] = useState(true);
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
   const [email, setEmail] = useState("");
-
   useEffect(() => {
     const shouldShow = () => {
       const lastShown = localStorage.getItem("exitIntentShown");
@@ -23,42 +23,34 @@ export function ExitIntentDialog() {
       }
       return true;
     };
-
     const handleMouseLeave = (e: MouseEvent) => {
-      if (
-        e.clientY <= 0 && // User's mouse is at the top of the viewport
-        shouldShow() &&
-        window.innerWidth >= 1024 // Only show on desktop
+      if (e.clientY <= 0 &&
+      // User's mouse is at the top of the viewport
+      shouldShow() && window.innerWidth >= 1024 // Only show on desktop
       ) {
         setIsOpen(true);
         localStorage.setItem("exitIntentShown", Date.now().toString());
       }
     };
-
     document.addEventListener("mouseleave", handleMouseLeave);
     return () => {
       document.removeEventListener("mouseleave", handleMouseLeave);
     };
   }, []);
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Here you would typically handle the email subscription
     console.log("Email submitted:", email);
     toast({
       title: "Thank you for subscribing!",
-      description: "We'll keep you updated with the latest AI marketplace news.",
+      description: "We'll keep you updated with the latest AI marketplace news."
     });
     setIsOpen(false);
   };
-
-  return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+  return <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent className="sm:max-w-[425px] bg-gradient-to-br from-[#9b87f5] via-[#D946EF] to-[#0EA5E9]">
         <DialogHeader>
-          <DialogTitle className="text-2xl text-white exo-2-heading text-center">
-            Don't Miss Out on AI Opportunities!
-          </DialogTitle>
+          <DialogTitle className="text-white exo-2-heading text-center text-xl">Unlock Exclusive AI Deals &amp; Insights</DialogTitle>
         </DialogHeader>
         <div className="text-center space-y-6 p-4">
           <div className="flex justify-center gap-12 items-center">
@@ -79,18 +71,8 @@ export function ExitIntentDialog() {
             Join thousands of AI entrepreneurs and investors getting exclusive deals and insights.
           </p>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <Input 
-              type="email"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full"
-              required
-            />
-            <Button 
-              type="submit" 
-              className="w-full bg-[#F97316] hover:bg-[#EA580C] text-white font-medium"
-            >
+            <Input type="email" placeholder="Enter your email" value={email} onChange={e => setEmail(e.target.value)} className="w-full" required />
+            <Button type="submit" className="w-full bg-[#F97316] hover:bg-[#EA580C] text-white font-medium">
               Get Exclusive Updates
             </Button>
             <div className="flex items-center justify-center gap-2 text-white/80 text-sm">
@@ -100,6 +82,5 @@ export function ExitIntentDialog() {
           </form>
         </div>
       </DialogContent>
-    </Dialog>
-  );
+    </Dialog>;
 }
