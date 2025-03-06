@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -57,7 +56,7 @@ export function ExitIntentDialog() {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent className="sm:max-w-[425px] bg-gradient-to-br from-[#9b87f5] via-[#D946EF] to-[#0EA5E9]">
         <DialogHeader>
-          <DialogTitle className="text-2xl text-white font-exo text-center">
+          <DialogTitle className="text-2xl text-white exo-2-heading text-center">
             Don't Miss Out on AI Opportunities!
           </DialogTitle>
         </DialogHeader>
