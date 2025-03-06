@@ -101,7 +101,7 @@ export const ListingThankYou = () => {
                 className="w-16 h-16 sm:w-24 sm:h-24 object-contain animate-float hover:opacity-80 transition-opacity"
               />
             </Link>
-            <h1 className="text-2xl sm:text-4xl font-exo font-bold bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] text-transparent bg-clip-text text-center px-2">
+            <h1 className="text-2xl sm:text-4xl exo-2-heading font-bold bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] text-transparent bg-clip-text text-center px-2">
               Thank You for Your Submission!
             </h1>
 
