@@ -86,6 +86,7 @@ export const handleProductSubmission = async (
       investment_timeline: data.investmentTimeline,
       business_type: data.businessType,
       deliverables: data.deliverables,
+      payment_status: 'pending',
       updated_at: new Date().toISOString(),
       ...(data.isAuction && {
         auction_end_time: auctionEndTime,
@@ -97,7 +98,11 @@ export const handleProductSubmission = async (
       })
     };
 
-    const { error } = await supabase.from('products').insert(productData);
+    const { data: insertedProduct, error } = await supabase
+      .from('products')
+      .insert(productData)
+      .select('id')
+      .single();
 
     if (error) {
       console.error('Supabase error:', error);
@@ -106,9 +111,12 @@ export const handleProductSubmission = async (
 
     toast({
       title: "Product Submitted Successfully!",
-      description: "Thank you for your submission. After a quick team review, your product will be made live for purchase on the marketplace.",
-      duration: 5000,
+      description: "Proceeding to payment page...",
+      duration: 3000,
     });
+
+    // Redirect to Stripe payment page
+    window.location.href = "https://buy.stripe.com/9AQ3dz3lmf2yccE288";
 
     return true;
   } catch (error) {

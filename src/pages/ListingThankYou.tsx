@@ -1,17 +1,26 @@
+
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Home, Users, Timer, Youtube, Twitter, Instagram, Rss, MousePointerClick } from "lucide-react";
+import { Home, Users, Timer, Youtube, Twitter, Instagram, Rss, MousePointerClick, AlertCircle } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 
 export const ListingThankYou = () => {
   const [queueNumber, setQueueNumber] = useState(0);
+  const location = useLocation();
+  const [isPaid, setIsPaid] = useState(false);
 
   useEffect(() => {
+    // Check if redirected from payment success
+    const params = new URLSearchParams(location.search);
+    if (params.get('payment_status') === 'success') {
+      setIsPaid(true);
+    }
+
     // Generate a random number between 1 and 207
     const randomNumber = Math.floor(Math.random() * 207) + 1;
     setQueueNumber(randomNumber);
-  }, []); // Empty dependency array means this runs once when component mounts
+  }, [location.search]); // Update when location search changes
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#9b87f5] via-[#D946EF] to-[#0EA5E9]">
@@ -34,6 +43,39 @@ export const ListingThankYou = () => {
                 Your AI product has been successfully submitted and is now under review for approval. Our marketplace is launching soon, and we'll notify you as soon as we go live!
               </p>
             </div>
+            
+            {!isPaid && (
+              <div className="w-full max-w-md bg-amber-50 rounded-lg p-4 sm:p-6 border border-amber-200 flex items-start space-x-3">
+                <AlertCircle className="text-amber-500 h-5 w-5 flex-shrink-0 mt-0.5" />
+                <div>
+                  <h3 className="font-medium text-amber-800">Payment Required</h3>
+                  <p className="text-sm text-amber-700 mt-1">
+                    Please complete your payment to finalize your listing. If you were redirected from payment and see this message, please contact support.
+                  </p>
+                  <a href="https://buy.stripe.com/9AQ3dz3lmf2yccE288" className="mt-3 inline-block">
+                    <Button variant="default" className="bg-amber-600 hover:bg-amber-700">
+                      Complete Payment
+                    </Button>
+                  </a>
+                </div>
+              </div>
+            )}
+
+            {isPaid && (
+              <div className="w-full max-w-md bg-green-50 rounded-lg p-4 sm:p-6 border border-green-200 flex items-start space-x-3">
+                <div className="bg-green-100 p-1 rounded-full">
+                  <svg className="h-5 w-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="font-medium text-green-800">Payment Successful</h3>
+                  <p className="text-sm text-green-700 mt-1">
+                    Thank you for your payment! Your listing is now complete and will be reviewed by our team.
+                  </p>
+                </div>
+              </div>
+            )}
             
             <div className="space-y-4 text-center max-w-xl px-2">
               <p className="text-sm sm:text-base text-gray-600 italic">
