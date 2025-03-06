@@ -42,6 +42,35 @@ const PricingFees = () => {
                 </div>
                 <h3 className="text-center text-2xl font-bold text-white mb-4">Commission</h3>
                 
+                <div className="my-4 bg-white/5 rounded-lg overflow-hidden">
+                  <Table>
+                    <TableHeader className="bg-white/10">
+                      <TableRow>
+                        <TableHead className="text-white text-xs font-medium">Price Range</TableHead>
+                        <TableHead className="text-white text-xs font-medium">Rate</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      <TableRow className="border-b border-white/5">
+                        <TableCell className="text-gray-300 text-xs py-2">$0 - $10,000</TableCell>
+                        <TableCell className="text-gray-300 text-xs py-2 font-semibold">10%</TableCell>
+                      </TableRow>
+                      <TableRow className="border-b border-white/5">
+                        <TableCell className="text-gray-300 text-xs py-2">$10,001 - $50,000</TableCell>
+                        <TableCell className="text-gray-300 text-xs py-2 font-semibold">8%</TableCell>
+                      </TableRow>
+                      <TableRow className="border-b border-white/5">
+                        <TableCell className="text-gray-300 text-xs py-2">$50,001 - $100,000</TableCell>
+                        <TableCell className="text-gray-300 text-xs py-2 font-semibold">6%</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="text-gray-300 text-xs py-2">$100,001+</TableCell>
+                        <TableCell className="text-gray-300 text-xs py-2 font-semibold">5%</TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </div>
+                
                 <p className="text-gray-300 text-center mb-6 flex-grow">
                   Pay less as you sell more with our transparent tiered pricing structure.
                 </p>
