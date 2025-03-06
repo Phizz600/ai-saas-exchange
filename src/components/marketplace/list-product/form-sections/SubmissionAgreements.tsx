@@ -101,7 +101,7 @@ export function SubmissionAgreements({ form }: SubmissionAgreementsProps) {
                           <p className="mb-2">Listings: Must include clear descriptions, pricing, and technical requirements.</p>
                           <p className="mb-2">Transactions: Processed via [Escrow.com/Stripe/Payment Processor].</p>
                           
-                          <p className="font-medium mt-4">Fees: Tiered Success Fee Structure (0 to $100,000+)</p>
+                          <p className="font-medium mt-4">Fees: Tiered Success Fee Structure</p>
                           <div className="overflow-x-auto">
                             <table className="min-w-full mb-4">
                               <thead>
@@ -111,12 +111,10 @@ export function SubmissionAgreements({ form }: SubmissionAgreementsProps) {
                                 </tr>
                               </thead>
                               <tbody>
-                                <tr><td>0−500</td><td>10%</td></tr>
-                                <tr><td>501−2,000</td><td>8%</td></tr>
-                                <tr><td>2,001−10,000</td><td>6%</td></tr>
-                                <tr><td>10,001−50,000</td><td>4%</td></tr>
-                                <tr><td>50,001−100,000</td><td>2%</td></tr>
-                                <tr><td>$100,001+</td><td>1%</td></tr>
+                                <tr><td>$0 - $10,000</td><td>10%</td></tr>
+                                <tr><td>$10,001 - $50,000</td><td>8%</td></tr>
+                                <tr><td>$50,001 - $100,000</td><td>6%</td></tr>
+                                <tr><td>$100,001+</td><td>5%</td></tr>
                               </tbody>
                             </table>
                           </div>

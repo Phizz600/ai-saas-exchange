@@ -1,3 +1,4 @@
+
 export type FAQItem = {
   id: string;
   question: string;
@@ -40,7 +41,7 @@ export const faqData: FAQItem[] = [
   {
     id: "commission",
     question: "What is the commission structure?",
-    answer: "We charge a 1-3% commission on the successful sale of an AI SaaS company."
+    answer: "We have a tiered commission structure based on the final selling price: 10% for sales up to $10,000, 8% for $10,001-$50,000, 6% for $50,001-$100,000, and 5% for sales over $100,001."
   },
   {
     id: "payment-methods",
