@@ -133,30 +133,40 @@ export function SubmissionAgreements({ form }: SubmissionAgreementsProps) {
                             <li>User Content: You grant us a license to host and display your content.</li>
                           </ul>
 
-                          <h2 className="text-lg font-semibold mt-6 mb-2">8. AI-Specific Rules</h2>
+                          <h2 className="text-lg font-semibold mt-6 mb-2">8. Marketing and Promotional Rights</h2>
+                          <p>By listing your product on the Marketplace, you grant AI Exchange Club a non-exclusive, royalty-free license to:</p>
+                          <ul className="list-disc pl-6 mb-4">
+                            <li>Use your product name, description, logo, screenshots, and other listing content for marketing purposes.</li>
+                            <li>Promote your listed product across our marketing channels, including but not limited to email newsletters, social media accounts, blogs, and partner websites.</li>
+                            <li>Feature your product in advertising materials both on and off our platform.</li>
+                            <li>Create and distribute promotional content highlighting your business and its features to potential buyers.</li>
+                          </ul>
+                          <p>This promotional license remains in effect for the duration of your listing and for a reasonable period thereafter for ongoing marketing campaigns. You may request the removal of specific marketing materials after your listing ends by contacting us directly.</p>
+
+                          <h2 className="text-lg font-semibold mt-6 mb-2">9. AI-Specific Rules</h2>
                           <p className="font-medium">Transparency: Sellers must disclose:</p>
                           <ul className="list-disc pl-6 mb-4">
                             <li>Whether AI outputs are human-reviewed.</li>
                             <li>Known risks (e.g., biases, inaccuracies).</li>
                           </ul>
 
-                          <h2 className="text-lg font-semibold mt-6 mb-2">9. Disclaimers and Liability</h2>
+                          <h2 className="text-lg font-semibold mt-6 mb-2">10. Disclaimers and Liability</h2>
                           <p>No Warranty: The Marketplace is provided "as-is." We do not guarantee accuracy, uptime, or safety.</p>
                           
-                          <h2 className="text-lg font-semibold mt-6 mb-2">10. Termination</h2>
+                          <h2 className="text-lg font-semibold mt-6 mb-2">11. Termination</h2>
                           <p>We may suspend/terminate accounts for violations. You may delete your account at any time.</p>
 
-                          <h2 className="text-lg font-semibold mt-6 mb-2">11. Governing Law</h2>
+                          <h2 className="text-lg font-semibold mt-6 mb-2">12. Governing Law</h2>
                           <p>These Terms shall be governed by the laws of the State of Minnesota, United States.</p>
 
-                          <h2 className="text-lg font-semibold mt-6 mb-2">12. Dispute Resolution</h2>
+                          <h2 className="text-lg font-semibold mt-6 mb-2">13. Dispute Resolution</h2>
                           <p className="font-medium">a. Binding Arbitration</p>
                           <p>Disputes shall be resolved by binding arbitration administered by the American Arbitration Association (AAA).</p>
 
-                          <h2 className="text-lg font-semibold mt-6 mb-2">13. Updates</h2>
+                          <h2 className="text-lg font-semibold mt-6 mb-2">14. Updates</h2>
                           <p>We will notify users of changes via email or in-platform alerts. Continued use = acceptance.</p>
 
-                          <h2 className="text-lg font-semibold mt-6 mb-2">14. Contact Us</h2>
+                          <h2 className="text-lg font-semibold mt-6 mb-2">15. Contact Us</h2>
                           <p>For questions or disputes:</p>
                           <p>AI Exchange Club</p>
                           <p>aiexchangeclub@gmail.com</p>
