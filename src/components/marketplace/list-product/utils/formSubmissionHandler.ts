@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { ListProductFormData } from "../types";
 import { toast } from "@/hooks/use-toast";
@@ -95,13 +96,17 @@ export const handleProductSubmission = async (
     const monthlyTrafficValue = data.monthlyTraffic ? getTrafficValue(data.monthlyTraffic) : 0;
     const auctionEndTime = data.auctionEndTime ? new Date(data.auctionEndTime).toISOString() : null;
 
-    // Handle all "Other" fields
+    // Handle "Other" field values properly
     const finalCategory = data.category === 'other' ? data.categoryOther?.toLowerCase().replace(/\s+/g, '_') : data.category;
-    const finalIndustry = data.industry === 'Other' ? data.industryOther : data.industry;
+    // Only set industry_other if the industry is "Other" and industryOther has a value
+    const industry = data.industry === 'Other' ? data.industry : data.industry;
+    const industryOther = data.industry === 'Other' ? data.industryOther : null;
+    
     const finalTechStack = data.techStack === 'Other' ? [] : [data.techStack];
     const finalLlmType = data.llmType === 'Other' ? null : data.llmType;
     const finalMonetization = data.monetization === 'other' ? data.monetizationOther : data.monetization;
 
+    // Build the product data object with careful attention to null/undefined values
     const productData = {
       title: data.title,
       description: data.description,
@@ -109,8 +114,8 @@ export const handleProductSubmission = async (
       category: finalCategory,
       category_other: data.category === 'other' ? data.categoryOther : null,
       stage: data.stage,
-      industry: finalIndustry,
-      industry_other: data.industry === 'Other' ? data.industryOther : null,
+      industry: industry,
+      industry_other: industryOther,
       monthly_revenue: data.monthlyRevenue || 0,
       monthly_profit: data.monthlyProfit || 0,
       gross_profit_margin: data.grossProfitMargin || 0,
@@ -145,20 +150,25 @@ export const handleProductSubmission = async (
       deliverables: data.deliverables,
       payment_status: 'pending',
       status: 'pending',
-      updated_at: new Date().toISOString(),
-      ...(data.isAuction && {
+      updated_at: new Date().toISOString()
+    };
+
+    // Add auction-specific fields if applicable
+    if (data.isAuction) {
+      Object.assign(productData, {
         auction_end_time: auctionEndTime,
         starting_price: data.startingPrice || 0,
         current_price: data.startingPrice || 0,
         min_price: data.minPrice || 0,
         price_decrement: data.priceDecrement || 0,
         price_decrement_interval: data.priceDecrementInterval
-      })
-    };
+      });
+    }
 
     console.log('Product data being sent to Supabase:', productData);
 
     try {
+      // Insert the product data and get the ID back
       const { data: insertedProduct, error } = await supabase
         .from('products')
         .insert(productData)
