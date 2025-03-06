@@ -46,25 +46,25 @@ const PricingFees = () => {
                   <Table>
                     <TableHeader className="bg-white/10">
                       <TableRow>
-                        <TableHead className="text-white text-sm font-medium">Price Range</TableHead>
+                        <TableHead className="text-white text-sm font-medium text-left">Price Range</TableHead>
                         <TableHead className="text-white text-sm font-medium">Rate</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       <TableRow className="border-b border-white/5">
-                        <TableCell className="text-gray-300 text-sm py-2">$0 - $10,000</TableCell>
+                        <TableCell className="text-gray-300 text-sm py-2 text-left">$0 - $10,000</TableCell>
                         <TableCell className="text-gray-300 text-sm py-2 font-semibold">10%</TableCell>
                       </TableRow>
                       <TableRow className="border-b border-white/5">
-                        <TableCell className="text-gray-300 text-sm py-2">$10,001 - $50,000</TableCell>
+                        <TableCell className="text-gray-300 text-sm py-2 text-left">$10,001 - $50,000</TableCell>
                         <TableCell className="text-gray-300 text-sm py-2 font-semibold">8%</TableCell>
                       </TableRow>
                       <TableRow className="border-b border-white/5">
-                        <TableCell className="text-gray-300 text-sm py-2">$50,001 - $100,000</TableCell>
+                        <TableCell className="text-gray-300 text-sm py-2 text-left">$50,001 - $100,000</TableCell>
                         <TableCell className="text-gray-300 text-sm py-2 font-semibold">6%</TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell className="text-gray-300 text-sm py-2">$100,001+</TableCell>
+                        <TableCell className="text-gray-300 text-sm py-2 text-left">$100,001+</TableCell>
                         <TableCell className="text-gray-300 text-sm py-2 font-semibold">5%</TableCell>
                       </TableRow>
                     </TableBody>
