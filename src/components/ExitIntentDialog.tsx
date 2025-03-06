@@ -67,9 +67,7 @@ export function ExitIntentDialog() {
               <span className="text-white text-sm">For Builders</span>
             </div>
           </div>
-          <p className="text-white text-lg">
-            Join thousands of AI entrepreneurs and investors getting exclusive deals and insights.
-          </p>
+          <p className="text-white text-lg">Get early access to premium AI tools, off-market deals, and actionable insights—before anyone else.</p>
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input type="email" placeholder="Enter your email" value={email} onChange={e => setEmail(e.target.value)} className="w-full" required />
             <Button type="submit" className="w-full bg-[#F97316] hover:bg-[#EA580C] text-white font-medium">
