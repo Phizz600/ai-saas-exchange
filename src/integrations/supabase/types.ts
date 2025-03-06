@@ -527,6 +527,7 @@ export type Database = {
           business_model: string | null
           business_type: string | null
           category: string
+          category_other: string | null
           competitors: string | null
           created_at: string
           current_price: number | null
@@ -585,6 +586,7 @@ export type Database = {
           business_model?: string | null
           business_type?: string | null
           category: string
+          category_other?: string | null
           competitors?: string | null
           created_at?: string
           current_price?: number | null
@@ -643,6 +645,7 @@ export type Database = {
           business_model?: string | null
           business_type?: string | null
           category?: string
+          category_other?: string | null
           competitors?: string | null
           created_at?: string
           current_price?: number | null
