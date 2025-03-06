@@ -1,41 +1,16 @@
-import { useState, useEffect } from "react";
+
+import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Briefcase, UserCog } from "lucide-react";
+
 export function ExitIntentDialog() {
-  // Set isOpen to true to display the dialog immediately
+  // Force the dialog to be open
   const [isOpen, setIsOpen] = useState(true);
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
   const [email, setEmail] = useState("");
-  useEffect(() => {
-    const shouldShow = () => {
-      const lastShown = localStorage.getItem("exitIntentShown");
-      if (lastShown) {
-        const timeSinceLastShow = Date.now() - parseInt(lastShown);
-        // Don't show if it was shown in the last 7 days
-        if (timeSinceLastShow < 7 * 24 * 60 * 60 * 1000) {
-          return false;
-        }
-      }
-      return true;
-    };
-    const handleMouseLeave = (e: MouseEvent) => {
-      if (e.clientY <= 0 &&
-      // User's mouse is at the top of the viewport
-      shouldShow() && window.innerWidth >= 1024 // Only show on desktop
-      ) {
-        setIsOpen(true);
-        localStorage.setItem("exitIntentShown", Date.now().toString());
-      }
-    };
-    document.addEventListener("mouseleave", handleMouseLeave);
-    return () => {
-      document.removeEventListener("mouseleave", handleMouseLeave);
-    };
-  }, []);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Here you would typically handle the email subscription
@@ -46,6 +21,7 @@ export function ExitIntentDialog() {
     });
     setIsOpen(false);
   };
+
   return <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent className="sm:max-w-[425px] bg-gradient-to-br from-[#9b87f5] via-[#D946EF] to-[#0EA5E9]">
         <DialogHeader>
@@ -72,6 +48,14 @@ export function ExitIntentDialog() {
             Get early access to premium AI tools, off-market deals, and actionable insights—before anyone else.
           </p>
           <form onSubmit={handleSubmit} className="space-y-4">
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email"
+              className="w-full p-2 rounded border border-white/30 bg-white/10 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50"
+              required
+            />
             <Button type="submit" className="w-full bg-[#F97316] hover:bg-[#EA580C] text-white font-medium">Join the Club</Button>
             <div className="flex items-center justify-center gap-2 text-white/80 text-sm">
               <span>🔒</span>
