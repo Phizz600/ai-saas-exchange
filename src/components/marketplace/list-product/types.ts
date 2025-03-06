@@ -50,5 +50,4 @@ export interface ListProductFormData {
   productAge?: string;
   businessLocation?: string;
   numberOfEmployees?: string;
-  industryOther?: string;
 }
