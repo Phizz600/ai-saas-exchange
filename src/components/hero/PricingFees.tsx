@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { DollarSign, PercentIcon, CheckCircle } from "lucide-react";
@@ -72,7 +71,7 @@ const PricingFees = () => {
                 </div>
                 
                 <p className="text-gray-300 text-center mb-6 flex-grow">
-                  Our tiered commission structure ensures fair rates across all deal sizes.
+                  Pay less as you sell more with our transparent tiered pricing structure.
                 </p>
                 <ul className="space-y-3 text-gray-300">
                   <li className="flex items-center">
