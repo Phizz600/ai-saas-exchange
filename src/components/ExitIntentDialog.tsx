@@ -1,16 +1,15 @@
-
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Briefcase, UserCog } from "lucide-react";
-
 export function ExitIntentDialog() {
   // Set isOpen to true to display the dialog immediately
   const [isOpen, setIsOpen] = useState(true);
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
   const [email, setEmail] = useState("");
-
   useEffect(() => {
     const shouldShow = () => {
       const lastShown = localStorage.getItem("exitIntentShown");
@@ -23,24 +22,20 @@ export function ExitIntentDialog() {
       }
       return true;
     };
-
     const handleMouseLeave = (e: MouseEvent) => {
-      if (
-        e.clientY <= 0 && // User's mouse is at the top of the viewport
-        shouldShow() &&
-        window.innerWidth >= 1024 // Only show on desktop
+      if (e.clientY <= 0 &&
+      // User's mouse is at the top of the viewport
+      shouldShow() && window.innerWidth >= 1024 // Only show on desktop
       ) {
         setIsOpen(true);
         localStorage.setItem("exitIntentShown", Date.now().toString());
       }
     };
-
     document.addEventListener("mouseleave", handleMouseLeave);
     return () => {
       document.removeEventListener("mouseleave", handleMouseLeave);
     };
   }, []);
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Here you would typically handle the email subscription
@@ -51,9 +46,7 @@ export function ExitIntentDialog() {
     });
     setIsOpen(false);
   };
-
-  return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+  return <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent className="sm:max-w-[425px] bg-gradient-to-br from-[#9b87f5] via-[#D946EF] to-[#0EA5E9]">
         <DialogHeader>
           <DialogTitle className="text-white exo-2-heading text-center text-xl">
@@ -79,12 +72,7 @@ export function ExitIntentDialog() {
             Get early access to premium AI tools, off-market deals, and actionable insights—before anyone else.
           </p>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <Button
-              type="submit"
-              className="w-full bg-[#F97316] hover:bg-[#EA580C] text-white font-medium"
-            >
-              Get Exclusive Updates
-            </Button>
+            <Button type="submit" className="w-full bg-[#F97316] hover:bg-[#EA580C] text-white font-medium">Join the Club</Button>
             <div className="flex items-center justify-center gap-2 text-white/80 text-sm">
               <span>🔒</span>
               <p>Join 10,000+ AI professionals • No spam, ever</p>
@@ -92,6 +80,5 @@ export function ExitIntentDialog() {
           </form>
         </div>
       </DialogContent>
-    </Dialog>
-  );
+    </Dialog>;
 }
