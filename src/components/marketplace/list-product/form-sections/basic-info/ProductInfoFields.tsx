@@ -13,7 +13,7 @@ interface ProductInfoFieldsProps {
 export function ProductInfoFields({ form }: ProductInfoFieldsProps) {
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-medium">Product Information</h3>
+      <h3 className="text-lg font-medium exo-2-heading">Product Information</h3>
       
       <FormField
         control={form.control}
@@ -63,14 +63,13 @@ export function ProductInfoFields({ form }: ProductInfoFieldsProps) {
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                {/* Ensure these options match the mapping in formSubmissionHandler.ts */}
-                <SelectItem value="AI Agents">AI Agents</SelectItem>
-                <SelectItem value="AI Applications">AI Applications</SelectItem>
-                <SelectItem value="AI Tools">AI Tools</SelectItem>
-                <SelectItem value="LLM">LLM</SelectItem>
-                <SelectItem value="Chatbots">Chatbots</SelectItem>
-                <SelectItem value="Training Data">Training Data</SelectItem>
-                <SelectItem value="Other">Other</SelectItem>
+                <SelectItem value="ai_agent">AI Agents</SelectItem>
+                <SelectItem value="ai_application">AI Applications</SelectItem>
+                <SelectItem value="ai_tool">AI Tools</SelectItem>
+                <SelectItem value="llm">LLM</SelectItem>
+                <SelectItem value="chatbot">Chatbots</SelectItem>
+                <SelectItem value="training_data">Training Data</SelectItem>
+                <SelectItem value="other">Other</SelectItem>
               </SelectContent>
             </Select>
             <FormMessage />
