@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -16,7 +17,8 @@ export function ExitIntentDialog() {
     window.open("https://aiexchangeclub.beehiiv.com/subscribe", "_blank");
   };
 
-  return <Dialog open={isOpen} onOpenChange={setIsOpen}>
+  // Removing onOpenChange to prevent the dialog from closing when clicking outside
+  return <Dialog open={isOpen}>
       <DialogContent className="sm:max-w-[425px] bg-gradient-to-br from-[#9b87f5] via-[#D946EF] to-[#0EA5E9]">
         <DialogHeader>
           <DialogTitle className="text-white exo-2-heading text-center text-xl">
