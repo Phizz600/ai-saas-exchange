@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Briefcase, UserCog } from "lucide-react";
+import AnimatedBackground from "@/components/hero/AnimatedBackground";
 
 export function ExitIntentDialog() {
   const [isOpen, setIsOpen] = useState(false);
@@ -48,7 +49,10 @@ export function ExitIntentDialog() {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleCloseDialog}>
-      <DialogContent className="sm:max-w-[425px] bg-gradient-to-br from-[#9b87f5] via-[#D946EF] to-[#0EA5E9]">
+      <DialogContent className="sm:max-w-[425px] relative overflow-hidden">
+        <div className="absolute inset-0 -z-10">
+          <AnimatedBackground />
+        </div>
         <DialogHeader>
           <DialogTitle className="text-white exo-2-heading text-center text-xl">
             Unlock Exclusive AI Deals &amp; Insights
