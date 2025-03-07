@@ -216,7 +216,9 @@ export const InvestorQuestionnaire = ({
         <div className="flex flex-col items-center space-y-4">
           <h3 className="text-2xl font-semibold mb-2 exo-2-heading">Thanks for completing your investor profile!</h3>
           <p className="text-gray-600">
-            We'll match you with AI products that align with your investment preferences.
+            We'll match you with AI products that align with your investment preferences. 
+            Join our newsletter below to receive notifications about potential matches and 
+            get early access to exclusive deals before anyone else.
           </p>
           
           {showNewsletterButton && (
