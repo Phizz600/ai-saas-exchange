@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { DollarSign, PercentIcon, CheckCircle, Clock } from "lucide-react";
@@ -6,11 +5,8 @@ import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@
 
 const PricingFees = () => {
   return (
-    <section className="relative z-10 py-20">
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-t from-accent via-accent2/80 to-accent3/60 rounded-3xl blur-[80px] opacity-30" />
-      
-      <div className="container mx-auto px-4 relative">
+    <section className="py-20">
+      <div className="container mx-auto px-4">
         <motion.h2 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -35,9 +31,8 @@ const PricingFees = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="transform transition-all duration-300 hover:-translate-y-2"
           >
-            <Card className="h-full p-8 bg-white/10 backdrop-blur-sm border-white/10 hover:shadow-lg transition-shadow">
+            <Card className="h-full p-8 bg-white/10 backdrop-blur-sm border-white/5 hover:shadow-lg transition-shadow">
               <div className="flex flex-col h-full">
                 <div className="flex justify-center mb-6">
                   <div className="bg-[#D946EE]/20 p-4 rounded-full">
@@ -107,9 +102,8 @@ const PricingFees = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="transform transition-all duration-300 hover:-translate-y-2"
           >
-            <Card className="h-full p-8 bg-white/10 backdrop-blur-sm border-white/10 hover:shadow-lg transition-shadow">
+            <Card className="h-full p-8 bg-white/10 backdrop-blur-sm border-white/5 hover:shadow-lg transition-shadow">
               <div className="flex flex-col h-full">
                 <div className="flex justify-center mb-6">
                   <div className="bg-[#8B5CF6]/20 p-4 rounded-full">
@@ -160,7 +154,7 @@ const PricingFees = () => {
                   <h4 className="font-semibold text-white text-sm mb-2">How We Compare</h4>
                   <p className="text-gray-300 text-xs">
                     Many marketplaces charge <span className="text-white font-bold">$50-$300</span> listing fees 
-                    with no guarantee of a sale. Our early adopter rate is <span className="text-[#0EA4E9] font-bold">80-97% lower</span> than competitors.
+                    with no guarantee of a sale. Our early adopter rate is <span className="text-[#0EA4E9] font-bold">80-97% lower</span>than competitors.
                   </p>
                 </div>
               </div>
