@@ -1,10 +1,14 @@
+
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ShieldCheck, Rocket, LineChart, Users } from "lucide-react";
 import { useState } from "react";
 import { Progress } from "@/components/ui/progress";
+import { InvestorQuestionnaire } from "@/components/investor/InvestorQuestionnaire";
+
 export const ComingSoon = () => {
   const [progress] = useState(80); // 800 out of 1000 spots taken
+  const [showQuestionnaire, setShowQuestionnaire] = useState(false);
 
   return <div className="min-h-screen bg-gradient-to-br from-[#9b87f5] via-[#D946EF] to-[#0EA5E9]">
       <div className="container mx-auto px-4 py-12">
@@ -76,6 +80,29 @@ export const ComingSoon = () => {
             </div>
           </div>
 
+          {/* Investor Questionnaire Section */}
+          <div className="max-w-xl mx-auto py-8 space-y-6 border-t border-b border-purple-100">
+            <div className="text-center">
+              <h2 className="text-2xl font-bold exo-2-heading bg-gradient-to-r from-[#8B5CF6] to-[#0EA5E9] bg-clip-text text-transparent">Get Matched with AI Investments</h2>
+              <p className="text-gray-700 mt-2">Complete this quick questionnaire to be matched with AI products that fit your investment criteria when we launch.</p>
+            </div>
+            
+            {showQuestionnaire ? (
+              <InvestorQuestionnaire 
+                variant="comingSoon" 
+                showNewsletterButton={true} 
+                onComplete={() => setShowQuestionnaire(false)} 
+              />
+            ) : (
+              <Button 
+                onClick={() => setShowQuestionnaire(true)}
+                className="w-full max-w-md mx-auto block bg-gradient-to-r from-[#0EA5E9] to-[#8B5CF6] hover:opacity-90 text-white"
+              >
+                Start Investment Matching Quiz
+              </Button>
+            )}
+          </div>
+
           {/* Benefits Grid */}
           <div className="grid md:grid-cols-2 gap-6 my-12">
             <div className="bg-white/50 p-6 rounded-lg border border-purple-100">
@@ -83,7 +110,7 @@ export const ComingSoon = () => {
                 <ShieldCheck className="w-8 h-8 text-[#8B5CF6]" />
                 <h3 className="text-xl font-semibold text-gray-800">Premium Deals</h3>
               </div>
-              <p className="text-gray-600">Complete this quick questionnaire to be matched with AI SaaS businesses that fit your investment criteria when we launch.</p>
+              <p className="text-gray-600">Get exclusive first access to vetted AI companies and products before they hit the public market.</p>
             </div>
 
             <div className="bg-white/50 p-6 rounded-lg border border-purple-100">
