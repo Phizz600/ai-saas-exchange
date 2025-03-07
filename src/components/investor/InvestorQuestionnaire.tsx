@@ -174,14 +174,11 @@ export const InvestorQuestionnaire = ({
     const fieldName = questionData.field;
 
     try {
-      // Get current user if logged in
       const { data: { user } } = await supabase.auth.getUser();
       
       if (user) {
-        // For authenticated users, save to Supabase
         console.log(`Saving ${fieldName} with value [${currentAnswer}] for user ${user.id}`);
         
-        // First check if the user has a preference record
         const { data: existingPrefs } = await supabase
           .from('investor_preferences')
           .select('*')
@@ -189,16 +186,14 @@ export const InvestorQuestionnaire = ({
           .maybeSingle();
 
         if (existingPrefs) {
-          // Update existing preferences
           await supabase
             .from('investor_preferences')
             .update({ 
               current_question: currentQuestion + 1,
-              [fieldName]: [currentAnswer]  // Store as array for consistency
+              [fieldName]: [currentAnswer]
             })
             .eq('user_id', user.id);
         } else {
-          // Create new preferences
           await supabase
             .from('investor_preferences')
             .insert({ 
@@ -210,7 +205,6 @@ export const InvestorQuestionnaire = ({
         
         console.log(`Successfully saved preference for ${fieldName}`);
       } else {
-        // For anonymous users, save to localStorage
         const storedPreferences = JSON.parse(localStorage.getItem('investor_preferences') || '{}');
         const updatedPreferences = {
           ...storedPreferences,
@@ -221,7 +215,6 @@ export const InvestorQuestionnaire = ({
         console.log(`Saved to localStorage: ${fieldName} = [${currentAnswer}]`);
       }
 
-      // Show success toast for the last question
       if (currentQuestion === questions.length - 1) {
         toast({
           title: "Profile Complete!",
@@ -237,7 +230,6 @@ export const InvestorQuestionnaire = ({
       });
     }
 
-    // Automatically advance to next question after a short delay
     setTimeout(() => {
       if (currentQuestion < questions.length - 1) {
         setCurrentQuestion(currentQuestion + 1);
@@ -246,10 +238,9 @@ export const InvestorQuestionnaire = ({
         setShowQuestionnaire(false);
         if (onComplete) onComplete();
       }
-    }, 500); // 500ms delay for visual feedback
+    }, 500);
   };
 
-  // Load saved progress when component mounts
   useEffect(() => {
     const loadSavedProgress = async () => {
       try {
@@ -263,16 +254,13 @@ export const InvestorQuestionnaire = ({
             .maybeSingle();
           
           if (preferences?.current_question) {
-            // If they've completed the questionnaire, show the completion screen
             if (preferences.current_question >= questions.length) {
               setHasCompletedQuestionnaire(true);
             } else {
-              // Otherwise set their progress
               setCurrentQuestion(preferences.current_question);
             }
           }
         } else {
-          // Check localStorage for anonymous users
           const storedPreferences = JSON.parse(localStorage.getItem('investor_preferences') || '{}');
           if (storedPreferences.current_question) {
             if (storedPreferences.current_question >= questions.length) {
@@ -306,8 +294,9 @@ export const InvestorQuestionnaire = ({
         <div className="flex flex-col items-center space-y-4">
           <h3 className="text-2xl font-semibold mb-2 exo-2-heading">Thank you for completing your investor profile!</h3>
           <p className="text-gray-600">
-            We'll match you with AI products that align with your investment preferences and notify you when we find perfect matches. 
-            Join our newsletter below to receive early access to exclusive deals and get first dibs on promising AI tools before anyone else.
+            We'll match you with AI products that align with your investment preferences and send you weekly emails with personalized recommendations. 
+            You'll receive match notifications directly to your inbox each week so you never miss a perfect opportunity. 
+            Join our newsletter below for additional exclusive deals and early access to promising AI tools.
           </p>
           
           {showNewsletterButton && (
@@ -429,4 +418,3 @@ export const InvestorQuestionnaire = ({
     </Card>
   );
 };
-
