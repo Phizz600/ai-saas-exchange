@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Form, FormField, FormItem, FormControl } from "@/components/ui/form";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
@@ -20,6 +19,7 @@ import {
 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 export const questions = [
   {
@@ -32,7 +32,8 @@ export const questions = [
       { value: "income", label: "Steady Income" },
       { value: "acquisition", label: "Strategic Acquisition" },
       { value: "portfolio", label: "Portfolio Diversification" }
-    ]
+    ],
+    field: "investment_goals"
   },
   {
     id: 2,
@@ -44,7 +45,8 @@ export const questions = [
       { value: "small", label: "Small ($50K - $200K)" },
       { value: "medium", label: "Medium ($200K - $1M)" },
       { value: "large", label: "Large ($1M+)" }
-    ]
+    ],
+    field: "investment_budget"
   },
   {
     id: 3,
@@ -56,7 +58,8 @@ export const questions = [
       { value: "growth", label: "Growth Stage" },
       { value: "established", label: "Established" },
       { value: "any", label: "Any Stage" }
-    ]
+    ],
+    field: "investment_stage"
   },
   {
     id: 4,
@@ -68,7 +71,8 @@ export const questions = [
       { value: "pay_per_use", label: "Pay Per Use" },
       { value: "freemium", label: "Freemium" },
       { value: "one_time", label: "One Time Purchase" }
-    ]
+    ],
+    field: "monetization_preferences"
   },
   {
     id: 5,
@@ -80,7 +84,8 @@ export const questions = [
       { value: "moderate", label: "Moderate" },
       { value: "aggressive", label: "Aggressive" },
       { value: "flexible", label: "Flexible" }
-    ]
+    ],
+    field: "risk_appetite"
   },
   {
     id: 6,
@@ -96,7 +101,8 @@ export const questions = [
       { value: "data_analytics", label: "Data Analytics" },
       { value: "automation", label: "Automation" },
       { value: "recommendation", label: "Recommendation Systems" }
-    ]
+    ],
+    field: "target_market"
   },
   {
     id: 7,
@@ -110,7 +116,8 @@ export const questions = [
       { value: "mistral", label: "Mistral AI" },
       { value: "gemini", label: "Gemini" },
       { value: "llama", label: "Llama" }
-    ]
+    ],
+    field: "llm_preferences"
   },
   {
     id: 8,
@@ -122,7 +129,8 @@ export const questions = [
       { value: "important", label: "Important" },
       { value: "nice", label: "Nice to Have" },
       { value: "not_important", label: "Not Important" }
-    ]
+    ],
+    field: "traffic_importance"
   },
   {
     id: 9,
@@ -134,7 +142,8 @@ export const questions = [
       { value: "medium", label: "Medium Term (2-5 years)" },
       { value: "long", label: "Long Term (5+ years)" },
       { value: "flexible", label: "Flexible" }
-    ]
+    ],
+    field: "investment_timeline"
   }
 ];
 
@@ -155,37 +164,77 @@ export const InvestorQuestionnaire = ({
   const [hasCompletedQuestionnaire, setHasCompletedQuestionnaire] = useState(false);
   const [showQuestionnaire, setShowQuestionnaire] = useState(false);
   const form = useForm();
+  const { toast } = useToast();
   
   const handleOptionSelect = async (value: string) => {
     const currentAnswer = value;
     if (!currentAnswer) return;
 
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    // Save the answer to the database if user is logged in
-    if (user) {
-      await supabase
-        .from('investor_preferences')
-        .update({ 
+    const questionData = questions[currentQuestion];
+    const fieldName = questionData.field;
+
+    try {
+      // Get current user if logged in
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (user) {
+        // For authenticated users, save to Supabase
+        console.log(`Saving ${fieldName} with value [${currentAnswer}] for user ${user.id}`);
+        
+        // First check if the user has a preference record
+        const { data: existingPrefs } = await supabase
+          .from('investor_preferences')
+          .select('*')
+          .eq('user_id', user.id)
+          .maybeSingle();
+
+        if (existingPrefs) {
+          // Update existing preferences
+          await supabase
+            .from('investor_preferences')
+            .update({ 
+              current_question: currentQuestion + 1,
+              [fieldName]: [currentAnswer]  // Store as array for consistency
+            })
+            .eq('user_id', user.id);
+        } else {
+          // Create new preferences
+          await supabase
+            .from('investor_preferences')
+            .insert({ 
+              user_id: user.id,
+              current_question: currentQuestion + 1,
+              [fieldName]: [currentAnswer]
+            });
+        }
+        
+        console.log(`Successfully saved preference for ${fieldName}`);
+      } else {
+        // For anonymous users, save to localStorage
+        const storedPreferences = JSON.parse(localStorage.getItem('investor_preferences') || '{}');
+        const updatedPreferences = {
+          ...storedPreferences,
           current_question: currentQuestion + 1,
-          [`${questions[currentQuestion].id === 8 ? 'traffic_importance' : 
-            questions[currentQuestion].id === 7 ? 'llm_preferences' :
-            questions[currentQuestion].id === 4 ? 'monetization_preferences' :
-            'investment_goals'}`]: [currentAnswer]
-        })
-        .eq('user_id', user.id);
-    } else {
-      // For anonymous users, save preferences in localStorage
-      const storedPreferences = JSON.parse(localStorage.getItem('investor_preferences') || '{}');
-      const updatedPreferences = {
-        ...storedPreferences,
-        current_question: currentQuestion + 1,
-        [`${questions[currentQuestion].id === 8 ? 'traffic_importance' : 
-          questions[currentQuestion].id === 7 ? 'llm_preferences' :
-          questions[currentQuestion].id === 4 ? 'monetization_preferences' :
-          'investment_goals'}`]: [currentAnswer]
-      };
-      localStorage.setItem('investor_preferences', JSON.stringify(updatedPreferences));
+          [fieldName]: [currentAnswer]
+        };
+        localStorage.setItem('investor_preferences', JSON.stringify(updatedPreferences));
+        console.log(`Saved to localStorage: ${fieldName} = [${currentAnswer}]`);
+      }
+
+      // Show success toast for the last question
+      if (currentQuestion === questions.length - 1) {
+        toast({
+          title: "Profile Complete!",
+          description: "Your investor profile has been successfully saved.",
+        });
+      }
+    } catch (error) {
+      console.error("Error saving preferences:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to save your preferences. Please try again.",
+      });
     }
 
     // Automatically advance to next question after a short delay
@@ -199,6 +248,47 @@ export const InvestorQuestionnaire = ({
       }
     }, 500); // 500ms delay for visual feedback
   };
+
+  // Load saved progress when component mounts
+  useEffect(() => {
+    const loadSavedProgress = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (user) {
+          const { data: preferences } = await supabase
+            .from('investor_preferences')
+            .select('current_question')
+            .eq('user_id', user.id)
+            .maybeSingle();
+          
+          if (preferences?.current_question) {
+            // If they've completed the questionnaire, show the completion screen
+            if (preferences.current_question >= questions.length) {
+              setHasCompletedQuestionnaire(true);
+            } else {
+              // Otherwise set their progress
+              setCurrentQuestion(preferences.current_question);
+            }
+          }
+        } else {
+          // Check localStorage for anonymous users
+          const storedPreferences = JSON.parse(localStorage.getItem('investor_preferences') || '{}');
+          if (storedPreferences.current_question) {
+            if (storedPreferences.current_question >= questions.length) {
+              setHasCompletedQuestionnaire(true);
+            } else {
+              setCurrentQuestion(storedPreferences.current_question);
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Error loading preferences:", error);
+      }
+    };
+
+    loadSavedProgress();
+  }, []);
 
   const handlePreviousQuestion = () => {
     if (currentQuestion > 0) {
@@ -214,11 +304,10 @@ export const InvestorQuestionnaire = ({
     return (
       <Card className={`p-6 text-center ${bgClass} ${className}`}>
         <div className="flex flex-col items-center space-y-4">
-          <h3 className="text-2xl font-semibold mb-2 exo-2-heading">Thanks for completing your investor profile!</h3>
+          <h3 className="text-2xl font-semibold mb-2 exo-2-heading">Thank you for completing your investor profile!</h3>
           <p className="text-gray-600">
-            We'll match you with AI products that align with your investment preferences. 
-            Join our newsletter below to receive notifications about potential matches and 
-            get early access to exclusive deals before anyone else.
+            We'll match you with AI products that align with your investment preferences and notify you when we find perfect matches. 
+            Join our newsletter below to receive early access to exclusive deals and get first dibs on promising AI tools before anyone else.
           </p>
           
           {showNewsletterButton && (
@@ -340,3 +429,4 @@ export const InvestorQuestionnaire = ({
     </Card>
   );
 };
+
