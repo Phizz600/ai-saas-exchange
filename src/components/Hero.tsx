@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Timer, TrendingDown, Users, Star, History, MousePointerClick } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+
 const NewsletterSubscription = lazy(() => import("@/components/hero/NewsletterSubscription"));
 const FeatureHighlights = lazy(() => import("@/components/hero/FeatureHighlights"));
 const AnimatedBackground = lazy(() => import("@/components/hero/AnimatedBackground"));
@@ -16,6 +17,9 @@ const HeroTitle = lazy(() => import("@/components/hero/HeroTitle"));
 const HowItWorks = lazy(() => import("@/components/hero/HowItWorks"));
 const SecurityFeatures = lazy(() => import("@/components/hero/SecurityFeatures"));
 const RoleInfo = lazy(() => import("@/components/hero/RoleInfo"));
+const PricingFees = lazy(() => import("@/components/hero/PricingFees"));
+const SectionTransition = lazy(() => import("@/components/hero/SectionTransition"));
+
 const placeholderProducts = [{
   id: 1,
   title: "AI Content Generator Pro",
@@ -266,8 +270,25 @@ const Hero = () => {
             <FeatureHighlights />
           </Suspense>
 
-          <Suspense fallback={<Skeleton className="h-64" />}>
-            <RoleInfo isSellerOpen={isSellerOpen} setIsSellerOpen={setIsSellerOpen} isBuyerOpen={isBuyerOpen} setIsBuyerOpen={setIsBuyerOpen} />
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className="relative mt-16 pt-8"
+          >
+            <div className="absolute inset-0 bg-gradient-to-b from-accent2/30 via-accent3/50 to-accent/70 rounded-3xl blur-[80px] opacity-30" />
+            
+            <Suspense fallback={<Skeleton className="h-64" />}>
+              <RoleInfo isSellerOpen={isSellerOpen} setIsSellerOpen={setIsSellerOpen} isBuyerOpen={isBuyerOpen} setIsBuyerOpen={setIsBuyerOpen} />
+            </Suspense>
+          </motion.div>
+
+          <Suspense fallback={<Skeleton className="h-32" />}>
+            <SectionTransition />
+          </Suspense>
+
+          <Suspense fallback={<Skeleton className="h-96" />}>
+            <PricingFees />
           </Suspense>
 
           <div className="mt-8 text-sm text-gray-200">
