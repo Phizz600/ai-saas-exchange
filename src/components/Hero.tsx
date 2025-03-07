@@ -87,6 +87,7 @@ const placeholderProducts = [{
   monthlyTraffic: 30000,
   image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d"
 }];
+
 const Hero = () => {
   const navigate = useNavigate();
   const [newsletterEmail, setNewsletterEmail] = useState("");
@@ -95,12 +96,14 @@ const Hero = () => {
   const [isSellerOpen, setIsSellerOpen] = useState(false);
   const [isBuyerOpen, setIsBuyerOpen] = useState(false);
   const words = ["SaaS", "Bots", "Apps", "Tools", "Startups", "APIs", "Products", "Solutions", "Algorithms", "Models", "Agents", "Platforms"];
+
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentWordIndex(prevIndex => (prevIndex + 1) % words.length);
     }, 2500);
     return () => clearInterval(interval);
   }, []);
+
   const handleListProductClick = async () => {
     const {
       data: {
@@ -113,6 +116,7 @@ const Hero = () => {
       navigate("/auth");
     }
   };
+
   return <div className="min-h-screen relative overflow-hidden">
       <Suspense fallback={<div className="absolute inset-0 bg-gradient-to-br from-accent via-accent2 to-accent3" />}>
         <AnimatedBackground />
@@ -143,10 +147,11 @@ const Hero = () => {
           </motion.p>
 
           <div className="flex flex-col gap-6 items-center">
-            <RainbowButton onClick={handleListProductClick} className="py-6 px-12 text-base">
+            <Button variant="green" onClick={handleListProductClick} className="py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
               <MousePointerClick className="mr-2" />
               Sell your AI SaaS Business
-            </RainbowButton>
+            </Button>
+            
             <Suspense fallback={<Skeleton className="w-full max-w-md h-32" />}>
               <NewsletterSubscription newsletterEmail={newsletterEmail} setNewsletterEmail={setNewsletterEmail} subscriberCount={subscriberCount} setSubscriberCount={setSubscriberCount} />
             </Suspense>
@@ -272,4 +277,5 @@ const Hero = () => {
       </div>
     </div>;
 };
+
 export default Hero;
