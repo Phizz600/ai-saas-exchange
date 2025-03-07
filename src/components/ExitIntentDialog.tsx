@@ -75,7 +75,7 @@ export function ExitIntentDialog() {
           <div className="space-y-4">
             <Button 
               onClick={handleRedirect} 
-              className="w-full bg-[#F97316] hover:bg-[#EA580C] text-white font-medium"
+              className="w-full bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white font-medium"
             >
               Join the Club
             </Button>
