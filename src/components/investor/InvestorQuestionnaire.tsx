@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Form, FormField, FormItem, FormControl } from "@/components/ui/form";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -22,7 +21,6 @@ import {
 import { useForm } from "react-hook-form";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 export const questions = [
   {
@@ -169,7 +167,6 @@ export const InvestorQuestionnaire = ({
   const [progress] = useState(80); // 800 out of 1000 spots taken
   const form = useForm();
   const { toast } = useToast();
-  const isMobile = useIsMobile();
   
   const handleOptionSelect = async (value: string) => {
     const currentAnswer = value;
@@ -295,25 +292,25 @@ export const InvestorQuestionnaire = ({
       : "";
       
     return (
-      <Card className={`p-4 md:p-6 text-center ${bgClass} ${className}`}>
-        <div className="flex flex-col items-center space-y-3 md:space-y-4">
-          <h3 className="text-xl md:text-2xl font-semibold mb-1 md:mb-2 exo-2-heading">Thank you for completing your investor profile!</h3>
-          <p className="text-sm md:text-base text-gray-600 mb-3 md:mb-6">
+      <Card className={`p-6 text-center ${bgClass} ${className}`}>
+        <div className="flex flex-col items-center space-y-4">
+          <h3 className="text-2xl font-semibold mb-2 exo-2-heading">Thank you for completing your investor profile!</h3>
+          <p className="text-gray-600 mb-6">
             We'll match you with AI products that align with your investment preferences and send you weekly emails with personalized recommendations. 
             You'll receive match notifications directly to your inbox each week so you never miss a perfect opportunity.
           </p>
           
-          <div className="max-w-xl mx-auto space-y-4 md:space-y-6">
-            <div className="text-center space-y-3 md:space-y-4">
-              <div className="space-y-4 md:space-y-6">
-                <div className="flex items-center justify-center gap-2 md:gap-3">
-                  <Users className="w-5 h-5 md:w-6 md:h-6 text-[#8B5CF6]" />
-                  <h3 className="text-lg md:text-xl font-semibold text-gray-800">Join 1,000+ AI Investors</h3>
+          <div className="max-w-xl mx-auto space-y-6">
+            <div className="text-center space-y-4">
+              <div className="space-y-6">
+                <div className="flex items-center justify-center gap-3">
+                  <Users className="w-6 h-6 text-[#8B5CF6]" />
+                  <h3 className="text-xl font-semibold text-gray-800">Join 1,000+ AI Investors</h3>
                 </div>
                 
-                <div className="space-y-1 md:space-y-2">
+                <div className="space-y-2">
                   <Progress value={progress} className="h-2 bg-purple-100" />
-                  <p className="text-[#D946EF] font-semibold text-sm md:text-base">
+                  <p className="text-[#D946EF] font-semibold">
                     Only 200 spots left! <span className="text-gray-700">Be part of the first wave of AI innovators.</span>
                   </p>
                 </div>
@@ -322,36 +319,36 @@ export const InvestorQuestionnaire = ({
 
             <div className="flex justify-center">
               <a href="https://aiexchangeclub.beehiiv.com/subscribe" target="_blank" rel="noopener noreferrer" className="w-full">
-                <Button className="w-full bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] hover:opacity-90 text-white text-sm md:text-base py-3 h-auto">
+                <Button className="w-full bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] hover:opacity-90 text-white">
                   Join The AI Exchange Club Newsletter
                 </Button>
               </a>
             </div>
 
-            <div className="text-xs md:text-sm text-gray-600 text-center">
-              ✓ Premium deal flow &nbsp;{isMobile ? <br /> : "• "}&nbsp; 
-              ✓ Market insights &nbsp;{isMobile ? <br /> : "• "}&nbsp; 
+            <div className="text-sm text-gray-600">
+              ✓ Premium deal flow &nbsp; • &nbsp; 
+              ✓ Market insights &nbsp; • &nbsp; 
               ✓ Community access
             </div>
 
-            <div className="space-y-2 md:space-y-3 bg-purple-50 p-4 md:p-6 rounded-lg">
-              <h3 className="font-semibold text-gray-800 text-center text-sm md:text-base">Why Join as an Investor?</h3>
-              <ul className="space-y-1.5 md:space-y-2 text-gray-700 text-left">
+            <div className="space-y-3 bg-purple-50 p-6 rounded-lg">
+              <h3 className="font-semibold text-gray-800 text-center">Why Join as an Investor?</h3>
+              <ul className="space-y-2 text-gray-700 text-left">
                 <li className="flex items-start gap-2">
-                  <span className="text-[#8B5CF6] font-bold mt-0.5">→</span>
-                  <span className="text-sm md:text-base">First access to vetted AI companies before public launch</span>
+                  <span className="text-[#8B5CF6] font-bold">→</span>
+                  <span>First access to vetted AI companies before public launch</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#8B5CF6] font-bold mt-0.5">→</span>
-                  <span className="text-sm md:text-base">Exclusive deals and preferential pricing through auctions</span>
+                  <span className="text-[#8B5CF6] font-bold">→</span>
+                  <span>Exclusive deals and preferential pricing through auctions</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#8B5CF6] font-bold mt-0.5">→</span>
-                  <span className="text-sm md:text-base">Connect with fellow AI investors and industry leaders</span>
+                  <span className="text-[#8B5CF6] font-bold">→</span>
+                  <span>Connect with fellow AI investors and industry leaders</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#8B5CF6] font-bold mt-0.5">→</span>
-                  <span className="text-sm md:text-base">Weekly curated insights on emerging AI opportunities</span>
+                  <span className="text-[#8B5CF6] font-bold">→</span>
+                  <span>Weekly curated insights on emerging AI opportunities</span>
                 </li>
               </ul>
             </div>
@@ -367,15 +364,15 @@ export const InvestorQuestionnaire = ({
       : "";
       
     return (
-      <Card className={`p-4 md:p-6 text-center ${bgClass} ${className}`}>
-        <div className="flex flex-col items-center space-y-3 md:space-y-4">
-          <h3 className="text-xl md:text-2xl font-semibold mb-1 md:mb-2 exo-2-heading">Complete Your Investor Profile</h3>
-          <p className="text-sm md:text-base text-gray-600">
+      <Card className={`p-6 text-center ${bgClass} ${className}`}>
+        <div className="flex flex-col items-center space-y-4">
+          <h3 className="text-2xl font-semibold mb-2 exo-2-heading">Complete Your Investor Profile</h3>
+          <p className="text-gray-600">
             Answer a few questions to help us match you with AI products that fit your investment criteria.
           </p>
           <Button 
             onClick={() => setShowQuestionnaire(true)}
-            className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 transition-opacity text-sm md:text-base"
+            className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 transition-opacity"
           >
             Start Questionnaire
           </Button>
@@ -391,16 +388,16 @@ export const InvestorQuestionnaire = ({
     : "";
 
   return (
-    <Card className={`p-4 md:p-6 max-w-2xl mx-auto ${bgClass} ${className}`}>
-      <div className="space-y-4 md:space-y-6">
-        <div className="text-center space-y-1 md:space-y-2">
-          <div className="flex justify-center mb-3 md:mb-4">
-            <div className="p-2 md:p-3 bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] rounded-full">
-              <Icon className="h-5 w-5 md:h-6 md:w-6 text-white" />
+    <Card className={`p-6 max-w-2xl mx-auto ${bgClass} ${className}`}>
+      <div className="space-y-6">
+        <div className="text-center space-y-2">
+          <div className="flex justify-center mb-4">
+            <div className="p-3 bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] rounded-full">
+              <Icon className="h-6 w-6 text-white" />
             </div>
           </div>
-          <h3 className="text-xl md:text-2xl font-semibold mb-1 md:mb-2 exo-2-heading">{currentQ.question}</h3>
-          <p className="text-sm md:text-base text-gray-600">{currentQ.description}</p>
+          <h3 className="text-2xl font-semibold mb-2 exo-2-heading">{currentQ.question}</h3>
+          <p className="text-gray-600">{currentQ.description}</p>
         </div>
         
         <Form {...form}>
@@ -415,7 +412,7 @@ export const InvestorQuestionnaire = ({
                       handleOptionSelect(value);
                     }}
                     defaultValue={field.value}
-                    className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4"
+                    className="grid grid-cols-1 md:grid-cols-2 gap-4"
                   >
                     {currentQ.options.map((option) => (
                       <div key={option.value} className="relative">
@@ -426,7 +423,7 @@ export const InvestorQuestionnaire = ({
                         />
                         <Label
                           htmlFor={option.value}
-                          className="flex flex-col items-center justify-center p-3 md:p-4 border-2 rounded-lg cursor-pointer hover:bg-gray-50 peer-checked:border-[#8B5CF6] peer-checked:bg-purple-50 transition-all duration-300 text-sm md:text-base"
+                          className="flex flex-col items-center justify-center p-4 border-2 rounded-lg cursor-pointer hover:bg-gray-50 peer-checked:border-[#8B5CF6] peer-checked:bg-purple-50 transition-all duration-300"
                         >
                           <span className="font-medium">{option.label}</span>
                         </Label>
@@ -439,17 +436,17 @@ export const InvestorQuestionnaire = ({
           />
         </Form>
 
-        <div className="flex justify-between items-center pt-3 md:pt-4 border-t">
+        <div className="flex justify-between items-center pt-4 border-t">
           <Button
             variant="outline"
             onClick={handlePreviousQuestion}
             disabled={currentQuestion === 0}
-            className="flex items-center gap-1 md:gap-2 text-xs md:text-sm px-2 md:px-4 py-1 md:py-2 h-auto"
+            className="flex items-center gap-2"
           >
-            <ChevronLeft className="h-3 w-3 md:h-4 md:w-4" />
+            <ChevronLeft className="h-4 w-4" />
             Previous
           </Button>
-          <div className="text-xs md:text-sm text-gray-500">
+          <div className="text-sm text-gray-500">
             Question {currentQuestion + 1} of {questions.length}
           </div>
           <Button
@@ -458,10 +455,10 @@ export const InvestorQuestionnaire = ({
               if (currentAnswer) handleOptionSelect(currentAnswer);
             }}
             disabled={!form.getValues(`question_${currentQuestion}`)}
-            className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 transition-opacity flex items-center gap-1 md:gap-2 text-xs md:text-sm px-2 md:px-4 py-1 md:py-2 h-auto"
+            className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 transition-opacity flex items-center gap-2"
           >
             {currentQuestion === questions.length - 1 ? "Finish" : "Next"}
-            <ChevronRight className="h-3 w-3 md:h-4 md:w-4" />
+            <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
       </div>
