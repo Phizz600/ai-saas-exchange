@@ -41,7 +41,7 @@ export const ComingSoon = () => {
               <ul className="space-y-2 text-gray-700 text-left">
                 <li className="flex items-start gap-2">
                   <span className="text-[#8B5CF6] font-bold">→</span>
-                  <span className="text-4xl">Get Matched with AI SaaS Businesses for Sale</span>
+                  <span className="text-3xl">Get matched with AI SaaS Businesses for sale</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-[#8B5CF6] font-bold">→</span>
