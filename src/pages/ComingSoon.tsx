@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ShieldCheck, Rocket, LineChart, Users } from "lucide-react";
@@ -28,13 +27,7 @@ export const ComingSoon = () => {
 
             
 
-            <div className="text-xs sm:text-sm text-gray-600 flex flex-wrap justify-center gap-x-2 gap-y-1">
-              <span>✓ Premium deal flow</span>
-              <span className="hidden sm:inline">•</span>
-              <span>✓ Market insights</span>
-              <span className="hidden sm:inline">•</span>
-              <span>✓ Community access</span>
-            </div>
+            
           </div>
 
           {/* Investor Questionnaire Section */}
