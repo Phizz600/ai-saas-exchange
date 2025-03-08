@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ShieldCheck, Rocket, LineChart, Users } from "lucide-react";
@@ -15,11 +14,10 @@ export const ComingSoon = () => {
             <img src="/lovable-uploads/f74b20e6-6798-4aeb-badd-2da6c2dce40b.png" alt="AI Exchange Logo" className="h-24 w-24 mx-auto mb-8 object-contain animate-float cursor-pointer hover:opacity-80 transition-opacity" />
           </Link>
 
-          <div className="text-center space-y-6">
+          <div className="text-center space-y-6 text-3xl">
             <h1 className="text-4xl md:text-5xl exo-2-heading font-bold bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] text-transparent bg-clip-text">Marketplace Launches Soon</h1>
-            <h2 className="text-2xl font-bold exo-2-heading bg-gradient-to-r from-[#8B5CF6] to-[#0EA5E9] bg-clip-text text-transparent">Get Matched with AI Investments</h2>
             <p className="text-xl text-gray-700 max-w-2xl mx-auto">
-              Complete this quick questionnaire to be matched with AI products that fit your investment criteria when we launch.
+              Join an exclusive network of investors gaining early access to cutting-edge AI products, tools, and companies through our innovative auction marketplace.
             </p>
           </div>
 
