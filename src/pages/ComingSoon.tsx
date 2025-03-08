@@ -47,7 +47,10 @@ export const ComingSoon = () => {
             <div className="space-y-3 bg-purple-50 p-4 sm:p-6 rounded-lg">
               <h3 className="font-semibold text-gray-800 text-center text-base sm:text-lg">Why Join as an Investor?</h3>
               <ul className="space-y-2 sm:space-y-3 text-gray-700 text-left text-sm sm:text-base">
-                
+                <li className="flex items-start gap-2">
+                  <span className="text-[#8B5CF6] font-bold mt-0.5">→</span>
+                  <span className="text-xl sm:text-3xl leading-tight">Get matched with AI SaaS Businesses for sale</span>
+                </li>
                 <li className="flex items-start gap-2">
                   <span className="text-[#8B5CF6] font-bold mt-0.5">→</span>
                   <span>Exclusive deals and preferential pricing through auctions</span>
