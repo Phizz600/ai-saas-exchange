@@ -16,6 +16,8 @@ const HeroTitle = lazy(() => import("@/components/hero/HeroTitle"));
 const HowItWorks = lazy(() => import("@/components/hero/HowItWorks"));
 const SecurityFeatures = lazy(() => import("@/components/hero/SecurityFeatures"));
 const RoleInfo = lazy(() => import("@/components/hero/RoleInfo"));
+const YouTubeEmbed = lazy(() => import("@/components/hero/YouTubeEmbed"));
+
 const placeholderProducts = [{
   id: 1,
   title: "AI Content Generator Pro",
@@ -260,6 +262,10 @@ const Hero = () => {
 
           <Suspense fallback={<Skeleton className="h-64" />}>
             <HowItWorks />
+          </Suspense>
+
+          <Suspense fallback={<Skeleton className="h-64 w-full max-w-4xl mx-auto" />}>
+            <YouTubeEmbed videoId="GyK9U07rykE" title="How AI Exchange Works - Video Tutorial" />
           </Suspense>
 
           <Suspense fallback={<Skeleton className="w-full h-48 mt-16" />}>
