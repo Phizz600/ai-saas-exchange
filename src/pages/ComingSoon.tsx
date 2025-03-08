@@ -27,13 +27,7 @@ export const ComingSoon = () => {
               
             </div>
 
-            <div className="flex justify-center">
-              <a href="https://aiexchangeclub.beehiiv.com/subscribe" target="_blank" rel="noopener noreferrer" className="w-full">
-                <Button className="w-full bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] hover:opacity-90 text-white">
-                  Join The AI Exchange Club Newsletter
-                </Button>
-              </a>
-            </div>
+            
 
             <div className="text-sm text-gray-600">
               ✓ Premium deal flow &nbsp; • &nbsp; 
