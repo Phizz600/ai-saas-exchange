@@ -1,13 +1,12 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ShieldCheck, Rocket, LineChart, Users } from "lucide-react";
 import { useState } from "react";
+import { Progress } from "@/components/ui/progress";
 import { InvestorQuestionnaire } from "@/components/investor/InvestorQuestionnaire";
-
 export const ComingSoon = () => {
+  const [progress] = useState(80); // 800 out of 1000 spots taken
   const [showQuestionnaire, setShowQuestionnaire] = useState(false);
-
   return <div className="min-h-screen bg-gradient-to-br from-[#9b87f5] via-[#D946EF] to-[#0EA5E9]">
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto space-y-12 bg-white/90 rounded-xl shadow-xl p-8 backdrop-blur-sm">
@@ -22,16 +21,47 @@ export const ComingSoon = () => {
             </p>
           </div>
 
-          {/* Newsletter Signup - In a more streamlined form */}
+          {/* Newsletter Signup - Moved up */}
           <div className="max-w-xl mx-auto space-y-6">
             <div className="text-center space-y-4">
-              <div className="flex justify-center">
-                <a href="https://aiexchangeclub.beehiiv.com/subscribe" target="_blank" rel="noopener noreferrer" className="w-full">
-                  <Button className="w-full bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] hover:opacity-90 text-white">
-                    Join The AI Exchange Club Newsletter
-                  </Button>
-                </a>
-              </div>
+              
+            </div>
+
+            <div className="flex justify-center">
+              <a href="https://aiexchangeclub.beehiiv.com/subscribe" target="_blank" rel="noopener noreferrer" className="w-full">
+                <Button className="w-full bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] hover:opacity-90 text-white">
+                  Join The AI Exchange Club Newsletter
+                </Button>
+              </a>
+            </div>
+
+            <div className="text-sm text-gray-600">
+              ✓ Premium deal flow &nbsp; • &nbsp; 
+              ✓ Market insights &nbsp; • &nbsp; 
+              ✓ Community access
+            </div>
+
+            {/* Newsletter Benefits */}
+            <div className="space-y-3 bg-purple-50 p-6 rounded-lg">
+              <h3 className="font-semibold text-gray-800 text-center">Why Join as an Investor?</h3>
+              <ul className="space-y-2 text-gray-700 text-left">
+                <li className="flex items-start gap-2">
+                  <span className="text-[#8B5CF6] font-bold">→</span>
+                  <span>First access to vetted AI companies before public launch</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#8B5CF6] font-bold">→</span>
+                  <span>Exclusive deals and preferential pricing through auctions</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#8B5CF6] font-bold">→</span>
+                  <span>Connect with fellow AI investors and industry leaders</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#8B5CF6] font-bold">→</span>
+                  <span>Weekly curated insights on emerging AI opportunities</span>
+                </li>
+              </ul>
             </div>
           </div>
 
@@ -42,20 +72,9 @@ export const ComingSoon = () => {
               <p className="text-gray-700 mt-2">Complete this quick questionnaire to be matched with AI products that fit your investment criteria when we launch.</p>
             </div>
             
-            {showQuestionnaire ? (
-              <InvestorQuestionnaire 
-                variant="comingSoon" 
-                showNewsletterButton={true} 
-                onComplete={() => setShowQuestionnaire(false)} 
-              />
-            ) : (
-              <Button 
-                onClick={() => setShowQuestionnaire(true)}
-                className="w-full max-w-md mx-auto block bg-gradient-to-r from-[#0EA5E9] to-[#8B5CF6] hover:opacity-90 text-white"
-              >
+            {showQuestionnaire ? <InvestorQuestionnaire variant="comingSoon" showNewsletterButton={true} onComplete={() => setShowQuestionnaire(false)} /> : <Button onClick={() => setShowQuestionnaire(true)} className="w-full max-w-md mx-auto block bg-gradient-to-r from-[#0EA5E9] to-[#8B5CF6] hover:opacity-90 text-white">
                 Start Investment Matching Quiz
-              </Button>
-            )}
+              </Button>}
           </div>
 
           {/* Benefits Grid */}
