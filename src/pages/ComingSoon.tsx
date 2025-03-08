@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ShieldCheck, Rocket, LineChart, Users } from "lucide-react";
@@ -34,8 +35,22 @@ export const ComingSoon = () => {
               ✓ Market insights &nbsp; • &nbsp; 
               ✓ Community access
             </div>
+          </div>
 
-            {/* Newsletter Benefits */}
+          {/* Investor Questionnaire Section */}
+          <div className="max-w-xl mx-auto py-8 space-y-6 border-t border-b border-purple-100">
+            <div className="text-center">
+              <h2 className="text-2xl font-bold exo-2-heading bg-gradient-to-r from-[#8B5CF6] to-[#0EA5E9] bg-clip-text text-transparent">Get Matched with AI Investments</h2>
+              <p className="text-gray-700 mt-2">Complete this quick questionnaire to be matched with AI products that fit your investment criteria when we launch.</p>
+            </div>
+            
+            {showQuestionnaire ? <InvestorQuestionnaire variant="comingSoon" showNewsletterButton={true} onComplete={() => setShowQuestionnaire(false)} /> : <Button onClick={() => setShowQuestionnaire(true)} className="w-full max-w-md mx-auto block bg-gradient-to-r from-[#0EA5E9] to-[#8B5CF6] hover:opacity-90 text-white">
+                Start Investment Matching Quiz
+              </Button>}
+          </div>
+
+          {/* Benefits Section - Moved after Questionnaire */}
+          <div className="max-w-xl mx-auto space-y-6">
             <div className="space-y-3 bg-purple-50 p-6 rounded-lg">
               <h3 className="font-semibold text-gray-800 text-center">Why Join as an Investor?</h3>
               <ul className="space-y-2 text-gray-700 text-left">
@@ -57,18 +72,6 @@ export const ComingSoon = () => {
                 </li>
               </ul>
             </div>
-          </div>
-
-          {/* Investor Questionnaire Section */}
-          <div className="max-w-xl mx-auto py-8 space-y-6 border-t border-b border-purple-100">
-            <div className="text-center">
-              <h2 className="text-2xl font-bold exo-2-heading bg-gradient-to-r from-[#8B5CF6] to-[#0EA5E9] bg-clip-text text-transparent">Get Matched with AI Investments</h2>
-              <p className="text-gray-700 mt-2">Complete this quick questionnaire to be matched with AI products that fit your investment criteria when we launch.</p>
-            </div>
-            
-            {showQuestionnaire ? <InvestorQuestionnaire variant="comingSoon" showNewsletterButton={true} onComplete={() => setShowQuestionnaire(false)} /> : <Button onClick={() => setShowQuestionnaire(true)} className="w-full max-w-md mx-auto block bg-gradient-to-r from-[#0EA5E9] to-[#8B5CF6] hover:opacity-90 text-white">
-                Start Investment Matching Quiz
-              </Button>}
           </div>
 
           {/* Benefits Grid */}
