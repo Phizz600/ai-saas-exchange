@@ -4,6 +4,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 import { 
   ChevronLeft, 
   ChevronRight,
@@ -163,6 +164,7 @@ export const InvestorQuestionnaire = ({
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [hasCompletedQuestionnaire, setHasCompletedQuestionnaire] = useState(false);
   const [showQuestionnaire, setShowQuestionnaire] = useState(false);
+  const [progress] = useState(80); // 800 out of 1000 spots taken
   const form = useForm();
   const { toast } = useToast();
   
@@ -293,19 +295,64 @@ export const InvestorQuestionnaire = ({
       <Card className={`p-6 text-center ${bgClass} ${className}`}>
         <div className="flex flex-col items-center space-y-4">
           <h3 className="text-2xl font-semibold mb-2 exo-2-heading">Thank you for completing your investor profile!</h3>
-          <p className="text-gray-600">
+          <p className="text-gray-600 mb-6">
             We'll match you with AI products that align with your investment preferences and send you weekly emails with personalized recommendations. 
-            You'll receive match notifications directly to your inbox each week so you never miss a perfect opportunity. 
-            Join our newsletter below for additional exclusive deals and early access to promising AI tools.
+            You'll receive match notifications directly to your inbox each week so you never miss a perfect opportunity.
           </p>
           
-          {showNewsletterButton && (
-            <a href="https://aiexchangeclub.beehiiv.com/subscribe" target="_blank" rel="noopener noreferrer" className="w-full max-w-md mt-4">
-              <Button className="w-full bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] hover:opacity-90 text-white">
-                Join The AI Exchange Club Newsletter
-              </Button>
-            </a>
-          )}
+          <div className="max-w-xl mx-auto space-y-6">
+            <div className="text-center space-y-4">
+              <div className="space-y-6">
+                <div className="flex items-center justify-center gap-3">
+                  <Users className="w-6 h-6 text-[#8B5CF6]" />
+                  <h3 className="text-xl font-semibold text-gray-800">Join 1,000+ AI Investors</h3>
+                </div>
+                
+                <div className="space-y-2">
+                  <Progress value={progress} className="h-2 bg-purple-100" />
+                  <p className="text-[#D946EF] font-semibold">
+                    Only 200 spots left! <span className="text-gray-700">Be part of the first wave of AI innovators.</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-center">
+              <a href="https://aiexchangeclub.beehiiv.com/subscribe" target="_blank" rel="noopener noreferrer" className="w-full">
+                <Button className="w-full bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] hover:opacity-90 text-white">
+                  Join The AI Exchange Club Newsletter
+                </Button>
+              </a>
+            </div>
+
+            <div className="text-sm text-gray-600">
+              ✓ Premium deal flow &nbsp; • &nbsp; 
+              ✓ Market insights &nbsp; • &nbsp; 
+              ✓ Community access
+            </div>
+
+            <div className="space-y-3 bg-purple-50 p-6 rounded-lg">
+              <h3 className="font-semibold text-gray-800 text-center">Why Join as an Investor?</h3>
+              <ul className="space-y-2 text-gray-700 text-left">
+                <li className="flex items-start gap-2">
+                  <span className="text-[#8B5CF6] font-bold">→</span>
+                  <span>First access to vetted AI companies before public launch</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#8B5CF6] font-bold">→</span>
+                  <span>Exclusive deals and preferential pricing through auctions</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#8B5CF6] font-bold">→</span>
+                  <span>Connect with fellow AI investors and industry leaders</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#8B5CF6] font-bold">→</span>
+                  <span>Weekly curated insights on emerging AI opportunities</span>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
       </Card>
     );
