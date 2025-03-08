@@ -33,7 +33,7 @@ export const ComingSoon = () => {
           {/* Investor Questionnaire Section */}
           <div className="max-w-xl mx-auto py-6 sm:py-8 space-y-4 sm:space-y-6 border-t border-b border-purple-100">
             <div className="text-center">
-              <h2 className="text-xl sm:text-2xl font-bold exo-2-heading bg-gradient-to-r from-[#8B5CF6] to-[#0EA5E9] bg-clip-text text-transparent leading-tight">Get Matched with AI Investments</h2>
+              <h2 className="sm:text-2xl font-bold exo-2-heading bg-gradient-to-r from-[#8B5CF6] to-[#0EA5E9] bg-clip-text text-transparent leading-tight text-3xl">Get Matched with AI SaaS Businesses</h2>
               <p className="text-sm sm:text-base text-gray-700 mt-2 px-2 sm:px-4">Complete this quick questionnaire to be matched with AI products that fit your investment criteria when we launch.</p>
             </div>
             
