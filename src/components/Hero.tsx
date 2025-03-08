@@ -13,7 +13,8 @@ const NewsletterSubscription = lazy(() => import("@/components/hero/NewsletterSu
 const FeatureHighlights = lazy(() => import("@/components/hero/FeatureHighlights"));
 const AnimatedBackground = lazy(() => import("@/components/hero/AnimatedBackground"));
 const HeroTitle = lazy(() => import("@/components/hero/HeroTitle"));
-const HowItWorks = lazy(() => import("@/components/hero/HowItWorks"));
+const HowItWorksTitle = lazy(() => import("@/components/hero/HowItWorksTitle"));
+const HowItWorksSteps = lazy(() => import("@/components/hero/HowItWorksSteps"));
 const SecurityFeatures = lazy(() => import("@/components/hero/SecurityFeatures"));
 const RoleInfo = lazy(() => import("@/components/hero/RoleInfo"));
 const YouTubeEmbed = lazy(() => import("@/components/hero/YouTubeEmbed"));
@@ -260,12 +261,16 @@ const Hero = () => {
             </div>
           </div>
 
-          <Suspense fallback={<Skeleton className="h-64" />}>
-            <HowItWorks />
+          <Suspense fallback={<Skeleton className="h-16" />}>
+            <HowItWorksTitle />
           </Suspense>
 
           <Suspense fallback={<Skeleton className="h-64 w-full max-w-4xl mx-auto" />}>
             <YouTubeEmbed videoId="GyK9U07rykE" title="How AI Exchange Works - Video Tutorial" />
+          </Suspense>
+
+          <Suspense fallback={<Skeleton className="h-64" />}>
+            <HowItWorksSteps />
           </Suspense>
 
           <Suspense fallback={<Skeleton className="w-full h-48 mt-16" />}>
