@@ -17,6 +17,7 @@ export const ComingSoon = () => {
 
           <div className="text-center space-y-6">
             <h1 className="text-4xl md:text-5xl exo-2-heading font-bold bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] text-transparent bg-clip-text">Marketplace Launches Soon</h1>
+            <h2 className="text-2xl font-bold exo-2-heading bg-gradient-to-r from-[#8B5CF6] to-[#0EA5E9] bg-clip-text text-transparent">Get Matched with AI Investments</h2>
             <p className="text-xl text-gray-700 max-w-2xl mx-auto">
               Complete this quick questionnaire to be matched with AI products that fit your investment criteria when we launch.
             </p>
