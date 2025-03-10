@@ -25,6 +25,13 @@ export const AuthForm = () => {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const { toast } = useToast();
 
+  // Get the current URL for use in the redirectTo
+  const getRedirectUrl = () => {
+    // Get the current origin (protocol + hostname + port)
+    const origin = window.location.origin;
+    return `${origin}/auth`;
+  };
+
   useEffect(() => {
     if (isSignUp) {
       setIsFormValid(
@@ -127,14 +134,18 @@ export const AuthForm = () => {
       
       console.log("AuthForm: Starting Google sign in process");
       
+      // Get the redirect URL dynamically
+      const redirectUrl = getRedirectUrl();
+      console.log("AuthForm: Using redirect URL:", redirectUrl);
+      
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
+          redirectTo: redirectUrl,
           queryParams: {
             access_type: 'offline',
             prompt: 'consent',
           },
-          redirectTo: window.location.origin + '/auth',
         },
       });
       
