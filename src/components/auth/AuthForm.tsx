@@ -27,9 +27,9 @@ export const AuthForm = () => {
 
   // Get the current URL for use in the redirectTo
   const getRedirectUrl = () => {
-    // Get the current origin (protocol + hostname + port)
-    const origin = window.location.origin;
-    return `${origin}/auth`;
+    // Get the full URL without any query parameters or hash
+    const url = new URL(window.location.href);
+    return `${url.origin}/auth`;
   };
 
   useEffect(() => {
@@ -45,6 +45,31 @@ export const AuthForm = () => {
       setIsFormValid(email !== "" && password !== "");
     }
   }, [email, password, firstName, agreedToTerms, isSignUp, userType]);
+
+  // Check for OAuth redirects when component mounts
+  useEffect(() => {
+    // If there's a hash in the URL, it might be an OAuth redirect
+    if (window.location.hash) {
+      console.log("AuthForm: Detected hash in URL, might be OAuth redirect");
+      const handleRedirect = async () => {
+        const { data, error } = await supabase.auth.getSession();
+        if (error) {
+          console.error("AuthForm: Error getting session after redirect:", error);
+          setErrorMessage("Error during Google sign in: " + error.message);
+          return;
+        }
+        if (data.session) {
+          console.log("AuthForm: Successfully signed in after redirect");
+          toast({
+            title: "Success!",
+            description: "You've been successfully logged in with Google.",
+          });
+        }
+      };
+      
+      handleRedirect();
+    }
+  }, [toast]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -138,7 +163,7 @@ export const AuthForm = () => {
       const redirectUrl = getRedirectUrl();
       console.log("AuthForm: Using redirect URL:", redirectUrl);
       
-      const { error } = await supabase.auth.signInWithOAuth({
+      const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
           redirectTo: redirectUrl,
@@ -151,17 +176,20 @@ export const AuthForm = () => {
       
       if (error) {
         console.error("AuthForm: Google sign in error:", error);
-        setErrorMessage(error.message || "An error occurred during Google sign in.");
+        setErrorMessage(`Error during Google sign in: ${error.message}`);
         setIsGoogleLoading(false);
         return;
       }
       
-      // If successful, the page will redirect to Google
-      console.log("AuthForm: Redirecting to Google for authentication");
+      if (data) {
+        console.log("AuthForm: Google sign in initiated successfully, redirecting...");
+      }
+      
+      // The page will redirect to Google for authentication, so we don't need to handle success here
       
     } catch (error: any) {
       console.error("AuthForm: Unexpected error during Google sign in:", error);
-      setErrorMessage(error.message || "An unexpected error occurred.");
+      setErrorMessage(`Unexpected error: ${error.message || "Unknown error occurred"}`);
       setIsGoogleLoading(false);
     }
   };

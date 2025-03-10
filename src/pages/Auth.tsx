@@ -13,6 +13,34 @@ const Auth = () => {
   useEffect(() => {
     console.log("Auth: Component mounted");
     
+    // Handle OAuth redirect if present in URL
+    const handleOAuthRedirect = async () => {
+      try {
+        // Check if there's an access_token or error in the URL
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        const accessToken = hashParams.get('access_token');
+        const error = hashParams.get('error');
+        
+        if (error) {
+          console.error("Auth: OAuth error:", error);
+          toast({
+            variant: "destructive",
+            title: "Authentication Error",
+            description: `Error during authentication: ${error}`,
+          });
+          return;
+        }
+        
+        if (accessToken) {
+          console.log("Auth: Found access token in URL, handling OAuth callback");
+        }
+      } catch (err) {
+        console.error("Auth: Error handling OAuth redirect:", err);
+      }
+    };
+    
+    handleOAuthRedirect();
+    
     const checkProfileAndRedirect = async (userId: string, retryCount = 0) => {
       console.log(`Auth: Checking profile for user: ${userId} (attempt ${retryCount + 1})`);
       
