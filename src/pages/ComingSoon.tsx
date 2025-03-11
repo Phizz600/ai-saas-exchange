@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ShieldCheck, Rocket, LineChart, Users } from "lucide-react";
@@ -62,35 +63,6 @@ export const ComingSoon = () => {
             <p className="text-gray-700 text-lg sm:text-xl md:text-2xl">
               Invest in the Future of AI
             </p>
-          </div>
-
-          {/* Newsletter Signup - Moved up */}
-          <div className="max-w-xl mx-auto space-y-4 sm:space-y-6">
-            <div className="text-center space-y-3 sm:space-y-4">
-              <div className="space-y-6">
-                <div className="flex items-center justify-center gap-3">
-                  <Users className="w-6 h-6 text-[#8B5CF6]" />
-                  <h3 className="text-xl font-semibold text-gray-800">Join 1,000+ AI Investors</h3>
-                </div>
-                <p className="text-gray-700">
-                  Get weekly AI product matches tailored to your investment preferences, delivered straight to your inbox—so you never miss a perfect opportunity.
-                </p>
-                <div className="space-y-2">
-                  <Progress value={progress} className="h-2 bg-purple-100" />
-                  <p className="text-[#D946EF] font-semibold">
-                    Only 200 spots left! <span className="text-gray-700">Be part of the first wave of AI innovators.</span>
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex justify-center">
-              <a href="https://aiexchangeclub.beehiiv.com/subscribe" target="_blank" rel="noopener noreferrer" className="w-full">
-                <Button className="w-full bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] hover:opacity-90 text-white">
-                  Join The AI Exchange Club Newsletter
-                </Button>
-              </a>
-            </div>
           </div>
 
           {/* Investor Questionnaire Section */}
