@@ -30,8 +30,8 @@ export const UserTypeSelector = ({ isBuilder, setIsBuilder, userType, setUserTyp
               <TooltipContent className="bg-white p-4 max-w-xs">
                 <p className="text-sm text-gray-600">
                   Choose how you'll use the marketplace:
-                  <br />- As an Investor to buy AI products
-                  <br />- As a Builder to sell AI products
+                  <br />- As an Investor to buy AI SaaS businesses
+                  <br />- As a Builder to sell AI SaaS businesses
                 </p>
               </TooltipContent>
             </Tooltip>
