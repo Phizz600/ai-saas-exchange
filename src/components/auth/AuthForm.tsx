@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -10,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
+import { Asterisk } from "lucide-react";
 
 export const AuthForm = () => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -203,8 +203,11 @@ export const AuthForm = () => {
       )}
 
       {isSignUp && (
-        <div>
-          <Label htmlFor="firstName">First Name</Label>
+        <div className="text-left">
+          <div className="flex items-center gap-1 mb-1">
+            <Label htmlFor="firstName" className="text-left">First Name</Label>
+            <Asterisk className="h-3 w-3 text-red-500" />
+          </div>
           <Input
             id="firstName"
             type="text"
@@ -217,8 +220,11 @@ export const AuthForm = () => {
         </div>
       )}
 
-      <div>
-        <Label htmlFor="email">Email</Label>
+      <div className="text-left">
+        <div className="flex items-center gap-1 mb-1">
+          <Label htmlFor="email" className="text-left">Email</Label>
+          <Asterisk className="h-3 w-3 text-red-500" />
+        </div>
         <Input
           id="email"
           type="email"
@@ -230,8 +236,11 @@ export const AuthForm = () => {
         />
       </div>
 
-      <div>
-        <Label htmlFor="password">Password</Label>
+      <div className="text-left">
+        <div className="flex items-center gap-1 mb-1">
+          <Label htmlFor="password" className="text-left">Password</Label>
+          <Asterisk className="h-3 w-3 text-red-500" />
+        </div>
         <Input
           id="password"
           type="password"
