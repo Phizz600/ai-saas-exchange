@@ -14,9 +14,7 @@ const WhyChooseUs = () => {
       }} transition={{
         duration: 0.5
       }} className="text-center mb-12">
-          <h2 className="exo-2-heading text-3xl md:text-4xl font-bold text-white mb-4">
-            Why AI Exchange Club?
-          </h2>
+          <h2 className="exo-2-heading text-3xl md:text-4xl font-bold text-white mb-4">Why Join The AI Exchange Club?</h2>
           <p className="text-xl text-gray-200 max-w-3xl mx-auto">Join hundreds of founders and investors who trust our platform for AI SaaS business transactions</p>
         </motion.div>
 
@@ -94,9 +92,7 @@ const WhyChooseUs = () => {
             <h3 className="exo-2-heading text-2xl font-bold text-white mb-4">
               We're Different
             </h3>
-            <p className="text-lg text-gray-200">
-              AI Exchange Club is the first marketplace specifically designed for AI businesses. We understand the unique challenges and opportunities in this rapidly evolving space.
-            </p>
+            <p className="text-lg text-gray-200">The AI Exchange Club is the first marketplace specifically designed for AI SaaS businesses. We understand the unique challenges and opportunities in this rapidly evolving space.</p>
             
             <ul className="space-y-4">
               <li className="flex items-start">
