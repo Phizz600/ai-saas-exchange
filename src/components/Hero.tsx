@@ -168,9 +168,7 @@ const Hero = () => {
           opacity: 1
         }} transition={{
           duration: 0.3
-        }} className="text-xl text-gray-200 mb-12 max-w-2xl mx-auto text-center">
-            Join an exclusive network of investors gaining early access to cutting-edge AI products, tools, and companies through our innovative auction marketplace.
-          </motion.p>
+        }} className="text-xl text-gray-200 mb-12 max-w-2xl mx-auto text-center">Join an exclusive network of investors gaining early access to cutting-edge AI SaaS businesses, products, tools, and solutions through our innovative Dutch auction marketplace.</motion.p>
 
           <div className="flex flex-col gap-6 items-center">
             <Button variant="green" onClick={handleListProductClick} className="py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
