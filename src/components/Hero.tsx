@@ -99,6 +99,26 @@ const Hero = () => {
   const [isSellerOpen, setIsSellerOpen] = useState(false);
   const [isBuyerOpen, setIsBuyerOpen] = useState(false);
   const words = ["SaaS", "Bots", "Apps", "Tools", "Startups", "APIs", "Products", "Solutions", "Algorithms", "Models", "Agents", "Platforms"];
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    // Check if user is authenticated
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsAuthenticated(!!session);
+    };
+    
+    checkAuth();
+    
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setIsAuthenticated(!!session);
+    });
+    
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -118,6 +138,10 @@ const Hero = () => {
     } else {
       navigate("/auth");
     }
+  };
+
+  const handleAuthRedirect = () => {
+    navigate("/auth");
   };
 
   return <div className="min-h-screen relative overflow-hidden">
@@ -241,19 +265,41 @@ const Hero = () => {
                       </div>
 
                       <div className="pt-4 space-y-2">
-                        {product.isAuction ? <Button className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] opacity-75 text-white cursor-not-allowed" disabled>
-                            Place Bid
-                          </Button> : <Button className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] opacity-75 text-white cursor-not-allowed" disabled>
-                            Buy Now
-                          </Button>}
+                        {product.isAuction ? 
+                          (isAuthenticated ? 
+                            <Button className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] opacity-75 text-white cursor-not-allowed" disabled>
+                              Place Bid
+                            </Button> : 
+                            <Button className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white" onClick={handleAuthRedirect}>
+                              Sign In to Place Bid
+                            </Button>)
+                        : 
+                          (isAuthenticated ?
+                            <Button className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] opacity-75 text-white cursor-not-allowed" disabled>
+                              Buy Now
+                            </Button> :
+                            <Button className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white" onClick={handleAuthRedirect}>
+                              Sign In to Buy
+                            </Button>)
+                        }
                         
-                        <Button variant="outline" className="w-full border-2 opacity-75 cursor-not-allowed" disabled>
-                          Make an Offer
-                        </Button>
+                        {isAuthenticated ?
+                          <Button variant="outline" className="w-full border-2 opacity-75 cursor-not-allowed" disabled>
+                            Make an Offer
+                          </Button> :
+                          <Button variant="outline" className="w-full border-2" onClick={handleAuthRedirect}>
+                            Sign In to Make an Offer
+                          </Button>
+                        }
 
-                        <Button variant="ghost" className="w-full opacity-75 cursor-not-allowed" disabled>
-                          View Details
-                        </Button>
+                        {isAuthenticated ?
+                          <Button variant="ghost" className="w-full opacity-75 cursor-not-allowed" disabled>
+                            View Details
+                          </Button> :
+                          <Button variant="ghost" className="w-full" onClick={handleAuthRedirect}>
+                            Sign In to View Details
+                          </Button>
+                        }
                       </div>
                     </div>
                   </Card>
