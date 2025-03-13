@@ -8,6 +8,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { InfoIcon } from "lucide-react";
 
 interface UserTypeSelectorProps {
   isBuilder: boolean;
@@ -19,16 +20,16 @@ interface UserTypeSelectorProps {
 export const UserTypeSelector = ({ isBuilder, setIsBuilder, userType, setUserType }: UserTypeSelectorProps) => {
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between space-x-2 bg-gray-50 p-3 rounded-lg">
+      <div className="flex items-center justify-between space-x-2 bg-white/10 backdrop-blur-sm p-4 rounded-lg border border-white/20">
         <div className="flex items-center space-x-2">
-          <Label htmlFor="userType" className="font-exo">I am a</Label>
+          <Label htmlFor="userType" className="font-exo text-white text-base">I am a</Label>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <span className="cursor-help text-gray-400 hover:text-gray-600">?</span>
+                <InfoIcon className="h-4 w-4 text-white/70 cursor-help hover:text-white transition-colors" />
               </TooltipTrigger>
-              <TooltipContent className="bg-white p-4 max-w-xs">
-                <p className="text-sm text-gray-600">
+              <TooltipContent side="top" className="bg-gray-900/95 text-white border-gray-700">
+                <p className="text-sm max-w-xs">
                   Choose how you'll use the marketplace:
                   <br />- As an Investor to buy AI SaaS businesses
                   <br />- As a Builder to sell AI SaaS businesses
@@ -39,7 +40,7 @@ export const UserTypeSelector = ({ isBuilder, setIsBuilder, userType, setUserTyp
         </div>
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-2">
-            <span className={`text-sm ${userType === 'ai_investor' ? 'text-primary font-medium' : 'text-muted-foreground'}`}>
+            <span className={`text-sm ${userType === 'ai_investor' ? 'text-white font-medium' : 'text-white/60'} transition-colors`}>
               Investor
             </span>
             <Switch
@@ -54,7 +55,7 @@ export const UserTypeSelector = ({ isBuilder, setIsBuilder, userType, setUserTyp
             >
               <span className="block h-5 w-5 rounded-full bg-white shadow-lg ring-0 transition-transform data-[state=checked]:translate-x-5 data-[state=unchecked]:translate-x-0" />
             </Switch>
-            <span className={`text-sm ${userType === 'ai_builder' ? 'text-primary font-medium' : 'text-muted-foreground'}`}>
+            <span className={`text-sm ${userType === 'ai_builder' ? 'text-white font-medium' : 'text-white/60'} transition-colors`}>
               Builder
             </span>
           </div>

@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -9,7 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
-import { Asterisk } from "lucide-react";
+import { Asterisk, Mail, Lock, User, Loader2 } from "lucide-react";
 
 export const AuthForm = () => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -195,62 +196,74 @@ export const AuthForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-6">
       {errorMessage && (
-        <Alert variant="destructive" className="mb-4">
-          <AlertDescription>{errorMessage}</AlertDescription>
+        <Alert variant="destructive" className="mb-4 bg-red-50/90 backdrop-blur-sm border border-red-200">
+          <AlertDescription className="font-medium">{errorMessage}</AlertDescription>
         </Alert>
       )}
 
       {isSignUp && (
         <div className="text-left">
-          <div className="flex items-center gap-1 mb-1">
-            <Label htmlFor="firstName" className="text-left">First Name</Label>
+          <div className="flex items-center gap-1 mb-2">
+            <Label htmlFor="firstName" className="text-left text-white text-base">First Name</Label>
             <Asterisk className="h-3 w-3 text-red-500" />
           </div>
-          <Input
-            id="firstName"
-            type="text"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-            required
-            className="bg-white"
-            disabled={isLoading || isGoogleLoading}
-          />
+          <div className="relative">
+            <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Input
+              id="firstName"
+              type="text"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              required
+              className="pl-10 bg-white/20 text-white backdrop-blur-md border-white/30 focus:border-[#D946EE] placeholder:text-white/50"
+              placeholder="Enter your first name"
+              disabled={isLoading || isGoogleLoading}
+            />
+          </div>
         </div>
       )}
 
       <div className="text-left">
-        <div className="flex items-center gap-1 mb-1">
-          <Label htmlFor="email" className="text-left">Email</Label>
+        <div className="flex items-center gap-1 mb-2">
+          <Label htmlFor="email" className="text-left text-white text-base">Email</Label>
           <Asterisk className="h-3 w-3 text-red-500" />
         </div>
-        <Input
-          id="email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          className="bg-white"
-          disabled={isLoading || isGoogleLoading}
-        />
+        <div className="relative">
+          <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+          <Input
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            className="pl-10 bg-white/20 text-white backdrop-blur-md border-white/30 focus:border-[#D946EE] placeholder:text-white/50"
+            placeholder="Enter your email"
+            disabled={isLoading || isGoogleLoading}
+          />
+        </div>
       </div>
 
       <div className="text-left">
-        <div className="flex items-center gap-1 mb-1">
-          <Label htmlFor="password" className="text-left">Password</Label>
+        <div className="flex items-center gap-1 mb-2">
+          <Label htmlFor="password" className="text-left text-white text-base">Password</Label>
           <Asterisk className="h-3 w-3 text-red-500" />
         </div>
-        <Input
-          id="password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          className="bg-white"
-          disabled={isLoading || isGoogleLoading}
-          minLength={6}
-        />
+        <div className="relative">
+          <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+          <Input
+            id="password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            className="pl-10 bg-white/20 text-white backdrop-blur-md border-white/30 focus:border-[#D946EE] placeholder:text-white/50"
+            placeholder="Enter your password"
+            disabled={isLoading || isGoogleLoading}
+            minLength={6}
+          />
+        </div>
       </div>
       
       {isSignUp && (
@@ -268,12 +281,12 @@ export const AuthForm = () => {
             id="terms"
             checked={agreedToTerms}
             onCheckedChange={(checked) => setAgreedToTerms(checked as boolean)}
-            className="bg-white"
+            className="border-white/30 data-[state=checked]:bg-[#D946EE] data-[state=checked]:border-[#D946EE]"
             disabled={isLoading || isGoogleLoading}
           />
           <label
             htmlFor="terms"
-            className="text-sm text-gray-600 cursor-pointer"
+            className="text-sm text-white/90 cursor-pointer"
           >
             I agree to the Terms of Service and Privacy Policy
           </label>
@@ -284,21 +297,28 @@ export const AuthForm = () => {
         type="submit" 
         disabled={isSignUp ? !isFormValid : false || isLoading || isGoogleLoading}
         className={cn(
-          "w-full transition-all duration-300 text-white",
+          "w-full transition-all duration-300 font-medium",
           (isSignUp && !isFormValid) || isLoading || isGoogleLoading
-            ? "bg-gray-300 cursor-not-allowed"
-            : "bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 shadow-lg hover:shadow-xl"
+            ? "bg-gray-400/50 cursor-not-allowed text-white/70"
+            : "bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:shadow-lg hover:shadow-purple-500/30 text-white overflow-hidden relative after:absolute after:inset-0 after:z-[-1] after:bg-gradient-to-r after:from-[#8B5CF6] after:via-[#0EA4E9] after:to-[#D946EE] after:opacity-0 hover:after:opacity-100 after:transition-opacity after:duration-500"
         )}
       >
-        {isLoading ? "Please wait..." : (isSignUp ? "Sign Up" : "Sign In")}
+        {isLoading ? (
+          <span className="flex items-center justify-center">
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Please wait...
+          </span>
+        ) : (
+          isSignUp ? "Sign Up" : "Sign In"
+        )}
       </Button>
 
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
-          <Separator className="w-full" />
+          <Separator className="w-full bg-white/20" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-card px-2 text-muted-foreground">
+          <span className="bg-transparent px-2 text-white/70">
             Or continue with
           </span>
         </div>
@@ -308,11 +328,14 @@ export const AuthForm = () => {
         type="button"
         onClick={handleGoogleSignIn}
         disabled={isLoading || isGoogleLoading}
-        className="w-full flex items-center justify-center bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+        className="w-full flex items-center justify-center bg-white/90 hover:bg-white text-gray-700 border-0 transition-all duration-300 hover:shadow-lg"
         variant="outline"
       >
         {isGoogleLoading ? (
-          "Please wait..."
+          <span className="flex items-center justify-center">
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Please wait...
+          </span>
         ) : (
           <>
             <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -338,7 +361,7 @@ export const AuthForm = () => {
         )}
       </Button>
 
-      <p className="text-center text-sm">
+      <p className="text-center text-sm text-white/80">
         {isSignUp ? "Already have an account? " : "Don't have an account? "}
         <button
           type="button"
@@ -347,7 +370,7 @@ export const AuthForm = () => {
             setErrorMessage("");
             setIsLoading(false);
           }}
-          className="text-primary hover:underline"
+          className="text-[#D946EE] hover:text-[#8B5CF6] transition-colors font-medium hover:underline focus:outline-none"
           disabled={isLoading || isGoogleLoading}
         >
           {isSignUp ? "Sign In" : "Sign Up"}
