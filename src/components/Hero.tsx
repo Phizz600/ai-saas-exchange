@@ -18,7 +18,6 @@ const HowItWorksSteps = lazy(() => import("@/components/hero/HowItWorksSteps"));
 const SecurityFeatures = lazy(() => import("@/components/hero/SecurityFeatures"));
 const RoleInfo = lazy(() => import("@/components/hero/RoleInfo"));
 const YouTubeEmbed = lazy(() => import("@/components/hero/YouTubeEmbed"));
-
 const placeholderProducts = [{
   id: 1,
   title: "AI Content Generator Pro",
@@ -90,7 +89,6 @@ const placeholderProducts = [{
   monthlyTraffic: 30000,
   image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d"
 }];
-
 const Hero = () => {
   const navigate = useNavigate();
   const [newsletterEmail, setNewsletterEmail] = useState("");
@@ -100,33 +98,36 @@ const Hero = () => {
   const [isBuyerOpen, setIsBuyerOpen] = useState(false);
   const words = ["SaaS", "Bots", "Apps", "Tools", "Startups", "APIs", "Products", "Solutions", "Algorithms", "Models", "Agents", "Platforms"];
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-
   useEffect(() => {
     // Check if user is authenticated
     const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: {
+          session
+        }
+      } = await supabase.auth.getSession();
       setIsAuthenticated(!!session);
     };
-    
     checkAuth();
-    
+
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const {
+      data: {
+        subscription
+      }
+    } = supabase.auth.onAuthStateChange((event, session) => {
       setIsAuthenticated(!!session);
     });
-    
     return () => {
       subscription.unsubscribe();
     };
   }, []);
-
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentWordIndex(prevIndex => (prevIndex + 1) % words.length);
     }, 2500);
     return () => clearInterval(interval);
   }, []);
-
   const handleListProductClick = async () => {
     const {
       data: {
@@ -139,11 +140,9 @@ const Hero = () => {
       navigate("/auth");
     }
   };
-
   const handleAuthRedirect = () => {
     navigate("/auth");
   };
-
   return <div className="min-h-screen relative overflow-hidden">
       <Suspense fallback={<div className="absolute inset-0 bg-gradient-to-br from-accent via-accent2 to-accent3" />}>
         <AnimatedBackground />
@@ -265,41 +264,19 @@ const Hero = () => {
                       </div>
 
                       <div className="pt-4 space-y-2">
-                        {product.isAuction ? 
-                          (isAuthenticated ? 
-                            <Button className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] opacity-75 text-white cursor-not-allowed" disabled>
+                        {product.isAuction ? isAuthenticated ? <Button className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] opacity-75 text-white cursor-not-allowed" disabled>
                               Place Bid
-                            </Button> : 
-                            <Button className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white" onClick={handleAuthRedirect}>
-                              Sign In to Place Bid
-                            </Button>)
-                        : 
-                          (isAuthenticated ?
-                            <Button className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] opacity-75 text-white cursor-not-allowed" disabled>
+                            </Button> : <Button className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white" onClick={handleAuthRedirect}>Place Bid</Button> : isAuthenticated ? <Button className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] opacity-75 text-white cursor-not-allowed" disabled>
                               Buy Now
-                            </Button> :
-                            <Button className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white" onClick={handleAuthRedirect}>
-                              Sign In to Buy
-                            </Button>)
-                        }
+                            </Button> : <Button className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white" onClick={handleAuthRedirect}>Buy</Button>}
                         
-                        {isAuthenticated ?
-                          <Button variant="outline" className="w-full border-2 opacity-75 cursor-not-allowed" disabled>
+                        {isAuthenticated ? <Button variant="outline" className="w-full border-2 opacity-75 cursor-not-allowed" disabled>
                             Make an Offer
-                          </Button> :
-                          <Button variant="outline" className="w-full border-2" onClick={handleAuthRedirect}>
-                            Sign In to Make an Offer
-                          </Button>
-                        }
+                          </Button> : <Button variant="outline" className="w-full border-2" onClick={handleAuthRedirect}>Make an Offer</Button>}
 
-                        {isAuthenticated ?
-                          <Button variant="ghost" className="w-full opacity-75 cursor-not-allowed" disabled>
+                        {isAuthenticated ? <Button variant="ghost" className="w-full opacity-75 cursor-not-allowed" disabled>
                             View Details
-                          </Button> :
-                          <Button variant="ghost" className="w-full" onClick={handleAuthRedirect}>
-                            Sign In to View Details
-                          </Button>
-                        }
+                          </Button> : <Button variant="ghost" className="w-full" onClick={handleAuthRedirect}>View Details</Button>}
                       </div>
                     </div>
                   </Card>
@@ -334,5 +311,4 @@ const Hero = () => {
       </div>
     </div>;
 };
-
 export default Hero;
