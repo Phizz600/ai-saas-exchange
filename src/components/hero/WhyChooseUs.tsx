@@ -1,34 +1,36 @@
-
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Shield, Award, Zap, UserCheck, LineChart } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-
 const WhyChooseUs = () => {
-  return (
-    <section className="py-16 relative overflow-hidden">
+  return <section className="py-16 relative overflow-hidden">
       <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-12"
-        >
+        <motion.div initial={{
+        opacity: 0,
+        y: 20
+      }} whileInView={{
+        opacity: 1,
+        y: 0
+      }} transition={{
+        duration: 0.5
+      }} className="text-center mb-12">
           <h2 className="exo-2-heading text-3xl md:text-4xl font-bold text-white mb-4">
             Why AI Exchange Club?
           </h2>
-          <p className="text-xl text-gray-200 max-w-3xl mx-auto">
-            Join thousands of founders and investors who trust our platform for AI SaaS business transactions
-          </p>
+          <p className="text-xl text-gray-200 max-w-3xl mx-auto">Join hundreds of founders and investors who trust our platform for AI SaaS business transactions</p>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-center"
-          >
+          <motion.div initial={{
+          opacity: 0,
+          y: 20
+        }} whileInView={{
+          opacity: 1,
+          y: 0
+        }} transition={{
+          duration: 0.5,
+          delay: 0.1
+        }} className="text-center">
             <div className="flex justify-center mb-4">
               <span className="flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white text-2xl font-bold">
                 98%
@@ -38,12 +40,16 @@ const WhyChooseUs = () => {
             <p className="text-gray-300">From both buyers and sellers on completed transactions</p>
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-center"
-          >
+          <motion.div initial={{
+          opacity: 0,
+          y: 20
+        }} whileInView={{
+          opacity: 1,
+          y: 0
+        }} transition={{
+          duration: 0.5,
+          delay: 0.2
+        }} className="text-center">
             <div className="flex justify-center mb-4">
               <span className="flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-r from-[#8B5CF6] to-[#0EA4E9] text-white text-2xl font-bold">
                 1.5x
@@ -53,12 +59,16 @@ const WhyChooseUs = () => {
             <p className="text-gray-300">Average selling price compared to general marketplaces</p>
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="text-center"
-          >
+          <motion.div initial={{
+          opacity: 0,
+          y: 20
+        }} whileInView={{
+          opacity: 1,
+          y: 0
+        }} transition={{
+          duration: 0.5,
+          delay: 0.3
+        }} className="text-center">
             <div className="flex justify-center mb-4">
               <span className="flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-r from-[#0EA4E9] to-[#D946EE] text-white text-2xl font-bold">
                 48h
@@ -72,12 +82,15 @@ const WhyChooseUs = () => {
         <Separator className="bg-white/10 mb-16" />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-            className="space-y-6"
-          >
+          <motion.div initial={{
+          opacity: 0,
+          x: -20
+        }} whileInView={{
+          opacity: 1,
+          x: 0
+        }} transition={{
+          duration: 0.5
+        }} className="space-y-6">
             <h3 className="exo-2-heading text-2xl font-bold text-white mb-4">
               We're Different
             </h3>
@@ -112,11 +125,15 @@ const WhyChooseUs = () => {
             </ul>
           </motion.div>
           
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-          >
+          <motion.div initial={{
+          opacity: 0,
+          x: 20
+        }} whileInView={{
+          opacity: 1,
+          x: 0
+        }} transition={{
+          duration: 0.5
+        }}>
             <Card className="h-full bg-white/5 backdrop-blur-sm border-white/10 p-6 overflow-hidden relative">
               <div className="relative z-10">
                 <h3 className="text-white text-xl font-semibold mb-4">What Our Users Say</h3>
@@ -160,8 +177,6 @@ const WhyChooseUs = () => {
           </motion.div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default WhyChooseUs;
