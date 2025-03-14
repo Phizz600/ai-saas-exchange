@@ -1,14 +1,14 @@
+
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Zap, DollarSign, ShieldCheck, TrendingDown, MessageSquare } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
-import { incrementProductViews, incrementProductClicks } from "@/integrations/supabase/functions";
-import { formatCurrency } from "@/lib/utils";
+import { SaveProduct } from "./product-card/SaveProduct";
+import { ProductMetrics } from "./product-card/ProductMetrics";
+import { ProductBadges } from "./product-card/ProductBadges";
+import { useProductAnalytics } from "./product-card/ProductAnalytics";
+import { ProductCardButton } from "./product-card/ProductCardButton";
 
 interface ProductCardProps {
   product: {
@@ -42,7 +42,8 @@ interface ProductCardProps {
 export function ProductCard({ product, onView }: ProductCardProps) {
   const [isSaved, setIsSaved] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const { toast } = useToast();
+  const { handleCardClick } = useProductAnalytics({ productId: product.id });
+  const saveProduct = SaveProduct({ productId: product.id });
 
   useEffect(() => {
     let mounted = true;
@@ -86,68 +87,11 @@ export function ProductCard({ product, onView }: ProductCardProps) {
     };
 
     checkIfSaved();
-    incrementProductViews(product.id).catch(console.error);
 
     return () => {
       mounted = false;
     };
   }, [product.id]);
-
-  const handleCardClick = async () => {
-    try {
-      await incrementProductClicks(product.id);
-    } catch (error) {
-      console.error('Error tracking product click:', error);
-    }
-  };
-
-  const handleSaveClick = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        toast({
-          title: "Authentication required",
-          description: "Please sign in to save products",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('saved_products')
-        .eq('id', user.id)
-        .single();
-
-      const currentSaves = profile?.saved_products || [];
-      const newSaves = isSaved
-        ? currentSaves.filter((id: string) => id !== product.id)
-        : [...currentSaves, product.id];
-
-      await supabase
-        .from('profiles')
-        .update({ 
-          saved_products: newSaves,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', user.id);
-
-      setIsSaved(!isSaved);
-      toast({
-        title: isSaved ? "Product unsaved" : "Product saved",
-        description: isSaved ? "Removed from saved products" : "Added to your saved products",
-      });
-
-    } catch (error) {
-      console.error('Error toggling product save:', error);
-      toast({
-        title: "Error",
-        description: "Failed to save product. Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
 
   const growthRate = "30%";
   const activeUsers = "2K";
@@ -168,12 +112,11 @@ export function ProductCard({ product, onView }: ProductCardProps) {
               className="w-full h-full object-cover"
             />
             {product.auction_end_time && (
-              <div className="absolute top-2 right-2">
-                <Badge variant="secondary" className="bg-amber-100 text-amber-700">
-                  <TrendingDown className="w-4 h-4 mr-1" />
-                  Dutch Auction
-                </Badge>
-              </div>
+              <ProductBadges 
+                category={product.category} 
+                stage={product.stage} 
+                auctionEndTime={product.auction_end_time} 
+              />
             )}
           </div>
           
@@ -183,45 +126,24 @@ export function ProductCard({ product, onView }: ProductCardProps) {
                 {product.title}
               </h3>
               
-              <div className="flex flex-wrap gap-2 mb-4">
-                <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
-                  {product.category}
-                </Badge>
-                <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
-                  {product.stage}
-                </Badge>
-              </div>
+              {!product.auction_end_time && (
+                <ProductBadges 
+                  category={product.category} 
+                  stage={product.stage} 
+                />
+              )}
             </div>
 
-            <div className="space-y-3">
-              <div className="flex items-center gap-2 text-gray-700">
-                <Zap className="w-4 h-4 text-amber-500" />
-                <span>{growthRate} MoM Growth</span>
-              </div>
-              
-              <div className="flex items-center gap-2 text-gray-700">
-                <DollarSign className="w-4 h-4 text-green-500" />
-                <span>{formatCurrency(product.monthlyRevenue)} MRR</span>
-              </div>
-              
-              <div className="flex items-center gap-2 text-gray-700">
-                <ShieldCheck className="w-4 h-4 text-blue-500" />
-                <span>Revenue Verified</span>
-              </div>
-            </div>
+            <ProductMetrics 
+              growthRate={growthRate} 
+              monthlyRevenue={product.monthlyRevenue} 
+            />
 
             <div className="pt-4">
-              <Button 
-                className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 text-white"
-                onClick={(e) => {
-                  e.preventDefault();
-                  onView?.();
-                }}
-                disabled={isLoading}
-              >
-                <MessageSquare className="w-4 h-4 mr-2" />
-                Make an Offer
-              </Button>
+              <ProductCardButton 
+                isLoading={isLoading} 
+                onView={onView} 
+              />
             </div>
           </div>
         </Card>
