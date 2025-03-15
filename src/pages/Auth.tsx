@@ -39,7 +39,45 @@ const Auth = () => {
       }
     };
     
+    const handleEmailConfirmation = async () => {
+      // Check URL for email confirmation parameters
+      const url = new URL(window.location.href);
+      const token_hash = url.hash.substring(1);
+      
+      if (token_hash && (url.searchParams.has('type') || token_hash.includes('type='))) {
+        try {
+          console.log("Auth: Handling email confirmation");
+
+          // Check if this is a password reset or email confirmation
+          if (url.searchParams.get('type') === 'recovery' || token_hash.includes('type=recovery')) {
+            // Handle password reset
+            console.log("Auth: Password reset flow detected");
+            toast({
+              title: "Password Reset",
+              description: "Please enter your new password.",
+            });
+            return;
+          }
+  
+          // Email confirmation
+          console.log("Auth: Email confirmation detected");
+          toast({
+            title: "Email Verified",
+            description: "Your email has been verified. You can now sign in.",
+          });
+        } catch (error) {
+          console.error("Auth: Error processing confirmation:", error);
+          toast({
+            variant: "destructive",
+            title: "Verification Failed",
+            description: "There was a problem verifying your email. Please try again.",
+          });
+        }
+      }
+    };
+    
     handleOAuthRedirect();
+    handleEmailConfirmation();
     
     const checkProfileAndRedirect = async (userId: string, retryCount = 0) => {
       console.log(`Auth: Checking profile for user: ${userId} (attempt ${retryCount + 1})`);

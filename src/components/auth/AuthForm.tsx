@@ -10,6 +10,8 @@ import { NameField, EmailField, PasswordField } from "./FormFields";
 import { TermsCheckbox } from "./TermsCheckbox";
 import { AuthButtons } from "./AuthButtons";
 import { handleGoogleSignIn, handleAuthSubmit } from "./utils/authHelpers";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { InfoIcon } from "lucide-react";
 
 export const AuthForm = () => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -23,6 +25,7 @@ export const AuthForm = () => {
   const [isFormValid, setIsFormValid] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [showVerificationInfo, setShowVerificationInfo] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -68,6 +71,10 @@ export const AuthForm = () => {
     e.preventDefault();
     if (isLoading) return;
     
+    if (isSignUp) {
+      setShowVerificationInfo(true);
+    }
+    
     await handleAuthSubmit(
       isSignUp,
       isFormValid,
@@ -88,6 +95,15 @@ export const AuthForm = () => {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <ErrorMessage errorMessage={errorMessage} />
+      
+      {showVerificationInfo && isSignUp && (
+        <Alert className="mb-4 bg-blue-50/90 backdrop-blur-sm border border-blue-200">
+          <InfoIcon className="h-4 w-4 text-blue-500 mr-2" />
+          <AlertDescription className="font-medium text-blue-700">
+            After signing up, you'll need to verify your email before you can sign in.
+          </AlertDescription>
+        </Alert>
+      )}
 
       {isSignUp && (
         <NameField 

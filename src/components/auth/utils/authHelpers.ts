@@ -78,7 +78,7 @@ export const handleAuthSubmit = async (
           data: {
             first_name: firstName,
             user_type: userType,
-            email_verified: true // This helps with testing
+            // Removed email_verified: true to allow Supabase's email verification flow
           },
         },
       });
@@ -103,6 +103,17 @@ export const handleAuthSubmit = async (
       }
 
       console.log("AuthForm: Signup successful. User ID:", data.user.id);
+      
+      // Handle the case where email verification is enabled
+      if (data.session === null) {
+        toast({
+          title: "Verification Required",
+          description: "Please check your email to verify your account before signing in.",
+        });
+        setIsLoading(false);
+        return;
+      }
+      
       toast({
         title: "Welcome!",
         description: "Your account has been created. Setting up your profile...",
