@@ -1,6 +1,7 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
-import { sendBrevoEmail } from "@/integrations/supabase/functions";
+import { sendBrevoEmail, trackBrevoEvent } from "@/integrations/supabase/functions";
 
 // Get the current URL for use in the redirectTo
 export const getRedirectUrl = () => {
@@ -103,6 +104,24 @@ export const handleAuthSubmit = async (
       }
 
       console.log("AuthForm: Signup successful. User ID:", data.user.id);
+      
+      // Track signup event in Brevo
+      await trackBrevoEvent(
+        'user_signup',
+        {
+          email,
+          FIRSTNAME: firstName,
+          LASTNAME: "",
+          user_type: userType
+        },
+        {
+          id: data.user.id,
+          data: {
+            signupDate: new Date().toISOString(),
+            userType: userType
+          }
+        }
+      );
       
       // Send welcome email via Brevo
       await sendBrevoEmail(
