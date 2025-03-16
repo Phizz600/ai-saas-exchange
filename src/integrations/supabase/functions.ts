@@ -242,6 +242,41 @@ export const sendBrevoEmail = async (
 };
 
 /**
+ * Tracks an event using Brevo through the Supabase edge function
+ * @param eventName The name of the event to track
+ * @param properties Properties to associate with the event (e.g. user info)
+ * @param eventData Additional data related to the event
+ */
+export const trackBrevoEvent = async (
+  eventName: string,
+  properties?: Record<string, any>,
+  eventData?: Record<string, any>
+) => {
+  try {
+    console.log(`Tracking Brevo event: ${eventName}`);
+    const { data, error } = await supabase.functions.invoke('send-brevo-email', {
+      body: {
+        mode: 'track_event',
+        eventName,
+        properties,
+        eventData
+      }
+    });
+
+    if (error) {
+      console.error('Error calling Brevo tracking function:', error);
+      return { success: false, error: error.message };
+    }
+    
+    console.log('Event tracked successfully:', data);
+    return { success: true, data };
+  } catch (error) {
+    console.error('Error in trackBrevoEvent:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+/**
  * Generate a pitch deck using OpenAI
  */
 export const generatePitchDeck = async (

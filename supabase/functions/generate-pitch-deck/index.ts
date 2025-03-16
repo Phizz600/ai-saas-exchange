@@ -58,6 +58,39 @@ serve(async (req) => {
 
     const data = await response.json()
     console.log('Generated pitch deck response:', data)
+    
+    // Track the pitch deck generation event in Brevo
+    try {
+      const brevoApiKey = Deno.env.get('BREVO_API_KEY')
+      if (brevoApiKey) {
+        await fetch('https://in-automate.brevo.com/api/v2/trackEvent', {
+          method: 'POST',
+          headers: {
+            'api-key': brevoApiKey,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            event: 'pitch_deck_generated',
+            properties: {
+              title,
+              category,
+              stage
+            },
+            eventdata: {
+              id: crypto.randomUUID(),
+              data: {
+                description,
+                monthlyRevenue: monthlyRevenue || 0
+              }
+            }
+          }),
+        });
+        console.log('Pitch deck generation event tracked in Brevo');
+      }
+    } catch (trackingError) {
+      console.error('Error tracking event in Brevo:', trackingError);
+      // Non-blocking error - continue with response
+    }
 
     return new Response(JSON.stringify(data), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
