@@ -1,52 +1,20 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
-import { sendBrevoEmail, BrevoTrack } from "@/integrations/supabase/brevo";
+import { BrevoTrack, sendBrevoEmail } from "@/integrations/supabase/brevo";
 
-// Get the current URL for use in the redirectTo
-export const getRedirectUrl = () => {
-  // Get the full URL without any query parameters or hash
-  const url = new URL(window.location.href);
-  return `${url.origin}/auth`;
-};
-
-export const handleGoogleSignIn = async (setErrorMessage: (message: string) => void, setIsGoogleLoading: (isLoading: boolean) => void) => {
-  try {
-    setErrorMessage("");
-    setIsGoogleLoading(true);
-    
-    console.log("AuthForm: Starting Google sign in process");
-    
-    const redirectUrl = getRedirectUrl();
-    console.log("AuthForm: Using redirect URL:", redirectUrl);
-    
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: redirectUrl,
-        queryParams: {
-          access_type: 'offline',
-          prompt: 'consent',
-        },
-      },
-    });
-    
-    if (error) {
-      console.error("AuthForm: Google sign in error:", error);
-      setErrorMessage(`Error during Google sign in: ${error.message}`);
-      setIsGoogleLoading(false);
-      return;
-    }
-    
-    if (data) {
-      console.log("AuthForm: Google sign in initiated successfully, redirecting...");
-    }
-  } catch (error: any) {
-    console.error("AuthForm: Unexpected error during Google sign in:", error);
-    setErrorMessage(`Unexpected error: ${error.message || "Unknown error occurred"}`);
-    setIsGoogleLoading(false);
-  }
-};
-
+/**
+ * Process user signup or sign in
+ * @param isSignUp Whether this is a signup or signin operation
+ * @param isFormValid Whether the form data is valid
+ * @param email User's email address
+ * @param password User's password
+ * @param firstName User's first name (for signup)
+ * @param userType User type (for signup)
+ * @param setErrorMessage Function to set error message
+ * @param setIsLoading Function to set loading state
+ * @param setIsSignUp Function to toggle between signup/signin modes
+ */
 export const handleAuthSubmit = async (
   isSignUp: boolean,
   isFormValid: boolean,
@@ -176,49 +144,6 @@ export const handleAuthSubmit = async (
   } catch (error: any) {
     console.error("AuthForm: Unexpected error:", error);
     setErrorMessage(error.message || "An unexpected error occurred.");
-    setIsLoading(false);
-  }
-};
-
-export const handlePasswordReset = async (
-  email: string,
-  setErrorMessage: (message: string) => void,
-  setIsLoading: (isLoading: boolean) => void,
-  setResetEmailSent: (sent: boolean) => void
-) => {
-  if (!email) {
-    setErrorMessage("Please enter your email address.");
-    return;
-  }
-  
-  setIsLoading(true);
-  setErrorMessage("");
-  
-  try {
-    console.log("AuthForm: Starting password reset process for:", email);
-    
-    const redirectUrl = getRedirectUrl();
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: redirectUrl,
-    });
-    
-    if (error) {
-      console.error("AuthForm: Password reset error:", error);
-      setErrorMessage(error.message);
-      setIsLoading(false);
-      return;
-    }
-    
-    console.log("AuthForm: Password reset email sent");
-    setResetEmailSent(true);
-    toast({
-      title: "Reset Link Sent",
-      description: "Check your email for a link to reset your password."
-    });
-  } catch (error: any) {
-    console.error("AuthForm: Unexpected error during password reset:", error);
-    setErrorMessage(error.message || "An unexpected error occurred.");
-  } finally {
     setIsLoading(false);
   }
 };

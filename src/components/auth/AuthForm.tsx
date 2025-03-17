@@ -9,7 +9,7 @@ import { ErrorMessage } from "./ErrorMessage";
 import { NameField, EmailField, PasswordField } from "./FormFields";
 import { TermsCheckbox } from "./TermsCheckbox";
 import { AuthButtons } from "./AuthButtons";
-import { handleGoogleSignIn, handleAuthSubmit } from "./utils/authHelpers";
+import { handleGoogleSignIn, handleAuthSubmit, handlePasswordReset } from "./utils";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { InfoIcon } from "lucide-react";
 
