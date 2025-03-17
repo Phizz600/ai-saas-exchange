@@ -207,7 +207,7 @@ export const updateOfferStatus = async (offerId: string, status: 'accepted' | 'd
  * @param params Optional parameters to be used in the email template
  */
 export const sendBrevoEmail = async (
-  event: 'user_signup' | 'product_listed' | 'offer_received' | 'pitch_deck_generated' | string,
+  event: 'user_signup' | 'product_listed' | 'offer_received' | 'pitch_deck_generated' | 'cart_updated' | string,
   recipient: string,
   templateId?: number,
   params?: Record<string, any>
@@ -254,6 +254,9 @@ export const trackBrevoEvent = async (
 ) => {
   try {
     console.log(`Tracking Brevo event: ${eventName}`);
+    console.log('Event properties:', properties);
+    console.log('Event data:', eventData);
+    
     const { data, error } = await supabase.functions.invoke('send-brevo-email', {
       body: {
         mode: 'track_event',
@@ -273,6 +276,29 @@ export const trackBrevoEvent = async (
   } catch (error) {
     console.error('Error in trackBrevoEvent:', error);
     return { success: false, error: error.message };
+  }
+};
+
+/**
+ * JavaScript-style Brevo tracking function that mimics the Brevo.push API
+ * This provides a similar interface to what you'd use with Brevo's JavaScript SDK
+ * @param args Array containing command, event name, properties, and event data
+ */
+export const BrevoTrack = {
+  push: async (args: [string, string, Record<string, any>?, Record<string, any>?]) => {
+    try {
+      if (args[0] !== 'track') {
+        console.error('Unsupported Brevo command:', args[0]);
+        return { success: false, error: 'Unsupported command' };
+      }
+      
+      const [_, eventName, properties, eventData] = args;
+      
+      return await trackBrevoEvent(eventName, properties, eventData);
+    } catch (error) {
+      console.error('Error in BrevoTrack.push:', error);
+      return { success: false, error: error.message };
+    }
   }
 };
 

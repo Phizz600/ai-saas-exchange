@@ -30,6 +30,7 @@ serve(async (req) => {
       }
 
       console.log(`Tracking event: ${eventName}`, JSON.stringify(properties || {}))
+      console.log(`Event data:`, JSON.stringify(eventData || {}))
       
       const response = await fetch('https://in-automate.brevo.com/api/v2/trackEvent', {
         method: 'POST',
