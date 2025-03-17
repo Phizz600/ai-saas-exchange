@@ -1,6 +1,6 @@
 
 import { useEffect } from "react";
-import { incrementProductViews, incrementProductClicks } from "@/integrations/supabase/functions";
+import { incrementProductViews, incrementProductClicks } from "@/integrations/supabase/product-analytics";
 
 interface ProductAnalyticsProps {
   productId: string;

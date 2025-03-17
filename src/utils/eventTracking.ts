@@ -1,5 +1,5 @@
 
-import { BrevoTrack } from "@/integrations/supabase/functions";
+import { BrevoTrack } from "@/integrations/supabase/brevo";
 
 /**
  * Track a cart update event

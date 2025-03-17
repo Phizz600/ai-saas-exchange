@@ -1,7 +1,6 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
-import { sendBrevoEmail, trackBrevoEvent, BrevoTrack } from "@/integrations/supabase/functions";
+import { sendBrevoEmail, BrevoTrack } from "@/integrations/supabase/brevo";
 
 // Get the current URL for use in the redirectTo
 export const getRedirectUrl = () => {
