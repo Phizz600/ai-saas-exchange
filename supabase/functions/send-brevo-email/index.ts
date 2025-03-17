@@ -29,7 +29,7 @@ serve(async (req) => {
         throw new Error('Missing required parameter: eventName')
       }
 
-      console.log(`Tracking event: ${eventName}`)
+      console.log(`Tracking event: ${eventName}`, JSON.stringify(properties || {}))
       
       const response = await fetch('https://in-automate.brevo.com/api/v2/trackEvent', {
         method: 'POST',
@@ -67,7 +67,7 @@ serve(async (req) => {
         throw new Error('Missing required parameter: recipient')
       }
 
-      console.log(`Processing ${event} event for email: ${recipient}`)
+      console.log(`Processing ${event} event for email: ${recipient}`, JSON.stringify(params || {}))
 
       // Map event types to template IDs if not explicitly provided
       let resolvedTemplateId = templateId
@@ -82,6 +82,8 @@ serve(async (req) => {
         
         resolvedTemplateId = templateMapping[event] || 1 // Default to template 1
       }
+
+      console.log(`Using Brevo template ID: ${resolvedTemplateId}`)
 
       // Send email using Brevo API
       const response = await fetch('https://api.brevo.com/v3/smtp/email', {

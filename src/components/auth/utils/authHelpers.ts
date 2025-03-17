@@ -106,7 +106,7 @@ export const handleAuthSubmit = async (
       console.log("AuthForm: Signup successful. User ID:", data.user.id);
       
       // Track signup event in Brevo
-      await trackBrevoEvent(
+      const trackingResult = await trackBrevoEvent(
         'user_signup',
         {
           email,
@@ -123,8 +123,10 @@ export const handleAuthSubmit = async (
         }
       );
       
+      console.log("Brevo tracking result:", trackingResult);
+      
       // Send welcome email via Brevo
-      await sendBrevoEmail(
+      const emailResult = await sendBrevoEmail(
         'user_signup',
         email,
         undefined,
@@ -133,6 +135,8 @@ export const handleAuthSubmit = async (
           userType 
         }
       );
+      
+      console.log("Brevo email result:", emailResult);
       
       // Handle the case where email verification is enabled
       if (data.session === null) {
@@ -172,6 +176,49 @@ export const handleAuthSubmit = async (
   } catch (error: any) {
     console.error("AuthForm: Unexpected error:", error);
     setErrorMessage(error.message || "An unexpected error occurred.");
+    setIsLoading(false);
+  }
+};
+
+export const handlePasswordReset = async (
+  email: string,
+  setErrorMessage: (message: string) => void,
+  setIsLoading: (isLoading: boolean) => void,
+  setResetEmailSent: (sent: boolean) => void
+) => {
+  if (!email) {
+    setErrorMessage("Please enter your email address.");
+    return;
+  }
+  
+  setIsLoading(true);
+  setErrorMessage("");
+  
+  try {
+    console.log("AuthForm: Starting password reset process for:", email);
+    
+    const redirectUrl = getRedirectUrl();
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: redirectUrl,
+    });
+    
+    if (error) {
+      console.error("AuthForm: Password reset error:", error);
+      setErrorMessage(error.message);
+      setIsLoading(false);
+      return;
+    }
+    
+    console.log("AuthForm: Password reset email sent");
+    setResetEmailSent(true);
+    toast({
+      title: "Reset Link Sent",
+      description: "Check your email for a link to reset your password."
+    });
+  } catch (error: any) {
+    console.error("AuthForm: Unexpected error during password reset:", error);
+    setErrorMessage(error.message || "An unexpected error occurred.");
+  } finally {
     setIsLoading(false);
   }
 };
