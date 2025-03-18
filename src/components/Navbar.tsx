@@ -1,4 +1,3 @@
-
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
@@ -6,15 +5,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTrigger } from "@/components/ui/sheet";
 import { useToast } from "@/hooks/use-toast";
-
 export const Navbar = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
   const isProfilePage = location.pathname === '/profile';
   const isHomePage = location.pathname === '/';
-  
   useEffect(() => {
     const checkAuth = async () => {
       const {
@@ -34,7 +33,6 @@ export const Navbar = () => {
     });
     return () => subscription.unsubscribe();
   }, []);
-  
   const handleNavigationClick = (e: React.MouseEvent, path: string) => {
     e.preventDefault();
     if (!isAuthenticated) {
@@ -45,13 +43,12 @@ export const Navbar = () => {
       navigate(path);
     }
   };
-  
   const handleSignOut = async () => {
     try {
       await supabase.auth.signOut();
       toast({
         title: "Signed out successfully",
-        description: "You have been signed out of your account",
+        description: "You have been signed out of your account"
       });
       navigate('/');
     } catch (error) {
@@ -59,11 +56,10 @@ export const Navbar = () => {
       toast({
         variant: "destructive",
         title: "Error signing out",
-        description: "There was a problem signing out of your account",
+        description: "There was a problem signing out of your account"
       });
     }
   };
-  
   const navigationItems = [{
     title: "Buy an AI Business",
     href: isAuthenticated ? "/coming-soon" : "/auth",
@@ -77,7 +73,6 @@ export const Navbar = () => {
     href: "/about",
     requiresAuth: false
   }];
-  
   return <nav className="w-full absolute z-10">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-24">
@@ -86,19 +81,11 @@ export const Navbar = () => {
           </Link>
 
           <div className="flex items-center space-x-6">
-            {!isAuthenticated ? (
-              <Link to="/auth">
+            {!isAuthenticated ? <Link to="/auth">
                 <Button variant="secondary" className="bg-white/20 hover:bg-white/30 backdrop-blur-sm">Sign Up</Button>
-              </Link>
-            ) : (
-              <Button 
-                variant="secondary" 
-                className="bg-white/20 hover:bg-white/30 backdrop-blur-sm"
-                onClick={handleSignOut}
-              >
+              </Link> : <Button variant="secondary" className="bg-white/20 hover:bg-white/30 backdrop-blur-sm" onClick={handleSignOut}>
                 Sign Out
-              </Button>
-            )}
+              </Button>}
 
             <Sheet>
               <SheetTrigger asChild>
@@ -118,9 +105,7 @@ export const Navbar = () => {
                     </Link>)}
                 </div>
                 <div className="mt-auto mb-6">
-                  <Button onClick={e => handleNavigationClick(e, '/list-product')} className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white hover:opacity-90" variant="secondary">
-                    Sell Your AI SaaS Business
-                  </Button>
+                  <Button onClick={e => handleNavigationClick(e, '/list-product')} className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white hover:opacity-90" variant="secondary">Free AI SaaS Valuation</Button>
                 </div>
               </SheetContent>
             </Sheet>
