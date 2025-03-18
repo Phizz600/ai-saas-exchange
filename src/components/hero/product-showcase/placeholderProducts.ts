@@ -2,7 +2,7 @@
 export const placeholderProducts = [{
   id: 1,
   title: "AI Content Generator Pro",
-  description: "Generate high-quality content with advanced AI",
+  description: "Generate high-quality advertorial content for Health & Beauty E-commerce brands.",
   price: 49999,
   category: "Content Generation",
   stage: "Revenue",
