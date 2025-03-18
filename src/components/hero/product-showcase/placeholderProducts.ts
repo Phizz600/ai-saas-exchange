@@ -10,7 +10,7 @@ export const placeholderProducts = [{
   monthlyTraffic: 15000,
   grossProfitMargin: 75,
   monthlyChurnRate: 2.5,
-  image: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7"
+  image: "/lovable-uploads/95cf573e-ba5e-4d4d-ae36-fc1cb2f60977.png"
 }, {
   id: 2,
   title: "SmartBot Assistant",
