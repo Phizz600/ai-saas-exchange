@@ -33,7 +33,8 @@ export const ProductsShowcase = ({
       >
         <Button 
           onClick={handleAuthRedirect} 
-          className="px-8 py-6 bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white text-lg"
+          variant="green"
+          className="px-8 py-6 text-lg"
         >
           Load More
         </Button>
