@@ -46,7 +46,6 @@ export const handleAuthSubmit = async (
           data: {
             first_name: firstName,
             user_type: userType,
-            // Removed email_verified: true to allow Supabase's email verification flow
           },
         },
       });
@@ -72,39 +71,46 @@ export const handleAuthSubmit = async (
 
       console.log("AuthForm: Signup successful. User ID:", data.user.id);
       
-      // Track signup event in Brevo using JS-style tracking
-      const trackingResult = await BrevoTrack.push([
-        "track",
-        "user_signup",
-        {
-          email,
-          FIRSTNAME: firstName,
-          LASTNAME: "",
-          user_type: userType
-        },
-        {
-          id: data.user.id,
-          data: {
-            signupDate: new Date().toISOString(),
-            userType: userType
+      // Check if this is a new user (just created)
+      const isNewUser = !data.user.last_sign_in_at || 
+                        (new Date(data.user.created_at).getTime() === new Date(data.user.last_sign_in_at).getTime());
+      
+      if (isNewUser) {
+        console.log("AuthForm: New user detected, sending welcome email and tracking signup");
+        
+        // Track signup event in Brevo using JS-style tracking
+        const trackingResult = await BrevoTrack.push([
+          "track",
+          "new_user_sign_up", // Using the event name from the example
+          {
+            email,
+            FIRSTNAME: firstName,
+            LASTNAME: "", // We don't collect last name in our form
+          },
+          {
+            id: data.user.id,
+            data: {
+              time: new Date().toISOString(),
+              userType: userType,
+            }
           }
-        }
-      ]);
-      
-      console.log("Brevo tracking result:", trackingResult);
-      
-      // Send welcome email via Brevo
-      const emailResult = await sendBrevoEmail(
-        'user_signup',
-        email,
-        undefined,
-        { 
-          firstName,
-          userType 
-        }
-      );
-      
-      console.log("Brevo email result:", emailResult);
+        ]);
+        
+        console.log("Brevo tracking result:", trackingResult);
+        
+        // Send welcome email via Brevo
+        const emailResult = await sendBrevoEmail(
+          'user_signup',
+          email,
+          undefined,
+          { 
+            firstName,
+            userType 
+          }
+        );
+        
+        console.log("Brevo email result:", emailResult);
+      }
       
       // Handle the case where email verification is enabled
       if (data.session === null) {
