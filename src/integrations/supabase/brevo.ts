@@ -42,3 +42,38 @@ export const trackBrevoEventAPI = async (
     return { success: false, error: error.message };
   }
 };
+
+// Alias for backward compatibility
+export const sendBrevoEmail = trackBrevoEventAPI;
+
+// BrevoTrack object for compatibility with eventTracking.ts
+export const BrevoTrack = {
+  push: async (args: any[]) => {
+    try {
+      if (args[0] === 'track' && args.length >= 3) {
+        const eventName = args[1];
+        const properties = args[2];
+        const eventData = args[3] || {};
+        
+        // Extract email from properties
+        const email = properties.email;
+        
+        if (!email) {
+          throw new Error('Email is required for Brevo event tracking');
+        }
+        
+        // Call the trackBrevoEventAPI with transformed parameters
+        return await trackBrevoEventAPI(
+          eventName,
+          { email_id: email },
+          properties,
+          eventData
+        );
+      }
+      throw new Error('Invalid Brevo Track command');
+    } catch (error) {
+      console.error('Error in BrevoTrack.push:', error);
+      return { success: false, error: error.message };
+    }
+  }
+};
