@@ -14,7 +14,7 @@ export const placeholderProducts = [{
 }, {
   id: 2,
   title: "SmartBot Assistant",
-  description: "24/7 customer service automation platform",
+  description: "AI-powered insights to grow fighter fanbase and attract sponsors.",
   isAuction: true,
   currentPrice: 75000,
   minPrice: 45000,
