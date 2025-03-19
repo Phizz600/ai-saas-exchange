@@ -20,16 +20,57 @@ serve(async (req) => {
       throw new Error('Missing Brevo API key')
     }
 
-    // Function supports two modes: send email or track event
-    if (body.mode === 'track_event') {
-      // Track an event via Brevo's tracking API
+    // Function supports three modes: send email, track event using JS style, or track event using API
+    if (body.mode === 'track_event_api') {
+      // Track an event via Brevo's Events API
+      const { eventName, identifiers, contactProperties, eventProperties } = body
+      
+      if (!eventName || !identifiers) {
+        throw new Error('Missing required parameters: eventName and identifiers')
+      }
+
+      console.log(`Tracking event via API: ${eventName}`, JSON.stringify(identifiers))
+      console.log(`Contact properties:`, JSON.stringify(contactProperties || {}))
+      console.log(`Event properties:`, JSON.stringify(eventProperties || {}))
+      
+      const response = await fetch('https://api.brevo.com/v3/events', {
+        method: 'POST',
+        headers: {
+          'api-key': brevoApiKey,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          event_name: eventName,
+          identifiers: identifiers,
+          contact_properties: contactProperties || {},
+          event_properties: eventProperties || {}
+        }),
+      })
+
+      const data = await response.json()
+      console.log('Brevo Events API response:', data)
+
+      if (!response.ok) {
+        throw new Error(`Brevo Events API error: ${JSON.stringify(data)}`)
+      }
+
+      return new Response(JSON.stringify({ 
+        success: true, 
+        message: `Event tracked successfully via API: ${eventName}`,
+        data 
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
+    } else if (body.mode === 'track_event') {
+      // Track an event via Brevo's tracking API (legacy JS style)
       const { eventName, properties, eventData } = body
       
       if (!eventName) {
         throw new Error('Missing required parameter: eventName')
       }
 
-      console.log(`Tracking event: ${eventName}`, JSON.stringify(properties || {}))
+      console.log(`Tracking event (JS style): ${eventName}`, JSON.stringify(properties || {}))
       console.log(`Event data:`, JSON.stringify(eventData || {}))
       
       const response = await fetch('https://in-automate.brevo.com/api/v2/trackEvent', {

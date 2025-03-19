@@ -1,7 +1,7 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
-import { BrevoTrack, sendBrevoEmail } from "@/integrations/supabase/brevo";
+import { BrevoTrack, sendBrevoEmail, trackBrevoEventAPI } from "@/integrations/supabase/brevo";
 
 /**
  * Process user signup or sign in
@@ -78,25 +78,22 @@ export const handleAuthSubmit = async (
       if (isNewUser) {
         console.log("AuthForm: New user detected, sending welcome email and tracking signup");
         
-        // Track signup event in Brevo using JS-style tracking
-        const trackingResult = await BrevoTrack.push([
-          "track",
-          "new_user_sign_up", // Using the event name from the example
+        // Track signup event using the Brevo API endpoint
+        const trackingResult = await trackBrevoEventAPI(
+          "new_user_sign_up",
+          { email_id: email },
           {
-            email,
             FIRSTNAME: firstName,
-            LASTNAME: "", // We don't collect last name in our form
+            LASTNAME: "",
+            USER_TYPE: userType
           },
           {
-            id: data.user.id,
-            data: {
-              time: new Date().toISOString(),
-              userType: userType,
-            }
+            signup_date: new Date().toISOString(),
+            user_id: data.user.id
           }
-        ]);
+        );
         
-        console.log("Brevo tracking result:", trackingResult);
+        console.log("Brevo API tracking result:", trackingResult);
         
         // Send welcome email via Brevo
         const emailResult = await sendBrevoEmail(
