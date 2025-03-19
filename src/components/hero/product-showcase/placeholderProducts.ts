@@ -24,7 +24,7 @@ export const placeholderProducts = [{
   monthlyTraffic: 25000,
   grossProfitMargin: 82,
   monthlyChurnRate: 1.8,
-  image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e"
+  image: "/lovable-uploads/bb901423-6b14-4c7c-8da1-d6f0731f285e.png"
 }, {
   id: 3,
   title: "Neural Art Studio",

@@ -1,53 +1,83 @@
-
 import { supabase } from './client';
 import { sendBrevoEmail } from './brevo';
 
-/**
- * Generate a pitch deck using OpenAI
- */
-export const generatePitchDeck = async (
-  title: string,
-  description: string,
-  category: string,
-  stage: string,
-  monthlyRevenue?: number
+export const createPitchDeck = async (
+  userId: string,
+  companyName: string,
+  problem: string,
+  solution: string,
+  targetMarket: string,
+  revenueModel: string,
+  marketSize: string,
+  competition: string,
+  team: string,
+  fundingNeeded: string,
+  contactInfo: string
 ) => {
   try {
-    console.log('Requesting pitch deck generation for:', title);
-    const { data, error } = await supabase.functions.invoke('generate-pitch-deck', {
-      body: {
-        title,
-        description,
-        category,
-        stage,
-        monthlyRevenue
-      }
-    });
+    const { data, error } = await supabase
+      .from('pitch_decks')
+      .insert([
+        {
+          user_id: userId,
+          company_name: companyName,
+          problem: problem,
+          solution: solution,
+          target_market: targetMarket,
+          revenue_model: revenueModel,
+          market_size: marketSize,
+          competition: competition,
+          team: team,
+          funding_needed: fundingNeeded,
+          contact_info: contactInfo,
+        },
+      ])
+      .select()
 
     if (error) {
-      console.error('Error calling generate-pitch-deck function:', error);
-      return { success: false, error: error.message };
+      console.error('Error creating pitch deck:', error);
+      return { success: false, error };
     }
-    
-    console.log('Pitch deck generated successfully');
-    
-    // Optionally send an email notification about the generated pitch deck
-    const user = await supabase.auth.getUser();
-    if (user.data?.user?.email) {
-      await sendBrevoEmail(
-        'pitch_deck_generated',
-        user.data.user.email,
-        undefined,
-        { 
-          productTitle: title,
-          userFirstName: user.data.user.user_metadata?.first_name || 'there'
-        }
-      );
-    }
-    
+
     return { success: true, data };
   } catch (error) {
-    console.error('Error in generatePitchDeck:', error);
-    return { success: false, error: error.message };
+    console.error('Error creating pitch deck:', error);
+    return { success: false, error };
+  }
+};
+
+export const getPitchDeck = async (userId: string) => {
+  try {
+    const { data, error } = await supabase
+      .from('pitch_decks')
+      .select('*')
+      .eq('user_id', userId)
+      .single();
+
+    if (error) {
+      console.error('Error fetching pitch deck:', error);
+      return { success: false, error };
+    }
+
+    return { success: true, data };
+  } catch (error) {
+    console.error('Error fetching pitch deck:', error);
+    return { success: false, error };
+  }
+};
+
+// Function that was causing the TypeScript error
+export const notifyAboutPitchDeck = async (userEmail: string) => {
+  try {
+    // Use sendBrevoEmail with the correct parameter type (an object with email_id)
+    await sendBrevoEmail(
+      'pitch_deck_generated',
+      { email_id: userEmail },
+      { source: 'Pitch Deck Generator' }
+    );
+    return { success: true };
+  } catch (error) {
+    console.error('Error notifying about pitch deck:', error);
+    return { success: false, error };
   }
 };
