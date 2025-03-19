@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { TrendingDown, Users, Star, History } from "lucide-react";
+import { TrendingDown, Users, Star, History, DollarSign } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 
 interface ProductCardProps {
@@ -92,7 +92,7 @@ export const ProductCard = ({
 
 const ProductCardDetails = ({ product }: { product: ProductCardProps['product'] }) => {
   return (
-    <div className="space-y-2">
+    <div className="space-y-3">
       <div className="flex items-baseline gap-2">
         <span className="text-lg font-semibold text-green-600">
           {product.isAuction 
@@ -106,29 +106,30 @@ const ProductCardDetails = ({ product }: { product: ProductCardProps['product'] 
         )}
       </div>
 
-      {product.monthlyTraffic && (
+      {product.monthlyRevenue && (
         <div className="flex items-center gap-2 text-gray-600">
-          <Users className="w-4 h-4" />
-          <span>{product.monthlyTraffic.toLocaleString()} monthly visitors</span>
+          <DollarSign className="w-4 h-4 text-green-500" />
+          <span>MRR: {formatCurrency(product.monthlyRevenue)}</span>
         </div>
       )}
 
-      {product.monthlyRevenue && (
-        <div className="text-sm text-gray-600">
-          MRR: {formatCurrency(product.monthlyRevenue)}
+      {product.monthlyTraffic && (
+        <div className="flex items-center gap-2 text-gray-600">
+          <Users className="w-4 h-4 text-blue-500" />
+          <span>{product.monthlyTraffic.toLocaleString()} monthly visitors</span>
         </div>
       )}
       
       {product.grossProfitMargin && (
         <div className="flex items-center gap-2 text-gray-600">
-          <Star className="w-4 h-4" />
+          <Star className="w-4 h-4 text-amber-500" />
           <span>{product.grossProfitMargin}% profit margin</span>
         </div>
       )}
 
       {typeof product.monthlyChurnRate === 'number' && (
         <div className="flex items-center gap-2 text-gray-600">
-          <History className="w-4 h-4" />
+          <History className="w-4 h-4 text-purple-500" />
           <span>{product.monthlyChurnRate}% monthly churn</span>
         </div>
       )}
