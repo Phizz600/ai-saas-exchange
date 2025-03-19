@@ -1,7 +1,5 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
-import { BrevoTrack, sendBrevoEmail, trackBrevoEventAPI } from "@/integrations/supabase/brevo";
 
 /**
  * Process user signup or sign in
@@ -76,37 +74,34 @@ export const handleAuthSubmit = async (
                         (new Date(data.user.created_at).getTime() === new Date(data.user.last_sign_in_at).getTime());
       
       if (isNewUser) {
-        console.log("AuthForm: New user detected, sending welcome email and tracking signup");
+        console.log("AuthForm: New user detected, tracking signup event with Brevo");
         
-        // Track signup event using the Brevo API endpoint
-        const trackingResult = await trackBrevoEventAPI(
-          "new_user_sign_up",
-          { email_id: email },
-          {
-            FIRSTNAME: firstName,
-            LASTNAME: "",
-            USER_TYPE: userType
-          },
-          {
-            signup_date: new Date().toISOString(),
-            user_id: data.user.id
-          }
-        );
-        
-        console.log("Brevo API tracking result:", trackingResult);
-        
-        // Send welcome email via Brevo
-        const emailResult = await sendBrevoEmail(
-          'user_signup',
-          email,
-          undefined,
-          { 
-            firstName,
-            userType 
-          }
-        );
-        
-        console.log("Brevo email result:", emailResult);
+        // Track new user signup event using Brevo Events API
+        try {
+          const trackingResult = await supabase.functions.invoke('send-brevo-email', {
+            body: {
+              mode: 'track_event_api',
+              eventName: 'new_user_sign_up',
+              identifiers: { 
+                email_id: email 
+              },
+              contactProperties: {
+                FIRSTNAME: firstName,
+                LASTNAME: "",
+                USER_TYPE: userType
+              },
+              eventProperties: {
+                signup_date: new Date().toISOString(),
+                user_id: data.user.id
+              }
+            }
+          });
+          
+          console.log("Brevo event tracking result:", trackingResult);
+        } catch (trackingError) {
+          console.error("Error tracking signup event with Brevo:", trackingError);
+          // Don't stop the signup process if tracking fails
+        }
       }
       
       // Handle the case where email verification is enabled
