@@ -35,7 +35,10 @@ export const placeholderProducts = [{
   monthlyRevenue: 5200,
   monthlyTraffic: 8000,
   image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158"
-}, {
+}];
+
+// These products are hidden until "Load More" is clicked
+export const hiddenProducts = [{
   id: 4,
   title: "DevAI Companion",
   description: "AI-powered code completion and review",
