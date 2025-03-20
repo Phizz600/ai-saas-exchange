@@ -27,14 +27,14 @@ export const placeholderProducts = [{
   image: "/lovable-uploads/bb901423-6b14-4c7c-8da1-d6f0731f285e.png"
 }, {
   id: 3,
-  title: "Neural Art Studio",
-  description: "Transform ideas into artwork instantly",
+  title: "Sports Betting AI",
+  description: "AI that mirrors top sportsbettors' winning picks with one click",
   price: 35000,
-  category: "Image Generation",
+  category: "Prediction",
   stage: "Growth",
   monthlyRevenue: 5200,
   monthlyTraffic: 8000,
-  image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158"
+  image: "/lovable-uploads/874b1cdb-5243-4569-8a79-00d949f9c590.png"
 }];
 
 // These products are hidden until "Load More" is clicked
