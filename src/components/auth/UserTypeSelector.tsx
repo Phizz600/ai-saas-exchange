@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -16,9 +17,9 @@ export const UserTypeSelector = ({
   setUserType
 }: UserTypeSelectorProps) => {
   return <div className="space-y-4">
-      <div className="flex items-center justify-between space-x-2 bg-white/10 backdrop-blur-sm p-4 rounded-lg border border-white/20">
+      <div className="flex items-center justify-between space-x-2 bg-black/30 p-4 rounded-lg border border-white/20 shadow-inner">
         <div className="flex items-center space-x-2">
-          <Label htmlFor="userType" className="font-exo text-white text-base">I am an</Label>
+          <Label htmlFor="userType" className="text-white text-base exo-2-heading">I am an</Label>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>

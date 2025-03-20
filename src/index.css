@@ -44,12 +44,14 @@
   textarea,
   button,
   select,
-  a {
+  a,
+  [role="button"] {
     -webkit-tap-highlight-color: transparent;
   }
   
   input, 
-  textarea {
+  textarea,
+  [role="switch"] {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -67,6 +69,12 @@
     -moz-appearance: none;
     appearance: none;
     border-radius: 0.5rem;
+  }
+  
+  /* Fix for switch appearance */
+  [role="switch"] {
+    -webkit-appearance: none;
+    appearance: none;
   }
 }
 
@@ -165,4 +173,3 @@
   font-style: normal;
   color: #333333;
 }
-
