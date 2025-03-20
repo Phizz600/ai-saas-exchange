@@ -13,7 +13,7 @@ export const placeholderProducts = [{
   image: "/lovable-uploads/95cf573e-ba5e-4d4d-ae36-fc1cb2f60977.png"
 }, {
   id: 2,
-  title: "SmartBot Assistant",
+  title: "AI Branding Tool for MMA",
   description: "AI-powered insights to grow fighter fanbase and attract sponsors.",
   isAuction: true,
   currentPrice: 75000,
