@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
@@ -33,7 +32,7 @@ export const AuthButtons = ({
 
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
-          <Separator className="w-full bg-white/20" />
+          
         </div>
         
       </div>
