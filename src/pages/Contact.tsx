@@ -53,7 +53,7 @@ export const Contact = () => {
                 <div className="flex items-start gap-4">
                   <Mail className="h-6 w-6 text-[#8B5CF6] mt-1" />
                   <div>
-                    <h3 className="font-semibold">Email</h3>
+                    <h3 className="font-semibold text-left">Email</h3>
                     <p className="text-gray-600">support@aiexchangeclub.com</p>
                   </div>
                 </div>
@@ -61,7 +61,7 @@ export const Contact = () => {
                 <div className="flex items-start gap-4">
                   <Phone className="h-6 w-6 text-[#8B5CF6] mt-1" />
                   <div>
-                    <h3 className="font-semibold">Phone</h3>
+                    <h3 className="font-semibold text-left">Phone</h3>
                     <p className="text-gray-600">+1 (507) 301-6119</p>
                   </div>
                 </div>
@@ -69,7 +69,7 @@ export const Contact = () => {
                 <div className="flex items-start gap-4">
                   <MapPin className="h-6 w-6 text-[#8B5CF6] mt-1" />
                   <div>
-                    <h3 className="font-semibold">Office</h3>
+                    <h3 className="font-semibold text-left">Office</h3>
                     <p className="text-gray-600">
                       123 AI Boulevard<br />
                       San Francisco, CA 94103<br />
@@ -80,7 +80,7 @@ export const Contact = () => {
               </div>
 
               <div className="mt-8">
-                <h3 className="font-semibold mb-4">Business Hours</h3>
+                <h3 className="font-semibold mb-4 text-center">Business Hours</h3>
                 <p className="text-gray-600">
                   Monday - Friday: 9am to 5pm PST<br />
                   Saturday & Sunday: Closed
