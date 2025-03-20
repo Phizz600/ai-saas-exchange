@@ -18,14 +18,14 @@ export const NameField = ({ firstName, setFirstName, isLoading, isGoogleLoading 
         <Asterisk className="h-3 w-3 text-red-500" />
       </div>
       <div className="relative">
-        <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+        <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4 z-10" />
         <Input
           id="firstName"
           type="text"
           value={firstName}
           onChange={(e) => setFirstName(e.target.value)}
           required
-          className="pl-10 bg-white/20 text-white backdrop-blur-md border-white/30 focus:border-[#D946EE] placeholder:text-white/50"
+          className="pl-10 bg-black/30 text-white border-white/40 focus:border-[#D946EE] placeholder:text-white/60 shadow-inner"
           placeholder="Enter your first name"
           disabled={isLoading || isGoogleLoading}
         />
@@ -49,14 +49,14 @@ export const EmailField = ({ email, setEmail, isLoading, isGoogleLoading }: Emai
         <Asterisk className="h-3 w-3 text-red-500" />
       </div>
       <div className="relative">
-        <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+        <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4 z-10" />
         <Input
           id="email"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="pl-10 bg-white/20 text-white backdrop-blur-md border-white/30 focus:border-[#D946EE] placeholder:text-white/50"
+          className="pl-10 bg-black/30 text-white border-white/40 focus:border-[#D946EE] placeholder:text-white/60 shadow-inner"
           placeholder="Enter your email"
           disabled={isLoading || isGoogleLoading}
         />
@@ -80,14 +80,14 @@ export const PasswordField = ({ password, setPassword, isLoading, isGoogleLoadin
         <Asterisk className="h-3 w-3 text-red-500" />
       </div>
       <div className="relative">
-        <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+        <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4 z-10" />
         <Input
           id="password"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          className="pl-10 bg-white/20 text-white backdrop-blur-md border-white/30 focus:border-[#D946EE] placeholder:text-white/50"
+          className="pl-10 bg-black/30 text-white border-white/40 focus:border-[#D946EE] placeholder:text-white/60 shadow-inner"
           placeholder="Enter your password"
           disabled={isLoading || isGoogleLoading}
           minLength={6}
