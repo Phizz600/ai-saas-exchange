@@ -34,7 +34,7 @@ export const placeholderProducts = [{
   stage: "Growth",
   monthlyRevenue: 5200,
   monthlyTraffic: 8000,
-  image: "/lovable-uploads/874b1cdb-5243-4569-8a79-00d949f9c590.png"
+  image: "/lovable-uploads/a0b0ca4a-b19a-41fc-b824-a7bc4da6d0e7.png"
 }];
 
 // These products are hidden until "Load More" is clicked
