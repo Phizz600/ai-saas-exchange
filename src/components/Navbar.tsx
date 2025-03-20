@@ -72,6 +72,10 @@ export const Navbar = () => {
     title: "About",
     href: "/about",
     requiresAuth: false
+  }, {
+    title: "Contact",
+    href: "/contact",
+    requiresAuth: false
   }];
   return <nav className="w-full absolute z-10">
       <div className="container mx-auto px-4">
