@@ -1,7 +1,7 @@
-
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ChevronDown, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 interface RoleInfoProps {
   isSellerOpen: boolean;
@@ -59,9 +59,11 @@ const RoleInfo = ({ isSellerOpen, setIsSellerOpen, isBuyerOpen, setIsBuyerOpen }
             </div>
           </div>
           
-          <Button variant="default" className="w-full mt-2 bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] hover:from-[#C836DD] hover:to-[#7A4CE5]">
-            List Your AI Business
-          </Button>
+          <Link to="/list-product">
+            <Button variant="default" className="w-full mt-2 bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] hover:from-[#C836DD] hover:to-[#7A4CE5]">
+              List Your AI Business
+            </Button>
+          </Link>
         </CollapsibleContent>
       </Collapsible>
 
