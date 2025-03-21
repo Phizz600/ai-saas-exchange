@@ -1,6 +1,7 @@
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, CheckCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface RoleInfoProps {
   isSellerOpen: boolean;
@@ -18,15 +19,49 @@ const RoleInfo = ({ isSellerOpen, setIsSellerOpen, isBuyerOpen, setIsBuyerOpen }
         className="bg-white/10 backdrop-blur-sm p-6 rounded-lg transition-all duration-300 hover:bg-white/15"
       >
         <CollapsibleTrigger className="flex items-center justify-between w-full">
-          <h3 className="text-2xl font-bold text-white">For Sellers</h3>
+          <h3 className="text-2xl font-bold text-white exo-2-heading">For Sellers</h3>
           <ChevronDown className={`w-6 h-6 text-white transition-transform duration-300 ${isSellerOpen ? 'rotate-180' : ''}`} />
         </CollapsibleTrigger>
-        <CollapsibleContent className="mt-4 space-y-4">
+        <CollapsibleContent className="mt-4 space-y-6">
           <h4 className="text-xl font-semibold text-white">Why Dutch Auctions Work for AI Startups</h4>
-          <ul className="space-y-3 text-gray-300">
-            <li>• Avoid undervaluation with a transparent pricing model</li>
-            <li>• Attract serious buyers racing to buy your AI SaaS product</li>
-          </ul>
+          
+          <div className="space-y-4">
+            <div className="flex items-start gap-3">
+              <CheckCircle className="w-5 h-5 text-[#D946EE] mt-1 flex-shrink-0" />
+              <div>
+                <h5 className="font-medium text-white">Maximum Value Discovery</h5>
+                <p className="text-gray-300">Our Dutch auction system ensures you get the true market value for your AI solution, avoiding the undervaluation common in traditional marketplaces.</p>
+              </div>
+            </div>
+            
+            <div className="flex items-start gap-3">
+              <CheckCircle className="w-5 h-5 text-[#D946EE] mt-1 flex-shrink-0" />
+              <div>
+                <h5 className="font-medium text-white">Qualified, Serious Buyers</h5>
+                <p className="text-gray-300">Connect with pre-vetted buyers who understand the AI landscape and appreciate the true value of your innovation.</p>
+              </div>
+            </div>
+            
+            <div className="flex items-start gap-3">
+              <CheckCircle className="w-5 h-5 text-[#8B5CF6] mt-1 flex-shrink-0" />
+              <div>
+                <h5 className="font-medium text-white">Streamlined Sales Process</h5>
+                <p className="text-gray-300">Our platform handles the complex aspects of transferring AI businesses, including secure escrow, code verification, and legal documentation.</p>
+              </div>
+            </div>
+            
+            <div className="flex items-start gap-3">
+              <CheckCircle className="w-5 h-5 text-[#8B5CF6] mt-1 flex-shrink-0" />
+              <div>
+                <h5 className="font-medium text-white">Premium Network Access</h5>
+                <p className="text-gray-300">Join our exclusive community of AI founders and gain access to investor networks, technical advisors, and ongoing support.</p>
+              </div>
+            </div>
+          </div>
+          
+          <Button variant="default" className="w-full mt-2 bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] hover:from-[#C836DD] hover:to-[#7A4CE5]">
+            List Your AI Business
+          </Button>
         </CollapsibleContent>
       </Collapsible>
 
@@ -36,15 +71,49 @@ const RoleInfo = ({ isSellerOpen, setIsSellerOpen, isBuyerOpen, setIsBuyerOpen }
         className="bg-white/10 backdrop-blur-sm p-6 rounded-lg transition-all duration-300 hover:bg-white/15"
       >
         <CollapsibleTrigger className="flex items-center justify-between w-full">
-          <h3 className="text-2xl font-bold text-white">For Buyers</h3>
+          <h3 className="text-2xl font-bold text-white exo-2-heading">For Buyers</h3>
           <ChevronDown className={`w-6 h-6 text-white transition-transform duration-300 ${isBuyerOpen ? 'rotate-180' : ''}`} />
         </CollapsibleTrigger>
-        <CollapsibleContent className="mt-4 space-y-4">
+        <CollapsibleContent className="mt-4 space-y-6">
           <h4 className="text-xl font-semibold text-white">Why Bid on AI Assets Here</h4>
-          <ul className="space-y-3 text-gray-300">
-            <li>• Acquire undervalued AI SaaS products before competitors</li>
-            <li>• No bidding wars, first to act wins</li>
-          </ul>
+          
+          <div className="space-y-4">
+            <div className="flex items-start gap-3">
+              <CheckCircle className="w-5 h-5 text-[#0EA4E9] mt-1 flex-shrink-0" />
+              <div>
+                <h5 className="font-medium text-white">First-Mover Advantage</h5>
+                <p className="text-gray-300">Acquire cutting-edge AI solutions before your competitors even know they exist. Our Dutch auction model rewards decisive action.</p>
+              </div>
+            </div>
+            
+            <div className="flex items-start gap-3">
+              <CheckCircle className="w-5 h-5 text-[#0EA4E9] mt-1 flex-shrink-0" />
+              <div>
+                <h5 className="font-medium text-white">Verified Quality</h5>
+                <p className="text-gray-300">Every listed business undergoes thorough technical, financial, and market validation by our expert team before being approved.</p>
+              </div>
+            </div>
+            
+            <div className="flex items-start gap-3">
+              <CheckCircle className="w-5 h-5 text-[#8B5CF6] mt-1 flex-shrink-0" />
+              <div>
+                <h5 className="font-medium text-white">Transparent Due Diligence</h5>
+                <p className="text-gray-300">Access comprehensive data, metrics, and documentation for each listing including traffic analytics, customer retention, and revenue models.</p>
+              </div>
+            </div>
+            
+            <div className="flex items-start gap-3">
+              <CheckCircle className="w-5 h-5 text-[#8B5CF6] mt-1 flex-shrink-0" />
+              <div>
+                <h5 className="font-medium text-white">Secure Acquisition Process</h5>
+                <p className="text-gray-300">Our platform provides secure payment processing, escrow services, and post-purchase transition support to ensure a smooth handover.</p>
+              </div>
+            </div>
+          </div>
+          
+          <Button variant="default" className="w-full mt-2 bg-gradient-to-r from-[#8B5CF6] to-[#0EA4E9] hover:from-[#7A4CE5] hover:to-[#0D93D8]">
+            Join Our Buyer Network
+          </Button>
         </CollapsibleContent>
       </Collapsible>
     </div>
