@@ -29,7 +29,7 @@ const RoleInfo = ({ isSellerOpen, setIsSellerOpen, isBuyerOpen, setIsBuyerOpen }
             <div className="flex items-start gap-3">
               <CheckCircle className="w-5 h-5 text-[#D946EE] mt-1 flex-shrink-0" />
               <div>
-                <h5 className="font-medium text-white text-left">Maximum Value Discovery</h5>
+                <h5 className="font-medium text-white">Maximum Value Discovery</h5>
                 <p className="text-gray-300">Our Dutch auction system ensures you get the true market value for your AI solution, avoiding the undervaluation common in traditional marketplaces.</p>
               </div>
             </div>
@@ -37,7 +37,7 @@ const RoleInfo = ({ isSellerOpen, setIsSellerOpen, isBuyerOpen, setIsBuyerOpen }
             <div className="flex items-start gap-3">
               <CheckCircle className="w-5 h-5 text-[#D946EE] mt-1 flex-shrink-0" />
               <div>
-                <h5 className="font-medium text-white text-left">Qualified, Serious Buyers</h5>
+                <h5 className="font-medium text-white">Qualified, Serious Buyers</h5>
                 <p className="text-gray-300">Connect with pre-vetted buyers who understand the AI landscape and appreciate the true value of your innovation.</p>
               </div>
             </div>
@@ -45,7 +45,7 @@ const RoleInfo = ({ isSellerOpen, setIsSellerOpen, isBuyerOpen, setIsBuyerOpen }
             <div className="flex items-start gap-3">
               <CheckCircle className="w-5 h-5 text-[#8B5CF6] mt-1 flex-shrink-0" />
               <div>
-                <h5 className="font-medium text-white text-left">Streamlined Sales Process</h5>
+                <h5 className="font-medium text-white">Streamlined Sales Process</h5>
                 <p className="text-gray-300">Our platform handles the complex aspects of transferring AI businesses, including secure escrow, code verification, and legal documentation.</p>
               </div>
             </div>
@@ -53,7 +53,7 @@ const RoleInfo = ({ isSellerOpen, setIsSellerOpen, isBuyerOpen, setIsBuyerOpen }
             <div className="flex items-start gap-3">
               <CheckCircle className="w-5 h-5 text-[#8B5CF6] mt-1 flex-shrink-0" />
               <div>
-                <h5 className="font-medium text-white text-left">Premium Network Access</h5>
+                <h5 className="font-medium text-white">Premium Network Access</h5>
                 <p className="text-gray-300">Join our exclusive community of AI founders and gain access to investor networks, technical advisors, and ongoing support.</p>
               </div>
             </div>
@@ -81,7 +81,7 @@ const RoleInfo = ({ isSellerOpen, setIsSellerOpen, isBuyerOpen, setIsBuyerOpen }
             <div className="flex items-start gap-3">
               <CheckCircle className="w-5 h-5 text-[#0EA4E9] mt-1 flex-shrink-0" />
               <div>
-                <h5 className="font-medium text-white text-left">First-Mover Advantage</h5>
+                <h5 className="font-medium text-white">First-Mover Advantage</h5>
                 <p className="text-gray-300">Acquire cutting-edge AI solutions before your competitors even know they exist. Our Dutch auction model rewards decisive action.</p>
               </div>
             </div>
@@ -89,7 +89,7 @@ const RoleInfo = ({ isSellerOpen, setIsSellerOpen, isBuyerOpen, setIsBuyerOpen }
             <div className="flex items-start gap-3">
               <CheckCircle className="w-5 h-5 text-[#0EA4E9] mt-1 flex-shrink-0" />
               <div>
-                <h5 className="font-medium text-white text-left">Verified Quality</h5>
+                <h5 className="font-medium text-white">Verified Quality</h5>
                 <p className="text-gray-300">Every listed business undergoes thorough technical, financial, and market validation by our expert team before being approved.</p>
               </div>
             </div>
@@ -97,7 +97,7 @@ const RoleInfo = ({ isSellerOpen, setIsSellerOpen, isBuyerOpen, setIsBuyerOpen }
             <div className="flex items-start gap-3">
               <CheckCircle className="w-5 h-5 text-[#8B5CF6] mt-1 flex-shrink-0" />
               <div>
-                <h5 className="font-medium text-white text-left">Transparent Due Diligence</h5>
+                <h5 className="font-medium text-white">Transparent Due Diligence</h5>
                 <p className="text-gray-300">Access comprehensive data, metrics, and documentation for each listing including traffic analytics, customer retention, and revenue models.</p>
               </div>
             </div>
@@ -105,7 +105,7 @@ const RoleInfo = ({ isSellerOpen, setIsSellerOpen, isBuyerOpen, setIsBuyerOpen }
             <div className="flex items-start gap-3">
               <CheckCircle className="w-5 h-5 text-[#8B5CF6] mt-1 flex-shrink-0" />
               <div>
-                <h5 className="font-medium text-white text-left">Secure Acquisition Process</h5>
+                <h5 className="font-medium text-white">Secure Acquisition Process</h5>
                 <p className="text-gray-300">Our platform provides secure payment processing, escrow services, and post-purchase transition support to ensure a smooth handover.</p>
               </div>
             </div>
