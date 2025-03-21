@@ -66,25 +66,12 @@ export const Contact = () => {
                   </div>
                 </div>
                 
-                <div className="flex items-start gap-4">
-                  <MapPin className="h-6 w-6 text-[#8B5CF6] mt-1" />
-                  <div>
-                    <h3 className="font-semibold text-left">Office</h3>
-                    <p className="text-gray-600">
-                      123 AI Boulevard<br />
-                      San Francisco, CA 94103<br />
-                      United States
-                    </p>
-                  </div>
-                </div>
+                
               </div>
 
               <div className="mt-8">
-                <h3 className="font-semibold mb-4 text-center">Business Hours</h3>
-                <p className="text-gray-600">
-                  Monday - Friday: 9am to 5pm PST<br />
-                  Saturday & Sunday: Closed
-                </p>
+                
+                
               </div>
             </div>
 
