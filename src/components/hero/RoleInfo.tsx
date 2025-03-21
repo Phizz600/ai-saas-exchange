@@ -1,3 +1,4 @@
+
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ChevronDown, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -113,9 +114,11 @@ const RoleInfo = ({ isSellerOpen, setIsSellerOpen, isBuyerOpen, setIsBuyerOpen }
             </div>
           </div>
           
-          <Button variant="default" className="w-full mt-2 bg-gradient-to-r from-[#8B5CF6] to-[#0EA4E9] hover:from-[#7A4CE5] hover:to-[#0D93D8]">
-            Join Our Buyer Network
-          </Button>
+          <a href="https://aiexchangeclub.beehiiv.com/subscribe" target="_blank" rel="noopener noreferrer" className="block w-full">
+            <Button variant="default" className="w-full mt-2 bg-gradient-to-r from-[#8B5CF6] to-[#0EA4E9] hover:from-[#7A4CE5] hover:to-[#0D93D8]">
+              Join Our Buyer Network
+            </Button>
+          </a>
         </CollapsibleContent>
       </Collapsible>
     </div>
