@@ -1,8 +1,9 @@
+
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut, Menu } from "lucide-react";
+import { LogOut, Menu, UserPlus } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTrigger } from "@/components/ui/sheet";
 import { useToast } from "@/hooks/use-toast";
 
@@ -88,7 +89,13 @@ export const Navbar = () => {
 
           <div className="flex items-center space-x-6">
             {!isAuthenticated ? <Link to="/auth">
-                <Button variant="secondary" className="bg-white/20 hover:bg-white/30 backdrop-blur-sm">Sign Up</Button>
+                <Button 
+                  variant="secondary" 
+                  className="bg-white/20 hover:bg-white/30 backdrop-blur-sm"
+                  size="icon"
+                >
+                  <UserPlus className="h-5 w-5" />
+                </Button>
               </Link> : <Button 
                   variant="secondary" 
                   className="bg-white/20 hover:bg-white/30 backdrop-blur-sm" 
