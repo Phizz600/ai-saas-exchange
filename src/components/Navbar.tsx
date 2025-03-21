@@ -2,9 +2,10 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Menu } from "lucide-react";
+import { LogOut, Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTrigger } from "@/components/ui/sheet";
 import { useToast } from "@/hooks/use-toast";
+
 export const Navbar = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const location = useLocation();
@@ -77,6 +78,7 @@ export const Navbar = () => {
     href: "/contact",
     requiresAuth: false
   }];
+
   return <nav className="w-full absolute z-10">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-24">
@@ -87,9 +89,14 @@ export const Navbar = () => {
           <div className="flex items-center space-x-6">
             {!isAuthenticated ? <Link to="/auth">
                 <Button variant="secondary" className="bg-white/20 hover:bg-white/30 backdrop-blur-sm">Sign Up</Button>
-              </Link> : <Button variant="secondary" className="bg-white/20 hover:bg-white/30 backdrop-blur-sm" onClick={handleSignOut}>
-                Sign Out
-              </Button>}
+              </Link> : <Button 
+                  variant="secondary" 
+                  className="bg-white/20 hover:bg-white/30 backdrop-blur-sm" 
+                  onClick={handleSignOut}
+                  size="icon"
+                >
+                  <LogOut className="h-5 w-5" />
+                </Button>}
 
             <Sheet>
               <SheetTrigger asChild>
