@@ -14,10 +14,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft, Send } from "lucide-react";
+import { ArrowLeft, Send, DollarSign } from "lucide-react";
 import { formatDistance } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { EscrowDialog } from "./EscrowDialog";
+import { EscrowStatus } from "./EscrowStatus";
+import { getEscrowTransactionByConversation } from "@/integrations/supabase/escrow";
 
 export const ChatWindow = () => {
   const { conversationId } = useParams<{ conversationId: string }>();
@@ -27,9 +30,17 @@ export const ChatWindow = () => {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [currentUser, setCurrentUser] = useState<{ id: string } | null>(null);
+  const [escrowDialogOpen, setEscrowDialogOpen] = useState(false);
+  const [escrowTransaction, setEscrowTransaction] = useState<any>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  const loadEscrowTransaction = async () => {
+    if (!conversationId) return;
+    const transaction = await getEscrowTransactionByConversation(conversationId);
+    setEscrowTransaction(transaction);
+  };
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -61,6 +72,9 @@ export const ChatWindow = () => {
       
       // Mark messages as read
       await markMessagesAsRead(conversationId);
+
+      // Load escrow transaction if any
+      await loadEscrowTransaction();
       
       setLoading(false);
     };
@@ -121,6 +135,19 @@ export const ChatWindow = () => {
     }
   };
 
+  const handleCreateEscrow = () => {
+    setEscrowDialogOpen(true);
+  };
+
+  const handleEscrowStatusChange = () => {
+    loadEscrowTransaction();
+  };
+
+  const getUserRole = (): "buyer" | "seller" => {
+    if (!currentUser || !conversation) return "buyer";
+    return currentUser.id === conversation.seller_id ? "seller" : "buyer";
+  };
+
   if (loading) {
     return (
       <Card className="h-[calc(100vh-10rem)] flex items-center justify-center">
@@ -142,6 +169,7 @@ export const ChatWindow = () => {
   }
 
   const otherParty = getOtherPartyDetails();
+  const userRole = getUserRole();
 
   return (
     <Card className="h-[calc(100vh-10rem)] flex flex-col">
@@ -167,10 +195,30 @@ export const ChatWindow = () => {
             {conversation.product?.title || 'Product discussion'}
           </p>
         </div>
+        {!escrowTransaction && (
+          <Button 
+            variant="outline"
+            size="sm"
+            onClick={handleCreateEscrow}
+            className="flex items-center gap-1"
+          >
+            <DollarSign className="h-4 w-4" />
+            Create Escrow
+          </Button>
+        )}
       </div>
       
       {/* Messages container */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        {escrowTransaction && (
+          <EscrowStatus 
+            transaction={escrowTransaction} 
+            userRole={userRole} 
+            conversationId={conversationId || ""}
+            onStatusChange={handleEscrowStatusChange}
+          />
+        )}
+        
         {messages.length === 0 ? (
           <div className="h-full flex items-center justify-center">
             <div className="text-center text-muted-foreground">
@@ -226,6 +274,14 @@ export const ChatWindow = () => {
           </Button>
         </div>
       </form>
+
+      {/* Escrow dialog */}
+      <EscrowDialog 
+        open={escrowDialogOpen}
+        onOpenChange={setEscrowDialogOpen}
+        conversationId={conversationId || ""}
+        productTitle={conversation.product?.title || "Product"}
+      />
     </Card>
   );
 };

@@ -113,6 +113,7 @@ export type Database = {
         Row: {
           buyer_id: string
           created_at: string
+          escrow_status: Database["public"]["Enums"]["escrow_status"] | null
           id: string
           last_message_at: string | null
           product_id: string
@@ -125,6 +126,7 @@ export type Database = {
         Insert: {
           buyer_id: string
           created_at?: string
+          escrow_status?: Database["public"]["Enums"]["escrow_status"] | null
           id?: string
           last_message_at?: string | null
           product_id: string
@@ -137,6 +139,7 @@ export type Database = {
         Update: {
           buyer_id?: string
           created_at?: string
+          escrow_status?: Database["public"]["Enums"]["escrow_status"] | null
           id?: string
           last_message_at?: string | null
           product_id?: string
@@ -213,6 +216,79 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      escrow_transactions: {
+        Row: {
+          agreed_terms: Json | null
+          amount: number
+          buyer_id: string
+          conversation_id: string
+          created_at: string
+          description: string | null
+          escrow_api_id: string | null
+          escrow_fee: number | null
+          id: string
+          platform_fee: number
+          product_id: string
+          seller_id: string
+          status: Database["public"]["Enums"]["escrow_status"]
+          updated_at: string
+        }
+        Insert: {
+          agreed_terms?: Json | null
+          amount: number
+          buyer_id: string
+          conversation_id: string
+          created_at?: string
+          description?: string | null
+          escrow_api_id?: string | null
+          escrow_fee?: number | null
+          id?: string
+          platform_fee: number
+          product_id: string
+          seller_id: string
+          status?: Database["public"]["Enums"]["escrow_status"]
+          updated_at?: string
+        }
+        Update: {
+          agreed_terms?: Json | null
+          amount?: number
+          buyer_id?: string
+          conversation_id?: string
+          created_at?: string
+          description?: string | null
+          escrow_api_id?: string | null
+          escrow_fee?: number | null
+          id?: string
+          platform_fee?: number
+          product_id?: string
+          seller_id?: string
+          status?: Database["public"]["Enums"]["escrow_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "escrow_transactions_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "escrow_transactions_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "matched_products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "escrow_transactions_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       investor_preferences: {
         Row: {
@@ -1004,6 +1080,12 @@ export type Database = {
         }
         Returns: number
       }
+      calculate_platform_fee: {
+        Args: {
+          amount: number
+        }
+        Returns: number
+      }
       check_auctions_ending_soon: {
         Args: Record<PropertyKey, never>
         Returns: undefined
@@ -1065,6 +1147,16 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
+      escrow_status:
+        | "pending"
+        | "agreement_reached"
+        | "escrow_created"
+        | "payment_secured"
+        | "delivery_in_progress"
+        | "inspection_period"
+        | "completed"
+        | "disputed"
+        | "cancelled"
       investment_preference:
         | "early_stage"
         | "growth_stage"
