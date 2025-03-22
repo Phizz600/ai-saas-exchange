@@ -44,7 +44,7 @@ export const faqCategories: FAQCategory[] = [
       {
         id: "fees",
         question: "What fees do you charge?",
-        answer: "We keep our fee structure simple and transparent with tiered commissions based on the final selling price:\n\n• 10% for sales up to $10,000\n• 8% for sales between $10,001-$50,000\n• 6% for sales between $50,001-$100,000\n• 5% for sales over $100,001\n\nThere are no hidden fees or charges - what you see is what you pay. These fees help us maintain the platform, verify listings, and provide our secure escrow service."
+        answer: "We keep our fee structure simple and transparent with tiered commissions based on the final selling price:\n\n• 10% for sales up to $10,000\n• 8% for sales between $10,001-$50,000\n• 6% for sales between $50,001-$100,000\n• 5% for sales over $100,001\n\nThere's also a $100 listing fee when you post your AI SaaS product. These fees help us maintain the platform, verify listings, and provide our secure escrow service."
       },
       {
         id: "data-security",

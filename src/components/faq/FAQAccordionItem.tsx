@@ -12,15 +12,15 @@ export const FAQAccordionItem = ({ item }: FAQAccordionItemProps) => {
       <AccordionTrigger className="px-4 py-4 text-white hover:text-[#D946EE] transition-colors font-medium text-left">
         {item.question}
       </AccordionTrigger>
-      <AccordionContent className="px-4 pb-4 pt-2 text-white/90 text-left">
+      <AccordionContent className="px-4 pb-6 pt-2 text-white/90">
         {Array.isArray(item.answer) ? (
-          <ul className="list-disc pl-5 space-y-2">
+          <ul className="list-disc pl-5 space-y-3">
             {item.answer.map((point, index) => (
-              <li key={index}>{point}</li>
+              <li key={index} className="text-left">{point}</li>
             ))}
           </ul>
         ) : (
-          <p className="text-left">{item.answer}</p>
+          <div className="text-left whitespace-pre-line">{item.answer}</div>
         )}
       </AccordionContent>
     </AccordionItem>
