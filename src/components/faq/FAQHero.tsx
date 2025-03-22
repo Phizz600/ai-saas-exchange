@@ -40,7 +40,7 @@ export const FAQHero = ({ onSearch }: FAQHeroProps) => {
       
       <div className="mt-8 flex flex-wrap justify-center gap-4">
         <div className="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-white/80">
-          <span className="font-medium">500+</span> Verified Transactions
+          <span className="font-medium">500+</span> Verified AI Startups
         </div>
         <div className="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-white/80">
           <span className="font-medium">24/7</span> Support
