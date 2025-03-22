@@ -98,7 +98,7 @@ const WhyChooseUs = () => {
               <li className="flex items-start">
                 <Shield className="h-6 w-6 text-[#D946EE] mr-3 flex-shrink-0 mt-1" />
                 <div>
-                  <h4 className="text-white font-semibold mb-1">Specialized AI Valuation</h4>
+                  <h4 className="text-white font-semibold mb-1 text-center">Specialized AI Valuation</h4>
                   <p className="text-gray-300">Our proprietary algorithm accurately values AI businesses based on multiple factors specific to the AI industry.</p>
                 </div>
               </li>
@@ -106,7 +106,7 @@ const WhyChooseUs = () => {
               <li className="flex items-start">
                 <Award className="h-6 w-6 text-[#8B5CF6] mr-3 flex-shrink-0 mt-1" />
                 <div>
-                  <h4 className="text-white font-semibold mb-1">Pre-qualified Buyers</h4>
+                  <h4 className="text-white font-semibold mb-1 text-center">Pre-qualified Buyers</h4>
                   <p className="text-gray-300">Our buyers undergo a verification process ensuring they're serious and have the necessary expertise.</p>
                 </div>
               </li>
