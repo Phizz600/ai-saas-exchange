@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
@@ -55,7 +56,11 @@ export const Footer = () => {
                     <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                     
                   </div>
-                  <Button type="submit" className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 transition-opacity text-white font-semibold" onClick={() => window.open("https://aiexchangeclub.beehiiv.com/subscribe", "_blank")}>
+                  <Button 
+                    type="submit" 
+                    className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 transition-opacity text-white font-semibold"
+                    onClick={() => window.open("https://aiexchangeclub.beehiiv.com/subscribe", "_blank")}
+                  >
                     Join the Club
                   </Button>
                 </form>
@@ -70,9 +75,6 @@ export const Footer = () => {
               </li>
               <li className="text-center md:text-left">
                 <Link to="/contact" className="text-white/80 hover:text-white">Contact</Link>
-              </li>
-              <li className="text-center md:text-left">
-                <Link to="/careers" className="text-white/80 hover:text-white">Careers</Link>
               </li>
             </ul>
           </div>
@@ -100,7 +102,7 @@ export const Footer = () => {
             </ul>
           </div>
           <div className="col-span-4 md:col-span-1">
-            
+            <h4 className="font-bold text-white text-center md:text-left">Follow Us</h4>
             <ul className="mt-4 space-y-2">
               <li className="text-center md:text-left">
                 <Link to="#" className="text-white/80 hover:text-white">Facebook</Link>
