@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { ProductGrid } from "@/components/marketplace/ProductGrid";
 import { MarketplacePagination } from "@/components/marketplace/MarketplacePagination";
@@ -10,7 +9,6 @@ import { incrementProductViews } from "@/integrations/supabase/functions";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { CheckCircle } from "lucide-react";
-
 export const MarketplaceContent = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [industryFilter, setIndustryFilter] = useState("all");
@@ -20,8 +18,11 @@ export const MarketplaceContent = () => {
   const [sortBy, setSortBy] = useState("relevant");
   const [currentPage, setCurrentPage] = useState(1);
   const [showVerifiedOnly, setShowVerifiedOnly] = useState(false);
-  
-  const { currentItems: products, totalPages, isLoading } = useMarketplaceProducts({
+  const {
+    currentItems: products,
+    totalPages,
+    isLoading
+  } = useMarketplaceProducts({
     searchQuery,
     industryFilter,
     stageFilter,
@@ -31,8 +32,11 @@ export const MarketplaceContent = () => {
     currentPage,
     showVerifiedOnly
   });
-  
-  const { notifications, unreadCount, markAsRead } = useNotifications();
+  const {
+    notifications,
+    unreadCount,
+    markAsRead
+  } = useNotifications();
 
   // Track product views
   const trackProductView = async (productId: string) => {
@@ -43,63 +47,16 @@ export const MarketplaceContent = () => {
       console.error('Error tracking product view:', error);
     }
   };
-
-  return (
-    <>
+  return <>
       <div className="flex items-center gap-2 mb-4">
-        <div className="flex items-center space-x-2">
-          <Switch
-            id="verified-mode"
-            checked={showVerifiedOnly}
-            onCheckedChange={setShowVerifiedOnly}
-          />
-          <Label 
-            htmlFor="verified-mode" 
-            className="flex items-center gap-2 text-sm font-medium cursor-pointer"
-          >
-            <CheckCircle className="h-4 w-4" />
-            Show Verified Listings Only
-          </Label>
-        </div>
+        
       </div>
 
-      <MarketplaceHeader
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        industryFilter={industryFilter}
-        setIndustryFilter={setIndustryFilter}
-        stageFilter={stageFilter}
-        setStageFilter={setStageFilter}
-        priceFilter={priceFilter}
-        setPriceFilter={setPriceFilter}
-        timeFilter={timeFilter}
-        setTimeFilter={setTimeFilter}
-        sortBy={sortBy}
-        setSortBy={setSortBy}
-        isLoading={isLoading}
-        notifications={notifications}
-        unreadCount={unreadCount}
-        onMarkAsRead={markAsRead}
-      />
+      <MarketplaceHeader searchQuery={searchQuery} setSearchQuery={setSearchQuery} industryFilter={industryFilter} setIndustryFilter={setIndustryFilter} stageFilter={stageFilter} setStageFilter={setStageFilter} priceFilter={priceFilter} setPriceFilter={setPriceFilter} timeFilter={timeFilter} setTimeFilter={setTimeFilter} sortBy={sortBy} setSortBy={setSortBy} isLoading={isLoading} notifications={notifications} unreadCount={unreadCount} onMarkAsRead={markAsRead} />
 
-      {isLoading ? (
-        <ProductGrid products={[]} isLoading={true} />
-      ) : products && products.length > 0 ? (
-        <>
-          <ProductGrid 
-            products={products} 
-            isLoading={false} 
-            onProductView={trackProductView}
-          />
-          <MarketplacePagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            setCurrentPage={setCurrentPage}
-          />
-        </>
-      ) : (
-        <EmptyState />
-      )}
-    </>
-  );
+      {isLoading ? <ProductGrid products={[]} isLoading={true} /> : products && products.length > 0 ? <>
+          <ProductGrid products={products} isLoading={false} onProductView={trackProductView} />
+          <MarketplacePagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />
+        </> : <EmptyState />}
+    </>;
 };
