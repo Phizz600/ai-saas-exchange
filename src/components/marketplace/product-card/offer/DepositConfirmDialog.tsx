@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
@@ -65,10 +66,11 @@ export function DepositConfirmDialog({
         throw new Error("Could not retrieve your profile information");
       }
 
-      // Fix: Properly access the seller information from the join
-      // The seller is returned as an object, not an array
-      const sellerName = product.seller?.full_name || 'Seller';
-      const sellerEmail = product.seller?.email || '';
+      // Fix: Properly accessing the seller information from the join result
+      // TypeScript is interpreting seller as an array of objects, but it's actually a nested object
+      const sellerData = product.seller as unknown as { full_name?: string; email?: string } || {};
+      const sellerName = sellerData.full_name || 'Seller';
+      const sellerEmail = sellerData.email || '';
 
       // Create escrow transaction for deposit
       const { data: escrowTransaction, error: escrowError } = await supabase
@@ -138,7 +140,6 @@ export function DepositConfirmDialog({
     }
   };
 
-  
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
