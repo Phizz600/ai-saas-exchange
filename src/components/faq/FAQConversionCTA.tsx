@@ -24,7 +24,7 @@ export const FAQConversionCTA = () => {
         <Link to="/list-product">
           <Button
             variant="outline"
-            className="border-white/50 text-white hover:bg-white/20 py-6 px-8 text-lg font-medium w-full sm:w-auto shadow-md"
+            className="bg-white/10 border-[#0EA4E9] border-2 text-white hover:bg-white/20 py-6 px-8 text-lg font-medium w-full sm:w-auto shadow-lg"
           >
             List Your Product
           </Button>
@@ -33,4 +33,3 @@ export const FAQConversionCTA = () => {
     </div>
   );
 };
-
