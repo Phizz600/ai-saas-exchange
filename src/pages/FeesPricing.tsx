@@ -1,20 +1,14 @@
-
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
-
 export const FeesPricing = () => {
-  return (
-    <div className="min-h-screen bg-accent">
+  return <div className="min-h-screen bg-accent">
       <Navbar />
       <div className="container mx-auto px-4 py-16 mt-24">
         <h1 className="exo-2-heading text-4xl font-bold text-white mb-8">Fees & Pricing</h1>
         
         <div className="space-y-8 text-white/80">
-          <section className="space-y-4">
-            <h2 className="text-2xl font-semibold text-white">Membership Fees</h2>
-            <p>$20 per month for both buyers and sellers.</p>
-          </section>
+          
 
           <section className="space-y-4">
             <h2 className="text-2xl font-semibold text-white">Listing Fees</h2>
@@ -62,6 +56,5 @@ export const FeesPricing = () => {
         </div>
       </div>
       <Footer />
-    </div>
-  );
+    </div>;
 };
