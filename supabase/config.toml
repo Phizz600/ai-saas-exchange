@@ -43,3 +43,5 @@ enabled = true
 [functions.escrow-api]
 verify_jwt = true
 
+[functions.verify-deposits]
+verify_jwt = true

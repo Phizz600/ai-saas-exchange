@@ -8,7 +8,7 @@ const corsHeaders = {
 };
 
 interface EscrowRequest {
-  action: "create" | "update" | "get" | "status" | "dispute";
+  action: "create" | "update" | "get" | "status" | "dispute" | "verify_deposit";
   transactionId?: string;
   data?: any;
 }
@@ -67,6 +67,10 @@ serve(async (req) => {
       case "create":
         apiUrl = `${escrowApiUrl}/transaction`;
         method = "POST";
+        
+        // Determine if this is a deposit transaction
+        const isDeposit = data.isDeposit || data.description?.toLowerCase().includes('deposit');
+        
         apiData = {
           currency: "usd",
           description: data.description,
@@ -138,6 +142,26 @@ serve(async (req) => {
           initiated_by: data.user_id,
         };
         break;
+        
+      case "verify_deposit":
+        // Check if the deposit has been made for an offer
+        const { data: escrowTransaction, error: escrowError } = await supabase
+          .from('escrow_transactions')
+          .select('*')
+          .eq('id', data.escrow_transaction_id)
+          .single();
+        
+        if (escrowError || !escrowTransaction) {
+          return new Response(
+            JSON.stringify({ error: "Escrow transaction not found" }),
+            { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
+        
+        // For now, we're checking status from Escrow.com API
+        apiUrl = `${escrowApiUrl}/transaction/${escrowTransaction.escrow_api_id}/status`;
+        method = "GET";
+        break;
 
       default:
         return new Response(
@@ -180,14 +204,14 @@ serve(async (req) => {
       const escrowData = await escrowResponse.json();
       console.log("Escrow.com API Response:", escrowData);
       
-      // If transaction was created successfully, update the database
+      // Handle specific actions after API response
       if (action === "create" && escrowResponse.ok) {
         // Store the transaction ID and update the escrow status
         const { error: dbError } = await supabase
           .from("escrow_transactions")
           .update({
             escrow_api_id: escrowData.id,
-            status: "escrow_created",
+            status: data.description?.toLowerCase().includes('deposit') ? 'deposit_pending' : 'escrow_created',
           })
           .eq("id", data.internal_transaction_id);
 
@@ -199,19 +223,86 @@ serve(async (req) => {
         await Promise.all([
           supabase.from("notifications").insert({
             user_id: data.buyer_id,
-            title: "Escrow Transaction Created",
-            message: `An escrow transaction for $${data.amount} has been created.`,
+            title: data.description?.toLowerCase().includes('deposit') ? "Deposit Transaction Created" : "Escrow Transaction Created",
+            message: data.description?.toLowerCase().includes('deposit') 
+              ? `A deposit transaction for $${data.amount} has been created.`
+              : `An escrow transaction for $${data.amount} has been created.`,
             type: "escrow_update",
             related_product_id: data.product_id,
           }),
           supabase.from("notifications").insert({
             user_id: data.seller_id,
-            title: "Escrow Transaction Created",
-            message: `An escrow transaction for $${data.amount} has been created.`,
+            title: data.description?.toLowerCase().includes('deposit') ? "Deposit Transaction Created" : "Escrow Transaction Created",
+            message: data.description?.toLowerCase().includes('deposit')
+              ? `A deposit transaction for $${data.amount} has been created.`
+              : `An escrow transaction for $${data.amount} has been created.`,
             type: "escrow_update",
             related_product_id: data.product_id,
           }),
         ]);
+      }
+      else if (action === "verify_deposit" && escrowResponse.ok) {
+        // Update the deposit status based on Escrow.com API response
+        const depositPaid = escrowData.status?.toLowerCase() === 'in broker' || 
+                           escrowData.status?.toLowerCase() === 'closed';
+        
+        if (depositPaid) {
+          // Update the escrow transaction status
+          await supabase
+            .from("escrow_transactions")
+            .update({
+              status: 'deposit_paid'
+            })
+            .eq("id", data.escrow_transaction_id);
+            
+          // Find and update the offer associated with this deposit
+          const { data: deposits, error: depositError } = await supabase
+            .from("deposit_transactions")
+            .select("offer_id")
+            .eq("escrow_transaction_id", data.escrow_transaction_id);
+            
+          if (!depositError && deposits && deposits.length > 0) {
+            // Update the offer status
+            await supabase
+              .from("offers")
+              .update({
+                deposit_status: 'deposit_paid',
+                status: 'pending' // Now the offer is actually pending seller review
+              })
+              .eq("id", deposits[0].offer_id);
+              
+            // Find product and notify seller about the verified offer
+            const { data: offer, error: offerError } = await supabase
+              .from("offers")
+              .select("product_id, amount, bidder_id, product:products(seller_id, title)")
+              .eq("id", deposits[0].offer_id)
+              .single();
+              
+            if (!offerError && offer) {
+              // Notify seller about the verified offer
+              await supabase.from("notifications").insert({
+                user_id: offer.product.seller_id,
+                title: "Verified Offer Received",
+                message: `You received a verified offer of $${offer.amount} for ${offer.product.title}. The buyer has already made a deposit.`,
+                type: "verified_offer",
+                related_product_id: offer.product_id
+              });
+            }
+          }
+        }
+        
+        // Return the verification result
+        return new Response(
+          JSON.stringify({ 
+            verified: depositPaid,
+            escrow_status: escrowData.status,
+            escrow_details: escrowData
+          }),
+          { 
+            status: 200, 
+            headers: { ...corsHeaders, "Content-Type": "application/json" } 
+          }
+        );
       }
 
       return new Response(

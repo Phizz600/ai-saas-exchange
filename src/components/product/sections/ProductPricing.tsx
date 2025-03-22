@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Timer, TrendingDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -6,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { OfferDialog } from "@/components/marketplace/product-card/offer/OfferDialog";
 
 interface ProductPricingProps {
   product: {
@@ -29,6 +32,7 @@ export function ProductPricing({ product }: ProductPricingProps) {
   const [nextDrop, setNextDrop] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentPrice, setCurrentPrice] = useState(product.current_price);
+  const [offerDialogOpen, setOfferDialogOpen] = useState(false);
   const { toast } = useToast();
 
   // Subscribe to real-time price updates
@@ -201,59 +205,6 @@ export function ProductPricing({ product }: ProductPricingProps) {
     }
   };
 
-  const handleOffer = async () => {
-    try {
-      setIsSubmitting(true);
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        toast({
-          title: "Authentication required",
-          description: "Please log in to make an offer",
-          variant: "destructive"
-        });
-        return;
-      }
-
-      const amount = parseCurrencyValue(offerAmount);
-      if (isNaN(amount) || amount <= 0) {
-        toast({
-          title: "Invalid offer amount",
-          description: "Please enter a valid offer amount",
-          variant: "destructive"
-        });
-        return;
-      }
-
-      const { error } = await supabase
-        .from('offers')
-        .insert({
-          product_id: product.id,
-          bidder_id: user.id,
-          amount,
-          status: 'pending'
-        });
-
-      if (error) throw error;
-
-      toast({
-        title: "Offer submitted successfully!",
-        description: `You've made an offer for $${amount.toLocaleString()}`,
-      });
-      setOfferAmount("");
-
-    } catch (error) {
-      console.error('Error making offer:', error);
-      toast({
-        title: "Error submitting offer",
-        description: "Please try again later",
-        variant: "destructive"
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
   // Determine the current price to display
   const displayPrice = currentPrice || product.starting_price || product.price || 0;
 
@@ -327,21 +278,25 @@ export function ProductPricing({ product }: ProductPricingProps) {
           )}
 
           <div className="space-y-3 mt-4 pt-4 border-t border-gray-200">
-            <Input
-              type="text"
-              value={offerAmount}
-              onChange={(e) => setOfferAmount(formatCurrencyInput(e.target.value))}
-              placeholder="Enter offer amount"
-              className="font-mono"
-            />
-            <Button 
-              variant="outline"
-              className="w-full border-2 hover:bg-gray-50"
-              onClick={handleOffer}
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Submitting..." : "Make an Offer"}
-            </Button>
+            <Dialog open={offerDialogOpen} onOpenChange={setOfferDialogOpen}>
+              <DialogTrigger asChild>
+                <Button 
+                  variant="outline"
+                  className="w-full border-2 hover:bg-gray-50"
+                >
+                  Make an Offer
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[500px]">
+                <OfferDialog 
+                  productId={product.id}
+                  productTitle={product.title || "Product"}
+                  isAuction={!!product.auction_end_time}
+                  currentPrice={displayPrice}
+                  onClose={() => setOfferDialogOpen(false)}
+                />
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
 
