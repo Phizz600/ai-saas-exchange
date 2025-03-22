@@ -38,7 +38,7 @@ export const Contact = () => {
       <Navbar />
       <main className="container mx-auto px-4 pt-32 pb-16">
         <div className="max-w-5xl mx-auto bg-white/90 backdrop-blur-sm rounded-lg shadow-xl p-8">
-          <h1 className="exo-2-heading text-4xl font-bold text-center mb-8 bg-gradient-to-r from-[#D946EE] to-[#0EA4E9] bg-clip-text text-transparent">
+          <h1 className="exo-2-heading text-4xl font-bold text-center mb-8 bg-gradient-to-r from-[#D946EE] to-[#0EA4E9] bg-clip-text text-slate-950">
             Contact Us
           </h1>
           
