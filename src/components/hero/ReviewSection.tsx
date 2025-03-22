@@ -72,8 +72,7 @@ export default function ReviewSection() {
         <SenjaTestimonials />
         
         {/* Original testimonials are kept as a fallback but can be removed if desired */}
-        <div className="mt-12 opacity-70">
-          <p className="text-center text-lg mb-8 text-gray-600">Additional reviews from our customers</p>
+        <div className="mt-12">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             {reviewers.slice(0, 3).map((reviewer, index) => (
               <ReviewCard key={index} reviewer={reviewer} index={index} />
