@@ -114,7 +114,7 @@ const WhyChooseUs = () => {
               <li className="flex items-start">
                 <Zap className="h-6 w-6 text-[#0EA4E9] mr-3 flex-shrink-0 mt-1" />
                 <div>
-                  <h4 className="text-white font-semibold mb-1">Fast Transactions</h4>
+                  <h4 className="text-white font-semibold mb-1 text-center">Fast Transactions</h4>
                   <p className="text-gray-300">Our streamlined process means deals close in days, not months.</p>
                 </div>
               </li>

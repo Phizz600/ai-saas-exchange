@@ -7,7 +7,6 @@ import { Sheet, SheetContent, SheetHeader, SheetTrigger } from "@/components/ui/
 import { useToast } from "@/hooks/use-toast";
 import { getUnreadMessagesCount } from "@/integrations/supabase/messages";
 import { Badge } from "@/components/ui/badge";
-
 export const Navbar = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -107,7 +106,7 @@ export const Navbar = () => {
     href: "/contact",
     requiresAuth: false
   }];
-  return <nav className="w-full absolute z-10 pt-10">
+  return <nav className="w-full absolute z-10">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-24">
           <Link to="/" className="flex items-center">
