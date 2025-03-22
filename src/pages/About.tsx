@@ -1,5 +1,6 @@
 
 import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
 
 export const About = () => {
   return <div className="min-h-screen bg-gradient-to-br from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9]">
@@ -31,6 +32,7 @@ We connect innovative AI entrepreneurs with forward-thinking investors, creating
           </div>
         </div>
       </main>
+      <Footer />
     </div>;
 };
 export default About;
