@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
@@ -66,6 +65,11 @@ export function DepositConfirmDialog({
         throw new Error("Could not retrieve your profile information");
       }
 
+      // Fix: Properly access the seller information from the join
+      // The seller is returned as an object, not an array
+      const sellerName = product.seller?.full_name || 'Seller';
+      const sellerEmail = product.seller?.email || '';
+
       // Create escrow transaction for deposit
       const { data: escrowTransaction, error: escrowError } = await supabase
         .from('escrow_transactions')
@@ -98,8 +102,8 @@ export function DepositConfirmDialog({
             buyer_name: buyer.full_name || 'Buyer',
             buyer_email: buyer.email || user.email,
             seller_id: product.seller_id,
-            seller_name: product.seller.full_name || 'Seller',
-            seller_email: product.seller.email,
+            seller_name: sellerName,
+            seller_email: sellerEmail,
             timeline: '14 days',
             platform_fee: platformFee,
             product_id: productId
@@ -134,6 +138,7 @@ export function DepositConfirmDialog({
     }
   };
 
+  
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
