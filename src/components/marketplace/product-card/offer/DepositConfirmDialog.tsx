@@ -44,15 +44,28 @@ export function DepositConfirmDialog({
         throw new Error("You must be logged in to make a deposit");
       }
       
-      // Get the seller information
+      // Get the product information - using a more direct query
       const { data: product, error: productError } = await supabase
         .from('products')
-        .select('seller_id, title, seller:profiles!products_seller_id_fkey(full_name, email)')
+        .select('id, title, seller_id')
         .eq('id', productId)
         .single();
         
       if (productError || !product) {
+        console.error('Product query error:', productError);
         throw new Error("Could not retrieve product information");
+      }
+      
+      // Get seller information separately to avoid join issues
+      const { data: seller, error: sellerError } = await supabase
+        .from('profiles')
+        .select('full_name, email')
+        .eq('id', product.seller_id)
+        .single();
+        
+      if (sellerError) {
+        console.error('Seller query error:', sellerError);
+        throw new Error("Could not retrieve seller information");
       }
       
       // Get buyer information
@@ -63,14 +76,13 @@ export function DepositConfirmDialog({
         .single();
         
       if (buyerError || !buyer) {
+        console.error('Buyer query error:', buyerError);
         throw new Error("Could not retrieve your profile information");
       }
 
-      // Fix: Properly accessing the seller information from the join result
-      // TypeScript is interpreting seller as an array of objects, but it's actually a nested object
-      const sellerData = product.seller as unknown as { full_name?: string; email?: string } || {};
-      const sellerName = sellerData.full_name || 'Seller';
-      const sellerEmail = sellerData.email || '';
+      // Get seller information safely
+      const sellerName = seller?.full_name || 'Seller';
+      const sellerEmail = seller?.email || '';
 
       // Create escrow transaction for deposit
       const { data: escrowTransaction, error: escrowError } = await supabase
@@ -89,9 +101,12 @@ export function DepositConfirmDialog({
         .single();
 
       if (escrowError || !escrowTransaction) {
+        console.error('Escrow transaction error:', escrowError);
         throw new Error("Failed to create escrow transaction for deposit");
       }
 
+      console.log('Initiating escrow with API for transaction:', escrowTransaction.id);
+      
       // Initialize escrow with Escrow.com API
       const response = await supabase.functions.invoke('escrow-api', {
         body: {
@@ -114,8 +129,11 @@ export function DepositConfirmDialog({
       });
 
       if (response.error) {
+        console.error('Escrow API error:', response.error);
         throw new Error(`Escrow API error: ${response.error}`);
       }
+      
+      console.log('Escrow API response:', response);
 
       // Success - notify the user
       toast({
@@ -144,7 +162,7 @@ export function DepositConfirmDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold">Confirm Offer Deposit</DialogTitle>
+          <DialogTitle className="text-xl font-semibold exo-2-title">Confirm Offer Deposit</DialogTitle>
           <DialogDescription>
             To verify your offer is genuine, we require a 10% deposit through our secure escrow service.
           </DialogDescription>
