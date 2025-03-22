@@ -8,7 +8,7 @@ const corsHeaders = {
 };
 
 interface EscrowRequest {
-  action: "create" | "update" | "get";
+  action: "create" | "update" | "get" | "status" | "dispute";
   transactionId?: string;
   data?: any;
 }
@@ -82,6 +82,7 @@ serve(async (req) => {
                   beneficial_owner: {
                     customer_id: data.seller_id,
                   },
+                  timeline: data.timeline || "30 days",
                 },
               ],
             },
@@ -105,6 +106,10 @@ serve(async (req) => {
             },
           ],
           type: "domain",
+          fee_structure: {
+            platform_fee: data.platform_fee,
+            escrow_fee: data.escrow_fee || "auto",
+          },
         };
         break;
 
@@ -118,6 +123,21 @@ serve(async (req) => {
         apiUrl = `${escrowApiUrl}/transaction/${transactionId}`;
         method = "GET";
         break;
+        
+      case "status":
+        apiUrl = `${escrowApiUrl}/transaction/${transactionId}/status`;
+        method = "GET";
+        break;
+        
+      case "dispute":
+        apiUrl = `${escrowApiUrl}/transaction/${transactionId}/dispute`;
+        method = "POST";
+        apiData = {
+          reason: data.reason,
+          description: data.description,
+          initiated_by: data.user_id,
+        };
+        break;
 
       default:
         return new Response(
@@ -127,40 +147,129 @@ serve(async (req) => {
     }
 
     console.log(`Making ${method} request to Escrow.com API: ${apiUrl}`);
+    console.log("Request data:", apiData);
     
-    // Make request to Escrow.com API
-    const escrowResponse = await fetch(apiUrl, {
-      method,
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Basic ${btoa(escrowApiKey + ":")}`,
-      },
-      body: method !== "GET" ? JSON.stringify(apiData) : undefined,
-    });
+    // Make request to Escrow.com API with error handling
+    try {
+      const escrowResponse = await fetch(apiUrl, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Basic ${btoa(escrowApiKey + ":")}`,
+        },
+        body: method !== "GET" ? JSON.stringify(apiData) : undefined,
+      });
 
-    const escrowData = await escrowResponse.json();
-    
-    // If transaction was created successfully, update the database
-    if (action === "create" && escrowResponse.ok) {
-      // Store the transaction ID and update the escrow status
-      const { error: dbError } = await supabase
-        .from("escrow_transactions")
-        .update({
-          escrow_api_id: escrowData.id,
-          status: "escrow_created",
-        })
-        .eq("id", data.internal_transaction_id);
-
-      if (dbError) {
-        console.error("Database update error:", dbError);
+      // Handle non-200 responses explicitly
+      if (!escrowResponse.ok) {
+        const errorBody = await escrowResponse.text();
+        console.error(`Escrow.com API Error (${escrowResponse.status}):`, errorBody);
+        return new Response(
+          JSON.stringify({ 
+            error: "Escrow.com API error", 
+            status: escrowResponse.status,
+            details: errorBody
+          }),
+          { 
+            status: 502, 
+            headers: { ...corsHeaders, "Content-Type": "application/json" } 
+          }
+        );
       }
-    }
+      
+      const escrowData = await escrowResponse.json();
+      console.log("Escrow.com API Response:", escrowData);
+      
+      // If transaction was created successfully, update the database
+      if (action === "create" && escrowResponse.ok) {
+        // Store the transaction ID and update the escrow status
+        const { error: dbError } = await supabase
+          .from("escrow_transactions")
+          .update({
+            escrow_api_id: escrowData.id,
+            status: "escrow_created",
+          })
+          .eq("id", data.internal_transaction_id);
 
-    return new Response(
-      JSON.stringify(escrowData),
-      { status: escrowResponse.status, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
-  } catch (error) {
+        if (dbError) {
+          console.error("Database update error:", dbError);
+        }
+        
+        // Create a notification for both parties
+        await Promise.all([
+          supabase.from("notifications").insert({
+            user_id: data.buyer_id,
+            title: "Escrow Transaction Created",
+            message: `An escrow transaction for $${data.amount} has been created.`,
+            type: "escrow_update",
+            related_product_id: data.product_id,
+          }),
+          supabase.from("notifications").insert({
+            user_id: data.seller_id,
+            title: "Escrow Transaction Created",
+            message: `An escrow transaction for $${data.amount} has been created.`,
+            type: "escrow_update",
+            related_product_id: data.product_id,
+          }),
+        ]);
+      }
+
+      return new Response(
+        JSON.stringify(escrowData),
+        { 
+          status: 200, 
+          headers: { ...corsHeaders, "Content-Type": "application/json" } 
+        }
+      );
+    } catch (apiError) {
+      console.error("Error calling Escrow.com API:", apiError);
+      
+      // If we encounter a network error or API failure, still update the transaction
+      // to a manual state if this was a create action
+      if (action === "create") {
+        try {
+          await supabase
+            .from("escrow_transactions")
+            .update({
+              status: "manual_setup",
+            })
+            .eq("id", data.internal_transaction_id);
+            
+          // Create a notification for both parties about the fallback
+          await Promise.all([
+            supabase.from("notifications").insert({
+              user_id: data.buyer_id,
+              title: "API Connection Issue",
+              message: "Escrow.com API connection failed. Please use the manual option.",
+              type: "escrow_update",
+              related_product_id: data.product_id,
+            }),
+            supabase.from("notifications").insert({
+              user_id: data.seller_id,
+              title: "API Connection Issue",
+              message: "Escrow.com API connection failed. Please use the manual option.",
+              type: "escrow_update",
+              related_product_id: data.product_id,
+            }),
+          ]);
+        } catch (dbError) {
+          console.error("Database error during fallback:", dbError);
+        }
+      }
+      
+      return new Response(
+        JSON.stringify({ 
+          error: "Failed to connect to Escrow.com API",
+          details: apiError.message,
+          fallback: action === "create" ? "manual_setup" : null
+        }),
+        { 
+          status: 503, 
+          headers: { ...corsHeaders, "Content-Type": "application/json" } 
+        }
+      );
+    }
+  } catch (error: any) {
     console.error("Error in escrow-api function:", error);
     return new Response(
       JSON.stringify({ error: error.message }),

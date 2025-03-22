@@ -42,3 +42,4 @@ enabled = true
 
 [functions.escrow-api]
 verify_jwt = true
+

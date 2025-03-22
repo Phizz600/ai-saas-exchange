@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { 
@@ -148,6 +147,12 @@ export const ChatWindow = () => {
     return currentUser.id === conversation.seller_id ? "seller" : "buyer";
   };
 
+  // Get the last 5 messages for analysis by the escrow dialog
+  const getLastMessages = () => {
+    if (!messages || messages.length === 0) return [];
+    return messages.slice(-5);
+  };
+
   if (loading) {
     return (
       <Card className="h-[calc(100vh-10rem)] flex items-center justify-center">
@@ -281,6 +286,7 @@ export const ChatWindow = () => {
         onOpenChange={setEscrowDialogOpen}
         conversationId={conversationId || ""}
         productTitle={conversation.product?.title || "Product"}
+        lastMessages={getLastMessages()}
       />
     </Card>
   );
