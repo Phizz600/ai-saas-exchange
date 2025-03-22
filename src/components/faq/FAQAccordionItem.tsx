@@ -12,7 +12,7 @@ export const FAQAccordionItem = ({ item }: FAQAccordionItemProps) => {
       <AccordionTrigger className="px-4 py-4 text-white hover:text-[#D946EE] transition-colors font-medium text-left">
         {item.question}
       </AccordionTrigger>
-      <AccordionContent className="px-4 pb-4 pt-2 text-white/80">
+      <AccordionContent className="px-4 pb-4 pt-2 text-white/90 text-left">
         {Array.isArray(item.answer) ? (
           <ul className="list-disc pl-5 space-y-2">
             {item.answer.map((point, index) => (
@@ -20,7 +20,7 @@ export const FAQAccordionItem = ({ item }: FAQAccordionItemProps) => {
             ))}
           </ul>
         ) : (
-          <p>{item.answer}</p>
+          <p className="text-left">{item.answer}</p>
         )}
       </AccordionContent>
     </AccordionItem>
