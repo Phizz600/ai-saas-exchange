@@ -11,7 +11,18 @@ import { supabase } from "@/integrations/supabase/client";
 export const ConversationList = () => {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Fetch the current user's ID when component mounts
+    const fetchCurrentUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      setCurrentUserId(data.user?.id || null);
+    };
+    
+    fetchCurrentUser();
+  }, []);
 
   useEffect(() => {
     const loadConversations = async () => {
@@ -82,15 +93,14 @@ export const ConversationList = () => {
       {conversations.map((conversation) => {
         // Determine other party details using the current user's ID
         const getOtherPartyDetails = () => {
-          const { data } = supabase.auth.getUser();
-          if (!data || !data.user) {
+          if (!currentUserId) {
             return {
               name: 'Unknown',
               avatar: null
             };
           }
           
-          if (data.user.id === conversation.seller_id) {
+          if (currentUserId === conversation.seller_id) {
             return {
               name: conversation.buyer?.full_name || 'Buyer',
               avatar: conversation.buyer?.avatar_url
