@@ -48,23 +48,6 @@ export const ConversationList = () => {
     navigate(`/messages/${conversationId}`);
   };
 
-  const getOtherPartyDetails = async (conversation: Conversation) => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return { name: 'Unknown', avatar: null };
-
-    if (user.id === conversation.seller_id) {
-      return {
-        name: conversation.buyer?.full_name || 'Buyer',
-        avatar: conversation.buyer?.avatar_url
-      };
-    } else {
-      return {
-        name: conversation.seller?.full_name || 'Seller',
-        avatar: conversation.seller?.avatar_url
-      };
-    }
-  };
-
   if (loading) {
     return (
       <div className="space-y-4">
@@ -97,20 +80,31 @@ export const ConversationList = () => {
   return (
     <div className="space-y-3">
       {conversations.map((conversation) => {
-        const otherParty = 
-          supabase.auth.getUser().then(({ data }) => {
-            if (data.user?.id === conversation.seller_id) {
-              return {
-                name: conversation.buyer?.full_name || 'Buyer',
-                avatar: conversation.buyer?.avatar_url
-              };
-            } else {
-              return {
-                name: conversation.seller?.full_name || 'Seller',
-                avatar: conversation.seller?.avatar_url
-              };
-            }
-          });
+        // Determine other party details using the current user's ID
+        const getOtherPartyDetails = () => {
+          const { data } = supabase.auth.getUser();
+          if (!data || !data.user) {
+            return {
+              name: 'Unknown',
+              avatar: null
+            };
+          }
+          
+          if (data.user.id === conversation.seller_id) {
+            return {
+              name: conversation.buyer?.full_name || 'Buyer',
+              avatar: conversation.buyer?.avatar_url
+            };
+          } else {
+            return {
+              name: conversation.seller?.full_name || 'Seller',
+              avatar: conversation.seller?.avatar_url
+            };
+          }
+        };
+        
+        // Get the other party details synchronously
+        const otherParty = getOtherPartyDetails();
 
         return (
           <Card
@@ -120,15 +114,15 @@ export const ConversationList = () => {
           >
             <div className="flex items-center gap-3">
               <Avatar className="h-12 w-12">
-                <AvatarImage src={otherParty.then(p => p.avatar || '')} />
+                <AvatarImage src={otherParty.avatar || ''} />
                 <AvatarFallback>
-                  {otherParty.then(p => p.name?.substring(0, 2).toUpperCase() || '??')}
+                  {otherParty.name?.substring(0, 2).toUpperCase() || '??'}
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
                 <div className="flex justify-between items-center">
                   <h4 className="font-medium truncate">
-                    {otherParty.then(p => p.name)}
+                    {otherParty.name}
                   </h4>
                   <span className="text-xs text-muted-foreground whitespace-nowrap">
                     {formatDistance(new Date(conversation.last_message_at), new Date(), { 
