@@ -1,21 +1,24 @@
 
-import { LucideIcon } from "lucide-react";
-import { Button } from "../ui/button";
-import { NavigateFunction, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Badge } from "@/components/ui/badge";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { ChevronDown, Menu } from "lucide-react";
 
 interface Tab {
   title: string;
-  icon: LucideIcon;
+  icon: React.ElementType;
   description?: string;
   path?: string;
   onClick?: () => void;
   indicator?: boolean;
+  badge?: number;
 }
 
 interface Separator {
@@ -24,58 +27,69 @@ interface Separator {
 
 type TabItem = Tab | Separator;
 
-interface Props {
+interface ExpandableTabsProps {
   tabs: TabItem[];
 }
 
-export const ExpandableTabs = ({ tabs }: Props) => {
+export const ExpandableTabs = ({ tabs }: ExpandableTabsProps) => {
+  const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
 
-  const handleClick = (tab: Tab) => {
+  const handleTabClick = (tab: Tab) => {
     if (tab.onClick) {
       tab.onClick();
     } else if (tab.path) {
       navigate(tab.path);
     }
+    setIsOpen(false);
   };
 
   return (
-    <div className="flex items-center space-x-1">
-      {tabs.map((tab, index) => {
-        if ('type' in tab && tab.type === 'separator') {
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button
+          className="flex items-center rounded-md p-2.5 text-sm font-medium hover:bg-gray-100 focus:outline-none"
+        >
+          <Menu className="h-5 w-5 mr-1" />
+          <ChevronDown className="h-4 w-4" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-56">
+        {tabs.map((item, index) => {
+          if ('type' in item && item.type === 'separator') {
+            return <DropdownMenuSeparator key={`sep-${index}`} />;
+          }
+          
+          const tab = item as Tab;
+          const Icon = tab.icon;
+          
           return (
-            <div key={index} className="w-px h-6 bg-gray-200 mx-2" />
-          );
-        }
-
-        const tabItem = tab as Tab;
-        const Icon = tabItem.icon;
-
-        return (
-          <div key={index} className="relative">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleClick(tabItem)}
-                    className="relative w-10 h-10 p-2"
+            <DropdownMenuItem
+              key={tab.title}
+              className="cursor-pointer px-3 py-2.5"
+              onClick={() => handleTabClick(tab)}
+            >
+              <div className="flex items-center">
+                <div className="relative">
+                  <Icon className="mr-2 h-5 w-5" />
+                  {tab.indicator && (
+                    <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-red-500" />
+                  )}
+                </div>
+                <span>{tab.title}</span>
+                {tab.badge !== undefined && (
+                  <Badge 
+                    variant="destructive" 
+                    className="ml-2"
                   >
-                    <Icon className="h-5 w-5" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>{tabItem.title}</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-            {tabItem.indicator && (
-              <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full" />
-            )}
-          </div>
-        );
-      })}
-    </div>
+                    {tab.badge > 9 ? '9+' : tab.badge}
+                  </Badge>
+                )}
+              </div>
+            </DropdownMenuItem>
+          );
+        })}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };

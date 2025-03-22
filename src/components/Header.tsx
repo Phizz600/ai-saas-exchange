@@ -2,12 +2,14 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { ExpandableTabs } from "./header/ExpandableTabs";
-import { Store, LayoutDashboard, Bell, HelpCircle, User, LogOut } from "lucide-react";
+import { Store, LayoutDashboard, Bell, HelpCircle, User, LogOut, MessageSquare } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { NotificationSheet } from "./marketplace/notifications/NotificationSheet";
 import { useNotifications } from "./marketplace/notifications/useNotifications";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getUnreadMessagesCount } from "@/integrations/supabase/messages";
+import { Badge } from "@/components/ui/badge";
 
 interface Tab {
   title: string;
@@ -16,6 +18,7 @@ interface Tab {
   path?: string;
   onClick?: () => void;
   indicator?: boolean;
+  badge?: number;
 }
 
 interface Separator {
@@ -30,6 +33,37 @@ export const Header = () => {
   const { toast } = useToast();
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const { notifications, unreadCount, markAsRead } = useNotifications();
+  const [unreadMessages, setUnreadMessages] = useState(0);
+
+  useEffect(() => {
+    const loadUnreadCount = async () => {
+      const count = await getUnreadMessagesCount();
+      setUnreadMessages(count);
+    };
+    
+    loadUnreadCount();
+    
+    // Subscribe to new messages to update unread count
+    const channel = supabase
+      .channel('header_messages_count')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'messages',
+        },
+        async () => {
+          const count = await getUnreadMessagesCount();
+          setUnreadMessages(count);
+        }
+      )
+      .subscribe();
+      
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
 
   const handleSignOut = async () => {
     try {
@@ -61,6 +95,13 @@ export const Header = () => {
       icon: LayoutDashboard,
       description: "View your dashboard",
       path: "/product-dashboard"
+    },
+    {
+      title: "Messages",
+      icon: MessageSquare,
+      description: "View messages",
+      path: "/messages",
+      badge: unreadMessages > 0 ? unreadMessages : undefined
     },
     {
       type: "separator"

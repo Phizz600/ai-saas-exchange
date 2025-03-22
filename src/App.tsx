@@ -16,6 +16,8 @@ import { Policies } from "@/pages/Policies";
 import About from "@/pages/About";
 import Contact from "@/pages/Contact";
 import { ResolutionCenter } from "@/pages/ResolutionCenter";
+import Messages from "@/pages/Messages";
+import { MessageChat } from "@/pages/MessageChat";
 import "./App.css";
 
 function App() {
@@ -61,6 +63,22 @@ function App() {
           element={
             <AuthGuard>
               <ProductDashboard />
+            </AuthGuard>
+          } 
+        />
+        <Route 
+          path="/messages" 
+          element={
+            <AuthGuard>
+              <Messages />
+            </AuthGuard>
+          } 
+        />
+        <Route 
+          path="/messages/:conversationId" 
+          element={
+            <AuthGuard>
+              <MessageChat />
             </AuthGuard>
           } 
         />
