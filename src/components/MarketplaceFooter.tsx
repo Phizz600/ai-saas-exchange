@@ -1,5 +1,6 @@
 
 import { Link } from "react-router-dom";
+import { Linkedin } from "lucide-react";
 
 export const MarketplaceFooter = () => {
   const footerLinks = [{
@@ -56,20 +57,13 @@ export const MarketplaceFooter = () => {
   }, {
     title: "Social",
     links: [{
-      name: "Twitter",
-      href: "https://twitter.com"
-    }, {
       name: "LinkedIn",
-      href: "https://linkedin.com"
-    }, {
-      name: "Facebook",
-      href: "https://facebook.com"
+      href: "https://www.linkedin.com/company/ai-exchange-club/?viewAsMember=true",
+      isExternal: true
     }, {
       name: "Instagram",
-      href: "https://instagram.com"
-    }, {
-      name: "Github",
-      href: "https://github.com"
+      href: "https://www.instagram.com/aiexchange.club/?igsh=MWt0bTg1eG5iZzM1Mw%3D%3D&utm_source=qr#",
+      isExternal: true
     }]
   }];
   
@@ -82,12 +76,24 @@ export const MarketplaceFooter = () => {
               <ul className="space-y-2">
                 {section.links.map((link, linkIndex) => (
                   <li key={linkIndex}>
-                    <Link 
-                      to={link.href}
-                      className="text-gray-600 hover:text-[#8B5CF6] transition-colors"
-                    >
-                      {link.name}
-                    </Link>
+                    {link.isExternal ? (
+                      <a 
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-gray-600 hover:text-[#8B5CF6] transition-colors"
+                      >
+                        {link.name === "LinkedIn" && <Linkedin className="inline h-4 w-4 mr-1" />}
+                        {link.name}
+                      </a>
+                    ) : (
+                      <Link 
+                        to={link.href}
+                        className="text-gray-600 hover:text-[#8B5CF6] transition-colors"
+                      >
+                        {link.name}
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ul>

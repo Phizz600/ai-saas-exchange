@@ -116,7 +116,14 @@ export const Footer = () => {
                 </a>
               </li>
               <li className="text-center md:text-left">
-                <Link to="#" className="text-white/80 hover:text-white">Instagram</Link>
+                <a 
+                  href="https://www.instagram.com/aiexchange.club/?igsh=MWt0bTg1eG5iZzM1Mw%3D%3D&utm_source=qr#" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="text-white/80 hover:text-white"
+                >
+                  Instagram
+                </a>
               </li>
             </ul>
           </div>
@@ -124,4 +131,3 @@ export const Footer = () => {
       </div>
     </footer>;
 };
-
