@@ -1,7 +1,7 @@
-
 import { motion } from "framer-motion";
 import { Star } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import SenjaTestimonials from "@/components/SenjaTestimonials";
 
 interface Reviewer {
   name: string;
@@ -56,10 +56,6 @@ const reviewers: Reviewer[] = [
 ];
 
 export default function ReviewSection() {
-  // Select a subset of reviews to display (3 in first row, 2 in second)
-  const topRowReviews = reviewers.slice(0, 3);
-  const bottomRowReviews = reviewers.slice(3, 5);
-
   return (
     <section className="py-20 bg-white">
       <div className="container mx-auto px-4">
@@ -71,18 +67,20 @@ export default function ReviewSection() {
         >
           Hear what these people think about AI Exchange Club
         </motion.h2>
-
-        <div className="space-y-8">
-          {/* Top row - 3 reviews */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {topRowReviews.map((reviewer, index) => (
+        
+        {/* Senja Testimonials Widget */}
+        <SenjaTestimonials />
+        
+        {/* Original testimonials are kept as a fallback but can be removed if desired */}
+        <div className="mt-12 opacity-70">
+          <p className="text-center text-lg mb-8 text-gray-600">Additional reviews from our customers</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            {reviewers.slice(0, 3).map((reviewer, index) => (
               <ReviewCard key={index} reviewer={reviewer} index={index} />
             ))}
           </div>
-
-          {/* Bottom row - 2 reviews */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            {bottomRowReviews.map((reviewer, index) => (
+            {reviewers.slice(3, 5).map((reviewer, index) => (
               <ReviewCard key={index + 3} reviewer={reviewer} index={index + 3} />
             ))}
           </div>
