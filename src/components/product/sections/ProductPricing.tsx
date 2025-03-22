@@ -22,6 +22,7 @@ interface ProductPricingProps {
     demo_url?: string;
     highest_bid?: number;
     starting_price?: number;
+    title?: string;
   };
 }
 

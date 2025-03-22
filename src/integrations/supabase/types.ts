@@ -190,6 +190,51 @@ export type Database = {
         }
         Relationships: []
       }
+      deposit_transactions: {
+        Row: {
+          amount: number
+          created_at: string
+          escrow_transaction_id: string | null
+          id: string
+          offer_id: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          escrow_transaction_id?: string | null
+          id?: string
+          offer_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          escrow_transaction_id?: string | null
+          id?: string
+          offer_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deposit_transactions_escrow_transaction_id_fkey"
+            columns: ["escrow_transaction_id"]
+            isOneToOne: false
+            referencedRelation: "escrow_transactions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "deposit_transactions_offer_id_fkey"
+            columns: ["offer_id"]
+            isOneToOne: false
+            referencedRelation: "offers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       draft_products: {
         Row: {
           created_at: string
@@ -539,6 +584,9 @@ export type Database = {
           amount: number
           bidder_id: string
           created_at: string
+          deposit_amount: number | null
+          deposit_status: string
+          deposit_transaction_id: string | null
           id: string
           message: string | null
           product_id: string
@@ -549,6 +597,9 @@ export type Database = {
           amount: number
           bidder_id: string
           created_at?: string
+          deposit_amount?: number | null
+          deposit_status?: string
+          deposit_transaction_id?: string | null
           id?: string
           message?: string | null
           product_id: string
@@ -559,6 +610,9 @@ export type Database = {
           amount?: number
           bidder_id?: string
           created_at?: string
+          deposit_amount?: number | null
+          deposit_status?: string
+          deposit_transaction_id?: string | null
           id?: string
           message?: string | null
           product_id?: string
@@ -1080,6 +1134,12 @@ export type Database = {
         }
         Returns: number
       }
+      calculate_offer_deposit_amount: {
+        Args: {
+          offer_amount: number
+        }
+        Returns: number
+      }
       calculate_platform_fee: {
         Args: {
           amount: number
@@ -1157,6 +1217,8 @@ export type Database = {
         | "completed"
         | "disputed"
         | "cancelled"
+        | "deposit_pending"
+        | "deposit_paid"
       investment_preference:
         | "early_stage"
         | "growth_stage"

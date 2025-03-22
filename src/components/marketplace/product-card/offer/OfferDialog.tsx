@@ -2,10 +2,12 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea"; 
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { CheckCircle, LockIcon, CircleDollarSign } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DepositConfirmDialog } from "./DepositConfirmDialog";
 
 interface OfferDialogProps {
@@ -18,293 +20,239 @@ interface OfferDialogProps {
 
 export function OfferDialog({ 
   productId, 
-  productTitle, 
+  productTitle,
   isAuction,
-  currentPrice,
+  currentPrice = 0,
   onClose 
 }: OfferDialogProps) {
   const [amount, setAmount] = useState("");
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showDepositDialog, setShowDepositDialog] = useState(false);
-  const [pendingOfferData, setPendingOfferData] = useState<{amount: number, message: string} | null>(null);
+  const [success, setSuccess] = useState(false);
+  const [depositDialogOpen, setDepositDialogOpen] = useState(false);
+  const [formattedAmount, setFormattedAmount] = useState("");
   const { toast } = useToast();
 
-  const handleInitiateOffer = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Remove non-numeric characters except period
+    let value = e.target.value.replace(/[^0-9.]/g, '');
     
+    // Ensure only one decimal point
+    const parts = value.split('.');
+    if (parts.length > 2) {
+      value = parts[0] + '.' + parts.slice(1).join('');
+    }
+    
+    // Limit decimal places to 2
+    if (parts.length === 2 && parts[1].length > 2) {
+      value = parts[0] + '.' + parts[1].slice(0, 2);
+    }
+    
+    setAmount(value);
+    
+    // Format for display
+    if (value) {
+      const numericValue = parseFloat(value);
+      if (!isNaN(numericValue)) {
+        setFormattedAmount(`$${numericValue.toLocaleString()}`);
+      } else {
+        setFormattedAmount("");
+      }
+    } else {
+      setFormattedAmount("");
+    }
+  };
+
+  const handleInitiateOffer = async () => {
+    const numericAmount = parseFloat(amount);
+    
+    // Validate amount
+    if (isNaN(numericAmount) || numericAmount <= 0) {
+      toast({
+        title: "Invalid amount",
+        description: "Please enter a valid amount for your offer.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // For auction listings, validate against the current price
+    if (isAuction && currentPrice && numericAmount <= currentPrice) {
+      toast({
+        title: "Amount too low",
+        description: `Your offer must be higher than the current price of $${currentPrice.toLocaleString()}`,
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // Open deposit dialog
+    setDepositDialogOpen(true);
+  };
+  
+  const handleOfferSubmit = async (escrowTransactionId: string) => {
     try {
+      setIsSubmitting(true);
+      
       const { data: { user } } = await supabase.auth.getUser();
+      
       if (!user) {
         toast({
           title: "Authentication required",
-          description: "Please sign in to make an offer",
+          description: "Please log in to make an offer",
           variant: "destructive",
         });
         return;
       }
-
-      const offerAmount = Number(amount.replace(/[^0-9.]/g, ''));
       
-      // Store the offer data to use after deposit
-      setPendingOfferData({
-        amount: offerAmount,
-        message
-      });
-      
-      // Show deposit confirmation dialog
-      setShowDepositDialog(true);
-
-    } catch (error) {
-      console.error('Error processing offer:', error);
-      toast({
-        title: "Error",
-        description: "Failed to process offer. Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleDepositComplete = async (escrowTransactionId: string) => {
-    if (!pendingOfferData) return;
-    
-    setIsSubmitting(true);
-    
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      const numericAmount = parseFloat(amount);
+      const depositAmount = Math.round(numericAmount * 0.1 * 100) / 100; // 10% deposit
       
       // Create the offer with deposit information
-      const { error } = await supabase
+      const { data: offer, error: offerError } = await supabase
         .from('offers')
         .insert({
           product_id: productId,
           bidder_id: user.id,
-          amount: pendingOfferData.amount,
-          message: pendingOfferData.message,
+          amount: numericAmount,
+          message: message,
+          status: 'deposit_pending',
           deposit_status: 'deposit_pending',
-          deposit_amount: pendingOfferData.amount * 0.1,
+          deposit_amount: depositAmount,
           deposit_transaction_id: escrowTransactionId
-        });
-
-      if (error) throw error;
-
-      toast({
-        title: "Offer submitted",
-        description: "Your offer will be processed once the deposit is confirmed",
+        })
+        .select()
+        .single();
+      
+      if (offerError) {
+        throw offerError;
+      }
+      
+      // Create a link between the deposit transaction and the offer
+      await supabase.from('deposit_transactions').insert({
+        offer_id: offer.id,
+        amount: depositAmount,
+        escrow_transaction_id: escrowTransactionId,
+        status: 'pending'
       });
       
-      // Reset form and close dialog
+      // Success
+      setSuccess(true);
+      
+      toast({
+        title: "Offer initiated!",
+        description: "Once your deposit is confirmed, your offer will be submitted to the seller.",
+      });
+      
+      // Reset form
       setAmount("");
       setMessage("");
-      setPendingOfferData(null);
-      onClose();
+      setFormattedAmount("");
       
-    } catch (error) {
-      console.error('Error submitting offer:', error);
+    } catch (error: any) {
+      console.error("Error creating offer:", error);
+      
       toast({
-        title: "Error",
-        description: "Failed to submit offer. Please try again.",
+        title: "Failed to create offer",
+        description: error.message || "An error occurred while creating your offer.",
         variant: "destructive",
       });
     } finally {
       setIsSubmitting(false);
     }
   };
-
-  const handleSubmitBid = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        toast({
-          title: "Authentication required",
-          description: "Please sign in to place a bid",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      const { error } = await supabase
-        .from('bids')
-        .insert({
-          product_id: productId,
-          bidder_id: user.id,
-          amount: Number(amount),
-        });
-
-      if (error) throw error;
-
-      toast({
-        title: "Bid placed",
-        description: "Your bid has been placed successfully",
-      });
-      onClose();
-
-    } catch (error) {
-      console.error('Error placing bid:', error);
-      toast({
-        title: "Error",
-        description: "Failed to place bid. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
+  
   return (
     <>
       <div className="space-y-4">
-        <div>
-          <h3 className="text-lg font-semibold mb-2">Make an Offer</h3>
-          <p className="text-sm text-gray-500 mb-4">
-            Submit your offer for {productTitle}
+        <div className="text-center mb-2">
+          <h2 className="text-xl font-semibold">Make an Offer</h2>
+          <p className="text-sm text-gray-500">
+            {productTitle}
           </p>
         </div>
-
-        {isAuction ? (
-          <Tabs defaultValue="bid" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="bid">Place Bid</TabsTrigger>
-              <TabsTrigger value="offer">Make Offer</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="bid">
-              <form onSubmit={handleSubmitBid} className="space-y-4">
-                <div className="space-y-2">
-                  <label htmlFor="bid-amount" className="text-sm font-medium">
-                    Bid Amount ($)
-                  </label>
-                  <Input
-                    id="bid-amount"
-                    type="number"
-                    min={currentPrice || 0}
-                    step="0.01"
-                    required
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    placeholder="Enter your bid amount"
-                  />
-                  {currentPrice && (
-                    <p className="text-sm text-gray-500">
-                      Current price: ${currentPrice.toLocaleString()}
-                    </p>
-                  )}
-                </div>
-
-                <div className="flex justify-end gap-2">
-                  <Button type="button" variant="outline" onClick={onClose}>
-                    Cancel
-                  </Button>
-                  <Button type="submit" disabled={isSubmitting}>
-                    {isSubmitting ? "Placing bid..." : "Place Bid"}
-                  </Button>
-                </div>
-              </form>
-            </TabsContent>
-
-            <TabsContent value="offer">
-              <form onSubmit={handleInitiateOffer} className="space-y-4">
-                <div className="space-y-2">
-                  <label htmlFor="offer-amount" className="text-sm font-medium">
-                    Offer Amount ($)
-                  </label>
-                  <Input
-                    id="offer-amount"
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    required
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    placeholder="Enter your offer amount"
-                  />
-                  <p className="text-xs text-amber-600">
-                    A 10% deposit will be required to verify your offer
-                  </p>
-                </div>
-
-                <div className="space-y-2">
-                  <label htmlFor="message" className="text-sm font-medium">
-                    Message (optional)
-                  </label>
-                  <Textarea
-                    id="message"
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Add a message to the seller"
-                    rows={3}
-                  />
-                </div>
-
-                <div className="flex justify-end gap-2">
-                  <Button type="button" variant="outline" onClick={onClose}>
-                    Cancel
-                  </Button>
-                  <Button type="submit" disabled={isSubmitting}>
-                    {isSubmitting ? "Processing..." : "Continue to Deposit"}
-                  </Button>
-                </div>
-              </form>
-            </TabsContent>
-          </Tabs>
-        ) : (
-          <form onSubmit={handleInitiateOffer} className="space-y-4">
-            <div className="space-y-2">
-              <label htmlFor="amount" className="text-sm font-medium">
-                Offer Amount ($)
-              </label>
-              <Input
-                id="amount"
-                type="number"
-                min="0"
-                step="0.01"
-                required
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                placeholder="Enter your offer amount"
-              />
-              <p className="text-xs text-amber-600">
-                A 10% deposit will be required to verify your offer
+        
+        {success ? (
+          <div className="py-8">
+            <div className="flex flex-col items-center justify-center text-center">
+              <div className="rounded-full bg-green-100 p-3 mb-4">
+                <CheckCircle className="h-8 w-8 text-green-600" />
+              </div>
+              <h3 className="text-lg font-medium mb-2">Offer Initiated!</h3>
+              <p className="text-gray-600 mb-6 max-w-md">
+                Your deposit has been initiated. Once confirmed, your offer will be submitted to the seller.
               </p>
+              <Button onClick={onClose}>Close</Button>
             </div>
-
-            <div className="space-y-2">
-              <label htmlFor="message" className="text-sm font-medium">
-                Message (optional)
-              </label>
-              <Textarea
-                id="message"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder="Add a message to the seller"
-                rows={3}
-              />
+          </div>
+        ) : (
+          <>
+            <div className="bg-blue-50 border border-blue-100 rounded-md p-3 mb-4">
+              <div className="flex gap-2 items-center text-blue-600 font-medium mb-1">
+                <LockIcon className="h-4 w-4" />
+                <span>Verified Offers Only</span>
+              </div>
+              <p className="text-sm text-blue-700">
+                To ensure serious offers, we require a 10% deposit that will be:
+              </p>
+              <ul className="text-sm text-blue-700 list-disc pl-5 mt-1">
+                <li>Applied to your purchase if accepted</li>
+                <li>Fully refunded if declined</li>
+                <li>Held securely in escrow throughout</li>
+              </ul>
             </div>
-
-            <div className="flex justify-end gap-2">
-              <Button type="button" variant="outline" onClick={onClose}>
-                Cancel
-              </Button>
-              <Button type="submit" disabled={isSubmitting}>
+            
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="amount">Offer Amount</Label>
+                <div className="relative">
+                  <Input
+                    id="amount"
+                    placeholder="Enter amount"
+                    value={amount}
+                    onChange={handleAmountChange}
+                    className="pl-7"
+                  />
+                  <CircleDollarSign className="h-4 w-4 text-gray-400 absolute left-2 top-3" />
+                </div>
+                {formattedAmount && (
+                  <div className="text-sm text-gray-600 flex justify-between">
+                    <span>Your offer: {formattedAmount}</span>
+                    <span>Required deposit: ${Math.round(parseFloat(amount) * 0.1 * 100) / 100}</span>
+                  </div>
+                )}
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="message">Message (optional)</Label>
+                <Textarea
+                  id="message"
+                  placeholder="Tell the seller why you're interested..."
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  rows={3}
+                />
+              </div>
+              
+              <Button 
+                onClick={handleInitiateOffer}
+                disabled={isSubmitting || !amount}
+                className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9]"
+              >
                 {isSubmitting ? "Processing..." : "Continue to Deposit"}
               </Button>
             </div>
-          </form>
+          </>
         )}
       </div>
-
-      {/* Deposit confirmation dialog */}
-      <DepositConfirmDialog
-        open={showDepositDialog}
-        onOpenChange={setShowDepositDialog}
-        offerAmount={pendingOfferData?.amount || 0}
+      
+      <DepositConfirmDialog 
+        open={depositDialogOpen}
+        onOpenChange={setDepositDialogOpen}
+        offerAmount={parseFloat(amount) || 0}
         productTitle={productTitle}
         productId={productId}
-        onDepositComplete={handleDepositComplete}
+        onDepositComplete={handleOfferSubmit}
       />
     </>
   );
