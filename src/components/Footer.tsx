@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Mail } from "lucide-react";
+import { Mail, Linkedin } from "lucide-react";
 export const Footer = () => {
   const [email, setEmail] = useState("");
 
@@ -105,10 +105,15 @@ export const Footer = () => {
             <h4 className="font-bold text-white text-center md:text-left">Follow Us</h4>
             <ul className="mt-4 space-y-2">
               <li className="text-center md:text-left">
-                <Link to="#" className="text-white/80 hover:text-white">Facebook</Link>
-              </li>
-              <li className="text-center md:text-left">
-                <Link to="#" className="text-white/80 hover:text-white">Twitter</Link>
+                <a 
+                  href="https://www.linkedin.com/company/ai-exchange-club/?viewAsMember=true" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="text-white/80 hover:text-white flex items-center justify-center md:justify-start"
+                >
+                  <Linkedin className="h-4 w-4 mr-2" />
+                  LinkedIn
+                </a>
               </li>
               <li className="text-center md:text-left">
                 <Link to="#" className="text-white/80 hover:text-white">Instagram</Link>
@@ -119,3 +124,4 @@ export const Footer = () => {
       </div>
     </footer>;
 };
+
