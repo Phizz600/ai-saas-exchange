@@ -50,7 +50,7 @@ export function DepositConfirmDialog({
       // Success - notify the user
       toast({
         title: "Deposit initiated",
-        description: "Please complete the payment through Escrow.com",
+        description: "Your offer process has been started. You will be notified when the seller responds.",
       });
       
       onDepositComplete(escrowId);
@@ -62,9 +62,17 @@ export function DepositConfirmDialog({
       
       toast({
         title: "Error",
-        description: "Failed to initiate deposit. Please try again.",
+        description: "There was an issue with your deposit. Your offer will still be sent but you may need to complete payment manually.",
         variant: "destructive",
       });
+      
+      // Even with an error, we'll proceed with the offer but mark it as manual deposit required
+      onDepositComplete("manual");
+      
+      // We'll close the dialog after a short delay to let the user see the error
+      setTimeout(() => {
+        onOpenChange(false);
+      }, 3000);
     } finally {
       setIsSubmitting(false);
     }

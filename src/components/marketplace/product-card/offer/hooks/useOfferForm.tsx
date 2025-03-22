@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -93,7 +92,7 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
       const numericAmount = parseFloat(amount);
       const depositAmount = Math.round(numericAmount * 0.1 * 100) / 100; // 10% deposit
       
-      // Create the offer with deposit information
+      // Create the offer with deposit information - use manual status if escrowTransactionId is "manual"
       const { data: offer, error: offerError } = await supabase
         .from('offers')
         .insert({
@@ -101,10 +100,10 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
           bidder_id: user.id,
           amount: numericAmount,
           message: message,
-          status: 'deposit_pending',
-          deposit_status: 'deposit_pending',
+          status: 'pending',
+          deposit_status: escrowTransactionId === "manual" ? 'manual_deposit' : 'deposit_pending',
           deposit_amount: depositAmount,
-          deposit_transaction_id: escrowTransactionId
+          deposit_transaction_id: escrowTransactionId === "manual" ? null : escrowTransactionId
         })
         .select()
         .single();
@@ -113,20 +112,25 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
         throw offerError;
       }
       
-      // Create a link between the deposit transaction and the offer
-      await supabase.from('deposit_transactions').insert({
-        offer_id: offer.id,
-        amount: depositAmount,
-        escrow_transaction_id: escrowTransactionId,
-        status: 'pending'
-      });
+      // Don't create a deposit transaction link if it's manual
+      if (escrowTransactionId !== "manual") {
+        // Create a link between the deposit transaction and the offer
+        await supabase.from('deposit_transactions').insert({
+          offer_id: offer.id,
+          amount: depositAmount,
+          escrow_transaction_id: escrowTransactionId,
+          status: 'pending'
+        });
+      }
       
       // Success
       setSuccess(true);
       
       toast({
-        title: "Offer initiated!",
-        description: "Once your deposit is confirmed, your offer will be submitted to the seller.",
+        title: "Offer submitted!",
+        description: escrowTransactionId === "manual" 
+          ? "Your offer has been submitted. Please contact support to complete the deposit manually."
+          : "Once your deposit is confirmed, your offer will be processed.",
       });
       
       // Reset form

@@ -63,6 +63,37 @@ serve(async (req) => {
     let method: string;
     let apiData: any = null;
 
+    // If seller_email is empty and we have a seller_id, try to get the email using service role
+    if (data && data.seller_email === "" && data.seller_id) {
+      // Create admin client with service role (this has higher privileges)
+      const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+      if (supabaseServiceKey) {
+        const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
+        try {
+          // Try to get the seller's email directly from auth.users
+          const { data: userData, error: userError } = await supabaseAdmin.auth.admin.getUserById(
+            data.seller_id
+          );
+          
+          if (!userError && userData && userData.user && userData.user.email) {
+            data.seller_email = userData.user.email;
+            console.log("Retrieved seller email:", data.seller_email);
+          } else {
+            console.error("Could not retrieve seller email:", userError);
+            // Use a placeholder email if needed
+            data.seller_email = "seller@placeholder.com";
+          }
+        } catch (error) {
+          console.error("Error retrieving seller email:", error);
+          data.seller_email = "seller@placeholder.com";
+        }
+      } else {
+        console.warn("SUPABASE_SERVICE_ROLE_KEY not available");
+        data.seller_email = "seller@placeholder.com";
+      }
+    }
+
+    // Proceed with escrow API call setup
     switch (action) {
       case "create":
         apiUrl = `${escrowApiUrl}/transaction`;
@@ -172,6 +203,56 @@ serve(async (req) => {
 
     console.log(`Making ${method} request to Escrow.com API: ${apiUrl}`);
     console.log("Request data:", apiData);
+    
+    // Make fallback response in case no API key
+    if (!escrowApiKey) {
+      console.error("No ESCROW_API_KEY provided");
+      
+      // For create action, still update the transaction to manual mode
+      if (action === "create" && data.internal_transaction_id) {
+        try {
+          await supabase
+            .from("escrow_transactions")
+            .update({
+              status: "manual_setup",
+            })
+            .eq("id", data.internal_transaction_id);
+            
+          // Create a notification for both parties about the manual option
+          await Promise.all([
+            supabase.from("notifications").insert({
+              user_id: data.buyer_id,
+              title: "Manual Escrow Setup Required",
+              message: "We couldn't connect to the Escrow service. Please proceed with the manual option.",
+              type: "escrow_update",
+              related_product_id: data.product_id,
+            }),
+            supabase.from("notifications").insert({
+              user_id: data.seller_id,
+              title: "Manual Escrow Setup Required",
+              message: "We couldn't connect to the Escrow service. Please proceed with the manual option.",
+              type: "escrow_update",
+              related_product_id: data.product_id,
+            }),
+          ]);
+        } catch (dbError) {
+          console.error("Database error during fallback:", dbError);
+        }
+      }
+      
+      // Return a mock response to allow the process to continue
+      return new Response(
+        JSON.stringify({ 
+          id: "manual-" + crypto.randomUUID().substring(0, 8),
+          status: "manual_setup",
+          message: "No Escrow API key provided. Proceeding with manual setup."
+        }),
+        { 
+          status: 200, 
+          headers: { ...corsHeaders, "Content-Type": "application/json" } 
+        }
+      );
+    }
     
     // Make request to Escrow.com API with error handling
     try {
