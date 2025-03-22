@@ -54,7 +54,7 @@ export const ExpandableTabs = ({ tabs }: ExpandableTabsProps) => {
           <ChevronDown className="h-4 w-4" />
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56">
+      <DropdownMenuContent align="end" className="w-56 bg-white shadow-lg border border-gray-200">
         {tabs.map((item, index) => {
           if ('type' in item && item.type === 'separator') {
             return <DropdownMenuSeparator key={`sep-${index}`} />;
