@@ -1,3 +1,4 @@
+
 import { MessageCircle, X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "./ui/button";
@@ -17,7 +18,7 @@ export const LiveChatButton = () => {
             exit={{ opacity: 0, y: 20 }}
             className="mb-4"
           >
-            <Card className="w-[300px] p-4 shadow-lg">
+            <Card className="w-[300px] p-4 shadow-lg bg-white"> {/* Changed to solid white background */}
               <div className="flex justify-between items-center mb-4">
                 <h3 className="font-semibold">Live Support</h3>
                 <Button
@@ -32,7 +33,7 @@ export const LiveChatButton = () => {
                 <p className="text-sm text-muted-foreground">
                   Our support team typically replies in a few minutes.
                 </p>
-                <div className="h-[300px] bg-accent/5 rounded-md p-4 overflow-y-auto">
+                <div className="h-[300px] bg-gray-100 rounded-md p-4 overflow-y-auto"> {/* Changed background to solid color */}
                   <div className="flex flex-col space-y-2">
                     <div className="bg-primary/10 p-2 rounded-lg max-w-[80%] self-start">
                       <p className="text-sm">Hello! How can we help you today?</p>
@@ -43,7 +44,7 @@ export const LiveChatButton = () => {
                   <input
                     type="text"
                     placeholder="Type your message..."
-                    className="flex-1 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background"
+                    className="flex-1 rounded-md border border-input bg-white px-3 py-2 text-sm ring-offset-background" // Ensured white background
                   />
                   <Button size="sm">Send</Button>
                 </div>
