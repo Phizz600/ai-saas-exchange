@@ -92,12 +92,6 @@ export const Navbar = () => {
     href: isAuthenticated ? "/list-product" : "/auth",
     requiresAuth: true
   }, {
-    title: "Messages",
-    href: "/messages",
-    requiresAuth: true,
-    showBadge: unreadCount > 0,
-    badgeCount: unreadCount
-  }, {
     title: "About",
     href: "/about",
     requiresAuth: false
