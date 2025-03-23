@@ -1,6 +1,6 @@
 
 import { Link } from "react-router-dom";
-import { Linkedin } from "lucide-react";
+import { Linkedin, Instagram } from "lucide-react";
 
 export const MarketplaceFooter = () => {
   const footerLinks = [{
@@ -84,6 +84,7 @@ export const MarketplaceFooter = () => {
                         className="text-gray-600 hover:text-[#8B5CF6] transition-colors"
                       >
                         {link.name === "LinkedIn" && <Linkedin className="inline h-4 w-4 mr-1" />}
+                        {link.name === "Instagram" && <Instagram className="inline h-4 w-4 mr-1" />}
                         {link.name}
                       </a>
                     ) : (
