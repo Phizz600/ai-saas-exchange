@@ -118,6 +118,23 @@ export const handleAuthSubmit = async (
         title: "Welcome!",
         description: "Your account has been created. Setting up your profile...",
       });
+
+      // Send welcome email
+      if (data.user) {
+        try {
+          await supabase.functions.invoke('send-welcome-email', {
+            body: {
+              email,
+              firstName,
+              userType
+            }
+          });
+          console.log("Welcome email sent successfully");
+        } catch (emailError) {
+          console.error("Error sending welcome email:", emailError);
+          // Don't block signup if email fails
+        }
+      }
       
     } else {
       console.log("AuthForm: Starting signin process");
