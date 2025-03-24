@@ -3,10 +3,6 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 import { Resend } from "npm:resend@2.0.0";
 
-const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
-const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
-const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
-
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -21,14 +17,25 @@ const handler = async (req: Request): Promise<Response> => {
 
   try {
     // Log available environment variables (without revealing their values)
+    const apiKey = Deno.env.get("RESEND_API_KEY");
     console.log("Environment check:", {
-      hasResendKey: !!Deno.env.get("RESEND_API_KEY"),
+      hasResendKey: !!apiKey,
       hasSupabaseUrl: !!Deno.env.get("SUPABASE_URL"),
       hasServiceRoleKey: !!Deno.env.get("SUPABASE_SERVICE_ROLE_KEY"),
-      supabaseUrl: supabaseUrl, // Safe to log URL
+      supabaseUrl: Deno.env.get("SUPABASE_URL"), // Safe to log URL
+      apiKeyLength: apiKey ? apiKey.length : 0,
+      apiKeyPrefix: apiKey ? apiKey.substring(0, 3) : "N/A",
+      apiKeySuffix: apiKey ? apiKey.substring(apiKey.length - 3) : "N/A"
     });
 
+    // Log request body for debugging
+    const requestBody = await req.json();
+    console.log("Request body:", requestBody);
+
     // Initialize Supabase admin client with service role key
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
+    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    
     if (!supabaseUrl || !supabaseServiceKey) {
       throw new Error("Missing required environment variables: SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY");
     }
@@ -90,10 +97,13 @@ const handler = async (req: Request): Promise<Response> => {
     console.log(`Sending test email to user: ${userEmail}`);
 
     // Check if Resend API key is available
-    if (!Deno.env.get("RESEND_API_KEY")) {
+    if (!apiKey) {
       throw new Error("Missing RESEND_API_KEY environment variable");
     }
 
+    // Initialize Resend with the API key
+    const resend = new Resend(apiKey);
+    
     // Send the welcome email
     const emailResponse = await resend.emails.send({
       from: "AI Exchange Club <onboarding@resend.dev>",
@@ -147,8 +157,14 @@ const handler = async (req: Request): Promise<Response> => {
     });
   } catch (error: any) {
     console.error("Error in send-test-email function:", error);
+    console.error("Error details:", error.message, error.stack);
+    
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ 
+        error: error.message,
+        stack: error.stack,
+        context: "Error occurred in send-test-email Edge Function"
+      }),
       {
         status: 500,
         headers: { "Content-Type": "application/json", ...corsHeaders },

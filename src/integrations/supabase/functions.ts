@@ -17,7 +17,14 @@ export const sendTestEmail = async () => {
     
     const { data, error } = await supabase.functions.invoke('send-test-email', {
       // Add some additional debugging info to track request
-      body: { timestamp: new Date().toISOString(), debug: true }
+      body: { 
+        timestamp: new Date().toISOString(), 
+        debug: true,
+        client_info: {
+          userAgent: navigator.userAgent,
+          platform: navigator.platform
+        }
+      }
     });
     
     const endTime = performance.now();

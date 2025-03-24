@@ -25,11 +25,13 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     console.log("Received request to send welcome email");
     
-    // Check if Resend API key is available
-    if (!Deno.env.get("RESEND_API_KEY")) {
+    // Check if Resend API key is available and log it for debugging (redacted)
+    const apiKey = Deno.env.get("RESEND_API_KEY");
+    if (!apiKey) {
       console.error("RESEND_API_KEY is not configured");
       throw new Error("Missing RESEND_API_KEY environment variable");
     }
+    console.log(`Using API key: ${apiKey.substring(0, 3)}...${apiKey.substring(apiKey.length - 3)}`);
 
     const requestData = await req.json();
     console.log("Request data received:", JSON.stringify(requestData, null, 2));
@@ -52,7 +54,11 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log(`Sending welcome email to ${email} (${userType || "unknown type"})`);
 
-    const emailResponse = await resend.emails.send({
+    // Initialize Resend with the API key - this can help ensure the API key is properly loaded
+    const resendClient = new Resend(apiKey);
+    
+    // Try sending the email
+    const emailResponse = await resendClient.emails.send({
       from: "AI Exchange Club <onboarding@resend.dev>",
       to: [email],
       subject: `Welcome to AI Exchange Club, ${firstName || "New User"}!`,
@@ -100,10 +106,21 @@ const handler = async (req: Request): Promise<Response> => {
     console.error("Error in send-welcome-email function:", error);
     console.error("Error details:", error.message, error.stack);
     
+    // Check for specific error types
+    const errorMessage = error.message || "Unknown error";
+    let detailedError = "No additional details";
+    
+    if (error.name === "validation_error") {
+      detailedError = "Resend API validation error: This usually means the API key is invalid or expired";
+    } else if (errorMessage.includes("fetch")) {
+      detailedError = "Network error reaching Resend API: Check your internet connection";
+    }
+    
     return new Response(
       JSON.stringify({ 
-        error: error.message,
-        details: error.stack
+        error: errorMessage,
+        details: detailedError,
+        stack: error.stack
       }),
       {
         status: 500,
