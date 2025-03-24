@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 
@@ -120,20 +121,31 @@ export const handleAuthSubmit = async (
       });
 
       // Send welcome email
-      if (data.user) {
-        try {
-          await supabase.functions.invoke('send-welcome-email', {
-            body: {
-              email,
-              firstName,
-              userType
-            }
-          });
-          console.log("Welcome email sent successfully");
-        } catch (emailError) {
-          console.error("Error sending welcome email:", emailError);
-          // Don't block signup if email fails
-        }
+      console.log("AuthForm: Sending welcome email to:", email);
+      try {
+        const emailResult = await supabase.functions.invoke('send-welcome-email', {
+          body: {
+            email,
+            firstName,
+            userType
+          }
+        });
+        console.log("Welcome email sent successfully:", emailResult);
+        
+        // Show a toast notifying the user about the welcome email
+        toast({
+          title: "Welcome Email Sent",
+          description: "Check your inbox for a welcome email with next steps!",
+        });
+      } catch (emailError: any) {
+        console.error("Error sending welcome email:", emailError);
+        console.error("Error details:", emailError.message);
+        // Show error toast but don't block signup
+        toast({
+          variant: "destructive",
+          title: "Email Delivery Issue",
+          description: "We couldn't send your welcome email, but your account was created successfully.",
+        });
       }
       
     } else {

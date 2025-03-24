@@ -23,18 +23,43 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { firstName, email, userType }: WelcomeEmailRequest = await req.json();
+    console.log("Received request to send welcome email");
+    
+    // Check if Resend API key is available
+    if (!Deno.env.get("RESEND_API_KEY")) {
+      console.error("RESEND_API_KEY is not configured");
+      throw new Error("Missing RESEND_API_KEY environment variable");
+    }
 
-    console.log(`Sending welcome email to ${email} (${userType})`);
+    const requestData = await req.json();
+    console.log("Request data received:", JSON.stringify(requestData, null, 2));
+
+    // Extract and validate email data
+    const { firstName, email, userType }: WelcomeEmailRequest = requestData;
+    
+    if (!email) {
+      console.error("Missing email in request");
+      throw new Error("Email is required");
+    }
+    
+    if (!firstName) {
+      console.log("First name not provided, using default");
+    }
+    
+    if (!userType) {
+      console.log("User type not provided, using default");
+    }
+
+    console.log(`Sending welcome email to ${email} (${userType || "unknown type"})`);
 
     const emailResponse = await resend.emails.send({
       from: "AI Exchange Club <onboarding@resend.dev>",
       to: [email],
-      subject: `Welcome to AI Exchange Club, ${firstName}!`,
+      subject: `Welcome to AI Exchange Club, ${firstName || "New User"}!`,
       html: `
         <div style="font-family: 'Exo 2', sans-serif; max-width: 600px; margin: 0 auto;">
           <h1 style="color: #8B5CF6; font-family: 'Exo 2', sans-serif; font-weight: 700;">Welcome to AI Exchange Club!</h1>
-          <p>Hi ${firstName},</p>
+          <p>Hi ${firstName || "there"},</p>
           <p>We're excited to have you join our community${userType === 'ai_builder' ? ' of AI builders' : ' of AI investors'}!</p>
           
           ${userType === 'ai_builder' ? `
@@ -73,8 +98,13 @@ const handler = async (req: Request): Promise<Response> => {
     });
   } catch (error: any) {
     console.error("Error in send-welcome-email function:", error);
+    console.error("Error details:", error.message, error.stack);
+    
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ 
+        error: error.message,
+        details: error.stack
+      }),
       {
         status: 500,
         headers: { "Content-Type": "application/json", ...corsHeaders },
