@@ -5,6 +5,7 @@ import { sendTestEmail } from "@/integrations/supabase/functions";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 
 export const TestEmailSender = () => {
   const [isSending, setIsSending] = useState(false);
@@ -42,38 +43,50 @@ export const TestEmailSender = () => {
   };
 
   return (
-    <div className="p-4 bg-white shadow rounded-md">
-      <h2 className="font-semibold mb-4 text-lg">Send Test Email</h2>
-      <p className="text-gray-600 mb-4">
-        This will send a welcome email to the most recent user who signed up.
-      </p>
+    <Card className="shadow-md">
+      <CardHeader>
+        <CardTitle className="text-lg">Send Test Email</CardTitle>
+        <CardDescription>
+          This will send a welcome email to the most recent user who signed up.
+        </CardDescription>
+      </CardHeader>
       
-      {error && (
-        <Alert variant="destructive" className="mb-4">
-          <AlertTitle>Error</AlertTitle>
-          <AlertDescription>
-            {error}
-            <div className="mt-2 text-xs">
-              <p>Check that the Edge Function is deployed properly in your Supabase project.</p>
-            </div>
-          </AlertDescription>
-        </Alert>
-      )}
-      
-      <Button 
-        onClick={handleSendTestEmail} 
-        disabled={isSending}
-        className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white"
-      >
-        {isSending ? (
-          <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Sending...
-          </>
-        ) : (
-          "Send Test Email"
+      <CardContent>
+        {error && (
+          <Alert variant="destructive" className="mb-4">
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>
+              {error}
+              <div className="mt-2 text-xs space-y-1">
+                <p>Please check that:</p>
+                <ul className="list-disc pl-5">
+                  <li>The Edge Function is deployed properly in your Supabase project</li>
+                  <li>Required secrets (RESEND_API_KEY, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY) are configured</li>
+                  <li>There are users in your database</li>
+                  <li>Your network connection allows requests to Supabase Functions</li>
+                </ul>
+              </div>
+            </AlertDescription>
+          </Alert>
         )}
-      </Button>
-    </div>
+      </CardContent>
+      
+      <CardFooter>
+        <Button 
+          onClick={handleSendTestEmail} 
+          disabled={isSending}
+          className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white"
+        >
+          {isSending ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Sending...
+            </>
+          ) : (
+            "Send Test Email"
+          )}
+        </Button>
+      </CardFooter>
+    </Card>
   );
 };

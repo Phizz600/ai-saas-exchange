@@ -12,7 +12,16 @@ import { supabase } from './client';
 export const sendTestEmail = async () => {
   console.log("Invoking send-test-email edge function...");
   try {
-    const { data, error } = await supabase.functions.invoke('send-test-email');
+    // Include timing information for debugging
+    const startTime = performance.now();
+    
+    const { data, error } = await supabase.functions.invoke('send-test-email', {
+      // Add some additional debugging info to track request
+      body: { timestamp: new Date().toISOString(), debug: true }
+    });
+    
+    const endTime = performance.now();
+    console.log(`Edge function call took ${endTime - startTime}ms`);
     
     if (error) {
       console.error("Error from edge function:", error);
@@ -23,6 +32,16 @@ export const sendTestEmail = async () => {
     return data;
   } catch (err) {
     console.error("Error sending test email:", err);
+    
+    // Provide more specific error messages based on error type
+    if (err instanceof TypeError && err.message.includes('NetworkError')) {
+      throw new Error('Network error connecting to the Edge Function. Check your connection and CORS settings.');
+    }
+    
+    if (err.message?.includes('Failed to fetch')) {
+      throw new Error('Failed to reach the Edge Function. Ensure it is deployed properly and accessible.');
+    }
+    
     throw err;
   }
 };
