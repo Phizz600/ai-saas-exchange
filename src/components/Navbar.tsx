@@ -1,8 +1,9 @@
+
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut, Menu, MessageSquare, UserPlus } from "lucide-react";
+import { LogOut, Menu, UserPlus } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTrigger } from "@/components/ui/sheet";
 import { useToast } from "@/hooks/use-toast";
 import { getUnreadMessagesCount } from "@/integrations/supabase/messages";
@@ -138,7 +139,6 @@ export const Navbar = () => {
                 <div className="flex flex-col gap-4 mt-8 flex-grow">
                   {navigationItems.map(item => <Link key={item.title} to={item.href} onClick={e => item.requiresAuth && !isAuthenticated ? handleNavigationClick(e, item.href) : null} className="text-black hover:text-black/80 font-exo text-lg px-4 rounded-lg hover:bg-white/10 transition-colors py-0 flex justify-between items-center">
                       <span>{item.title}</span>
-                      {item.showBadge && <Badge variant="destructive" className="ml-2">{item.badgeCount}</Badge>}
                     </Link>)}
                 </div>
                 <div className="mt-auto mb-6">

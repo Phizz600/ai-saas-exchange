@@ -1,20 +1,17 @@
 
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 import { Resend } from "npm:resend@2.0.0";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
+const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
     "authorization, x-client-info, apikey, content-type",
 };
-
-interface WelcomeEmailRequest {
-  firstName: string;
-  email: string;
-  userType: 'ai_builder' | 'ai_investor';
-}
 
 const handler = async (req: Request): Promise<Response> => {
   // Handle CORS preflight requests
@@ -23,10 +20,33 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { firstName, email, userType }: WelcomeEmailRequest = await req.json();
+    // Initialize Supabase admin client with service role key
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+    
+    // Get the most recent user from auth.users
+    const { data: users, error: userError } = await supabase
+      .from('auth.users')
+      .select('id, email, raw_user_meta_data')
+      .order('created_at', { ascending: false })
+      .limit(1);
+    
+    if (userError) {
+      console.error("Error fetching most recent user:", userError);
+      throw new Error("Failed to fetch most recent user");
+    }
 
-    console.log(`Sending welcome email to ${email} (${userType})`);
+    if (!users || users.length === 0) {
+      throw new Error("No users found in the system");
+    }
 
+    const user = users[0];
+    const email = user.email;
+    const firstName = user.raw_user_meta_data?.first_name || "User";
+    const userType = user.raw_user_meta_data?.user_type || "ai_investor";
+
+    console.log(`Sending test email to most recent user: ${email}`);
+
+    // Send the welcome email
     const emailResponse = await resend.emails.send({
       from: "AI Exchange Club <onboarding@resend.dev>",
       to: [email],
@@ -62,9 +82,15 @@ const handler = async (req: Request): Promise<Response> => {
       `,
     });
 
-    console.log("Welcome email sent successfully:", emailResponse);
+    console.log("Test email sent successfully:", emailResponse);
 
-    return new Response(JSON.stringify(emailResponse), {
+    return new Response(JSON.stringify({
+      message: "Test email sent successfully",
+      to: email,
+      firstName,
+      userType,
+      response: emailResponse
+    }), {
       status: 200,
       headers: {
         "Content-Type": "application/json",
@@ -72,7 +98,7 @@ const handler = async (req: Request): Promise<Response> => {
       },
     });
   } catch (error: any) {
-    console.error("Error in send-welcome-email function:", error);
+    console.error("Error in send-test-email function:", error);
     return new Response(
       JSON.stringify({ error: error.message }),
       {
