@@ -19,6 +19,7 @@ import { ResolutionCenter } from "@/pages/ResolutionCenter";
 import Messages from "@/pages/Messages";
 import { MessageChat } from "@/pages/MessageChat";
 import FAQ from "@/pages/FAQ";
+import Admin from "@/pages/Admin";
 import "./App.css";
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/faq" element={<FAQ />} />
         <Route path="/resolution-center" element={<ResolutionCenter />} />
+        <Route path="/admin" element={<Admin />} />
         <Route 
           path="/profile" 
           element={

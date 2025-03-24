@@ -9,6 +9,7 @@ import PricingFees from "@/components/hero/PricingFees";
 import WhyChooseUs from "@/components/hero/WhyChooseUs";
 import { ParticlesBackground } from "@/components/hero/ParticlesBackground";
 import { PromotionalBanner } from "@/components/PromotionalBanner";
+import { Link } from "react-router-dom";
 
 export const Index = () => {
   return (
@@ -23,6 +24,18 @@ export const Index = () => {
         <ReviewSection />
         <Footer />
         <ExitIntentDialog />
+        
+        {/* Admin link - only visible in development */}
+        {import.meta.env.DEV && (
+          <div className="fixed bottom-4 right-4 z-50">
+            <Link 
+              to="/admin" 
+              className="bg-gray-800 text-white px-4 py-2 rounded-md text-sm hover:bg-gray-700 transition-colors"
+            >
+              Admin Panel
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );
