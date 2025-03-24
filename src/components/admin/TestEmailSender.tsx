@@ -10,11 +10,13 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 export const TestEmailSender = () => {
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [debugInfo, setDebugInfo] = useState<any>(null);
   const { toast } = useToast();
 
   const handleSendTestEmail = async () => {
     setIsSending(true);
     setError(null);
+    setDebugInfo(null);
     
     try {
       console.log("Attempting to send test email...");
@@ -31,6 +33,17 @@ export const TestEmailSender = () => {
       
       const errorMessage = err?.message || "An unexpected error occurred";
       setError(errorMessage);
+      
+      // Store any additional error information for debugging
+      if (err?.response) {
+        try {
+          const responseData = await err.response.json();
+          setDebugInfo(responseData);
+          console.log("Error response data:", responseData);
+        } catch (parseErr) {
+          console.log("Could not parse error response:", parseErr);
+        }
+      }
       
       toast({
         variant: "destructive",
@@ -66,6 +79,12 @@ export const TestEmailSender = () => {
                   <li>Your network connection allows requests to Supabase Functions</li>
                 </ul>
               </div>
+              
+              {debugInfo && (
+                <div className="mt-2 p-2 bg-gray-800 text-white rounded text-xs overflow-auto max-h-40">
+                  <pre>{JSON.stringify(debugInfo, null, 2)}</pre>
+                </div>
+              )}
             </AlertDescription>
           </Alert>
         )}
