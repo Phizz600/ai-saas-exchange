@@ -136,27 +136,31 @@ const handler = async (req: Request): Promise<Response> => {
               box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             }
             .email-header {
-              padding: 24px;
+              padding: 30px;
               text-align: center;
-              background: linear-gradient(90deg, #D946EE 0%, #8B5CF6 50%, #0EA4E9 100%);
+              background: linear-gradient(135deg, #D946EE 0%, #8B5CF6 50%, #0EA4E9 100%);
             }
-            .email-header img {
-              max-width: 200px;
+            .logo {
+              width: 180px;
               height: auto;
+              margin-bottom: 10px;
             }
             .email-body {
-              padding: 30px;
+              padding: 40px 30px;
             }
             .greeting {
-              font-size: 18px;
+              font-size: 20px;
+              font-weight: 600;
               margin-bottom: 20px;
+              color: #8B5CF6;
             }
             h1 {
-              color: #8B5CF6;
+              color: #D946EE;
               font-weight: 700;
               margin-top: 0;
               margin-bottom: 24px;
               font-size: 28px;
+              line-height: 1.3;
             }
             h2 {
               color: #0EA4E9;
@@ -165,101 +169,152 @@ const handler = async (req: Request): Promise<Response> => {
               margin-top: 30px;
               margin-bottom: 15px;
             }
+            p {
+              margin-bottom: 16px;
+              color: #4B5563;
+            }
             .feature-list {
-              background-color: #f6f5ff;
-              border-radius: 8px;
-              padding: 20px 25px;
-              margin-bottom: 25px;
+              background-color: #f0ecff;
+              border-radius: 10px;
+              padding: 25px;
+              margin-bottom: 30px;
+              border-left: 4px solid #8B5CF6;
             }
             .feature-list ul {
-              margin: 0;
+              margin: 10px 0 0;
               padding-left: 20px;
             }
             .feature-list li {
-              margin-bottom: 10px;
+              margin-bottom: 12px;
+              position: relative;
+            }
+            .feature-list li::before {
+              content: "→";
+              color: #D946EE;
+              font-weight: bold;
+              display: inline-block;
+              width: 1em;
+              margin-left: -1em;
             }
             .cta-button {
               display: inline-block;
               background: linear-gradient(90deg, #D946EE 0%, #8B5CF6 100%);
               color: white;
               text-decoration: none;
-              padding: 12px 24px;
+              padding: 14px 28px;
               border-radius: 8px;
               font-weight: 600;
-              margin: 25px 0;
+              font-size: 16px;
+              margin: 30px 0;
               transition: all 0.3s ease;
+              text-align: center;
             }
             .cta-button:hover {
-              opacity: 0.9;
               transform: translateY(-2px);
+              box-shadow: 0 6px 15px rgba(139, 92, 246, 0.3);
+            }
+            .divider {
+              height: 1px;
+              background-color: #E5E7EB;
+              margin: 30px 0;
+            }
+            .support-section {
+              background-color: #E0F2FE;
+              border-radius: 10px;
+              padding: 20px;
+              margin-top: 20px;
+            }
+            .support-section h3 {
+              color: #0EA4E9;
+              margin-top: 0;
+              font-size: 18px;
             }
             .email-footer {
-              background-color: #f6f5ff;
-              padding: 20px;
+              background-color: #F3F4F6;
+              padding: 25px;
               text-align: center;
-              color: #666;
+              color: #6B7280;
               font-size: 14px;
             }
-            .social-icons {
-              margin: 15px 0;
+            .social-links {
+              margin: 20px 0;
             }
-            .social-icon {
+            .social-link {
               display: inline-block;
               margin: 0 10px;
-              width: 24px;
-              height: 24px;
+              font-weight: 500;
+              color: #8B5CF6;
+              text-decoration: none;
+            }
+            .highlight {
+              color: #D946EE;
+              font-weight: 600;
             }
           </style>
         </head>
         <body>
           <div class="email-container">
             <div class="email-header">
-              <img src="https://aiexchange.club/ai-exchange-logo.png" alt="AI Exchange Club Logo">
+              <img src="https://aiexchange.club/ai-exchange-logo.png" alt="AI Exchange Club" class="logo">
             </div>
             
             <div class="email-body">
-              <h1>Welcome to the AI Exchange Club!</h1>
+              <h1>Welcome to the AI Exchange Community!</h1>
               
               <p class="greeting">Hi ${firstName || "there"},</p>
               
-              <p>We're thrilled to welcome you to our community of passionate individuals in the AI ecosystem! You've joined at an exciting time as AI continues to transform industries worldwide.</p>
+              <p>We're excited to have you join our global community of AI enthusiasts, innovators, and investors. The AI Exchange Club is where groundbreaking AI solutions meet the resources they need to thrive.</p>
               
               ${userType === 'ai_builder' ? `
-                <h2>Your Journey as an AI Builder Starts Now</h2>
+                <h2>Your AI Builder Journey Begins</h2>
                 <div class="feature-list">
                   <p>Here's what you can do with your new account:</p>
                   <ul>
-                    <li><strong>Showcase your AI solutions</strong> to potential investors and partners</li>
-                    <li><strong>Connect with investors</strong> looking for the next big AI innovation</li>
-                    <li><strong>Track engagement</strong> with your products and analyze market interest</li>
-                    <li><strong>Access resources</strong> to help scale your AI business</li>
+                    <li><strong>Showcase your AI innovations</strong> to a curated network of investors and partners</li>
+                    <li><strong>Connect directly with investors</strong> interested in AI technologies like yours</li>
+                    <li><strong>Gain visibility</strong> for your solutions through our marketplace</li>
+                    <li><strong>Access resources</strong> to help scale your AI business faster</li>
                   </ul>
                 </div>
               ` : `
-                <h2>Your Journey as an AI Investor Starts Now</h2>
+                <h2>Your AI Investor Journey Begins</h2>
                 <div class="feature-list">
                   <p>Here's what you can do with your new account:</p>
                   <ul>
-                    <li><strong>Discover innovative AI solutions</strong> across various domains and industries</li>
-                    <li><strong>Connect directly with builders</strong> creating cutting-edge AI technology</li>
-                    <li><strong>Track potential investment opportunities</strong> based on your preferences</li>
-                    <li><strong>Get early access</strong> to promising AI products and services</li>
+                    <li><strong>Discover vetted AI solutions</strong> across various domains and industries</li>
+                    <li><strong>Connect directly with builders</strong> creating the future of AI technology</li>
+                    <li><strong>Track potential opportunities</strong> based on your investment criteria</li>
+                    <li><strong>Get early access</strong> to promising AI products before they hit the mainstream</li>
                   </ul>
                 </div>
               `}
               
-              <p>Our platform is designed to create meaningful connections and facilitate growth in the AI space. Whether you're building, investing, or exploring, we're here to support your journey.</p>
+              <p>Our platform is designed to make connections that matter and facilitate growth in the rapidly evolving AI landscape. We've created a secure environment where AI builders and investors can collaborate with confidence.</p>
               
               <center>
-                <a href="https://aiexchange.club/marketplace" class="cta-button">Explore the Marketplace</a>
+                <a href="https://aiexchange.club/marketplace" class="cta-button">Explore the AI Marketplace</a>
               </center>
               
-              <p>If you have any questions or need assistance, don't hesitate to reach out to our support team.</p>
+              <div class="divider"></div>
               
-              <p>Best regards,<br>The AI Exchange Club Team</p>
+              <p>To get the most out of your membership, we recommend completing your profile and exploring the marketplace to see what's trending in AI today.</p>
+              
+              <div class="support-section">
+                <h3>Need Assistance?</h3>
+                <p>If you have any questions or need help navigating the platform, our team is here to support you. Simply reply to this email or visit our help center.</p>
+              </div>
+              
+              <p>Looking forward to seeing your impact in the AI ecosystem!</p>
+              
+              <p>Best regards,<br><span class="highlight">The AI Exchange Club Team</span></p>
             </div>
             
             <div class="email-footer">
+              <div class="social-links">
+                <a href="https://twitter.com/aiexchangeclub" class="social-link">Twitter</a>
+                <a href="https://linkedin.com/company/aiexchangeclub" class="social-link">LinkedIn</a>
+                <a href="https://aiexchange.club/blog" class="social-link">Blog</a>
+              </div>
               <p>© 2023 AI Exchange Club. All rights reserved.</p>
               <p>This email was sent to ${userEmail}</p>
             </div>
