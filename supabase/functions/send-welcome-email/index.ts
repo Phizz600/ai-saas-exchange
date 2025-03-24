@@ -57,9 +57,9 @@ const handler = async (req: Request): Promise<Response> => {
     // Initialize Resend with the API key - this can help ensure the API key is properly loaded
     const resendClient = new Resend(apiKey);
     
-    // Try sending the email - using the verified domain in the from address
+    // Try sending the email - using one of the verified email addresses
     const emailResponse = await resendClient.emails.send({
-      from: "AI Exchange Club <noreply@aiexchange.club>",
+      from: "AI Exchange Club <khalid@aiexchange.club>",
       to: [email],
       subject: `Welcome to AI Exchange Club, ${firstName || "New User"}!`,
       html: `
