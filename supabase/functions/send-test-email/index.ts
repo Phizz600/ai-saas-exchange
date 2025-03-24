@@ -20,31 +20,58 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    // Log available environment variables (without revealing their values)
+    console.log("Environment check:", {
+      hasResendKey: !!Deno.env.get("RESEND_API_KEY"),
+      hasSupabaseUrl: !!Deno.env.get("SUPABASE_URL"),
+      hasServiceRoleKey: !!Deno.env.get("SUPABASE_SERVICE_ROLE_KEY"),
+      supabaseUrl: supabaseUrl, // Safe to log URL
+    });
+
     // Initialize Supabase admin client with service role key
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+    if (!supabaseUrl || !supabaseServiceKey) {
+      throw new Error("Missing required environment variables: SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY");
+    }
     
-    // Get the most recent user from auth.users
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+    console.log("Supabase client initialized");
+    
+    // Get the most recent user
+    console.log("Attempting to fetch most recent user...");
     const { data: users, error: userError } = await supabase
-      .from('auth.users')
-      .select('id, email, raw_user_meta_data')
+      .from('profiles')
+      .select('id, email, first_name, user_type')
       .order('created_at', { ascending: false })
       .limit(1);
     
     if (userError) {
       console.error("Error fetching most recent user:", userError);
-      throw new Error("Failed to fetch most recent user");
+      throw new Error(`Failed to fetch most recent user: ${userError.message}`);
     }
 
     if (!users || users.length === 0) {
+      console.log("No users found in the system");
       throw new Error("No users found in the system");
     }
 
     const user = users[0];
+    console.log(`Found user:`, JSON.stringify(user, null, 2));
+    
+    if (!user.email) {
+      console.log("User found but missing email address");
+      throw new Error("User found but missing email address");
+    }
+    
     const email = user.email;
-    const firstName = user.raw_user_meta_data?.first_name || "User";
-    const userType = user.raw_user_meta_data?.user_type || "ai_investor";
+    const firstName = user.first_name || "User";
+    const userType = user.user_type || "ai_investor";
 
     console.log(`Sending test email to most recent user: ${email}`);
+
+    // Check if Resend API key is available
+    if (!Deno.env.get("RESEND_API_KEY")) {
+      throw new Error("Missing RESEND_API_KEY environment variable");
+    }
 
     // Send the welcome email
     const emailResponse = await resend.emails.send({
