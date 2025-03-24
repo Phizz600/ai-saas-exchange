@@ -52,3 +52,28 @@ export const sendTestEmail = async () => {
     throw err;
   }
 };
+
+// Function to send a welcome email directly (can be used during signup)
+export const sendWelcomeEmail = async (email: string, firstName: string, userType: 'ai_builder' | 'ai_investor') => {
+  console.log(`Sending welcome email to ${email}`);
+  try {
+    const { data, error } = await supabase.functions.invoke('send-welcome-email', {
+      body: { 
+        email,
+        firstName,
+        userType
+      }
+    });
+    
+    if (error) {
+      console.error("Error sending welcome email:", error);
+      throw error;
+    }
+    
+    console.log("Welcome email sent successfully:", data);
+    return data;
+  } catch (err) {
+    console.error("Error in sendWelcomeEmail function:", err);
+    throw err;
+  }
+};

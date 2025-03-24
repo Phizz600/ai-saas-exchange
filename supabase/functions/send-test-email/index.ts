@@ -104,9 +104,9 @@ const handler = async (req: Request): Promise<Response> => {
     // Initialize Resend with the API key
     const resend = new Resend(apiKey);
     
-    // Send the welcome email
+    // Send the welcome email with your verified domain
     const emailResponse = await resend.emails.send({
-      from: "AI Exchange Club <onboarding@resend.dev>",
+      from: "AI Exchange Club <noreply@aiexchange.club>",
       to: [userEmail],
       subject: `Welcome to AI Exchange Club, ${firstName}!`,
       html: `
