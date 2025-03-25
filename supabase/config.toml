@@ -48,9 +48,11 @@ verify_jwt = true
 
 [functions.send-welcome-email]
 verify_jwt = false
+no_verify_jwt = true
 
 [functions.send-test-email]
 verify_jwt = false
+no_verify_jwt = true
 
 [functions.send-brevo-email]
 verify_jwt = true
