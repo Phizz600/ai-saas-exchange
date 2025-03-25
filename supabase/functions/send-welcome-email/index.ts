@@ -12,6 +12,8 @@ interface WelcomeEmailRequest {
   firstName: string;
   email: string;
   userType: 'ai_builder' | 'ai_investor';
+  timestamp?: string;
+  source?: string;
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -59,7 +61,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Request data received:", JSON.stringify(requestData, null, 2));
 
     // Extract and validate email data
-    const { firstName, email, userType }: WelcomeEmailRequest = requestData;
+    const { firstName, email, userType, timestamp, source }: WelcomeEmailRequest = requestData;
     
     if (!email) {
       console.error("Missing email in request");
@@ -84,6 +86,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     console.log(`Sending welcome email to ${email} (${userType || "unknown type"})`);
+    console.log(`Request metadata - timestamp: ${timestamp || "none"}, source: ${source || "none"}`);
 
     // Initialize Resend with the API key - this can help ensure the API key is properly loaded
     const resend = new Resend(apiKey);

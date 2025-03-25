@@ -69,7 +69,9 @@ export const sendWelcomeEmail = async (email: string, firstName: string, userTyp
       body: { 
         email,
         firstName,
-        userType
+        userType,
+        timestamp: new Date().toISOString(),  // Add timestamp for debugging
+        source: 'signup_flow'  // Track source of request
       }
     });
     
@@ -78,13 +80,13 @@ export const sendWelcomeEmail = async (email: string, firstName: string, userTyp
     
     if (error) {
       console.error("Error sending welcome email:", error);
-      throw error;
+      return { error: error.message || "Failed to send welcome email" };
     }
     
     // Check for errors in the response data
     if (data?.error) {
       console.error("Error in welcome email response:", data.error);
-      throw new Error(data.error);
+      return { error: data.error };
     }
     
     console.log("Welcome email sent successfully:", data);
@@ -104,21 +106,23 @@ export const sendWelcomeEmail = async (email: string, firstName: string, userTyp
           body: { 
             email,
             firstName,
-            userType
+            userType,
+            timestamp: new Date().toISOString(),
+            source: 'signup_flow_retry'
           }
         });
         
-        if (error) throw error;
-        if (data?.error) throw new Error(data.error);
+        if (error) return { error: error.message || "Failed to send welcome email on retry" };
+        if (data?.error) return { error: data.error };
         
         console.log("Welcome email sent successfully on retry:", data);
         return data;
       } catch (retryErr) {
         console.error("Retry also failed:", retryErr);
-        throw new Error(`Failed to send welcome email after retry: ${retryErr.message}`);
+        return { error: `Failed to send welcome email after retry: ${retryErr.message}` };
       }
     }
     
-    throw err;
+    return { error: err.message || "Unknown error sending welcome email" };
   }
 };

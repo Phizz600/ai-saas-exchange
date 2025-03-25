@@ -38,6 +38,11 @@ export const WelcomeEmailTester = () => {
       const response = await sendWelcomeEmail(email, firstName, userType);
       
       console.log("Welcome email response:", response);
+      
+      if (response.error) {
+        throw new Error(response.error);
+      }
+      
       setSuccess(response);
       
       toast({
