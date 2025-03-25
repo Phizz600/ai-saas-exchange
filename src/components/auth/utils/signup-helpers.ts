@@ -1,6 +1,6 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { sendWelcomeEmail } from "@/integrations/supabase/functions";
 
 /**
  * Process user signup or sign in
@@ -123,13 +123,7 @@ export const handleAuthSubmit = async (
       // Send welcome email
       console.log("AuthForm: Sending welcome email to:", email);
       try {
-        const emailResult = await supabase.functions.invoke('send-welcome-email', {
-          body: {
-            email,
-            firstName,
-            userType
-          }
-        });
+        const emailResult = await sendWelcomeEmail(email, firstName, userType);
         console.log("Welcome email sent successfully:", emailResult);
         
         // Show a toast notifying the user about the welcome email

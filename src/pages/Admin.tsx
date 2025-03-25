@@ -1,6 +1,7 @@
 
 import { Header } from "@/components/Header";
 import { TestEmailSender } from "@/components/admin/TestEmailSender";
+import { WelcomeEmailTester } from "@/components/admin/WelcomeEmailTester";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -37,6 +38,8 @@ export const Admin = () => {
                 <CardContent className="px-0">
                   <div className="grid gap-6">
                     <TestEmailSender />
+                    
+                    <WelcomeEmailTester />
                     
                     <Card className="shadow-md opacity-60">
                       <CardHeader>
