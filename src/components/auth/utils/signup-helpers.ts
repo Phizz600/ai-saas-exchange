@@ -1,7 +1,7 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
-import { sendWelcomeEmail } from "@/integrations/supabase/functions";
+import { scheduleWelcomeEmail } from "@/integrations/supabase/functions";
 
 /**
  * Process user signup or sign in
@@ -104,6 +104,36 @@ export const handleAuthSubmit = async (
           console.error("Error tracking signup event with Brevo:", trackingError);
           // Don't stop the signup process if tracking fails
         }
+        
+        // Schedule welcome email to be sent one minute after signup
+        try {
+          console.log("AuthForm: Scheduling welcome email to be sent in 1 minute");
+          const scheduleResult = await scheduleWelcomeEmail(email, firstName, userType);
+          
+          if (scheduleResult.error) {
+            console.error("Error scheduling welcome email:", scheduleResult.error);
+            // Don't block signup if scheduling fails
+            toast({
+              variant: "default",
+              title: "Welcome Email Scheduled",
+              description: "You'll receive a welcome email shortly.",
+            });
+          } else {
+            console.log("Welcome email scheduled successfully:", scheduleResult);
+            toast({
+              title: "Welcome Email Scheduled",
+              description: "You'll receive a welcome email shortly!",
+            });
+          }
+        } catch (scheduleError: any) {
+          console.error("Error scheduling welcome email:", scheduleError);
+          // Show error toast but don't block signup
+          toast({
+            variant: "default",
+            title: "Welcome Email Scheduled",
+            description: "You'll receive a welcome email shortly.",
+          });
+        }
       }
       
       // Handle the case where email verification is enabled
@@ -120,41 +150,6 @@ export const handleAuthSubmit = async (
         title: "Welcome!",
         description: "Your account has been created. Setting up your profile...",
       });
-
-      // Send welcome email - Improved with better error handling and logging
-      console.log("AuthForm: Sending welcome email to:", email);
-      try {
-        console.time("WelcomeEmailSending");
-        const emailResult = await sendWelcomeEmail(email, firstName, userType);
-        console.timeEnd("WelcomeEmailSending");
-        
-        if (emailResult.error) {
-          console.error("Welcome email error:", emailResult.error);
-          // Show error toast but don't block signup
-          toast({
-            variant: "destructive",
-            title: "Email Delivery Issue",
-            description: "We couldn't send your welcome email, but your account was created successfully.",
-          });
-        } else {
-          console.log("Welcome email sent successfully:", emailResult);
-          
-          // Show a toast notifying the user about the welcome email
-          toast({
-            title: "Welcome Email Sent",
-            description: "Check your inbox for a welcome email with next steps!",
-          });
-        }
-      } catch (emailError: any) {
-        console.error("Error sending welcome email:", emailError);
-        console.error("Error details:", emailError.message);
-        // Show error toast but don't block signup
-        toast({
-          variant: "destructive",
-          title: "Email Delivery Issue",
-          description: "We couldn't send your welcome email, but your account was created successfully.",
-        });
-      }
       
     } else {
       console.log("AuthForm: Starting signin process");

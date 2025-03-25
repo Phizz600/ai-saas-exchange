@@ -59,7 +59,45 @@ export const sendTestEmail = async () => {
   }
 };
 
-// Function to send a welcome email directly (can be used during signup)
+// Function to schedule a welcome email to be sent after a delay
+export const scheduleWelcomeEmail = async (email: string, firstName: string, userType: 'ai_builder' | 'ai_investor') => {
+  console.log(`Scheduling welcome email to ${email} to be sent with 1 minute delay`);
+  try {
+    const startTime = performance.now();
+    
+    const { data, error } = await supabase.functions.invoke('schedule-welcome-email', {
+      body: { 
+        email,
+        firstName,
+        userType,
+        timestamp: new Date().toISOString(),
+        source: 'signup_flow'
+      }
+    });
+    
+    const endTime = performance.now();
+    console.log(`Schedule welcome email function call took ${endTime - startTime}ms`);
+    
+    if (error) {
+      console.error("Error scheduling welcome email:", error);
+      return { error: error.message || "Failed to schedule welcome email" };
+    }
+    
+    // Check for errors in the response data
+    if (data?.error) {
+      console.error("Error in schedule welcome email response:", data.error);
+      return { error: data.error };
+    }
+    
+    console.log("Welcome email scheduled successfully:", data);
+    return data;
+  } catch (err) {
+    console.error("Error in scheduleWelcomeEmail function:", err);
+    return { error: err.message || "Unknown error scheduling welcome email" };
+  }
+};
+
+// Function to send a welcome email directly (can be used during signup or for testing)
 export const sendWelcomeEmail = async (email: string, firstName: string, userType: 'ai_builder' | 'ai_investor') => {
   console.log(`Sending welcome email to ${email}`);
   try {
@@ -71,7 +109,7 @@ export const sendWelcomeEmail = async (email: string, firstName: string, userTyp
         firstName,
         userType,
         timestamp: new Date().toISOString(),  // Add timestamp for debugging
-        source: 'signup_flow'  // Track source of request
+        source: 'manual_trigger'  // Track source of request
       }
     });
     
@@ -108,7 +146,7 @@ export const sendWelcomeEmail = async (email: string, firstName: string, userTyp
             firstName,
             userType,
             timestamp: new Date().toISOString(),
-            source: 'signup_flow_retry'
+            source: 'manual_trigger_retry'
           }
         });
         

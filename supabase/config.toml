@@ -57,3 +57,7 @@ verify_jwt = true
 
 [functions.generate-pitch-deck]
 verify_jwt = true
+
+[functions.schedule-welcome-email]
+verify_jwt = false
+

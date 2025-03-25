@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { sendWelcomeEmail } from "@/integrations/supabase/functions";
+import { sendWelcomeEmail, scheduleWelcomeEmail } from "@/integrations/supabase/functions";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -9,9 +9,11 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export const WelcomeEmailTester = () => {
   const [isSending, setIsSending] = useState(false);
+  const [isScheduling, setIsScheduling] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<any>(null);
   const [email, setEmail] = useState("");
@@ -19,15 +21,20 @@ export const WelcomeEmailTester = () => {
   const [userType, setUserType] = useState<"ai_builder" | "ai_investor">("ai_investor");
   const { toast } = useToast();
 
-  const handleSendWelcomeEmail = async () => {
+  const validateInputs = () => {
     if (!email || !firstName) {
       toast({
         variant: "destructive",
         title: "Missing information",
         description: "Please enter an email address and first name",
       });
-      return;
+      return false;
     }
+    return true;
+  };
+
+  const handleSendWelcomeEmail = async () => {
+    if (!validateInputs()) return;
 
     setIsSending(true);
     setError(null);
@@ -64,12 +71,50 @@ export const WelcomeEmailTester = () => {
     }
   };
 
+  const handleScheduleWelcomeEmail = async () => {
+    if (!validateInputs()) return;
+
+    setIsScheduling(true);
+    setError(null);
+    setSuccess(null);
+    
+    try {
+      console.log(`Scheduling welcome email to ${email} (${userType})`);
+      const response = await scheduleWelcomeEmail(email, firstName, userType);
+      
+      console.log("Schedule welcome email response:", response);
+      
+      if (response.error) {
+        throw new Error(response.error);
+      }
+      
+      setSuccess(response);
+      
+      toast({
+        title: "Welcome email scheduled!",
+        description: `Email will be sent to ${email} in 1 minute`,
+      });
+    } catch (err: any) {
+      console.error("Error scheduling welcome email:", err);
+      const errorMessage = err?.message || "An unexpected error occurred";
+      setError(errorMessage);
+      
+      toast({
+        variant: "destructive",
+        title: "Failed to schedule welcome email",
+        description: errorMessage,
+      });
+    } finally {
+      setIsScheduling(false);
+    }
+  };
+
   return (
     <Card className="shadow-md">
       <CardHeader>
-        <CardTitle className="text-lg">Send Welcome Email</CardTitle>
+        <CardTitle className="text-lg">Welcome Email Sender</CardTitle>
         <CardDescription>
-          Send a welcome email to a specific email address
+          Send or schedule a welcome email to a specific email address
         </CardDescription>
       </CardHeader>
       
@@ -123,7 +168,7 @@ export const WelcomeEmailTester = () => {
           <Alert className="bg-green-50 border-green-200">
             <AlertTitle className="text-green-700">Success</AlertTitle>
             <AlertDescription className="text-green-600">
-              <p>Welcome email sent successfully!</p>
+              <p>{success.message || "Operation completed successfully!"}</p>
               <div className="mt-2 p-2 bg-green-100 text-green-800 rounded text-xs overflow-auto max-h-40">
                 <pre>{JSON.stringify(success, null, 2)}</pre>
               </div>
@@ -132,21 +177,47 @@ export const WelcomeEmailTester = () => {
         )}
       </CardContent>
       
-      <CardFooter>
-        <Button 
-          onClick={handleSendWelcomeEmail} 
-          disabled={isSending}
-          className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white"
-        >
-          {isSending ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Sending...
-            </>
-          ) : (
-            "Send Welcome Email"
-          )}
-        </Button>
+      <CardFooter className="flex flex-col space-y-4">
+        <div className="flex space-x-4 w-full">
+          <Button 
+            onClick={handleSendWelcomeEmail} 
+            disabled={isSending || isScheduling}
+            className="flex-1 bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white"
+          >
+            {isSending ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Sending...
+              </>
+            ) : (
+              "Send Now"
+            )}
+          </Button>
+          
+          <Button 
+            onClick={handleScheduleWelcomeEmail} 
+            disabled={isSending || isScheduling}
+            className="flex-1 bg-[#8B5CF6] text-white"
+          >
+            {isScheduling ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Scheduling...
+              </>
+            ) : (
+              "Schedule (1 min delay)"
+            )}
+          </Button>
+        </div>
+        
+        <div className="text-xs text-gray-500 w-full">
+          <p className="mb-1">Note:</p>
+          <ul className="list-disc pl-4 space-y-1">
+            <li>The "Send Now" option delivers the email immediately</li>
+            <li>The "Schedule" option will send the email after a 1-minute delay</li>
+            <li>New user signups automatically receive a scheduled welcome email with a 1-minute delay</li>
+          </ul>
+        </div>
       </CardFooter>
     </Card>
   );
