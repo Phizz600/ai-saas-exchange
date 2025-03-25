@@ -10,27 +10,8 @@ import WhyChooseUs from "@/components/hero/WhyChooseUs";
 import { ParticlesBackground } from "@/components/hero/ParticlesBackground";
 import { PromotionalBanner } from "@/components/PromotionalBanner";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
 
 export const Index = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  
-  useEffect(() => {
-    const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setIsAuthenticated(!!session);
-    };
-    
-    checkAuth();
-    
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setIsAuthenticated(!!session);
-    });
-    
-    return () => subscription.unsubscribe();
-  }, []);
-  
   return (
     <div className="min-h-screen relative overflow-hidden">
       <ParticlesBackground />
@@ -44,8 +25,8 @@ export const Index = () => {
         <Footer />
         <ExitIntentDialog />
         
-        {/* Admin link - visible in development or to authenticated users */}
-        {(import.meta.env.DEV || isAuthenticated) && (
+        {/* Admin link - only visible in development */}
+        {import.meta.env.DEV && (
           <div className="fixed bottom-4 right-4 z-50">
             <Link 
               to="/admin" 

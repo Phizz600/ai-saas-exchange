@@ -2,8 +2,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
 
-// Initialize with null to detect if not properly set
-let resend: Resend | null = null;
+const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -17,72 +16,14 @@ interface WelcomeEmailRequest {
   userType: 'ai_builder' | 'ai_investor';
 }
 
-// Function to initialize Resend with retry logic
-const initializeResend = (apiKey: string | undefined, retryCount = 0): Resend | null => {
-  try {
-    console.log(`Initializing Resend (attempt ${retryCount + 1})...`);
-    
-    if (!apiKey) {
-      console.error("RESEND_API_KEY is undefined or empty");
-      return null;
-    }
-    
-    console.log(`Using API key: ${apiKey.substring(0, 3)}...${apiKey.substring(apiKey.length - 3)}`);
-    return new Resend(apiKey);
-  } catch (error) {
-    console.error(`Error initializing Resend (attempt ${retryCount + 1}):`, error);
-    return null;
-  }
-};
-
-// Function to send email with retry logic
-const sendEmailWithRetry = async (
-  resendClient: Resend,
-  data: {
-    from: string;
-    to: string[];
-    subject: string;
-    html: string;
-  },
-  maxRetries = 3
-): Promise<any> => {
-  let lastError = null;
-  
-  for (let attempt = 0; attempt < maxRetries; attempt++) {
-    try {
-      console.log(`Sending email attempt ${attempt + 1}/${maxRetries}...`);
-      const response = await resendClient.emails.send(data);
-      console.log(`Email sent successfully on attempt ${attempt + 1}:`, response);
-      return response;
-    } catch (error) {
-      lastError = error;
-      console.error(`Email sending failed on attempt ${attempt + 1}:`, error);
-      
-      if (attempt < maxRetries - 1) {
-        // Exponential backoff (wait longer between each retry)
-        const waitTime = Math.pow(2, attempt) * 1000; // 1s, 2s, 4s, etc.
-        console.log(`Waiting ${waitTime}ms before retry...`);
-        await new Promise(resolve => setTimeout(resolve, waitTime));
-      }
-    }
-  }
-  
-  // If we reach here, all attempts failed
-  throw lastError;
-};
-
 const handler = async (req: Request): Promise<Response> => {
-  // Log the API endpoint being called and method
-  console.log(`Handling ${req.method} request to send-welcome-email function`);
-  
   // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
-    console.log("Handling CORS preflight request");
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    console.log("Starting welcome email process");
+    console.log("Received request to send welcome email");
     
     // Check if Resend API key is available and log it for debugging (redacted)
     const apiKey = Deno.env.get("RESEND_API_KEY");
@@ -90,24 +31,10 @@ const handler = async (req: Request): Promise<Response> => {
       console.error("RESEND_API_KEY is not configured");
       throw new Error("Missing RESEND_API_KEY environment variable");
     }
-    
-    // Only initialize once or if it failed previously
-    if (!resend) {
-      resend = initializeResend(apiKey);
-      if (!resend) {
-        throw new Error("Failed to initialize Resend client");
-      }
-    }
+    console.log(`Using API key: ${apiKey.substring(0, 3)}...${apiKey.substring(apiKey.length - 3)}`);
 
-    // Parse and validate request data
-    let requestData: WelcomeEmailRequest;
-    try {
-      requestData = await req.json();
-      console.log("Request data received:", JSON.stringify(requestData, null, 2));
-    } catch (parseError) {
-      console.error("Failed to parse request JSON:", parseError);
-      throw new Error("Invalid JSON in request body");
-    }
+    const requestData = await req.json();
+    console.log("Request data received:", JSON.stringify(requestData, null, 2));
 
     // Extract and validate email data
     const { firstName, email, userType }: WelcomeEmailRequest = requestData;
@@ -125,11 +52,14 @@ const handler = async (req: Request): Promise<Response> => {
       console.log("User type not provided, using default");
     }
 
-    console.log(`Preparing to send welcome email to ${email} (${userType || "unknown type"})`);
+    console.log(`Sending welcome email to ${email} (${userType || "unknown type"})`);
+
+    // Initialize Resend with the API key - this can help ensure the API key is properly loaded
+    const resendClient = new Resend(apiKey);
     
-    // Try sending the email - using verified sender domain
-    const emailResponse = await sendEmailWithRetry(resend, {
-      from: "AI Exchange Club <hello@aiexchange.club>", // Using verified domain
+    // Try sending the email - using one of the verified email addresses
+    const emailResponse = await resendClient.emails.send({
+      from: "AI Exchange Club <khalid@aiexchange.club>",
       to: [email],
       subject: `Welcome to AI Exchange Club, ${firstName || "New User"}!`,
       html: `
@@ -363,26 +293,21 @@ const handler = async (req: Request): Promise<Response> => {
     // Check for specific error types
     const errorMessage = error.message || "Unknown error";
     let detailedError = "No additional details";
-    let status = 500;
     
     if (error.name === "validation_error") {
       detailedError = "Resend API validation error: This usually means the API key is invalid or expired";
     } else if (errorMessage.includes("fetch")) {
       detailedError = "Network error reaching Resend API: Check your internet connection";
-    } else if (errorMessage.includes("domain") || errorMessage.includes("sender")) {
-      status = 400;
-      detailedError = "Email domain not verified: Make sure your sender domain is verified in Resend";
     }
     
     return new Response(
       JSON.stringify({ 
         error: errorMessage,
         details: detailedError,
-        stack: error.stack,
-        timestamp: new Date().toISOString()
+        stack: error.stack
       }),
       {
-        status,
+        status: 500,
         headers: { "Content-Type": "application/json", ...corsHeaders },
       }
     );

@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { sendTestEmail } from "@/integrations/supabase/functions";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, RefreshCw } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 
@@ -11,21 +11,18 @@ export const TestEmailSender = () => {
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [debugInfo, setDebugInfo] = useState<any>(null);
-  const [emailSent, setEmailSent] = useState<any>(null);
   const { toast } = useToast();
 
   const handleSendTestEmail = async () => {
     setIsSending(true);
     setError(null);
     setDebugInfo(null);
-    setEmailSent(null);
     
     try {
       console.log("Attempting to send test email...");
       const response = await sendTestEmail();
       
       console.log("Email send response:", response);
-      setEmailSent(response);
       
       toast({
         title: "Test email sent!",
@@ -91,26 +88,9 @@ export const TestEmailSender = () => {
             </AlertDescription>
           </Alert>
         )}
-        
-        {emailSent && (
-          <Alert className="mb-4 border-green-200 bg-green-50">
-            <AlertTitle className="text-green-800">Email Sent Successfully</AlertTitle>
-            <AlertDescription className="text-green-700">
-              <div className="mt-2 text-xs">
-                <p><strong>To:</strong> {emailSent.to}</p>
-                <p><strong>First Name:</strong> {emailSent.firstName || "Not provided"}</p>
-                <p><strong>User Type:</strong> {emailSent.userType || "Not specified"}</p>
-                
-                <div className="mt-2 p-2 bg-white border border-green-200 rounded text-xs overflow-auto max-h-40">
-                  <pre>{JSON.stringify(emailSent.response || {}, null, 2)}</pre>
-                </div>
-              </div>
-            </AlertDescription>
-          </Alert>
-        )}
       </CardContent>
       
-      <CardFooter className="flex justify-between">
+      <CardFooter>
         <Button 
           onClick={handleSendTestEmail} 
           disabled={isSending}
@@ -122,10 +102,7 @@ export const TestEmailSender = () => {
               Sending...
             </>
           ) : (
-            <>
-              <RefreshCw className="mr-2 h-4 w-4" />
-              Send Test Email
-            </>
+            "Send Test Email"
           )}
         </Button>
       </CardFooter>

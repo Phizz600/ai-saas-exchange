@@ -3,90 +3,21 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 import { Resend } from "npm:resend@2.0.0";
 
-// Initialize with null to detect if not properly set
-let resend: Resend | null = null;
-
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
     "authorization, x-client-info, apikey, content-type",
 };
 
-// Function to initialize Resend with retry logic
-const initializeResend = (apiKey: string | undefined, retryCount = 0): Resend | null => {
-  try {
-    console.log(`Initializing Resend (attempt ${retryCount + 1})...`);
-    
-    if (!apiKey) {
-      console.error("RESEND_API_KEY is undefined or empty");
-      return null;
-    }
-    
-    console.log(`Using API key: ${apiKey.substring(0, 3)}...${apiKey.substring(apiKey.length - 3)}`);
-    return new Resend(apiKey);
-  } catch (error) {
-    console.error(`Error initializing Resend (attempt ${retryCount + 1}):`, error);
-    return null;
-  }
-};
-
-// Function to send email with retry logic
-const sendEmailWithRetry = async (
-  resendClient: Resend,
-  data: {
-    from: string;
-    to: string[];
-    subject: string;
-    html: string;
-  },
-  maxRetries = 3
-): Promise<any> => {
-  let lastError = null;
-  
-  for (let attempt = 0; attempt < maxRetries; attempt++) {
-    try {
-      console.log(`Sending email attempt ${attempt + 1}/${maxRetries}...`);
-      const response = await resendClient.emails.send(data);
-      console.log(`Email sent successfully on attempt ${attempt + 1}:`, response);
-      return response;
-    } catch (error) {
-      lastError = error;
-      console.error(`Email sending failed on attempt ${attempt + 1}:`, error);
-      
-      if (attempt < maxRetries - 1) {
-        // Exponential backoff (wait longer between each retry)
-        const waitTime = Math.pow(2, attempt) * 1000; // 1s, 2s, 4s, etc.
-        console.log(`Waiting ${waitTime}ms before retry...`);
-        await new Promise(resolve => setTimeout(resolve, waitTime));
-      }
-    }
-  }
-  
-  // If we reach here, all attempts failed
-  throw lastError;
-};
-
 const handler = async (req: Request): Promise<Response> => {
-  // Log the API endpoint being called and method
-  console.log(`Handling ${req.method} request to send-test-email function`);
-  
   // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
-    console.log("Handling CORS preflight request");
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    console.log("Starting test email process");
-    
     // Log available environment variables (without revealing their values)
     const apiKey = Deno.env.get("RESEND_API_KEY");
-    if (!apiKey) {
-      console.error("RESEND_API_KEY is not configured");
-      throw new Error("Missing RESEND_API_KEY environment variable");
-    }
-    
-    // Check environment variables
     console.log("Environment check:", {
       hasResendKey: !!apiKey,
       hasSupabaseUrl: !!Deno.env.get("SUPABASE_URL"),
@@ -97,22 +28,9 @@ const handler = async (req: Request): Promise<Response> => {
       apiKeySuffix: apiKey ? apiKey.substring(apiKey.length - 3) : "N/A"
     });
 
-    // Only initialize once or if it failed previously
-    if (!resend) {
-      resend = initializeResend(apiKey);
-      if (!resend) {
-        throw new Error("Failed to initialize Resend client");
-      }
-    }
-
     // Log request body for debugging
-    let requestBody: any = {};
-    try {
-      requestBody = await req.json();
-      console.log("Request body:", requestBody);
-    } catch (e) {
-      console.log("No request body or invalid JSON");
-    }
+    const requestBody = await req.json();
+    console.log("Request body:", requestBody);
 
     // Initialize Supabase admin client with service role key
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
@@ -122,86 +40,54 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("Missing required environment variables: SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY");
     }
     
-    console.log("Initializing Supabase client...");
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
     console.log("Supabase client initialized");
     
-    // Try to fetch users using different approaches
-    console.log("Attempting to fetch user data...");
-    
+    // First check for users in auth.users
+    console.log("Attempting to fetch most recent user from auth.users...");
+    const { data: authUsers, error: authUserError } = await supabase
+      .from('auth')
+      .select('users(id, email, created_at)')
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single();
+
     let userEmail;
     let firstName = "User";
     let userType = "ai_investor";
-    let foundUser = false;
-    
-    try {
-      // Try fetching from profiles table first
-      console.log("Trying to fetch user from profiles table...");
+
+    if (authUserError || !authUsers) {
+      console.log("Could not fetch from auth.users, trying profiles table");
+      
+      // Get the most recent user from profiles
       const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
         .select('id, first_name, user_type')
         .order('created_at', { ascending: false })
         .limit(1);
       
-      if (profilesError) {
+      if (profilesError || !profiles || profiles.length === 0) {
         console.error("Error fetching from profiles:", profilesError);
-      } else if (profiles && profiles.length > 0) {
-        console.log("Found user in profiles table:", profiles[0]);
-        
-        // Get the user email from auth.users using the profile ID
-        const profile = profiles[0];
-        const { data: userData, error: userError } = await supabase
-          .auth.admin.getUserById(profile.id);
-        
-        if (userError) {
-          console.error("Error fetching user email:", userError);
-        } else if (userData && userData.user && userData.user.email) {
-          userEmail = userData.user.email;
-          firstName = profile.first_name || "User";
-          userType = profile.user_type || "ai_investor";
-          foundUser = true;
-          console.log(`Successfully found user: ${userEmail} (${firstName}, ${userType})`);
-        }
+        throw new Error(`No users found in the system or unable to access user data`);
       }
-    } catch (error) {
-      console.error("Error in first approach:", error);
-    }
-    
-    // If first approach failed, try another approach
-    if (!foundUser) {
-      try {
-        console.log("First approach failed, trying alternative approach...");
-        const { data: { users }, error: usersError } = await supabase.auth.admin.listUsers({
-          page: 1,
-          perPage: 1
-        });
-        
-        if (usersError) {
-          console.error("Error listing users:", usersError);
-        } else if (users && users.length > 0) {
-          userEmail = users[0].email;
-          // Try to get the user's profile data
-          try {
-            const { data: profile } = await supabase
-              .from('profiles')
-              .select('first_name, user_type')
-              .eq('id', users[0].id)
-              .maybeSingle();
-              
-            if (profile) {
-              firstName = profile.first_name || "User";
-              userType = profile.user_type || "ai_investor";
-            }
-          } catch (profileError) {
-            console.error("Error fetching profile:", profileError);
-          }
-          
-          foundUser = true;
-          console.log(`Found user with alternative approach: ${userEmail}`);
-        }
-      } catch (error) {
-        console.error("Error in alternative approach:", error);
+
+      // Get the user email from auth.users using the profile ID
+      const profile = profiles[0];
+      const { data: userData, error: userError } = await supabase
+        .auth.admin.getUserById(profile.id);
+      
+      if (userError || !userData || !userData.user || !userData.user.email) {
+        console.error("Error fetching user email:", userError);
+        throw new Error("Unable to retrieve user email");
       }
+      
+      userEmail = userData.user.email;
+      firstName = profile.first_name || "User";
+      userType = profile.user_type || "ai_investor";
+    } else {
+      // Use data from auth.users
+      const user = authUsers.users;
+      userEmail = user.email;
     }
 
     if (!userEmail) {
@@ -209,10 +95,18 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     console.log(`Sending test email to user: ${userEmail}`);
+
+    // Check if Resend API key is available
+    if (!apiKey) {
+      throw new Error("Missing RESEND_API_KEY environment variable");
+    }
+
+    // Initialize Resend with the API key
+    const resend = new Resend(apiKey);
     
     // Send the welcome email with your verified domain
-    const emailResponse = await sendEmailWithRetry(resend, {
-      from: "AI Exchange Club <hello@aiexchange.club>",
+    const emailResponse = await resend.emails.send({
+      from: "AI Exchange Club <khalid@aiexchange.club>",
       to: [userEmail],
       subject: `Welcome to AI Exchange Club, ${firstName}!`,
       html: `
@@ -449,24 +343,12 @@ const handler = async (req: Request): Promise<Response> => {
     console.error("Error in send-test-email function:", error);
     console.error("Error details:", error.message, error.stack);
     
-    // Provide more detailed error information
-    const errorInfo = {
-      error: error.message,
-      stack: error.stack,
-      context: "Error occurred in send-test-email Edge Function",
-      timestamp: new Date().toISOString(),
-      // Check for specific error types
-      details: error.name === "validation_error" 
-        ? "Resend API validation error: This usually means the API key is invalid or expired"
-        : error.message.includes("fetch")
-        ? "Network error reaching Resend API: Check your internet connection"
-        : error.message.includes("domain") || error.message.includes("sender")
-        ? "Email domain not verified: Make sure your sender domain is verified in Resend"
-        : "Unknown error type"
-    };
-    
     return new Response(
-      JSON.stringify(errorInfo),
+      JSON.stringify({ 
+        error: error.message,
+        stack: error.stack,
+        context: "Error occurred in send-test-email Edge Function"
+      }),
       {
         status: 500,
         headers: { "Content-Type": "application/json", ...corsHeaders },

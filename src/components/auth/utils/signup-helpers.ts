@@ -120,9 +120,33 @@ export const handleAuthSubmit = async (
         description: "Your account has been created. Setting up your profile...",
       });
 
-      // Send welcome email - with retry mechanism
+      // Send welcome email
       console.log("AuthForm: Sending welcome email to:", email);
-      sendWelcomeEmailWithRetry(email, firstName, userType);
+      try {
+        const emailResult = await supabase.functions.invoke('send-welcome-email', {
+          body: {
+            email,
+            firstName,
+            userType
+          }
+        });
+        console.log("Welcome email sent successfully:", emailResult);
+        
+        // Show a toast notifying the user about the welcome email
+        toast({
+          title: "Welcome Email Sent",
+          description: "Check your inbox for a welcome email with next steps!",
+        });
+      } catch (emailError: any) {
+        console.error("Error sending welcome email:", emailError);
+        console.error("Error details:", emailError.message);
+        // Show error toast but don't block signup
+        toast({
+          variant: "destructive",
+          title: "Email Delivery Issue",
+          description: "We couldn't send your welcome email, but your account was created successfully.",
+        });
+      }
       
     } else {
       console.log("AuthForm: Starting signin process");
@@ -149,60 +173,4 @@ export const handleAuthSubmit = async (
     setErrorMessage(error.message || "An unexpected error occurred.");
     setIsLoading(false);
   }
-};
-
-// Helper function to send welcome email with retry mechanism
-const sendWelcomeEmailWithRetry = async (
-  email: string, 
-  firstName: string, 
-  userType: 'ai_builder' | 'ai_investor',
-  maxRetries = 3
-) => {
-  let attempt = 0;
-  
-  const attemptSend = async () => {
-    attempt++;
-    console.log(`Welcome email attempt ${attempt}/${maxRetries}`);
-    
-    try {
-      const emailResult = await supabase.functions.invoke('send-welcome-email', {
-        body: {
-          email,
-          firstName,
-          userType
-        }
-      });
-      console.log("Welcome email sent successfully:", emailResult);
-      
-      // Show a toast notifying the user about the welcome email
-      toast({
-        title: "Welcome Email Sent",
-        description: "Check your inbox for a welcome email with next steps!",
-      });
-      
-      return true; // Success
-    } catch (emailError: any) {
-      console.error(`Error sending welcome email (attempt ${attempt}):`, emailError);
-      console.error("Error details:", emailError.message);
-      
-      // If we have more retries left, wait and try again
-      if (attempt < maxRetries) {
-        const delay = Math.pow(2, attempt) * 1000; // Exponential backoff: 2s, 4s, 8s
-        console.log(`Retrying in ${delay}ms...`);
-        await new Promise(resolve => setTimeout(resolve, delay));
-        return await attemptSend();
-      }
-      
-      // All retries failed
-      toast({
-        variant: "destructive",
-        title: "Email Delivery Issue",
-        description: "We couldn't send your welcome email, but your account was created successfully.",
-      });
-      
-      return false;
-    }
-  };
-  
-  return attemptSend();
 };
