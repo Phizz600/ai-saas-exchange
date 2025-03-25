@@ -35,6 +35,12 @@ export const sendTestEmail = async () => {
       throw error;
     }
     
+    // Check for errors in the response data
+    if (data?.error) {
+      console.error("Error response from edge function:", data.error);
+      throw new Error(data.error);
+    }
+    
     console.log("Edge function response:", data);
     return data;
   } catch (err) {
@@ -57,6 +63,8 @@ export const sendTestEmail = async () => {
 export const sendWelcomeEmail = async (email: string, firstName: string, userType: 'ai_builder' | 'ai_investor') => {
   console.log(`Sending welcome email to ${email}`);
   try {
+    const startTime = performance.now();
+    
     const { data, error } = await supabase.functions.invoke('send-welcome-email', {
       body: { 
         email,
@@ -65,15 +73,52 @@ export const sendWelcomeEmail = async (email: string, firstName: string, userTyp
       }
     });
     
+    const endTime = performance.now();
+    console.log(`Welcome email function call took ${endTime - startTime}ms`);
+    
     if (error) {
       console.error("Error sending welcome email:", error);
       throw error;
+    }
+    
+    // Check for errors in the response data
+    if (data?.error) {
+      console.error("Error in welcome email response:", data.error);
+      throw new Error(data.error);
     }
     
     console.log("Welcome email sent successfully:", data);
     return data;
   } catch (err) {
     console.error("Error in sendWelcomeEmail function:", err);
+    
+    // Add retry logic for transient errors
+    if (err.message?.includes('NetworkError') || err.message?.includes('Failed to fetch')) {
+      console.log("Network error detected, retrying once...");
+      
+      try {
+        // Wait 1 second before retrying
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        const { data, error } = await supabase.functions.invoke('send-welcome-email', {
+          body: { 
+            email,
+            firstName,
+            userType
+          }
+        });
+        
+        if (error) throw error;
+        if (data?.error) throw new Error(data.error);
+        
+        console.log("Welcome email sent successfully on retry:", data);
+        return data;
+      } catch (retryErr) {
+        console.error("Retry also failed:", retryErr);
+        throw new Error(`Failed to send welcome email after retry: ${retryErr.message}`);
+      }
+    }
+    
     throw err;
   }
 };
