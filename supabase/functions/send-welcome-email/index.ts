@@ -106,7 +106,13 @@ const handler = async (req: Request): Promise<Response> => {
             <meta name="viewport" content="width=device-width, initial-scale=1">
             <title>Welcome to AI Exchange Club</title>
             <style>
-              @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700&display=swap');
+              @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;600;700;800&display=swap');
+              
+              * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+              }
               
               body {
                 font-family: 'Exo 2', Arial, sans-serif;
@@ -116,141 +122,256 @@ const handler = async (req: Request): Promise<Response> => {
                 margin: 0;
                 padding: 0;
               }
+              
+              .email-wrapper {
+                max-width: 100%;
+                margin: 0 auto;
+                background-color: #f9f9f9;
+                padding: 20px;
+              }
+              
               .email-container {
                 max-width: 600px;
                 margin: 0 auto;
                 background-color: #ffffff;
-                border-radius: 12px;
+                border-radius: 16px;
                 overflow: hidden;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+                box-shadow: 0 8px 30px rgba(0,0,0,0.08);
               }
+              
               .email-header {
-                padding: 24px;
+                padding: 30px 20px;
                 text-align: center;
-                background: linear-gradient(90deg, #D946EE 0%, #8B5CF6 50%, #0EA4E9 100%);
+                background: linear-gradient(135deg, #D946EE 0%, #8B5CF6 50%, #0EA4E9 100%);
+                position: relative;
               }
-              .email-header img {
-                max-width: 200px;
+              
+              .logo {
+                max-width: 180px;
                 height: auto;
+                display: inline-block;
+                margin-bottom: 15px;
               }
-              .email-body {
-                padding: 30px;
+              
+              .header-title {
+                color: white;
+                font-size: 28px;
+                font-weight: 700;
+                margin: 0;
+                text-shadow: 0 2px 4px rgba(0,0,0,0.15);
+                letter-spacing: 0.5px;
               }
-              .greeting {
+              
+              .header-subtitle {
+                color: rgba(255,255,255,0.9);
                 font-size: 18px;
-                margin-bottom: 20px;
+                font-weight: 400;
+                margin-top: 5px;
               }
+              
+              .email-body {
+                padding: 40px 30px;
+              }
+              
+              .greeting {
+                font-size: 20px;
+                margin-bottom: 25px;
+                color: #333;
+                font-weight: 500;
+              }
+              
+              .greeting strong {
+                color: #8B5CF6;
+                font-weight: 700;
+              }
+              
               h1 {
                 color: #8B5CF6;
                 font-weight: 700;
                 margin-top: 0;
-                margin-bottom: 24px;
-                font-size: 28px;
+                margin-bottom: 30px;
+                font-size: 26px;
+                letter-spacing: -0.5px;
               }
+              
               h2 {
                 color: #0EA4E9;
                 font-weight: 600;
                 font-size: 22px;
-                margin-top: 30px;
-                margin-bottom: 15px;
+                margin-top: 40px;
+                margin-bottom: 18px;
               }
+              
+              p {
+                margin: 0 0 20px;
+                color: #333;
+                font-size: 16px;
+              }
+              
               .feature-list {
-                background-color: #f6f5ff;
-                border-radius: 8px;
-                padding: 20px 25px;
-                margin-bottom: 25px;
+                background-color: #f7f5ff;
+                border-radius: 12px;
+                padding: 25px 30px;
+                margin-bottom: 30px;
+                border-left: 5px solid #8B5CF6;
               }
+              
               .feature-list ul {
-                margin: 0;
-                padding-left: 20px;
+                margin: 15px 0 5px;
+                padding-left: 25px;
               }
+              
               .feature-list li {
-                margin-bottom: 10px;
+                margin-bottom: 12px;
+                position: relative;
+                list-style-type: none;
+                padding-left: 5px;
               }
+              
+              .feature-list li:before {
+                content: "•";
+                color: #D946EE;
+                font-weight: bold;
+                font-size: 24px;
+                display: inline-block;
+                width: 20px;
+                position: absolute;
+                left: -20px;
+                top: -5px;
+              }
+              
+              .feature-list li strong {
+                color: #0EA4E9;
+                font-weight: 600;
+              }
+              
+              .cta-container {
+                text-align: center;
+                margin: 35px 0;
+              }
+              
               .cta-button {
                 display: inline-block;
                 background: linear-gradient(90deg, #D946EE 0%, #8B5CF6 100%);
                 color: white;
                 text-decoration: none;
-                padding: 12px 24px;
-                border-radius: 8px;
+                padding: 16px 30px;
+                border-radius: 12px;
                 font-weight: 600;
-                margin: 25px 0;
+                font-size: 18px;
                 transition: all 0.3s ease;
+                box-shadow: 0 4px 15px rgba(139, 92, 246, 0.35);
               }
-              .cta-button:hover {
-                opacity: 0.9;
-                transform: translateY(-2px);
-              }
+              
               .email-footer {
                 background-color: #f6f5ff;
-                padding: 20px;
+                padding: 25px 20px;
                 text-align: center;
                 color: #666;
                 font-size: 14px;
+                border-top: 1px solid #eee;
               }
-              .social-icons {
-                margin: 15px 0;
+              
+              .footer-social {
+                margin: 15px 0 20px;
               }
-              .social-icon {
-                display: inline-block;
-                margin: 0 10px;
-                width: 24px;
-                height: 24px;
+              
+              .footer-text {
+                margin-bottom: 8px;
+                color: #777;
+                font-size: 14px;
+              }
+              
+              .divider {
+                height: 1px;
+                background: linear-gradient(to right, transparent, rgba(139, 92, 246, 0.4), transparent);
+                margin: 30px 0;
+              }
+              
+              .highlight {
+                color: #D946EE;
+                font-weight: 600;
+              }
+              
+              @media only screen and (max-width: 550px) {
+                .email-body {
+                  padding: 30px 20px;
+                }
+                
+                h1 {
+                  font-size: 24px;
+                }
+                
+                h2 {
+                  font-size: 20px;
+                }
+                
+                .feature-list {
+                  padding: 20px 15px;
+                }
               }
             </style>
           </head>
           <body>
-            <div class="email-container">
-              <div class="email-header">
-                <img src="https://aiexchange.club/ai-exchange-logo.png" alt="AI Exchange Club Logo">
-              </div>
-              
-              <div class="email-body">
-                <h1>Welcome to the AI Exchange Club!</h1>
+            <div class="email-wrapper">
+              <div class="email-container">
+                <div class="email-header">
+                  <img src="https://aiexchange.club/ai-exchange-logo.png" alt="AI Exchange Club Logo" class="logo">
+                  <h1 class="header-title">Welcome to the Future of AI</h1>
+                  <p class="header-subtitle">Where Innovation Meets Investment</p>
+                </div>
                 
-                <p class="greeting">Hi ${firstName || "there"},</p>
-                
-                <p>We're thrilled to welcome you to our community of passionate individuals in the AI ecosystem! You've joined at an exciting time as AI continues to transform industries worldwide.</p>
-                
-                ${userType === 'ai_builder' ? `
-                  <h2>Your Journey as an AI Builder Starts Now</h2>
-                  <div class="feature-list">
-                    <p>Here's what you can do with your new account:</p>
-                    <ul>
-                      <li><strong>Showcase your AI solutions</strong> to potential investors and partners</li>
-                      <li><strong>Connect with investors</strong> looking for the next big AI innovation</li>
-                      <li><strong>Track engagement</strong> with your products and analyze market interest</li>
-                      <li><strong>Access resources</strong> to help scale your AI business</li>
-                    </ul>
+                <div class="email-body">
+                  <p class="greeting">Hi <strong>${firstName || "there"}</strong>,</p>
+                  
+                  <p>We're thrilled to welcome you to the <span class="highlight">AI Exchange Club</span> — your gateway to the future of artificial intelligence. You've joined at an exciting time as AI continues to transform industries worldwide.</p>
+                  
+                  ${userType === 'ai_builder' ? `
+                    <h2>Your Journey as an AI Builder Starts Now</h2>
+                    <div class="feature-list">
+                      <p>Here's what you can do with your new account:</p>
+                      <ul>
+                        <li><strong>Showcase your AI solutions</strong> to a curated network of potential investors and partners</li>
+                        <li><strong>Connect with investors</strong> who are actively looking for the next big AI innovation</li>
+                        <li><strong>Track engagement metrics</strong> with your products and analyze market interest in real-time</li>
+                        <li><strong>Access exclusive resources</strong> and support to help scale your AI business</li>
+                      </ul>
+                    </div>
+                  ` : `
+                    <h2>Your Journey as an AI Investor Starts Now</h2>
+                    <div class="feature-list">
+                      <p>Here's what you can do with your new account:</p>
+                      <ul>
+                        <li><strong>Discover innovative AI solutions</strong> across various domains and industries before they hit the mainstream market</li>
+                        <li><strong>Connect directly with builders</strong> creating cutting-edge AI technology to form valuable partnerships</li>
+                        <li><strong>Track potential investment opportunities</strong> based on your preferences and investment criteria</li>
+                        <li><strong>Get early access</strong> to promising AI products and services with exclusive member benefits</li>
+                      </ul>
+                    </div>
+                  `}
+                  
+                  <p>Our platform is designed to create meaningful connections and facilitate growth in the AI space. Whether you're building, investing, or exploring, we're here to support your journey every step of the way.</p>
+                  
+                  <div class="divider"></div>
+                  
+                  <p>To get started, we recommend exploring our marketplace to see what's currently trending in the AI space:</p>
+                  
+                  <div class="cta-container">
+                    <a href="https://aiexchange.club/marketplace" class="cta-button">Explore the Marketplace</a>
                   </div>
-                ` : `
-                  <h2>Your Journey as an AI Investor Starts Now</h2>
-                  <div class="feature-list">
-                    <p>Here's what you can do with your new account:</p>
-                    <ul>
-                      <li><strong>Discover innovative AI solutions</strong> across various domains and industries</li>
-                      <li><strong>Connect directly with builders</strong> creating cutting-edge AI technology</li>
-                      <li><strong>Track potential investment opportunities</strong> based on your preferences</li>
-                      <li><strong>Get early access</strong> to promising AI products and services</li>
-                    </ul>
-                  </div>
-                `}
+                  
+                  <p>If you have any questions or need assistance, our team is ready to help you make the most of your AI Exchange Club membership. Just reply to this email or reach out to our support team.</p>
+                  
+                  <p>We're excited to see what you'll accomplish!</p>
+                  
+                  <p>Best regards,<br><span class="highlight">The AI Exchange Club Team</span></p>
+                </div>
                 
-                <p>Our platform is designed to create meaningful connections and facilitate growth in the AI space. Whether you're building, investing, or exploring, we're here to support your journey.</p>
-                
-                <center>
-                  <a href="https://aiexchange.club/marketplace" class="cta-button">Explore the Marketplace</a>
-                </center>
-                
-                <p>If you have any questions or need assistance, don't hesitate to reach out to our support team.</p>
-                
-                <p>Best regards,<br>The AI Exchange Club Team</p>
-              </div>
-              
-              <div class="email-footer">
-                <p>© 2023 AI Exchange Club. All rights reserved.</p>
-                <p>This email was sent to ${email}</p>
+                <div class="email-footer">
+                  <p class="footer-text">© 2023 AI Exchange Club. All rights reserved.</p>
+                  <p class="footer-text">This email was sent to ${email}</p>
+                  <p class="footer-text">You received this email because you signed up for an AI Exchange Club account.</p>
+                </div>
               </div>
             </div>
           </body>
