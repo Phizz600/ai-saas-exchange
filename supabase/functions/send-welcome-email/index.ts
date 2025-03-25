@@ -91,6 +91,15 @@ const handler = async (req: Request): Promise<Response> => {
     // Initialize Resend with the API key - this can help ensure the API key is properly loaded
     const resend = new Resend(apiKey);
     
+    // Set the destination URL based on userType
+    const ctaButtonUrl = userType === 'ai_builder' 
+      ? 'https://aiexchange.club/list-product' 
+      : 'https://aiexchange.club/coming-soon';
+    
+    const ctaButtonText = userType === 'ai_builder'
+      ? 'List Your AI Product'
+      : 'Explore the Marketplace';
+    
     // Try sending the email with proper error handling
     try {
       // Send the welcome email using a verified sender address
@@ -357,7 +366,7 @@ const handler = async (req: Request): Promise<Response> => {
                   <p>To get started, we recommend exploring our marketplace to see what's currently trending in the AI space:</p>
                   
                   <div class="cta-container">
-                    <a href="https://aiexchange.club/marketplace" class="cta-button">Explore the Marketplace</a>
+                    <a href="${ctaButtonUrl}" class="cta-button">${ctaButtonText}</a>
                   </div>
                   
                   <p>If you have any questions or need assistance, our team is ready to help you make the most of your AI Exchange Club membership. Just reply to this email or reach out to our support team.</p>
