@@ -91,14 +91,14 @@ const handler = async (req: Request): Promise<Response> => {
     // Initialize Resend with the API key - this can help ensure the API key is properly loaded
     const resend = new Resend(apiKey);
     
-    // Set the destination URL based on userType
+    // Set the destination URL based on userType - updated to send investors to questionnaire
     const ctaButtonUrl = userType === 'ai_builder' 
       ? 'https://aiexchange.club/list-product' 
-      : 'https://aiexchange.club/coming-soon';
+      : 'https://aiexchange.club/investor-questionnaire';
     
     const ctaButtonText = userType === 'ai_builder'
       ? 'List Your AI Product'
-      : 'Explore the Marketplace';
+      : 'Start Investor Questionnaire';
     
     // Try sending the email with proper error handling
     try {
@@ -346,6 +346,8 @@ const handler = async (req: Request): Promise<Response> => {
                         <li><strong>Access exclusive resources</strong> and support to help scale your AI business</li>
                       </ul>
                     </div>
+                    
+                    <p>Our platform is designed to create meaningful connections and facilitate growth in the AI space. Ready to list your AI product and start attracting investors?</p>
                   ` : `
                     <h2>Your Journey as an AI Investor Starts Now</h2>
                     <div class="feature-list">
@@ -357,13 +359,15 @@ const handler = async (req: Request): Promise<Response> => {
                         <li><strong>Get early access</strong> to promising AI products and services with exclusive member benefits</li>
                       </ul>
                     </div>
+                    
+                    <p>Our platform is designed to connect you with AI innovations that match your investment interests. To help us understand your preferences, we've created a quick questionnaire.</p>
                   `}
-                  
-                  <p>Our platform is designed to create meaningful connections and facilitate growth in the AI space. Whether you're building, investing, or exploring, we're here to support your journey every step of the way.</p>
                   
                   <div class="divider"></div>
                   
-                  <p>To get started, we recommend exploring our marketplace to see what's currently trending in the AI space:</p>
+                  <p>${userType === 'ai_builder' ? 
+                    'To get started, head over to our product listing page:' : 
+                    'Take our quick questionnaire to help us match you with the right AI opportunities:'}</p>
                   
                   <div class="cta-container">
                     <a href="${ctaButtonUrl}" class="cta-button">${ctaButtonText}</a>

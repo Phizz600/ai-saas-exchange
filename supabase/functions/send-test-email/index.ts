@@ -126,6 +126,11 @@ const handler = async (req: Request): Promise<Response> => {
 
     const resend = new Resend(apiKey);
     
+    // Set the destination URL based on userType
+    const ctaButtonUrl = userType === 'ai_builder' 
+      ? 'https://aiexchange.club/list-product' 
+      : 'https://aiexchange.club/investor-questionnaire';
+    
     // Test the API key with a validation check
     try {
       console.log("Validating Resend API key...");
@@ -269,6 +274,12 @@ const handler = async (req: Request): Promise<Response> => {
                       <li><strong>Access resources</strong> to help scale your AI business</li>
                     </ul>
                   </div>
+                  
+                  <p>Ready to list your AI product and start attracting investors?</p>
+                  
+                  <center>
+                    <a href="https://aiexchange.club/list-product" class="cta-button">List Your AI Product</a>
+                  </center>
                 ` : `
                   <h2>Your Journey as an AI Investor Starts Now</h2>
                   <div class="feature-list">
@@ -280,13 +291,13 @@ const handler = async (req: Request): Promise<Response> => {
                       <li><strong>Get early access</strong> to promising AI products and services</li>
                     </ul>
                   </div>
+                  
+                  <p>Let's start by understanding your investment preferences:</p>
+                  
+                  <center>
+                    <a href="https://aiexchange.club/investor-questionnaire" class="cta-button">Start Investor Questionnaire</a>
+                  </center>
                 `}
-                
-                <p>Our platform is designed to create meaningful connections and facilitate growth in the AI space. Whether you're building, investing, or exploring, we're here to support your journey.</p>
-                
-                <center>
-                  <a href="https://aiexchange.club/marketplace" class="cta-button">Explore the Marketplace</a>
-                </center>
                 
                 <p>If you have any questions or need assistance, don't hesitate to reach out to our support team.</p>
                 
