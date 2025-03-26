@@ -172,7 +172,7 @@ const handler = async (req: Request): Promise<Response> => {
               }
               
               .header-subtitle {
-                color: rgba(255,255,255,0.9);
+                color: white;
                 font-size: 18px;
                 font-weight: 400;
                 margin-top: 5px;
@@ -325,7 +325,7 @@ const handler = async (req: Request): Promise<Response> => {
             <div class="email-wrapper">
               <div class="email-container">
                 <div class="email-header">
-                  <img src="https://aiexchange.club/ai-exchange-logo.png" alt="AI Exchange Club Logo" class="logo">
+                  <img src="https://aiexchange.club/lovable-uploads/0283f7d5-13a6-40c9-b40a-69868474cec9.png" alt="AI Exchange Club Logo" class="logo">
                   <h1 class="header-title">Welcome to the Future of AI</h1>
                   <p class="header-subtitle">Where Innovation Meets Investment</p>
                 </div>

@@ -169,6 +169,15 @@ const handler = async (req: Request): Promise<Response> => {
                 max-width: 200px;
                 height: auto;
               }
+              .email-header h1 {
+                color: white;
+                margin-top: 15px;
+                font-size: 24px;
+              }
+              .email-header p {
+                color: white;
+                margin: 5px 0 0;
+              }
               .email-body {
                 padding: 30px;
               }
@@ -239,12 +248,12 @@ const handler = async (req: Request): Promise<Response> => {
           <body>
             <div class="email-container">
               <div class="email-header">
-                <img src="https://aiexchange.club/ai-exchange-logo.png" alt="AI Exchange Club Logo">
+                <img src="https://aiexchange.club/lovable-uploads/0283f7d5-13a6-40c9-b40a-69868474cec9.png" alt="AI Exchange Club Logo">
+                <h1>Welcome to the AI Exchange Club!</h1>
+                <p>Where Innovation Meets Investment</p>
               </div>
               
               <div class="email-body">
-                <h1>Welcome to the AI Exchange Club!</h1>
-                
                 <p class="greeting">Hi ${firstName || "there"},</p>
                 
                 <p>We're thrilled to welcome you to our community of passionate individuals in the AI ecosystem! You've joined at an exciting time as AI continues to transform industries worldwide.</p>
