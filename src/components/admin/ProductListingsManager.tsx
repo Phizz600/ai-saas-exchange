@@ -32,7 +32,8 @@ type Product = {
   price: number;
   created_at: string;
   seller?: {
-    full_name: string;
+    full_name: string | null;
+    first_name: string | null;
     avatar_url: string;
   };
 };
@@ -52,7 +53,7 @@ export const ProductListingsManager = () => {
         .from('products')
         .select(`
           *,
-          seller:profiles(full_name, avatar_url)
+          seller:profiles(full_name, first_name, avatar_url)
         `);
       
       if (statusFilter) {
@@ -120,6 +121,12 @@ export const ProductListingsManager = () => {
     }
   };
 
+  // Helper function to get seller display name
+  const getSellerName = (seller: Product['seller']) => {
+    if (!seller) return 'Unknown';
+    return seller.full_name || seller.first_name || 'Unknown';
+  };
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
@@ -176,7 +183,7 @@ export const ProductListingsManager = () => {
               {products.map((product) => (
                 <TableRow key={product.id}>
                   <TableCell className="font-medium">{product.title}</TableCell>
-                  <TableCell>{product.seller?.full_name || 'Unknown'}</TableCell>
+                  <TableCell>{getSellerName(product.seller)}</TableCell>
                   <TableCell>{product.category}</TableCell>
                   <TableCell>${product.price.toLocaleString()}</TableCell>
                   <TableCell>{getStatusBadge(product.status)}</TableCell>

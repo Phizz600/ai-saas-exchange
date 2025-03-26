@@ -29,7 +29,8 @@ type Product = {
   stage?: string;
   created_at: string;
   seller?: {
-    full_name: string;
+    full_name: string | null;
+    first_name: string | null;
     avatar_url: string;
   };
 };
@@ -70,6 +71,12 @@ export function ProductReviewDialog({
     onClose();
   };
 
+  // Helper function to get seller display name
+  const getSellerName = () => {
+    if (!product.seller) return "Unknown Seller";
+    return product.seller.full_name || product.seller.first_name || "Unknown Seller";
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
@@ -106,7 +113,7 @@ export function ProductReviewDialog({
               </div>
               <p className="text-sm text-gray-500">
                 Submitted on {format(new Date(product.created_at), "MMM d, yyyy")} by{" "}
-                {product.seller?.full_name || "Unknown Seller"}
+                {getSellerName()}
               </p>
             </div>
           </div>
