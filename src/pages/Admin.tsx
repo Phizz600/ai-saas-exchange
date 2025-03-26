@@ -2,6 +2,7 @@
 import { Header } from "@/components/Header";
 import { TestEmailSender } from "@/components/admin/TestEmailSender";
 import { WelcomeEmailTester } from "@/components/admin/WelcomeEmailTester";
+import { ProductListingsManager } from "@/components/admin/ProductListingsManager";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -24,11 +25,16 @@ export const Admin = () => {
             </AlertDescription>
           </Alert>
           
-          <Tabs defaultValue="emails" className="mb-6">
+          <Tabs defaultValue="products" className="mb-6">
             <TabsList className="mb-4">
+              <TabsTrigger value="products">Product Listings</TabsTrigger>
               <TabsTrigger value="emails">Email Testing</TabsTrigger>
               <TabsTrigger value="settings">Settings</TabsTrigger>
             </TabsList>
+            
+            <TabsContent value="products">
+              <ProductListingsManager />
+            </TabsContent>
             
             <TabsContent value="emails">
               <Card className="border-none shadow-none">
