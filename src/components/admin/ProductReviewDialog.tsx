@@ -56,8 +56,8 @@ export function ProductReviewDialog({
   const handleApprove = () => {
     setIsSubmitting(true);
     onApprove(product.id);
+    setFeedback(""); // Reset feedback after submission
     setIsSubmitting(false);
-    onClose();
   };
 
   const handleReject = () => {
@@ -67,8 +67,8 @@ export function ProductReviewDialog({
     }
     setIsSubmitting(true);
     onReject(product.id, feedback);
+    setFeedback(""); // Reset feedback after submission
     setIsSubmitting(false);
-    onClose();
   };
 
   // Helper function to get seller display name

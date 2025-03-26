@@ -86,7 +86,7 @@ export const ProductListingsManager = () => {
       const { error } = await supabase
         .from('products')
         .update({ 
-          status: newStatus,
+          status: newStatus === 'approved' ? 'active' : newStatus, // Set status to 'active' when approved
           admin_feedback: feedback || null,
           reviewed_at: new Date().toISOString(),
           reviewed_by: (await supabase.auth.getUser()).data.user?.id
@@ -113,7 +113,10 @@ export const ProductListingsManager = () => {
       case 'pending':
         return <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200">Pending</Badge>;
       case 'approved':
-        return <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">Approved</Badge>;
+      case 'active':
+        return <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+          {status === 'approved' ? 'Approved' : 'Active'}
+        </Badge>;
       case 'rejected':
         return <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">Rejected</Badge>;
       default:
@@ -144,8 +147,8 @@ export const ProductListingsManager = () => {
               <DropdownMenuItem onClick={() => setStatusFilter('pending')}>
                 Pending
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setStatusFilter('approved')}>
-                Approved
+              <DropdownMenuItem onClick={() => setStatusFilter('active')}>
+                Active
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setStatusFilter('rejected')}>
                 Rejected

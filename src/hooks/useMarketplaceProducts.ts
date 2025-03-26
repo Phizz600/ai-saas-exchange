@@ -41,7 +41,7 @@ export const useMarketplaceProducts = ({
       let query = supabase
         .from('products')
         .select('*', { count: 'exact' })
-        .eq('status', 'active');
+        .eq('status', 'active'); // Only show approved/active products
 
       // Apply filters
       if (searchQuery) {
@@ -113,7 +113,7 @@ export const useMarketplaceProducts = ({
     }
   };
 
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error, refetch } = useQuery({
     queryKey: ['products', searchQuery, industryFilter, stageFilter, priceFilter, sortBy, currentPage, showVerifiedOnly],
     queryFn: fetchProducts,
   });
@@ -144,6 +144,7 @@ export const useMarketplaceProducts = ({
     totalPages: data?.count ? Math.ceil(data.count / itemsPerPage) : 0,
     isLoading,
     error,
+    refetch, // Add refetch function to allow manual refreshing
     categoriesOverview: categoriesData || [],
   };
 };
