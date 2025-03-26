@@ -46,15 +46,15 @@ export function FormProgressBar({ currentSection, onSectionClick }: FormProgress
                 isActive ? "text-[#8B5CF6]" : "text-gray-400"
               )}
             >
-              {/* Circle indicator */}
+              {/* Circle indicator - increased size from w-8 h-8 to w-10 h-10 */}
               <div
                 className={cn(
-                  "w-8 h-8 rounded-full flex items-center justify-center transition-all",
+                  "w-10 h-10 rounded-full flex items-center justify-center transition-all",
                   isActive ? "bg-[#8B5CF6] text-white" : "bg-gray-200"
                 )}
               >
-                {/* Show icon for both mobile and desktop, but hide text on mobile */}
-                <IconComponent className="w-4 h-4" />
+                {/* Increased icon size from w-4 h-4 to w-5 h-5 */}
+                <IconComponent className="w-5 h-5" />
               </div>
               
               {/* Title - hidden on mobile */}
@@ -66,8 +66,8 @@ export function FormProgressBar({ currentSection, onSectionClick }: FormProgress
         })}
       </div>
 
-      {/* Progress bar */}
-      <div className="absolute top-4 left-0 right-0 h-0.5 bg-gray-200 -z-10">
+      {/* Progress bar - adjusted top position from top-4 to top-5 to match the larger buttons */}
+      <div className="absolute top-5 left-0 right-0 h-0.5 bg-gray-200 -z-10">
         <div
           className="h-full bg-[#8B5CF6] transition-all duration-300"
           style={{
