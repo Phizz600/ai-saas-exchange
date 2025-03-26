@@ -91,7 +91,7 @@ const handler = async (req: Request): Promise<Response> => {
     // Initialize Resend with the API key - this can help ensure the API key is properly loaded
     const resend = new Resend(apiKey);
     
-    // Set the destination URL based on userType - updated to send investors to questionnaire
+    // Use the CORRECT URL paths for each user type
     const ctaButtonUrl = userType === 'ai_builder' 
       ? 'https://aiexchange.club/list-product' 
       : 'https://aiexchange.club/investor-questionnaire';

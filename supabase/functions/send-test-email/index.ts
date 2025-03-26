@@ -126,7 +126,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     const resend = new Resend(apiKey);
     
-    // Set the destination URL based on userType
+    // Set the correct destination URL based on userType
     const ctaButtonUrl = userType === 'ai_builder' 
       ? 'https://aiexchange.club/list-product' 
       : 'https://aiexchange.club/investor-questionnaire';
