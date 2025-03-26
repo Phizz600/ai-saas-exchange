@@ -126,10 +126,10 @@ const handler = async (req: Request): Promise<Response> => {
 
     const resend = new Resend(apiKey);
     
-    // Set the correct destination URL based on userType
+    // Set the correct destination URL based on userType - use coming-soon for investors
     const ctaButtonUrl = userType === 'ai_builder' 
       ? 'https://aiexchange.club/list-product' 
-      : 'https://aiexchange.club/investor-questionnaire';
+      : 'https://aiexchange.club/coming-soon';
     
     // Test the API key with a validation check
     try {
@@ -295,7 +295,7 @@ const handler = async (req: Request): Promise<Response> => {
                   <p>Let's start by understanding your investment preferences:</p>
                   
                   <center>
-                    <a href="https://aiexchange.club/investor-questionnaire" class="cta-button">Start Investor Questionnaire</a>
+                    <a href="https://aiexchange.club/coming-soon" class="cta-button">Start Investor Questionnaire</a>
                   </center>
                 `}
                 
@@ -373,7 +373,7 @@ const handler = async (req: Request): Promise<Response> => {
       {
         status: 500,
         headers: { "Content-Type": "application/json", ...corsHeaders },
-      }
+        }
     );
   }
 };

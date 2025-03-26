@@ -91,14 +91,15 @@ const handler = async (req: Request): Promise<Response> => {
     // Initialize Resend with the API key - this can help ensure the API key is properly loaded
     const resend = new Resend(apiKey);
     
-    // Use the CORRECT URL paths for each user type
+    // Map user types to their respective destination paths
+    // Builders go to list-product page, Investors go to coming-soon page
     const ctaButtonUrl = userType === 'ai_builder' 
       ? 'https://aiexchange.club/list-product' 
-      : 'https://aiexchange.club/investor-questionnaire';
+      : 'https://aiexchange.club/coming-soon';
     
     const ctaButtonText = userType === 'ai_builder'
       ? 'List Your AI Product'
-      : 'Start Investor Questionnaire';
+      : 'Start Investment Matching Quiz';
     
     // Try sending the email with proper error handling
     try {
