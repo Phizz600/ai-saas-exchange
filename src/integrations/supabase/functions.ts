@@ -59,121 +59,30 @@ export const sendTestEmail = async () => {
   }
 };
 
-// Function to schedule a welcome email to be sent after a delay
+// Function to schedule a welcome email to be sent after a delay - DISABLED
 export const scheduleWelcomeEmail = async (
   email: string, 
   firstName: string, 
   userType: 'ai_builder' | 'ai_investor',
   siteUrl?: string
 ) => {
-  console.log(`Scheduling welcome email to ${email} to be sent with 1 minute delay`);
-  try {
-    const startTime = performance.now();
-    
-    const { data, error } = await supabase.functions.invoke('schedule-welcome-email', {
-      body: { 
-        email,
-        firstName,
-        userType,
-        timestamp: new Date().toISOString(),
-        source: 'signup_flow',
-        siteUrl: siteUrl || window.location.origin
-      }
-    });
-    
-    const endTime = performance.now();
-    console.log(`Schedule welcome email function call took ${endTime - startTime}ms`);
-    
-    if (error) {
-      console.error("Error scheduling welcome email:", error);
-      return { error: error.message || "Failed to schedule welcome email" };
-    }
-    
-    // Check for errors in the response data
-    if (data?.error) {
-      console.error("Error in schedule welcome email response:", data.error);
-      return { error: data.error };
-    }
-    
-    console.log("Welcome email scheduled successfully:", data);
-    return data;
-  } catch (err) {
-    console.error("Error in scheduleWelcomeEmail function:", err);
-    return { error: err.message || "Unknown error scheduling welcome email" };
-  }
+  console.log(`Welcome email functionality is currently disabled.`);
+  return { 
+    message: "Welcome email functionality is currently disabled", 
+    status: "disabled" 
+  };
 };
 
-// Function to send a welcome email directly (can be used during signup or for testing)
+// Function to send a welcome email directly - DISABLED
 export const sendWelcomeEmail = async (
   email: string, 
   firstName: string, 
   userType: 'ai_builder' | 'ai_investor',
   siteUrl?: string
 ) => {
-  console.log(`Sending welcome email to ${email}`);
-  try {
-    const startTime = performance.now();
-    
-    const { data, error } = await supabase.functions.invoke('send-welcome-email', {
-      body: { 
-        email,
-        firstName,
-        userType,
-        timestamp: new Date().toISOString(),  // Add timestamp for debugging
-        source: 'manual_trigger',  // Track source of request
-        siteUrl: siteUrl || window.location.origin
-      }
-    });
-    
-    const endTime = performance.now();
-    console.log(`Welcome email function call took ${endTime - startTime}ms`);
-    
-    if (error) {
-      console.error("Error sending welcome email:", error);
-      return { error: error.message || "Failed to send welcome email" };
-    }
-    
-    // Check for errors in the response data
-    if (data?.error) {
-      console.error("Error in welcome email response:", data.error);
-      return { error: data.error };
-    }
-    
-    console.log("Welcome email sent successfully:", data);
-    return data;
-  } catch (err) {
-    console.error("Error in sendWelcomeEmail function:", err);
-    
-    // Add retry logic for transient errors
-    if (err.message?.includes('NetworkError') || err.message?.includes('Failed to fetch')) {
-      console.log("Network error detected, retrying once...");
-      
-      try {
-        // Wait 1 second before retrying
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        const { data, error } = await supabase.functions.invoke('send-welcome-email', {
-          body: { 
-            email,
-            firstName,
-            userType,
-            timestamp: new Date().toISOString(),
-            source: 'manual_trigger_retry',
-            siteUrl: siteUrl || window.location.origin
-          }
-        });
-        
-        if (error) return { error: error.message || "Failed to send welcome email on retry" };
-        if (data?.error) return { error: data.error };
-        
-        console.log("Welcome email sent successfully on retry:", data);
-        return data;
-      } catch (retryErr) {
-        console.error("Retry also failed:", retryErr);
-        return { error: `Failed to send welcome email after retry: ${retryErr.message}` };
-      }
-    }
-    
-    return { error: err.message || "Unknown error sending welcome email" };
-  }
+  console.log(`Welcome email functionality is currently disabled.`);
+  return { 
+    message: "Welcome email functionality is currently disabled", 
+    status: "disabled" 
+  };
 };

@@ -1,7 +1,5 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
-import { scheduleWelcomeEmail } from "@/integrations/supabase/functions";
 import { getRedirectUrl } from "./url-helpers";
 
 /**
@@ -106,39 +104,13 @@ export const handleAuthSubmit = async (
           // Don't stop the signup process if tracking fails
         }
         
-        // Get the base URL for the welcome email links
-        const baseUrl = window.location.origin;
-        console.log("Using base URL for welcome email:", baseUrl);
-        
-        // Schedule welcome email to be sent one minute after signup
-        try {
-          console.log("AuthForm: Scheduling welcome email to be sent in 1 minute");
-          const scheduleResult = await scheduleWelcomeEmail(email, firstName, userType, baseUrl);
-          
-          if (scheduleResult.error) {
-            console.error("Error scheduling welcome email:", scheduleResult.error);
-            // Don't block signup if scheduling fails
-            toast({
-              variant: "default",
-              title: "Welcome Email Scheduled",
-              description: "You'll receive a welcome email shortly.",
-            });
-          } else {
-            console.log("Welcome email scheduled successfully:", scheduleResult);
-            toast({
-              title: "Welcome Email Scheduled",
-              description: "You'll receive a welcome email shortly!",
-            });
-          }
-        } catch (scheduleError: any) {
-          console.error("Error scheduling welcome email:", scheduleError);
-          // Show error toast but don't block signup
-          toast({
-            variant: "default",
-            title: "Welcome Email Scheduled",
-            description: "You'll receive a welcome email shortly.",
-          });
-        }
+        // WELCOME EMAIL SENDING DISABLED
+        console.log("AuthForm: Welcome email sending is currently disabled");
+        toast({
+          variant: "default",
+          title: "Account Created",
+          description: "Your account has been created successfully.",
+        });
       }
       
       // Handle the case where email verification is enabled
