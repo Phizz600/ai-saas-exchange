@@ -62,26 +62,31 @@ const Auth = () => {
           // Email confirmation
           console.log("Auth: Email confirmation detected");
           
-          // In email verification flow, don't navigate immediately
-          // This prevents redirecting the original tab unexpectedly
-          if (window.opener) {
+          // If this is a new tab/popup from email verification
+          if (!window.opener) {
+            // If this is the main window (direct visit), show message and redirect to home
+            toast({
+              title: "Email Verified",
+              description: "Your email has been verified. You can now sign in.",
+            });
+            
+            // Redirect to home page after verification
+            console.log("Auth: Redirecting verified user to home page");
+            setTimeout(() => {
+              navigate("/");
+            }, 1500);
+          } else {
             // If this is the popup/new tab, show a message to close it
             toast({
               title: "Email Verified",
               description: "Your email has been verified. You can now close this tab and sign in.",
             });
-            // Optionally notify the opener window to refresh
+            // Notify the opener window to refresh
             try {
               window.opener.postMessage('EMAIL_VERIFIED', window.location.origin);
             } catch (e) {
               console.error("Error posting message to opener:", e);
             }
-          } else {
-            // If this is the main window, just show toast
-            toast({
-              title: "Email Verified",
-              description: "Your email has been verified. You can now sign in.",
-            });
           }
         } catch (error) {
           console.error("Auth: Error processing confirmation:", error);
