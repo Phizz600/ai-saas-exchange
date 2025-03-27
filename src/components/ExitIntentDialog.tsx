@@ -10,7 +10,7 @@ export function ExitIntentDialog() {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Check if we should show the dialog (once per day)
+    // Check if we should show the dialog (once per week)
     const shouldShowDialog = () => {
       const lastShown = localStorage.getItem('exitIntentLastShown');
       
@@ -19,8 +19,8 @@ export function ExitIntentDialog() {
       const lastShownDate = new Date(lastShown);
       const currentDate = new Date();
       
-      // Check if it's been more than 24 hours since last shown
-      return currentDate.getTime() - lastShownDate.getTime() > 24 * 60 * 60 * 1000;
+      // Check if it's been more than 7 days (1 week) since last shown
+      return currentDate.getTime() - lastShownDate.getTime() > 7 * 24 * 60 * 60 * 1000;
     };
 
     // Only show if we should based on last shown time
