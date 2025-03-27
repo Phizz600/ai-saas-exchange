@@ -60,7 +60,12 @@ export const sendTestEmail = async () => {
 };
 
 // Function to schedule a welcome email to be sent after a delay
-export const scheduleWelcomeEmail = async (email: string, firstName: string, userType: 'ai_builder' | 'ai_investor') => {
+export const scheduleWelcomeEmail = async (
+  email: string, 
+  firstName: string, 
+  userType: 'ai_builder' | 'ai_investor',
+  siteUrl?: string
+) => {
   console.log(`Scheduling welcome email to ${email} to be sent with 1 minute delay`);
   try {
     const startTime = performance.now();
@@ -71,7 +76,8 @@ export const scheduleWelcomeEmail = async (email: string, firstName: string, use
         firstName,
         userType,
         timestamp: new Date().toISOString(),
-        source: 'signup_flow'
+        source: 'signup_flow',
+        siteUrl: siteUrl || window.location.origin
       }
     });
     
@@ -98,7 +104,12 @@ export const scheduleWelcomeEmail = async (email: string, firstName: string, use
 };
 
 // Function to send a welcome email directly (can be used during signup or for testing)
-export const sendWelcomeEmail = async (email: string, firstName: string, userType: 'ai_builder' | 'ai_investor') => {
+export const sendWelcomeEmail = async (
+  email: string, 
+  firstName: string, 
+  userType: 'ai_builder' | 'ai_investor',
+  siteUrl?: string
+) => {
   console.log(`Sending welcome email to ${email}`);
   try {
     const startTime = performance.now();
@@ -109,7 +120,8 @@ export const sendWelcomeEmail = async (email: string, firstName: string, userTyp
         firstName,
         userType,
         timestamp: new Date().toISOString(),  // Add timestamp for debugging
-        source: 'manual_trigger'  // Track source of request
+        source: 'manual_trigger',  // Track source of request
+        siteUrl: siteUrl || window.location.origin
       }
     });
     
@@ -146,7 +158,8 @@ export const sendWelcomeEmail = async (email: string, firstName: string, userTyp
             firstName,
             userType,
             timestamp: new Date().toISOString(),
-            source: 'manual_trigger_retry'
+            source: 'manual_trigger_retry',
+            siteUrl: siteUrl || window.location.origin
           }
         });
         

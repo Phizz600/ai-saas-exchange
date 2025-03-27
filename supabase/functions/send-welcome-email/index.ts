@@ -14,6 +14,7 @@ interface WelcomeEmailRequest {
   userType: 'ai_builder' | 'ai_investor';
   timestamp?: string;
   source?: string;
+  siteUrl?: string;
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -61,7 +62,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Request data received:", JSON.stringify(requestData, null, 2));
 
     // Extract and validate email data
-    const { firstName, email, userType, timestamp, source }: WelcomeEmailRequest = requestData;
+    const { firstName, email, userType, timestamp, source, siteUrl }: WelcomeEmailRequest = requestData;
     
     if (!email) {
       console.error("Missing email in request");
@@ -91,11 +92,15 @@ const handler = async (req: Request): Promise<Response> => {
     // Initialize Resend with the API key - this can help ensure the API key is properly loaded
     const resend = new Resend(apiKey);
     
+    // Get the base URL either from the request or default to production URL
+    const baseUrl = siteUrl || "https://aiexchange.club";
+    console.log(`Using base URL for links: ${baseUrl}`);
+    
     // Map user types to their respective destination paths
     // Builders go to list-product page, Investors go to coming-soon page
     const ctaButtonUrl = userType === 'ai_builder' 
-      ? 'https://aiexchange.club/list-product' 
-      : 'https://aiexchange.club/coming-soon';
+      ? `${baseUrl}/list-product` 
+      : `${baseUrl}/coming-soon`;
     
     const ctaButtonText = userType === 'ai_builder'
       ? 'List Your AI Product'
@@ -326,7 +331,7 @@ const handler = async (req: Request): Promise<Response> => {
             <div class="email-wrapper">
               <div class="email-container">
                 <div class="email-header">
-                  <img src="https://aiexchange.club/lovable-uploads/0283f7d5-13a6-40c9-b40a-69868474cec9.png" alt="AI Exchange Club Logo" class="logo">
+                  <img src="${baseUrl}/lovable-uploads/0283f7d5-13a6-40c9-b40a-69868474cec9.png" alt="AI Exchange Club Logo" class="logo">
                   <h1 class="header-title">Welcome to the Future of AI</h1>
                   <p class="header-subtitle">Where Innovation Meets Investment</p>
                 </div>

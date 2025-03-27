@@ -61,10 +61,28 @@ const Auth = () => {
   
           // Email confirmation
           console.log("Auth: Email confirmation detected");
-          toast({
-            title: "Email Verified",
-            description: "Your email has been verified. You can now sign in.",
-          });
+          
+          // In email verification flow, don't navigate immediately
+          // This prevents redirecting the original tab unexpectedly
+          if (window.opener) {
+            // If this is the popup/new tab, show a message to close it
+            toast({
+              title: "Email Verified",
+              description: "Your email has been verified. You can now close this tab and sign in.",
+            });
+            // Optionally notify the opener window to refresh
+            try {
+              window.opener.postMessage('EMAIL_VERIFIED', window.location.origin);
+            } catch (e) {
+              console.error("Error posting message to opener:", e);
+            }
+          } else {
+            // If this is the main window, just show toast
+            toast({
+              title: "Email Verified",
+              description: "Your email has been verified. You can now sign in.",
+            });
+          }
         } catch (error) {
           console.error("Auth: Error processing confirmation:", error);
           toast({
@@ -186,6 +204,17 @@ const Auth = () => {
     
     checkSession();
 
+    // Listen for messages from the popup window
+    const messageHandler = (event: MessageEvent) => {
+      if (event.data === 'EMAIL_VERIFIED') {
+        console.log("Auth: Received EMAIL_VERIFIED message from verification window");
+        // Refresh the page or update the UI as needed
+        window.location.reload();
+      }
+    };
+    
+    window.addEventListener('message', messageHandler);
+
     // Subscribe to auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("Auth: Auth state changed:", event, session?.user?.id);
@@ -198,6 +227,7 @@ const Auth = () => {
     return () => {
       console.log("Auth: Cleaning up subscription");
       subscription.unsubscribe();
+      window.removeEventListener('message', messageHandler);
     };
   }, [navigate, toast]);
 

@@ -13,6 +13,7 @@ interface WelcomeEmailRequest {
   userType: 'ai_builder' | 'ai_investor';
   timestamp?: string;
   source?: string;
+  siteUrl?: string;
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -28,7 +29,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Request data received:", JSON.stringify(requestData, null, 2));
 
     // Extract and validate email data
-    const { firstName, email, userType, timestamp, source }: WelcomeEmailRequest = requestData;
+    const { firstName, email, userType, timestamp, source, siteUrl }: WelcomeEmailRequest = requestData;
     
     if (!email) {
       console.error("Missing email in request");
@@ -54,6 +55,9 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log(`Scheduling welcome email to ${email} (${userType || "unknown type"})`);
     console.log(`Request metadata - timestamp: ${timestamp || "none"}, source: ${source || "none"}`);
+    if (siteUrl) {
+      console.log(`Using provided site URL: ${siteUrl}`);
+    }
 
     // Set up delayed execution of the welcome email (simulates a background task)
     const scheduleId = crypto.randomUUID();
@@ -84,7 +88,8 @@ const handler = async (req: Request): Promise<Response> => {
             firstName,
             userType,
             timestamp: new Date().toISOString(),
-            source: "scheduled_task"
+            source: "scheduled_task",
+            siteUrl: siteUrl || null
           })
         });
         

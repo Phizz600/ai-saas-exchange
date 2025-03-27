@@ -2,6 +2,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { scheduleWelcomeEmail } from "@/integrations/supabase/functions";
+import { getRedirectUrl } from "./url-helpers";
 
 /**
  * Process user signup or sign in
@@ -105,10 +106,14 @@ export const handleAuthSubmit = async (
           // Don't stop the signup process if tracking fails
         }
         
+        // Get the base URL for the welcome email links
+        const baseUrl = window.location.origin;
+        console.log("Using base URL for welcome email:", baseUrl);
+        
         // Schedule welcome email to be sent one minute after signup
         try {
           console.log("AuthForm: Scheduling welcome email to be sent in 1 minute");
-          const scheduleResult = await scheduleWelcomeEmail(email, firstName, userType);
+          const scheduleResult = await scheduleWelcomeEmail(email, firstName, userType, baseUrl);
           
           if (scheduleResult.error) {
             console.error("Error scheduling welcome email:", scheduleResult.error);

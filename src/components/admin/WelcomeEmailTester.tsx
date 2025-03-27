@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Switch } from "@/components/ui/switch";
 
 export const WelcomeEmailTester = () => {
   const [isSending, setIsSending] = useState(false);
@@ -19,6 +19,7 @@ export const WelcomeEmailTester = () => {
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [userType, setUserType] = useState<"ai_builder" | "ai_investor">("ai_investor");
+  const [useCurrentSiteUrl, setUseCurrentSiteUrl] = useState(true);
   const { toast } = useToast();
 
   const validateInputs = () => {
@@ -42,7 +43,8 @@ export const WelcomeEmailTester = () => {
     
     try {
       console.log(`Sending welcome email to ${email} (${userType})`);
-      const response = await sendWelcomeEmail(email, firstName, userType);
+      const siteUrl = useCurrentSiteUrl ? window.location.origin : undefined;
+      const response = await sendWelcomeEmail(email, firstName, userType, siteUrl);
       
       console.log("Welcome email response:", response);
       
@@ -80,7 +82,8 @@ export const WelcomeEmailTester = () => {
     
     try {
       console.log(`Scheduling welcome email to ${email} (${userType})`);
-      const response = await scheduleWelcomeEmail(email, firstName, userType);
+      const siteUrl = useCurrentSiteUrl ? window.location.origin : undefined;
+      const response = await scheduleWelcomeEmail(email, firstName, userType, siteUrl);
       
       console.log("Schedule welcome email response:", response);
       
@@ -157,6 +160,25 @@ export const WelcomeEmailTester = () => {
           </RadioGroup>
         </div>
         
+        <div className="flex items-center space-x-2 pt-2">
+          <Switch 
+            id="use-current-url" 
+            checked={useCurrentSiteUrl}
+            onCheckedChange={setUseCurrentSiteUrl}
+          />
+          <Label htmlFor="use-current-url">
+            Use current site URL ({window.location.origin}) for email links
+          </Label>
+        </div>
+        
+        {!useCurrentSiteUrl && (
+          <div className="rounded-md bg-amber-50 p-3 border border-amber-200">
+            <p className="text-amber-700 text-sm">
+              Using production URL (https://aiexchange.club) for email links.
+            </p>
+          </div>
+        )}
+        
         {error && (
           <Alert variant="destructive">
             <AlertTitle>Error</AlertTitle>
@@ -216,6 +238,7 @@ export const WelcomeEmailTester = () => {
             <li>The "Send Now" option delivers the email immediately</li>
             <li>The "Schedule" option will send the email after a 1-minute delay</li>
             <li>New user signups automatically receive a scheduled welcome email with a 1-minute delay</li>
+            <li>Email links will use {useCurrentSiteUrl ? window.location.origin : 'https://aiexchange.club'} as the base URL</li>
           </ul>
         </div>
       </CardFooter>
