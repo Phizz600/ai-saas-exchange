@@ -5,6 +5,7 @@ export * from './products';
 export * from './brevo';
 export * from './pitch-deck';
 export * from './utils/validation';
+export * from './contact';
 
 import { supabase } from './client';
 

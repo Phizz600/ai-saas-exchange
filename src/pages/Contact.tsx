@@ -6,8 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Mail, Phone, MapPin, Send } from "lucide-react";
+import { Mail, Phone, MapPin, Send, Loader2 } from "lucide-react";
 import { ParticlesBackground } from "@/components/hero/ParticlesBackground";
+import { sendContactEmail } from "@/integrations/supabase/contact";
 
 export const Contact = () => {
   const [name, setName] = useState("");
@@ -15,28 +16,65 @@ export const Contact = () => {
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission
-    setTimeout(() => {
-      toast({
-        title: "Message sent",
-        description: "We've received your message and will get back to you soon."
-      });
+    try {
+      // Basic validation
+      if (!name || !email || !subject || !message) {
+        toast({
+          title: "Missing information",
+          description: "Please fill in all fields to send your message.",
+          variant: "destructive"
+        });
+        setIsSubmitting(false);
+        return;
+      }
 
-      // Reset form
-      setName("");
-      setEmail("");
-      setSubject("");
-      setMessage("");
+      // Email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        toast({
+          title: "Invalid email",
+          description: "Please enter a valid email address.",
+          variant: "destructive"
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Send the contact email
+      const result = await sendContactEmail(name, email, subject, message);
+
+      if (result.success) {
+        toast({
+          title: "Message sent",
+          description: "We've received your message and will get back to you soon."
+        });
+
+        // Reset form
+        setName("");
+        setEmail("");
+        setSubject("");
+        setMessage("");
+      } else {
+        throw new Error(result.error || "Failed to send message. Please try again later.");
+      }
+    } catch (error) {
+      console.error("Error sending contact message:", error);
+      toast({
+        title: "Error sending message",
+        description: error.message || "Something went wrong. Please try again later.",
+        variant: "destructive"
+      });
+    } finally {
       setIsSubmitting(false);
-    }, 1500);
+    }
   };
+
   return <div className="min-h-screen relative overflow-hidden">
       <ParticlesBackground />
       <div className="relative z-10">
@@ -70,13 +108,9 @@ export const Contact = () => {
                       <p className="text-gray-600">+1 (507) 301-6119</p>
                     </div>
                   </div>
-                  
-                  
                 </div>
 
                 <div className="mt-8">
-                  
-                  
                 </div>
               </div>
 
@@ -114,10 +148,7 @@ export const Contact = () => {
                   
                   <Button type="submit" disabled={isSubmitting} className="w-full bg-gradient-to-r from-[#13293D] via-[#16324F] to-[#0EA4E9] text-white">
                     {isSubmitting ? <span className="flex items-center justify-center">
-                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
+                        <Loader2 className="animate-spin h-4 w-4 mr-2" />
                         Sending...
                       </span> : <span className="flex items-center justify-center">
                         <Send className="h-4 w-4 mr-2" />
