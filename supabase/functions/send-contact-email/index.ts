@@ -22,7 +22,14 @@ serve(async (req) => {
     }
     
     if (!brevoApiKey) {
-      throw new Error('Missing Brevo API key')
+      console.error('BREVO_API_KEY environment variable is not set');
+      return new Response(JSON.stringify({ 
+        success: false, 
+        error: 'Server configuration error: Missing API key' 
+      }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
     }
 
     console.log(`Processing contact form submission from ${name} (${email})`)

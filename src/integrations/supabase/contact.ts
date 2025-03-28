@@ -26,6 +26,12 @@ export const sendContactEmail = async (
       return { success: false, error: error.message };
     }
     
+    // Check if the response contains an error message
+    if (data && !data.success) {
+      console.error('Error response from contact email function:', data.error);
+      return { success: false, error: data.error || 'Failed to send message' };
+    }
+    
     console.log('Contact message sent successfully:', data);
     return { success: true, data };
   } catch (error) {
