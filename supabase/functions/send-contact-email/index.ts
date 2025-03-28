@@ -39,7 +39,7 @@ serve(async (req) => {
     // Initialize Resend with API key
     const resend = new Resend(resendApiKey);
     
-    // Send the email using Resend with improved HTML template
+    // Send the email using Resend with improved HTML template inspired by Notion/Netflix
     const response = await resend.emails.send({
       from: 'AI Exchange <khalid@aiexchange.club>',
       to: ['support@aiexchange.club'],
@@ -53,71 +53,138 @@ serve(async (req) => {
           <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
           <title>Contact Form Submission</title>
           <style>
+            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+            
+            body {
+              font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+              background-color: #f9f9fa;
+              margin: 0;
+              padding: 0;
+              -webkit-font-smoothing: antialiased;
+              color: #333333;
+            }
+            
+            .container {
+              max-width: 580px;
+              margin: 0 auto;
+              padding: 20px;
+            }
+            
+            .content {
+              background-color: #ffffff;
+              border-radius: 8px;
+              box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+              overflow: hidden;
+            }
+            
+            .header {
+              background: linear-gradient(to right, #13293D, #0EA4E9);
+              padding: 24px;
+              text-align: left;
+            }
+            
+            .header h1 {
+              color: white;
+              margin: 0;
+              font-size: 20px;
+              font-weight: 600;
+              letter-spacing: -0.02em;
+            }
+            
+            .body {
+              padding: 24px;
+            }
+            
+            .message-section {
+              background-color: #f7f9fc;
+              border-radius: 6px;
+              padding: 16px;
+              margin-top: 16px;
+              border-left: 4px solid #0EA4E9;
+            }
+            
+            .message-content {
+              margin: 0;
+              font-size: 15px;
+              line-height: 1.6;
+              white-space: pre-wrap;
+            }
+            
+            .field {
+              margin-bottom: 16px;
+            }
+            
+            .field-name {
+              font-size: 13px;
+              color: #666666;
+              margin-bottom: 4px;
+              font-weight: 600;
+            }
+            
+            .field-value {
+              font-size: 15px;
+              margin: 0;
+              color: #333333;
+            }
+            
+            .footer {
+              border-top: 1px solid #EAEAEA;
+              padding: 24px;
+              font-size: 12px;
+              color: #666666;
+              text-align: center;
+            }
+            
+            .footer p {
+              margin: 0 0 8px 0;
+            }
+            
+            .logo {
+              opacity: 0.8;
+              margin-bottom: 8px;
+            }
+            
             @media only screen and (max-width: 620px) {
-              table.body h1 {
-                font-size: 28px !important;
-                margin-bottom: 10px !important;
+              .container {
+                padding: 12px;
               }
-              table.body p,
-              table.body ul,
-              table.body ol,
-              table.body td,
-              table.body span,
-              table.body a {
-                font-size: 16px !important;
-              }
-              table.body .wrapper,
-              table.body .article {
-                padding: 10px !important;
-              }
-              table.body .content {
-                padding: 0 !important;
-              }
-              table.body .container {
-                padding: 0 !important;
-                width: 100% !important;
-              }
-              table.body .main {
-                border-left-width: 0 !important;
-                border-radius: 0 !important;
-                border-right-width: 0 !important;
+              
+              .header, .body, .footer {
+                padding: 20px;
               }
             }
           </style>
         </head>
-        <body style="background-color: #f6f6f6; font-family: sans-serif; -webkit-font-smoothing: antialiased; font-size: 14px; line-height: 1.4; margin: 0; padding: 0; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%;">
-          <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="body" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #f6f6f6; width: 100%;" width="100%" bgcolor="#f6f6f6">
-            <tr>
-              <td style="font-family: sans-serif; font-size: 14px; vertical-align: top;" valign="top">&nbsp;</td>
-              <td class="container" style="font-family: sans-serif; font-size: 14px; vertical-align: top; display: block; max-width: 580px; padding: 10px; width: 580px; margin: 0 auto;" width="580" valign="top">
-                <div class="content" style="box-sizing: border-box; display: block; margin: 0 auto; max-width: 580px; padding: 10px;">
-                  <table role="presentation" class="main" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; background: #ffffff; border-radius: 3px; width: 100%;" width="100%">
-                    <tr>
-                      <td class="wrapper" style="font-family: sans-serif; font-size: 14px; vertical-align: top; box-sizing: border-box; padding: 20px;" valign="top">
-                        <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;" width="100%">
-                          <tr>
-                            <td style="font-family: sans-serif; font-size: 14px; vertical-align: top;" valign="top">
-                              <div style="border-bottom: 1px solid #e6e6e6; margin-bottom: 20px; padding-bottom: 10px;">
-                                <h1 style="color: #13293D; font-family: sans-serif; font-weight: 700; margin: 0; margin-bottom: 15px;">Contact Form Submission</h1>
-                              </div>
-                              <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px;"><strong style="color: #13293D;">From:</strong> ${name} (${email})</p>
-                              <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px;"><strong style="color: #13293D;">Subject:</strong> ${subject}</p>
-                              <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 5px;"><strong style="color: #13293D;">Message:</strong></p>
-                              <div style="background-color: #f9f9f9; border-left: 4px solid #0EA4E9; padding: 15px; margin-bottom: 20px;">
-                                <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; line-height: 1.6;">${message.replace(/\n/g, '<br>')}</p>
-                              </div>
-                              <p style="font-family: sans-serif; font-size: 12px; color: #999999; font-weight: normal; margin: 0;">This message was sent via the contact form on AI Exchange.</p>
-                            </td>
-                          </tr>
-                        </table>
-                      </td>
-                    </tr>
-                  </table>
+        <body>
+          <div class="container">
+            <div class="content">
+              <div class="header">
+                <h1>New Contact Form Submission</h1>
+              </div>
+              <div class="body">
+                <div class="field">
+                  <div class="field-name">FROM</div>
+                  <p class="field-value">${name} &lt;${email}&gt;</p>
                 </div>
-              </td>
-              <td style="font-family: sans-serif; font-size: 14px; vertical-align: top;" valign="top">&nbsp;</td>
-            </tr>
-          </table>
+                
+                <div class="field">
+                  <div class="field-name">SUBJECT</div>
+                  <p class="field-value">${subject}</p>
+                </div>
+                
+                <div class="field">
+                  <div class="field-name">MESSAGE</div>
+                  <div class="message-section">
+                    <p class="message-content">${message.replace(/\n/g, '<br>')}</p>
+                  </div>
+                </div>
+              </div>
+              <div class="footer">
+                <p>This message was sent from the contact form at AI Exchange.</p>
+                <p>You can reply directly to this email to respond to ${name}.</p>
+              </div>
+            </div>
+          </div>
         </body>
         </html>
       `,
