@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -215,8 +216,7 @@ export function ProductPage() {
           </div>
         </div>
         
-        {/* Acquisition banner */}
-        
+        {/* Acquisition banner removed */}
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div className="space-y-6">
