@@ -1,54 +1,35 @@
-
 import { Shield, CheckCircle, Star, User, DollarSign, Award } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-
-const recentSales = [
-  "AI Chatbot sold for $45,000",
-  "ML Model acquired for $28,000",
-  "NLP Tool purchased for $35,000",
-  "Data Pipeline sold for $52,000",
-  "Image Generation API sold for $67,000",
-  "Voice AI solution acquired for $31,000"
-];
-
-const testimonials = [
-  {
-    text: "Acquired an NLP tool in 48 hours. The escrow process was seamless!",
-    author: "Sarah, AI Investor",
-    role: "Venture Capital",
-    avatar: "/placeholder.svg"
-  },
-  {
-    text: "The verification process gave me confidence in my purchase.",
-    author: "Michael, Tech Entrepreneur",
-    role: "Founder",
-    avatar: "/placeholder.svg"
-  },
-  {
-    text: "Smooth transaction from start to finish. Highly recommended!",
-    author: "David, ML Engineer",
-    role: "CTO",
-    avatar: "/placeholder.svg"
-  }
-];
-
+const recentSales = ["AI Chatbot sold for $45,000", "ML Model acquired for $28,000", "NLP Tool purchased for $35,000", "Data Pipeline sold for $52,000", "Image Generation API sold for $67,000", "Voice AI solution acquired for $31,000"];
+const testimonials = [{
+  text: "Acquired an NLP tool in 48 hours. The escrow process was seamless!",
+  author: "Sarah, AI Investor",
+  role: "Venture Capital",
+  avatar: "/placeholder.svg"
+}, {
+  text: "The verification process gave me confidence in my purchase.",
+  author: "Michael, Tech Entrepreneur",
+  role: "Founder",
+  avatar: "/placeholder.svg"
+}, {
+  text: "Smooth transaction from start to finish. Highly recommended!",
+  author: "David, ML Engineer",
+  role: "CTO",
+  avatar: "/placeholder.svg"
+}];
 export function TrustBoosters() {
   const [currentSaleIndex, setCurrentSaleIndex] = useState(0);
-
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentSaleIndex((prev) => (prev + 1) % recentSales.length);
+      setCurrentSaleIndex(prev => (prev + 1) % recentSales.length);
     }, 3000);
-
     return () => clearInterval(interval);
   }, []);
-
-  return (
-    <div className="space-y-10 mb-12">
+  return <div className="space-y-10 mb-12">
       {/* Section Header */}
       <div className="text-center">
         <h2 className="exo-2-heading text-2xl md:text-3xl font-bold mb-3 text-gray-900">
@@ -68,14 +49,18 @@ export function TrustBoosters() {
               <DollarSign className="h-6 w-6 text-green-500 mr-3" />
               <span className="text-gray-700 font-medium">Recent Transactions:</span>
             </div>
-            <motion.div
-              key={currentSaleIndex}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.5 }}
-              className="font-medium text-[#8B5CF6]"
-            >
+            <motion.div key={currentSaleIndex} initial={{
+            opacity: 0,
+            y: 20
+          }} animate={{
+            opacity: 1,
+            y: 0
+          }} exit={{
+            opacity: 0,
+            y: -20
+          }} transition={{
+            duration: 0.5
+          }} className="font-medium text-[#8B5CF6]">
               {recentSales[currentSaleIndex]}
             </motion.div>
           </div>
@@ -84,13 +69,18 @@ export function TrustBoosters() {
 
       {/* Key Trust Factors */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          viewport={{ once: true, margin: "-100px" }}
-          className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100"
-        >
+        <motion.div initial={{
+        opacity: 0,
+        y: 20
+      }} whileInView={{
+        opacity: 1,
+        y: 0
+      }} transition={{
+        duration: 0.5
+      }} viewport={{
+        once: true,
+        margin: "-100px"
+      }} className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100">
           <div className="p-3 bg-green-100 rounded-full w-fit mb-4">
             <Shield className="h-6 w-6 text-green-600" />
           </div>
@@ -103,13 +93,19 @@ export function TrustBoosters() {
           </Badge>
         </motion.div>
         
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          viewport={{ once: true, margin: "-100px" }}
-          className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100"
-        >
+        <motion.div initial={{
+        opacity: 0,
+        y: 20
+      }} whileInView={{
+        opacity: 1,
+        y: 0
+      }} transition={{
+        duration: 0.5,
+        delay: 0.2
+      }} viewport={{
+        once: true,
+        margin: "-100px"
+      }} className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100">
           <div className="p-3 bg-amber-100 rounded-full w-fit mb-4">
             <CheckCircle className="h-6 w-6 text-amber-600" />
           </div>
@@ -122,13 +118,19 @@ export function TrustBoosters() {
           </Badge>
         </motion.div>
         
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          viewport={{ once: true, margin: "-100px" }}
-          className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100"
-        >
+        <motion.div initial={{
+        opacity: 0,
+        y: 20
+      }} whileInView={{
+        opacity: 1,
+        y: 0
+      }} transition={{
+        duration: 0.5,
+        delay: 0.4
+      }} viewport={{
+        once: true,
+        margin: "-100px"
+      }} className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100">
           <div className="p-3 bg-blue-100 rounded-full w-fit mb-4">
             <Award className="h-6 w-6 text-blue-600" />
           </div>
@@ -146,15 +148,19 @@ export function TrustBoosters() {
       <div className="mt-12">
         <h3 className="text-xl font-semibold text-center mb-8">What Our Users Say</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {testimonials.map((testimonial, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1, duration: 0.5 }}
-              viewport={{ once: true, margin: "-100px" }}
-              className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100 relative"
-            >
+          {testimonials.map((testimonial, index) => <motion.div key={index} initial={{
+          opacity: 0,
+          y: 20
+        }} whileInView={{
+          opacity: 1,
+          y: 0
+        }} transition={{
+          delay: index * 0.1,
+          duration: 0.5
+        }} viewport={{
+          once: true,
+          margin: "-100px"
+        }} className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100 relative">
               <div className="absolute -top-4 -right-4">
                 <Star className="h-8 w-8 text-yellow-400 fill-yellow-400" />
               </div>
@@ -173,39 +179,11 @@ export function TrustBoosters() {
                   </div>
                 </div>
               </div>
-            </motion.div>
-          ))}
+            </motion.div>)}
         </div>
       </div>
       
       {/* Trust Stats */}
-      <motion.div 
-        className="bg-gradient-to-r from-[#D946EE]/10 via-[#8B5CF6]/10 to-[#0EA4E9]/10 rounded-2xl p-8 text-center"
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        viewport={{ once: true, margin: "-100px" }}
-      >
-        <h3 className="text-xl font-semibold mb-6">Trusted by AI Entrepreneurs Worldwide</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
-          <div>
-            <p className="text-3xl font-bold text-[#D946EE]">570+</p>
-            <p className="text-gray-600">Verified Products</p>
-          </div>
-          <div>
-            <p className="text-3xl font-bold text-[#8B5CF6]">$14.2M</p>
-            <p className="text-gray-600">Transaction Volume</p>
-          </div>
-          <div>
-            <p className="text-3xl font-bold text-[#0EA4E9]">98%</p>
-            <p className="text-gray-600">Satisfaction Rate</p>
-          </div>
-          <div>
-            <p className="text-3xl font-bold text-emerald-500">24/7</p>
-            <p className="text-gray-600">Expert Support</p>
-          </div>
-        </div>
-      </motion.div>
-    </div>
-  );
+      
+    </div>;
 }

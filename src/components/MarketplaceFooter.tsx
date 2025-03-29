@@ -1,7 +1,5 @@
-
 import { Link } from "react-router-dom";
 import { Linkedin, Instagram } from "lucide-react";
-
 export const MarketplaceFooter = () => {
   const footerLinks = [{
     title: "Company",
@@ -66,44 +64,7 @@ export const MarketplaceFooter = () => {
       isExternal: true
     }]
   }];
-  
   return <footer className="bg-gray-50 border-t border-gray-200">
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-          {footerLinks.map((section, index) => (
-            <div key={index}>
-              <h3 className="font-semibold text-gray-800 mb-4">{section.title}</h3>
-              <ul className="space-y-2">
-                {section.links.map((link, linkIndex) => (
-                  <li key={linkIndex}>
-                    {link.isExternal ? (
-                      <a 
-                        href={link.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-gray-600 hover:text-[#8B5CF6] transition-colors"
-                      >
-                        {link.name === "LinkedIn" && <Linkedin className="inline h-4 w-4 mr-1" />}
-                        {link.name === "Instagram" && <Instagram className="inline h-4 w-4 mr-1" />}
-                        {link.name}
-                      </a>
-                    ) : (
-                      <Link 
-                        to={link.href}
-                        className="text-gray-600 hover:text-[#8B5CF6] transition-colors"
-                      >
-                        {link.name}
-                      </Link>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-        <div className="mt-8 pt-8 border-t border-gray-200 text-center text-gray-500">
-          <p>© {new Date().getFullYear()} AI Exchange Club. All rights reserved.</p>
-        </div>
-      </div>
+      
     </footer>;
 };
