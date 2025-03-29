@@ -50,23 +50,9 @@ export function useBidForm({ productId, productTitle, currentPrice = 0 }: UseBid
   const handleInitiateBid = async () => {
     const numericAmount = parseFloat(bidAmount);
     
-    // Validate amount
-    if (isNaN(numericAmount) || numericAmount <= 0) {
-      toast({
-        title: "Invalid amount",
-        description: "Please enter a valid amount for your bid.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Validate against the current price
-    if (currentPrice && numericAmount <= currentPrice) {
-      toast({
-        title: "Bid too low",
-        description: `Your bid must be higher than the current price of $${currentPrice.toLocaleString()}`,
-        variant: "destructive",
-      });
+    // Validate amount - moved to BidForm component
+    // We'll still have a basic check here as a fallback
+    if (isNaN(numericAmount) || numericAmount <= 0 || (currentPrice && numericAmount <= currentPrice)) {
       return;
     }
     
@@ -99,23 +85,31 @@ export function useBidForm({ productId, productTitle, currentPrice = 0 }: UseBid
           product_id: productId,
           bidder_id: user.id,
           amount: numericAmount,
-          status: escrowTransactionId === "manual" ? 'deposit_pending_manual' : 'deposit_pending'
+          status: escrowTransactionId === "manual" ? 'deposit_pending_manual' : 'deposit_pending',
+          deposit_status: 'pending',
+          deposit_amount: depositAmount
         })
         .select()
         .single();
       
       if (bidError) {
+        console.error('Error creating bid:', bidError);
         throw bidError;
       }
       
       // Create a deposit_transactions record
       if (escrowTransactionId !== "manual") {
-        await supabase.from('deposit_transactions').insert({
+        const { error: depositError } = await supabase.from('deposit_transactions').insert({
           bid_id: bid.id,
           amount: depositAmount,
           escrow_transaction_id: escrowTransactionId,
           status: 'pending'
         });
+        
+        if (depositError) {
+          console.error('Error creating deposit transaction:', depositError);
+          throw depositError;
+        }
       }
       
       toast({
