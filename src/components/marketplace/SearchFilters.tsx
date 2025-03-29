@@ -121,6 +121,12 @@ export const SearchFilters = ({
   const [debouncedSearchQuery] = useDebounce(localSearchQuery, 300);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   
+  // Sync local state with parent state when props change
+  useEffect(() => {
+    setLocalSearchQuery(searchQuery);
+  }, [searchQuery]);
+  
+  // Update parent search query when debounced query changes
   useEffect(() => {
     setSearchQuery(debouncedSearchQuery);
   }, [debouncedSearchQuery, setSearchQuery]);
@@ -135,6 +141,7 @@ export const SearchFilters = ({
     setPriceFilter('all');
     setTimeFilter('all');
     setSortBy('relevant');
+    setIsSheetOpen(false);
   };
 
   const renderActiveFilters = () => {
