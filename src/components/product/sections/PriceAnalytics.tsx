@@ -146,52 +146,9 @@ export function PriceAnalytics({ analytics, productId, timeRange }: PriceAnalyti
   const totalBids = bidActivityData?.reduce((sum, item) => sum + item.value, 0) || 0;
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      {/* Price Metrics Card */}
-      <Card className="border-2 border-[#D946EE]/30 rounded-xl overflow-hidden shadow-sm">
-        <div className="bg-gradient-to-r from-[#D946EE]/10 to-[#8B5CF6]/10 px-6 py-4 border-b border-[#D946EE]/20">
-          <div className="flex items-center gap-2">
-            <div className="p-2 rounded-full bg-[#D946EE]/20">
-              <Activity className="h-5 w-5 text-[#D946EE]" />
-            </div>
-            <h3 className="text-xl font-bold exo-2-heading text-gray-800">Price Metrics</h3>
-          </div>
-        </div>
-        <CardContent className="p-6 space-y-6">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <p className="text-sm text-gray-500 mb-1">Current Range</p>
-              <div className="text-lg font-semibold truncate">
-                ${analytics.min.toLocaleString()} - ${analytics.max.toLocaleString()}
-              </div>
-            </div>
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <p className="text-sm text-gray-500 mb-1">Average Price</p>
-              <p className="text-lg font-semibold">${analytics.avg.toLocaleString()}</p>
-            </div>
-          </div>
-          
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <p className="text-sm text-gray-500 mb-1">Price Change</p>
-            <div className={`text-lg font-semibold ${analytics.change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-              ${Math.abs(analytics.change).toLocaleString()} 
-              <span className="ml-1">({analytics.changePercent.toFixed(1)}%)</span>
-            </div>
-          </div>
-          
-          <div className="flex flex-wrap gap-2 mt-4">
-            <Badge variant="outline" className="bg-[#D946EE]/10 text-[#D946EE] border-0 rounded-full px-4 py-1">
-              {timeRange} Period
-            </Badge>
-            <Badge variant="outline" className="bg-[#8B5CF6]/10 text-[#8B5CF6] border-0 rounded-full px-4 py-1">
-              {totalBids} Bids
-            </Badge>
-          </div>
-        </CardContent>
-      </Card>
-      
-      {/* Bid Analytics Card */}
-      <Card className="lg:col-span-2 border-2 border-[#8B5CF6]/30 rounded-xl overflow-hidden shadow-sm">
+    <div className="space-y-6">
+      {/* Bid Analytics Card - Now full width */}
+      <Card className="border-2 border-[#8B5CF6]/30 rounded-xl overflow-hidden shadow-sm">
         <div className="bg-gradient-to-r from-[#8B5CF6]/10 to-[#0EA4E9]/10 px-6 py-4 border-b border-[#8B5CF6]/20">
           <div className="flex justify-between items-center flex-wrap gap-3">
             <div className="flex items-center gap-2">
@@ -250,6 +207,7 @@ export function PriceAnalytics({ analytics, productId, timeRange }: PriceAnalyti
                         <stop offset="95%" stopColor="#D946EE" stopOpacity={0.5}/>
                       </linearGradient>
                     </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(0, 0, 0, 0.05)" />
                     <XAxis 
                       dataKey="name" 
                       tick={{ fontSize: 12 }}
@@ -261,6 +219,7 @@ export function PriceAnalytics({ analytics, productId, timeRange }: PriceAnalyti
                       tick={{ fontSize: 12 }}
                       tickLine={false}
                       axisLine={{ stroke: '#E5E7EB' }}
+                      width={30}
                     />
                     <Tooltip
                       contentStyle={{
@@ -349,6 +308,53 @@ export function PriceAnalytics({ analytics, productId, timeRange }: PriceAnalyti
             {chartView === "activity" 
               ? `Bid activity over ${timeRange} time period` 
               : "Distribution of bids across price ranges"}
+          </div>
+        </CardContent>
+      </Card>
+      
+      {/* Price Metrics Card - Now full width */}
+      <Card className="border-2 border-[#D946EE]/30 rounded-xl overflow-hidden shadow-sm">
+        <div className="bg-gradient-to-r from-[#D946EE]/10 to-[#8B5CF6]/10 px-6 py-4 border-b border-[#D946EE]/20">
+          <div className="flex items-center gap-2">
+            <div className="p-2 rounded-full bg-[#D946EE]/20">
+              <Activity className="h-5 w-5 text-[#D946EE]" />
+            </div>
+            <h3 className="text-xl font-bold exo-2-heading text-gray-800">Price Metrics</h3>
+          </div>
+        </div>
+        <CardContent className="p-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Current Range */}
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <p className="text-sm text-gray-500 mb-1">Current Range</p>
+              <div className="text-lg font-semibold">
+                ${analytics.min.toLocaleString()} - ${analytics.max.toLocaleString()}
+              </div>
+            </div>
+            
+            {/* Average Price */}
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <p className="text-sm text-gray-500 mb-1">Average Price</p>
+              <p className="text-lg font-semibold">${analytics.avg.toLocaleString()}</p>
+            </div>
+            
+            {/* Price Change */}
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <p className="text-sm text-gray-500 mb-1">Price Change</p>
+              <div className={`text-lg font-semibold ${analytics.change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                ${Math.abs(analytics.change).toLocaleString()} 
+                <span className="ml-1">({analytics.changePercent.toFixed(1)}%)</span>
+              </div>
+            </div>
+          </div>
+          
+          <div className="flex flex-wrap gap-2 mt-6">
+            <Badge variant="outline" className="bg-[#D946EE]/10 text-[#D946EE] border-0 rounded-full px-4 py-1">
+              {timeRange} Period
+            </Badge>
+            <Badge variant="outline" className="bg-[#8B5CF6]/10 text-[#8B5CF6] border-0 rounded-full px-4 py-1">
+              {totalBids} Bids
+            </Badge>
           </div>
         </CardContent>
       </Card>
