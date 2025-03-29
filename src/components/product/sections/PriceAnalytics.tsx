@@ -161,9 +161,9 @@ export function PriceAnalytics({ analytics, productId, timeRange }: PriceAnalyti
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-gray-50 p-4 rounded-lg">
               <p className="text-sm text-gray-500 mb-1">Current Range</p>
-              <p className="text-lg font-semibold">
+              <div className="text-lg font-semibold truncate">
                 ${analytics.min.toLocaleString()} - ${analytics.max.toLocaleString()}
-              </p>
+              </div>
             </div>
             <div className="bg-gray-50 p-4 rounded-lg">
               <p className="text-sm text-gray-500 mb-1">Average Price</p>
@@ -173,16 +173,17 @@ export function PriceAnalytics({ analytics, productId, timeRange }: PriceAnalyti
           
           <div className="bg-gray-50 p-4 rounded-lg">
             <p className="text-sm text-gray-500 mb-1">Price Change</p>
-            <p className={`text-lg font-semibold ${analytics.change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-              {analytics.change.toLocaleString()} ({analytics.changePercent.toFixed(1)}%)
-            </p>
+            <div className={`text-lg font-semibold ${analytics.change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+              ${Math.abs(analytics.change).toLocaleString()} 
+              <span className="ml-1">({analytics.changePercent.toFixed(1)}%)</span>
+            </div>
           </div>
           
-          <div className="flex gap-2 mt-4">
-            <Badge variant="outline" className="bg-[#D946EE]/10 text-[#D946EE] border-0 rounded-full px-4">
+          <div className="flex flex-wrap gap-2 mt-4">
+            <Badge variant="outline" className="bg-[#D946EE]/10 text-[#D946EE] border-0 rounded-full px-4 py-1">
               {timeRange} Period
             </Badge>
-            <Badge variant="outline" className="bg-[#8B5CF6]/10 text-[#8B5CF6] border-0 rounded-full px-4">
+            <Badge variant="outline" className="bg-[#8B5CF6]/10 text-[#8B5CF6] border-0 rounded-full px-4 py-1">
               {totalBids} Bids
             </Badge>
           </div>
@@ -192,7 +193,7 @@ export function PriceAnalytics({ analytics, productId, timeRange }: PriceAnalyti
       {/* Bid Analytics Card */}
       <Card className="lg:col-span-2 border-2 border-[#8B5CF6]/30 rounded-xl overflow-hidden shadow-sm">
         <div className="bg-gradient-to-r from-[#8B5CF6]/10 to-[#0EA4E9]/10 px-6 py-4 border-b border-[#8B5CF6]/20">
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center flex-wrap gap-3">
             <div className="flex items-center gap-2">
               <div className="p-2 rounded-full bg-[#8B5CF6]/20">
                 <Users className="h-5 w-5 text-[#8B5CF6]" />
@@ -323,8 +324,10 @@ export function PriceAnalytics({ analytics, productId, timeRange }: PriceAnalyti
                       iconType="circle" 
                       iconSize={8}
                       formatter={(value) => {
-                        return <span className="text-xs">{value}</span>;
+                        // Truncate longer values
+                        return <span className="text-xs">{typeof value === 'string' && value.length > 20 ? value.substring(0, 20) + '...' : value}</span>;
                       }}
+                      wrapperStyle={{ fontSize: '10px', paddingTop: '10px' }}
                     />
                     <Tooltip
                       contentStyle={{

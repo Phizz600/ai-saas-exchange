@@ -130,7 +130,7 @@ export function PriceHistoryChart({ productId }: PriceHistoryChartProps) {
             </div>
           </div>
           
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center flex-wrap gap-2">
             <div className="flex gap-3">
               <Button
                 variant={chartType === "area" ? "default" : "outline"}
@@ -177,6 +177,7 @@ export function PriceHistoryChart({ productId }: PriceHistoryChartProps) {
                     tick={{ fontSize: 10 }}
                     tickLine={{ stroke: '#8B5CF6' }}
                     domain={['auto', 'auto']}
+                    width={50} // Add width to ensure labels aren't cut off
                   />
                   <ChartTooltip
                     content={<ChartTooltipContent formatter={(value) => `$${Number(value).toLocaleString()}`} />}
@@ -185,7 +186,7 @@ export function PriceHistoryChart({ productId }: PriceHistoryChartProps) {
                     y={avgPrice} 
                     stroke="#0EA4E9" 
                     strokeDasharray="3 3"
-                    label={{ value: `Avg: $${avgPrice.toLocaleString()}`, position: 'right', fill: '#0EA4E9', fontSize: 10 }} 
+                    label={{ value: `Avg: $${avgPrice.toFixed(0)}`, position: 'right', fill: '#0EA4E9', fontSize: 10 }} 
                   />
                   <Area 
                     type="monotone" 
@@ -211,6 +212,7 @@ export function PriceHistoryChart({ productId }: PriceHistoryChartProps) {
                     tick={{ fontSize: 10 }}
                     tickLine={{ stroke: '#8B5CF6' }}
                     domain={['auto', 'auto']}
+                    width={50} // Add width to ensure labels aren't cut off
                   />
                   <ChartTooltip
                     content={<ChartTooltipContent formatter={(value) => `$${Number(value).toLocaleString()}`} />}
@@ -219,7 +221,7 @@ export function PriceHistoryChart({ productId }: PriceHistoryChartProps) {
                     y={avgPrice} 
                     stroke="#0EA4E9" 
                     strokeDasharray="3 3" 
-                    label={{ value: `Avg: $${avgPrice.toLocaleString()}`, position: 'right', fill: '#0EA4E9', fontSize: 10 }} 
+                    label={{ value: `Avg: $${avgPrice.toFixed(0)}`, position: 'right', fill: '#0EA4E9', fontSize: 10 }} 
                   />
                   <Line 
                     type="monotone" 
