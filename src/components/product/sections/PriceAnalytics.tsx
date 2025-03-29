@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
@@ -140,7 +139,7 @@ export function PriceAnalytics({ analytics, productId, timeRange }: PriceAnalyti
       return brackets;
     }
   });
-
+  
   const COLORS = ['#D946EE', '#8B5CF6', '#0EA4E9', '#10B981'];
   
   // Count total bids
@@ -148,7 +147,7 @@ export function PriceAnalytics({ analytics, productId, timeRange }: PriceAnalyti
 
   return (
     <div className="space-y-6">
-      {/* Bid Analytics Card - Now full width */}
+      {/* Bid Analytics Card - Full width */}
       <Card className="border-2 border-[#8B5CF6]/30 rounded-xl overflow-hidden shadow-sm">
         <div className="bg-gradient-to-r from-[#8B5CF6]/10 to-[#0EA4E9]/10 px-6 py-4 border-b border-[#8B5CF6]/20">
           <div className="flex justify-between items-center flex-wrap gap-3">
@@ -313,7 +312,7 @@ export function PriceAnalytics({ analytics, productId, timeRange }: PriceAnalyti
         </CardContent>
       </Card>
       
-      {/* Price Metrics Card - Now full width */}
+      {/* Price Metrics Card - Now full width with improved layout */}
       <Card className="border-2 border-[#D946EE]/30 rounded-xl overflow-hidden shadow-sm">
         <div className="bg-gradient-to-r from-[#D946EE]/10 to-[#8B5CF6]/10 px-6 py-4 border-b border-[#D946EE]/20">
           <div className="flex items-center gap-2">
@@ -324,11 +323,11 @@ export function PriceAnalytics({ analytics, productId, timeRange }: PriceAnalyti
           </div>
         </div>
         <CardContent className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
             {/* Current Range */}
             <div className="bg-gray-50 p-4 rounded-lg">
               <p className="text-sm text-gray-500 mb-1">Current Range</p>
-              <div className="text-lg font-semibold">
+              <div className="text-lg font-semibold truncate">
                 ${analytics.min.toLocaleString()} - ${analytics.max.toLocaleString()}
               </div>
             </div>
@@ -336,15 +335,19 @@ export function PriceAnalytics({ analytics, productId, timeRange }: PriceAnalyti
             {/* Average Price */}
             <div className="bg-gray-50 p-4 rounded-lg">
               <p className="text-sm text-gray-500 mb-1">Average Price</p>
-              <p className="text-lg font-semibold">${analytics.avg.toLocaleString()}</p>
+              <p className="text-lg font-semibold truncate">${analytics.avg.toLocaleString()}</p>
             </div>
             
-            {/* Price Change */}
+            {/* Price Change - Fixed layout to prevent overflow */}
             <div className="bg-gray-50 p-4 rounded-lg">
               <p className="text-sm text-gray-500 mb-1">Price Change</p>
-              <div className={`text-lg font-semibold ${analytics.change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                ${Math.abs(analytics.change).toLocaleString()} 
-                <span className="ml-1">({analytics.changePercent.toFixed(1)}%)</span>
+              <div className="flex items-baseline flex-wrap gap-1">
+                <span className={`text-lg font-semibold ${analytics.change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                  ${Math.abs(analytics.change).toLocaleString()}
+                </span>
+                <span className={`text-sm font-medium ${analytics.change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                  ({analytics.changePercent.toFixed(1)}%)
+                </span>
               </div>
             </div>
           </div>
