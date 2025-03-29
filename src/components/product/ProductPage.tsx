@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -17,7 +16,6 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, CheckCircle, ExternalLink, BadgeCheck, Timer } from "lucide-react";
 import { motion } from "framer-motion";
-
 interface Product {
   id: string;
   seller_id: string;
@@ -60,89 +58,86 @@ interface Product {
     avatar_url: string | null;
   };
 }
-
 export function ProductPage() {
-  const { id } = useParams<{ id: string }>();
+  const {
+    id
+  } = useParams<{
+    id: string;
+  }>();
   const navigate = useNavigate();
   const [isLiked, setIsLiked] = useState(false);
-  const { toast } = useToast();
-
-  const { data: product, isLoading, error } = useQuery({
+  const {
+    toast
+  } = useToast();
+  const {
+    data: product,
+    isLoading,
+    error
+  } = useQuery({
     queryKey: ['product', id],
     queryFn: async () => {
       if (!id) {
         throw new Error('No product ID provided');
       }
-
-      const { data, error } = await supabase
-        .from('products')
-        .select(`
+      const {
+        data,
+        error
+      } = await supabase.from('products').select(`
           *,
           seller:seller_id(
             id,
             full_name,
             avatar_url
           )
-        `)
-        .eq('id', id)
-        .single();
-
+        `).eq('id', id).single();
       if (error) {
         console.error('Error fetching product:', error);
         throw error;
       }
-
       if (!data) {
         throw new Error('Product not found');
       }
-
       return data as Product;
     },
     retry: 1,
     gcTime: 0
   });
-
   useEffect(() => {
     if (error) {
       console.error('Query error:', error);
       toast({
         title: "Error",
         description: "Failed to load product details",
-        variant: "destructive",
+        variant: "destructive"
       });
       navigate('/marketplace');
     }
   }, [error, toast, navigate]);
-
   useEffect(() => {
     const checkIfLiked = async () => {
       if (!id) return;
-      
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: {
+          user
+        }
+      } = await supabase.auth.getUser();
       if (!user) return;
-
-      const { data: likedStatus } = await supabase.rpc('check_product_liked', {
+      const {
+        data: likedStatus
+      } = await supabase.rpc('check_product_liked', {
         check_user_id: user.id,
         check_product_id: id
       });
       setIsLiked(!!likedStatus);
     };
-
     checkIfLiked();
   }, [id]);
-
   if (isLoading) {
-    return (
-      <>
+    return <>
         <Header />
         <div className="container mx-auto px-4 py-8 mt-16">
           <div className="flex items-center mb-6">
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="mr-2" 
-              onClick={() => navigate(-1)}
-            >
+            <Button variant="ghost" size="sm" className="mr-2" onClick={() => navigate(-1)}>
               <ArrowLeft className="h-4 w-4 mr-1" />
               Back
             </Button>
@@ -176,13 +171,10 @@ export function ProductPage() {
             </div>
           </div>
         </div>
-      </>
-    );
+      </>;
   }
-
   if (!product) {
-    return (
-      <>
+    return <>
         <Header />
         <div className="container mx-auto px-4 py-8 mt-16">
           <div className="text-center">
@@ -190,8 +182,7 @@ export function ProductPage() {
             <p className="text-gray-600">The product you're looking for doesn't exist or has been removed.</p>
           </div>
         </div>
-      </>
-    );
+      </>;
   }
 
   // Determine acquisition timeline text based on investment_timeline
@@ -209,20 +200,13 @@ export function ProductPage() {
         return 'Ready for acquisition';
     }
   };
-
-  return (
-    <>
+  return <>
       <Header />
       
       <div className="container mx-auto px-4 py-8 mt-16 mb-16">
         {/* Breadcrumbs and back button */}
         <div className="flex items-center mb-6">
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="mr-4" 
-            onClick={() => navigate(-1)}
-          >
+          <Button variant="ghost" size="sm" className="mr-4" onClick={() => navigate(-1)}>
             <ArrowLeft className="h-4 w-4 mr-1" />
             Back to Marketplace
           </Button>
@@ -232,39 +216,32 @@ export function ProductPage() {
         </div>
         
         {/* Acquisition banner */}
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="bg-gradient-to-r from-[#8B5CF6]/10 via-[#D946EE]/10 to-[#0EA4E9]/10 p-3 rounded-lg mb-6 flex items-center justify-between"
-        >
-          <div className="flex items-center">
-            <Timer className="h-5 w-5 text-[#D946EE] mr-2" />
-            <span className="text-sm font-medium">{getAcquisitionTimelineText(product.investment_timeline)}</span>
-          </div>
-          {product.is_verified && (
-            <div className="flex items-center">
-              <BadgeCheck className="h-5 w-5 text-green-500 mr-1" />
-              <span className="text-sm font-medium text-green-600">Verified Listing</span>
-            </div>
-          )}
-        </motion.div>
+        
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div className="space-y-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
+            <motion.div initial={{
+            opacity: 0,
+            y: 20
+          }} animate={{
+            opacity: 1,
+            y: 0
+          }} transition={{
+            duration: 0.5
+          }}>
               <ProductGallery images={[product.image_url]} />
             </motion.div>
             
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-            >
+            <motion.div initial={{
+            opacity: 0,
+            y: 20
+          }} animate={{
+            opacity: 1,
+            y: 0
+          }} transition={{
+            duration: 0.5,
+            delay: 0.1
+          }}>
               <Card className="p-6 border-t-4 border-t-[#D946EE]">
                 <h3 className="text-lg font-semibold mb-4 exo-2-heading">Product Details</h3>
                 <div className="space-y-3">
@@ -280,97 +257,107 @@ export function ProductPage() {
                     <span className="text-gray-600">Monthly Revenue</span>
                     <span className="font-medium text-green-600">
                       ${product.monthly_revenue ? product.monthly_revenue.toLocaleString() : '0'}
-                      {product.is_revenue_verified && (
-                        <CheckCircle className="inline-block h-4 w-4 ml-1 text-green-500" />
-                      )}
+                      {product.is_revenue_verified && <CheckCircle className="inline-block h-4 w-4 ml-1 text-green-500" />}
                     </span>
                   </div>
-                  {product.demo_url && (
-                    <a 
-                      href={product.demo_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2 w-full py-2 mt-2 text-[#8B5CF6] border border-[#8B5CF6] rounded-md hover:bg-[#8B5CF6]/10 transition-colors"
-                    >
+                  {product.demo_url && <a href={product.demo_url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 w-full py-2 mt-2 text-[#8B5CF6] border border-[#8B5CF6] rounded-md hover:bg-[#8B5CF6]/10 transition-colors">
                       <ExternalLink className="h-4 w-4" />
                       View Live Demo
-                    </a>
-                  )}
+                    </a>}
                 </div>
-                {product.special_notes && (
-                  <div className="mt-4 border-t pt-4">
+                {product.special_notes && <div className="mt-4 border-t pt-4">
                     <h4 className="text-base font-semibold mb-2">Special Notes</h4>
                     <p className="text-gray-600 whitespace-pre-wrap">{product.special_notes}</p>
-                  </div>
-                )}
+                  </div>}
               </Card>
             </motion.div>
             
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
+            <motion.div initial={{
+            opacity: 0,
+            y: 20
+          }} animate={{
+            opacity: 1,
+            y: 0
+          }} transition={{
+            duration: 0.5,
+            delay: 0.2
+          }}>
               <PriceHistoryChart productId={product.id} />
             </motion.div>
           </div>
 
           <div className="space-y-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <ProductHeader 
-                product={{
-                  id: product.id,
-                  title: product.title,
-                  description: product.description || ''
-                }}
-                isLiked={isLiked}
-                setIsLiked={setIsLiked}
-              />
+            <motion.div initial={{
+            opacity: 0,
+            y: 20
+          }} animate={{
+            opacity: 1,
+            y: 0
+          }} transition={{
+            duration: 0.5
+          }}>
+              <ProductHeader product={{
+              id: product.id,
+              title: product.title,
+              description: product.description || ''
+            }} isLiked={isLiked} setIsLiked={setIsLiked} />
             </motion.div>
             
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-            >
+            <motion.div initial={{
+            opacity: 0,
+            y: 20
+          }} animate={{
+            opacity: 1,
+            y: 0
+          }} transition={{
+            duration: 0.5,
+            delay: 0.1
+          }}>
               <ProductPricing product={product} />
             </motion.div>
             
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
+            <motion.div initial={{
+            opacity: 0,
+            y: 20
+          }} animate={{
+            opacity: 1,
+            y: 0
+          }} transition={{
+            duration: 0.5,
+            delay: 0.2
+          }}>
               <ProductStats product={product} />
             </motion.div>
           </div>
         </div>
 
         <div className="mt-12 space-y-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-          >
+          <motion.div initial={{
+          opacity: 0,
+          y: 20
+        }} animate={{
+          opacity: 1,
+          y: 0
+        }} transition={{
+          duration: 0.5,
+          delay: 0.3
+        }}>
             <ProductReviews productId={product.id} />
           </motion.div>
           
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-          >
-            <RelatedProducts 
-              currentProductCategory={product.category}
-              currentProductId={product.id}
-            />
+          <motion.div initial={{
+          opacity: 0,
+          y: 20
+        }} animate={{
+          opacity: 1,
+          y: 0
+        }} transition={{
+          duration: 0.5,
+          delay: 0.4
+        }}>
+            <RelatedProducts currentProductCategory={product.category} currentProductId={product.id} />
           </motion.div>
         </div>
       </div>
-    </>
-  );
+    </>;
 }
