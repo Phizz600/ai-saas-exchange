@@ -12,10 +12,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { BidForm } from "../bid/BidForm";
 
 interface AuctionSectionProps {
   product: {
     id: string;
+    title?: string;
     current_price?: number;
     min_price?: number;
     price_decrement?: number;
@@ -27,6 +29,7 @@ export function AuctionSection({ product }: AuctionSectionProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);
   const [currentPrice, setCurrentPrice] = useState(product.current_price);
+  const [showBidForm, setShowBidForm] = useState(false);
   const { toast } = useToast();
   const auctionEnded = product.auction_end_time && new Date(product.auction_end_time) < new Date();
 
@@ -53,50 +56,7 @@ export function AuctionSection({ product }: AuctionSectionProps) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [product.id]); // Remove currentPrice from dependencies
-
-  const handleBid = async () => {
-    if (!currentPrice) return;
-    
-    setIsSubmitting(true);
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        toast({
-          title: "Authentication required",
-          description: "Please log in to place a bid",
-          variant: "destructive"
-        });
-        return;
-      }
-
-      const { error } = await supabase
-        .from('bids')
-        .insert({
-          product_id: product.id,
-          bidder_id: user.id,
-          amount: currentPrice
-        });
-
-      if (error) throw error;
-
-      toast({
-        title: "Bid placed successfully!",
-        description: `You've placed a bid for $${currentPrice.toLocaleString()}`,
-      });
-
-    } catch (error) {
-      console.error('Error placing bid:', error);
-      toast({
-        title: "Error placing bid",
-        description: "Please try again later",
-        variant: "destructive"
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  }, [product.id]);
 
   const handleShare = async (url: string) => {
     try {
@@ -177,14 +137,32 @@ export function AuctionSection({ product }: AuctionSectionProps) {
         </div>
       </div>
 
-      {!auctionEnded && (
+      {!auctionEnded && !showBidForm && (
         <Button 
           className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white hover:opacity-90"
-          onClick={handleBid}
-          disabled={isSubmitting}
+          onClick={() => setShowBidForm(true)}
         >
-          {isSubmitting ? "Placing bid..." : "Place Bid"}
+          Place Bid
         </Button>
+      )}
+
+      {showBidForm && (
+        <div className="border-t pt-4 mt-2">
+          <BidForm
+            productId={product.id}
+            productTitle={product.title || "Product"}
+            currentPrice={currentPrice}
+          />
+          
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="mt-2 w-full text-xs"
+            onClick={() => setShowBidForm(false)}
+          >
+            Cancel
+          </Button>
+        </div>
       )}
     </div>
   );

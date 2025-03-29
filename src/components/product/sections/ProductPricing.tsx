@@ -1,14 +1,13 @@
-
 import { useState, useEffect } from "react";
 import { Timer, TrendingDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { OfferDialog } from "@/components/marketplace/product-card/offer/OfferDialog";
+import { BidForm } from "@/components/marketplace/product-card/bid/BidForm";
 
 interface ProductPricingProps {
   product: {
@@ -27,8 +26,6 @@ interface ProductPricingProps {
 }
 
 export function ProductPricing({ product }: ProductPricingProps) {
-  const [bidAmount, setBidAmount] = useState("");
-  const [offerAmount, setOfferAmount] = useState("");
   const [timeLeft, setTimeLeft] = useState("");
   const [nextDrop, setNextDrop] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -126,86 +123,6 @@ export function ProductPricing({ product }: ProductPricingProps) {
     return () => clearInterval(timer);
   }, [product.auction_end_time, product.price_decrement_interval]);
 
-  const formatCurrencyInput = (value: string) => {
-    let numericValue = value.replace(/[^0-9.]/g, '');
-    const parts = numericValue.split('.');
-    if (parts.length > 2) {
-      numericValue = parts[0] + '.' + parts.slice(1).join('');
-    }
-    if (parts.length === 2 && parts[1].length > 2) {
-      numericValue = parts[0] + '.' + parts[1].slice(0, 2);
-    }
-    if (numericValue) {
-      const number = parseFloat(numericValue);
-      if (!isNaN(number)) {
-        return `$${number.toLocaleString('en-US', {
-          minimumFractionDigits: 0,
-          maximumFractionDigits: 2
-        })}`;
-      }
-    }
-    return '';
-  };
-
-  const parseCurrencyValue = (value: string) => {
-    return parseFloat(value.replace(/[$,]/g, '')) || 0;
-  };
-
-  const handleBid = async () => {
-    try {
-      setIsSubmitting(true);
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        toast({
-          title: "Authentication required",
-          description: "Please log in to place a bid",
-          variant: "destructive"
-        });
-        return;
-      }
-
-      const bidValue = parseCurrencyValue(bidAmount);
-      const currentHighestBid = currentPrice || product.starting_price || product.price || 0;
-
-      if (isNaN(bidValue) || bidValue <= currentHighestBid) {
-        toast({
-          title: "Invalid bid amount",
-          description: `Bid must be greater than the current price of $${currentHighestBid.toLocaleString()}`,
-          variant: "destructive"
-        });
-        return;
-      }
-
-      const { error } = await supabase
-        .from('bids')
-        .insert({
-          product_id: product.id,
-          bidder_id: user.id,
-          amount: bidValue,
-          status: 'pending'
-        });
-
-      if (error) throw error;
-
-      toast({
-        title: "Bid placed successfully!",
-        description: `You've placed a bid for $${bidValue.toLocaleString()}`,
-      });
-      setBidAmount("");
-
-    } catch (error) {
-      console.error('Error placing bid:', error);
-      toast({
-        title: "Error placing bid",
-        description: "Please try again later",
-        variant: "destructive"
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
   // Determine the current price to display
   const displayPrice = currentPrice || product.starting_price || product.price || 0;
 
@@ -258,23 +175,15 @@ export function ProductPricing({ product }: ProductPricingProps) {
               </div>
             </div>
           )}
-
+          
           {product.auction_end_time && (
-            <div className="space-y-3">
-              <Input
-                type="text"
-                value={bidAmount}
-                onChange={(e) => setBidAmount(formatCurrencyInput(e.target.value))}
-                placeholder="Enter bid amount"
-                className="font-mono"
+            <div className="space-y-3 border p-4 rounded-md">
+              <h3 className="font-medium">Place Your Bid</h3>
+              <BidForm 
+                productId={product.id}
+                productTitle={product.title || "Product"} 
+                currentPrice={displayPrice}
               />
-              <Button 
-                className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90"
-                onClick={handleBid}
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? "Placing bid..." : "Place Bid"}
-              </Button>
             </div>
           )}
 
