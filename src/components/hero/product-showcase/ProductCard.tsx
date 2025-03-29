@@ -146,21 +146,21 @@ const ProductCardButtons = ({
     <>
       {product.isAuction ? (
         isAuthenticated ? (
-          <Button className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] opacity-75 text-white cursor-not-allowed" disabled>
+          <Button className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 text-white cursor-not-allowed shadow-md disabled:opacity-90 disabled:shadow-none" disabled>
             Place Bid
           </Button>
         ) : (
-          <Button className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white" onClick={handleAuthRedirect}>
+          <Button className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 text-white shadow-md hover:shadow-lg hover:shadow-purple-500/20 transition-all" onClick={handleAuthRedirect}>
             Place Bid
           </Button>
         )
       ) : (
         isAuthenticated ? (
-          <Button className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] opacity-75 text-white cursor-not-allowed" disabled>
+          <Button className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 text-white cursor-not-allowed shadow-md disabled:opacity-90 disabled:shadow-none" disabled>
             Buy Now
           </Button>
         ) : (
-          <Button className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white" onClick={handleAuthRedirect}>
+          <Button className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 text-white shadow-md hover:shadow-lg hover:shadow-purple-500/20 transition-all" onClick={handleAuthRedirect}>
             Buy
           </Button>
         )
@@ -171,7 +171,7 @@ const ProductCardButtons = ({
           Make an Offer
         </Button>
       ) : (
-        <Button variant="outline" className="w-full border-2" onClick={handleAuthRedirect}>
+        <Button variant="outline" className="w-full border-2 hover:bg-gray-50 hover:border-purple-200 transition-all" onClick={handleAuthRedirect}>
           Make an Offer
         </Button>
       )}
@@ -181,7 +181,7 @@ const ProductCardButtons = ({
           View Details
         </Button>
       ) : (
-        <Button variant="ghost" className="w-full" onClick={handleAuthRedirect}>
+        <Button variant="ghost" className="w-full hover:bg-gray-50 hover:text-purple-600 transition-all" onClick={handleAuthRedirect}>
           View Details
         </Button>
       )}

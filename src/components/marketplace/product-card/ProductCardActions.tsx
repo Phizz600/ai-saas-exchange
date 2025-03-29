@@ -38,7 +38,7 @@ export function ProductCardActions({ product }: ProductCardActionsProps) {
       <Dialog open={isOfferDialogOpen} onOpenChange={setIsOfferDialogOpen}>
         <DialogTrigger asChild>
           <Button 
-            className="w-full bg-white text-black hover:bg-gradient-to-r hover:from-[#D946EE] hover:via-[#8B5CF6] hover:to-[#0EA4E9] hover:text-white transition-all duration-300"
+            className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 text-white shadow-md hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300"
           >
             <MessageSquare className="h-4 w-4 mr-2" />
             {isAuction ? "Make Offer / Bid" : "Make an Offer"}
