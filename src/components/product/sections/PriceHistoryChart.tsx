@@ -8,9 +8,8 @@ import {
   XAxis, 
   YAxis, 
   Tooltip, 
-  ResponsiveContainer, 
-  Area, 
   AreaChart,
+  Area,
   CartesianGrid,
   ReferenceLine
 } from "recharts";
@@ -19,7 +18,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { PriceAnalytics } from "./PriceAnalytics";
 import { motion } from "framer-motion";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { ChartContainer, ChartTooltipContent, ChartTooltip } from "@/components/ui/chart";
 
 interface PriceHistoryChartProps {
   productId: string;
@@ -74,7 +73,7 @@ export function PriceHistoryChart({ productId }: PriceHistoryChartProps) {
 
   if (isLoading) {
     return (
-      <Card className="p-6">
+      <Card className="p-6 rounded-xl overflow-hidden shadow-sm">
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <span className="exo-2-heading">Price History</span>
@@ -112,10 +111,10 @@ export function PriceHistoryChart({ productId }: PriceHistoryChartProps) {
       transition={{ duration: 0.5 }}
       className="space-y-6"
     >
-      <Card className="p-6 overflow-hidden">
-        <CardHeader className="px-0 pt-0">
+      <Card className="overflow-hidden rounded-xl border-2 border-[#8B5CF6]/30 shadow-sm">
+        <CardHeader className="px-6 pt-6 pb-0">
           <div className="flex justify-between items-center flex-wrap gap-4 mb-2">
-            <CardTitle className="exo-2-heading">Price History</CardTitle>
+            <CardTitle className="exo-2-heading text-xl">Price History</CardTitle>
             <div className="flex gap-2">
               {["1M", "3M", "6M", "1Y"].map((range) => (
                 <Button
@@ -156,11 +155,11 @@ export function PriceHistoryChart({ productId }: PriceHistoryChartProps) {
           </div>
         </CardHeader>
         
-        <CardContent className="px-0 pb-0">
+        <CardContent className="p-6">
           <div className="h-[300px]">
             <ChartContainer config={chartConfig} className="h-[300px]">
               {chartType === "area" ? (
-                <AreaChart data={priceHistory}>
+                <AreaChart data={priceHistory} margin={{ top: 10, right: 10, left: 0, bottom: 10 }}>
                   <defs>
                     <linearGradient id="colorPrice" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.8}/>
@@ -200,7 +199,7 @@ export function PriceHistoryChart({ productId }: PriceHistoryChartProps) {
                   />
                 </AreaChart>
               ) : (
-                <LineChart data={priceHistory}>
+                <LineChart data={priceHistory} margin={{ top: 10, right: 10, left: 0, bottom: 10 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(0, 0, 0, 0.05)" />
                   <XAxis 
                     dataKey="date"

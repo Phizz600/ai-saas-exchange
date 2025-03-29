@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
@@ -16,10 +16,10 @@ import {
   Cell,
   Legend
 } from "recharts";
-import { ChartTooltipContent, ChartTooltip } from "@/components/ui/chart";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { TrendingUp, TrendingDown, History, Users, Activity, HelpCircle } from "lucide-react";
-import { Tooltip as UITooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Activity, Users, HelpCircle } from "lucide-react";
+import { TooltipProvider, Tooltip as UITooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface PriceAnalyticsProps {
   analytics: {
@@ -34,14 +34,12 @@ interface PriceAnalyticsProps {
 }
 
 export function PriceAnalytics({ analytics, productId, timeRange }: PriceAnalyticsProps) {
-  const [chartView, setChartView] = useState<"bidActivity" | "bidDistribution">("bidActivity");
+  const [chartView, setChartView] = useState<"activity" | "distribution">("activity");
 
   // Fetch bid activity data
   const { data: bidActivityData, isLoading: isLoadingActivity } = useQuery({
     queryKey: ['bid-activity', productId, timeRange],
     queryFn: async () => {
-      // In a real app, you might fetch this from a specialized endpoint
-      // Here we'll simulate some bid activity data based on time periods
       const rangeInDays = timeRange === "1Y" ? 365 : 
                           timeRange === "6M" ? 180 : 
                           timeRange === "3M" ? 90 : 30;
@@ -54,26 +52,20 @@ export function PriceAnalytics({ analytics, productId, timeRange }: PriceAnalyti
 
       if (error) throw error;
       
-      // Group bids by day/week/month depending on time range
-      const bidsByPeriod: Record<string, number> = {};
-      
-      // Create period labels based on time range
+      // Group bids by period based on time range
       let periods: string[] = [];
       if (timeRange === "1M") {
-        // For 1 month, show weeks
         periods = ["Week 1", "Week 2", "Week 3", "Week 4"];
       } else if (timeRange === "3M") {
-        // For 3 months, show months
         periods = ["Month 1", "Month 2", "Month 3"];
       } else if (timeRange === "6M") {
-        // For 6 months, show months
         periods = ["Month 1", "Month 2", "Month 3", "Month 4", "Month 5", "Month 6"];
       } else {
-        // For 1 year, show quarters
         periods = ["Q1", "Q2", "Q3", "Q4"];
       }
       
       // Initialize with zero counts
+      const bidsByPeriod: Record<string, number> = {};
       periods.forEach(period => {
         bidsByPeriod[period] = 0;
       });
@@ -85,23 +77,20 @@ export function PriceAnalytics({ analytics, productId, timeRange }: PriceAnalyti
           let period: string;
           
           if (timeRange === "1M") {
-            // Week number within the month
             const dayOfMonth = date.getDate();
             if (dayOfMonth <= 7) period = "Week 1";
             else if (dayOfMonth <= 14) period = "Week 2";
             else if (dayOfMonth <= 21) period = "Week 3";
             else period = "Week 4";
           } else if (timeRange === "3M" || timeRange === "6M") {
-            // Month number
             const monthIndex = date.getMonth();
             const currentMonth = new Date().getMonth();
             let monthsAgo = (currentMonth - monthIndex + 12) % 12;
-            if (monthsAgo >= 6 && timeRange === "6M") monthsAgo = 5;
-            if (monthsAgo >= 3 && timeRange === "3M") monthsAgo = 2;
-            period = `Month ${6 - monthsAgo}`;
-            if (timeRange === "3M") period = `Month ${3 - monthsAgo}`;
+            const totalMonths = timeRange === "6M" ? 6 : 3;
+            
+            if (monthsAgo >= totalMonths) monthsAgo = totalMonths - 1;
+            period = `Month ${totalMonths - monthsAgo}`;
           } else {
-            // Quarter
             const month = date.getMonth();
             if (month < 3) period = "Q1";
             else if (month < 6) period = "Q2";
@@ -119,14 +108,10 @@ export function PriceAnalytics({ analytics, productId, timeRange }: PriceAnalyti
     }
   });
   
-  // Fetch bid distribution data (simulate for now)
+  // Fetch bid distribution data
   const { data: bidDistributionData, isLoading: isLoadingDistribution } = useQuery({
     queryKey: ['bid-distribution', productId],
     queryFn: async () => {
-      // In a real app, you would fetch the actual bid distribution from your backend
-      // Here we'll generate simulated data
-      
-      // Get actual min and max from analytics
       const min = analytics.min;
       const max = analytics.max;
       const range = max - min;
@@ -155,176 +140,199 @@ export function PriceAnalytics({ analytics, productId, timeRange }: PriceAnalyti
     }
   });
 
-  // Set up colors for the pie chart
   const COLORS = ['#D946EE', '#8B5CF6', '#0EA4E9', '#10B981'];
   
-  const bidActivityBarColors = {
-    "Week 1": "#D946EE",
-    "Week 2": "#C837EC",
-    "Week 3": "#B729EA",
-    "Week 4": "#A61BE8",
-    "Month 1": "#D946EE",
-    "Month 2": "#C837EC", 
-    "Month 3": "#B729EA",
-    "Month 4": "#A61BE8",
-    "Month 5": "#952AE6",
-    "Month 6": "#8B5CF6",
-    "Q1": "#D946EE",
-    "Q2": "#B729EA",
-    "Q3": "#952AE6",
-    "Q4": "#8B5CF6"
-  };
+  // Count total bids
+  const totalBids = bidActivityData?.reduce((sum, item) => sum + item.value, 0) || 0;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.1 }}
-      className="grid grid-cols-1 lg:grid-cols-3 gap-6"
-    >
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Price Metrics Card */}
-      <Card className="p-6 border-t-4 border-[#D946EE]">
-        <CardHeader className="px-0 pt-0">
-          <CardTitle className="exo-2-heading flex items-center gap-2 text-lg">
-            <Activity className="h-5 w-5 text-[#D946EE]" />
-            Price Metrics
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="px-0 pb-0 space-y-4">
+      <Card className="border-2 border-[#D946EE]/30 rounded-xl overflow-hidden shadow-sm">
+        <div className="bg-gradient-to-r from-[#D946EE]/10 to-[#8B5CF6]/10 px-6 py-4 border-b border-[#D946EE]/20">
+          <div className="flex items-center gap-2">
+            <div className="p-2 rounded-full bg-[#D946EE]/20">
+              <Activity className="h-5 w-5 text-[#D946EE]" />
+            </div>
+            <h3 className="text-xl font-bold exo-2-heading text-gray-800">Price Metrics</h3>
+          </div>
+        </div>
+        <CardContent className="p-6 space-y-6">
           <div className="grid grid-cols-2 gap-4">
-            <div className="bg-gray-50 p-3 rounded-md">
-              <div className="text-sm text-gray-500">Current Range</div>
-              <div className="font-semibold mt-1">
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <p className="text-sm text-gray-500 mb-1">Current Range</p>
+              <p className="text-lg font-semibold">
                 ${analytics.min.toLocaleString()} - ${analytics.max.toLocaleString()}
-              </div>
+              </p>
             </div>
-            <div className="bg-gray-50 p-3 rounded-md">
-              <div className="text-sm text-gray-500">Average Price</div>
-              <div className="font-semibold mt-1">${analytics.avg.toLocaleString()}</div>
-            </div>
-          </div>
-          
-          <div className="bg-gray-50 p-3 rounded-md">
-            <div className="text-sm text-gray-500">Price Change</div>
-            <div className="flex items-center mt-1">
-              <span className={`font-semibold ${analytics.change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                {analytics.change >= 0 ? '+' : ''}{analytics.change.toLocaleString()} ({analytics.changePercent.toFixed(1)}%)
-              </span>
-              {analytics.change >= 0 ? (
-                <TrendingUp className="ml-2 h-4 w-4 text-green-600" />
-              ) : (
-                <TrendingDown className="ml-2 h-4 w-4 text-red-600" />
-              )}
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <p className="text-sm text-gray-500 mb-1">Average Price</p>
+              <p className="text-lg font-semibold">${analytics.avg.toLocaleString()}</p>
             </div>
           </div>
           
-          <div className="flex gap-2">
-            <Badge variant="outline" className="bg-[#D946EE]/10 text-[#D946EE] border-0">
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <p className="text-sm text-gray-500 mb-1">Price Change</p>
+            <p className={`text-lg font-semibold ${analytics.change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+              {analytics.change.toLocaleString()} ({analytics.changePercent.toFixed(1)}%)
+            </p>
+          </div>
+          
+          <div className="flex gap-2 mt-4">
+            <Badge variant="outline" className="bg-[#D946EE]/10 text-[#D946EE] border-0 rounded-full px-4">
               {timeRange} Period
             </Badge>
-            <Badge variant="outline" className="bg-[#8B5CF6]/10 text-[#8B5CF6] border-0">
-              {bidActivityData?.reduce((sum, item) => sum + item.value, 0) || 0} Bids
+            <Badge variant="outline" className="bg-[#8B5CF6]/10 text-[#8B5CF6] border-0 rounded-full px-4">
+              {totalBids} Bids
             </Badge>
           </div>
         </CardContent>
       </Card>
       
-      {/* Bid Activity/Distribution Chart Card */}
-      <Card className="lg:col-span-2 p-6">
-        <CardHeader className="px-0 pt-0">
+      {/* Bid Analytics Card */}
+      <Card className="lg:col-span-2 border-2 border-[#8B5CF6]/30 rounded-xl overflow-hidden shadow-sm">
+        <div className="bg-gradient-to-r from-[#8B5CF6]/10 to-[#0EA4E9]/10 px-6 py-4 border-b border-[#8B5CF6]/20">
           <div className="flex justify-between items-center">
-            <CardTitle className="exo-2-heading flex items-center gap-2 text-lg">
-              <Users className="h-5 w-5 text-[#8B5CF6]" />
-              Bid Analytics
-              <TooltipProvider>
-                <UITooltip>
-                  <TooltipTrigger asChild>
-                    <HelpCircle className="h-4 w-4 text-gray-400 ml-1 cursor-help" />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p className="w-[200px] text-xs">
-                      View bid activity over time or distribution across price ranges
-                    </p>
-                  </TooltipContent>
-                </UITooltip>
-              </TooltipProvider>
-            </CardTitle>
-            <div className="flex gap-2">
-              <Badge 
-                variant={chartView === "bidActivity" ? "default" : "outline"}
-                className={`cursor-pointer ${chartView === "bidActivity" ? "bg-[#8B5CF6]" : ""}`}
-                onClick={() => setChartView("bidActivity")}
-              >
-                <History className="h-3 w-3 mr-1" />
-                Activity
-              </Badge>
-              <Badge 
-                variant={chartView === "bidDistribution" ? "default" : "outline"}
-                className={`cursor-pointer ${chartView === "bidDistribution" ? "bg-[#D946EE]" : ""}`}
-                onClick={() => setChartView("bidDistribution")}
-              >
-                <Activity className="h-3 w-3 mr-1" />
-                Distribution
-              </Badge>
+            <div className="flex items-center gap-2">
+              <div className="p-2 rounded-full bg-[#8B5CF6]/20">
+                <Users className="h-5 w-5 text-[#8B5CF6]" />
+              </div>
+              <h3 className="text-xl font-bold exo-2-heading text-gray-800 flex items-center">
+                Bid Analytics
+                <TooltipProvider>
+                  <UITooltip>
+                    <TooltipTrigger asChild>
+                      <HelpCircle className="h-4 w-4 text-gray-400 ml-2 cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="w-[200px] text-xs">
+                        View bid activity over time or bid distribution across price ranges
+                      </p>
+                    </TooltipContent>
+                  </UITooltip>
+                </TooltipProvider>
+              </h3>
             </div>
+            
+            <Tabs value={chartView} onValueChange={(v) => setChartView(v as "activity" | "distribution")} className="w-auto">
+              <TabsList className="bg-gray-100">
+                <TabsTrigger 
+                  value="activity"
+                  className={`${chartView === "activity" ? "bg-[#8B5CF6] text-white" : "text-gray-600"} px-4`}
+                >
+                  Activity
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="distribution"
+                  className={`${chartView === "distribution" ? "bg-[#D946EE] text-white" : "text-gray-600"} px-4`}
+                >
+                  Distribution
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
           </div>
-        </CardHeader>
-        <CardContent className="px-0 pb-0">
-          <div className="h-[200px]">
-            {chartView === "bidActivity" ? (
+        </div>
+        
+        <CardContent className="p-6">
+          <div className="h-[240px]">
+            {chartView === "activity" ? (
               isLoadingActivity ? (
-                <div className="h-full w-full bg-gray-100 animate-pulse rounded-md"></div>
+                <div className="h-full w-full flex items-center justify-center">
+                  <div className="animate-pulse bg-gray-200 h-full w-full rounded-md"></div>
+                </div>
               ) : (
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={bidActivityData}>
-                    <XAxis dataKey="name" />
-                    <YAxis allowDecimals={false} />
-                    <Tooltip 
+                  <BarChart data={bidActivityData} margin={{ top: 10, right: 10, left: -15, bottom: 0 }}>
+                    <defs>
+                      <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#8B5CF6" stopOpacity={0.8}/>
+                        <stop offset="95%" stopColor="#D946EE" stopOpacity={0.5}/>
+                      </linearGradient>
+                    </defs>
+                    <XAxis 
+                      dataKey="name" 
+                      tick={{ fontSize: 12 }}
+                      tickLine={false}
+                      axisLine={{ stroke: '#E5E7EB' }}
+                    />
+                    <YAxis 
+                      allowDecimals={false}
+                      tick={{ fontSize: 12 }}
+                      tickLine={false}
+                      axisLine={{ stroke: '#E5E7EB' }}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                        borderColor: '#8B5CF6',
+                        borderRadius: '0.5rem',
+                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+                      }}
                       formatter={(value) => [`${value} bids`, "Activity"]}
                       labelFormatter={(label) => `Period: ${label}`}
                     />
                     <Bar 
                       dataKey="value" 
                       name="Bids"
+                      fill="url(#barGradient)"
                       radius={[4, 4, 0, 0]}
-                      fill="#8B5CF6"
-                      //getBarFill for custom color per period
-                      fillOpacity={0.8}
-                    >
-                      {bidActivityData?.map((entry, index) => (
-                        <Cell 
-                          key={`cell-${index}`} 
-                          fill={bidActivityBarColors[entry.name as keyof typeof bidActivityBarColors] || "#8B5CF6"} 
-                        />
-                      ))}
-                    </Bar>
+                      animationDuration={800}
+                      animationEasing="ease-in-out"
+                    />
                   </BarChart>
                 </ResponsiveContainer>
               )
             ) : (
               isLoadingDistribution ? (
-                <div className="h-full w-full bg-gray-100 animate-pulse rounded-md"></div>
+                <div className="h-full w-full flex items-center justify-center">
+                  <div className="animate-pulse bg-gray-200 h-full w-full rounded-md"></div>
+                </div>
               ) : (
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
+                    <defs>
+                      {COLORS.map((color, index) => (
+                        <linearGradient key={index} id={`pieGradient${index}`} x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor={color} stopOpacity={0.8}/>
+                          <stop offset="95%" stopColor={color} stopOpacity={0.5}/>
+                        </linearGradient>
+                      ))}
+                    </defs>
                     <Pie
                       data={bidDistributionData}
                       cx="50%"
                       cy="50%"
                       labelLine={false}
-                      outerRadius={80}
+                      outerRadius={85}
                       innerRadius={40}
-                      fill="#8884d8"
                       dataKey="value"
                       nameKey="name"
-                      label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}
+                      label={({ name, percent }) => `${(percent * 100).toFixed(0)}%`}
+                      animationDuration={800}
+                      animationEasing="ease-in-out"
                     >
                       {bidDistributionData?.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        <Cell 
+                          key={`cell-${index}`} 
+                          fill={`url(#pieGradient${index % COLORS.length})`} 
+                        />
                       ))}
                     </Pie>
-                    <Legend />
-                    <Tooltip 
+                    <Legend 
+                      verticalAlign="bottom" 
+                      iconType="circle" 
+                      iconSize={8}
+                      formatter={(value) => {
+                        return <span className="text-xs">{value}</span>;
+                      }}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                        borderColor: '#D946EE',
+                        borderRadius: '0.5rem',
+                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+                      }}
                       formatter={(value) => [`${value} bids`, "Count"]}
                       labelFormatter={(name) => `Price Range: $${name}`}
                     />
@@ -333,17 +341,14 @@ export function PriceAnalytics({ analytics, productId, timeRange }: PriceAnalyti
               )
             )}
           </div>
-          {chartView === "bidActivity" ? (
-            <div className="text-xs text-center text-gray-500 mt-2">
-              Bid activity over {timeRange} time period
-            </div>
-          ) : (
-            <div className="text-xs text-center text-gray-500 mt-2">
-              Distribution of bids across price ranges
-            </div>
-          )}
+          
+          <div className="text-center text-sm text-gray-500 mt-4">
+            {chartView === "activity" 
+              ? `Bid activity over ${timeRange} time period` 
+              : "Distribution of bids across price ranges"}
+          </div>
         </CardContent>
       </Card>
-    </motion.div>
+    </div>
   );
 }
