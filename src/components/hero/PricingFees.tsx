@@ -16,7 +16,7 @@ const PricingFees = () => {
           transition={{ duration: 0.5, delay: 0.1 }}
           className="mb-12"
         >
-          <Card className="p-8 bg-gradient-to-r from-[#8B5CF6]/20 via-[#D946EE]/20 to-[#0EA4E9]/20 backdrop-blur-sm border border-[#8B5CF6]/30 relative overflow-hidden">
+          <Card className="p-8 bg-gradient-to-r from-[#8B5CF6]/30 via-[#D946EE]/40 to-[#0EA4E9]/30 backdrop-blur-sm border border-[#8B5CF6]/50 relative overflow-hidden shadow-xl">
             <div className="absolute top-0 right-0 bg-[#D946EE] text-white text-xs font-bold px-4 py-1 rounded-bl transform rotate-0">
               NEW
             </div>
