@@ -116,6 +116,87 @@ export const FeesPricing = () => {
                 </div>
               </div>
             </div>
+
+            {/* New section for bidding and deposit fees */}
+            <div className="mt-10">
+              <h2 className="text-2xl font-semibold text-white mb-6 exo-2-heading">Bidding & Deposit Fee Structure</h2>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+                <div className="p-6 rounded-lg bg-white/5 backdrop-blur-sm border border-white/10">
+                  <h3 className="text-lg font-semibold text-white mb-3">Initial Offer Deposits</h3>
+                  <ul className="space-y-3 text-white/80">
+                    <li className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-[#8B5CF6] mr-2 mt-1 flex-shrink-0" />
+                      <span>10% deposit required when making an offer</span>
+                    </li>
+                    <li className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-[#8B5CF6] mr-2 mt-1 flex-shrink-0" />
+                      <span>5% platform fee applied to deposits (0.5% of offer value)</span>
+                    </li>
+                    <li className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-[#8B5CF6] mr-2 mt-1 flex-shrink-0" />
+                      <span>Fully refundable if offer is declined</span>
+                    </li>
+                    <li className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-[#8B5CF6] mr-2 mt-1 flex-shrink-0" />
+                      <span>Applied toward final purchase if offer is accepted</span>
+                    </li>
+                  </ul>
+                </div>
+                
+                <div className="p-6 rounded-lg bg-white/5 backdrop-blur-sm border border-white/10">
+                  <h3 className="text-lg font-semibold text-white mb-3">Updated Offer Deposits</h3>
+                  <ul className="space-y-3 text-white/80">
+                    <li className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-[#0EA4E9] mr-2 mt-1 flex-shrink-0" />
+                      <span>No additional deposit for small increases (less than 20%)</span>
+                    </li>
+                    <li className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-[#0EA4E9] mr-2 mt-1 flex-shrink-0" />
+                      <span>For offers increased by more than 20%, only the additional deposit amount is required</span>
+                    </li>
+                    <li className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-[#0EA4E9] mr-2 mt-1 flex-shrink-0" />
+                      <span>5% platform fee applies only to the additional deposit amount</span>
+                    </li>
+                    <li className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-[#0EA4E9] mr-2 mt-1 flex-shrink-0" />
+                      <span>Original deposit is carried forward and applied to the new offer</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              
+              <div className="bg-white/5 p-6 rounded-lg border border-white/10">
+                <h3 className="text-lg font-semibold text-white mb-3">Deposit Examples</h3>
+                
+                <div className="space-y-6">
+                  <div>
+                    <h4 className="text-white font-medium mb-2">Initial Offer:</h4>
+                    <p className="text-white/80 mb-1">• Offer amount: $50,000</p>
+                    <p className="text-white/80 mb-1">• Required deposit: $5,000 (10%)</p>
+                    <p className="text-white/80 mb-1">• Platform fee: $250 (5% of deposit)</p>
+                    <p className="text-white/80 mb-1">• Total payment: $5,250</p>
+                  </div>
+                  
+                  <div>
+                    <h4 className="text-white font-medium mb-2">Small Increase (less than 20%):</h4>
+                    <p className="text-white/80 mb-1">• Updated offer: $55,000 (10% increase)</p>
+                    <p className="text-white/80 mb-1">• Additional deposit required: $0</p>
+                    <p className="text-white/80 mb-1">• Original deposit is applied to the new offer</p>
+                  </div>
+                  
+                  <div>
+                    <h4 className="text-white font-medium mb-2">Large Increase (more than 20%):</h4>
+                    <p className="text-white/80 mb-1">• Updated offer: $70,000 (40% increase)</p>
+                    <p className="text-white/80 mb-1">• New total deposit needed: $7,000 (10% of new offer)</p>
+                    <p className="text-white/80 mb-1">• Additional deposit required: $2,000 ($7,000 - $5,000)</p>
+                    <p className="text-white/80 mb-1">• Platform fee on additional deposit: $100 (5% of $2,000)</p>
+                    <p className="text-white/80 mb-1">• Total additional payment: $2,100</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </Card>
         </motion.div>
         

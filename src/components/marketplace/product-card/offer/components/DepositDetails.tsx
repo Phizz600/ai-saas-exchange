@@ -21,18 +21,24 @@ export function DepositDetails({
   return (
     <div className="my-4 border border-gray-200 rounded-md overflow-hidden">
       <div className="bg-gray-50 p-3 border-b border-gray-200">
-        <h3 className="font-medium">Deposit Summary</h3>
+        <h3 className="font-medium">
+          {isAdditionalDeposit ? "Additional Deposit Summary" : "Deposit Summary"}
+        </h3>
         <p className="text-sm text-gray-600">{productTitle}</p>
       </div>
       
       <div className="p-4 space-y-3">
         <div className="flex justify-between items-center text-sm">
-          <span>Offer Amount</span>
+          <span>{isAdditionalDeposit ? "Updated Offer Amount" : "Offer Amount"}</span>
           <span className="font-medium">${offerAmount.toLocaleString()}</span>
         </div>
         
         <div className="flex justify-between items-center text-sm">
-          <span>{isAdditionalDeposit ? "Additional Deposit (10%)" : "Deposit (10%)"}</span>
+          <span>
+            {isAdditionalDeposit 
+              ? "Additional Deposit Required" 
+              : "Deposit (10% of offer)"}
+          </span>
           <span className="font-medium">${depositAmount.toLocaleString()}</span>
         </div>
         
@@ -48,8 +54,8 @@ export function DepositDetails({
         
         <p className="text-xs text-gray-500 italic mt-2">
           {isAdditionalDeposit 
-            ? "This additional deposit is required because your updated offer is more than 20% higher than your original offer."
-            : "Your deposit will be applied to the final purchase price if your offer is accepted or fully refunded if declined."}
+            ? "This additional deposit is required because your updated offer is more than 20% higher than your original offer. Your previous deposit will be applied to your new offer."
+            : "Your deposit will be applied to the final purchase price if your offer is accepted or fully refunded if declined. No additional deposit is required for small offer updates (less than 20% increase)."}
         </p>
       </div>
     </div>
