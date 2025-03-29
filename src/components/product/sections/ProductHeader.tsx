@@ -1,9 +1,11 @@
 
-import { Share2, Heart, Bookmark } from "lucide-react";
+import { Share2, Heart, Bookmark, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Badge } from "@/components/ui/badge";
 
 interface ProductHeaderProps {
   product: {
@@ -18,6 +20,11 @@ interface ProductHeaderProps {
 export function ProductHeader({ product, isLiked, setIsLiked }: ProductHeaderProps) {
   const { toast } = useToast();
   const [isSaved, setIsSaved] = useState(false);
+  const [shareUrl, setShareUrl] = useState("");
+  
+  useEffect(() => {
+    setShareUrl(window.location.href);
+  }, []);
 
   useEffect(() => {
     const checkIfSaved = async () => {
@@ -135,40 +142,80 @@ export function ProductHeader({ product, isLiked, setIsLiked }: ProductHeaderPro
     }
   };
 
+  const handleShare = async () => {
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: product.title,
+          text: product.description,
+          url: shareUrl,
+        });
+      } else {
+        await navigator.clipboard.writeText(shareUrl);
+        toast({
+          title: "Link copied!",
+          description: "Product link has been copied to your clipboard",
+        });
+      }
+    } catch (error) {
+      console.error('Error sharing:', error);
+      navigator.clipboard.writeText(shareUrl);
+      toast({
+        title: "Link copied!",
+        description: "Product link has been copied to your clipboard",
+      });
+    }
+  };
+
   return (
-    <div className="flex justify-between items-start">
-      <div>
-        <h1 className="text-3xl font-bold mb-2">{product.title}</h1>
-        <p className="text-gray-600">{product.description}</p>
-      </div>
-      <div className="flex gap-2">
-        <Button 
-          variant="outline" 
-          size="icon"
-          onClick={() => {
-            navigator.clipboard.writeText(window.location.href);
-            toast({
-              title: "Link copied!",
-              description: "Product link has been copied to your clipboard",
-            });
-          }}
-        >
-          <Share2 className="h-4 w-4" />
-        </Button>
-        <Button 
-          variant="outline" 
-          size="icon"
-          onClick={handleSave}
-        >
-          <Bookmark className={`h-4 w-4 ${isSaved ? "fill-current" : ""}`} />
-        </Button>
-        <Button 
-          variant="outline" 
-          size="icon"
-          onClick={handleLike}
-        >
-          <Heart className={`h-4 w-4 ${isLiked ? "fill-current text-red-500" : ""}`} />
-        </Button>
+    <div className="space-y-5">
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        className="flex justify-between items-start"
+      >
+        <div>
+          <h1 className="text-3xl font-bold mb-1 exo-2-heading bg-clip-text text-transparent bg-gradient-to-r from-[#8B5CF6] to-[#D946EE]">
+            {product.title}
+          </h1>
+          <Badge variant="secondary" className="mb-3 bg-[#0EA4E9]/10 text-[#0EA4E9] border-none">
+            AI Business Opportunity
+          </Badge>
+        </div>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={handleShare}
+            className="relative overflow-hidden group border-gray-200 hover:border-[#8B5CF6] hover:text-[#8B5CF6] transition-colors"
+          >
+            <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-[#8B5CF6]/10 to-[#D946EE]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+            <Share2 className="h-4 w-4 relative z-10" />
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={handleSave}
+            className={`relative overflow-hidden group border-gray-200 hover:border-[#D946EE] ${isSaved ? 'text-[#D946EE] border-[#D946EE]' : 'hover:text-[#D946EE]'} transition-colors`}
+          >
+            <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-[#D946EE]/10 to-[#8B5CF6]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+            <Bookmark className={`h-4 w-4 relative z-10 ${isSaved ? "fill-current" : ""}`} />
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={handleLike}
+            className={`relative overflow-hidden group border-gray-200 hover:border-red-400 ${isLiked ? 'text-red-500 border-red-400' : 'hover:text-red-500'} transition-colors`}
+          >
+            <span className="absolute inset-0 w-full h-full bg-red-400/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+            <Heart className={`h-4 w-4 relative z-10 ${isLiked ? "fill-current" : ""}`} />
+          </Button>
+        </div>
+      </motion.div>
+      
+      <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
+        <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">{product.description}</p>
       </div>
     </div>
   );

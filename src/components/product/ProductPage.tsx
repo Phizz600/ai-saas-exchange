@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -13,6 +14,9 @@ import { RelatedProducts } from "../marketplace/product-card/RelatedProducts";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft, CheckCircle, ExternalLink, BadgeCheck, Timer } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface Product {
   id: string;
@@ -132,6 +136,18 @@ export function ProductPage() {
       <>
         <Header />
         <div className="container mx-auto px-4 py-8 mt-16">
+          <div className="flex items-center mb-6">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="mr-2" 
+              onClick={() => navigate(-1)}
+            >
+              <ArrowLeft className="h-4 w-4 mr-1" />
+              Back
+            </Button>
+            <Skeleton className="h-6 w-60" />
+          </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div className="space-y-6">
               <Skeleton className="h-[400px] w-full rounded-lg" />
@@ -178,29 +194,108 @@ export function ProductPage() {
     );
   }
 
+  // Determine acquisition timeline text based on investment_timeline
+  const getAcquisitionTimelineText = (timeline?: string) => {
+    switch (timeline) {
+      case 'immediate':
+        return 'Ready for immediate acquisition';
+      case 'within_30_days':
+        return 'Available for acquisition within 30 days';
+      case 'within_90_days':
+        return 'Available for acquisition within 90 days';
+      case 'more_than_90_days':
+        return 'Planned for acquisition in the future';
+      default:
+        return 'Ready for acquisition';
+    }
+  };
+
   return (
     <>
       <Header />
-      <div className="container mx-auto px-4 py-8 mt-16">
+      
+      <div className="container mx-auto px-4 py-8 mt-16 mb-16">
+        {/* Breadcrumbs and back button */}
+        <div className="flex items-center mb-6">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="mr-4" 
+            onClick={() => navigate(-1)}
+          >
+            <ArrowLeft className="h-4 w-4 mr-1" />
+            Back to Marketplace
+          </Button>
+          <div className="text-sm text-gray-500">
+            Marketplace / {product.category} / {product.title}
+          </div>
+        </div>
+        
+        {/* Acquisition banner */}
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="bg-gradient-to-r from-[#8B5CF6]/10 via-[#D946EE]/10 to-[#0EA4E9]/10 p-3 rounded-lg mb-6 flex items-center justify-between"
+        >
+          <div className="flex items-center">
+            <Timer className="h-5 w-5 text-[#D946EE] mr-2" />
+            <span className="text-sm font-medium">{getAcquisitionTimelineText(product.investment_timeline)}</span>
+          </div>
+          {product.is_verified && (
+            <div className="flex items-center">
+              <BadgeCheck className="h-5 w-5 text-green-500 mr-1" />
+              <span className="text-sm font-medium text-green-600">Verified Listing</span>
+            </div>
+          )}
+        </motion.div>
+        
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div className="space-y-6">
-            <ProductGallery images={[product.image_url]} />
-            <Card className="p-6">
-              <h3 className="text-lg font-semibold mb-4">Product Details</h3>
-              <div className="space-y-3">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Category</span>
-                  <span className="font-medium">{product.category}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Stage</span>
-                  <span className="font-medium">{product.stage}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Monthly Revenue</span>
-                  <span className="font-medium">
-                    ${product.monthly_revenue ? product.monthly_revenue.toLocaleString() : '0'}
-                  </span>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <ProductGallery images={[product.image_url]} />
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+            >
+              <Card className="p-6 border-t-4 border-t-[#D946EE]">
+                <h3 className="text-lg font-semibold mb-4 exo-2-heading">Product Details</h3>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
+                    <span className="text-gray-600">Category</span>
+                    <span className="font-medium px-2 py-1 bg-[#8B5CF6]/10 rounded-md text-[#8B5CF6]">{product.category}</span>
+                  </div>
+                  <div className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
+                    <span className="text-gray-600">Stage</span>
+                    <span className="font-medium px-2 py-1 bg-[#0EA4E9]/10 rounded-md text-[#0EA4E9]">{product.stage}</span>
+                  </div>
+                  <div className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
+                    <span className="text-gray-600">Monthly Revenue</span>
+                    <span className="font-medium text-green-600">
+                      ${product.monthly_revenue ? product.monthly_revenue.toLocaleString() : '0'}
+                      {product.is_revenue_verified && (
+                        <CheckCircle className="inline-block h-4 w-4 ml-1 text-green-500" />
+                      )}
+                    </span>
+                  </div>
+                  {product.demo_url && (
+                    <a 
+                      href={product.demo_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-2 w-full py-2 mt-2 text-[#8B5CF6] border border-[#8B5CF6] rounded-md hover:bg-[#8B5CF6]/10 transition-colors"
+                    >
+                      <ExternalLink className="h-4 w-4" />
+                      View Live Demo
+                    </a>
+                  )}
                 </div>
                 {product.special_notes && (
                   <div className="mt-4 border-t pt-4">
@@ -208,32 +303,72 @@ export function ProductPage() {
                     <p className="text-gray-600 whitespace-pre-wrap">{product.special_notes}</p>
                   </div>
                 )}
-              </div>
-            </Card>
-            <PriceHistoryChart productId={product.id} />
+              </Card>
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              <PriceHistoryChart productId={product.id} />
+            </motion.div>
           </div>
 
           <div className="space-y-6">
-            <ProductHeader 
-              product={{
-                id: product.id,
-                title: product.title,
-                description: product.description || ''
-              }}
-              isLiked={isLiked}
-              setIsLiked={setIsLiked}
-            />
-            <ProductPricing product={product} />
-            <ProductStats product={product} />
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <ProductHeader 
+                product={{
+                  id: product.id,
+                  title: product.title,
+                  description: product.description || ''
+                }}
+                isLiked={isLiked}
+                setIsLiked={setIsLiked}
+              />
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+            >
+              <ProductPricing product={product} />
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              <ProductStats product={product} />
+            </motion.div>
           </div>
         </div>
 
         <div className="mt-12 space-y-8">
-          <ProductReviews productId={product.id} />
-          <RelatedProducts 
-            currentProductCategory={product.category}
-            currentProductId={product.id}
-          />
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            <ProductReviews productId={product.id} />
+          </motion.div>
+          
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+          >
+            <RelatedProducts 
+              currentProductCategory={product.category}
+              currentProductId={product.id}
+            />
+          </motion.div>
         </div>
       </div>
     </>
