@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -18,24 +17,33 @@ export const ListingThankYou = () => {
   const [paymentNeeded, setPaymentNeeded] = useState(false);
 
   useEffect(() => {
-    // Check for product ID in session storage
-    const pendingProductId = sessionStorage.getItem('pendingProductId');
-    if (pendingProductId) {
-      setProductId(pendingProductId);
-      console.log("Found pending product ID:", pendingProductId);
-    }
-
-    // Check if redirected from payment success
+    // Check for product ID in URL params first, then session storage as fallback
     const params = new URLSearchParams(location.search);
+    const urlProductId = params.get('product_id');
     const paymentStatus = params.get('payment_status');
     const paymentNeededParam = params.get('payment_needed');
     
+    // First try to get product ID from URL params
+    if (urlProductId) {
+      setProductId(urlProductId);
+      console.log("Found product ID in URL:", urlProductId);
+    } else {
+      // Fallback to session storage
+      const pendingProductId = sessionStorage.getItem('pendingProductId');
+      if (pendingProductId) {
+        setProductId(pendingProductId);
+        console.log("Found pending product ID in session storage:", pendingProductId);
+      }
+    }
+    
+    // Check if redirected from payment success
     if (paymentStatus === 'success') {
       setIsPaid(true);
       
       // If we have both payment success and a product ID, update the payment status
-      if (pendingProductId) {
-        updatePaymentStatus(pendingProductId);
+      const idToUpdate = urlProductId || sessionStorage.getItem('pendingProductId');
+      if (idToUpdate) {
+        updatePaymentStatus(idToUpdate);
       }
     }
 
@@ -78,7 +86,10 @@ export const ListingThankYou = () => {
 
   const retryPayment = () => {
     if (productId) {
-      window.location.href = `https://buy.stripe.com/9AQ3dz3lmf2yccE288?client_reference_id=${productId}`;
+      // Use origin to ensure proper URL construction
+      const currentHost = window.location.origin;
+      const successUrl = `${currentHost}/listing-thank-you?payment_status=success&product_id=${productId}`;
+      window.location.href = `https://buy.stripe.com/9AQ3dz3lmf2yccE288?client_reference_id=${productId}&success_url=${encodeURIComponent(successUrl)}`;
     } else {
       toast({
         title: "Product Information Missing",

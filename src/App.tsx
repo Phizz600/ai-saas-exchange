@@ -62,6 +62,15 @@ function App() {
             </AuthGuard>
           } 
         />
+        {/* Make sure we also support the URL structure shown in the error */}
+        <Route 
+          path="listing-thank-you" 
+          element={
+            <AuthGuard>
+              <ListingThankYou />
+            </AuthGuard>
+          } 
+        />
         <Route 
           path="/product-dashboard" 
           element={

@@ -90,7 +90,10 @@ export function ListProductForm() {
       setTimeout(() => {
         try {
           console.log("Redirecting to payment for product:", productId);
-          window.location.href = `https://buy.stripe.com/9AQ3dz3lmf2yccE288?client_reference_id=${productId}`;
+          // Use the FULL URL including protocol to ensure it works correctly
+          const currentHost = window.location.origin;
+          const successUrl = `${currentHost}/listing-thank-you?payment_status=success&product_id=${productId}`;
+          window.location.href = `https://buy.stripe.com/9AQ3dz3lmf2yccE288?client_reference_id=${productId}&success_url=${encodeURIComponent(successUrl)}`;
         } catch (error) {
           console.error("Redirect error:", error);
           // Fallback if redirect fails
