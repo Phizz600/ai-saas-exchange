@@ -1,3 +1,4 @@
+
 import { Search, SlidersHorizontal, X, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -232,28 +233,28 @@ export const SearchFilters = ({
               </SheetHeader>
               <div className="py-6 space-y-6">
                 <FilterSection
-                  title="Industry"
+                  label="Industry"
                   options={industries}
-                  activeValue={industryFilter}
-                  onChange={setIndustryFilter}
+                  value={industryFilter}
+                  onValueChange={setIndustryFilter}
                 />
                 <FilterSection
-                  title="Stage"
+                  label="Stage"
                   options={stages}
-                  activeValue={stageFilter}
-                  onChange={setStageFilter}
+                  value={stageFilter}
+                  onValueChange={setStageFilter}
                 />
                 <FilterSection
-                  title="Price Range"
+                  label="Price Range"
                   options={priceRanges}
-                  activeValue={priceFilter}
-                  onChange={setPriceFilter}
+                  value={priceFilter}
+                  onValueChange={setPriceFilter}
                 />
                 <FilterSection
-                  title="Sort By"
+                  label="Sort By"
                   options={sortOptions}
-                  activeValue={sortBy}
-                  onChange={setSortBy}
+                  value={sortBy}
+                  onValueChange={setSortBy}
                 />
                 {hasActiveFilters && (
                   <Button 
