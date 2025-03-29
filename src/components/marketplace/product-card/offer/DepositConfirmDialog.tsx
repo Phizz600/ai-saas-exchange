@@ -15,6 +15,8 @@ interface DepositConfirmDialogProps {
   productTitle: string;
   productId: string;
   onDepositComplete: (escrowId: string) => void;
+  isUpdatingOffer?: boolean;
+  additionalDepositAmount?: number;
 }
 
 export function DepositConfirmDialog({
@@ -23,14 +25,19 @@ export function DepositConfirmDialog({
   offerAmount,
   productTitle,
   productId,
-  onDepositComplete
+  onDepositComplete,
+  isUpdatingOffer = false,
+  additionalDepositAmount = 0
 }: DepositConfirmDialogProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
   
-  // Calculate deposit amount (10% of offer)
-  const depositAmount = Math.round(offerAmount * 0.1 * 100) / 100;
+  // Calculate deposit amount
+  const depositAmount = isUpdatingOffer && additionalDepositAmount > 0 
+    ? additionalDepositAmount 
+    : Math.round(offerAmount * 0.1 * 100) / 100;
+    
   const platformFee = Math.round(depositAmount * 0.05 * 100) / 100;
   const totalAmount = depositAmount + platformFee;
 
@@ -44,13 +51,16 @@ export function DepositConfirmDialog({
         offerAmount,
         depositAmount,
         platformFee,
-        productTitle
+        productTitle,
+        isAdditionalDeposit: isUpdatingOffer && additionalDepositAmount > 0
       });
       
       // Success - notify the user
       toast({
-        title: "Deposit initiated",
-        description: "Your offer process has been started. You will be notified when the seller responds.",
+        title: isUpdatingOffer ? "Additional deposit initiated" : "Deposit initiated",
+        description: isUpdatingOffer 
+          ? "Your offer update process has been started. You will be notified when the seller responds."
+          : "Your offer process has been started. You will be notified when the seller responds.",
       });
       
       onDepositComplete(escrowId);
@@ -82,9 +92,13 @@ export function DepositConfirmDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold exo-2-title">Confirm Offer Deposit</DialogTitle>
+          <DialogTitle className="text-xl font-semibold exo-2-title">
+            {isUpdatingOffer ? "Confirm Additional Deposit" : "Confirm Offer Deposit"}
+          </DialogTitle>
           <DialogDescription>
-            To verify your offer is genuine, we require a 10% deposit through our secure escrow service.
+            {isUpdatingOffer
+              ? "You're increasing your offer by more than 20%, which requires an additional deposit."
+              : "To verify your offer is genuine, we require a 10% deposit through our secure escrow service."}
           </DialogDescription>
         </DialogHeader>
 
@@ -94,6 +108,7 @@ export function DepositConfirmDialog({
           depositAmount={depositAmount}
           platformFee={platformFee}
           totalAmount={totalAmount}
+          isAdditionalDeposit={isUpdatingOffer && additionalDepositAmount > 0}
         />
 
         {error && (
@@ -112,7 +127,7 @@ export function DepositConfirmDialog({
             disabled={isSubmitting}
             className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9]"
           >
-            {isSubmitting ? "Processing..." : "Pay Deposit"}
+            {isSubmitting ? "Processing..." : isUpdatingOffer ? "Pay Additional Deposit" : "Pay Deposit"}
           </Button>
         </DialogFooter>
       </DialogContent>

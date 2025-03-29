@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 
 interface DepositInitiationParams {
@@ -6,6 +7,7 @@ interface DepositInitiationParams {
   depositAmount: number;
   platformFee: number;
   productTitle: string;
+  isAdditionalDeposit?: boolean;
 }
 
 export async function initiateDeposit({
@@ -13,7 +15,8 @@ export async function initiateDeposit({
   offerAmount,
   depositAmount,
   platformFee,
-  productTitle
+  productTitle,
+  isAdditionalDeposit = false
 }: DepositInitiationParams) {
   // Get the current user
   const { data: { user } } = await supabase.auth.getUser();
@@ -72,7 +75,9 @@ export async function initiateDeposit({
       amount: depositAmount,
       platform_fee: platformFee,
       escrow_fee: 0, // No escrow fee for deposits
-      description: `Deposit for offer on ${product.title}`,
+      description: isAdditionalDeposit 
+        ? `Additional deposit for updated offer on ${product.title}`
+        : `Deposit for offer on ${product.title}`,
       status: 'deposit_pending'
     })
     .select()
@@ -91,7 +96,9 @@ export async function initiateDeposit({
       action: 'create',
       data: {
         internal_transaction_id: escrowTransaction.id,
-        description: `Deposit for offer on ${product.title}`,
+        description: isAdditionalDeposit 
+          ? `Additional deposit for updated offer on ${product.title}`
+          : `Deposit for offer on ${product.title}`,
         amount: depositAmount,
         buyer_id: user.id,
         buyer_name: buyer.full_name || 'Buyer',
@@ -101,7 +108,9 @@ export async function initiateDeposit({
         seller_email: sellerEmail,
         timeline: '14 days',
         platform_fee: platformFee,
-        product_id: productId
+        product_id: productId,
+        isDeposit: true,
+        isAdditionalDeposit
       }
     }
   });

@@ -27,11 +27,15 @@ export function OfferDialog({
     success,
     depositDialogOpen,
     formattedAmount,
+    existingOffer,
+    isUpdatingOffer,
+    additionalDepositAmount,
     setMessage,
     setDepositDialogOpen,
     handleAmountChange,
     handleInitiateOffer,
-    handleOfferSubmit
+    handleOfferSubmit,
+    handleUpdateOffer
   } = useOfferForm({ productId, isAuction, currentPrice });
 
   const handleMessageChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -42,7 +46,9 @@ export function OfferDialog({
     <>
       <div className="space-y-4">
         <div className="text-center mb-2">
-          <h2 className="text-xl font-semibold exo-2-title">Make an Offer</h2>
+          <h2 className="text-xl font-semibold exo-2-title">
+            {isUpdatingOffer ? "Update Your Offer" : "Make an Offer"}
+          </h2>
           <p className="text-sm text-gray-500">
             {productTitle}
           </p>
@@ -56,9 +62,12 @@ export function OfferDialog({
             message={message}
             formattedAmount={formattedAmount}
             isSubmitting={isSubmitting}
+            productId={productId}
             onAmountChange={handleAmountChange}
             onMessageChange={handleMessageChange}
             onInitiateOffer={handleInitiateOffer}
+            existingOffer={existingOffer}
+            isUpdatingOffer={isUpdatingOffer}
           />
         )}
       </div>
@@ -70,6 +79,8 @@ export function OfferDialog({
         productTitle={productTitle}
         productId={productId}
         onDepositComplete={handleOfferSubmit}
+        isUpdatingOffer={isUpdatingOffer}
+        additionalDepositAmount={additionalDepositAmount}
       />
     </>
   );

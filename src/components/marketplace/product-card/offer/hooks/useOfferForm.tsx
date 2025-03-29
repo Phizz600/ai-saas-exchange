@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -15,7 +16,52 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
   const [success, setSuccess] = useState(false);
   const [depositDialogOpen, setDepositDialogOpen] = useState(false);
   const [formattedAmount, setFormattedAmount] = useState("");
+  const [existingOffer, setExistingOffer] = useState<any | null>(null);
+  const [isUpdatingOffer, setIsUpdatingOffer] = useState(false);
+  const [additionalDepositAmount, setAdditionalDepositAmount] = useState(0);
   const { toast } = useToast();
+
+  // Check if user has an existing offer on this product
+  useEffect(() => {
+    const checkExistingOffer = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (!user) return;
+        
+        const { data, error } = await supabase
+          .from('offers')
+          .select('*')
+          .eq('product_id', productId)
+          .eq('bidder_id', user.id)
+          .order('created_at', { ascending: false })
+          .limit(1);
+          
+        if (error) throw error;
+        
+        if (data && data.length > 0) {
+          setExistingOffer(data[0]);
+          
+          // Pre-fill the form with existing offer data
+          setAmount(data[0].amount.toString());
+          setFormattedAmount(`$${data[0].amount.toLocaleString()}`);
+          
+          if (data[0].message) {
+            setMessage(data[0].message);
+          }
+          
+          // If the offer is pending or deposit_pending, enable update mode
+          if (['pending', 'deposit_pending'].includes(data[0].status)) {
+            setIsUpdatingOffer(true);
+          }
+        }
+      } catch (error) {
+        console.error("Error checking existing offers:", error);
+      }
+    };
+    
+    checkExistingOffer();
+  }, [productId]);
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // Remove non-numeric characters except period
@@ -39,6 +85,20 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
       const numericValue = parseFloat(value);
       if (!isNaN(numericValue)) {
         setFormattedAmount(`$${numericValue.toLocaleString()}`);
+        
+        // Calculate additional deposit needed for updates
+        if (isUpdatingOffer && existingOffer) {
+          const originalAmount = existingOffer.amount;
+          const originalDeposit = existingOffer.deposit_amount;
+          
+          if (numericValue > originalAmount * 1.2) {
+            const newDepositTotal = Math.round(numericValue * 0.1 * 100) / 100;
+            const additionalDepositNeeded = Math.round((newDepositTotal - originalDeposit) * 100) / 100;
+            setAdditionalDepositAmount(additionalDepositNeeded > 0 ? additionalDepositNeeded : 0);
+          } else {
+            setAdditionalDepositAmount(0);
+          }
+        }
       } else {
         setFormattedAmount("");
       }
@@ -70,8 +130,79 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
       return;
     }
     
-    // Open deposit dialog
-    setDepositDialogOpen(true);
+    // If updating an offer
+    if (isUpdatingOffer && existingOffer) {
+      // Only require deposit if increasing by more than 20%
+      if (numericAmount > existingOffer.amount * 1.2 && additionalDepositAmount > 0) {
+        // Open deposit dialog with additional deposit amount
+        setDepositDialogOpen(true);
+      } else {
+        // Just update the offer without additional deposit
+        await handleUpdateOffer();
+      }
+    } else {
+      // Open deposit dialog for new offer
+      setDepositDialogOpen(true);
+    }
+  };
+  
+  const handleUpdateOffer = async () => {
+    try {
+      setIsSubmitting(true);
+      
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast({
+          title: "Authentication required",
+          description: "Please log in to update your offer",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      const numericAmount = parseFloat(amount);
+      
+      // Update the offer
+      const { data: updatedOffer, error: updateError } = await supabase
+        .from('offers')
+        .update({
+          amount: numericAmount,
+          message: message,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', existingOffer.id)
+        .select()
+        .single();
+      
+      if (updateError) {
+        throw updateError;
+      }
+      
+      // Success
+      setSuccess(true);
+      
+      toast({
+        title: "Offer updated!",
+        description: "Your offer has been updated successfully.",
+      });
+      
+      // Reset form
+      setAmount("");
+      setMessage("");
+      setFormattedAmount("");
+      
+    } catch (error: any) {
+      console.error("Error updating offer:", error);
+      
+      toast({
+        title: "Failed to update offer",
+        description: error.message || "An error occurred while updating your offer.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
   
   const handleOfferSubmit = async (escrowTransactionId: string) => {
@@ -90,48 +221,87 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
       }
       
       const numericAmount = parseFloat(amount);
-      const depositAmount = Math.round(numericAmount * 0.1 * 100) / 100; // 10% deposit
       
-      // Create the offer with deposit information - use manual status if escrowTransactionId is "manual"
-      const { data: offer, error: offerError } = await supabase
-        .from('offers')
-        .insert({
-          product_id: productId,
-          bidder_id: user.id,
-          amount: numericAmount,
-          message: message,
-          status: 'pending',
-          deposit_status: escrowTransactionId === "manual" ? 'manual_deposit' : 'deposit_pending',
-          deposit_amount: depositAmount,
-          deposit_transaction_id: escrowTransactionId === "manual" ? null : escrowTransactionId
-        })
-        .select()
-        .single();
-      
-      if (offerError) {
-        throw offerError;
-      }
-      
-      // Don't create a deposit transaction link if it's manual
-      if (escrowTransactionId !== "manual") {
-        // Create a link between the deposit transaction and the offer
-        await supabase.from('deposit_transactions').insert({
-          offer_id: offer.id,
-          amount: depositAmount,
-          escrow_transaction_id: escrowTransactionId,
-          status: 'pending'
+      // If updating an existing offer with additional deposit
+      if (isUpdatingOffer && existingOffer) {
+        // Calculate new deposit total (original + additional)
+        const newDepositTotal = existingOffer.deposit_amount + additionalDepositAmount;
+        
+        // Update the existing offer
+        const { data: updatedOffer, error: updateError } = await supabase
+          .from('offers')
+          .update({
+            amount: numericAmount,
+            message: message,
+            deposit_amount: newDepositTotal,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', existingOffer.id)
+          .select()
+          .single();
+        
+        if (updateError) {
+          throw updateError;
+        }
+        
+        // Create a new deposit transaction record for the additional deposit
+        if (escrowTransactionId !== "manual" && additionalDepositAmount > 0) {
+          await supabase.from('deposit_transactions').insert({
+            offer_id: existingOffer.id,
+            amount: additionalDepositAmount,
+            escrow_transaction_id: escrowTransactionId,
+            status: 'pending'
+          });
+        }
+        
+        toast({
+          title: "Offer updated!",
+          description: "Your offer has been updated with the additional deposit.",
+        });
+      } else {
+        // Create a new offer for first-time offers
+        const depositAmount = Math.round(numericAmount * 0.1 * 100) / 100; // 10% deposit
+        
+        const { data: offer, error: offerError } = await supabase
+          .from('offers')
+          .insert({
+            product_id: productId,
+            bidder_id: user.id,
+            amount: numericAmount,
+            message: message,
+            status: 'pending',
+            deposit_status: escrowTransactionId === "manual" ? 'manual_deposit' : 'deposit_pending',
+            deposit_amount: depositAmount,
+            deposit_transaction_id: escrowTransactionId === "manual" ? null : escrowTransactionId
+          })
+          .select()
+          .single();
+        
+        if (offerError) {
+          throw offerError;
+        }
+        
+        // Don't create a deposit transaction link if it's manual
+        if (escrowTransactionId !== "manual") {
+          // Create a link between the deposit transaction and the offer
+          await supabase.from('deposit_transactions').insert({
+            offer_id: offer.id,
+            amount: depositAmount,
+            escrow_transaction_id: escrowTransactionId,
+            status: 'pending'
+          });
+        }
+        
+        toast({
+          title: "Offer submitted!",
+          description: escrowTransactionId === "manual" 
+            ? "Your offer has been submitted. Please contact support to complete the deposit manually."
+            : "Once your deposit is confirmed, your offer will be processed.",
         });
       }
       
-      // Success
+      // Set success state
       setSuccess(true);
-      
-      toast({
-        title: "Offer submitted!",
-        description: escrowTransactionId === "manual" 
-          ? "Your offer has been submitted. Please contact support to complete the deposit manually."
-          : "Once your deposit is confirmed, your offer will be processed.",
-      });
       
       // Reset form
       setAmount("");
@@ -139,11 +309,11 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
       setFormattedAmount("");
       
     } catch (error: any) {
-      console.error("Error creating offer:", error);
+      console.error("Error creating/updating offer:", error);
       
       toast({
-        title: "Failed to create offer",
-        description: error.message || "An error occurred while creating your offer.",
+        title: "Failed to process offer",
+        description: error.message || "An error occurred while processing your offer.",
         variant: "destructive",
       });
     } finally {
@@ -165,12 +335,16 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
     success,
     depositDialogOpen,
     formattedAmount,
+    existingOffer,
+    isUpdatingOffer,
+    additionalDepositAmount,
     setAmount,
     setMessage,
     setDepositDialogOpen,
     handleAmountChange,
     handleInitiateOffer,
     handleOfferSubmit,
+    handleUpdateOffer,
     resetForm
   };
 }
