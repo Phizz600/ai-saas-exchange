@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
@@ -312,7 +313,7 @@ export function PriceAnalytics({ analytics, productId, timeRange }: PriceAnalyti
         </CardContent>
       </Card>
       
-      {/* Price Metrics Card - Now full width with improved layout */}
+      {/* Price Metrics Card - Now with improved layout and spacing */}
       <Card className="border-2 border-[#D946EE]/30 rounded-xl overflow-hidden shadow-sm">
         <div className="bg-gradient-to-r from-[#D946EE]/10 to-[#8B5CF6]/10 px-6 py-4 border-b border-[#D946EE]/20">
           <div className="flex items-center gap-2">
@@ -338,16 +339,18 @@ export function PriceAnalytics({ analytics, productId, timeRange }: PriceAnalyti
               <p className="text-lg font-semibold truncate">${analytics.avg.toLocaleString()}</p>
             </div>
             
-            {/* Price Change - Fixed layout to prevent overflow */}
+            {/* Price Change - Completely restructured to prevent overflow */}
             <div className="bg-gray-50 p-4 rounded-lg">
               <p className="text-sm text-gray-500 mb-1">Price Change</p>
-              <div className="flex items-baseline flex-wrap gap-1">
-                <span className={`text-lg font-semibold ${analytics.change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                  ${Math.abs(analytics.change).toLocaleString()}
-                </span>
-                <span className={`text-sm font-medium ${analytics.change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                  ({analytics.changePercent.toFixed(1)}%)
-                </span>
+              <div className="flex flex-col">
+                <div className="flex items-center space-x-2 overflow-visible">
+                  <span className={`text-lg font-semibold ${analytics.change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    ${Math.abs(analytics.change).toLocaleString()}
+                  </span>
+                  <span className={`text-sm font-medium px-1.5 py-0.5 rounded-full ${analytics.change >= 0 ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
+                    {analytics.change >= 0 ? '+' : '-'}{Math.abs(analytics.changePercent).toFixed(1)}%
+                  </span>
+                </div>
               </div>
             </div>
           </div>
