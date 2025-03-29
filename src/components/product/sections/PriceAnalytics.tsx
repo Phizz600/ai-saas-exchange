@@ -14,7 +14,8 @@ import {
   PieChart,
   Pie,
   Cell,
-  Legend
+  Legend,
+  CartesianGrid
 } from "recharts";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
