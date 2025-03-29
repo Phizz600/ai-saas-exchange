@@ -16,7 +16,7 @@ const PricingFees = () => {
           transition={{ duration: 0.5, delay: 0.1 }}
           className="mb-12"
         >
-          <Card className="p-8 bg-gradient-to-r from-[#8B5CF6]/30 via-[#D946EE]/40 to-[#0EA4E9]/30 backdrop-blur-sm border border-[#8B5CF6]/50 relative overflow-hidden shadow-xl">
+          <Card className="p-8 bg-gradient-to-r from-[#8B5CF6]/50 via-[#D946EE]/60 to-[#0EA4E9]/50 backdrop-blur-sm border border-[#8B5CF6]/60 relative overflow-hidden shadow-xl">
             <div className="absolute top-0 right-0 bg-[#D946EE] text-white text-xs font-bold px-4 py-1 rounded-bl transform rotate-0">
               NEW
             </div>
@@ -26,66 +26,66 @@ const PricingFees = () => {
                   <Crown className="h-7 w-7 text-amber-400 mr-3" />
                   <h2 className="text-2xl font-bold text-white exo-2-title">Pro Membership</h2>
                 </div>
-                <p className="text-gray-300 mb-6">
+                <p className="text-white mb-6 text-opacity-90">
                   Unlock premium benefits and save on fees with our annual Pro Membership plan. Perfect for serious sellers and investors looking to maximize their marketplace experience.
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-                  <div className="bg-white/10 rounded-lg p-4">
+                  <div className="bg-white/20 rounded-lg p-4">
                     <h3 className="text-lg font-medium text-white mb-3">For Sellers</h3>
                     <ul className="space-y-2">
                       <li className="flex items-start">
                         <CheckCircle className="h-5 w-5 text-green-400 mr-2 flex-shrink-0 mt-0.5" />
-                        <span className="text-gray-300">$0 listing fees</span>
+                        <span className="text-white">$0 listing fees</span>
                       </li>
                       <li className="flex items-start">
                         <CheckCircle className="h-5 w-5 text-green-400 mr-2 flex-shrink-0 mt-0.5" />
-                        <span className="text-gray-300">Reduced commission rates</span>
+                        <span className="text-white">Reduced commission rates</span>
                       </li>
                       <li className="flex items-start">
                         <CheckCircle className="h-5 w-5 text-green-400 mr-2 flex-shrink-0 mt-0.5" />
-                        <span className="text-gray-300">3 code audits per year</span>
+                        <span className="text-white">3 code audits per year</span>
                       </li>
                       <li className="flex items-start">
                         <CheckCircle className="h-5 w-5 text-green-400 mr-2 flex-shrink-0 mt-0.5" />
-                        <span className="text-gray-300">Featured placement</span>
+                        <span className="text-white">Featured placement</span>
                       </li>
                     </ul>
                   </div>
-                  <div className="bg-white/10 rounded-lg p-4">
+                  <div className="bg-white/20 rounded-lg p-4">
                     <h3 className="text-lg font-medium text-white mb-3">For Buyers</h3>
                     <ul className="space-y-2">
                       <li className="flex items-start">
                         <CheckCircle className="h-5 w-5 text-green-400 mr-2 flex-shrink-0 mt-0.5" />
-                        <span className="text-gray-300">$0 deposit fees</span>
+                        <span className="text-white">$0 deposit fees</span>
                       </li>
                       <li className="flex items-start">
                         <CheckCircle className="h-5 w-5 text-green-400 mr-2 flex-shrink-0 mt-0.5" />
-                        <span className="text-gray-300">Dedicated account manager</span>
+                        <span className="text-white">Dedicated account manager</span>
                       </li>
                       <li className="flex items-start">
                         <CheckCircle className="h-5 w-5 text-green-400 mr-2 flex-shrink-0 mt-0.5" />
-                        <span className="text-gray-300">Enhanced due diligence</span>
+                        <span className="text-white">Enhanced due diligence</span>
                       </li>
                       <li className="flex items-start">
                         <CheckCircle className="h-5 w-5 text-green-400 mr-2 flex-shrink-0 mt-0.5" />
-                        <span className="text-gray-300">Early access to new listings</span>
+                        <span className="text-white">Early access to new listings</span>
                       </li>
                     </ul>
                   </div>
                 </div>
               </div>
-              <div className="flex flex-col justify-center items-center bg-white/10 rounded-xl p-6 border border-white/10">
-                <span className="text-gray-400 text-sm line-through mb-1">$499/year</span>
+              <div className="flex flex-col justify-center items-center bg-white/20 rounded-xl p-6 border border-white/20">
+                <span className="text-white text-sm line-through mb-1">$499/year</span>
                 <div className="text-center mb-4">
                   <span className="text-4xl font-bold text-white">$299</span>
-                  <span className="text-gray-300">/year</span>
+                  <span className="text-white">/year</span>
                 </div>
-                <div className="bg-white/10 p-3 rounded-md mb-4 w-full">
+                <div className="bg-white/20 p-3 rounded-md mb-4 w-full">
                   <div className="flex items-center justify-center gap-2 text-amber-300 mb-1">
                     <Award className="h-4 w-4" />
                     <p className="text-sm font-medium">Introductory Pricing</p>
                   </div>
-                  <p className="text-gray-300 text-xs text-center">
+                  <p className="text-white text-xs text-center">
                     Lock in this annual rate before prices increase!
                   </p>
                 </div>
