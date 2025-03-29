@@ -1,9 +1,8 @@
-
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Edit2, Timer, Heart, Bookmark } from "lucide-react";
+import { Edit2, Timer, Heart, Bookmark, TrendingDown, CheckCircle, DollarSign, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -38,6 +37,7 @@ export function ProductCard({ product, showEditButton = false }: ProductCardProp
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
   const { toast } = useToast();
   const isAuction = !!product.auction_end_time;
 
@@ -97,7 +97,7 @@ export function ProductCard({ product, showEditButton = false }: ProductCardProp
           updated_at: new Date().toISOString()
         })
         .eq('id', user.id);
-
+      
       setIsFavorited(!isFavorited);
       toast({
         title: isFavorited ? "Removed from favorites" : "Added to favorites",
@@ -159,57 +159,99 @@ export function ProductCard({ product, showEditButton = false }: ProductCardProp
       });
     }
   };
+  
+  const getCategoryColor = (category: string = '') => {
+    const colors: Record<string, { bg: string; text: string }> = {
+      'Content Generation': { bg: 'bg-purple-100', text: 'text-purple-700' },
+      'Customer Service': { bg: 'bg-blue-100', text: 'text-blue-700' },
+      'Image Generation': { bg: 'bg-pink-100', text: 'text-pink-700' },
+      'Development Tools': { bg: 'bg-indigo-100', text: 'text-indigo-700' },
+      'Audio Processing': { bg: 'bg-cyan-100', text: 'text-cyan-700' },
+      'Video Processing': { bg: 'bg-rose-100', text: 'text-rose-700' },
+      'Finance': { bg: 'bg-emerald-100', text: 'text-emerald-700' }
+    };
+    return colors[category] || { bg: 'bg-gray-100', text: 'text-gray-700' };
+  };
+
+  const getStageColor = (stage: string = '') => {
+    const colors: Record<string, { bg: string; text: string }> = {
+      'Revenue': { bg: 'bg-green-100', text: 'text-green-700' },
+      'MVP': { bg: 'bg-blue-100', text: 'text-blue-700' },
+      'Prototype': { bg: 'bg-amber-100', text: 'text-amber-700' },
+      'Idea': { bg: 'bg-gray-100', text: 'text-gray-700' }
+    };
+    return colors[stage] || { bg: 'bg-gray-100', text: 'text-gray-700' };
+  };
 
   return (
     <>
-      <Link to={`/product/${product.id}`}>
-        <Card className="overflow-hidden h-full hover:shadow-lg transition-shadow duration-300 relative group">
-          {/* Product Image */}
-          <div className="relative h-48">
+      <Link to={`/product/${product.id}`} className="group">
+        <Card className="overflow-hidden h-full hover:shadow-xl transition-all duration-300 border-gray-100/50 group-hover:border-blue-100/50 relative bg-white backdrop-blur-sm">
+          {/* Product Image with Loading State */}
+          <div className="relative h-48 overflow-hidden">
+            {!isImageLoaded && (
+              <div className="absolute inset-0 bg-gradient-to-r from-gray-200 to-gray-300 animate-pulse" />
+            )}
             <img
               src={product.image || "/placeholder.svg"}
               alt={product.title}
-              className="w-full h-full object-cover"
+              className={`w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${
+                isImageLoaded ? 'opacity-100' : 'opacity-0'
+              }`}
+              onLoad={() => setIsImageLoaded(true)}
             />
+            
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            
             <div className="absolute top-2 right-2 flex gap-0.5">
               {showEditButton && (
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="text-white hover:text-white hover:bg-black/20"
+                  className="text-white bg-black/20 hover:bg-black/30 hover:text-white"
                   onClick={(e) => {
                     e.preventDefault();
                     setIsEditDialogOpen(true);
                   }}
                 >
-                  <Edit2 className="h-6 w-6" />
+                  <Edit2 className="h-5 w-5" />
                 </Button>
               )}
               <Button
                 variant="ghost"
                 size="icon"
-                className={`text-white hover:text-white hover:bg-black/20 ${
+                className={`text-white bg-black/20 hover:bg-black/30 hover:text-white ${
                   isSaved ? "text-primary" : ""
                 }`}
                 onClick={toggleSave}
               >
-                <Bookmark className={`h-6 w-6 ${isSaved ? "fill-current" : ""}`} />
+                <Bookmark className={`h-5 w-5 ${isSaved ? "fill-current" : ""}`} />
               </Button>
               <Button
                 variant="ghost"
                 size="icon"
-                className={`text-white hover:text-white hover:bg-black/20 ${
+                className={`text-white bg-black/20 hover:bg-black/30 hover:text-white ${
                   isFavorited ? "text-red-500" : ""
                 }`}
                 onClick={toggleFavorite}
               >
-                <Heart className={`h-6 w-6 ${isFavorited ? "fill-current" : ""}`} />
+                <Heart className={`h-5 w-5 ${isFavorited ? "fill-current" : ""}`} />
               </Button>
             </div>
+            
             {isAuction && (
+              <div className="absolute bottom-2 left-2">
+                <Badge variant="secondary" className="bg-amber-500/90 text-white border-0 flex items-center">
+                  <TrendingDown className="w-3.5 h-3.5 mr-1" />
+                  Dutch Auction
+                </Badge>
+              </div>
+            )}
+            
+            {isAuction && timeLeft && (
               <div className="absolute bottom-2 right-2">
-                <Badge variant="secondary" className="bg-amber-100 text-amber-700">
-                  <Timer className="w-4 h-4 mr-1" />
+                <Badge variant="secondary" className="bg-black/70 text-amber-50 border-0">
+                  <Timer className="w-3.5 h-3.5 mr-1" />
                   {timeLeft}
                 </Badge>
               </div>
@@ -218,47 +260,65 @@ export function ProductCard({ product, showEditButton = false }: ProductCardProp
 
           {/* Product Content */}
           <div className="p-4">
-            <h3 className="font-semibold text-lg mb-2 line-clamp-1">{product.title}</h3>
+            <h3 className="font-semibold text-lg mb-2 text-gray-900 line-clamp-1 group-hover:text-[#8B5CF6] transition-colors duration-200">
+              {product.title}
+            </h3>
             {product.description && (
               <p className="text-gray-600 text-sm mb-3 line-clamp-2">{product.description}</p>
             )}
 
-            <div className="space-y-2">
+            <div className="space-y-3">
               {/* Price Display */}
               <div className="flex items-baseline gap-2">
-                <span className="text-lg font-semibold text-green-600">
+                <span className="text-lg font-semibold text-green-600 flex items-center">
+                  <DollarSign className="h-4 w-4 mr-0.5" />
                   {isAuction
-                    ? formatCurrency(product.current_price || product.price || 0)
-                    : formatCurrency(product.price || 0)}
+                    ? formatCurrency(product.current_price || product.price || 0).replace('$', '')
+                    : formatCurrency(product.price || 0).replace('$', '')}
                 </span>
                 {isAuction && product.min_price && (
                   <span className="text-sm text-gray-500">
-                    (Min: {formatCurrency(product.min_price)})
+                    (Min: {formatCurrency(product.min_price).replace('$', '')})
                   </span>
                 )}
               </div>
 
+              {/* Stats */}
+              {product.monthlyRevenue !== undefined && product.monthlyRevenue > 0 && (
+                <div className="text-sm text-gray-600 flex items-center gap-1.5">
+                  <Users className="h-4 w-4 text-blue-500" />
+                  MRR: {formatCurrency(product.monthlyRevenue)}
+                </div>
+              )}
+
               {/* Category and Stage */}
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2 pt-2">
                 {product.category && (
-                  <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
+                  <Badge 
+                    variant="outline" 
+                    className={`${getCategoryColor(product.category).bg} ${getCategoryColor(product.category).text} border-0`}
+                  >
                     {product.category}
                   </Badge>
                 )}
                 {product.stage && (
-                  <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                  <Badge 
+                    variant="outline" 
+                    className={`${getStageColor(product.stage).bg} ${getStageColor(product.stage).text} border-0`}
+                  >
                     {product.stage}
                   </Badge>
                 )}
               </div>
-
-              {/* Monthly Revenue */}
-              {product.monthlyRevenue !== undefined && product.monthlyRevenue > 0 && (
-                <div className="text-sm text-gray-600">
-                  Monthly Revenue: {formatCurrency(product.monthlyRevenue)}
-                </div>
-              )}
             </div>
+          </div>
+          
+          {/* Verification Badge */}
+          <div className="absolute top-2 left-2">
+            <Badge variant="secondary" className="bg-green-500/90 text-white border-0 flex items-center">
+              <CheckCircle className="w-3.5 h-3.5 mr-1" />
+              Verified
+            </Badge>
           </div>
         </Card>
       </Link>

@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { useDebounce } from "use-debounce";
 import { useEffect, useState } from "react";
 import { FilterSection } from "./filters/FilterSection";
+import { motion } from "framer-motion";
+
 const industries = [{
   value: "all",
   label: "All Industries"
@@ -31,6 +33,7 @@ const industries = [{
   value: "video_processing",
   label: "Video Processing"
 }];
+
 const stages = [{
   value: "all",
   label: "All Stages"
@@ -47,6 +50,7 @@ const stages = [{
   value: "beta",
   label: "Beta"
 }];
+
 const priceRanges = [{
   value: "all",
   label: "All Prices"
@@ -63,6 +67,7 @@ const priceRanges = [{
   value: "50000+",
   label: "$50,000+"
 }];
+
 const sortOptions = [{
   value: "relevant",
   label: "Most Relevant"
@@ -79,6 +84,7 @@ const sortOptions = [{
   value: "popular",
   label: "Most Popular"
 }];
+
 interface SearchFiltersProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
@@ -94,6 +100,7 @@ interface SearchFiltersProps {
   setSortBy: (sort: string) => void;
   isLoading?: boolean;
 }
+
 export const SearchFilters = ({
   searchQuery,
   setSearchQuery,
@@ -111,10 +118,14 @@ export const SearchFilters = ({
 }: SearchFiltersProps) => {
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
   const [debouncedSearchQuery] = useDebounce(localSearchQuery, 300);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+  
   useEffect(() => {
     setSearchQuery(debouncedSearchQuery);
   }, [debouncedSearchQuery, setSearchQuery]);
+  
   const hasActiveFilters = searchQuery || industryFilter !== 'all' || stageFilter !== 'all' || priceFilter !== 'all' || timeFilter !== 'all';
+  
   const clearAllFilters = () => {
     setLocalSearchQuery('');
     setSearchQuery('');
@@ -124,100 +135,171 @@ export const SearchFilters = ({
     setTimeFilter('all');
     setSortBy('relevant');
   };
+
   const renderActiveFilters = () => {
     const filters = [];
+    
     if (searchQuery) {
-      filters.push(<Badge key="search" variant="secondary" className="gap-1">
+      filters.push(
+        <Badge key="search" variant="secondary" className="gap-1">
           Search: {searchQuery}
           <X className="h-3 w-3 cursor-pointer" onClick={() => {
-          setLocalSearchQuery('');
-          setSearchQuery('');
-        }} />
-        </Badge>);
+            setLocalSearchQuery('');
+            setSearchQuery('');
+          }} />
+        </Badge>
+      );
     }
     if (industryFilter !== 'all') {
       const industryLabel = industries.find(i => i.value === industryFilter)?.label;
-      filters.push(<Badge key="industry" variant="secondary" className="gap-1">
+      filters.push(
+        <Badge key="industry" variant="secondary" className="gap-1">
           Industry: {industryLabel}
           <X className="h-3 w-3 cursor-pointer" onClick={() => setIndustryFilter('all')} />
-        </Badge>);
+        </Badge>
+      );
     }
     if (stageFilter !== 'all') {
       const stageLabel = stages.find(s => s.value === stageFilter)?.label;
-      filters.push(<Badge key="stage" variant="secondary" className="gap-1">
+      filters.push(
+        <Badge key="stage" variant="secondary" className="gap-1">
           Stage: {stageLabel}
           <X className="h-3 w-3 cursor-pointer" onClick={() => setStageFilter('all')} />
-        </Badge>);
+        </Badge>
+      );
     }
     if (priceFilter !== 'all') {
       const priceLabel = priceRanges.find(p => p.value === priceFilter)?.label;
-      filters.push(<Badge key="price" variant="secondary" className="gap-1">
+      filters.push(
+        <Badge key="price" variant="secondary" className="gap-1">
           Price: {priceLabel}
           <X className="h-3 w-3 cursor-pointer" onClick={() => setPriceFilter('all')} />
-        </Badge>);
+        </Badge>
+      );
     }
+    
     return filters;
   };
-  return <div className="space-y-4">
-      <div className="bg-white/80 backdrop-blur-xl shadow-lg p-4 border border-gray-100/50 py-[24px] px-[60px] rounded-xl">
-        <div className="flex flex-col md:flex-row gap-4">
-          <div className="relative flex-grow">
-            <Input placeholder="Search AI products..." value={localSearchQuery} onChange={e => {
-            setLocalSearchQuery(e.target.value);
-            console.log('Search input changed:', e.target.value);
-          }} className="pl-10 bg-gray-50/50 border-gray-200/50 focus:border-primary/50 focus:ring-primary/50" disabled={isLoading} />
-            {isLoading ? <Loader2 className="absolute left-3 top-3 h-4 w-4 text-gray-400 animate-spin" /> : <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />}
+
+  const activeFilters = renderActiveFilters();
+
+  return (
+    <div className="space-y-4">
+      <div className="flex flex-col md:flex-row gap-4 items-stretch md:items-center">
+        <div className="relative flex-grow max-w-2xl">
+          <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+            <Search className="h-4 w-4 text-gray-400" />
           </div>
-          
-          <div className="hidden md:flex gap-2 flex-wrap">
-            <FilterSection label="Industry" value={industryFilter} onValueChange={setIndustryFilter} options={industries} disabled={isLoading} />
+          <Input
+            type="text"
+            placeholder="Search AI products..."
+            value={localSearchQuery}
+            onChange={(e) => setLocalSearchQuery(e.target.value)}
+            className="pl-10 border-gray-200 focus:border-[#8B5CF6] transition-colors bg-white h-10 md:h-11 shadow-sm hover:shadow-md"
+          />
+          {localSearchQuery && (
+            <button
+              className="absolute inset-y-0 right-3 flex items-center"
+              onClick={() => {
+                setLocalSearchQuery('');
+                setSearchQuery('');
+              }}
+            >
+              <X className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+            </button>
+          )}
+        </div>
 
-            <FilterSection label="Stage" value={stageFilter} onValueChange={setStageFilter} options={stages} disabled={isLoading} />
-
-            <FilterSection label="Price Range" value={priceFilter} onValueChange={setPriceFilter} options={priceRanges} disabled={isLoading} />
-
-            <FilterSection label="Sort by" value={sortBy} onValueChange={setSortBy} options={sortOptions} disabled={isLoading} />
-          </div>
-
-          <Sheet>
+        <div className="flex gap-2">
+          <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
             <SheetTrigger asChild>
-              <Button variant="outline" className="md:hidden" disabled={isLoading}>
+              <Button variant="outline" className="bg-white border-gray-200 shadow-sm hover:shadow-md">
                 <SlidersHorizontal className="h-4 w-4 mr-2" />
-                Filters
+                Filter
+                {hasActiveFilters && (
+                  <Badge variant="secondary" className="ml-2 bg-[#8B5CF6] text-white">
+                    {activeFilters.length}
+                  </Badge>
+                )}
               </Button>
             </SheetTrigger>
-            <SheetContent>
+            <SheetContent className="w-full sm:max-w-md overflow-y-auto">
               <SheetHeader>
                 <SheetTitle>Filters</SheetTitle>
                 <SheetDescription>
-                  Refine your search with these filters
+                  Refine your search with the following filters.
                 </SheetDescription>
               </SheetHeader>
-              <div className="flex flex-col gap-4 mt-4">
-                <FilterSection label="Industry" value={industryFilter} onValueChange={setIndustryFilter} options={industries} disabled={isLoading} />
-
-                <FilterSection label="Stage" value={stageFilter} onValueChange={setStageFilter} options={stages} disabled={isLoading} />
-
-                <FilterSection label="Price Range" value={priceFilter} onValueChange={setPriceFilter} options={priceRanges} disabled={isLoading} />
-
-                <FilterSection label="Sort by" value={sortBy} onValueChange={setSortBy} options={sortOptions} disabled={isLoading} />
+              <div className="py-6 space-y-6">
+                <FilterSection
+                  title="Industry"
+                  options={industries}
+                  activeValue={industryFilter}
+                  onChange={setIndustryFilter}
+                />
+                <FilterSection
+                  title="Stage"
+                  options={stages}
+                  activeValue={stageFilter}
+                  onChange={setStageFilter}
+                />
+                <FilterSection
+                  title="Price Range"
+                  options={priceRanges}
+                  activeValue={priceFilter}
+                  onChange={setPriceFilter}
+                />
+                <FilterSection
+                  title="Sort By"
+                  options={sortOptions}
+                  activeValue={sortBy}
+                  onChange={setSortBy}
+                />
+                {hasActiveFilters && (
+                  <Button 
+                    variant="destructive" 
+                    className="w-full mt-4"
+                    onClick={() => {
+                      clearAllFilters();
+                      setIsSheetOpen(false);
+                    }}
+                  >
+                    Clear All Filters
+                  </Button>
+                )}
               </div>
             </SheetContent>
           </Sheet>
-
-          {hasActiveFilters && <Button variant="ghost" size="sm" onClick={clearAllFilters} className="hidden md:flex items-center gap-2" disabled={isLoading}>
-              <X className="h-4 w-4" />
-              Clear all
-            </Button>}
         </div>
       </div>
 
-      {hasActiveFilters && <div className="flex flex-wrap gap-2">
-          {renderActiveFilters()}
-          <Button variant="ghost" size="sm" onClick={clearAllFilters} className="md:hidden" disabled={isLoading}>
-            <X className="h-4 w-4 mr-2" />
-            Clear all
-          </Button>
-        </div>}
-    </div>;
+      {/* Active Filters */}
+      {hasActiveFilters && activeFilters.length > 0 && (
+        <motion.div 
+          className="flex flex-wrap gap-2 pt-1"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          {activeFilters}
+          {activeFilters.length > 1 && (
+            <Badge 
+              variant="outline" 
+              className="cursor-pointer bg-red-50 text-red-600 hover:bg-red-100 transition-colors"
+              onClick={clearAllFilters}
+            >
+              Clear All <X className="h-3 w-3 ml-1" />
+            </Badge>
+          )}
+        </motion.div>
+      )}
+
+      {isLoading && (
+        <div className="flex items-center text-sm text-gray-500">
+          <Loader2 className="h-3 w-3 mr-2 animate-spin" />
+          Updating results...
+        </div>
+      )}
+    </div>
+  );
 };
