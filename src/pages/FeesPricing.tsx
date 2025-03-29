@@ -3,8 +3,9 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { DollarSign, PercentIcon, CheckCircle, ShieldCheck } from "lucide-react";
+import { DollarSign, PercentIcon, CheckCircle, ShieldCheck, Crown, BadgeCheck, User } from "lucide-react";
 import PricingFees from "@/components/hero/PricingFees";
 
 export const FeesPricing = () => {
@@ -44,6 +45,101 @@ export const FeesPricing = () => {
           transition={{ delay: 0.3, duration: 0.6 }}
         >
           <Card className="bg-white/10 backdrop-blur-sm border-white/5 p-8 rounded-xl">
+            {/* Pro Membership Details Section */}
+            <div className="mb-12">
+              <h2 className="text-2xl font-semibold text-white mb-6 exo-2-heading flex items-center">
+                <Crown className="h-6 w-6 text-amber-400 mr-3" />
+                Pro Membership Benefits
+              </h2>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <div className="bg-white/5 p-6 rounded-lg border border-white/10">
+                  <h3 className="text-xl font-semibold text-white mb-4">Exclusive Features</h3>
+                  <ul className="space-y-3">
+                    <li className="flex items-start">
+                      <BadgeCheck className="h-5 w-5 text-amber-400 mr-3 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <span className="text-white font-medium">3 Code Audits Per Year</span>
+                        <p className="text-gray-400 text-sm mt-1">Our technical team will review your AI product's code for security, performance, and quality issues.</p>
+                      </div>
+                    </li>
+                    <li className="flex items-start">
+                      <BadgeCheck className="h-5 w-5 text-amber-400 mr-3 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <span className="text-white font-medium">Dedicated Account Manager</span>
+                        <p className="text-gray-400 text-sm mt-1">Get personalized assistance with all aspects of your buying or selling journey.</p>
+                      </div>
+                    </li>
+                    <li className="flex items-start">
+                      <BadgeCheck className="h-5 w-5 text-amber-400 mr-3 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <span className="text-white font-medium">Premium Due Diligence</span>
+                        <p className="text-gray-400 text-sm mt-1">Enhanced verification and assessment processes for business purchases.</p>
+                      </div>
+                    </li>
+                    <li className="flex items-start">
+                      <BadgeCheck className="h-5 w-5 text-amber-400 mr-3 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <span className="text-white font-medium">Pro Community Access</span>
+                        <p className="text-gray-400 text-sm mt-1">Join exclusive networking events and connect with other AI entrepreneurs.</p>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+                
+                <div className="bg-white/5 p-6 rounded-lg border border-white/10">
+                  <h3 className="text-xl font-semibold text-white mb-4">Fee Savings</h3>
+                  <ul className="space-y-3">
+                    <li className="flex items-start">
+                      <BadgeCheck className="h-5 w-5 text-amber-400 mr-3 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <span className="text-white font-medium">$0 Listing Fees</span>
+                        <p className="text-gray-400 text-sm mt-1">List as many AI products as you want without paying the standard listing fee.</p>
+                      </div>
+                    </li>
+                    <li className="flex items-start">
+                      <BadgeCheck className="h-5 w-5 text-amber-400 mr-3 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <span className="text-white font-medium">$0 Deposit Fees</span>
+                        <p className="text-gray-400 text-sm mt-1">Make offers without paying the 5% platform fee on required deposits.</p>
+                      </div>
+                    </li>
+                    <li className="flex items-start">
+                      <BadgeCheck className="h-5 w-5 text-amber-400 mr-3 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <span className="text-white font-medium">Reduced Commission (2% Discount)</span>
+                        <p className="text-gray-400 text-sm mt-1">Pay 2% less on our standard commission rates when you sell your AI product.</p>
+                      </div>
+                    </li>
+                    <li className="flex items-start">
+                      <BadgeCheck className="h-5 w-5 text-amber-400 mr-3 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <span className="text-white font-medium">Priority Support</span>
+                        <p className="text-gray-400 text-sm mt-1">Get faster response times and dedicated support channels.</p>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              
+              <div className="bg-[#8B5CF6]/10 border border-[#8B5CF6]/20 p-6 rounded-lg">
+                <div className="flex flex-col md:flex-row items-center justify-between">
+                  <div className="mb-6 md:mb-0">
+                    <h3 className="text-xl font-semibold text-white mb-2">Ready to Upgrade?</h3>
+                    <p className="text-gray-300 max-w-xl">
+                      Join our Pro Membership today for just $299/year and start enjoying exclusive benefits and significant savings.
+                    </p>
+                  </div>
+                  <Button 
+                    className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] min-w-[200px] py-6"
+                    size="lg"
+                  >
+                    Upgrade to Pro
+                  </Button>
+                </div>
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               <div className="p-6 rounded-lg bg-white/5 backdrop-blur-sm border border-white/10 flex flex-col items-center">
                 <div className="p-3 rounded-full bg-[#D946EE]/20 mb-4">
@@ -77,30 +173,35 @@ export const FeesPricing = () => {
                   <TableHeader className="bg-white/10">
                     <TableRow>
                       <TableHead className="text-white font-semibold">Final Selling Price</TableHead>
-                      <TableHead className="text-white font-semibold">Commission Rate</TableHead>
-                      <TableHead className="text-white font-semibold">You Keep</TableHead>
+                      <TableHead className="text-white font-semibold">Standard Rate</TableHead>
+                      <TableHead className="text-white font-semibold">Pro Member Rate</TableHead>
+                      <TableHead className="text-white font-semibold">You Keep (Pro)</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     <TableRow className="hover:bg-white/5 transition-colors">
                       <TableCell className="text-white/90 font-medium">$0 - $10,000</TableCell>
                       <TableCell className="text-white/90">10%</TableCell>
-                      <TableCell className="text-[#0EA4E9] font-medium">90%</TableCell>
+                      <TableCell className="text-amber-300 font-medium">8%</TableCell>
+                      <TableCell className="text-[#0EA4E9] font-medium">92%</TableCell>
                     </TableRow>
                     <TableRow className="hover:bg-white/5 transition-colors">
                       <TableCell className="text-white/90 font-medium">$10,001 - $50,000</TableCell>
                       <TableCell className="text-white/90">8%</TableCell>
-                      <TableCell className="text-[#0EA4E9] font-medium">92%</TableCell>
+                      <TableCell className="text-amber-300 font-medium">6%</TableCell>
+                      <TableCell className="text-[#0EA4E9] font-medium">94%</TableCell>
                     </TableRow>
                     <TableRow className="hover:bg-white/5 transition-colors">
                       <TableCell className="text-white/90 font-medium">$50,001 - $100,000</TableCell>
                       <TableCell className="text-white/90">6%</TableCell>
-                      <TableCell className="text-[#0EA4E9] font-medium">94%</TableCell>
+                      <TableCell className="text-amber-300 font-medium">4%</TableCell>
+                      <TableCell className="text-[#0EA4E9] font-medium">96%</TableCell>
                     </TableRow>
                     <TableRow className="hover:bg-white/5 transition-colors">
                       <TableCell className="text-white/90 font-medium">$100,001+</TableCell>
                       <TableCell className="text-white/90">5%</TableCell>
-                      <TableCell className="text-[#0EA4E9] font-medium">95%</TableCell>
+                      <TableCell className="text-amber-300 font-medium">3%</TableCell>
+                      <TableCell className="text-[#0EA4E9] font-medium">97%</TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>
@@ -110,8 +211,8 @@ export const FeesPricing = () => {
                 <div className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-[#D946EE] mr-3 mt-1 flex-shrink-0" />
                   <p className="text-white/80">
-                    <span className="text-white font-medium">Example:</span> If you sell your AI SaaS product for $75,000, 
-                    you'll only pay a 6% commission ($4,500) and keep $70,500.
+                    <span className="text-white font-medium">Example:</span> If you sell your AI SaaS product for $75,000 as a Pro member, 
+                    you'll only pay a 4% commission ($3,000) instead of 6% ($4,500), saving you $1,500!
                   </p>
                 </div>
               </div>
@@ -141,6 +242,10 @@ export const FeesPricing = () => {
                       <CheckCircle className="h-5 w-5 text-[#8B5CF6] mr-2 mt-1 flex-shrink-0" />
                       <span>Applied toward final purchase if offer is accepted</span>
                     </li>
+                    <li className="flex items-start">
+                      <BadgeCheck className="h-5 w-5 text-amber-400 mr-2 mt-1 flex-shrink-0" />
+                      <span className="text-amber-300">Pro members: No platform fee on deposits</span>
+                    </li>
                   </ul>
                 </div>
                 
@@ -163,6 +268,10 @@ export const FeesPricing = () => {
                       <CheckCircle className="h-5 w-5 text-[#0EA4E9] mr-2 mt-1 flex-shrink-0" />
                       <span>Original deposit is carried forward and applied to the new offer</span>
                     </li>
+                    <li className="flex items-start">
+                      <BadgeCheck className="h-5 w-5 text-amber-400 mr-2 mt-1 flex-shrink-0" />
+                      <span className="text-amber-300">Pro members: No platform fee on additional deposits</span>
+                    </li>
                   </ul>
                 </div>
               </div>
@@ -177,6 +286,7 @@ export const FeesPricing = () => {
                     <p className="text-white/80 mb-1">• Required deposit: $5,000 (10%)</p>
                     <p className="text-white/80 mb-1">• Platform fee: $250 (5% of deposit)</p>
                     <p className="text-white/80 mb-1">• Total payment: $5,250</p>
+                    <p className="text-white/80 mb-1 text-amber-300">• Pro member total: $5,000 (no platform fee)</p>
                   </div>
                   
                   <div>
@@ -193,6 +303,7 @@ export const FeesPricing = () => {
                     <p className="text-white/80 mb-1">• Additional deposit required: $2,000 ($7,000 - $5,000)</p>
                     <p className="text-white/80 mb-1">• Platform fee on additional deposit: $100 (5% of $2,000)</p>
                     <p className="text-white/80 mb-1">• Total additional payment: $2,100</p>
+                    <p className="text-white/80 mb-1 text-amber-300">• Pro member total: $2,000 (no platform fee)</p>
                   </div>
                 </div>
               </div>
@@ -211,12 +322,21 @@ export const FeesPricing = () => {
             <p className="text-white/80 mb-6">
               Join our marketplace today and connect with qualified buyers looking for innovative AI solutions like yours.
             </p>
-            <a 
-              href="/list-product" 
-              className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white font-medium rounded-lg hover:opacity-90 transition-opacity"
-            >
-              List Your Product
-            </a>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <a 
+                href="/list-product" 
+                className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white font-medium rounded-lg hover:opacity-90 transition-opacity"
+              >
+                List Your Product
+              </a>
+              <a 
+                href="#" 
+                className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-[#8B5CF6] to-[#0EA4E9] text-white font-medium rounded-lg hover:opacity-90 transition-opacity"
+              >
+                <Crown className="mr-2 h-5 w-5" />
+                Upgrade to Pro
+              </a>
+            </div>
           </div>
         </motion.div>
       </div>

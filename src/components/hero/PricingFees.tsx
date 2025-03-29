@@ -1,13 +1,104 @@
 
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
-import { DollarSign, PercentIcon, CheckCircle, Clock, ShieldCheck } from "lucide-react";
+import { DollarSign, PercentIcon, CheckCircle, Clock, ShieldCheck, Crown, BadgeCheck, Users, Award } from "lucide-react";
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
 
 const PricingFees = () => {
   return (
     <section className="py-20">
       <div className="container mx-auto px-4">
+        {/* Pro Membership Banner */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="mb-12"
+        >
+          <Card className="p-8 bg-gradient-to-r from-[#8B5CF6]/20 via-[#D946EE]/20 to-[#0EA4E9]/20 backdrop-blur-sm border border-[#8B5CF6]/30 relative overflow-hidden">
+            <div className="absolute top-0 right-0 bg-[#D946EE] text-white text-xs font-bold px-4 py-1 rounded-bl transform rotate-0">
+              NEW
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="md:col-span-2">
+                <div className="flex items-center mb-4">
+                  <Crown className="h-7 w-7 text-amber-400 mr-3" />
+                  <h2 className="text-2xl font-bold text-white exo-2-title">Pro Membership</h2>
+                </div>
+                <p className="text-gray-300 mb-6">
+                  Unlock premium benefits and save on fees with our annual Pro Membership plan. Perfect for serious sellers and investors looking to maximize their marketplace experience.
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                  <div className="bg-white/10 rounded-lg p-4">
+                    <h3 className="text-lg font-medium text-white mb-3">For Sellers</h3>
+                    <ul className="space-y-2">
+                      <li className="flex items-start">
+                        <CheckCircle className="h-5 w-5 text-green-400 mr-2 flex-shrink-0 mt-0.5" />
+                        <span className="text-gray-300">$0 listing fees</span>
+                      </li>
+                      <li className="flex items-start">
+                        <CheckCircle className="h-5 w-5 text-green-400 mr-2 flex-shrink-0 mt-0.5" />
+                        <span className="text-gray-300">Reduced commission rates</span>
+                      </li>
+                      <li className="flex items-start">
+                        <CheckCircle className="h-5 w-5 text-green-400 mr-2 flex-shrink-0 mt-0.5" />
+                        <span className="text-gray-300">3 code audits per year</span>
+                      </li>
+                      <li className="flex items-start">
+                        <CheckCircle className="h-5 w-5 text-green-400 mr-2 flex-shrink-0 mt-0.5" />
+                        <span className="text-gray-300">Featured placement</span>
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="bg-white/10 rounded-lg p-4">
+                    <h3 className="text-lg font-medium text-white mb-3">For Buyers</h3>
+                    <ul className="space-y-2">
+                      <li className="flex items-start">
+                        <CheckCircle className="h-5 w-5 text-green-400 mr-2 flex-shrink-0 mt-0.5" />
+                        <span className="text-gray-300">$0 deposit fees</span>
+                      </li>
+                      <li className="flex items-start">
+                        <CheckCircle className="h-5 w-5 text-green-400 mr-2 flex-shrink-0 mt-0.5" />
+                        <span className="text-gray-300">Dedicated account manager</span>
+                      </li>
+                      <li className="flex items-start">
+                        <CheckCircle className="h-5 w-5 text-green-400 mr-2 flex-shrink-0 mt-0.5" />
+                        <span className="text-gray-300">Enhanced due diligence</span>
+                      </li>
+                      <li className="flex items-start">
+                        <CheckCircle className="h-5 w-5 text-green-400 mr-2 flex-shrink-0 mt-0.5" />
+                        <span className="text-gray-300">Early access to new listings</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-col justify-center items-center bg-white/10 rounded-xl p-6 border border-white/10">
+                <span className="text-gray-400 text-sm line-through mb-1">$499/year</span>
+                <div className="text-center mb-4">
+                  <span className="text-4xl font-bold text-white">$299</span>
+                  <span className="text-gray-300">/year</span>
+                </div>
+                <div className="bg-white/10 p-3 rounded-md mb-4 w-full">
+                  <div className="flex items-center justify-center gap-2 text-amber-300 mb-1">
+                    <Award className="h-4 w-4" />
+                    <p className="text-sm font-medium">Introductory Pricing</p>
+                  </div>
+                  <p className="text-gray-300 text-xs text-center">
+                    Lock in this annual rate before prices increase!
+                  </p>
+                </div>
+                <Button 
+                  className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 transition-opacity"
+                >
+                  Upgrade to Pro
+                </Button>
+              </div>
+            </div>
+          </Card>
+        </motion.div>
+        
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto mb-12">
           {/* Card 1 - Commission Structure */}
           <motion.div 
@@ -65,6 +156,10 @@ const PricingFees = () => {
                     <CheckCircle className="h-5 w-5 text-[#D946EE] mr-2" />
                     <span>No hidden fees or surprises</span>
                   </li>
+                  <li className="flex items-center">
+                    <BadgeCheck className="h-5 w-5 text-amber-400 mr-2" />
+                    <span className="text-amber-300">Pro members: 2% discount</span>
+                  </li>
                 </ul>
               </div>
             </Card>
@@ -120,12 +215,16 @@ const PricingFees = () => {
                     <CheckCircle className="h-5 w-5 text-[#8B5CF6] mr-2" />
                     <span>Lifetime pricing guarantee</span>
                   </li>
+                  <li className="flex items-center">
+                    <BadgeCheck className="h-5 w-5 text-amber-400 mr-2" />
+                    <span className="text-amber-300">Pro members: $0 listing fee</span>
+                  </li>
                 </ul>
               </div>
             </Card>
           </motion.div>
           
-          {/* Card 3 - NEW: Deposit Fees */}
+          {/* Card 3 - Deposit Fees */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -183,8 +282,8 @@ const PricingFees = () => {
                     <span>Fully refundable if offer declined</span>
                   </li>
                   <li className="flex items-center">
-                    <CheckCircle className="h-5 w-5 text-[#0EA4E9] mr-2" />
-                    <span>Applied to purchase if accepted</span>
+                    <BadgeCheck className="h-5 w-5 text-amber-400 mr-2" />
+                    <span className="text-amber-300">Pro members: $0 deposit fees</span>
                   </li>
                 </ul>
               </div>
