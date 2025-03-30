@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import { Star } from "lucide-react";
 import { Card } from "@/components/ui/card";
@@ -63,15 +64,24 @@ export default function ReviewSection() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-16 text-4xl font-bold text-gray-800 exo-2-heading"
+          className="text-center mb-8 text-4xl font-bold text-gray-800 exo-2-heading"
         >
-          Hear what these people think about AI Exchange Club
+          Hear what people think about AI Exchange Club
         </motion.h2>
         
-        {/* Senja Testimonials Widget */}
-        <SenjaTestimonials />
+        {/* Senja Testimonials Widget - Featured more prominently */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="max-w-6xl mx-auto mb-16"
+        >
+          <div className="bg-gradient-to-r from-[#D946EE]/5 via-[#8B5CF6]/5 to-[#0EA4E9]/5 p-1 rounded-lg shadow-md">
+            <SenjaTestimonials />
+          </div>
+        </motion.div>
         
-        {/* Original testimonials are kept as a fallback but can be removed if desired */}
+        {/* Original testimonials are kept as a fallback */}
         <div className="mt-12">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             {reviewers.slice(0, 3).map((reviewer, index) => (
