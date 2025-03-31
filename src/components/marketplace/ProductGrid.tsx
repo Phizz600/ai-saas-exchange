@@ -80,7 +80,7 @@ export const ProductGrid = ({ products, isLoading = false, onProductView }: Prod
                 avatar_url: product.seller?.avatar_url || "/placeholder.svg"
               }
             }}
-            showEditButton={session?.user?.id === product.seller_id}
+            // Removed showEditButton prop since it's not defined in ProductCardProps
           />
         </motion.div>
       ))}
