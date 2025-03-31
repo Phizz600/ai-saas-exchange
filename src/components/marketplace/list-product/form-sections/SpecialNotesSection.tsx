@@ -30,20 +30,7 @@ export function SpecialNotesSection() {
 
   return (
     <div className="space-y-6">
-      {/* Special Notes */}
-      <div className="border rounded-lg p-5 bg-white shadow-sm">
-        <Label htmlFor="specialNotes" className="block text-sm font-medium text-gray-700">
-          Special Notes or Instructions
-        </Label>
-        <Textarea
-          id="specialNotes"
-          placeholder="Include any specific details or instructions for potential buyers"
-          className="mt-1 h-32"
-          {...register("specialNotes")}
-        />
-      </div>
-      
-      {/* Deliverables Section */}
+      {/* Deliverables Section - Moved before Special Notes */}
       <div className="border rounded-lg p-5 bg-white shadow-sm">
         <h3 className="text-lg font-medium exo-2-heading mb-4">Deliverables</h3>
         <p className="text-sm text-gray-500 mb-4">
@@ -94,6 +81,19 @@ export function SpecialNotesSection() {
             )}
           </div>
         </div>
+      </div>
+
+      {/* Special Notes - Now after Deliverables */}
+      <div className="border rounded-lg p-5 bg-white shadow-sm">
+        <Label htmlFor="specialNotes" className="block text-sm font-medium text-gray-700">
+          Special Notes or Instructions
+        </Label>
+        <Textarea
+          id="specialNotes"
+          placeholder="Include any specific details or instructions for potential buyers"
+          className="mt-1 h-32"
+          {...register("specialNotes")}
+        />
       </div>
       
       {/* Add NDA Option */}
