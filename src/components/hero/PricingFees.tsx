@@ -1,111 +1,37 @@
-
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { DollarSign, PercentIcon, CheckCircle, Clock, ShieldCheck, Crown, BadgeCheck, Users, Award } from "lucide-react";
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-
 const PricingFees = () => {
-  return (
-    <section className="py-20">
+  return <section className="py-20">
       <div className="container mx-auto px-4">
         {/* Pro Membership Banner */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="mb-12"
-        >
-          <Card className="p-8 bg-gradient-to-r from-[#8B5CF6]/50 via-[#D946EE]/60 to-[#0EA4E9]/50 backdrop-blur-sm border border-[#8B5CF6]/60 relative overflow-hidden shadow-xl">
-            <div className="absolute top-0 right-0 bg-[#D946EE] text-white text-xs font-bold px-4 py-1 rounded-bl transform rotate-0">
-              NEW
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="md:col-span-2">
-                <div className="flex items-center mb-4">
-                  <Crown className="h-7 w-7 text-amber-400 mr-3" />
-                  <h2 className="text-2xl font-bold text-white exo-2-title">Pro Membership</h2>
-                </div>
-                <p className="text-white mb-6 text-opacity-90">
-                  Unlock premium benefits and save on fees with our annual Pro Membership plan. Perfect for serious sellers and investors looking to maximize their marketplace experience.
-                </p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-                  <div className="bg-white/20 rounded-lg p-4">
-                    <h3 className="text-lg font-medium text-white mb-3">For Sellers</h3>
-                    <ul className="space-y-2">
-                      <li className="flex items-start">
-                        <CheckCircle className="h-5 w-5 text-green-400 mr-2 flex-shrink-0 mt-0.5" />
-                        <span className="text-white">$0 listing fees</span>
-                      </li>
-                      <li className="flex items-start">
-                        <CheckCircle className="h-5 w-5 text-green-400 mr-2 flex-shrink-0 mt-0.5" />
-                        <span className="text-white">Reduced commission rates</span>
-                      </li>
-                      <li className="flex items-start">
-                        <CheckCircle className="h-5 w-5 text-green-400 mr-2 flex-shrink-0 mt-0.5" />
-                        <span className="text-white">3 code audits per year</span>
-                      </li>
-                      <li className="flex items-start">
-                        <CheckCircle className="h-5 w-5 text-green-400 mr-2 flex-shrink-0 mt-0.5" />
-                        <span className="text-white">Featured placement</span>
-                      </li>
-                    </ul>
-                  </div>
-                  <div className="bg-white/20 rounded-lg p-4">
-                    <h3 className="text-lg font-medium text-white mb-3">For Buyers</h3>
-                    <ul className="space-y-2">
-                      <li className="flex items-start">
-                        <CheckCircle className="h-5 w-5 text-green-400 mr-2 flex-shrink-0 mt-0.5" />
-                        <span className="text-white">$0 deposit fees</span>
-                      </li>
-                      <li className="flex items-start">
-                        <CheckCircle className="h-5 w-5 text-green-400 mr-2 flex-shrink-0 mt-0.5" />
-                        <span className="text-white">Dedicated account manager</span>
-                      </li>
-                      <li className="flex items-start">
-                        <CheckCircle className="h-5 w-5 text-green-400 mr-2 flex-shrink-0 mt-0.5" />
-                        <span className="text-white">Enhanced due diligence</span>
-                      </li>
-                      <li className="flex items-start">
-                        <CheckCircle className="h-5 w-5 text-green-400 mr-2 flex-shrink-0 mt-0.5" />
-                        <span className="text-white">Early access to new listings</span>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-col justify-center items-center bg-white/20 rounded-xl p-6 border border-white/20">
-                <span className="text-white text-sm line-through mb-1">$499/year</span>
-                <div className="text-center mb-4">
-                  <span className="text-4xl font-bold text-white">$299</span>
-                  <span className="text-white">/year</span>
-                </div>
-                <div className="bg-white/20 p-3 rounded-md mb-4 w-full">
-                  <div className="flex items-center justify-center gap-2 text-amber-300 mb-1">
-                    <Award className="h-4 w-4" />
-                    <p className="text-sm font-medium">Introductory Pricing</p>
-                  </div>
-                  <p className="text-white text-xs text-center">
-                    Lock in this annual rate before prices increase!
-                  </p>
-                </div>
-                <Button 
-                  className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 transition-opacity"
-                >
-                  Upgrade to Pro
-                </Button>
-              </div>
-            </div>
-          </Card>
+        <motion.div initial={{
+        opacity: 0,
+        y: 20
+      }} whileInView={{
+        opacity: 1,
+        y: 0
+      }} transition={{
+        duration: 0.5,
+        delay: 0.1
+      }} className="mb-12">
+          
         </motion.div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto mb-12">
           {/* Card 1 - Commission Structure */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
+          <motion.div initial={{
+          opacity: 0,
+          y: 20
+        }} whileInView={{
+          opacity: 1,
+          y: 0
+        }} transition={{
+          duration: 0.5,
+          delay: 0.2
+        }}>
             <Card className="h-full p-8 bg-white/10 backdrop-blur-sm border-white/5 hover:shadow-lg transition-shadow">
               <div className="flex flex-col h-full">
                 <div className="flex justify-center mb-6">
@@ -166,11 +92,16 @@ const PricingFees = () => {
           </motion.div>
           
           {/* Card 2 - Listing Fee */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-          >
+          <motion.div initial={{
+          opacity: 0,
+          y: 20
+        }} whileInView={{
+          opacity: 1,
+          y: 0
+        }} transition={{
+          duration: 0.5,
+          delay: 0.3
+        }}>
             <Card className="h-full p-8 bg-white/10 backdrop-blur-sm border-white/5 hover:shadow-lg transition-shadow">
               <div className="flex flex-col h-full">
                 <div className="flex justify-center mb-6">
@@ -225,11 +156,16 @@ const PricingFees = () => {
           </motion.div>
           
           {/* Card 3 - Deposit Fees */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-          >
+          <motion.div initial={{
+          opacity: 0,
+          y: 20
+        }} whileInView={{
+          opacity: 1,
+          y: 0
+        }} transition={{
+          duration: 0.5,
+          delay: 0.4
+        }}>
             <Card className="h-full p-8 bg-white/10 backdrop-blur-sm border-white/5 hover:shadow-lg transition-shadow">
               <div className="flex flex-col h-full">
                 <div className="flex justify-center mb-6">
@@ -291,19 +227,21 @@ const PricingFees = () => {
           </motion.div>
         </div>
         
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-          className="text-center mt-12"
-        >
+        <motion.div initial={{
+        opacity: 0,
+        y: 20
+      }} whileInView={{
+        opacity: 1,
+        y: 0
+      }} transition={{
+        duration: 0.5,
+        delay: 0.5
+      }} className="text-center mt-12">
           <p className="text-gray-300 max-w-2xl mx-auto">
             All transactions are processed securely through Escrow.com to ensure safe and transparent dealings for both parties.
           </p>
         </motion.div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default PricingFees;
