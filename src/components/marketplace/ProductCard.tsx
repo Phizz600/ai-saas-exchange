@@ -1,8 +1,9 @@
+
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Edit2, Timer, Heart, Bookmark, TrendingDown, CheckCircle, DollarSign, Users, Star, Clock, User } from "lucide-react";
+import { Edit2, Timer, Heart, Bookmark, TrendingDown, CheckCircle, DollarSign, Users, Star, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -221,95 +222,106 @@ export function ProductCard({ product, showEditButton = false }: ProductCardProp
     <>
       <Link to={`/product/${product.id}`} className="group">
         <Card className="overflow-hidden h-full hover:shadow-xl transition-all duration-300 border-gray-100/50 group-hover:border-blue-100/50 relative bg-white backdrop-blur-sm">
-          {/* Product Image with Loading State */}
-          <div className="relative h-48 overflow-hidden">
-            {!isImageLoaded && (
-              <div className="absolute inset-0 bg-gradient-to-r from-gray-200 to-gray-300 animate-pulse" />
-            )}
-            <img
-              src={product.image || "/placeholder.svg"}
-              alt={product.title}
-              className={`w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${
-                isImageLoaded ? 'opacity-100' : 'opacity-0'
-              }`}
-              onLoad={() => setIsImageLoaded(true)}
-            />
-            
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            
-            <div className="absolute top-2 right-2 flex gap-0.5">
-              {showEditButton && (
+          {/* Hero Section with Background Image and Product Info */}
+          <div className="relative">
+            <div className="relative h-48 overflow-hidden">
+              {!isImageLoaded && (
+                <div className="absolute inset-0 bg-gradient-to-r from-gray-200 to-gray-300 animate-pulse" />
+              )}
+              <img
+                src={product.image || "/placeholder.svg"}
+                alt={product.title}
+                className={`w-full h-full object-cover ${
+                  isImageLoaded ? 'opacity-100' : 'opacity-0'
+                }`}
+                onLoad={() => setIsImageLoaded(true)}
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-transparent" />
+              
+              {/* Verification Badge */}
+              {isVerified && (
+                <div className="absolute top-2 left-2">
+                  <Badge variant="secondary" className="bg-green-500/90 text-white border-0 flex items-center">
+                    <CheckCircle className="w-3.5 h-3.5 mr-1" />
+                    Verified
+                  </Badge>
+                </div>
+              )}
+              
+              {/* Action Buttons */}
+              <div className="absolute top-2 right-2 flex gap-0.5">
+                {showEditButton && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="text-white bg-black/20 hover:bg-black/30 hover:text-white"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setIsEditDialogOpen(true);
+                    }}
+                  >
+                    <Edit2 className="h-5 w-5" />
+                  </Button>
+                )}
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="text-white bg-black/20 hover:bg-black/30 hover:text-white"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setIsEditDialogOpen(true);
-                  }}
+                  className={`text-white bg-black/20 hover:bg-black/30 hover:text-white ${
+                    isSaved ? "text-primary" : ""
+                  }`}
+                  onClick={toggleSave}
                 >
-                  <Edit2 className="h-5 w-5" />
+                  <Bookmark className={`h-5 w-5 ${isSaved ? "fill-current" : ""}`} />
                 </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className={`text-white bg-black/20 hover:bg-black/30 hover:text-white ${
+                    isFavorited ? "text-red-500" : ""
+                  }`}
+                  onClick={toggleFavorite}
+                >
+                  <Heart className={`h-5 w-5 ${isFavorited ? "fill-current" : ""}`} />
+                </Button>
+              </div>
+              
+              {/* Title & Description Overlay */}
+              <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+                <h3 className="font-semibold text-xl text-white group-hover:text-white mb-1 exo-2-heading">
+                  {product.title}
+                </h3>
+                <p className="text-sm text-white/90 line-clamp-2">
+                  {product.description}
+                </p>
+              </div>
+              
+              {/* Auction Badge */}
+              {isAuction && (
+                <div className="absolute top-2 right-20">
+                  <Badge variant="secondary" className="bg-amber-500/90 text-white border-0 flex items-center">
+                    <TrendingDown className="w-3.5 h-3.5 mr-1" />
+                    Dutch Auction
+                  </Badge>
+                </div>
               )}
-              <Button
-                variant="ghost"
-                size="icon"
-                className={`text-white bg-black/20 hover:bg-black/30 hover:text-white ${
-                  isSaved ? "text-primary" : ""
-                }`}
-                onClick={toggleSave}
-              >
-                <Bookmark className={`h-5 w-5 ${isSaved ? "fill-current" : ""}`} />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className={`text-white bg-black/20 hover:bg-black/30 hover:text-white ${
-                  isFavorited ? "text-red-500" : ""
-                }`}
-                onClick={toggleFavorite}
-              >
-                <Heart className={`h-5 w-5 ${isFavorited ? "fill-current" : ""}`} />
-              </Button>
+              
+              {/* Auction Timer */}
+              {isAuction && timeLeft && (
+                <div className="absolute top-10 right-2">
+                  <Badge variant="secondary" className="bg-black/70 text-amber-50 border-0">
+                    <Timer className="w-3.5 h-3.5 mr-1" />
+                    {timeLeft}
+                  </Badge>
+                </div>
+              )}
             </div>
             
-            {isAuction && (
-              <div className="absolute bottom-2 left-2">
-                <Badge variant="secondary" className="bg-amber-500/90 text-white border-0 flex items-center">
-                  <TrendingDown className="w-3.5 h-3.5 mr-1" />
-                  Dutch Auction
-                </Badge>
-              </div>
-            )}
-            
-            {isAuction && timeLeft && (
-              <div className="absolute bottom-2 right-2">
-                <Badge variant="secondary" className="bg-black/70 text-amber-50 border-0">
-                  <Timer className="w-3.5 h-3.5 mr-1" />
-                  {timeLeft}
-                </Badge>
-              </div>
-            )}
-            
-            {/* Verification Badge - only show if product is verified */}
-            {isVerified && (
-              <div className="absolute top-2 left-2">
-                <Badge variant="secondary" className="bg-green-500/90 text-white border-0 flex items-center">
-                  <CheckCircle className="w-3.5 h-3.5 mr-1" />
-                  Verified
-                </Badge>
-              </div>
-            )}
-          </div>
-
-          {/* Product Content */}
-          <div className="p-5 space-y-4">
-            {/* Category & Stage Pills at the top */}
-            <div className="flex flex-wrap gap-2">
+            {/* Category & Stage Pills */}
+            <div className="px-5 pt-3 pb-1 flex flex-wrap gap-2">
               {product.category && (
                 <Badge 
                   variant="outline" 
-                  className={`rounded-full px-4 py-1 ${getCategoryColor(product.category).bg} ${getCategoryColor(product.category).text} border-0`}
+                  className={`rounded-full px-3 py-1 text-xs ${getCategoryColor(product.category).bg} ${getCategoryColor(product.category).text} border-0`}
                 >
                   {product.category}
                 </Badge>
@@ -317,25 +329,23 @@ export function ProductCard({ product, showEditButton = false }: ProductCardProp
               {product.stage && (
                 <Badge 
                   variant="outline" 
-                  className={`rounded-full px-4 py-1 ${getStageColor(product.stage).bg} ${getStageColor(product.stage).text} border-0`}
+                  className={`rounded-full px-3 py-1 text-xs ${getStageColor(product.stage).bg} ${getStageColor(product.stage).text} border-0`}
                 >
                   {product.stage}
                 </Badge>
               )}
             </div>
-            
-            {/* Title */}
-            <h3 className="font-semibold text-lg text-gray-900 group-hover:text-[#8B5CF6] transition-colors duration-200 exo-2-heading">
-              {product.title}
-            </h3>
-            
+          </div>
+
+          {/* Metrics Section */}
+          <div className="p-5 pt-1 space-y-4">
             {/* Price in green */}
             <div className="text-2xl font-bold text-green-600">
               ${new Intl.NumberFormat('en-US').format((product.current_price || product.price || 0))}
             </div>
             
             {/* Metrics */}
-            <div className="space-y-2">
+            <div className="grid grid-cols-2 gap-y-2">
               {/* MRR */}
               {product.monthlyRevenue !== undefined && product.monthlyRevenue > 0 && (
                 <div className="flex items-center gap-2 text-gray-700">
@@ -349,7 +359,7 @@ export function ProductCard({ product, showEditButton = false }: ProductCardProp
                 <div className="flex items-center gap-2 text-gray-700">
                   <Users className="h-5 w-5 text-blue-500" />
                   <span className="text-gray-600">
-                    {new Intl.NumberFormat('en-US').format(product.monthly_traffic)} monthly visitors
+                    {new Intl.NumberFormat('en-US').format(product.monthly_traffic)} visitors
                   </span>
                 </div>
               )}
@@ -359,7 +369,7 @@ export function ProductCard({ product, showEditButton = false }: ProductCardProp
                 <div className="flex items-center gap-2 text-gray-700">
                   <Star className="h-5 w-5 text-amber-500" />
                   <span className="text-gray-600">
-                    {product.gross_profit_margin}% profit margin
+                    {product.gross_profit_margin}% margin
                   </span>
                 </div>
               )}
@@ -369,7 +379,7 @@ export function ProductCard({ product, showEditButton = false }: ProductCardProp
                 <div className="flex items-center gap-2 text-gray-700">
                   <Clock className="h-5 w-5 text-purple-500" />
                   <span className="text-gray-600">
-                    {product.monthly_churn_rate}% monthly churn
+                    {product.monthly_churn_rate}% churn
                   </span>
                 </div>
               )}
@@ -381,7 +391,7 @@ export function ProductCard({ product, showEditButton = false }: ProductCardProp
             <Button 
               className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 text-white font-medium shadow-md hover:shadow-lg hover:shadow-purple-500/20 transition-all"
             >
-              {isAuction ? "Bid Now" : "Buy"}
+              {isAuction ? "Place Bid" : "Buy"}
             </Button>
             
             <Button 
