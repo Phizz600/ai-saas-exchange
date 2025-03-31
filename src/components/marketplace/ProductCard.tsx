@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -360,6 +361,13 @@ export function ProductCard({ product, showEditButton = false }: ProductCardProp
             <h3 className="font-semibold text-lg text-gray-900 group-hover:text-[#8B5CF6] transition-colors duration-200 exo-2-heading">
               {product.title}
             </h3>
+            
+            {/* Description - Added here */}
+            {product.description && (
+              <p className="text-sm text-gray-600 line-clamp-2">
+                {product.description}
+              </p>
+            )}
             
             {/* Price in green - making the font size smaller and left aligned */}
             <div className="text-xl font-bold text-green-600 text-left">
