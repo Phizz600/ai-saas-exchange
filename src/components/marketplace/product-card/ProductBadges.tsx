@@ -1,12 +1,12 @@
 
 import { Badge } from "@/components/ui/badge";
 
-interface CategoryBadgesProps {
+interface ProductBadgesProps {
   category?: string;
   stage?: string;
 }
 
-export function ProductBadges({ category, stage }: CategoryBadgesProps) {
+export function ProductBadges({ category, stage }: ProductBadgesProps) {
   const getCategoryColor = (category: string = '') => {
     const colors: Record<string, { bg: string; text: string }> = {
       'Content Generation': { bg: 'bg-purple-100', text: 'text-purple-700' },
@@ -22,10 +22,10 @@ export function ProductBadges({ category, stage }: CategoryBadgesProps) {
 
   const getStageColor = (stage: string = '') => {
     const colors: Record<string, { bg: string; text: string }> = {
-      'Revenue': { bg: 'bg-green-100', text: 'text-green-700' },
-      'MVP': { bg: 'bg-blue-100', text: 'text-blue-700' },
+      'Revenue': { bg: 'bg-blue-100', text: 'text-blue-700' },
+      'MVP': { bg: 'bg-green-100', text: 'text-green-700' },
       'Prototype': { bg: 'bg-amber-100', text: 'text-amber-700' },
-      'Idea': { bg: 'bg-gray-100', text: 'text-gray-700' }
+      'Idea': { bg: 'bg-orange-100', text: 'text-orange-700' }
     };
     return colors[stage] || { bg: 'bg-gray-100', text: 'text-gray-700' };
   };
