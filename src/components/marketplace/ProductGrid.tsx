@@ -73,7 +73,7 @@ export const ProductGrid = ({ products, isLoading = false, onProductView }: Prod
               min_price: product.min_price,
               price_decrement: product.price_decrement,
               is_revenue_verified: product.is_revenue_verified,
-              is_code_audited: product.is_code_audited,
+              is_code_audited: product.is_code_audited, 
               is_traffic_verified: product.is_traffic_verified,
               seller: {
                 id: product.seller?.id || "",
@@ -87,4 +87,4 @@ export const ProductGrid = ({ products, isLoading = false, onProductView }: Prod
       ))}
     </div>
   );
-}
+};
