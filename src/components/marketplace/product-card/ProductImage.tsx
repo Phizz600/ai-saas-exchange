@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Edit2, Bookmark, Heart, TrendingDown, Timer, CheckCircle } from "lucide-react";
+import { Edit2, Bookmark, Heart, TrendingDown, Timer, CheckCircle, LockIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
@@ -14,6 +14,8 @@ interface ProductImageProps {
   isFavorited: boolean;
   isSaved: boolean;
   isVerified: boolean;
+  requiresNda?: boolean;
+  hasSignedNda?: boolean;
   showEditButton?: boolean;
   toggleFavorite: (e: React.MouseEvent) => void;
   toggleSave: (e: React.MouseEvent) => void;
@@ -30,6 +32,8 @@ export function ProductImage({
   isFavorited,
   isSaved,
   isVerified,
+  requiresNda = false,
+  hasSignedNda = false,
   showEditButton = false,
   toggleFavorite,
   toggleSave,
@@ -45,12 +49,25 @@ export function ProductImage({
         alt={title}
         className={`w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-100 ${
           isImageLoaded ? 'opacity-100' : 'opacity-0'
-        }`}
+        } ${requiresNda && !hasSignedNda ? 'blur-sm' : ''}`}
         onLoad={() => setIsImageLoaded(true)}
       />
       
       {/* Reduced opacity of the gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent z-10" />
+      
+      {/* Confidential overlay for NDA-required products */}
+      {requiresNda && !hasSignedNda && (
+        <div className="absolute inset-0 bg-gradient-to-r from-[#8B5CF6]/70 to-[#D946EE]/70 flex items-center justify-center z-20">
+          <div className="bg-blue-500 text-white px-6 py-4 rounded-md shadow-lg text-center max-w-[80%]">
+            <div className="flex items-center justify-center mb-1">
+              <LockIcon className="h-5 w-5 mr-2" />
+              <span className="font-bold text-lg exo-2-heading">Confidential</span>
+            </div>
+            <div className="text-sm">Sign NDA to view</div>
+          </div>
+        </div>
+      )}
       
       <div className="absolute top-2 right-2 flex gap-0.5 z-30">
         {showEditButton && (
