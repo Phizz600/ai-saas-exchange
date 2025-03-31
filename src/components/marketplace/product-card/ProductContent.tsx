@@ -16,6 +16,7 @@ interface ProductContentProps {
   is_revenue_verified?: boolean;
   is_code_audited?: boolean;
   is_traffic_verified?: boolean;
+  requires_nda?: boolean;
 }
 
 export function ProductContent({
@@ -31,12 +32,13 @@ export function ProductContent({
   monthly_churn_rate,
   is_revenue_verified,
   is_code_audited,
-  is_traffic_verified
+  is_traffic_verified,
+  requires_nda
 }: ProductContentProps) {
   return (
     <div className="p-5 space-y-4">
       {/* Category & Stage Pills at the top */}
-      <ProductBadges category={category} stage={stage} />
+      <ProductBadges category={category} stage={stage} requiresNda={requires_nda} />
       
       {/* Title */}
       <h3 className="font-semibold text-lg text-gray-900 group-hover:text-[#8B5CF6] transition-colors duration-200 exo-2-heading">
@@ -44,9 +46,16 @@ export function ProductContent({
       </h3>
       
       {/* Description - Added here */}
-      {description && (
+      {description && !requires_nda && (
         <p className="text-sm text-gray-600 line-clamp-2">
           {description}
+        </p>
+      )}
+      
+      {/* If NDA is required, show placeholder text */}
+      {requires_nda && (
+        <p className="text-sm text-gray-600 italic">
+          Additional details available after signing NDA
         </p>
       )}
       
@@ -55,16 +64,18 @@ export function ProductContent({
         ${new Intl.NumberFormat('en-US').format((current_price || price || 0))}
       </div>
       
-      {/* Metrics */}
-      <ProductMetrics 
-        monthlyRevenue={monthlyRevenue}
-        monthly_traffic={monthly_traffic}
-        gross_profit_margin={gross_profit_margin}
-        monthly_churn_rate={monthly_churn_rate}
-        is_revenue_verified={is_revenue_verified}
-        is_code_audited={is_code_audited}
-        is_traffic_verified={is_traffic_verified}
-      />
+      {/* Only show metrics if NDA is not required */}
+      {!requires_nda && (
+        <ProductMetrics 
+          monthlyRevenue={monthlyRevenue}
+          monthly_traffic={monthly_traffic}
+          gross_profit_margin={gross_profit_margin}
+          monthly_churn_rate={monthly_churn_rate}
+          is_revenue_verified={is_revenue_verified}
+          is_code_audited={is_code_audited}
+          is_traffic_verified={is_traffic_verified}
+        />
+      )}
     </div>
   );
 }

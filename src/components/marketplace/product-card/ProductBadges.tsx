@@ -1,11 +1,14 @@
+
 import { Badge } from "@/components/ui/badge";
+import { LockIcon } from "lucide-react";
 
 interface ProductBadgesProps {
   category?: string;
   stage?: string;
+  requiresNda?: boolean;
 }
 
-export function ProductBadges({ category, stage }: ProductBadgesProps) {
+export function ProductBadges({ category, stage, requiresNda }: ProductBadgesProps) {
   const getCategoryColor = (category: string = '') => {
     const colors: Record<string, { bg: string; text: string }> = {
       // Updated color scheme for all categories
@@ -50,6 +53,15 @@ export function ProductBadges({ category, stage }: ProductBadgesProps) {
 
   return (
     <div className="flex flex-wrap gap-1.5">
+      {requiresNda && (
+        <Badge 
+          variant="outline" 
+          className="px-3 py-1 rounded-full bg-blue-100 text-blue-700 border-0 font-medium text-xs shadow-sm flex items-center"
+        >
+          <LockIcon className="h-3 w-3 mr-1" />
+          NDA Required
+        </Badge>
+      )}
       {category && (
         <Badge 
           variant="outline" 

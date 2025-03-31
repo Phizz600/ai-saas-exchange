@@ -1,4 +1,3 @@
-
 export interface ListProductFormData {
   title: string;
   description: string;
@@ -51,4 +50,6 @@ export interface ListProductFormData {
   productAge?: string;
   businessLocation?: string;
   numberOfEmployees?: string;
+  requires_nda?: boolean;
+  nda_content?: string;
 }

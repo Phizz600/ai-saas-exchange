@@ -736,6 +736,51 @@ export type Database = {
           },
         ]
       }
+      product_ndas: {
+        Row: {
+          created_at: string
+          id: string
+          ip_address: string | null
+          product_id: string
+          signed_at: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          ip_address?: string | null
+          product_id: string
+          signed_at?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          ip_address?: string | null
+          product_id?: string
+          signed_at?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_ndas_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "matched_products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_ndas_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       products: {
         Row: {
           active_users: string | null
@@ -777,6 +822,7 @@ export type Database = {
           monthly_profit: number | null
           monthly_revenue: number | null
           monthly_traffic: number | null
+          nda_content: string | null
           number_of_employees: string | null
           payment_status: string | null
           price: number
@@ -784,6 +830,7 @@ export type Database = {
           price_decrement_interval: string | null
           product_age: string | null
           product_link: string | null
+          requires_nda: boolean | null
           reviewed_at: string | null
           reviewed_by: string | null
           seller_id: string
@@ -837,6 +884,7 @@ export type Database = {
           monthly_profit?: number | null
           monthly_revenue?: number | null
           monthly_traffic?: number | null
+          nda_content?: string | null
           number_of_employees?: string | null
           payment_status?: string | null
           price: number
@@ -844,6 +892,7 @@ export type Database = {
           price_decrement_interval?: string | null
           product_age?: string | null
           product_link?: string | null
+          requires_nda?: boolean | null
           reviewed_at?: string | null
           reviewed_by?: string | null
           seller_id: string
@@ -897,6 +946,7 @@ export type Database = {
           monthly_profit?: number | null
           monthly_revenue?: number | null
           monthly_traffic?: number | null
+          nda_content?: string | null
           number_of_employees?: string | null
           payment_status?: string | null
           price?: number
@@ -904,6 +954,7 @@ export type Database = {
           price_decrement_interval?: string | null
           product_age?: string | null
           product_link?: string | null
+          requires_nda?: boolean | null
           reviewed_at?: string | null
           reviewed_by?: string | null
           seller_id?: string
