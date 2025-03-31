@@ -69,8 +69,6 @@ export const ProductGrid = ({ products, isLoading = false, onProductView }: Prod
               image_url: product.image_url || "/placeholder.svg",
               auction_end_time: product.auction_end_time,
               current_price: product.current_price,
-              min_price: product.min_price,
-              price_decrement: product.price_decrement,
               is_revenue_verified: product.is_revenue_verified,
               is_code_audited: product.is_code_audited, 
               is_traffic_verified: product.is_traffic_verified,
