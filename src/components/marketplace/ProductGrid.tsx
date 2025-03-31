@@ -35,7 +35,7 @@ export const ProductGrid = ({ products, isLoading = false, onProductView }: Prod
         <div className="bg-gray-100 rounded-full p-6 mb-6">
           <Search className="h-10 w-10 text-gray-400" />
         </div>
-        <h3 className="text-xl font-semibold text-gray-900 mb-3">No products found</h3>
+        <h3 className="text-xl font-semibold text-gray-900 mb-3 exo-2-heading">No products found</h3>
         <p className="text-gray-600 max-w-md">
           We couldn't find any products matching your search criteria. Try adjusting your filters or search terms.
         </p>
