@@ -361,8 +361,8 @@ export function ProductCard({ product, showEditButton = false }: ProductCardProp
               {product.title}
             </h3>
             
-            {/* Price in green - making the font size smaller */}
-            <div className="text-xl font-bold text-green-600">
+            {/* Price in green - making the font size smaller and left aligned */}
+            <div className="text-xl font-bold text-green-600 text-left">
               ${new Intl.NumberFormat('en-US').format((product.current_price || product.price || 0))}
             </div>
             
