@@ -110,7 +110,7 @@ export function ProductCard({ product }: ProductCardProps) {
             onSignSuccess={handleNdaSuccess}
           />
         ) : (
-          <ProductActions isAuction={isAuction} />
+          <ProductActions isAuction={isAuction} productId={product.id} />
         )}
       </CardFooter>
     </Card>
