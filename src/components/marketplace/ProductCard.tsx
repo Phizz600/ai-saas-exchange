@@ -75,7 +75,6 @@ export function ProductCard({ product, showEditButton = false }: ProductCardProp
     return () => clearInterval(timer);
   }, [product.auction_end_time]);
 
-  // Check if user has saved or favorited this product
   useEffect(() => {
     const checkUserInteractions = async () => {
       try {
@@ -229,14 +228,14 @@ export function ProductCard({ product, showEditButton = false }: ProductCardProp
             <img
               src={product.image || "/placeholder.svg"}
               alt={product.title}
-              className={`w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-60 ${
-                isImageLoaded ? 'opacity-60' : 'opacity-0'
+              className={`w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-100 ${
+                isImageLoaded ? 'opacity-100' : 'opacity-0'
               }`}
               onLoad={() => setIsImageLoaded(true)}
             />
             
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent z-10" />
-            
+            {/* Reduced opacity of the gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent z-10" />
             
             <div className="absolute top-2 right-2 flex gap-0.5 z-30">
               {showEditButton && (
