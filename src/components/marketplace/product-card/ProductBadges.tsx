@@ -39,11 +39,11 @@ export function ProductBadges({ category, stage }: ProductBadgesProps) {
   };
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex flex-wrap gap-1.5">
       {category && (
         <Badge 
           variant="outline" 
-          className={`px-4 py-1.5 rounded-full ${getCategoryColor(category).bg} ${getCategoryColor(category).text} border-0 font-medium text-sm shadow-sm`}
+          className={`px-3 py-1 rounded-full ${getCategoryColor(category).bg} ${getCategoryColor(category).text} border-0 font-medium text-xs shadow-sm`}
         >
           {category}
         </Badge>
@@ -51,7 +51,7 @@ export function ProductBadges({ category, stage }: ProductBadgesProps) {
       {stage && (
         <Badge 
           variant="outline" 
-          className={`px-4 py-1.5 rounded-full ${getStageColor(stage).bg} ${getStageColor(stage).text} border-0 font-medium text-sm shadow-sm`}
+          className={`px-3 py-1 rounded-full ${getStageColor(stage).bg} ${getStageColor(stage).text} border-0 font-medium text-xs shadow-sm`}
         >
           {stage}
         </Badge>
