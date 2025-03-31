@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -362,8 +361,8 @@ export function ProductCard({ product, showEditButton = false }: ProductCardProp
               {product.title}
             </h3>
             
-            {/* Price in green */}
-            <div className="text-2xl font-bold text-green-600">
+            {/* Price in green - making the font size smaller */}
+            <div className="text-xl font-bold text-green-600">
               ${new Intl.NumberFormat('en-US').format((product.current_price || product.price || 0))}
             </div>
             
