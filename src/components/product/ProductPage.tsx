@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -15,8 +14,11 @@ import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, CheckCircle, ExternalLink, BadgeCheck, Timer } from "lucide-react";
+import { ArrowLeft, CheckCircle, ExternalLink, BadgeCheck, Timer, LockIcon } from "lucide-react";
 import { motion } from "framer-motion";
+import { useNdaStatus } from "../marketplace/product-card/useNdaStatus";
+import { NdaButton } from "../marketplace/product-card/NdaButton";
+
 interface Product {
   id: string;
   seller_id: string;
@@ -53,12 +55,15 @@ interface Product {
   monetization_other?: string;
   business_model?: string;
   investment_timeline?: string;
+  requires_nda?: boolean;
+  nda_content?: string;
   seller: {
     id: string;
     full_name: string | null;
     avatar_url: string | null;
   };
 }
+
 export function ProductPage() {
   const {
     id
@@ -67,9 +72,9 @@ export function ProductPage() {
   }>();
   const navigate = useNavigate();
   const [isLiked, setIsLiked] = useState(false);
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
+  const { hasSigned, isCheckingStatus, setHasSigned } = useNdaStatus(id || '');
+  
   const {
     data: product,
     isLoading,
@@ -103,6 +108,7 @@ export function ProductPage() {
     retry: 1,
     gcTime: 0
   });
+
   useEffect(() => {
     if (error) {
       console.error('Query error:', error);
@@ -114,6 +120,7 @@ export function ProductPage() {
       navigate('/marketplace');
     }
   }, [error, toast, navigate]);
+
   useEffect(() => {
     const checkIfLiked = async () => {
       if (!id) return;
@@ -133,6 +140,16 @@ export function ProductPage() {
     };
     checkIfLiked();
   }, [id]);
+
+  // Handle NDA success
+  const handleNdaSuccess = () => {
+    setHasSigned(true);
+    toast({
+      title: "NDA Signed",
+      description: "You now have access to the full product details",
+    });
+  };
+
   if (isLoading) {
     return <>
         <Header />
@@ -174,6 +191,7 @@ export function ProductPage() {
         </div>
       </>;
   }
+
   if (!product) {
     return <>
         <Header />
@@ -185,6 +203,9 @@ export function ProductPage() {
         </div>
       </>;
   }
+
+  // Determine if we need to show limited information
+  const showLimitedInfo = product?.requires_nda && !hasSigned;
 
   // Determine acquisition timeline text based on investment_timeline
   const getAcquisitionTimelineText = (timeline?: string) => {
@@ -201,6 +222,7 @@ export function ProductPage() {
         return 'Ready for acquisition';
     }
   };
+
   return <>
       <Header />
       
@@ -216,7 +238,32 @@ export function ProductPage() {
           </div>
         </div>
         
-        {/* Acquisition banner removed */}
+        {/* NDA Banner - show only if NDA is required and not signed */}
+        {showLimitedInfo && (
+          <motion.div 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6 flex items-start gap-4"
+          >
+            <div className="bg-amber-100 rounded-full p-2">
+              <LockIcon className="h-6 w-6 text-amber-600" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-semibold text-amber-900 exo-2-heading">
+                This product requires a Non-Disclosure Agreement
+              </h3>
+              <p className="text-amber-700 mb-4">
+                Some information about this product is confidential. To view all details, you need to sign an NDA.
+              </p>
+              <NdaButton 
+                productId={product.id} 
+                productTitle={product.title}
+                ndaContent={product.nda_content}
+                onSignSuccess={handleNdaSuccess}
+              />
+            </div>
+          </motion.div>
+        )}
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div className="space-y-6">
@@ -256,34 +303,46 @@ export function ProductPage() {
                   <div className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
                     <span className="text-gray-600">Monthly Revenue</span>
                     <span className="font-medium text-green-600">
-                      ${product.monthly_revenue ? product.monthly_revenue.toLocaleString() : '0'}
-                      {product.is_revenue_verified && <CheckCircle className="inline-block h-4 w-4 ml-1 text-green-500" />}
+                      {showLimitedInfo ? (
+                        <span className="text-gray-400">Sign NDA to view</span>
+                      ) : (
+                        <>
+                          ${product.monthly_revenue ? product.monthly_revenue.toLocaleString() : '0'}
+                          {product.is_revenue_verified && <CheckCircle className="inline-block h-4 w-4 ml-1 text-green-500" />}
+                        </>
+                      )}
                     </span>
                   </div>
-                  {product.demo_url && <a href={product.demo_url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 w-full py-2 mt-2 text-[#8B5CF6] border border-[#8B5CF6] rounded-md hover:bg-[#8B5CF6]/10 transition-colors">
+                  {!showLimitedInfo && product.demo_url && (
+                    <a href={product.demo_url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 w-full py-2 mt-2 text-[#8B5CF6] border border-[#8B5CF6] rounded-md hover:bg-[#8B5CF6]/10 transition-colors">
                       <ExternalLink className="h-4 w-4" />
                       View Live Demo
-                    </a>}
+                    </a>
+                  )}
                 </div>
-                {product.special_notes && <div className="mt-4 border-t pt-4">
+                {!showLimitedInfo && product.special_notes && (
+                  <div className="mt-4 border-t pt-4">
                     <h4 className="text-base font-semibold mb-2">Special Notes</h4>
                     <p className="text-gray-600 whitespace-pre-wrap">{product.special_notes}</p>
-                  </div>}
+                  </div>
+                )}
               </Card>
             </motion.div>
             
-            <motion.div initial={{
-            opacity: 0,
-            y: 20
-          }} animate={{
-            opacity: 1,
-            y: 0
-          }} transition={{
-            duration: 0.5,
-            delay: 0.2
-          }}>
-              <PriceHistoryChart productId={product.id} />
-            </motion.div>
+            {!showLimitedInfo && (
+              <motion.div initial={{
+                opacity: 0,
+                y: 20
+              }} animate={{
+                opacity: 1,
+                y: 0
+              }} transition={{
+                duration: 0.5,
+                delay: 0.2
+              }}>
+                <PriceHistoryChart productId={product.id} />
+              </motion.div>
+            )}
           </div>
 
           <div className="space-y-6">
@@ -299,7 +358,9 @@ export function ProductPage() {
               <ProductHeader product={{
               id: product.id,
               title: product.title,
-              description: product.description || ''
+              description: showLimitedInfo ? 
+                "Sign an NDA to view the full product description and details." : 
+                product.description || ''
             }} isLiked={isLiked} setIsLiked={setIsLiked} />
             </motion.div>
             
@@ -316,34 +377,38 @@ export function ProductPage() {
               <ProductPricing product={product} />
             </motion.div>
             
-            <motion.div initial={{
-            opacity: 0,
-            y: 20
-          }} animate={{
-            opacity: 1,
-            y: 0
-          }} transition={{
-            duration: 0.5,
-            delay: 0.2
-          }}>
-              <ProductStats product={product} />
-            </motion.div>
+            {!showLimitedInfo && (
+              <motion.div initial={{
+                opacity: 0,
+                y: 20
+              }} animate={{
+                opacity: 1,
+                y: 0
+              }} transition={{
+                duration: 0.5,
+                delay: 0.2
+              }}>
+                <ProductStats product={product} />
+              </motion.div>
+            )}
           </div>
         </div>
 
         <div className="mt-12 space-y-8">
-          <motion.div initial={{
-          opacity: 0,
-          y: 20
-        }} animate={{
-          opacity: 1,
-          y: 0
-        }} transition={{
-          duration: 0.5,
-          delay: 0.3
-        }}>
-            <ProductReviews productId={product.id} />
-          </motion.div>
+          {!showLimitedInfo && (
+            <motion.div initial={{
+              opacity: 0,
+              y: 20
+            }} animate={{
+              opacity: 1,
+              y: 0
+            }} transition={{
+              duration: 0.5,
+              delay: 0.3
+            }}>
+              <ProductReviews productId={product.id} />
+            </motion.div>
+          )}
           
           <motion.div initial={{
           opacity: 0,
