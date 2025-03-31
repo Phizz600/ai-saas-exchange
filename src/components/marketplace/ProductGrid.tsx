@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import { ProductCard } from "./ProductCard";
 import { ProductCardSkeleton } from "./product-card/ProductCardSkeleton";
@@ -62,6 +63,10 @@ export const ProductGrid = ({ products, isLoading = false, onProductView }: Prod
               category: product.category || "",
               stage: product.stage || "",
               monthlyRevenue: Number(product.monthly_revenue || 0),
+              monthly_profit: Number(product.monthly_profit || 0),
+              gross_profit_margin: Number(product.gross_profit_margin || 0),
+              monthly_churn_rate: Number(product.monthly_churn_rate || 0),
+              monthly_traffic: Number(product.monthly_traffic || 0),
               image: product.image_url || "/placeholder.svg",
               auction_end_time: product.auction_end_time,
               current_price: product.current_price,

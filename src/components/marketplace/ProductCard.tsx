@@ -1,9 +1,8 @@
-
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Edit2, Timer, Heart, Bookmark, TrendingDown, CheckCircle, DollarSign, Users } from "lucide-react";
+import { Edit2, Timer, Heart, Bookmark, TrendingDown, CheckCircle, DollarSign, Users, Star, Clock, User } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -20,6 +19,10 @@ interface ProductCardProps {
     category?: string;
     stage?: string;
     monthlyRevenue?: number;
+    monthly_profit?: number;
+    gross_profit_margin?: number;
+    monthly_churn_rate?: number;
+    monthly_traffic?: number;
     image?: string;
     auction_end_time?: string;
     current_price?: number;
@@ -287,79 +290,112 @@ export function ProductCard({ product, showEditButton = false }: ProductCardProp
                 </Badge>
               </div>
             )}
+            
+            {/* Verification Badge - only show if product is verified */}
+            {isVerified && (
+              <div className="absolute top-2 left-2">
+                <Badge variant="secondary" className="bg-green-500/90 text-white border-0 flex items-center">
+                  <CheckCircle className="w-3.5 h-3.5 mr-1" />
+                  Verified
+                </Badge>
+              </div>
+            )}
           </div>
 
           {/* Product Content */}
-          <div className="p-4">
-            <h3 className="font-semibold text-lg mb-2 text-gray-900 line-clamp-1 group-hover:text-[#8B5CF6] transition-colors duration-200 exo-2-heading">
+          <div className="p-5 space-y-4">
+            {/* Category & Stage Pills at the top */}
+            <div className="flex flex-wrap gap-2">
+              {product.category && (
+                <Badge 
+                  variant="outline" 
+                  className={`rounded-full px-4 py-1 ${getCategoryColor(product.category).bg} ${getCategoryColor(product.category).text} border-0`}
+                >
+                  {product.category}
+                </Badge>
+              )}
+              {product.stage && (
+                <Badge 
+                  variant="outline" 
+                  className={`rounded-full px-4 py-1 ${getStageColor(product.stage).bg} ${getStageColor(product.stage).text} border-0`}
+                >
+                  {product.stage}
+                </Badge>
+              )}
+            </div>
+            
+            {/* Title */}
+            <h3 className="font-semibold text-lg text-gray-900 group-hover:text-[#8B5CF6] transition-colors duration-200 exo-2-heading">
               {product.title}
             </h3>
-            {product.description && (
-              <p className="text-gray-600 text-sm mb-3 line-clamp-2">{product.description}</p>
-            )}
-
-            <div className="space-y-3">
-              {/* Price Display */}
-              <div className="flex items-baseline gap-2">
-                <span className="text-lg font-semibold text-green-600 flex items-center">
-                  <DollarSign className="h-4 w-4 mr-0.5" />
-                  {isAuction
-                    ? formatCurrency(product.current_price || product.price || 0).replace('$', '')
-                    : formatCurrency(product.price || 0).replace('$', '')}
-                </span>
-                {isAuction && product.min_price && (
-                  <span className="text-sm text-gray-500">
-                    (Min: {formatCurrency(product.min_price).replace('$', '')})
-                  </span>
-                )}
-              </div>
-
-              {/* Stats */}
+            
+            {/* Price in green */}
+            <div className="text-2xl font-bold text-green-600">
+              ${new Intl.NumberFormat('en-US').format((product.current_price || product.price || 0))}
+            </div>
+            
+            {/* Metrics */}
+            <div className="space-y-2">
+              {/* MRR */}
               {product.monthlyRevenue !== undefined && product.monthlyRevenue > 0 && (
-                <div className="text-sm text-gray-600 flex items-center gap-1.5">
-                  <Users className="h-4 w-4 text-blue-500" />
-                  MRR: {formatCurrency(product.monthlyRevenue)}
+                <div className="flex items-center gap-2 text-gray-700">
+                  <DollarSign className="h-5 w-5 text-green-500" />
+                  <span className="text-gray-600">MRR: ${new Intl.NumberFormat('en-US').format(product.monthlyRevenue)}</span>
                 </div>
               )}
-
-              {/* Category and Stage */}
-              <div className="flex flex-wrap gap-2 pt-2">
-                {product.category && (
-                  <Badge 
-                    variant="outline" 
-                    className={`${getCategoryColor(product.category).bg} ${getCategoryColor(product.category).text} border-0`}
-                  >
-                    {product.category}
-                  </Badge>
-                )}
-                {product.stage && (
-                  <Badge 
-                    variant="outline" 
-                    className={`${getStageColor(product.stage).bg} ${getStageColor(product.stage).text} border-0`}
-                  >
-                    {product.stage}
-                  </Badge>
-                )}
-              </div>
+              
+              {/* Monthly visitors */}
+              {product.monthly_traffic !== undefined && product.monthly_traffic > 0 && (
+                <div className="flex items-center gap-2 text-gray-700">
+                  <Users className="h-5 w-5 text-blue-500" />
+                  <span className="text-gray-600">
+                    {new Intl.NumberFormat('en-US').format(product.monthly_traffic)} monthly visitors
+                  </span>
+                </div>
+              )}
+              
+              {/* Profit Margin */}
+              {product.gross_profit_margin !== undefined && (
+                <div className="flex items-center gap-2 text-gray-700">
+                  <Star className="h-5 w-5 text-amber-500" />
+                  <span className="text-gray-600">
+                    {product.gross_profit_margin}% profit margin
+                  </span>
+                </div>
+              )}
+              
+              {/* Churn Rate */}
+              {product.monthly_churn_rate !== undefined && (
+                <div className="flex items-center gap-2 text-gray-700">
+                  <Clock className="h-5 w-5 text-purple-500" />
+                  <span className="text-gray-600">
+                    {product.monthly_churn_rate}% monthly churn
+                  </span>
+                </div>
+              )}
             </div>
           </div>
           
-          {/* Verification Badge - only show if product is verified */}
-          {isVerified && (
-            <div className="absolute top-2 left-2">
-              <Badge variant="secondary" className="bg-green-500/90 text-white border-0 flex items-center">
-                <CheckCircle className="w-3.5 h-3.5 mr-1" />
-                Verified
-              </Badge>
-            </div>
-          )}
-          
-          {/* Action Button in Footer */}
-          <div className="p-4 pt-0">
+          {/* Action Buttons */}
+          <div className="p-5 pt-0 space-y-2">
             <Button 
-              className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 text-white shadow-md hover:shadow-lg hover:shadow-purple-500/20 transition-all mt-4"
+              className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 text-white font-medium shadow-md hover:shadow-lg hover:shadow-purple-500/20 transition-all"
             >
-              {isAuction ? "Make Offer / Bid" : "Make an Offer"}
+              {isAuction ? "Bid Now" : "Buy"}
+            </Button>
+            
+            <Button 
+              variant="outline"
+              className="w-full border-gray-200 hover:bg-gray-50 text-gray-700 font-medium"
+            >
+              Make an Offer
+            </Button>
+            
+            <Button 
+              variant="ghost"
+              className="w-full text-gray-500 hover:text-gray-700 font-medium"
+            >
+              View Details
             </Button>
           </div>
         </Card>
