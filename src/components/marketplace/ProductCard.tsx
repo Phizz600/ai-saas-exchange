@@ -1,9 +1,8 @@
-
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Edit2, Timer, Heart, Bookmark, TrendingDown, CheckCircle, DollarSign, Users, Star, Clock, User, Shield } from "lucide-react";
+import { Edit2, Timer, Heart, Bookmark, TrendingDown, CheckCircle, DollarSign, Users, Star, Clock, User } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -222,55 +221,23 @@ export function ProductCard({ product, showEditButton = false }: ProductCardProp
     <>
       <Link to={`/product/${product.id}`} className="group">
         <Card className="overflow-hidden h-full hover:shadow-xl transition-all duration-300 border-gray-100/50 group-hover:border-blue-100/50 relative bg-white backdrop-blur-sm">
-          {/* Product Image with Loading State and Blue Gradient Background */}
-          <div className="relative h-48 overflow-hidden bg-gradient-to-r from-[#13293D] to-[#18435A]">
+          {/* Product Image with Loading State */}
+          <div className="relative h-48 overflow-hidden">
             {!isImageLoaded && (
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-900/40 to-blue-700/40 animate-pulse" />
+              <div className="absolute inset-0 bg-gradient-to-r from-gray-200 to-gray-300 animate-pulse" />
             )}
             <img
               src={product.image || "/placeholder.svg"}
               alt={product.title}
-              className={`w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-60 ${
-                isImageLoaded ? 'opacity-60' : 'opacity-0'
+              className={`w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${
+                isImageLoaded ? 'opacity-100' : 'opacity-0'
               }`}
               onLoad={() => setIsImageLoaded(true)}
             />
             
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent z-10" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             
-            {/* Verification Data Metrics */}
-            <div className="absolute inset-0 flex flex-col justify-center items-center p-4 z-20">
-              <div className="w-full flex justify-around text-white">
-                {product.monthlyRevenue !== undefined && product.monthlyRevenue > 0 && (
-                  <div className="flex flex-col items-center">
-                    <div className="text-2xl font-bold exo-2-heading">
-                      ${new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 }).format(product.monthlyRevenue)}
-                    </div>
-                    <div className="text-xs text-blue-200">Monthly Revenue</div>
-                  </div>
-                )}
-                
-                {product.monthly_traffic !== undefined && product.monthly_traffic > 0 && (
-                  <div className="flex flex-col items-center">
-                    <div className="text-2xl font-bold exo-2-heading">
-                      {new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 }).format(product.monthly_traffic)}
-                    </div>
-                    <div className="text-xs text-blue-200">Monthly Visitors</div>
-                  </div>
-                )}
-                
-                {product.gross_profit_margin !== undefined && product.gross_profit_margin > 0 && (
-                  <div className="flex flex-col items-center">
-                    <div className="text-2xl font-bold exo-2-heading">
-                      {product.gross_profit_margin}%
-                    </div>
-                    <div className="text-xs text-blue-200">Profit Margin</div>
-                  </div>
-                )}
-              </div>
-            </div>
-            
-            <div className="absolute top-2 right-2 flex gap-0.5 z-30">
+            <div className="absolute top-2 right-2 flex gap-0.5">
               {showEditButton && (
                 <Button
                   variant="ghost"
@@ -307,7 +274,7 @@ export function ProductCard({ product, showEditButton = false }: ProductCardProp
             </div>
             
             {isAuction && (
-              <div className="absolute bottom-2 left-2 z-30">
+              <div className="absolute bottom-2 left-2">
                 <Badge variant="secondary" className="bg-amber-500/90 text-white border-0 flex items-center">
                   <TrendingDown className="w-3.5 h-3.5 mr-1" />
                   Dutch Auction
@@ -316,7 +283,7 @@ export function ProductCard({ product, showEditButton = false }: ProductCardProp
             )}
             
             {isAuction && timeLeft && (
-              <div className="absolute bottom-2 right-2 z-30">
+              <div className="absolute bottom-2 right-2">
                 <Badge variant="secondary" className="bg-black/70 text-amber-50 border-0">
                   <Timer className="w-3.5 h-3.5 mr-1" />
                   {timeLeft}
@@ -326,7 +293,7 @@ export function ProductCard({ product, showEditButton = false }: ProductCardProp
             
             {/* Verification Badge - only show if product is verified */}
             {isVerified && (
-              <div className="absolute top-2 left-2 z-30">
+              <div className="absolute top-2 left-2">
                 <Badge variant="secondary" className="bg-green-500/90 text-white border-0 flex items-center">
                   <CheckCircle className="w-3.5 h-3.5 mr-1" />
                   Verified
@@ -405,25 +372,6 @@ export function ProductCard({ product, showEditButton = false }: ProductCardProp
                     {product.monthly_churn_rate}% monthly churn
                   </span>
                 </div>
-              )}
-            </div>
-            
-            {/* Verification Badges */}
-            <div className="flex flex-wrap gap-1.5">
-              {product.is_revenue_verified && (
-                <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 text-xs">
-                  <Shield className="w-3 h-3 mr-1" /> Revenue Verified
-                </Badge>
-              )}
-              {product.is_code_audited && (
-                <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 text-xs">
-                  <CheckCircle className="w-3 h-3 mr-1" /> Code Audited
-                </Badge>
-              )}
-              {product.is_traffic_verified && (
-                <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200 text-xs">
-                  <Users className="w-3 h-3 mr-1" /> Traffic Verified
-                </Badge>
               )}
             </div>
           </div>
