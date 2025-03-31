@@ -75,10 +75,12 @@ export const ProductGrid = ({ products, isLoading = false, onProductView }: Prod
               is_revenue_verified: product.is_revenue_verified,
               is_code_audited: product.is_code_audited, 
               is_traffic_verified: product.is_traffic_verified,
+              requires_nda: product.requires_nda,
+              nda_content: product.nda_content,
               seller: {
                 id: product.seller?.id || "",
-                name: product.seller?.full_name || "Anonymous",
-                avatar: product.seller?.avatar_url || "/placeholder.svg"
+                full_name: product.seller?.full_name || "Anonymous",
+                avatar_url: product.seller?.avatar_url || "/placeholder.svg"
               }
             }}
             showEditButton={session?.user?.id === product.seller_id}
