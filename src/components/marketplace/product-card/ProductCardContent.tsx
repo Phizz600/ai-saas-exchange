@@ -2,7 +2,7 @@
 import { Badge } from "@/components/ui/badge";
 import { formatCurrency } from "@/lib/utils";
 import { Database } from "@/integrations/supabase/types";
-import { Timer, TrendingDown, LockIcon } from "lucide-react";
+import { Timer, TrendingDown } from "lucide-react";
 import { useEffect, useState } from "react";
 
 type Product = Database['public']['Tables']['products']['Row'];
@@ -20,8 +20,6 @@ interface ProductCardContentProps {
   price_decrement?: Product['price_decrement'];
   price_decrement_interval?: Product['price_decrement_interval'];
   auction_status?: Product['auction_status'];
-  requires_nda?: boolean;
-  has_signed_nda?: boolean;
 }
 
 export function ProductCardContent({
@@ -37,8 +35,6 @@ export function ProductCardContent({
   price_decrement,
   price_decrement_interval,
   auction_status,
-  requires_nda = false,
-  has_signed_nda = false,
 }: ProductCardContentProps) {
   const [timeLeft, setTimeLeft] = useState<string>('');
   const [nextDrop, setNextDrop] = useState<string>('');
@@ -131,23 +127,9 @@ export function ProductCardContent({
   return (
     <div className="p-6">
       <h3 className="font-semibold text-lg text-gray-900 mb-2 line-clamp-1">
-        {requires_nda && !has_signed_nda ? (
-          <div className="flex items-center">
-            <LockIcon className="h-4 w-4 mr-2 text-[#8B5CF6]" />
-            <span>{category} Business</span>
-          </div>
-        ) : (
-          title
-        )}
+        {title}
       </h3>
-      
-      {!requires_nda || has_signed_nda ? (
-        <p className="text-sm text-gray-500 line-clamp-2 mb-4">{description}</p>
-      ) : (
-        <p className="text-sm text-gray-500 line-clamp-2 mb-4 italic">
-          Confidential business details. Sign NDA to view complete information.
-        </p>
-      )}
+      <p className="text-sm text-gray-500 line-clamp-2 mb-4">{description}</p>
       
       <div className="grid grid-cols-2 gap-4 mb-4">
         <div>
@@ -172,13 +154,7 @@ export function ProductCardContent({
         <div>
           <span className="text-sm font-semibold text-gray-600">Monthly Revenue</span>
           <div className="font-medium text-green-600">
-            {requires_nda && !has_signed_nda ? (
-              <span className="text-gray-500 italic">Sign NDA to view</span>
-            ) : monthlyRevenue ? (
-              formatCurrency(Number(monthlyRevenue))
-            ) : (
-              '-'
-            )}
+            {monthlyRevenue ? formatCurrency(Number(monthlyRevenue)) : '-'}
           </div>
         </div>
         <div>
@@ -235,13 +211,6 @@ export function ProductCardContent({
               )}
             </div>
           )}
-        </div>
-      )}
-
-      {requires_nda && !has_signed_nda && (
-        <div className="mt-4 flex items-center text-sm text-[#8B5CF6] font-medium">
-          <LockIcon className="h-4 w-4 mr-2" />
-          <span>Sign NDA to view complete details</span>
         </div>
       )}
     </div>

@@ -12,18 +12,16 @@ interface ProductCardActionsProps {
   product: {
     id: string;
     title: string;
-    description?: string;
+    description: string;
     price: number;
-    category?: string;
-    stage?: string;
+    category: string;
+    stage: string;
     monthlyRevenue?: number;
-    image_url?: string;
+    image?: string;
     auction_end_time?: string;
     current_price?: number;
     min_price?: number;
     price_decrement?: number;
-    price_decrement_interval?: string;
-    requires_nda?: boolean;
   };
 }
 
@@ -34,7 +32,7 @@ export function ProductCardActions({ product }: ProductCardActionsProps) {
   const auctionEnded = isAuction && new Date(product.auction_end_time) < new Date();
 
   return (
-    <CardFooter className="flex flex-col gap-3 p-0">
+    <CardFooter className="flex flex-col gap-3">
       {isAuction && !auctionEnded && <AuctionSection product={product} />}
 
       <Dialog open={isOfferDialogOpen} onOpenChange={setIsOfferDialogOpen}>

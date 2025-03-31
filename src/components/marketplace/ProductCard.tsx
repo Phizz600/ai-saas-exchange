@@ -1,11 +1,11 @@
 
 import { useState } from "react";
 import { Card, CardHeader, CardFooter } from "@/components/ui/card";
-import { ProductCardContent } from "./product-card/ProductCardContent";
+import { ProductContent } from "./product-card/ProductContent";
 import { ProductImage } from "./product-card/ProductImage";
 import { useNdaStatus } from "./product-card/useNdaStatus";
 import { NdaButton } from "./product-card/NdaButton";
-import { ProductCardActions } from "./product-card/ProductCardActions";
+import { ProductActions } from "./product-card/ProductActions";
 import { useProductCard } from "./product-card/useProductCard";
 
 interface ProductCardProps {
@@ -33,9 +33,6 @@ interface ProductCardProps {
     nda_content?: string;
     auction_end_time?: string;
     current_price?: number;
-    min_price?: number;
-    price_decrement?: number;
-    price_decrement_interval?: string;
   };
 }
 
@@ -55,7 +52,9 @@ export function ProductCard({ product }: ProductCardProps) {
   const isAuction = !!product.auction_end_time;
   const isVerified = product.is_revenue_verified || product.is_code_audited || product.is_traffic_verified;
   
-  // Handle edit click
+  // Logic to determine if we need to show limited information
+  const showLimitedInfo = product.requires_nda && !hasSigned;
+
   const handleEditClick = (e: React.MouseEvent) => {
     e.preventDefault();
     // Handle edit click
@@ -79,32 +78,31 @@ export function ProductCard({ product }: ProductCardProps) {
           isFavorited={isFavorited}
           isSaved={isSaved}
           isVerified={isVerified}
-          requiresNda={product.requires_nda}
-          hasSignedNda={hasSigned}
           toggleFavorite={toggleFavorite}
           toggleSave={toggleSave}
           onEditClick={handleEditClick}
         />
       </CardHeader>
       
-      <ProductCardContent
+      <ProductContent
         title={product.title}
-        description={product.description}
+        description={showLimitedInfo ? undefined : product.description}
         price={product.price}
         current_price={product.current_price}
-        category={product.category || "Other"}
-        stage={product.stage || "Unknown"}
+        category={product.category}
+        stage={product.stage}
         monthlyRevenue={product.monthly_revenue}
-        auction_end_time={product.auction_end_time}
-        min_price={product.min_price}
-        price_decrement={product.price_decrement}
-        price_decrement_interval={product.price_decrement_interval}
-        requires_nda={product.requires_nda}
-        has_signed_nda={hasSigned}
+        monthly_traffic={product.monthly_traffic}
+        gross_profit_margin={product.gross_profit_margin}
+        monthly_churn_rate={product.monthly_churn_rate}
+        is_revenue_verified={product.is_revenue_verified}
+        is_code_audited={product.is_code_audited}
+        is_traffic_verified={product.is_traffic_verified}
+        requires_nda={showLimitedInfo}
       />
       
       <CardFooter className="p-5 pt-0 space-y-3 flex flex-col">
-        {product.requires_nda && !hasSigned ? (
+        {showLimitedInfo ? (
           <NdaButton
             productId={product.id}
             productTitle={product.title}
@@ -112,7 +110,7 @@ export function ProductCard({ product }: ProductCardProps) {
             onSignSuccess={handleNdaSuccess}
           />
         ) : (
-          <ProductCardActions product={product} />
+          <ProductActions isAuction={isAuction} productId={product.id} />
         )}
       </CardFooter>
     </Card>
