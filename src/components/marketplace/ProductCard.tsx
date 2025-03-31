@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -8,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { formatCurrency } from "@/lib/utils";
 import { EditProductDialog } from "./product-card/EditProductDialog";
+import { motion } from "framer-motion";
 
 interface ProductCardProps {
   product: {
@@ -23,6 +25,9 @@ interface ProductCardProps {
     current_price?: number;
     min_price?: number;
     price_decrement?: number;
+    is_revenue_verified?: boolean;
+    is_code_audited?: boolean;
+    is_traffic_verified?: boolean;
     seller: {
       id: string;
       name: string;
@@ -40,6 +45,7 @@ export function ProductCard({ product, showEditButton = false }: ProductCardProp
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const { toast } = useToast();
   const isAuction = !!product.auction_end_time;
+  const isVerified = product.is_revenue_verified || product.is_code_audited || product.is_traffic_verified;
 
   useEffect(() => {
     if (!product.auction_end_time) return;
@@ -65,6 +71,31 @@ export function ProductCard({ product, showEditButton = false }: ProductCardProp
     const timer = setInterval(calculateTimeLeft, 60000);
     return () => clearInterval(timer);
   }, [product.auction_end_time]);
+
+  // Check if user has saved or favorited this product
+  useEffect(() => {
+    const checkUserInteractions = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('liked_products, saved_products')
+          .eq('id', user.id)
+          .single();
+
+        if (profile) {
+          setIsFavorited(profile.liked_products?.includes(product.id) || false);
+          setIsSaved(profile.saved_products?.includes(product.id) || false);
+        }
+      } catch (error) {
+        console.error('Error checking user interactions:', error);
+      }
+    };
+
+    checkUserInteractions();
+  }, [product.id]);
 
   const toggleFavorite = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -260,7 +291,7 @@ export function ProductCard({ product, showEditButton = false }: ProductCardProp
 
           {/* Product Content */}
           <div className="p-4">
-            <h3 className="font-semibold text-lg mb-2 text-gray-900 line-clamp-1 group-hover:text-[#8B5CF6] transition-colors duration-200">
+            <h3 className="font-semibold text-lg mb-2 text-gray-900 line-clamp-1 group-hover:text-[#8B5CF6] transition-colors duration-200 exo-2-heading">
               {product.title}
             </h3>
             {product.description && (
@@ -313,12 +344,23 @@ export function ProductCard({ product, showEditButton = false }: ProductCardProp
             </div>
           </div>
           
-          {/* Verification Badge */}
-          <div className="absolute top-2 left-2">
-            <Badge variant="secondary" className="bg-green-500/90 text-white border-0 flex items-center">
-              <CheckCircle className="w-3.5 h-3.5 mr-1" />
-              Verified
-            </Badge>
+          {/* Verification Badge - only show if product is verified */}
+          {isVerified && (
+            <div className="absolute top-2 left-2">
+              <Badge variant="secondary" className="bg-green-500/90 text-white border-0 flex items-center">
+                <CheckCircle className="w-3.5 h-3.5 mr-1" />
+                Verified
+              </Badge>
+            </div>
+          )}
+          
+          {/* Action Button in Footer */}
+          <div className="p-4 pt-0">
+            <Button 
+              className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 text-white shadow-md hover:shadow-lg hover:shadow-purple-500/20 transition-all mt-4"
+            >
+              {isAuction ? "Make Offer / Bid" : "Make an Offer"}
+            </Button>
           </div>
         </Card>
       </Link>
