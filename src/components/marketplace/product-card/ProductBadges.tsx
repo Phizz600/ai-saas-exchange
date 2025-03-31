@@ -1,4 +1,3 @@
-
 import { Badge } from "@/components/ui/badge";
 
 interface ProductBadgesProps {
@@ -9,6 +8,7 @@ interface ProductBadgesProps {
 export function ProductBadges({ category, stage }: ProductBadgesProps) {
   const getCategoryColor = (category: string = '') => {
     const colors: Record<string, { bg: string; text: string }> = {
+      // Updated color scheme for all categories
       'Content Generation': { bg: 'bg-purple-100', text: 'text-purple-700' },
       'Customer Service': { bg: 'bg-blue-100', text: 'text-blue-700' },
       'Image Generation': { bg: 'bg-pink-100', text: 'text-pink-700' },
@@ -18,8 +18,18 @@ export function ProductBadges({ category, stage }: ProductBadgesProps) {
       'Finance': { bg: 'bg-emerald-100', text: 'text-emerald-700' },
       'Automation': { bg: 'bg-sky-100', text: 'text-sky-700' },
       'Natural Language Processing': { bg: 'bg-violet-100', text: 'text-violet-700' },
-      'Other': { bg: 'bg-gray-100', text: 'text-gray-700' },
-      'Revenue Generating': { bg: 'bg-green-100', text: 'text-green-700' }
+      'Machine Learning': { bg: 'bg-blue-100', text: 'text-blue-700' },
+      'Computer Vision': { bg: 'bg-emerald-100', text: 'text-emerald-700' },
+      'Voice & Speech': { bg: 'bg-orange-100', text: 'text-orange-700' },
+      'Data Analytics': { bg: 'bg-cyan-100', text: 'text-cyan-700' },
+      'Recommendation Systems': { bg: 'bg-amber-100', text: 'text-amber-700' },
+      'AI Applications': { bg: 'bg-fuchsia-100', text: 'text-fuchsia-700' },
+      'AI Tools': { bg: 'bg-indigo-100', text: 'text-indigo-700' },
+      'LLM': { bg: 'bg-purple-100', text: 'text-purple-700' },
+      'Chatbots': { bg: 'bg-pink-100', text: 'text-pink-700' },
+      'Training Data': { bg: 'bg-teal-100', text: 'text-teal-700' },
+      'Revenue Generating': { bg: 'bg-green-100', text: 'text-green-700' },
+      'Other': { bg: 'bg-gray-100', text: 'text-gray-700' }
     };
     return colors[category] || { bg: 'bg-gray-100', text: 'text-gray-700' };
   };
