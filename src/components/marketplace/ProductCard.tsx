@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -238,37 +237,6 @@ export function ProductCard({ product, showEditButton = false }: ProductCardProp
             
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent z-10" />
             
-            {/* Verification Data Metrics */}
-            <div className="absolute inset-0 flex flex-col justify-center items-center p-4 z-20">
-              <div className="w-full flex justify-around text-white">
-                {product.monthlyRevenue !== undefined && product.monthlyRevenue > 0 && (
-                  <div className="flex flex-col items-center">
-                    <div className="text-2xl font-bold exo-2-heading">
-                      ${new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 }).format(product.monthlyRevenue)}
-                    </div>
-                    <div className="text-xs text-blue-200">Monthly Revenue</div>
-                  </div>
-                )}
-                
-                {product.monthly_traffic !== undefined && product.monthly_traffic > 0 && (
-                  <div className="flex flex-col items-center">
-                    <div className="text-2xl font-bold exo-2-heading">
-                      {new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 }).format(product.monthly_traffic)}
-                    </div>
-                    <div className="text-xs text-blue-200">Monthly Visitors</div>
-                  </div>
-                )}
-                
-                {product.gross_profit_margin !== undefined && product.gross_profit_margin > 0 && (
-                  <div className="flex flex-col items-center">
-                    <div className="text-2xl font-bold exo-2-heading">
-                      {product.gross_profit_margin}%
-                    </div>
-                    <div className="text-xs text-blue-200">Profit Margin</div>
-                  </div>
-                )}
-              </div>
-            </div>
             
             <div className="absolute top-2 right-2 flex gap-0.5 z-30">
               {showEditButton && (
