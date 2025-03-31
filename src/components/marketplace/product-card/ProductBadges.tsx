@@ -26,8 +26,12 @@ export function ProductBadges({ category, stage }: ProductBadgesProps) {
 
   const getStageColor = (stage: string = '') => {
     const colors: Record<string, { bg: string; text: string }> = {
-      'Revenue': { bg: 'bg-blue-500', text: 'text-white' },
       'MVP': { bg: 'bg-green-500', text: 'text-white' },
+      'Revenue': { bg: 'bg-blue-500', text: 'text-white' },
+      'Beta': { bg: 'bg-purple-500', text: 'text-white' },
+      'Production Ready': { bg: 'bg-teal-500', text: 'text-white' },
+      'Revenue Generating': { bg: 'bg-emerald-500', text: 'text-white' },
+      'Scaling': { bg: 'bg-indigo-500', text: 'text-white' },
       'Prototype': { bg: 'bg-amber-500', text: 'text-white' },
       'Idea': { bg: 'bg-orange-500', text: 'text-white' }
     };
