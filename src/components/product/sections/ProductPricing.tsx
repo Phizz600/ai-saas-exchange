@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Timer, TrendingDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -90,6 +91,27 @@ export function ProductPricing({ product }: ProductPricingProps) {
     return `${Math.floor(hours / 24)}d ago`;
   };
 
+  // Format the price decrement to show the correct interval
+  const formatPriceDecrement = () => {
+    if (!product.price_decrement) return "";
+    
+    const interval = product.price_decrement_interval || 'day';
+    return `Drops $${product.price_decrement.toLocaleString()}/${interval}`;
+  };
+
+  // Calculate the interval in milliseconds
+  const getIntervalInMilliseconds = () => {
+    const interval = product.price_decrement_interval || 'day';
+    switch(interval) {
+      case 'minute': return 60 * 1000;
+      case 'hour': return 60 * 60 * 1000;
+      case 'day': return 24 * 60 * 60 * 1000;
+      case 'week': return 7 * 24 * 60 * 60 * 1000;
+      case 'month': return 30 * 24 * 60 * 60 * 1000;
+      default: return 24 * 60 * 60 * 1000;
+    }
+  };
+
   useEffect(() => {
     const calculateTimeLeft = () => {
       if (!product.auction_end_time) return;
@@ -110,12 +132,19 @@ export function ProductPricing({ product }: ProductPricingProps) {
       setTimeLeft(`${days}d ${hours}h ${minutes}m`);
 
       // Calculate next price drop
-      const interval = product.price_decrement_interval === 'hour' ? 60 * 60 * 1000 : 24 * 60 * 60 * 1000;
+      const interval = getIntervalInMilliseconds();
       const nextDropTime = Math.ceil(now / interval) * interval;
       const timeToNextDrop = nextDropTime - now;
+      
+      // Format the next drop time
       const nextDropHours = Math.floor(timeToNextDrop / (1000 * 60 * 60));
       const nextDropMinutes = Math.floor((timeToNextDrop % (1000 * 60 * 60)) / (1000 * 60));
-      setNextDrop(`${nextDropHours}h ${nextDropMinutes}m`);
+      
+      if (nextDropHours > 0) {
+        setNextDrop(`${nextDropHours}h ${nextDropMinutes}m`);
+      } else {
+        setNextDrop(`${nextDropMinutes}m`);
+      }
     };
 
     calculateTimeLeft();
@@ -150,9 +179,7 @@ export function ProductPricing({ product }: ProductPricingProps) {
                 </div>
                 <div className="flex items-center gap-2 text-sm text-gray-600">
                   <TrendingDown className="h-4 w-4" />
-                  <span>
-                    Drops ${product.price_decrement?.toLocaleString()}/{product.price_decrement_interval || 'day'}
-                  </span>
+                  <span>{formatPriceDecrement()}</span>
                 </div>
                 <p className="text-sm text-amber-600 mt-1">Next drop in: {nextDrop}</p>
               </div>

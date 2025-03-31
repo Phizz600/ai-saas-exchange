@@ -2,7 +2,7 @@
 import { Badge } from "@/components/ui/badge";
 import { formatCurrency } from "@/lib/utils";
 import { Database } from "@/integrations/supabase/types";
-import { Timer } from "lucide-react";
+import { Timer, TrendingDown } from "lucide-react";
 import { useEffect, useState } from "react";
 
 type Product = Database['public']['Tables']['products']['Row'];
@@ -18,6 +18,7 @@ interface ProductCardContentProps {
   current_price?: Product['current_price'];
   min_price?: Product['min_price'];
   price_decrement?: Product['price_decrement'];
+  price_decrement_interval?: Product['price_decrement_interval'];
   auction_status?: Product['auction_status'];
 }
 
@@ -32,10 +33,25 @@ export function ProductCardContent({
   current_price,
   min_price,
   price_decrement,
+  price_decrement_interval,
   auction_status,
 }: ProductCardContentProps) {
   const [timeLeft, setTimeLeft] = useState<string>('');
+  const [nextDrop, setNextDrop] = useState<string>('');
   const isAuction = !!auction_end_time;
+  
+  // Calculate the interval in milliseconds
+  const getIntervalInMilliseconds = () => {
+    const interval = price_decrement_interval || 'day';
+    switch(interval) {
+      case 'minute': return 60 * 1000;
+      case 'hour': return 60 * 60 * 1000;
+      case 'day': return 24 * 60 * 60 * 1000;
+      case 'week': return 7 * 24 * 60 * 60 * 1000;
+      case 'month': return 30 * 24 * 60 * 60 * 1000;
+      default: return 24 * 60 * 60 * 1000;
+    }
+  };
   
   useEffect(() => {
     if (!auction_end_time) return;
@@ -55,12 +71,35 @@ export function ProductCardContent({
       const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
 
       setTimeLeft(`${days}d ${hours}h ${minutes}m`);
+      
+      // Calculate next price drop
+      const interval = getIntervalInMilliseconds();
+      const nextDropTime = Math.ceil(now / interval) * interval;
+      const timeToNextDrop = nextDropTime - now;
+      
+      // Format the next drop time
+      const nextDropHours = Math.floor(timeToNextDrop / (1000 * 60 * 60));
+      const nextDropMinutes = Math.floor((timeToNextDrop % (1000 * 60 * 60)) / (1000 * 60));
+      
+      if (nextDropHours > 0) {
+        setNextDrop(`${nextDropHours}h ${nextDropMinutes}m`);
+      } else {
+        setNextDrop(`${nextDropMinutes}m`);
+      }
     };
 
     calculateTimeLeft();
     const timer = setInterval(calculateTimeLeft, 60000);
     return () => clearInterval(timer);
   }, [auction_end_time]);
+
+  // Format the price decrement to show the correct interval
+  const formatPriceDecrement = () => {
+    if (!price_decrement) return "";
+    
+    const interval = price_decrement_interval || 'day';
+    return `$${price_decrement.toLocaleString()}/${interval}`;
+  };
 
   const getCategoryColor = (category: string) => {
     const colors: Record<string, { bg: string; text: string }> = {
@@ -152,13 +191,23 @@ export function ProductCardContent({
           </Badge>
           
           {timeLeft && (
-            <div className="flex items-center gap-2 text-sm text-gray-600">
-              <Timer className="h-4 w-4" />
-              <span>{timeLeft}</span>
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 text-sm text-gray-600">
+                <Timer className="h-4 w-4" />
+                <span>{timeLeft}</span>
+              </div>
+              
               {price_decrement && (
-                <span className="text-amber-600 ml-2">
-                  Drops {formatCurrency(price_decrement)}/hour
-                </span>
+                <div className="flex items-center gap-2 text-sm text-amber-600">
+                  <TrendingDown className="h-4 w-4" />
+                  <span>Drops {formatPriceDecrement()}</span>
+                </div>
+              )}
+              
+              {nextDrop && (
+                <div className="text-sm text-amber-600">
+                  Next drop in: {nextDrop}
+                </div>
               )}
             </div>
           )}

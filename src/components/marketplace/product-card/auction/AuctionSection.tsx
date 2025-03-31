@@ -21,6 +21,7 @@ interface AuctionSectionProps {
     current_price?: number;
     min_price?: number;
     price_decrement?: number;
+    price_decrement_interval?: string;
     auction_end_time?: string;
   };
 }
@@ -30,6 +31,8 @@ export function AuctionSection({ product }: AuctionSectionProps) {
   const [isShareOpen, setIsShareOpen] = useState(false);
   const [currentPrice, setCurrentPrice] = useState(product.current_price);
   const [showBidForm, setShowBidForm] = useState(false);
+  const [timeLeft, setTimeLeft] = useState("");
+  const [nextDrop, setNextDrop] = useState("");
   const { toast } = useToast();
   const auctionEnded = product.auction_end_time && new Date(product.auction_end_time) < new Date();
 
@@ -57,6 +60,67 @@ export function AuctionSection({ product }: AuctionSectionProps) {
       supabase.removeChannel(channel);
     };
   }, [product.id]);
+
+  // Calculate the interval in milliseconds
+  const getIntervalInMilliseconds = () => {
+    const interval = product.price_decrement_interval || 'day';
+    switch(interval) {
+      case 'minute': return 60 * 1000;
+      case 'hour': return 60 * 60 * 1000;
+      case 'day': return 24 * 60 * 60 * 1000;
+      case 'week': return 7 * 24 * 60 * 60 * 1000;
+      case 'month': return 30 * 24 * 60 * 60 * 1000;
+      default: return 24 * 60 * 60 * 1000;
+    }
+  };
+
+  // Format the price decrement to show the correct interval
+  const formatPriceDecrement = () => {
+    if (!product.price_decrement) return "";
+    
+    const interval = product.price_decrement_interval || 'day';
+    return `$${product.price_decrement.toLocaleString()}/${interval}`;
+  };
+
+  useEffect(() => {
+    const calculateTimeLeft = () => {
+      if (!product.auction_end_time) return;
+
+      const now = new Date().getTime();
+      const endTime = new Date(product.auction_end_time).getTime();
+      const difference = endTime - now;
+
+      if (difference <= 0) {
+        setTimeLeft('Auction ended');
+        return;
+      }
+
+      const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+
+      setTimeLeft(`${days}d ${hours}h ${minutes}m`);
+
+      // Calculate next price drop
+      const interval = getIntervalInMilliseconds();
+      const nextDropTime = Math.ceil(now / interval) * interval;
+      const timeToNextDrop = nextDropTime - now;
+      
+      // Format the next drop time
+      const nextDropHours = Math.floor(timeToNextDrop / (1000 * 60 * 60));
+      const nextDropMinutes = Math.floor((timeToNextDrop % (1000 * 60 * 60)) / (1000 * 60));
+      
+      if (nextDropHours > 0) {
+        setNextDrop(`${nextDropHours}h ${nextDropMinutes}m`);
+      } else {
+        setNextDrop(`${nextDropMinutes}m`);
+      }
+    };
+
+    calculateTimeLeft();
+    const timer = setInterval(calculateTimeLeft, 60000);
+    return () => clearInterval(timer);
+  }, [product.auction_end_time]);
 
   const handleShare = async (url: string) => {
     try {
@@ -129,13 +193,15 @@ export function AuctionSection({ product }: AuctionSectionProps) {
       <div className="flex items-center justify-between text-sm mb-4">
         <div className="flex items-center gap-2 text-gray-600">
           <Timer className="h-4 w-4" />
-          <span>24h left</span>
+          <span>{timeLeft}</span>
         </div>
         <div className="flex items-center gap-2 text-amber-600">
           <TrendingDown className="h-4 w-4" />
-          <span>Drops ${product.price_decrement?.toLocaleString()}/hour</span>
+          <span>Drops {formatPriceDecrement()}</span>
         </div>
       </div>
+
+      <div className="text-sm text-amber-600 mb-4">Next drop in: {nextDrop}</div>
 
       {!auctionEnded && !showBidForm && (
         <Button 
