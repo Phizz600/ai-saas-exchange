@@ -9,43 +9,35 @@ import { CalendarIcon, Info, Sparkle } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Switch } from "@/components/ui/switch";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { calculateValuation, formatCurrency } from "../utils/valuationCalculator";
 import { Card } from "@/components/ui/card";
 import { useEffect, useState } from "react";
-
 interface AuctionSectionProps {
   form: UseFormReturn<ListProductFormData>;
 }
-
-export function AuctionSection({ form }: AuctionSectionProps) {
-  const [valuation, setValuation] = useState<{ low: number; high: number }>({ low: 0, high: 0 });
+export function AuctionSection({
+  form
+}: AuctionSectionProps) {
+  const [valuation, setValuation] = useState<{
+    low: number;
+    high: number;
+  }>({
+    low: 0,
+    high: 0
+  });
   const monthlyRevenue = form.watch("monthlyRevenue");
   const isAuction = form.watch("isAuction");
-
   if (monthlyRevenue && !form.getValues("startingPrice")) {
     form.setValue("startingPrice", monthlyRevenue * 10);
   }
-
   const watchMonthlyRevenue = form.watch("monthlyRevenue") || 0;
   const watchMonthlyChurnRate = form.watch("monthlyChurnRate") || 0;
   const watchGrossProfitMargin = (form.watch("grossProfitMargin") || 0) / 100;
   const watchIndustry = form.watch("industry") || "";
   const watchHasPatents = form.watch("hasPatents") || false;
   const watchCustomerAcquisitionCost = form.watch("customerAcquisitionCost");
-
   const formatCurrencyInput = (value: string) => {
     let numericValue = value.replace(/[^0-9.]/g, '');
     const parts = numericValue.split('.');
@@ -66,12 +58,10 @@ export function AuctionSection({ form }: AuctionSectionProps) {
     }
     return '';
   };
-
   const parseCurrencyValue = (value: string) => {
     const numericValue = parseFloat(value.replace(/[$,]/g, ''));
     return isNaN(numericValue) ? 0 : numericValue;
   };
-
   const handleValuationClick = (e: React.MouseEvent, value: number, isHigh: boolean) => {
     e.preventDefault();
     if (isAuction) {
@@ -84,56 +74,33 @@ export function AuctionSection({ form }: AuctionSectionProps) {
       form.setValue("price", value);
     }
   };
-
   useEffect(() => {
     const updateValuation = async () => {
-      const newValuation = await calculateValuation(
-        watchMonthlyRevenue,
-        watchMonthlyChurnRate / 100,
-        watchGrossProfitMargin,
-        watchIndustry,
-        watchHasPatents,
-        undefined,
-        undefined,
-        watchCustomerAcquisitionCost
-      );
+      const newValuation = await calculateValuation(watchMonthlyRevenue, watchMonthlyChurnRate / 100, watchGrossProfitMargin, watchIndustry, watchHasPatents, undefined, undefined, watchCustomerAcquisitionCost);
       setValuation(newValuation);
     };
-
     updateValuation();
   }, [watchMonthlyRevenue, watchMonthlyChurnRate, watchGrossProfitMargin, watchIndustry, watchHasPatents, watchCustomerAcquisitionCost]);
-
-  return (
-    <div className="space-y-6">
+  return <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <span className={`text-sm ${!isAuction ? "text-primary" : "text-gray-500"}`}>Fixed Price</span>
-          <FormField
-            control={form.control}
-            name="isAuction"
-            render={({ field }) => (
-              <FormItem className="flex items-center space-x-2">
+          <FormField control={form.control} name="isAuction" render={({
+          field
+        }) => <FormItem className="flex items-center space-x-2">
                 <FormControl>
-                  <Switch
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
+                  <Switch checked={field.value} onCheckedChange={field.onChange} />
                 </FormControl>
-              </FormItem>
-            )}
-          />
+              </FormItem>} />
           <span className={`text-sm ${isAuction ? "text-primary" : "text-gray-500"}`}>Dutch Auction</span>
         </div>
       </div>
       
-      {isAuction ? (
-        <div className="space-y-4">
+      {isAuction ? <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormField
-              control={form.control}
-              name="startingPrice"
-              render={({ field }) => (
-                <FormItem>
+            <FormField control={form.control} name="startingPrice" render={({
+          field
+        }) => <FormItem>
                   <FormLabel className="flex items-center gap-2">
                     Starting Price (USD)
                     <TooltipProvider>
@@ -148,27 +115,17 @@ export function AuctionSection({ form }: AuctionSectionProps) {
                     </TooltipProvider>
                   </FormLabel>
                   <FormControl>
-                    <Input
-                      type="text"
-                      placeholder="Enter starting price"
-                      value={formatCurrencyInput(field.value?.toString() || '')}
-                      onChange={(e) => {
-                        const value = parseCurrencyValue(e.target.value);
-                        field.onChange(value > 0 ? value : undefined);
-                      }}
-                      className="font-mono"
-                    />
+                    <Input type="text" placeholder="Enter starting price" value={formatCurrencyInput(field.value?.toString() || '')} onChange={e => {
+              const value = parseCurrencyValue(e.target.value);
+              field.onChange(value > 0 ? value : undefined);
+            }} className="font-mono" />
                   </FormControl>
                   <FormMessage />
-                </FormItem>
-              )}
-            />
+                </FormItem>} />
 
-            <FormField
-              control={form.control}
-              name="minPrice"
-              render={({ field }) => (
-                <FormItem>
+            <FormField control={form.control} name="minPrice" render={({
+          field
+        }) => <FormItem>
                   <FormLabel className="flex items-center gap-2">
                     Minimum Price (USD)
                     <TooltipProvider>
@@ -183,29 +140,19 @@ export function AuctionSection({ form }: AuctionSectionProps) {
                     </TooltipProvider>
                   </FormLabel>
                   <FormControl>
-                    <Input
-                      type="text"
-                      placeholder="Enter minimum price"
-                      value={formatCurrencyInput(field.value?.toString() || '')}
-                      onChange={(e) => {
-                        const value = parseCurrencyValue(e.target.value);
-                        field.onChange(value > 0 ? value : undefined);
-                      }}
-                      className="font-mono"
-                    />
+                    <Input type="text" placeholder="Enter minimum price" value={formatCurrencyInput(field.value?.toString() || '')} onChange={e => {
+              const value = parseCurrencyValue(e.target.value);
+              field.onChange(value > 0 ? value : undefined);
+            }} className="font-mono" />
                   </FormControl>
                   <FormMessage />
-                </FormItem>
-              )}
-            />
+                </FormItem>} />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormField
-              control={form.control}
-              name="priceDecrement"
-              render={({ field }) => (
-                <FormItem>
+            <FormField control={form.control} name="priceDecrement" render={({
+          field
+        }) => <FormItem>
                   <FormLabel className="flex items-center gap-2">
                     Price Decrement (USD)
                     <TooltipProvider>
@@ -220,27 +167,17 @@ export function AuctionSection({ form }: AuctionSectionProps) {
                     </TooltipProvider>
                   </FormLabel>
                   <FormControl>
-                    <Input
-                      type="text"
-                      placeholder="Enter price decrement"
-                      value={formatCurrencyInput(field.value?.toString() || '')}
-                      onChange={(e) => {
-                        const value = parseCurrencyValue(e.target.value);
-                        field.onChange(value > 0 ? value : undefined);
-                      }}
-                      className="font-mono"
-                    />
+                    <Input type="text" placeholder="Enter price decrement" value={formatCurrencyInput(field.value?.toString() || '')} onChange={e => {
+              const value = parseCurrencyValue(e.target.value);
+              field.onChange(value > 0 ? value : undefined);
+            }} className="font-mono" />
                   </FormControl>
                   <FormMessage />
-                </FormItem>
-              )}
-            />
+                </FormItem>} />
 
-            <FormField
-              control={form.control}
-              name="priceDecrementInterval"
-              render={({ field }) => (
-                <FormItem>
+            <FormField control={form.control} name="priceDecrementInterval" render={({
+          field
+        }) => <FormItem>
                   <FormLabel className="flex items-center gap-2">
                     Decrement Interval
                     <TooltipProvider>
@@ -269,72 +206,16 @@ export function AuctionSection({ form }: AuctionSectionProps) {
                     </SelectContent>
                   </Select>
                   <FormMessage />
-                </FormItem>
-              )}
-            />
+                </FormItem>} />
           </div>
 
-          <FormField
-            control={form.control}
-            name="auctionEndTime"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel className="flex items-center gap-2">
-                  Auction End Time
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Info className="h-4 w-4 text-gray-500 cursor-help" />
-                      </TooltipTrigger>
-                      <TooltipContent className="bg-white">
-                        <p>When the auction will automatically end</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-full pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {field.value ? (
-                          format(field.value, "PPP")
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0 bg-white" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      disabled={(date) =>
-                        date < new Date() || date < new Date("1900-01-01")
-                      }
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-      ) : (
-        <div className="space-y-4">
-          <FormField
-            control={form.control}
-            name="price"
-            render={({ field }) => (
-              <FormItem>
+          <FormField control={form.control} name="auctionEndTime" render={({
+        field
+      }) => {}} />
+        </div> : <div className="space-y-4">
+          <FormField control={form.control} name="price" render={({
+        field
+      }) => <FormItem>
                 <FormLabel className="flex items-center gap-2">
                   Fixed Price (USD)
                   <TooltipProvider>
@@ -349,23 +230,14 @@ export function AuctionSection({ form }: AuctionSectionProps) {
                   </TooltipProvider>
                 </FormLabel>
                 <FormControl>
-                  <Input
-                    type="text"
-                    placeholder="Enter price"
-                    value={formatCurrencyInput(field.value?.toString() || '')}
-                    onChange={(e) => {
-                      const value = parseCurrencyValue(e.target.value);
-                      field.onChange(value > 0 ? value : undefined);
-                    }}
-                    className="font-mono"
-                  />
+                  <Input type="text" placeholder="Enter price" value={formatCurrencyInput(field.value?.toString() || '')} onChange={e => {
+            const value = parseCurrencyValue(e.target.value);
+            field.onChange(value > 0 ? value : undefined);
+          }} className="font-mono" />
                 </FormControl>
                 <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-      )}
+              </FormItem>} />
+        </div>}
 
       <Card className="p-6 bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] text-white">
         <h3 className="text-xl font-semibold mb-4 flex items-center justify-center gap-2">
@@ -373,19 +245,11 @@ export function AuctionSection({ form }: AuctionSectionProps) {
           AI-Powered Valuation Range
         </h3>
         <div className="text-2xl font-bold flex items-center justify-center gap-4">
-          <button
-            type="button"
-            onClick={(e) => handleValuationClick(e, valuation.low, false)}
-            className="hover:opacity-80 transition-opacity"
-          >
+          <button type="button" onClick={e => handleValuationClick(e, valuation.low, false)} className="hover:opacity-80 transition-opacity">
             {formatCurrency(valuation.low)}
           </button>
           <span>-</span>
-          <button
-            type="button"
-            onClick={(e) => handleValuationClick(e, valuation.high, true)}
-            className="hover:opacity-80 transition-opacity"
-          >
+          <button type="button" onClick={e => handleValuationClick(e, valuation.high, true)} className="hover:opacity-80 transition-opacity">
             {formatCurrency(valuation.high)}
           </button>
         </div>
@@ -395,6 +259,5 @@ export function AuctionSection({ form }: AuctionSectionProps) {
           Click on either value to use it as your {isAuction ? "auction prices" : "fixed price"}.
         </p>
       </Card>
-    </div>
-  );
+    </div>;
 }
