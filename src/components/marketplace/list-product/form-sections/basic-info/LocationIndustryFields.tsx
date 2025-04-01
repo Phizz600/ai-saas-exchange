@@ -140,7 +140,7 @@ export function LocationIndustryFields({ form }: LocationIndustryFieldsProps) {
       {watchIndustry === "Other" && (
         <FormField
           control={form.control}
-          name="category_other"
+          name="industryOther"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Specify Industry</FormLabel>
