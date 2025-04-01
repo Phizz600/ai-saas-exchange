@@ -100,6 +100,12 @@ export const submitProductForm = async (
       nda_content: formData.nda_content,
     };
 
+    // Add console.log to debug NDA fields
+    console.log("Product submission - NDA fields:", {
+      requires_nda: formData.requires_nda,
+      nda_content: formData.nda_content
+    });
+
     // Submit the product data to Supabase
     const { data, error } = await supabase
       .from("products")
@@ -174,6 +180,12 @@ export const handleProductSubmission = async (
       const imageName = `${generateUniqueId()}.${fileExt}`;
       const filePath = `products/${imageName}`;
 
+      // Debug log for NDA settings
+      console.log("Form Data NDA settings:", {
+        requires_nda: data.requires_nda,
+        nda_content: data.nda_content
+      });
+
       const { error: uploadError } = await storage
         .from("lovable-uploads")
         .upload(filePath, data.image, {
@@ -189,7 +201,7 @@ export const handleProductSubmission = async (
       imageUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/lovable-uploads/${filePath}`;
     }
     
-    // Prepare product data with NDA fields
+    // Prepare product data with NDA fields - ensure requires_nda is properly passed
     const productData = {
       title: data.title,
       description: data.description,
@@ -237,9 +249,15 @@ export const handleProductSubmission = async (
       business_location: data.businessLocation,
       number_of_employees: data.numberOfEmployees,
       product_link: data.productLink,
-      requires_nda: data.requires_nda || false,
+      requires_nda: data.requires_nda === true, // Ensure boolean value
       nda_content: data.nda_content || null,
     };
+    
+    // Additional debug logs
+    console.log("Final product data - NDA fields:", {
+      requires_nda: productData.requires_nda,
+      nda_content: productData.nda_content
+    });
     
     // Submit the product to the database
     const { data: newProduct, error } = await supabase
@@ -305,10 +323,16 @@ export const handleProductUpdate = async (
       monetization: data.monetization !== 'other' ? data.monetization : undefined,
       monetization_other: data.monetization === 'other' ? data.monetizationOther : undefined,
       updated_at: new Date().toISOString(),
-      // Include NDA fields if they exist in the data
-      requires_nda: data.requires_nda !== undefined ? data.requires_nda : undefined,
+      // Ensure NDA fields are properly included
+      requires_nda: data.requires_nda !== undefined ? data.requires_nda === true : undefined,
       nda_content: data.nda_content,
     };
+    
+    // Log NDA fields for debugging
+    console.log("Product update - NDA fields:", {
+      requires_nda: updateData.requires_nda,
+      nda_content: updateData.nda_content
+    });
     
     // Filter out undefined values
     Object.keys(updateData).forEach(key => {
