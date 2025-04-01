@@ -17,3 +17,6 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     }
   }
 });
+
+// Export storage for file uploads
+export const storage = supabase.storage;
