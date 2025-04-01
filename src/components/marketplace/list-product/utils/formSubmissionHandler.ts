@@ -1,5 +1,5 @@
 
-import { supabase, storage } from "@/integrations/supabase/client";
+import { supabase, storage, PRODUCT_IMAGES_BUCKET } from "@/integrations/supabase/client";
 import { ListProductFormData } from "../types";
 import { generateUniqueId } from "@/lib/utils";
 
@@ -27,8 +27,11 @@ export const submitProductForm = async (
       const imageName = `${generateUniqueId()}.${fileExt}`;
       const filePath = `products/${imageName}`;
 
+      // Add console.log for debugging image upload attempts
+      console.log("Attempting to upload image to bucket:", PRODUCT_IMAGES_BUCKET);
+
       const { error: uploadError } = await storage
-        .from("lovable-uploads")
+        .from(PRODUCT_IMAGES_BUCKET)
         .upload(filePath, formData.image, {
           cacheControl: "3600",
           upsert: false,
@@ -45,7 +48,7 @@ export const submitProductForm = async (
         return false;
       }
 
-      imageUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/lovable-uploads/${filePath}`;
+      imageUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${PRODUCT_IMAGES_BUCKET}/${filePath}`;
     }
 
     // Prepare the product data for submission
@@ -96,7 +99,7 @@ export const submitProductForm = async (
       business_location: formData.businessLocation,
       number_of_employees: formData.numberOfEmployees,
       product_link: formData.productLink,
-      requires_nda: formData.requires_nda || false,
+      requires_nda: formData.requires_nda === true, // Ensure boolean value
       nda_content: formData.nda_content,
     };
 
@@ -186,8 +189,11 @@ export const handleProductSubmission = async (
         nda_content: data.nda_content
       });
 
+      // Log the bucket name being used
+      console.log("Uploading to bucket:", PRODUCT_IMAGES_BUCKET);
+
       const { error: uploadError } = await storage
-        .from("lovable-uploads")
+        .from(PRODUCT_IMAGES_BUCKET)
         .upload(filePath, data.image, {
           cacheControl: "3600",
           upsert: false,
@@ -198,7 +204,7 @@ export const handleProductSubmission = async (
         return { success: false, error: "Failed to upload image. Please try again." };
       }
 
-      imageUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/lovable-uploads/${filePath}`;
+      imageUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${PRODUCT_IMAGES_BUCKET}/${filePath}`;
     }
     
     // Prepare product data with NDA fields - ensure requires_nda is properly passed
