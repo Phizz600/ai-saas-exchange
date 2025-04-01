@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { ListProductFormData } from "../types";
 import { toast } from "@/hooks/use-toast";
@@ -191,9 +190,6 @@ export const handleProductSubmission = async (
       deliverables: data.deliverables,
       payment_status: 'pending',
       status: 'pending',
-      // Add NDA-related fields
-      requires_nda: data.requires_nda || false,
-      nda_content: data.nda_content || null,
       updated_at: new Date().toISOString()
     };
 
@@ -333,12 +329,6 @@ export const handleProductUpdate = async (
     const monthlyChurnRate = validatePrice(data.monthlyChurnRate);
     const customerAcquisitionCost = validatePrice(data.customerAcquisitionCost);
 
-    // Add NDA fields to the update data if they exist
-    const ndaUpdate = {
-      ...(typeof data.requires_nda !== 'undefined' && { requires_nda: data.requires_nda }),
-      ...(data.nda_content && { nda_content: data.nda_content }),
-    };
-
     const updateData = {
       ...(data.title && { title: data.title }),
       ...(data.description && { description: data.description }),
@@ -368,7 +358,6 @@ export const handleProductUpdate = async (
       ...monetizationUpdate,
       ...(data.businessType && { business_type: data.businessType }),
       ...(data.deliverables && { deliverables: data.deliverables }),
-      ...ndaUpdate,
       updated_at: new Date().toISOString()
     };
 
