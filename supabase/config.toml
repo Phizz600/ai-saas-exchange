@@ -63,3 +63,6 @@ verify_jwt = false
 
 [functions.send-contact-email]
 verify_jwt = false
+
+[functions.update-dutch-auction-prices]
+verify_jwt = true

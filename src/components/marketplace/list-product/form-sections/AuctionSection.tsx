@@ -1,3 +1,4 @@
+
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { UseFormReturn } from "react-hook-form";
@@ -14,9 +15,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { calculateValuation, formatCurrency } from "../utils/valuationCalculator";
 import { Card } from "@/components/ui/card";
 import { useEffect, useState } from "react";
+
 interface AuctionSectionProps {
   form: UseFormReturn<ListProductFormData>;
 }
+
 export function AuctionSection({
   form
 }: AuctionSectionProps) {
@@ -27,17 +30,21 @@ export function AuctionSection({
     low: 0,
     high: 0
   });
+  
   const monthlyRevenue = form.watch("monthlyRevenue");
   const isAuction = form.watch("isAuction");
+  
   if (monthlyRevenue && !form.getValues("startingPrice")) {
     form.setValue("startingPrice", monthlyRevenue * 10);
   }
+  
   const watchMonthlyRevenue = form.watch("monthlyRevenue") || 0;
   const watchMonthlyChurnRate = form.watch("monthlyChurnRate") || 0;
   const watchGrossProfitMargin = (form.watch("grossProfitMargin") || 0) / 100;
   const watchIndustry = form.watch("industry") || "";
   const watchHasPatents = form.watch("hasPatents") || false;
   const watchCustomerAcquisitionCost = form.watch("customerAcquisitionCost");
+  
   const formatCurrencyInput = (value: string) => {
     let numericValue = value.replace(/[^0-9.]/g, '');
     const parts = numericValue.split('.');
@@ -58,10 +65,12 @@ export function AuctionSection({
     }
     return '';
   };
+  
   const parseCurrencyValue = (value: string) => {
     const numericValue = parseFloat(value.replace(/[$,]/g, ''));
     return isNaN(numericValue) ? 0 : numericValue;
   };
+  
   const handleValuationClick = (e: React.MouseEvent, value: number, isHigh: boolean) => {
     e.preventDefault();
     if (isAuction) {
@@ -74,6 +83,7 @@ export function AuctionSection({
       form.setValue("price", value);
     }
   };
+  
   useEffect(() => {
     const updateValuation = async () => {
       const newValuation = await calculateValuation(watchMonthlyRevenue, watchMonthlyChurnRate / 100, watchGrossProfitMargin, watchIndustry, watchHasPatents, undefined, undefined, watchCustomerAcquisitionCost);
@@ -81,6 +91,19 @@ export function AuctionSection({
     };
     updateValuation();
   }, [watchMonthlyRevenue, watchMonthlyChurnRate, watchGrossProfitMargin, watchIndustry, watchHasPatents, watchCustomerAcquisitionCost]);
+
+  // Helper function to get the display text for price decrement interval
+  const getDecrementIntervalLabel = (interval: string) => {
+    switch (interval) {
+      case "minute": return "Per Minute";
+      case "hour": return "Per Hour";
+      case "day": return "Per Day";
+      case "week": return "Per Week";
+      case "month": return "Per Month";
+      default: return "Select interval";
+    }
+  };
+
   return <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
@@ -194,7 +217,9 @@ export function AuctionSection({
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select interval" />
+                        <SelectValue placeholder="Select interval">
+                          {field.value ? getDecrementIntervalLabel(field.value) : "Select interval"}
+                        </SelectValue>
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>

@@ -4,6 +4,7 @@ import { formatCurrency } from "@/lib/utils";
 import { Database } from "@/integrations/supabase/types";
 import { Timer } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useAuctionPricing } from "./useAuctionPricing";
 
 type Product = Database['public']['Tables']['products']['Row'];
 
@@ -19,6 +20,9 @@ interface ProductCardContentProps {
   min_price?: Product['min_price'];
   price_decrement?: Product['price_decrement'];
   auction_status?: Product['auction_status'];
+  price_decrement_interval?: Product['price_decrement_interval'];
+  created_at: string;
+  starting_price?: Product['starting_price'];
 }
 
 export function ProductCardContent({
@@ -33,35 +37,23 @@ export function ProductCardContent({
   min_price,
   price_decrement,
   auction_status,
+  price_decrement_interval,
+  created_at,
+  starting_price,
 }: ProductCardContentProps) {
-  const [timeLeft, setTimeLeft] = useState<string>('');
   const isAuction = !!auction_end_time;
+  const { timeLeft, currentPrice, isAuctionEnded } = useAuctionPricing({
+    auction_end_time,
+    starting_price,
+    current_price,
+    min_price,
+    price_decrement,
+    price_decrement_interval,
+    created_at
+  });
   
-  useEffect(() => {
-    if (!auction_end_time) return;
-
-    const calculateTimeLeft = () => {
-      const now = new Date().getTime();
-      const endTime = new Date(auction_end_time).getTime();
-      const difference = endTime - now;
-
-      if (difference <= 0) {
-        setTimeLeft('Auction ended');
-        return;
-      }
-
-      const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-
-      setTimeLeft(`${days}d ${hours}h ${minutes}m`);
-    };
-
-    calculateTimeLeft();
-    const timer = setInterval(calculateTimeLeft, 60000);
-    return () => clearInterval(timer);
-  }, [auction_end_time]);
-
+  const displayPrice = isAuction ? currentPrice || current_price || price : price;
+  
   const getCategoryColor = (category: string) => {
     const colors: Record<string, { bg: string; text: string }> = {
       'Content Generation': { bg: 'bg-purple-100', text: 'text-purple-700' },
@@ -85,6 +77,20 @@ export function ProductCardContent({
     return colors[stage] || { bg: 'bg-gray-100', text: 'text-gray-700' };
   };
 
+  // Format the price decrement interval for display
+  const formatDecrementInterval = (interval?: string) => {
+    if (!interval) return "hour"; // Default
+    
+    switch(interval) {
+      case "minute": return "minute";
+      case "hour": return "hour";
+      case "day": return "day";
+      case "week": return "week";
+      case "month": return "month";
+      default: return interval;
+    }
+  };
+
   return (
     <div className="p-6">
       <h3 className="font-semibold text-lg text-gray-900 mb-2 line-clamp-1">
@@ -100,7 +106,7 @@ export function ProductCardContent({
           <div className="font-medium text-green-600">
             {isAuction ? (
               <>
-                {formatCurrency(current_price || price)}
+                {formatCurrency(displayPrice || 0)}
                 {min_price && (
                   <span className="text-sm text-gray-500 ml-1">
                     (Min: {formatCurrency(min_price)})
@@ -155,9 +161,9 @@ export function ProductCardContent({
             <div className="flex items-center gap-2 text-sm text-gray-600">
               <Timer className="h-4 w-4" />
               <span>{timeLeft}</span>
-              {price_decrement && (
+              {price_decrement && price_decrement_interval && (
                 <span className="text-amber-600 ml-2">
-                  Drops {formatCurrency(price_decrement)}/hour
+                  Drops {formatCurrency(price_decrement)}/{formatDecrementInterval(price_decrement_interval)}
                 </span>
               )}
             </div>
