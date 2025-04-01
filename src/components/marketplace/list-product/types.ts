@@ -7,7 +7,7 @@ export interface ListProductFormData {
   categoryOther?: string;
   stage: string;
   industry: string;
-  industryOther?: string;
+  // Remove industryOther field as it doesn't exist in DB
   monthlyRevenue?: number;
   monthlyTraffic: string;
   activeUsers: string;

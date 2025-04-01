@@ -1,3 +1,4 @@
+
 import { supabase, storage, PRODUCT_IMAGES_BUCKET } from "@/integrations/supabase/client";
 import { ListProductFormData } from "../types";
 import { generateUniqueId } from "@/lib/utils";
@@ -61,7 +62,7 @@ export const submitProductForm = async (
       category_other: formData.categoryOther,
       stage: formData.stage,
       industry: formData.industry,
-      industry_other: formData.industryOther,
+      // Remove industry_other as it doesn't exist in DB schema
       monthly_revenue: Number(formData.monthlyRevenue || 0),
       monthly_traffic: Number(formData.monthlyTraffic || 0),
       active_users: formData.activeUsers,
@@ -219,7 +220,7 @@ export const handleProductSubmission = async (
       category_other: data.categoryOther,
       stage: data.stage,
       industry: data.industry,
-      industry_other: data.industryOther,
+      // Remove industry_other as it doesn't exist in DB schema
       monthly_revenue: Number(data.monthlyRevenue || 0),
       monthly_traffic: Number(data.monthlyTraffic || 0),
       active_users: data.activeUsers,
