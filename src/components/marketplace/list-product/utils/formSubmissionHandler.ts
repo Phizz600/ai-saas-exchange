@@ -1,389 +1,154 @@
-import { supabase } from "@/integrations/supabase/client";
+import { supabase, storage } from "@/integrations/supabase/client";
 import { ListProductFormData } from "../types";
-import { toast } from "@/hooks/use-toast";
+import { generateUniqueId } from "@/lib/utils";
 
-const getTrafficValue = (range: string): number => {
-  const upperBound = range.split('-')[1] || range;
-  return parseInt(upperBound.replace(/,/g, ''));
-};
-
-// Ensure price is a valid number
-const validatePrice = (price: any): number | undefined => {
-  if (price === undefined || price === null) return undefined;
-  
-  const numericPrice = typeof price === 'number' ? price : 
-                       typeof price === 'string' ? parseFloat(price.replace(/[$,]/g, '')) : 
-                       undefined;
-                       
-  return numericPrice && !isNaN(numericPrice) && numericPrice > 0 ? numericPrice : undefined;
-};
-
-export const handleProductSubmission = async (
-  data: ListProductFormData,
-  setIsLoading: (loading: boolean) => void
-): Promise<{ success: boolean; productId?: string; error?: string }> => {
-  try {
-    setIsLoading(true);
-    console.log('Submitting product data:', data);
-
-    // Check authentication first
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (authError) {
-      console.error('Authentication error:', authError);
-      return { 
-        success: false,
-        error: "Authentication failed. Please log in again."
-      };
-    }
-    
-    if (!user) {
-      toast({
-        title: "Authentication required",
-        description: "Please log in to list a product",
-        variant: "destructive"
-      });
-      return { 
-        success: false,
-        error: "Authentication required. Please log in to list a product." 
-      };
-    }
-
-    // Process image upload
-    let image_url = null;
-    if (data.image && data.image instanceof File) {
-      console.log("Processing image upload:", data.image.name, data.image.type, data.image.size);
-      
-      try {
-        const fileExt = data.image.name.split('.').pop();
-        const fileName = `${crypto.randomUUID()}.${fileExt}`;
-        const filePath = fileName;
-        
-        console.log("Uploading to path:", filePath);
-        
-        const { error: uploadError, data: uploadData } = await supabase.storage
-          .from('product-images')
-          .upload(filePath, data.image, {
-            cacheControl: '3600',
-            upsert: true
-          });
-
-        if (uploadError) {
-          console.error("Upload error:", uploadError);
-          return { 
-            success: false,
-            error: `Image upload failed: ${uploadError.message}`
-          };
-        }
-
-        console.log("Upload successful:", uploadData);
-
-        const { data: { publicUrl } } = supabase.storage
-          .from('product-images')
-          .getPublicUrl(filePath);
-          
-        console.log("Generated public URL:", publicUrl);
-        image_url = publicUrl;
-      } catch (uploadError) {
-        console.error("Image upload failed:", uploadError);
-        toast({
-          title: "Image Upload Failed",
-          description: "There was a problem uploading your image. Please try again with a smaller image or different format.",
-          variant: "destructive"
-        });
-        return { 
-          success: false,
-          error: "Image upload failed. Please try with a smaller image or different format."
-        };
-      }
-    } else {
-      console.log("No image to upload");
-      return { 
-        success: false,
-        error: "Product image is required."
-      };
-    }
-
-    const monthlyTrafficValue = data.monthlyTraffic ? getTrafficValue(data.monthlyTraffic) : 0;
-    const auctionEndTime = data.auctionEndTime ? new Date(data.auctionEndTime).toISOString() : null;
-
-    // FIX: Keep category as "Other" when selected, and store the custom category in category_other
-    // This ensures we don't violate the database constraint
-    const finalTechStack = data.techStack === 'Other' ? [] : [data.techStack];
-    const finalLlmType = data.llmType === 'Other' ? null : data.llmType;
-    const finalMonetization = data.monetization === 'other' ? data.monetizationOther : data.monetization;
-
-    // Validate and process price fields
-    const price = validatePrice(data.isAuction ? undefined : data.price);
-    const startingPrice = validatePrice(data.isAuction ? data.startingPrice : undefined);
-    const minPrice = validatePrice(data.isAuction ? data.minPrice : undefined);
-    const priceDecrement = validatePrice(data.isAuction ? data.priceDecrement : undefined);
-    
-    // Price validation checks
-    if (data.isAuction) {
-      if (!startingPrice) {
-        return {
-          success: false,
-          error: "Please provide a valid starting price for the auction."
-        };
-      }
-      if (!minPrice) {
-        return {
-          success: false,
-          error: "Please provide a valid minimum price for the auction."
-        };
-      }
-      if (!priceDecrement) {
-        return {
-          success: false,
-          error: "Please provide a valid price decrement amount."
-        };
-      }
-    } else {
-      if (!price) {
-        return {
-          success: false,
-          error: "Please provide a valid price for your product."
-        };
-      }
-    }
-
-    // Build the product data object without industry_other field
-    const productData = {
-      title: data.title,
-      description: data.description,
-      price: data.isAuction ? startingPrice : price || 0,
-      category: data.category, // Keep the original category, including "Other"
-      category_other: data.category === 'Other' ? data.categoryOther : null, // Store custom category when "Other" is selected
-      stage: data.stage,
-      industry: data.industry === 'Other' ? data.industryOther : data.industry,
-      monthly_revenue: validatePrice(data.monthlyRevenue) || 0,
-      monthly_profit: validatePrice(data.monthlyProfit) || 0,
-      gross_profit_margin: validatePrice(data.grossProfitMargin) || 0,
-      monthly_churn_rate: validatePrice(data.monthlyChurnRate) || 0,
-      monthly_traffic: monthlyTrafficValue,
-      active_users: data.activeUsers,
-      image_url,
-      seller_id: user.id,
-      tech_stack: finalTechStack,
-      tech_stack_other: data.techStack === 'Other' ? data.techStackOther : null,
-      llm_type: finalLlmType,
-      llm_type_other: data.llmType === 'Other' ? data.llmTypeOther : null,
-      integrations_other: data.integrations_other,
-      team_size: data.teamSize,
-      has_patents: data.hasPatents,
-      competitors: data.competitors,
-      demo_url: data.demoUrl,
-      product_link: data.productLink || null,
-      is_revenue_verified: data.isRevenueVerified || false,
-      is_code_audited: data.isCodeAudited || false,
-      is_traffic_verified: data.isTrafficVerified || false,
-      product_age: data.productAge,
-      business_location: data.businessLocation,
-      special_notes: data.specialNotes,
-      number_of_employees: data.numberOfEmployees,
-      customer_acquisition_cost: validatePrice(data.customerAcquisitionCost) || 0,
-      monetization: finalMonetization,
-      monetization_other: data.monetization === 'other' ? data.monetizationOther : null,
-      business_model: data.businessModel,
-      investment_timeline: data.investmentTimeline,
-      business_type: data.businessType,
-      deliverables: data.deliverables,
-      payment_status: 'pending',
-      status: 'pending',
-      updated_at: new Date().toISOString()
-    };
-
-    // Add auction-specific fields if applicable
-    if (data.isAuction) {
-      Object.assign(productData, {
-        auction_end_time: auctionEndTime,
-        starting_price: startingPrice || 0,
-        current_price: startingPrice || 0,
-        min_price: minPrice || 0,
-        price_decrement: priceDecrement || 0,
-        price_decrement_interval: data.priceDecrementInterval
-      });
-    }
-
-    console.log('Product data being sent to Supabase:', productData);
-
-    try {
-      // Insert the product data and get the ID back
-      const { data: insertedProduct, error } = await supabase
-        .from('products')
-        .insert(productData)
-        .select('id')
-        .single();
-
-      if (error) {
-        console.error('Supabase error:', error);
-        return { 
-          success: false,
-          error: `Database error: ${error.message}`
-        };
-      }
-      
-      console.log("Product inserted successfully:", insertedProduct);
-
-      if (!insertedProduct || !insertedProduct.id) {
-        console.error("Missing product ID from inserted product");
-        return { 
-          success: false,
-          error: "Product was created but ID is missing. Please contact support."
-        };
-      }
-
-      // Store the product ID in session storage for retrieval after payment
-      sessionStorage.setItem('pendingProductId', insertedProduct.id);
-      console.log("Saved product ID to session storage:", insertedProduct.id);
-
-      return {
-        success: true,
-        productId: insertedProduct.id
-      };
-    } catch (dbError) {
-      console.error('Database error:', dbError);
-      return { 
-        success: false,
-        error: "Database error. Please try again or contact support."
-      };
-    }
-  } catch (error) {
-    console.error('Error submitting product:', error);
-    return { 
-      success: false,
-      error: "An unexpected error occurred. Please try again or contact support."
-    };
-  } finally {
-    setIsLoading(false);
-  }
-};
-
-export const handleProductUpdate = async (
-  productId: string,
-  data: Partial<ListProductFormData>,
-  setIsLoading: (loading: boolean) => void
+export const submitProductForm = async (
+  formData: ListProductFormData,
+  user_id: string,
+  router: any,
+  storage: any,
+  setIsSubmitting: (isSubmitting: boolean) => void,
+  toast: any,
+  resetForm: () => void,
+  draftId?: string
 ): Promise<boolean> => {
+  if (!formData) {
+    console.error("Form data is undefined");
+    return false;
+  }
+
   try {
-    setIsLoading(true);
-    console.log('Updating product data:', { productId, data });
+    setIsSubmitting(true);
 
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      toast({
-        title: "Authentication required",
-        description: "Please log in to update your product",
-        variant: "destructive"
-      });
-      return false;
+    let imageUrl = null;
+    if (formData.image) {
+      const fileExt = formData.image.name.split(".").pop();
+      const imageName = `${generateUniqueId()}.${fileExt}`;
+      const filePath = `products/${imageName}`;
+
+      const { error: uploadError } = await storage
+        .from("lovable-uploads")
+        .upload(filePath, formData.image, {
+          cacheControl: "3600",
+          upsert: false,
+        });
+
+      if (uploadError) {
+        console.error("Image upload error", uploadError);
+        toast({
+          title: "Upload Error",
+          description: "Failed to upload image. Please try again.",
+          variant: "destructive",
+        });
+        setIsSubmitting(false);
+        return false;
+      }
+
+      imageUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/lovable-uploads/${filePath}`;
     }
 
-    const { data: existingProduct } = await supabase
-      .from('products')
-      .select('seller_id')
-      .eq('id', productId)
-      .single();
-
-    if (!existingProduct || existingProduct.seller_id !== user.id) {
-      toast({
-        title: "Unauthorized",
-        description: "You don't have permission to update this product",
-        variant: "destructive"
-      });
-      return false;
-    }
-
-    const monthlyTrafficValue = data.monthlyTraffic ? getTrafficValue(data.monthlyTraffic) : undefined;
-
-    // Process "Other" fields for the update
-    const categoryUpdate = data.category ? {
-      category: data.category, // Keep original category including "Other"
-      category_other: data.category === 'Other' ? data.categoryOther : null // Store custom category
-    } : {};
-
-    // Update industry handling to avoid industry_other column
-    const industryUpdate = data.industry ? {
-      industry: data.industry === 'Other' ? data.industryOther : data.industry
-    } : {};
-
-    const techStackUpdate = data.techStack ? {
-      tech_stack: data.techStack === 'Other' ? [] : [data.techStack],
-      tech_stack_other: data.techStack === 'Other' ? data.techStackOther : null
-    } : {};
-
-    const llmTypeUpdate = data.llmType ? {
-      llm_type: data.llmType === 'Other' ? null : data.llmType,
-      llm_type_other: data.llmType === 'Other' ? data.llmTypeOther : null
-    } : {};
-
-    const monetizationUpdate = data.monetization ? {
-      monetization: data.monetization === 'other' ? data.monetizationOther : data.monetization,
-      monetization_other: data.monetization === 'other' ? data.monetizationOther : null
-    } : {};
-
-    // Validate price fields
-    const price = validatePrice(data.price);
-    const monthlyRevenue = validatePrice(data.monthlyRevenue);
-    const monthlyProfit = validatePrice(data.monthlyProfit);
-    const grossProfitMargin = validatePrice(data.grossProfitMargin);
-    const monthlyChurnRate = validatePrice(data.monthlyChurnRate);
-    const customerAcquisitionCost = validatePrice(data.customerAcquisitionCost);
-
-    const updateData = {
-      ...(data.title && { title: data.title }),
-      ...(data.description && { description: data.description }),
-      ...(price !== undefined && { price }),
-      ...(data.productLink !== undefined && { product_link: data.productLink }),
-      ...categoryUpdate,
-      ...industryUpdate,
-      ...(data.stage && { stage: data.stage }),
-      ...(monthlyRevenue !== undefined && { monthly_revenue: monthlyRevenue }),
-      ...(monthlyProfit !== undefined && { monthly_profit: monthlyProfit }),
-      ...(grossProfitMargin !== undefined && { gross_profit_margin: grossProfitMargin }),
-      ...(monthlyChurnRate !== undefined && { monthly_churn_rate: monthlyChurnRate }),
-      ...(monthlyTrafficValue && { monthly_traffic: monthlyTrafficValue }),
-      ...(data.activeUsers && { active_users: data.activeUsers }),
-      ...techStackUpdate,
-      ...llmTypeUpdate,
-      ...(data.integrations_other && { integrations_other: data.integrations_other }),
-      ...(data.teamSize && { team_size: data.teamSize }),
-      ...(typeof data.hasPatents !== 'undefined' && { has_patents: data.hasPatents }),
-      ...(data.competitors && { competitors: data.competitors }),
-      ...(data.demoUrl && { demo_url: data.demoUrl }),
-      ...(data.productAge && { product_age: data.productAge }),
-      ...(data.businessLocation && { business_location: data.businessLocation }),
-      ...(data.specialNotes && { special_notes: data.specialNotes }),
-      ...(data.numberOfEmployees && { number_of_employees: data.numberOfEmployees }),
-      ...(customerAcquisitionCost !== undefined && { customer_acquisition_cost: customerAcquisitionCost }),
-      ...monetizationUpdate,
-      ...(data.businessType && { business_type: data.businessType }),
-      ...(data.deliverables && { deliverables: data.deliverables }),
-      updated_at: new Date().toISOString()
+    // Prepare the product data for submission
+    const productData = {
+      title: formData.title,
+      description: formData.description,
+      price: Number(formData.price || 0),
+      category: formData.category,
+      category_other: formData.categoryOther,
+      stage: formData.stage,
+      industry: formData.industry,
+      industry_other: formData.industryOther,
+      monthly_revenue: Number(formData.monthlyRevenue || 0),
+      monthly_traffic: Number(formData.monthlyTraffic || 0),
+      active_users: formData.activeUsers,
+      gross_profit_margin: Number(formData.grossProfitMargin || 0),
+      image_url: imageUrl,
+      seller_id: user_id,
+      tech_stack: formData.techStack ? [formData.techStack] : [],
+      tech_stack_other: formData.techStackOther,
+      team_size: formData.teamSize,
+      has_patents: formData.hasPatents || false,
+      competitors: formData.competitors,
+      demo_url: formData.demoUrl,
+      is_verified: formData.isVerified || false,
+      special_notes: formData.specialNotes,
+      status: "pending",
+      is_auction: formData.isAuction || false,
+      starting_price: formData.isAuction ? Number(formData.startingPrice || 0) : null,
+      min_price: formData.isAuction ? Number(formData.minPrice || 0) : null,
+      price_decrement: formData.isAuction ? Number(formData.priceDecrement || 0) : null,
+      price_decrement_interval: formData.isAuction ? formData.priceDecrementInterval : null,
+      auction_end_time: formData.isAuction && formData.auctionEndTime ? formData.auctionEndTime.toISOString() : null,
+      auction_status: formData.isAuction ? "pending" : null,
+      business_type: formData.businessType,
+      deliverables: formData.deliverables || [],
+      monthly_profit: Number(formData.monthlyProfit || 0),
+      monthly_churn_rate: Number(formData.monthlyChurnRate || 0),
+      customer_acquisition_cost: Number(formData.customerAcquisitionCost || 0),
+      monetization: formData.monetization,
+      monetization_other: formData.monetizationOther,
+      business_model: formData.businessModel,
+      investment_timeline: formData.investmentTimeline,
+      llm_type: formData.llmType,
+      llm_type_other: formData.llmTypeOther,
+      integrations_other: formData.integrations_other,
+      product_age: formData.productAge,
+      business_location: formData.businessLocation,
+      number_of_employees: formData.numberOfEmployees,
+      product_link: formData.productLink,
+      requires_nda: formData.requires_nda || false,
+      nda_content: formData.nda_content,
     };
 
-    const { error } = await supabase
-      .from('products')
-      .update(updateData)
-      .eq('id', productId);
+    // Submit the product data to Supabase
+    const { data, error } = await supabase
+      .from("products")
+      .insert([productData])
+      .select()
 
-    if (error) throw error;
+    if (error) {
+      console.error("Supabase submission error", error);
+      toast({
+        title: "Submission Error",
+        description: "Failed to submit product. Please try again.",
+        variant: "destructive",
+      });
+      setIsSubmitting(false);
+      return false;
+    }
+
+    // If draftId is provided, delete the draft
+    if (draftId) {
+      const { error: deleteError } = await supabase
+        .from("product_drafts")
+        .delete()
+        .eq("id", draftId);
+
+      if (deleteError) {
+        console.error("Error deleting draft:", deleteError);
+        toast({
+          title: "Error Deleting Draft",
+          description: "Failed to delete the draft. Please try again.",
+          variant: "destructive",
+        });
+      }
+    }
 
     toast({
-      title: "Product Updated Successfully!",
-      description: "Your product listing has been updated.",
-      duration: 5000,
+      title: "Success",
+      description: "Product submitted successfully!",
     });
-
+    resetForm();
+    router.push("/marketplace");
     return true;
-  } catch (error) {
-    console.error('Error updating product:', error);
+  } catch (error: any) {
+    console.error("Form submission failed", error);
     toast({
-      title: "Error",
-      description: "Failed to update your product. Please try again.",
+      title: "Submission Error",
+      description: error.message || "Failed to submit product. Please try again.",
       variant: "destructive",
     });
     return false;
   } finally {
-    setIsLoading(false);
+    setIsSubmitting(false);
   }
 };

@@ -56,7 +56,7 @@ export function ProductCard({ product }: ProductCardProps) {
   console.log(`Product ${product.id} - requires_nda:`, product.requires_nda);
   
   // Logic to determine if we need to show limited information
-  // Fix: Ensure product.requires_nda is a boolean, not undefined or null
+  // Ensure product.requires_nda is a boolean, not undefined or null
   const requiresNda = product.requires_nda === true;
   const showLimitedInfo = requiresNda && !hasSigned;
   
