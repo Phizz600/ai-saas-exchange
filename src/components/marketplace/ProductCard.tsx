@@ -78,6 +78,7 @@ export function ProductCard({ product }: ProductCardProps) {
           isFavorited={isFavorited}
           isSaved={isSaved}
           isVerified={isVerified}
+          requiresNda={showLimitedInfo}
           toggleFavorite={toggleFavorite}
           toggleSave={toggleSave}
           onEditClick={handleEditClick}

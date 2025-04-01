@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Edit2, Bookmark, Heart, TrendingDown, Timer, CheckCircle } from "lucide-react";
+import { Edit2, Bookmark, Heart, TrendingDown, Timer, CheckCircle, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
@@ -15,6 +15,7 @@ interface ProductImageProps {
   isSaved: boolean;
   isVerified: boolean;
   showEditButton?: boolean;
+  requiresNda?: boolean;
   toggleFavorite: (e: React.MouseEvent) => void;
   toggleSave: (e: React.MouseEvent) => void;
   onEditClick: (e: React.MouseEvent) => void;
@@ -31,6 +32,7 @@ export function ProductImage({
   isSaved,
   isVerified,
   showEditButton = false,
+  requiresNda = false,
   toggleFavorite,
   toggleSave,
   onEditClick
@@ -45,9 +47,17 @@ export function ProductImage({
         alt={title}
         className={`w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-100 ${
           isImageLoaded ? 'opacity-100' : 'opacity-0'
-        }`}
+        } ${requiresNda ? 'blur-md' : ''}`}
         onLoad={() => setIsImageLoaded(true)}
       />
+      
+      {/* NDA Confidential overlay */}
+      {requiresNda && (
+        <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center z-20 text-white p-4 text-center">
+          <Lock className="h-8 w-8 mb-2" />
+          <p className="font-semibold text-sm">Confidential - Sign NDA to view</p>
+        </div>
+      )}
       
       {/* Reduced opacity of the gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent z-10" />
