@@ -64,18 +64,16 @@ export function ProductContent({
         ${new Intl.NumberFormat('en-US').format((current_price || price || 0))}
       </div>
       
-      {/* Only show metrics if NDA is not required */}
-      {!requires_nda && (
-        <ProductMetrics 
-          monthlyRevenue={monthlyRevenue}
-          monthly_traffic={monthly_traffic}
-          gross_profit_margin={gross_profit_margin}
-          monthly_churn_rate={monthly_churn_rate}
-          is_revenue_verified={is_revenue_verified}
-          is_code_audited={is_code_audited}
-          is_traffic_verified={is_traffic_verified}
-        />
-      )}
+      {/* Show metrics for ALL products, whether NDA is required or not */}
+      <ProductMetrics 
+        monthlyRevenue={monthlyRevenue}
+        monthly_traffic={monthly_traffic}
+        gross_profit_margin={gross_profit_margin}
+        monthly_churn_rate={monthly_churn_rate}
+        is_revenue_verified={is_revenue_verified}
+        is_code_audited={is_code_audited}
+        is_traffic_verified={is_traffic_verified}
+      />
     </div>
   );
 }
