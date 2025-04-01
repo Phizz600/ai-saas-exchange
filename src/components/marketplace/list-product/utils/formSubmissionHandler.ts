@@ -1,4 +1,3 @@
-
 import { supabase, storage, PRODUCT_IMAGES_BUCKET } from "@/integrations/supabase/client";
 import { ListProductFormData } from "../types";
 import { generateUniqueId } from "@/lib/utils";
@@ -48,7 +47,9 @@ export const submitProductForm = async (
         return false;
       }
 
-      imageUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${PRODUCT_IMAGES_BUCKET}/${filePath}`;
+      // Use the correct way to build the image URL for Vite
+      const supabaseUrl = import.meta.env.NEXT_PUBLIC_SUPABASE_URL || 'https://pxadbwlidclnfoodjtpd.supabase.co';
+      imageUrl = `${supabaseUrl}/storage/v1/object/public/${PRODUCT_IMAGES_BUCKET}/${filePath}`;
     }
 
     // Prepare the product data for submission
@@ -204,7 +205,9 @@ export const handleProductSubmission = async (
         return { success: false, error: "Failed to upload image. Please try again." };
       }
 
-      imageUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${PRODUCT_IMAGES_BUCKET}/${filePath}`;
+      // Use the correct way to build the image URL for Vite
+      const supabaseUrl = import.meta.env.NEXT_PUBLIC_SUPABASE_URL || 'https://pxadbwlidclnfoodjtpd.supabase.co';
+      imageUrl = `${supabaseUrl}/storage/v1/object/public/${PRODUCT_IMAGES_BUCKET}/${filePath}`;
     }
     
     // Prepare product data with NDA fields - ensure requires_nda is properly passed

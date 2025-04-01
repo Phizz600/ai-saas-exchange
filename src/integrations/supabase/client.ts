@@ -23,3 +23,6 @@ export const storage = supabase.storage;
 
 // Define the correct bucket name as a constant to avoid mismatches
 export const PRODUCT_IMAGES_BUCKET = 'product-images';
+
+// Export the Supabase URL for use in other parts of the app
+export const SUPABASE_URL = supabaseUrl;
