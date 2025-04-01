@@ -54,6 +54,13 @@ export function ProductCard({ product }: ProductCardProps) {
   
   // Logic to determine if we need to show limited information
   const showLimitedInfo = product.requires_nda && !hasSigned;
+  
+  console.log('Product Card:', {
+    productId: product.id, 
+    requiresNda: product.requires_nda,
+    hasSigned,
+    showLimitedInfo
+  });
 
   const handleEditClick = (e: React.MouseEvent) => {
     e.preventDefault();

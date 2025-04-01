@@ -12,6 +12,8 @@ export function useNdaStatus(productId: string) {
         // First check if user is authenticated
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) {
+          // If no user is authenticated, they definitely haven't signed the NDA
+          console.log('No authenticated user, NDA status: unsigned');
           setHasSigned(false);
           setIsCheckingStatus(false);
           return;
@@ -30,6 +32,7 @@ export function useNdaStatus(productId: string) {
           setHasSigned(false);
         } else {
           setHasSigned(!!data);
+          console.log('User authenticated, NDA status:', !!data ? 'signed' : 'unsigned');
         }
       } catch (err) {
         console.error('Error in NDA status check:', err);
