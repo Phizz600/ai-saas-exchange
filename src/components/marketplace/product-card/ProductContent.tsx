@@ -40,9 +40,9 @@ export function ProductContent({
       {/* Category & Stage Pills at the top */}
       <ProductBadges category={category} stage={stage} requiresNda={requires_nda} />
       
-      {/* Title */}
+      {/* Title - Modified to show "Confidential" for NDA-required products */}
       <h3 className="font-semibold text-lg text-gray-900 group-hover:text-[#8B5CF6] transition-colors duration-200 exo-2-heading">
-        {title}
+        {requires_nda ? "Confidential" : title}
       </h3>
       
       {/* Description - Added here */}
