@@ -2,11 +2,9 @@
 import { useFormContext } from "react-hook-form";
 import { ListProductFormData } from "../../types";
 import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 
 export function NdaSection() {
-  const { watch, setValue, register } = useFormContext<ListProductFormData>();
+  const { watch, setValue } = useFormContext<ListProductFormData>();
   const formData = watch();
 
   return (
@@ -26,21 +24,6 @@ export function NdaSection() {
           }}
         />
       </div>
-      
-      {formData.requires_nda && (
-        <div className="mt-4">
-          <Label htmlFor="nda_content">Customize NDA Content (Optional)</Label>
-          <Textarea
-            id="nda_content"
-            placeholder="Enter custom NDA text or leave empty to use the default template"
-            className="h-32"
-            {...register("nda_content")}
-          />
-          <p className="text-xs text-gray-500 mt-1">
-            If left blank, a standard NDA template will be used
-          </p>
-        </div>
-      )}
     </div>
   );
 }
