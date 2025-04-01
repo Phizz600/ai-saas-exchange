@@ -6,6 +6,7 @@ import { CompanyInfoFields } from "./basic-info/CompanyInfoFields";
 import { ProductInfoFields } from "./basic-info/ProductInfoFields";
 import { LocationIndustryFields } from "./basic-info/LocationIndustryFields";
 import { ImageSection } from "./ImageSection";
+import { NdaSection } from "./basic-info/NdaSection";
 
 interface BasicInfoSectionProps {
   form: UseFormReturn<ListProductFormData>;
@@ -21,6 +22,7 @@ export function BasicInfoSection({ form }: BasicInfoSectionProps) {
         <CompanyInfoFields form={form} />
         <LocationIndustryFields form={form} />
         <ImageSection form={form} />
+        <NdaSection />
       </div>
     </div>
   );
