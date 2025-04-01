@@ -234,9 +234,18 @@ export function AuctionSection({
                 </FormItem>} />
           </div>
 
-          <FormField control={form.control} name="auctionEndTime" render={({
-        field
-      }) => {}} />
+          {/* Fix for the auctionEndTime field - return a proper React element instead of void */}
+          <FormField 
+            control={form.control} 
+            name="auctionEndTime" 
+            render={({ field }) => (
+              <FormItem className="hidden">
+                <FormControl>
+                  <Input type="hidden" />
+                </FormControl>
+              </FormItem>
+            )} 
+          />
         </div> : <div className="space-y-4">
           <FormField control={form.control} name="price" render={({
         field
