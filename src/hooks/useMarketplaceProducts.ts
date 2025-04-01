@@ -89,6 +89,9 @@ export const useMarketplaceProducts = ({
         throw error;
       }
 
+      // Log which products have requires_nda set to true
+      console.log('Products with requires_nda:', products?.filter(p => p.requires_nda).map(p => ({ id: p.id, title: p.title })));
+
       // Return products with default seller info
       const productsWithSellers = products?.map(product => ({
         ...product,

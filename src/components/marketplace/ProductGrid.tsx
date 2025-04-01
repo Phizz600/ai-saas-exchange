@@ -19,6 +19,9 @@ interface ProductGridProps {
 export const ProductGrid = ({ products, isLoading = false, onProductView }: ProductGridProps) => {
   const session = useSession();
 
+  // Debug the products to see if they have requires_nda property
+  console.log('ProductGrid - products with requires_nda:', products.map(p => ({ id: p.id, title: p.title, requires_nda: p.requires_nda })));
+
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 py-8 px-4">
@@ -80,7 +83,6 @@ export const ProductGrid = ({ products, isLoading = false, onProductView }: Prod
                 avatar_url: product.seller?.avatar_url || "/placeholder.svg"
               }
             }}
-            // Removed showEditButton prop since it's not defined in ProductCardProps
           />
         </motion.div>
       ))}

@@ -52,12 +52,17 @@ export function ProductCard({ product }: ProductCardProps) {
   const isAuction = !!product.auction_end_time;
   const isVerified = product.is_revenue_verified || product.is_code_audited || product.is_traffic_verified;
   
+  // Debug the requires_nda property to make sure it's being passed correctly
+  console.log(`Product ${product.id} - requires_nda:`, product.requires_nda);
+  
   // Logic to determine if we need to show limited information
-  const showLimitedInfo = product.requires_nda && !hasSigned;
+  // Fix: Ensure product.requires_nda is a boolean, not undefined or null
+  const requiresNda = product.requires_nda === true;
+  const showLimitedInfo = requiresNda && !hasSigned;
   
   console.log('Product Card:', {
     productId: product.id, 
-    requiresNda: product.requires_nda,
+    requiresNda,
     hasSigned,
     showLimitedInfo
   });

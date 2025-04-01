@@ -34,6 +34,9 @@ export const useProducts = ({ showVerifiedOnly = false }: UseProductsProps = {})
         throw error;
       }
 
+      // Log which products have requires_nda set to true
+      console.log('Products with requires_nda:', products?.filter(p => p.requires_nda).map(p => ({ id: p.id, title: p.title })));
+      
       console.log('Products fetched:', products);
       return products;
     },

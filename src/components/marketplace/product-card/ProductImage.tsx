@@ -37,6 +37,9 @@ export function ProductImage({
   toggleSave,
   onEditClick
 }: ProductImageProps) {
+  // Debug the requiresNda prop
+  console.log(`ProductImage - ${title} - requiresNda:`, requiresNda);
+  
   return (
     <div className="relative h-48 overflow-hidden bg-gradient-to-r from-[#13293D] to-[#18435A]">
       {!isImageLoaded && (
@@ -51,11 +54,12 @@ export function ProductImage({
         onLoad={() => setIsImageLoaded(true)}
       />
       
-      {/* NDA Confidential overlay */}
+      {/* NDA Confidential overlay - made more prominent */}
       {requiresNda && (
-        <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center z-20 text-white p-4 text-center">
-          <Lock className="h-8 w-8 mb-2" />
-          <p className="font-semibold text-sm">Confidential - Sign NDA to view</p>
+        <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center z-20 text-white p-4 text-center">
+          <Lock className="h-10 w-10 mb-3 text-purple-300" />
+          <p className="font-bold text-base mb-1">CONFIDENTIAL</p>
+          <p className="font-medium text-sm">Sign NDA to view details</p>
         </div>
       )}
       
