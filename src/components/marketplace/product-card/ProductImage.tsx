@@ -1,8 +1,9 @@
 
 import { useState } from "react";
-import { Edit2, Bookmark, Heart, TrendingDown, Timer, CheckCircle, Lock } from "lucide-react";
+import { Edit2, Bookmark, Heart, TrendingDown, Timer, CheckCircle, Lock, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { ConfidentialWatermark } from "./ConfidentialWatermark";
 
 interface ProductImageProps {
   image?: string;
@@ -54,13 +55,27 @@ export function ProductImage({
         onLoad={() => setIsImageLoaded(true)}
       />
       
-      {/* NDA Confidential overlay - made more prominent */}
+      {/* NDA Confidential overlay with enhanced visuals */}
       {requiresNda && (
         <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center z-20 text-white p-4 text-center">
-          <Lock className="h-10 w-10 mb-3 text-purple-300" />
-          <p className="font-bold text-base mb-1">CONFIDENTIAL</p>
-          <p className="font-medium text-sm">Sign NDA to view details</p>
+          <div className="bg-purple-500/20 p-3 rounded-full mb-3">
+            <Lock className="h-10 w-10 text-purple-300" />
+          </div>
+          <p className="font-bold text-base mb-1 exo-2-heading">CONFIDENTIAL</p>
+          <p className="font-medium text-sm mb-3">Sign NDA to view details</p>
+          <Badge 
+            variant="outline" 
+            className="bg-purple-900/50 text-white border-purple-500/20 flex items-center"
+          >
+            <Eye className="h-3 w-3 mr-1" />
+            Protected Content
+          </Badge>
         </div>
+      )}
+      
+      {/* Add watermark for confidential content */}
+      {requiresNda && (
+        <ConfidentialWatermark opacity={0.15} />
       )}
       
       {/* Reduced opacity of the gradient overlay */}

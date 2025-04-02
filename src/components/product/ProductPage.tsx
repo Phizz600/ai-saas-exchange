@@ -14,10 +14,13 @@ import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, CheckCircle, ExternalLink, BadgeCheck, Timer, LockIcon } from "lucide-react";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { ArrowLeft, CheckCircle, ExternalLink, BadgeCheck, Timer, LockIcon, InfoIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import { useNdaStatus } from "../marketplace/product-card/useNdaStatus";
 import { NdaButton } from "../marketplace/product-card/NdaButton";
+import { NdaStatusBadge } from "../marketplace/product-card/NdaStatusBadge";
+import { ConfidentialWatermark } from "../marketplace/product-card/ConfidentialWatermark";
 
 interface Product {
   id: string;
@@ -74,6 +77,35 @@ export function ProductPage() {
   const [isLiked, setIsLiked] = useState(false);
   const { toast } = useToast();
   const { hasSigned, isCheckingStatus, setHasSigned } = useNdaStatus(id || '');
+  
+  // Add print warning
+  useEffect(() => {
+    const handleBeforePrint = () => {
+      if (product?.requires_nda) {
+        alert("Warning: This document contains confidential information protected by an NDA. Unauthorized printing or distribution is prohibited.");
+      }
+    };
+
+    window.addEventListener('beforeprint', handleBeforePrint);
+    return () => window.removeEventListener('beforeprint', handleBeforePrint);
+  }, [product?.requires_nda]);
+  
+  // Add copy protection
+  useEffect(() => {
+    const handleCopy = (e: ClipboardEvent) => {
+      if (product?.requires_nda && !hasSigned) {
+        e.preventDefault();
+        toast({
+          title: "Copy restricted",
+          description: "This content is protected by NDA and cannot be copied until you sign the agreement",
+          variant: "destructive",
+        });
+      }
+    };
+    
+    document.addEventListener('copy', handleCopy);
+    return () => document.removeEventListener('copy', handleCopy);
+  }, [product?.requires_nda, hasSigned, toast]);
   
   const {
     data: product,
@@ -228,14 +260,21 @@ export function ProductPage() {
       
       <div className="container mx-auto px-4 py-8 mt-16 mb-16">
         {/* Breadcrumbs and back button */}
-        <div className="flex items-center mb-6">
-          <Button variant="ghost" size="sm" className="mr-4" onClick={() => navigate(-1)}>
-            <ArrowLeft className="h-4 w-4 mr-1" />
-            Back to Marketplace
-          </Button>
-          <div className="text-sm text-gray-500">
-            Marketplace / {product.category} / {product.title}
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center">
+            <Button variant="ghost" size="sm" className="mr-4" onClick={() => navigate(-1)}>
+              <ArrowLeft className="h-4 w-4 mr-1" />
+              Back to Marketplace
+            </Button>
+            <div className="text-sm text-gray-500">
+              Marketplace / {product.category} / {product.title}
+            </div>
           </div>
+          
+          {/* Show NDA Status Badge if signed */}
+          {product.requires_nda && hasSigned && (
+            <NdaStatusBadge productId={product.id} showTimestamp={true} />
+          )}
         </div>
         
         {/* NDA Banner - show only if NDA is required and not signed */}
@@ -265,6 +304,17 @@ export function ProductPage() {
           </motion.div>
         )}
         
+        {/* Show signed NDA reminder alert for signed users */}
+        {product.requires_nda && hasSigned && (
+          <Alert className="mb-6 bg-blue-50 border-blue-200">
+            <InfoIcon className="h-4 w-4 text-blue-600" />
+            <AlertTitle className="text-blue-800">Confidentiality Notice</AlertTitle>
+            <AlertDescription className="text-blue-700">
+              The information on this page is protected under a signed NDA. Unauthorized sharing or distribution is prohibited.
+            </AlertDescription>
+          </Alert>
+        )}
+        
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div className="space-y-6">
             <motion.div initial={{
@@ -275,8 +325,13 @@ export function ProductPage() {
             y: 0
           }} transition={{
             duration: 0.5
-          }}>
+          }} className="relative">
               <ProductGallery images={[product.image_url]} />
+              
+              {/* Add watermark for NDA content that has been signed */}
+              {product.requires_nda && hasSigned && (
+                <ConfidentialWatermark />
+              )}
             </motion.div>
             
             <motion.div initial={{
@@ -321,9 +376,14 @@ export function ProductPage() {
                   )}
                 </div>
                 {!showLimitedInfo && product.special_notes && (
-                  <div className="mt-4 border-t pt-4">
+                  <div className="mt-4 border-t pt-4 relative">
                     <h4 className="text-base font-semibold mb-2">Special Notes</h4>
                     <p className="text-gray-600 whitespace-pre-wrap">{product.special_notes}</p>
+                    
+                    {/* Add subtle watermark for signed NDA content */}
+                    {product.requires_nda && hasSigned && (
+                      <ConfidentialWatermark opacity={0.05} />
+                    )}
                   </div>
                 )}
               </Card>
@@ -387,8 +447,13 @@ export function ProductPage() {
               }} transition={{
                 duration: 0.5,
                 delay: 0.2
-              }}>
+              }} className="relative">
                 <ProductStats product={product} />
+                
+                {/* Add watermark for NDA content */}
+                {product.requires_nda && hasSigned && (
+                  <ConfidentialWatermark opacity={0.05} />
+                )}
               </motion.div>
             )}
           </div>
@@ -405,8 +470,13 @@ export function ProductPage() {
             }} transition={{
               duration: 0.5,
               delay: 0.3
-            }}>
+            }} className="relative">
               <ProductReviews productId={product.id} />
+              
+              {/* Add watermark for NDA content */}
+              {product.requires_nda && hasSigned && (
+                <ConfidentialWatermark opacity={0.03} />
+              )}
             </motion.div>
           )}
           
@@ -423,6 +493,15 @@ export function ProductPage() {
             <RelatedProducts currentProductCategory={product.category} currentProductId={product.id} />
           </motion.div>
         </div>
+        
+        {/* Footer NDA reminder - add subtle NDA status at the bottom */}
+        {product.requires_nda && hasSigned && (
+          <div className="mt-10 pt-4 border-t border-gray-200 text-center">
+            <p className="text-xs text-gray-500 italic">
+              Remember: All information on this page is covered by the NDA you signed. Last accessed: {new Date().toLocaleString()}
+            </p>
+          </div>
+        )}
       </div>
     </>;
 }
