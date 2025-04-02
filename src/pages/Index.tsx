@@ -9,6 +9,7 @@ import PricingFees from "@/components/hero/PricingFees";
 import WhyChooseUs from "@/components/hero/WhyChooseUs";
 import { ParticlesBackground } from "@/components/hero/ParticlesBackground";
 import { PromotionalBanner } from "@/components/PromotionalBanner";
+import EnhancedNdaPolicy from "@/components/hero/EnhancedNdaPolicy";
 import { Link } from "react-router-dom";
 
 export const Index = () => {
@@ -21,6 +22,7 @@ export const Index = () => {
         <Hero />
         <WhyChooseUs />
         <PricingFees />
+        <EnhancedNdaPolicy />
         <ReviewSection />
         <Footer />
         <ExitIntentDialog />

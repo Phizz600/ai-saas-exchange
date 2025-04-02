@@ -21,6 +21,7 @@ import { MessageChat } from "@/pages/MessageChat";
 import FAQ from "@/pages/FAQ";
 import Admin from "@/pages/Admin";
 import { ToastProvider } from "@/hooks/use-toast";
+import NdaPolicy from "@/pages/NdaPolicy";
 import "./App.css";
 
 function App() {
@@ -38,6 +39,7 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/faq" element={<FAQ />} />
+          <Route path="/nda-policy" element={<NdaPolicy />} />
           <Route path="/resolution-center" element={<ResolutionCenter />} />
           <Route path="/admin" element={<Admin />} />
           <Route 
