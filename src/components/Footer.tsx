@@ -88,6 +88,9 @@ export const Footer = () => {
                 <Link to="/fees-pricing" className="text-white/80 hover:text-white">Fees & Pricing</Link>
               </li>
               <li className="text-center md:text-left">
+                <Link to="/nda-policy" className="text-white/80 hover:text-white">Enhanced NDA</Link>
+              </li>
+              <li className="text-center md:text-left">
                 <Link to="/policies" className="text-white/80 hover:text-white">Policies</Link>
               </li>
               <li className="text-center md:text-left">
