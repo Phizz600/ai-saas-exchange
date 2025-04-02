@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import { Star } from "lucide-react";
 import { Card } from "@/components/ui/card";
@@ -57,7 +58,7 @@ const reviewers: Reviewer[] = [
 
 export default function ReviewSection() {
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-gradient-to-b from-[#f8fafc] to-white border-t border-gray-100">
       <div className="container mx-auto px-4">
         <motion.h2 
           initial={{ opacity: 0, y: 20 }}
@@ -96,7 +97,7 @@ function ReviewCard({ reviewer, index }: { reviewer: Reviewer; index: number }) 
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
     >
-      <Card className="h-full p-6 bg-gray-50 border-gray-100 hover:shadow-md transition-shadow">
+      <Card className="h-full p-6 bg-white border-gray-200 hover:shadow-md transition-shadow">
         <div className="space-y-4">
           {/* Star rating */}
           <div className="flex text-[#8B5CF6]">
