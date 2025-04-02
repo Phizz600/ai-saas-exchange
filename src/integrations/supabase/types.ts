@@ -739,6 +739,7 @@ export type Database = {
       product_ndas: {
         Row: {
           created_at: string
+          device_info: Json | null
           id: string
           ip_address: string | null
           product_id: string
@@ -748,6 +749,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          device_info?: Json | null
           id?: string
           ip_address?: string | null
           product_id: string
@@ -757,6 +759,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          device_info?: Json | null
           id?: string
           ip_address?: string | null
           product_id?: string
