@@ -94,8 +94,8 @@ export function NdaDialog({
     }
   };
 
-  // Updated comprehensive NDA content
-  const defaultNdaContent = `This Non-Disclosure Agreement ("Agreement") is entered into between you ("Recipient" or "You") and the seller of the AI product or service ("Seller") listed on AI Exchange Club.
+  // Updated AI-specific NDA content
+  const aiNdaContent = `This Non-Disclosure Agreement ("Agreement") is entered into between you ("Recipient" or "You") and the seller of the AI product or service ("Seller") listed on AI Exchange Club.
 
 PLEASE READ THIS AGREEMENT CAREFULLY BEFORE ACCESSING CONFIDENTIAL INFORMATION. BY CLICKING "SIGN & VIEW DETAILS," YOU ACKNOWLEDGE THAT YOU HAVE READ, UNDERSTAND, AND AGREE TO BE LEGALLY BOUND BY THE TERMS OF THIS AGREEMENT.
 
@@ -159,8 +159,8 @@ By signing this Agreement, You certify that You are authorized to receive the Co
       </DialogHeader>
       
       <div className="mt-6">
-        <div className="bg-gray-50 p-4 rounded-md border border-gray-200 h-64 overflow-y-auto text-sm">
-          {ndaContent || defaultNdaContent}
+        <div className="bg-gray-50 p-4 rounded-md border border-gray-200 h-64 overflow-y-auto text-sm whitespace-pre-wrap">
+          {ndaContent || aiNdaContent}
         </div>
         
         <div className="flex items-center space-x-2 mt-4">
