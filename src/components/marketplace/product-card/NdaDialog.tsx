@@ -94,66 +94,58 @@ export function NdaDialog({
     }
   };
 
-  // Updated AI-specific NDA content
-  const defaultNdaContent = `NON-DISCLOSURE AGREEMENT FOR AI PRODUCTS
+  // Updated comprehensive NDA content
+  const defaultNdaContent = `This Non-Disclosure Agreement ("Agreement") is entered into between you ("Recipient" or "You") and the seller of the AI product or service ("Seller") listed on AI Exchange Club.
 
-This Non-Disclosure Agreement ("Agreement") is entered into between the seller of the AI product or service ("Discloser") and you, the potential buyer or investor ("Recipient") viewing the product details on AI Exchange Club.
+PLEASE READ THIS AGREEMENT CAREFULLY BEFORE ACCESSING CONFIDENTIAL INFORMATION. BY CLICKING "SIGN & VIEW DETAILS," YOU ACKNOWLEDGE THAT YOU HAVE READ, UNDERSTAND, AND AGREE TO BE LEGALLY BOUND BY THE TERMS OF THIS AGREEMENT.
 
-1. DEFINITIONS
+1. PURPOSE
+   You wish to evaluate the AI product or service ("Product") for potential acquisition. The Seller will disclose certain confidential and proprietary information to enable your evaluation.
 
-"AI Product" means the artificial intelligence product, service, model, algorithm, application, or technology being offered for sale or investment on AI Exchange Club, including but not limited to:
-- Foundation models and fine-tuned models
-- ML algorithms and training methodologies
-- Inference engines and optimization techniques
-- Data processing pipelines and model evaluation frameworks
-- AI applications and user interfaces
+2. CONFIDENTIAL INFORMATION
+   "Confidential Information" includes, but is not limited to:
+   • Financial data (revenue, profit margins, customer acquisition costs)
+   • Technical specifications and source code
+   • Customer and user data
+   • Proprietary algorithms and AI models
+   • Business strategies and operational methods
+   • Any information reasonably understood to be confidential
 
-"Confidential Information" means any proprietary or sensitive information related to the AI Product, including but not limited to:
-- Technical specifications, model architecture, and hyperparameters
-- Training data sources, preprocessing techniques, and prompt engineering methods
-- Performance metrics, limitations, and workarounds
-- Business strategies, pricing models, and target markets
-- Customer acquisition costs and retention metrics
-- Intellectual property and trade secrets
-- Source code and API documentation
-- Research findings and development roadmap
+3. RECIPIENT OBLIGATIONS
+   You agree to:
+   a) Keep all Confidential Information strictly confidential
+   b) Use Confidential Information solely for evaluating the potential acquisition
+   c) Not reverse-engineer, decompile, or disassemble any software or AI models
+   d) Not use the information to create a competing product or service
+   e) Not disclose Confidential Information to any third party without prior written consent
+   f) Take reasonable security measures to protect the Confidential Information
 
-2. CONFIDENTIALITY OBLIGATIONS
+4. EXCLUSIONS
+   This Agreement does not apply to information that:
+   a) Was already known to You prior to disclosure
+   b) Is or becomes publicly available through no fault of Your own
+   c) Is independently developed by You without use of Confidential Information
+   d) Is rightfully obtained from a third party without restriction
 
-2.1 The Recipient agrees to:
-   (a) Maintain strict confidentiality of all Confidential Information
-   (b) Not disclose Confidential Information to any third party
-   (c) Use Confidential Information solely for evaluating a potential acquisition or investment
-   (d) Take reasonable security measures to prevent unauthorized access
-   (e) Not reverse engineer, decompile, or attempt to derive source code or model weights
-   (f) Not use Confidential Information to develop competing products or services
-   (g) Not create derivative works based on the AI Product without express permission
+5. TERM AND TERMINATION
+   This Agreement shall remain in effect for three (3) years from the date of acceptance. Your obligations regarding the protection of Confidential Information shall survive the termination of this Agreement.
 
-2.2 Exclusions: This Agreement does not apply to information that:
-   (a) Is or becomes publicly available through no fault of the Recipient
-   (b) Was known to the Recipient prior to disclosure
-   (c) Is independently developed by the Recipient without use of Confidential Information
-   (d) Is disclosed pursuant to a valid court order or legal requirement
+6. RETURN OF MATERIALS
+   Upon Seller's request or termination of discussions, You shall promptly return or destroy all materials containing Confidential Information.
 
-3. TERM AND TERMINATION
+7. NO RIGHTS GRANTED
+   Nothing in this Agreement grants You any rights to intellectual property, licenses, or ownership of the Product or Confidential Information.
 
-3.1 This Agreement shall remain in effect for three (3) years from the date of acceptance.
-3.2 The confidentiality obligations shall survive termination of this Agreement.
+8. REMEDIES
+   You acknowledge that monetary damages may be inadequate for a breach of this Agreement and that the Seller shall be entitled to seek injunctive relief in addition to any other available remedies.
 
-4. REMEDIES
+9. GOVERNING LAW
+   This Agreement shall be governed by the laws of the State of Minnesota, without regard to its conflict of law principles.
 
-4.1 The Recipient acknowledges that monetary damages may not be sufficient remedy for unauthorized disclosure of Confidential Information.
-4.2 The Discloser shall be entitled to seek injunctive relief to prevent breaches of this Agreement.
+10. ENTIRE AGREEMENT
+    This Agreement constitutes the entire understanding between You and the Seller regarding the Confidential Information and supersedes all prior discussions.
 
-5. GOVERNING LAW
-
-This Agreement shall be governed by the laws of Minnesota, USA, without regard to its conflict of law principles.
-
-6. ACCEPTANCE
-
-By clicking "Sign & View Details", you acknowledge that you have read, understand, and agree to be legally bound by the terms of this Agreement.
-
-AI Exchange Club acts only as a facilitator and marketplace for this transaction and is not a party to this Agreement.`;
+By signing this Agreement, You certify that You are authorized to receive the Confidential Information and agree to be bound by the terms herein.`;
 
   return (
     <div className="max-w-2xl mx-auto">
