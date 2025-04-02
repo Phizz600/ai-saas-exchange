@@ -1,190 +1,77 @@
-"use client";
 
-import * as React from "react";
-import type {
-  ToastActionElement,
-  ToastProps,
-} from "@/components/ui/toast";
+// This is a custom hook for toast notifications
+import { useState, useEffect, createContext, useContext } from "react";
 
-const TOAST_LIMIT = 1;
-const TOAST_REMOVE_DELAY = 1000000;
-
-type ToasterToast = ToastProps & {
+// Types
+export type ToastProps = {
   id: string;
-  title?: React.ReactNode;
-  description?: React.ReactNode;
-  action?: ToastActionElement;
+  title?: string;
+  description?: string;
+  action?: React.ReactNode;
+  variant?: "default" | "destructive";
 };
 
-const actionTypes = {
-  ADD_TOAST: "ADD_TOAST",
-  UPDATE_TOAST: "UPDATE_TOAST",
-  DISMISS_TOAST: "DISMISS_TOAST",
-  REMOVE_TOAST: "REMOVE_TOAST",
-} as const;
+type ToastContextType = {
+  toasts: ToastProps[];
+  addToast: (toast: Omit<ToastProps, "id">) => void;
+  removeToast: (id: string) => void;
+};
 
-let count = 0;
+// Create a context for the toast
+const ToastContext = createContext<ToastContextType | undefined>(undefined);
 
-function genId() {
-  count = (count + 1) % Number.MAX_SAFE_INTEGER;
-  return count.toString();
-}
+// Generate a unique ID for each toast
+const generateId = (): string => {
+  return Math.random().toString(36).substr(2, 9);
+};
 
-type ActionType = typeof actionTypes;
+// Toast provider component
+export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
+  const [toasts, setToasts] = useState<ToastProps[]>([]);
 
-type Action =
-  | {
-      type: ActionType["ADD_TOAST"];
-      toast: ToasterToast;
-    }
-  | {
-      type: ActionType["UPDATE_TOAST"];
-      toast: Partial<ToasterToast>;
-    }
-  | {
-      type: ActionType["DISMISS_TOAST"];
-      toastId?: ToasterToast["id"];
-    }
-  | {
-      type: ActionType["REMOVE_TOAST"];
-      toastId?: ToasterToast["id"];
-    };
+  // Add a new toast
+  const addToast = (toast: Omit<ToastProps, "id">) => {
+    const id = generateId();
+    setToasts((prevToasts) => [...prevToasts, { ...toast, id }]);
 
-interface State {
-  toasts: ToasterToast[];
-}
+    // Auto-dismiss after 5 seconds
+    setTimeout(() => {
+      setToasts((prevToasts) => prevToasts.filter((t) => t.id !== id));
+    }, 5000);
+  };
 
-const toastTimeouts = new Map<string, ReturnType<typeof setTimeout>>();
+  // Remove a toast by ID
+  const removeToast = (id: string) => {
+    setToasts((prevToasts) => prevToasts.filter((toast) => toast.id !== id));
+  };
 
-const addToRemoveQueue = (toastId: string) => {
-  if (toastTimeouts.has(toastId)) {
-    return;
+  return (
+    <ToastContext.Provider value={{ toasts, addToast, removeToast }}>
+      {children}
+    </ToastContext.Provider>
+  );
+};
+
+// Hook to use the toast
+export const useToast = () => {
+  const context = useContext(ToastContext);
+  if (context === undefined) {
+    throw new Error("useToast must be used within a ToastProvider");
   }
-
-  const timeout = setTimeout(() => {
-    toastTimeouts.delete(toastId);
-    dispatch({
-      type: "REMOVE_TOAST",
-      toastId: toastId,
-    });
-  }, TOAST_REMOVE_DELAY);
-
-  toastTimeouts.set(toastId, timeout);
+  return context;
 };
 
-export const reducer = (state: State, action: Action): State => {
-  switch (action.type) {
-    case "ADD_TOAST":
-      return {
-        ...state,
-        toasts: [action.toast, ...state.toasts].slice(0, TOAST_LIMIT),
-      };
+// Standalone toast function (for use outside of React components)
+let toastHandler: ((toast: Omit<ToastProps, "id">) => void) | null = null;
 
-    case "UPDATE_TOAST":
-      return {
-        ...state,
-        toasts: state.toasts.map((t) =>
-          t.id === action.toast.id ? { ...t, ...action.toast } : t
-        ),
-      };
+export const setToastHandler = (handler: (toast: Omit<ToastProps, "id">) => void) => {
+  toastHandler = handler;
+};
 
-    case "DISMISS_TOAST": {
-      const { toastId } = action;
-
-      if (toastId) {
-        addToRemoveQueue(toastId);
-      } else {
-        state.toasts.forEach((toast) => {
-          addToRemoveQueue(toast.id);
-        });
-      }
-
-      return {
-        ...state,
-        toasts: state.toasts.map((t) =>
-          t.id === toastId || toastId === undefined
-            ? {
-                ...t,
-                open: false,
-              }
-            : t
-        ),
-      };
-    }
-    case "REMOVE_TOAST":
-      if (action.toastId === undefined) {
-        return {
-          ...state,
-          toasts: [],
-        };
-      }
-      return {
-        ...state,
-        toasts: state.toasts.filter((t) => t.id !== action.toastId),
-      };
+export const toast = (props: Omit<ToastProps, "id">) => {
+  if (toastHandler) {
+    toastHandler(props);
+  } else {
+    console.warn("Toast handler not initialized. Make sure to use ToastProvider.");
   }
 };
-
-const listeners: Array<(state: State) => void> = [];
-
-let memoryState: State = { toasts: [] };
-
-function dispatch(action: Action) {
-  memoryState = reducer(memoryState, action);
-  listeners.forEach((listener) => {
-    listener(memoryState);
-  });
-}
-
-type Toast = Omit<ToasterToast, "id">;
-
-function toast({ ...props }: Toast) {
-  const id = genId();
-
-  const update = (props: ToasterToast) =>
-    dispatch({
-      type: "UPDATE_TOAST",
-      toast: { ...props, id },
-    });
-  const dismiss = () => dispatch({ type: "DISMISS_TOAST", toastId: id });
-
-  dispatch({
-    type: "ADD_TOAST",
-    toast: {
-      ...props,
-      id,
-      open: true,
-      onOpenChange: (open) => {
-        if (!open) dismiss();
-      },
-    },
-  });
-
-  return {
-    id: id,
-    dismiss,
-    update,
-  };
-}
-
-function useToast() {
-  const [state, setState] = React.useState<State>(memoryState);
-
-  React.useEffect(() => {
-    listeners.push(setState);
-    return () => {
-      const index = listeners.indexOf(setState);
-      if (index > -1) {
-        listeners.splice(index, 1);
-      }
-    };
-  }, [state]);
-
-  return {
-    ...state,
-    toast,
-    dismiss: (toastId?: string) => dispatch({ type: "DISMISS_TOAST", toastId }),
-  };
-}
-
-export { useToast, toast };

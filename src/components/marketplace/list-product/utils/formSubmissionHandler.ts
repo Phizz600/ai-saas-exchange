@@ -210,7 +210,7 @@ export const handleProductSubmission = async (
       imageUrl = `${supabaseUrl}/storage/v1/object/public/${PRODUCT_IMAGES_BUCKET}/${filePath}`;
     }
     
-    // Prepare product data with NDA fields - ensure requires_nda is properly passed
+    // Prepare product data - removing is_auction and related fields that don't exist in DB
     const productData = {
       title: data.title,
       description: data.description,
@@ -219,7 +219,6 @@ export const handleProductSubmission = async (
       category_other: data.categoryOther,
       stage: data.stage,
       industry: data.industry,
-      // Use industryOther field as industry_other column in DB
       industry_other: data.industryOther,
       monthly_revenue: Number(data.monthlyRevenue || 0),
       monthly_traffic: Number(data.monthlyTraffic || 0),
@@ -236,13 +235,7 @@ export const handleProductSubmission = async (
       is_verified: data.isVerified || false,
       special_notes: data.specialNotes,
       status: "pending",
-      is_auction: data.isAuction || false,
-      starting_price: data.isAuction ? Number(data.startingPrice || 0) : null,
-      min_price: data.isAuction ? Number(data.minPrice || 0) : null,
-      price_decrement: data.isAuction ? Number(data.priceDecrement || 0) : null,
-      price_decrement_interval: data.isAuction ? data.priceDecrementInterval : null,
-      auction_end_time: data.isAuction && data.auctionEndTime ? data.auctionEndTime.toISOString() : null,
-      auction_status: data.isAuction ? "pending" : null,
+      // Removing is_auction field and related auction fields
       business_type: data.businessType,
       deliverables: data.deliverables || [],
       monthly_profit: Number(data.monthlyProfit || 0),

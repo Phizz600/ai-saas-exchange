@@ -51,7 +51,7 @@ export function ListProductForm() {
       activeUsers: "",
       grossProfitMargin: undefined,
       image: null,
-      isAuction: false,
+      isAuction: false, // Keep this for form state, even if DB doesn't have column yet
       startingPrice: undefined,
       minPrice: undefined,
       priceDecrement: undefined,
