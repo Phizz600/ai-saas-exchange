@@ -18,7 +18,7 @@ export const NdaPolicy = () => {
         </div>
         
         <div className="container mx-auto px-4 py-16">
-          <div className="max-w-4xl mx-auto bg-white/90 backdrop-blur-sm rounded-lg shadow-xl p-8">
+          <div className="max-w-4xl mx-auto bg-gray-50 backdrop-blur-sm rounded-lg shadow-xl p-8">
             <div className="relative">
               <h1 className="exo-2-heading text-4xl md:text-5xl font-bold text-gray-800 mb-4 my-[60px]">Enhanced NDA Policy</h1>
               <div className="h-1 w-20 bg-gradient-to-r from-[#D946EE] to-[#8B5CF6]"></div>
