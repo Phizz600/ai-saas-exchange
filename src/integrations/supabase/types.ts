@@ -806,6 +806,7 @@ export type Database = {
           id: string
           image_url: string | null
           industry: string | null
+          industry_other: string | null
           integrations: string[] | null
           integrations_other: string | null
           investment_timeline: string | null
@@ -868,6 +869,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           industry?: string | null
+          industry_other?: string | null
           integrations?: string[] | null
           integrations_other?: string | null
           investment_timeline?: string | null
@@ -930,6 +932,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           industry?: string | null
+          industry_other?: string | null
           integrations?: string[] | null
           integrations_other?: string | null
           investment_timeline?: string | null

@@ -1,3 +1,4 @@
+
 import { motion, AnimatePresence } from "framer-motion";
 import { Star } from "lucide-react";
 interface HeroTitleProps {
@@ -16,11 +17,12 @@ const HeroTitle = ({
     duration: 0.3
   }} className="flex flex-col items-center mb-8">
       <div className="flex items-center gap-2 mb-6 bg-white/10 backdrop-blur-sm px-4 rounded-full py-[9px] my-[30px]">
-        <div className="flex">
-          {[...Array(5)].map((_, i) => <Star key={i} className={`w-4 h-4 ${i < 5 ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`} />)}
+        <div className="flex flex-col items-center">
+          <span className="text-white text-xs mb-1 italic">powered by artificial intelligence</span>
+          <div className="flex">
+            {[...Array(5)].map((_, i) => <Star key={i} className={`w-4 h-4 ${i < 5 ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`} />)}
+          </div>
         </div>
-        
-        
       </div>
 
       <h1 className="exo-2-heading font-bold leading-tight text-white text-center mx-0 my-0 py-0 px-0 md:text-6xl text-3xl">
