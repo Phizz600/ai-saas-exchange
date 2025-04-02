@@ -1,11 +1,11 @@
-
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Mail, Linkedin } from "lucide-react";
+import { Mail, Linkedin, Youtube } from "lucide-react";
+
 export const Footer = () => {
   const [email, setEmail] = useState("");
 
@@ -126,6 +126,17 @@ export const Footer = () => {
                   className="text-white/80 hover:text-white"
                 >
                   Instagram
+                </a>
+              </li>
+              <li className="text-center md:text-left">
+                <a 
+                  href="https://www.youtube.com/channel/UCIy1JdgWbNAFxSBobWz2vTw" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="text-white/80 hover:text-white flex items-center justify-center md:justify-start"
+                >
+                  <Youtube className="h-4 w-4 mr-2" />
+                  YouTube
                 </a>
               </li>
             </ul>
