@@ -14,8 +14,8 @@ const HeroTitle = ({
     opacity: 1
   }} transition={{
     duration: 0.3
-  }} className="flex flex-col items-center mb-8">
-      <span className="text-white italic mb-2 my-0 mx-0 px-0 py-0 text-sm">powered by artificial intelligence</span>
+  }} className="flex flex-col items-center mb-8 my-0 py-0">
+      
       <div className="flex items-center gap-2 mb-6 bg-white/10 backdrop-blur-sm px-4 rounded-full py-[9px] my-[30px]">
         <div className="flex">
           {[...Array(5)].map((_, i) => <Star key={i} className={`w-4 h-4 ${i < 5 ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`} />)}
