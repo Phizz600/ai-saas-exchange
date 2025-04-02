@@ -2,10 +2,16 @@
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { Shield, Lock, FileCheck, Eye, UserCheck, AlertTriangle } from "lucide-react";
+import { Shield, Lock, FileCheck, Eye, UserCheck, AlertTriangle, ChevronDown } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { ConfidentialWatermark } from "@/components/marketplace/product-card/ConfidentialWatermark";
+import { 
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 export const NdaPolicy = () => {
   return (
@@ -157,32 +163,61 @@ export const NdaPolicy = () => {
             </div>
           </div>
           
-          {/* FAQ Section */}
+          {/* FAQ Section with Accordion */}
           <div className="mt-16">
             <h2 className="text-3xl font-bold mb-8 exo-2-heading">Frequently Asked Questions</h2>
             
-            <div className="space-y-6">
-              <div>
-                <h3 className="text-xl font-semibold mb-2">Are the NDAs legally binding?</h3>
-                <p className="text-gray-600">
-                  Yes, our NDAs are crafted by legal experts specializing in technology law and are designed to be legally binding in most jurisdictions.
-                </p>
-              </div>
+            <Accordion type="single" collapsible className="space-y-4">
+              <AccordionItem value="item-1" className="border rounded-lg overflow-hidden shadow-sm bg-white">
+                <AccordionTrigger className="px-6 py-4 hover:bg-gray-50 text-xl font-medium">
+                  Are the NDAs legally binding?
+                </AccordionTrigger>
+                <AccordionContent className="px-6 pb-4 text-gray-600">
+                  Yes, our NDAs are crafted by legal experts specializing in technology law and are designed to be legally 
+                  binding in most jurisdictions.
+                </AccordionContent>
+              </AccordionItem>
               
-              <div>
-                <h3 className="text-xl font-semibold mb-2">What happens if someone breaches the NDA?</h3>
-                <p className="text-gray-600">
-                  Our platform captures comprehensive evidence of agreement to terms, which can be used in legal proceedings if a breach occurs. Additionally, our team can assist with the initial steps of addressing an NDA violation.
-                </p>
-              </div>
+              <AccordionItem value="item-2" className="border rounded-lg overflow-hidden shadow-sm bg-white">
+                <AccordionTrigger className="px-6 py-4 hover:bg-gray-50 text-xl font-medium">
+                  What happens if someone breaches the NDA?
+                </AccordionTrigger>
+                <AccordionContent className="px-6 pb-4 text-gray-600">
+                  Our platform captures comprehensive evidence of agreement to terms, which can be used in legal proceedings 
+                  if a breach occurs. Additionally, our team can assist with the initial steps of addressing an NDA violation.
+                </AccordionContent>
+              </AccordionItem>
               
-              <div>
-                <h3 className="text-xl font-semibold mb-2">Can I customize the NDA for my specific product?</h3>
-                <p className="text-gray-600">
-                  Premium sellers can work with our legal team to customize certain aspects of the NDA to address specific concerns or unique aspects of their business.
-                </p>
-              </div>
-            </div>
+              <AccordionItem value="item-3" className="border rounded-lg overflow-hidden shadow-sm bg-white">
+                <AccordionTrigger className="px-6 py-4 hover:bg-gray-50 text-xl font-medium">
+                  Can I customize the NDA for my specific product?
+                </AccordionTrigger>
+                <AccordionContent className="px-6 pb-4 text-gray-600">
+                  Premium sellers can work with our legal team to customize certain aspects of the NDA to address specific 
+                  concerns or unique aspects of their business.
+                </AccordionContent>
+              </AccordionItem>
+              
+              <AccordionItem value="item-4" className="border rounded-lg overflow-hidden shadow-sm bg-white">
+                <AccordionTrigger className="px-6 py-4 hover:bg-gray-50 text-xl font-medium">
+                  How do you verify the identity of NDA signers?
+                </AccordionTrigger>
+                <AccordionContent className="px-6 pb-4 text-gray-600">
+                  We employ a multi-factor verification process that includes email confirmation, device fingerprinting, 
+                  and IP address logging to ensure the signer's identity can be traced and verified.
+                </AccordionContent>
+              </AccordionItem>
+              
+              <AccordionItem value="item-5" className="border rounded-lg overflow-hidden shadow-sm bg-white">
+                <AccordionTrigger className="px-6 py-4 hover:bg-gray-50 text-xl font-medium">
+                  How long does the NDA protection last?
+                </AccordionTrigger>
+                <AccordionContent className="px-6 pb-4 text-gray-600">
+                  Our standard NDAs provide protection for two years from the date of signing, but premium sellers can 
+                  customize the duration to meet their specific requirements.
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
           </div>
         </div>
       </div>
