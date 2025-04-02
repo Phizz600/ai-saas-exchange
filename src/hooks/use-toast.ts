@@ -1,5 +1,4 @@
 
-// This is a custom hook for toast notifications
 import React, { useState, createContext, useContext, useEffect } from "react";
 
 // Types

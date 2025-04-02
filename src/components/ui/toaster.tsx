@@ -10,7 +10,6 @@ import {
   ToastTitle,
   ToastViewport,
 } from "@/components/ui/toast";
-import { useEffect } from "react";
 
 export function Toaster() {
   const { toasts, removeToast } = useToast();
