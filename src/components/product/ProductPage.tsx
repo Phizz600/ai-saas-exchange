@@ -68,45 +68,13 @@ interface Product {
 }
 
 export function ProductPage() {
-  const {
-    id
-  } = useParams<{
-    id: string;
-  }>();
+  const { id } = useParams<{ id: string; }>();
   const navigate = useNavigate();
   const [isLiked, setIsLiked] = useState(false);
   const { toast } = useToast();
   const { hasSigned, isCheckingStatus, setHasSigned } = useNdaStatus(id || '');
   
-  // Add print warning
-  useEffect(() => {
-    const handleBeforePrint = () => {
-      if (product?.requires_nda) {
-        alert("Warning: This document contains confidential information protected by an NDA. Unauthorized printing or distribution is prohibited.");
-      }
-    };
-
-    window.addEventListener('beforeprint', handleBeforePrint);
-    return () => window.removeEventListener('beforeprint', handleBeforePrint);
-  }, [product?.requires_nda]);
-  
-  // Add copy protection
-  useEffect(() => {
-    const handleCopy = (e: ClipboardEvent) => {
-      if (product?.requires_nda && !hasSigned) {
-        e.preventDefault();
-        toast({
-          title: "Copy restricted",
-          description: "This content is protected by NDA and cannot be copied until you sign the agreement",
-          variant: "destructive",
-        });
-      }
-    };
-    
-    document.addEventListener('copy', handleCopy);
-    return () => document.removeEventListener('copy', handleCopy);
-  }, [product?.requires_nda, hasSigned, toast]);
-  
+  // Fetch product data
   const {
     data: product,
     isLoading,
@@ -140,6 +108,38 @@ export function ProductPage() {
     retry: 1,
     gcTime: 0
   });
+
+  // Determine if we need to show limited information - moved after product query
+  const showLimitedInfo = product?.requires_nda && !hasSigned;
+  
+  // Add print warning - moved after product query
+  useEffect(() => {
+    const handleBeforePrint = () => {
+      if (product?.requires_nda) {
+        alert("Warning: This document contains confidential information protected by an NDA. Unauthorized printing or distribution is prohibited.");
+      }
+    };
+
+    window.addEventListener('beforeprint', handleBeforePrint);
+    return () => window.removeEventListener('beforeprint', handleBeforePrint);
+  }, [product?.requires_nda]);
+  
+  // Add copy protection - moved after product query
+  useEffect(() => {
+    const handleCopy = (e: ClipboardEvent) => {
+      if (product?.requires_nda && !hasSigned) {
+        e.preventDefault();
+        toast({
+          title: "Copy restricted",
+          description: "This content is protected by NDA and cannot be copied until you sign the agreement",
+          variant: "destructive",
+        });
+      }
+    };
+    
+    document.addEventListener('copy', handleCopy);
+    return () => document.removeEventListener('copy', handleCopy);
+  }, [product?.requires_nda, hasSigned, toast]);
 
   useEffect(() => {
     if (error) {
@@ -236,9 +236,6 @@ export function ProductPage() {
       </>;
   }
 
-  // Determine if we need to show limited information
-  const showLimitedInfo = product?.requires_nda && !hasSigned;
-
   // Determine acquisition timeline text based on investment_timeline
   const getAcquisitionTimelineText = (timeline?: string) => {
     switch (timeline) {
@@ -314,6 +311,8 @@ export function ProductPage() {
             </AlertDescription>
           </Alert>
         )}
+        
+        
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div className="space-y-6">
