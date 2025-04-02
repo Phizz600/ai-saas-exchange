@@ -25,6 +25,33 @@ export function NdaDialog({
   const [isAgreed, setIsAgreed] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Function to get detailed user device information
+  const getUserDeviceInfo = () => {
+    const deviceInfo = {
+      userAgent: navigator.userAgent,
+      platform: navigator.platform,
+      vendor: navigator.vendor,
+      language: navigator.language,
+      screenResolution: `${window.screen.width}x${window.screen.height}`,
+      colorDepth: window.screen.colorDepth,
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      timestamp: new Date().toISOString()
+    };
+    return JSON.stringify(deviceInfo);
+  };
+
+  // Function to get IP address via a public API
+  const getIpAddress = async () => {
+    try {
+      const response = await fetch('https://api.ipify.org?format=json');
+      const data = await response.json();
+      return data.ip;
+    } catch (error) {
+      console.error('Error fetching IP address:', error);
+      return 'Unable to determine IP';
+    }
+  };
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     
@@ -51,17 +78,20 @@ export function NdaDialog({
         return;
       }
       
-      // Get the user's IP address (this is a placeholder, actual implementation may vary)
-      // In a real app, you might want to use a server-side function to get the IP address
-      const ipAddress = "User's browser";
+      // Get the user's actual IP address
+      const ipAddress = await getIpAddress();
       
-      // Record the NDA signature
+      // Get detailed device information
+      const deviceInfo = getUserDeviceInfo();
+      
+      // Record the NDA signature with enhanced information
       const { error } = await supabase
         .from('product_ndas')
         .insert({
           user_id: user.id,
           product_id: productId,
-          ip_address: ipAddress
+          ip_address: ipAddress,
+          device_info: deviceInfo
         });
       
       if (error) {
@@ -149,6 +179,17 @@ PLEASE READ THIS AGREEMENT CAREFULLY BEFORE ACCESSING CONFIDENTIAL INFORMATION. 
 
 By signing this Agreement, You certify that You are authorized to receive the Confidential Information and agree to be bound by the terms herein.`;
 
+  // Confidentiality notice to display at the top of the dialog
+  const confidentialityNotice = (
+    <div className="bg-red-50 text-red-700 p-3 rounded-md mb-4 text-sm border border-red-200 flex items-center">
+      <div className="mr-2 flex-shrink-0">⚠️</div>
+      <div>
+        <strong>Confidentiality Notice:</strong> The information you are about to access is confidential. 
+        Your IP address and device information will be recorded for security purposes.
+      </div>
+    </div>
+  );
+
   return (
     <div className="max-w-2xl mx-auto">
       <DialogHeader>
@@ -161,7 +202,19 @@ By signing this Agreement, You certify that You are authorized to receive the Co
       </DialogHeader>
       
       <div className="mt-6">
-        <div className="bg-gray-50 p-4 rounded-md border border-gray-200 h-64 overflow-y-auto text-sm whitespace-pre-wrap">
+        {/* Add confidentiality notice */}
+        {confidentialityNotice}
+        
+        {/* NDA content with watermark */}
+        <div className="bg-gray-50 p-4 rounded-md border border-gray-200 h-64 overflow-y-auto text-sm whitespace-pre-wrap relative">
+          {/* Add a diagonal watermark */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-10 overflow-hidden">
+            <div className="transform rotate-45 text-gray-500 text-4xl font-bold flex whitespace-nowrap">
+              <span className="mx-4">CONFIDENTIAL</span>
+              <span className="mx-4">CONFIDENTIAL</span>
+              <span className="mx-4">CONFIDENTIAL</span>
+            </div>
+          </div>
           {ndaContent || fixedNdaContent}
         </div>
         
