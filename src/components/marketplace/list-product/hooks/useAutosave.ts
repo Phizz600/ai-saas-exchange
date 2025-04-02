@@ -80,8 +80,8 @@ export const useAutosave = (form: UseFormReturn<ListProductFormData>, currentSec
 
       if (showToast) {
         toast({
-          description: "Draft saved",
-          duration: 2000
+          description: "Draft saved"
+          // Removed the duration property as it's not in the ToastProps type
         });
       }
     } catch (error) {
