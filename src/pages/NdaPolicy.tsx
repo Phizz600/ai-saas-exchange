@@ -1,4 +1,3 @@
-
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -6,22 +5,15 @@ import { Shield, Lock, FileCheck, Eye, UserCheck, AlertTriangle, ChevronDown } f
 import { Card } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { ConfidentialWatermark } from "@/components/marketplace/product-card/ConfidentialWatermark";
-import { 
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 export const NdaPolicy = () => {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-accent/20 via-white to-accent2/20">
+  return <div className="min-h-screen bg-gradient-to-br from-accent/20 via-white to-accent2/20">
       <Navbar />
       
       <div className="container mx-auto px-4 py-16 mt-24">
         <div className="max-w-4xl mx-auto">
           <div className="relative">
-            <h1 className="exo-2-heading text-4xl md:text-5xl font-bold text-gray-800 mb-4">Enhanced NDA Policy</h1>
+            <h1 className="exo-2-heading text-4xl md:text-5xl font-bold text-gray-800 mb-4 my-[60px]">Enhanced NDA Policy</h1>
             <div className="h-1 w-20 bg-gradient-to-r from-[#D946EE] to-[#8B5CF6]"></div>
           </div>
           
@@ -33,11 +25,7 @@ export const NdaPolicy = () => {
 
           {/* Hero section with image */}
           <div className="mt-12 relative rounded-xl overflow-hidden shadow-xl">
-            <img 
-              src="https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&q=80&w=1200&h=600" 
-              alt="Secure digital technology" 
-              className="w-full h-64 object-cover" 
-            />
+            <img src="https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&q=80&w=1200&h=600" alt="Secure digital technology" className="w-full h-64 object-cover" />
             <div className="absolute inset-0 bg-gradient-to-r from-[#8B5CF6]/80 to-transparent flex items-center">
               <div className="p-8 md:p-16 max-w-lg">
                 <h2 className="text-white text-3xl font-bold mb-4 exo-2-heading">Trusted by Industry Leaders</h2>
@@ -223,8 +211,6 @@ export const NdaPolicy = () => {
       </div>
       
       <Footer />
-    </div>
-  );
+    </div>;
 };
-
 export default NdaPolicy;
