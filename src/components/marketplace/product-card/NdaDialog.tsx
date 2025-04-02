@@ -94,48 +94,60 @@ export function NdaDialog({
     }
   };
 
-  const defaultNdaContent = `NON-DISCLOSURE AGREEMENT
+  const defaultNdaContent = `NON-DISCLOSURE AGREEMENT FOR AI PRODUCTS
 
-Please read the following Non-Disclosure Agreement ("Agreement") carefully. By clicking on the "Sign & View Details" button you are indicating your acceptance of this Non-Disclosure Agreement and agree to be legally bound by it.
+This Non-Disclosure Agreement ("Agreement") is entered into between the seller of the AI product or service ("Seller", "Discloser") and you, the potential buyer or investor ("Recipient") viewing product details on AI Exchange Club.
 
-For the purposes of this Agreement, "AI Product" means the AI product or service currently advertised and offered for sale on AI Exchange Club which you are viewing.
+1. DEFINITIONS
 
-"Seller" means the owner of the AI Product.
+"AI Product" means the artificial intelligence product, service, model, algorithm, application, or technology being offered for sale or investment on AI Exchange Club.
 
-"You" or "Your" or "Buyer" means the person or company who is interested in acquiring the AI Product.
+"Confidential Information" means any proprietary or sensitive information related to the AI Product, including but not limited to:
+- Technical specifications, algorithms, and model architecture
+- Training methodologies and data sources
+- Financial information and metrics
+- User statistics and performance data
+- Business strategies and monetization plans
+- Intellectual property and trade secrets
+- Source code and implementation details
+- Customer and user information
+- Any information marked as confidential or that should reasonably be understood as confidential
 
-For the purpose of this Agreement, You and the Seller are each a "Party" and collectively "The Parties."
+2. CONFIDENTIALITY OBLIGATIONS
 
-This Agreement is effective as of the date of Your acceptance of this Agreement.
-You wish to evaluate the AI Product and engage in discussions with the Seller in connection with Your possible acquisition of the AI Product ("Purpose").
-The Seller wishes to disclose certain Confidential Information to You relating to the Purpose. You enter into this Agreement to protect the confidentiality of the Confidential Information, on the terms set out below.
-You acknowledge and agree that terms of this Agreement are binding upon You and enforceable by the Seller.
+2.1 The Recipient agrees to:
+   (a) Maintain strict confidentiality of all Confidential Information
+   (b) Not disclose Confidential Information to any third party
+   (c) Use Confidential Information solely for evaluating a potential acquisition or investment
+   (d) Take reasonable security measures to prevent unauthorized access
+   (e) Not reverse engineer, decompile, or attempt to derive source code from the AI Product
+   (f) Not use Confidential Information to develop competing products or services
 
-"Confidential Information" means any information provided by the Seller or any of its Personnel to You or any of your Personnel for or in connection with the Purpose, including: (a) information designated as confidential by the Seller; (b) information imparted in circumstances of confidence; (c) any AI models, algorithms, training data, or technical implementations; (d) business processes, revenue figures, customer information, or operational details; or (e) information that You know, or ought to know, is confidential, but excluding information which is already known by You at the time it is disclosed, or which is or becomes public knowledge other than by a breach of this Agreement.
+2.2 Exclusions: This Agreement does not apply to information that:
+   (a) Is or becomes publicly available through no fault of the Recipient
+   (b) Was known to the Recipient prior to disclosure
+   (c) Is independently developed by the Recipient without use of Confidential Information
+   (d) Is disclosed pursuant to a valid court order or legal requirement
 
-"Personnel" means any employee, officer, agent, contractor, subcontractor, student or volunteer of a Party, and any employee, officer, agent, contractor, subcontractor, student or volunteer of a contractor or subcontractor, but excludes the other Party and its Personnel.
+3. TERM AND TERMINATION
 
-You acknowledge and agree that the Confidential Information is valuable.
-In consideration for the Seller providing the Confidential Information to You, You accept and agree to keep the Confidential Information confidential in accordance terms of this Agreement.
-Subject to clause 10, You must (a) keep the Confidential Information confidential and preserve its confidential nature; and (b) not use or disclose or permit the use or disclosure of Confidential Information for any purpose other than the Purpose.
-This Agreement does not prohibit the use or disclosure of Confidential Information (a) required to be disclosed by You by law or pursuant to the rules of any securities exchange; (b) by You to your legal or other advisers, subject to the relevant adviser being subject to confidentiality obligations or a confidentiality undertaking in a form reasonably satisfactory to the Seller; (c) which is necessary for the Purpose, but only to the extent necessary for the Purpose; (d) to an auditor solely for the purposes of an audit; or (e) which the Seller has agreed in writing may be used or disclosed by You, provided such use or disclosure is in accordance with the terms of that agreement.
+3.1 This Agreement shall remain in effect for three (3) years from the date of acceptance.
+3.2 The confidentiality obligations shall survive termination of this Agreement.
 
-You must ensure (a) your Personnel are made aware of the confidential nature of the Confidential Information and the terms of this Agreement before being provided with or having access to Confidential Information; and (b) your Personnel do not do or fail to do anything that, if done or not done, would amount to a breach of your obligations under this Agreement.
-If You become aware that You have or may breach this Agreement, You must immediately notify the Seller and take all reasonable steps required to stop the breach.
-Unless agreed otherwise in writing, this Agreement and the obligations under this Agreement continue in full force and effect for three (3) years from the Commencement Date.
+4. REMEDIES
 
-You acknowledge that the Confidential Information remains the property of the Seller at all times and that this Agreement does not convey to You or any of your Personnel any proprietary or other interest in the Confidential Information.
-You must, promptly upon request by the Seller, return or destroy all material containing Confidential Information in your possession, power or control, which was either received from the Seller or which You have generated.
-You acknowledge that disclosure of any Confidential Information in breach of this Agreement would cause irreparable harm to the Seller for which damages may not be an adequate remedy.
-You consent to the grant of injunctive relief to restrain any breach of this Agreement, or specific performance to compel You to perform your obligations under this Agreement, as a remedy for any breach or threatened breach of this Agreement and in addition to any other remedies available to the Seller.
+4.1 The Recipient acknowledges that monetary damages may not be sufficient remedy for unauthorized disclosure of Confidential Information.
+4.2 The Discloser shall be entitled to seek injunctive relief to prevent breaches of this Agreement.
 
-You indemnify the Seller against any claims, loss, damages, costs and expenses (including legal costs on a solicitor and own client basis) that the Seller incurs or suffers directly or indirectly as a result of a breach of this Agreement by You, or any unauthorised use or disclosure of the Confidential Information by You or your Personnel or a person who received Confidential Information from any of them.
+5. GOVERNING LAW
 
-This Agreement is governed by the laws of Minnesota and You agree to submit to the non-exclusive jurisdiction of its courts.
-This Agreement shall be binding upon and for the benefit of the Parties, their successors and assigns.
-This Agreement constitutes Your entire understanding in relation to its subject matter and supersedes all prior written or oral agreements or undertakings regarding that subject matter.
-You may not assign this Agreement (or any right under it) to another person without the prior, written consent of the Seller.
-The termination or expiry of this Agreement for any reason will not extinguish Your obligations, which, either expressly or by their nature, are intended to survive termination or expiry, including clause 9.`;
+This Agreement shall be governed by the laws of Minnesota, USA, without regard to its conflict of law principles.
+
+6. ACCEPTANCE
+
+By clicking "Sign & View Details", you acknowledge that you have read, understand, and agree to be legally bound by the terms of this Agreement.
+
+AI Exchange Club acts only as a facilitator and marketplace for this transaction and is not a party to this Agreement.`;
 
   return (
     <div className="max-w-2xl mx-auto">
