@@ -3,13 +3,26 @@ import { Card } from "@/components/ui/card";
 import { DollarSign, PercentIcon, CheckCircle, Clock, ShieldCheck, Crown, BadgeCheck, Users, Award } from "lucide-react";
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-
 const PricingFees = () => {
-  return (
-    <section className="relative py-20">
+  return <section className="py-20">
       <div className="container mx-auto px-4">
         {/* Pro Membership Banner */}
         <motion.div initial={{
+        opacity: 0,
+        y: 20
+      }} whileInView={{
+        opacity: 1,
+        y: 0
+      }} transition={{
+        duration: 0.5,
+        delay: 0.1
+      }} className="mb-12">
+          
+        </motion.div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto mb-12">
+          {/* Card 1 - Commission Structure */}
+          <motion.div initial={{
           opacity: 0,
           y: 20
         }} whileInView={{
@@ -17,23 +30,8 @@ const PricingFees = () => {
           y: 0
         }} transition={{
           duration: 0.5,
-          delay: 0.1
-        }} className="mb-12">
-          
-        </motion.div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto mb-12">
-          {/* Card 1 - Commission Structure */}
-          <motion.div initial={{
-            opacity: 0,
-            y: 20
-          }} whileInView={{
-            opacity: 1,
-            y: 0
-          }} transition={{
-            duration: 0.5,
-            delay: 0.2
-          }}>
+          delay: 0.2
+        }}>
             <Card className="h-full p-8 bg-white/10 backdrop-blur-sm border-white/5 hover:shadow-lg transition-shadow">
               <div className="flex flex-col h-full">
                 <div className="flex justify-center mb-6">
@@ -95,15 +93,15 @@ const PricingFees = () => {
           
           {/* Card 2 - Listing Fee */}
           <motion.div initial={{
-            opacity: 0,
-            y: 20
-          }} whileInView={{
-            opacity: 1,
-            y: 0
-          }} transition={{
-            duration: 0.5,
-            delay: 0.3
-          }}>
+          opacity: 0,
+          y: 20
+        }} whileInView={{
+          opacity: 1,
+          y: 0
+        }} transition={{
+          duration: 0.5,
+          delay: 0.3
+        }}>
             <Card className="h-full p-8 bg-white/10 backdrop-blur-sm border-white/5 hover:shadow-lg transition-shadow">
               <div className="flex flex-col h-full">
                 <div className="flex justify-center mb-6">
@@ -159,15 +157,15 @@ const PricingFees = () => {
           
           {/* Card 3 - Deposit Fees */}
           <motion.div initial={{
-            opacity: 0,
-            y: 20
-          }} whileInView={{
-            opacity: 1,
-            y: 0
-          }} transition={{
-            duration: 0.5,
-            delay: 0.4
-          }}>
+          opacity: 0,
+          y: 20
+        }} whileInView={{
+          opacity: 1,
+          y: 0
+        }} transition={{
+          duration: 0.5,
+          delay: 0.4
+        }}>
             <Card className="h-full p-8 bg-white/10 backdrop-blur-sm border-white/5 hover:shadow-lg transition-shadow">
               <div className="flex flex-col h-full">
                 <div className="flex justify-center mb-6">
@@ -230,30 +228,20 @@ const PricingFees = () => {
         </div>
         
         <motion.div initial={{
-          opacity: 0,
-          y: 20
-        }} whileInView={{
-          opacity: 1,
-          y: 0
-        }} transition={{
-          duration: 0.5,
-          delay: 0.5
-        }} className="text-center mt-12">
+        opacity: 0,
+        y: 20
+      }} whileInView={{
+        opacity: 1,
+        y: 0
+      }} transition={{
+        duration: 0.5,
+        delay: 0.5
+      }} className="text-center mt-12">
           <p className="text-gray-300 max-w-2xl mx-auto">
             All transactions are processed securely through Escrow.com to ensure safe and transparent dealings for both parties.
           </p>
         </motion.div>
       </div>
-      
-      {/* Wave divider at the bottom to create a smooth transition to the NDA section */}
-      <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-0 transform translate-y-1">
-        <svg className="relative block w-full h-16" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
-          <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" 
-                className="fill-blue-50/50"></path>
-        </svg>
-      </div>
-    </section>
-  );
+    </section>;
 };
-
 export default PricingFees;

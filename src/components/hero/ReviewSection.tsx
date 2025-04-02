@@ -58,37 +58,28 @@ const reviewers: Reviewer[] = [
 
 export default function ReviewSection() {
   return (
-    <section className="relative py-24 bg-gradient-to-b from-[#f8fafc] via-[#f5f7fa] to-white">
+    <section className="py-20 bg-gradient-to-b from-[#f8fafc] to-white border-t border-gray-100">
       <div className="container mx-auto px-4">
         <motion.h2 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-6 text-4xl font-bold exo-2-heading bg-gradient-to-r from-[#8B5CF6] to-[#D946EE] bg-clip-text text-transparent"
+          className="text-center mb-16 text-4xl font-bold text-gray-800 exo-2-heading"
         >
           Hear what these people think about AI Exchange Club
         </motion.h2>
-        
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="text-center mb-16 text-gray-600 max-w-2xl mx-auto"
-        >
-          Join hundreds of satisfied users who are already experiencing the benefits of our platform
-        </motion.p>
         
         {/* Senja Testimonials Widget */}
         <SenjaTestimonials />
         
         {/* Original testimonials are kept as a fallback */}
-        <div className="mt-16">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+        <div className="mt-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             {reviewers.slice(0, 3).map((reviewer, index) => (
               <ReviewCard key={index} reviewer={reviewer} index={index} />
             ))}
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
             {reviewers.slice(3, 5).map((reviewer, index) => (
               <ReviewCard key={index + 3} reviewer={reviewer} index={index + 3} />
             ))}
@@ -106,7 +97,7 @@ function ReviewCard({ reviewer, index }: { reviewer: Reviewer; index: number }) 
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
     >
-      <Card className="h-full p-6 bg-white border-[#d1d5db]/20 hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+      <Card className="h-full p-6 bg-white border-gray-200 hover:shadow-md transition-shadow">
         <div className="space-y-4">
           {/* Star rating */}
           <div className="flex text-[#8B5CF6]">
@@ -123,7 +114,7 @@ function ReviewCard({ reviewer, index }: { reviewer: Reviewer; index: number }) 
             <img
               src={reviewer.avatar}
               alt={reviewer.name}
-              className="w-12 h-12 rounded-full mr-4 object-cover ring-2 ring-[#D946EE]/10"
+              className="w-12 h-12 rounded-full mr-4 object-cover"
             />
             <div>
               <h4 className="font-bold text-gray-900">{reviewer.name}</h4>
