@@ -1,3 +1,4 @@
+
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -6,11 +7,15 @@ import { Card } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { ConfidentialWatermark } from "@/components/marketplace/product-card/ConfidentialWatermark";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+
 export const NdaPolicy = () => {
   return <div className="min-h-screen bg-gradient-to-br from-accent/20 via-white to-accent2/20">
-      <Navbar />
+      {/* Changed from absolute to relative positioning by removing the mt-24 class */}
+      <div className="sticky top-0 z-50 w-full">
+        <Navbar />
+      </div>
       
-      <div className="container mx-auto px-4 py-16 mt-24">
+      <div className="container mx-auto px-4 py-16">
         <div className="max-w-4xl mx-auto">
           <div className="relative">
             <h1 className="exo-2-heading text-4xl md:text-5xl font-bold text-gray-800 mb-4 my-[60px]">Enhanced NDA Policy</h1>
