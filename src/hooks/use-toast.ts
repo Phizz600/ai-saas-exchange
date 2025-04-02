@@ -1,6 +1,6 @@
 
 // This is a custom hook for toast notifications
-import { useState, useEffect, createContext, useContext } from "react";
+import { useState, createContext, useContext } from "react";
 
 // Types
 export type ToastProps = {
@@ -45,10 +45,11 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
     setToasts((prevToasts) => prevToasts.filter((toast) => toast.id !== id));
   };
 
-  return (
-    <ToastContext.Provider value={{ toasts, addToast, removeToast }}>
-      {children}
-    </ToastContext.Provider>
+  // Create provider without using JSX
+  return React.createElement(
+    ToastContext.Provider, 
+    { value: { toasts, addToast, removeToast } },
+    children
   );
 };
 
