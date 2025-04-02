@@ -94,8 +94,8 @@ export function NdaDialog({
     }
   };
 
-  // Use the provided NDA content or fall back to the default
-  const defaultNdaContent = `NON-DISCLOSURE AGREEMENT
+  // Fixed NDA content exactly as provided by the user
+  const fixedNdaContent = `NON-DISCLOSURE AGREEMENT
 
 This Non-Disclosure Agreement ("Agreement") is entered into between you ("Recipient" or "You") and the seller of the AI product or service ("Seller") listed on AI Exchange Club.
 
@@ -162,7 +162,7 @@ By signing this Agreement, You certify that You are authorized to receive the Co
       
       <div className="mt-6">
         <div className="bg-gray-50 p-4 rounded-md border border-gray-200 h-64 overflow-y-auto text-sm whitespace-pre-wrap">
-          {ndaContent || defaultNdaContent}
+          {ndaContent || fixedNdaContent}
         </div>
         
         <div className="flex items-center space-x-2 mt-4">
