@@ -94,24 +94,29 @@ export function NdaDialog({
     }
   };
 
+  // Updated AI-specific NDA content
   const defaultNdaContent = `NON-DISCLOSURE AGREEMENT FOR AI PRODUCTS
 
-This Non-Disclosure Agreement ("Agreement") is entered into between the seller of the AI product or service ("Seller", "Discloser") and you, the potential buyer or investor ("Recipient") viewing product details on AI Exchange Club.
+This Non-Disclosure Agreement ("Agreement") is entered into between the seller of the AI product or service ("Discloser") and you, the potential buyer or investor ("Recipient") viewing the product details on AI Exchange Club.
 
 1. DEFINITIONS
 
-"AI Product" means the artificial intelligence product, service, model, algorithm, application, or technology being offered for sale or investment on AI Exchange Club.
+"AI Product" means the artificial intelligence product, service, model, algorithm, application, or technology being offered for sale or investment on AI Exchange Club, including but not limited to:
+- Foundation models and fine-tuned models
+- ML algorithms and training methodologies
+- Inference engines and optimization techniques
+- Data processing pipelines and model evaluation frameworks
+- AI applications and user interfaces
 
 "Confidential Information" means any proprietary or sensitive information related to the AI Product, including but not limited to:
-- Technical specifications, algorithms, and model architecture
-- Training methodologies and data sources
-- Financial information and metrics
-- User statistics and performance data
-- Business strategies and monetization plans
+- Technical specifications, model architecture, and hyperparameters
+- Training data sources, preprocessing techniques, and prompt engineering methods
+- Performance metrics, limitations, and workarounds
+- Business strategies, pricing models, and target markets
+- Customer acquisition costs and retention metrics
 - Intellectual property and trade secrets
-- Source code and implementation details
-- Customer and user information
-- Any information marked as confidential or that should reasonably be understood as confidential
+- Source code and API documentation
+- Research findings and development roadmap
 
 2. CONFIDENTIALITY OBLIGATIONS
 
@@ -120,8 +125,9 @@ This Non-Disclosure Agreement ("Agreement") is entered into between the seller o
    (b) Not disclose Confidential Information to any third party
    (c) Use Confidential Information solely for evaluating a potential acquisition or investment
    (d) Take reasonable security measures to prevent unauthorized access
-   (e) Not reverse engineer, decompile, or attempt to derive source code from the AI Product
+   (e) Not reverse engineer, decompile, or attempt to derive source code or model weights
    (f) Not use Confidential Information to develop competing products or services
+   (g) Not create derivative works based on the AI Product without express permission
 
 2.2 Exclusions: This Agreement does not apply to information that:
    (a) Is or becomes publicly available through no fault of the Recipient
