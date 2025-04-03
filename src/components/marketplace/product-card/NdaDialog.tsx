@@ -124,60 +124,73 @@ export function NdaDialog({
     }
   };
 
-  // Fixed NDA content exactly as provided by the user
-  const fixedNdaContent = `NON-DISCLOSURE AGREEMENT
+  // Flippa-style NDA content tailored for AI Exchange Club
+  const flippaStyleNdaContent = `NON-DISCLOSURE AGREEMENT
 
-This Non-Disclosure Agreement ("Agreement") is entered into between you ("Recipient" or "You") and the seller of the AI product or service ("Seller") listed on AI Exchange Club.
+This Non-Disclosure Agreement ("Agreement") is entered into on the date of electronic acceptance between:
 
-PLEASE READ THIS AGREEMENT CAREFULLY BEFORE ACCESSING CONFIDENTIAL INFORMATION. BY CLICKING "SIGN & VIEW DETAILS," YOU ACKNOWLEDGE THAT YOU HAVE READ, UNDERSTAND, AND AGREE TO BE LEGALLY BOUND BY THE TERMS OF THIS AGREEMENT.
+You ("Recipient") and AI Exchange Club LLC ("AI Exchange"), a platform facilitating the buying and selling of AI-powered businesses and products.
 
 1. PURPOSE
-   You wish to evaluate the AI product or service ("Product") for potential acquisition. The Seller will disclose certain confidential and proprietary information to enable your evaluation.
+   The Recipient wishes to evaluate certain confidential and proprietary information relating to the AI business or product listed on the AI Exchange Club platform for the sole purpose of evaluating a potential acquisition.
 
 2. CONFIDENTIAL INFORMATION
-   "Confidential Information" includes, but is not limited to:
-   • Financial data (revenue, profit margins, customer acquisition costs)
-   • Technical specifications and source code
-   • Customer and user data
-   • Proprietary algorithms and AI models
-   • Business strategies and operational methods
-   • Any information reasonably understood to be confidential
+   "Confidential Information" means all information disclosed by a seller ("Disclosing Party") through AI Exchange Club, whether oral, written, electronic, or otherwise, including but not limited to:
+   
+   a) Business information: Financial data, revenue metrics, profit margins, customer acquisition costs, pricing strategies, and business operations
+   b) Technical information: Software code, algorithms, AI models, system architecture, technical specifications, and implementation methods
+   c) Customer information: Customer lists, user data, engagement metrics, and user behavior analytics
+   d) Intellectual property: Trade secrets, know-how, inventions, techniques, processes, research, and development
+   e) Marketing information: Marketing strategies, market research, competition analysis, and promotional plans
+   f) Any information that would reasonably be understood to be confidential or proprietary
 
 3. RECIPIENT OBLIGATIONS
-   You agree to:
-   a) Keep all Confidential Information strictly confidential
+   The Recipient agrees to:
+   
+   a) Maintain all Confidential Information in strict confidence
    b) Use Confidential Information solely for evaluating the potential acquisition
-   c) Not reverse-engineer, decompile, or disassemble any software or AI models
-   d) Not use the information to create a competing product or service
-   e) Not disclose Confidential Information to any third party without prior written consent
-   f) Take reasonable security measures to protect the Confidential Information
+   c) Not disclose Confidential Information to any third party without prior written consent
+   d) Take reasonable security measures to protect Confidential Information
+   e) Not reverse-engineer, decompile, or disassemble any software or AI models
+   f) Not use the information to create a competing product or service
+   g) Promptly notify AI Exchange Club of any unauthorized disclosure or use
 
 4. EXCLUSIONS
-   This Agreement does not apply to information that:
-   a) Was already known to You prior to disclosure
-   b) Is or becomes publicly available through no fault of Your own
-   c) Is independently developed by You without use of Confidential Information
-   d) Is rightfully obtained from a third party without restriction
+   This Agreement does not impose obligations with respect to information that:
+   
+   a) Was lawfully in Recipient's possession before receiving it from the Disclosing Party
+   b) Is or becomes publicly available through no act or fault of the Recipient
+   c) Is received by Recipient from a third party without a duty of confidentiality
+   d) Is independently developed by Recipient without use of Confidential Information
+   e) Is disclosed pursuant to a court order, provided Recipient gives advance notice to the Disclosing Party
 
 5. TERM AND TERMINATION
-   This Agreement shall remain in effect for three (3) years from the date of acceptance. Your obligations regarding the protection of Confidential Information shall survive the termination of this Agreement.
+   This Agreement shall remain in effect for three (3) years from the date of acceptance. The Recipient's obligation to maintain confidentiality survives termination of this Agreement.
 
 6. RETURN OF MATERIALS
-   Upon Seller's request or termination of discussions, You shall promptly return or destroy all materials containing Confidential Information.
+   Upon request of the Disclosing Party or AI Exchange Club, or when Confidential Information is no longer needed, the Recipient shall promptly return or destroy all materials containing Confidential Information.
 
-7. NO RIGHTS GRANTED
-   Nothing in this Agreement grants You any rights to intellectual property, licenses, or ownership of the Product or Confidential Information.
+7. NO LICENSE GRANTED
+   Nothing in this Agreement grants the Recipient any rights to patents, copyrights, trademarks, or other intellectual property rights. No license is granted or implied by this Agreement.
 
 8. REMEDIES
-   You acknowledge that monetary damages may be inadequate for a breach of this Agreement and that the Seller shall be entitled to seek injunctive relief in addition to any other available remedies.
+   The Recipient acknowledges that monetary damages may be inadequate for a breach of this Agreement and that the Disclosing Party shall be entitled to seek injunctive relief in addition to any other available remedies.
 
 9. GOVERNING LAW
-   This Agreement shall be governed by the laws of the State of Minnesota, without regard to its conflict of law principles.
+   This Agreement shall be governed by the laws of the State of Minnesota without regard to its conflict of law provisions. Any disputes arising under this Agreement shall be subject to the exclusive jurisdiction of the courts of Minnesota.
 
-10. ENTIRE AGREEMENT
-    This Agreement constitutes the entire understanding between You and the Seller regarding the Confidential Information and supersedes all prior discussions.
+10. DIGITAL SIGNATURE AND RECORDKEEPING
+    The Recipient acknowledges that clicking "Sign & View Details" constitutes a legally binding electronic signature. AI Exchange Club will maintain a record of this agreement, including:
+    
+    a) Date and time of acceptance
+    b) IP address of the Recipient
+    c) Browser and device information
+    d) Any other information required to establish the validity of this Agreement
 
-By signing this Agreement, You certify that You are authorized to receive the Confidential Information and agree to be bound by the terms herein.`;
+11. ENTIRE AGREEMENT
+    This Agreement constitutes the entire understanding between the parties regarding Confidential Information and supersedes all prior agreements between them.
+
+By clicking "Sign & View Details," the Recipient acknowledges reading, understanding, and agreeing to all the terms of this Agreement.`;
 
   // Confidentiality notice to display at the top of the dialog
   const confidentialityNotice = (
@@ -215,7 +228,7 @@ By signing this Agreement, You certify that You are authorized to receive the Co
               <span className="mx-4">CONFIDENTIAL</span>
             </div>
           </div>
-          {ndaContent || fixedNdaContent}
+          {ndaContent || flippaStyleNdaContent}
         </div>
         
         <div className="flex items-center space-x-2 mt-4">
