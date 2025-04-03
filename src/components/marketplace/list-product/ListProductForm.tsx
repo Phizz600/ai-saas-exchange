@@ -112,6 +112,31 @@ export function ListProductForm() {
     }
   };
 
+  const validatePricing = (data: ListProductFormData): { valid: boolean; message?: string } => {
+    if (data.isAuction) {
+      // Validate auction pricing
+      if (!data.startingPrice || data.startingPrice <= 0) {
+        return { valid: false, message: "Starting price must be greater than 0" };
+      }
+      if (!data.minPrice || data.minPrice <= 0) {
+        return { valid: false, message: "Minimum price must be greater than 0" };
+      }
+      if (data.minPrice >= data.startingPrice) {
+        return { valid: false, message: "Minimum price must be less than the starting price" };
+      }
+      if (!data.priceDecrement || data.priceDecrement <= 0) {
+        return { valid: false, message: "Price decrement must be greater than 0" };
+      }
+    } else {
+      // Validate fixed price
+      if (!data.price || data.price <= 0) {
+        return { valid: false, message: "Price must be greater than 0" };
+      }
+    }
+    
+    return { valid: true };
+  };
+
   const onSubmit = async (data: ListProductFormData) => {
     // Reset states
     setSubmissionError(null);
@@ -145,6 +170,18 @@ export function ListProductForm() {
         variant: "destructive",
       });
       handleSectionClick(0); // Go back to the basics section
+      return;
+    }
+
+    // Price validation
+    const priceValidation = validatePricing(data);
+    if (!priceValidation.valid) {
+      toast({
+        title: "Invalid Pricing",
+        description: priceValidation.message,
+        variant: "destructive",
+      });
+      handleSectionClick(5); // Go to the pricing section
       return;
     }
 

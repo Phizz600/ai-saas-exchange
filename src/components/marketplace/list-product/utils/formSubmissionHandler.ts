@@ -1,3 +1,4 @@
+
 import { supabase, storage, PRODUCT_IMAGES_BUCKET } from "@/integrations/supabase/client";
 import { ListProductFormData } from "../types";
 import { generateUniqueId } from "@/lib/utils";
@@ -56,7 +57,7 @@ export const submitProductForm = async (
     const productData = {
       title: formData.title,
       description: formData.description,
-      price: Number(formData.price || 0),
+      price: formData.price ? Math.max(1, Number(formData.price)) : null, // Ensure minimum price of 1
       category: formData.category,
       category_other: formData.categoryOther,
       stage: formData.stage,
@@ -78,9 +79,9 @@ export const submitProductForm = async (
       special_notes: formData.specialNotes,
       status: "pending",
       is_auction: formData.isAuction || false,
-      starting_price: formData.isAuction ? Number(formData.startingPrice || 0) : null,
-      min_price: formData.isAuction ? Number(formData.minPrice || 0) : null,
-      price_decrement: formData.isAuction ? Number(formData.priceDecrement || 0) : null,
+      starting_price: formData.isAuction ? Math.max(1, Number(formData.startingPrice || 1)) : null,
+      min_price: formData.isAuction ? Math.max(1, Number(formData.minPrice || 1)) : null,
+      price_decrement: formData.isAuction ? Math.max(1, Number(formData.priceDecrement || 1)) : null,
       price_decrement_interval: formData.isAuction ? formData.priceDecrementInterval : null,
       auction_end_time: formData.isAuction && formData.auctionEndTime ? formData.auctionEndTime.toISOString() : null,
       auction_status: formData.isAuction ? "pending" : null,
@@ -210,11 +211,17 @@ export const handleProductSubmission = async (
       imageUrl = `${supabaseUrl}/storage/v1/object/public/${PRODUCT_IMAGES_BUCKET}/${filePath}`;
     }
     
-    // Prepare product data - removing is_auction and related fields that don't exist in DB
+    // Calculate price based on auction or fixed price
+    let finalPrice = data.isAuction ? Math.max(1, Number(data.startingPrice)) : Math.max(1, Number(data.price));
+    
+    // Set current_price initially equal to price or starting_price
+    const currentPrice = data.isAuction ? Math.max(1, Number(data.startingPrice)) : Math.max(1, Number(data.price));
+    
+    // Prepare product data
     const productData = {
       title: data.title,
       description: data.description,
-      price: Number(data.price || 0),
+      price: Math.max(1, Number(data.price || 1)), // Ensure minimum price of 1
       category: data.category,
       category_other: data.categoryOther,
       stage: data.stage,
@@ -235,7 +242,14 @@ export const handleProductSubmission = async (
       is_verified: data.isVerified || false,
       special_notes: data.specialNotes,
       status: "pending",
-      // Removing is_auction field and related auction fields
+      // Handle auction specific fields
+      is_auction: data.isAuction || false,
+      starting_price: data.isAuction ? Math.max(1, Number(data.startingPrice || 1)) : null,
+      min_price: data.isAuction ? Math.max(1, Number(data.minPrice || 1)) : null,
+      price_decrement: data.isAuction ? Math.max(1, Number(data.priceDecrement || 1)) : null,
+      price_decrement_interval: data.isAuction ? data.priceDecrementInterval : null,
+      auction_end_time: data.isAuction && data.auctionEndTime ? data.auctionEndTime.toISOString() : null,
+      current_price: currentPrice, // Add current price field
       business_type: data.businessType,
       deliverables: data.deliverables || [],
       monthly_profit: Number(data.monthlyProfit || 0),
@@ -257,6 +271,14 @@ export const handleProductSubmission = async (
     };
     
     // Additional debug logs
+    console.log("Final product data - Price fields:", {
+      is_auction: productData.is_auction,
+      price: productData.price,
+      starting_price: productData.starting_price,
+      min_price: productData.min_price,
+      current_price: productData.current_price
+    });
+    
     console.log("Final product data - NDA fields:", {
       requires_nda: productData.requires_nda,
       nda_content: productData.nda_content
@@ -302,7 +324,7 @@ export const handleProductUpdate = async (
     const updateData: any = {
       title: data.title,
       description: data.description,
-      price: data.price ? Number(data.price) : undefined,
+      price: data.price ? Math.max(1, Number(data.price)) : undefined, // Ensure minimum price of 1
       category: data.category,
       stage: data.stage,
       industry: data.industry,
