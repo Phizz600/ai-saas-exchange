@@ -124,8 +124,8 @@ export function NdaDialog({
     }
   };
 
-  // Flippa-style NDA content tailored for AI Exchange Club
-  const flippaStyleNdaContent = `NON-DISCLOSURE AGREEMENT
+  // AI Exchange Club NDA content
+  const aiExchangeNdaContent = `NON-DISCLOSURE AGREEMENT
 
 This Non-Disclosure Agreement ("Agreement") is entered into on the date of electronic acceptance between:
 
@@ -228,7 +228,7 @@ By clicking "Sign & View Details," the Recipient acknowledges reading, understan
               <span className="mx-4">CONFIDENTIAL</span>
             </div>
           </div>
-          {ndaContent || flippaStyleNdaContent}
+          {ndaContent || aiExchangeNdaContent}
         </div>
         
         <div className="flex items-center space-x-2 mt-4">
