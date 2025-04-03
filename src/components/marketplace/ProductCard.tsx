@@ -52,8 +52,9 @@ export function ProductCard({ product }: ProductCardProps) {
   const isAuction = !!product.auction_end_time;
   const isVerified = product.is_revenue_verified || product.is_code_audited || product.is_traffic_verified;
   
-  // Debug the requires_nda property to make sure it's being passed correctly
+  // Debug the NDA content to make sure it's being passed correctly
   console.log(`Product ${product.id} - requires_nda:`, product.requires_nda);
+  console.log(`Product ${product.id} - nda_content:`, product.nda_content ? 'Present' : 'Not provided');
   
   // Logic to determine if we need to show limited information
   // Ensure product.requires_nda is a boolean, not undefined or null
@@ -64,7 +65,8 @@ export function ProductCard({ product }: ProductCardProps) {
     productId: product.id, 
     requiresNda,
     hasSigned,
-    showLimitedInfo
+    showLimitedInfo,
+    ndaContentProvided: !!product.nda_content
   });
 
   const handleEditClick = (e: React.MouseEvent) => {

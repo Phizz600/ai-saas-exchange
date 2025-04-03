@@ -14,6 +14,10 @@ interface NdaButtonProps {
 
 export function NdaButton({ productId, productTitle, ndaContent, onSignSuccess }: NdaButtonProps) {
   const [isNdaDialogOpen, setIsNdaDialogOpen] = useState(false);
+  
+  // Log NDA content received
+  console.log('NdaButton - productId:', productId);
+  console.log('NdaButton - ndaContent provided:', ndaContent ? 'Yes' : 'No');
 
   return (
     <Dialog open={isNdaDialogOpen} onOpenChange={setIsNdaDialogOpen}>

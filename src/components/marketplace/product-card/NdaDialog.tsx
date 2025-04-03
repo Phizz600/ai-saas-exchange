@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { DialogHeader, DialogFooter, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -124,8 +123,8 @@ export function NdaDialog({
     }
   };
 
-  // AI Exchange Club NDA content
-  const aiExchangeNdaContent = `NON-DISCLOSURE AGREEMENT
+  // The default NDA content used when no product-specific NDA is provided
+  const defaultNdaContent = `NON-DISCLOSURE AGREEMENT
 
 This Non-Disclosure Agreement ("Agreement") is entered into on the date of electronic acceptance between:
 
@@ -203,6 +202,13 @@ By clicking "Sign & View Details," the Recipient acknowledges reading, understan
     </div>
   );
 
+  // Log NDA content to debug what's being displayed
+  console.log('Product-specific NDA content:', ndaContent ? 'Present' : 'Not provided');
+  console.log('Using:', ndaContent ? 'Product-specific NDA' : 'Default NDA');
+
+  // Use the provided NDA content or fall back to the default
+  const displayedNdaContent = ndaContent || defaultNdaContent;
+
   return (
     <div className="max-w-2xl mx-auto">
       <DialogHeader>
@@ -228,7 +234,7 @@ By clicking "Sign & View Details," the Recipient acknowledges reading, understan
               <span className="mx-4">CONFIDENTIAL</span>
             </div>
           </div>
-          {ndaContent || aiExchangeNdaContent}
+          {displayedNdaContent}
         </div>
         
         <div className="flex items-center space-x-2 mt-4">
