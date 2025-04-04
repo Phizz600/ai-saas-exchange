@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { MousePointerClick, Star } from "lucide-react";
+import { MousePointerClick } from "lucide-react";
 import { ProductsShowcase } from "@/components/hero/ProductsShowcase";
 const NewsletterSubscription = lazy(() => import("@/components/hero/NewsletterSubscription"));
 const FeatureHighlights = lazy(() => import("@/components/hero/FeatureHighlights"));
@@ -14,7 +14,6 @@ const HowItWorksSteps = lazy(() => import("@/components/hero/HowItWorksSteps"));
 const SecurityFeatures = lazy(() => import("@/components/hero/SecurityFeatures"));
 const RoleInfo = lazy(() => import("@/components/hero/RoleInfo"));
 const YouTubeEmbed = lazy(() => import("@/components/hero/YouTubeEmbed"));
-
 interface HeroSectionProps {
   isAuthenticated: boolean;
   currentWordIndex: number;
@@ -30,7 +29,6 @@ interface HeroSectionProps {
   handleListProductClick: () => void;
   handleAuthRedirect: () => void;
 }
-
 const HeroSection = ({
   isAuthenticated,
   currentWordIndex,
@@ -79,13 +77,6 @@ const HeroSection = ({
               Sell your AI SaaS Business
             </Button>
             
-            {/* Stars added here, below the button */}
-            <div className="flex items-center gap-2 mb-4 bg-white/10 backdrop-blur-sm px-4 rounded-full py-[9px]">
-              <div className="flex">
-                {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 text-yellow-400 fill-yellow-400" />)}
-              </div>
-            </div>
-            
             <Suspense fallback={<Skeleton className="w-full max-w-md h-32" />}>
               <NewsletterSubscription newsletterEmail={newsletterEmail} setNewsletterEmail={setNewsletterEmail} subscriberCount={subscriberCount} setSubscriberCount={setSubscriberCount} />
             </Suspense>
@@ -131,5 +122,4 @@ const HeroSection = ({
       </div>
     </div>;
 };
-
 export default HeroSection;
