@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { createPaymentAuthorization } from "@/services/stripe-service";
 
 interface UseBidFormProps {
   productId: string;
@@ -15,6 +16,8 @@ export function useBidForm({ productId, productTitle, currentPrice = 0 }: UseBid
   const [success, setSuccess] = useState(false);
   const [depositDialogOpen, setDepositDialogOpen] = useState(false);
   const [formattedBidAmount, setFormattedBidAmount] = useState("");
+  const [paymentClientSecret, setPaymentClientSecret] = useState<string | null>(null);
+  const [bidId, setBidId] = useState<string | null>(null);
   const { toast } = useToast();
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,20 +53,15 @@ export function useBidForm({ productId, productTitle, currentPrice = 0 }: UseBid
   const handleInitiateBid = async () => {
     const numericAmount = parseFloat(bidAmount);
     
-    // Validate amount - moved to BidForm component
-    // We'll still have a basic check here as a fallback
+    // Basic validation (more validation in the UI component)
     if (isNaN(numericAmount) || numericAmount <= 0 || (currentPrice && numericAmount <= currentPrice)) {
       return;
     }
     
-    // Open deposit dialog
-    setDepositDialogOpen(true);
-  };
-
-  const handleBidSubmit = async (escrowTransactionId: string) => {
     try {
       setIsSubmitting(true);
       
+      // 1. Get the current user
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
@@ -72,66 +70,73 @@ export function useBidForm({ productId, productTitle, currentPrice = 0 }: UseBid
           description: "Please log in to place a bid",
           variant: "destructive",
         });
+        setIsSubmitting(false);
         return;
       }
       
-      const numericAmount = parseFloat(bidAmount);
-      const depositAmount = Math.round(numericAmount * 0.1 * 100) / 100; // 10% deposit
-      
-      // Create a new bid
+      // 2. Create a bid record with pending status
       const { data: bid, error: bidError } = await supabase
         .from('bids')
         .insert({
           product_id: productId,
           bidder_id: user.id,
           amount: numericAmount,
-          status: escrowTransactionId === "manual" ? 'deposit_pending_manual' : 'deposit_pending',
-          deposit_status: 'pending',
-          deposit_amount: depositAmount
+          status: 'pending',
+          payment_status: 'pending'
         })
         .select()
         .single();
-      
+        
       if (bidError) {
-        console.error('Error creating bid:', bidError);
-        throw bidError;
+        console.error("Error creating bid:", bidError);
+        toast({
+          title: "Bid Error",
+          description: "Failed to place your bid. Please try again.",
+          variant: "destructive",
+        });
+        setIsSubmitting(false);
+        return;
       }
       
-      // Create a deposit_transactions record
-      if (escrowTransactionId !== "manual") {
-        const { error: depositError } = await supabase.from('deposit_transactions').insert({
-          bid_id: bid.id,
-          amount: depositAmount,
-          escrow_transaction_id: escrowTransactionId,
-          status: 'pending'
+      // Store the bid ID for use in payment processing
+      setBidId(bid.id);
+      
+      // 3. Create a payment authorization with Stripe
+      const { clientSecret, error: stripeError } = await createPaymentAuthorization(
+        numericAmount, 
+        bid.id,
+        productId
+      );
+      
+      if (stripeError || !clientSecret) {
+        console.error("Stripe authorization error:", stripeError);
+        toast({
+          title: "Payment Authorization Error",
+          description: stripeError || "Failed to create payment authorization. Please try again.",
+          variant: "destructive",
         });
         
-        if (depositError) {
-          console.error('Error creating deposit transaction:', depositError);
-          throw depositError;
-        }
+        // Clean up the bid record
+        await supabase
+          .from('bids')
+          .delete()
+          .eq('id', bid.id);
+          
+        setIsSubmitting(false);
+        return;
       }
       
+      // Store the client secret for use in the payment form
+      setPaymentClientSecret(clientSecret);
+      
+      // 4. Open the deposit dialog to complete payment
+      setDepositDialogOpen(true);
+      
+    } catch (error) {
+      console.error("Error initiating bid:", error);
       toast({
-        title: "Bid submitted!",
-        description: escrowTransactionId === "manual" 
-          ? "Your bid has been submitted. Please contact support to complete the deposit manually."
-          : "Once your deposit is confirmed, your bid will be processed.",
-      });
-      
-      // Set success state
-      setSuccess(true);
-      
-      // Reset form
-      setBidAmount("");
-      setFormattedBidAmount("");
-      
-    } catch (error: any) {
-      console.error("Error creating bid:", error);
-      
-      toast({
-        title: "Failed to process bid",
-        description: error.message || "An error occurred while processing your bid.",
+        title: "Error",
+        description: "An unexpected error occurred. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -139,10 +144,59 @@ export function useBidForm({ productId, productTitle, currentPrice = 0 }: UseBid
     }
   };
 
+  const handleBidSubmit = async (paymentMethodId: string) => {
+    try {
+      setIsSubmitting(true);
+      
+      if (!bidId) {
+        throw new Error("Bid ID is missing");
+      }
+      
+      // Update the bid record with the payment method ID
+      const { error: updateError } = await supabase
+        .from('bids')
+        .update({ 
+          payment_method_id: paymentMethodId,
+          status: 'active',
+          payment_status: 'processing'
+        })
+        .eq('id', bidId);
+        
+      if (updateError) {
+        throw updateError;
+      }
+      
+      // Show success message
+      setSuccess(true);
+      
+      toast({
+        title: "Bid Placed Successfully",
+        description: "Your bid has been placed and your payment method has been authorized.",
+      });
+      
+      // Reset the form
+      setBidAmount("");
+      setFormattedBidAmount("");
+      
+    } catch (error: any) {
+      console.error("Error finalizing bid:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to complete your bid. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+      setDepositDialogOpen(false);
+    }
+  };
+
   const resetForm = () => {
     setBidAmount("");
     setFormattedBidAmount("");
     setSuccess(false);
+    setBidId(null);
+    setPaymentClientSecret(null);
   };
 
   return {
@@ -151,7 +205,8 @@ export function useBidForm({ productId, productTitle, currentPrice = 0 }: UseBid
     isSubmitting,
     success,
     depositDialogOpen,
-    setBidAmount,
+    paymentClientSecret,
+    bidId,
     setDepositDialogOpen,
     handleAmountChange,
     handleInitiateBid,

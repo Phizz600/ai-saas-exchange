@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useBidForm } from "./hooks/useBidForm";
 import { BidDepositDialog } from "./BidDepositDialog";
 import { Alert, AlertDescription } from "@/components/ui/alert"; 
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, CreditCard } from "lucide-react";
 import { useState } from "react";
 
 interface BidFormProps {
@@ -20,6 +20,7 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
     isSubmitting,
     success,
     depositDialogOpen,
+    paymentClientSecret,
     setDepositDialogOpen,
     handleAmountChange,
     handleInitiateBid,
@@ -60,7 +61,7 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
       <div className="space-y-4 bg-green-50 p-4 rounded-md">
         <h3 className="font-medium text-green-800">Bid Successfully Submitted!</h3>
         <p className="text-sm text-green-700">
-          Your bid has been received. Once your deposit is confirmed, your bid will be processed.
+          Your bid has been received and your payment method has been authorized. No charges have been made to your card yet - you'll only be charged if you win this auction.
         </p>
         <Button
           onClick={resetForm}
@@ -103,8 +104,9 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
             Current price: ${currentPrice.toLocaleString()} - Your bid must be higher
           </p>
         )}
-        <p className="text-xs text-gray-500 mt-1">
-          A 10% refundable deposit is required for all bids
+        <p className="text-xs text-gray-500 mt-1 flex items-center gap-1">
+          <CreditCard className="h-3 w-3" />
+          Your card will be authorized but not charged until you win
         </p>
       </div>
       
@@ -123,6 +125,7 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
         productId={productId}
         bidAmount={parseFloat(bidAmount) || 0}
         productTitle={productTitle}
+        clientSecret={paymentClientSecret}
       />
     </div>
   );
