@@ -1,4 +1,3 @@
-
 import { supabase, storage, PRODUCT_IMAGES_BUCKET } from "@/integrations/supabase/client";
 import { ListProductFormData } from "../types";
 import { generateUniqueId } from "@/lib/utils";
@@ -217,7 +216,7 @@ export const handleProductSubmission = async (
     // Set current_price initially equal to price or starting_price
     const currentPrice = data.isAuction ? Math.max(1, Number(data.startingPrice)) : Math.max(1, Number(data.price));
     
-    // Prepare product data
+    // Prepare product data - remove is_auction field and use database-compatible fields
     const productData = {
       title: data.title,
       description: data.description,
@@ -242,8 +241,8 @@ export const handleProductSubmission = async (
       is_verified: data.isVerified || false,
       special_notes: data.specialNotes,
       status: "pending",
-      // Handle auction specific fields
-      is_auction: data.isAuction || false,
+      // Handle auction specific fields - use the actual database column names
+      auction_status: data.isAuction ? "pending" : null,
       starting_price: data.isAuction ? Math.max(1, Number(data.startingPrice || 1)) : null,
       min_price: data.isAuction ? Math.max(1, Number(data.minPrice || 1)) : null,
       price_decrement: data.isAuction ? Math.max(1, Number(data.priceDecrement || 1)) : null,
@@ -272,7 +271,6 @@ export const handleProductSubmission = async (
     
     // Additional debug logs
     console.log("Final product data - Price fields:", {
-      is_auction: productData.is_auction,
       price: productData.price,
       starting_price: productData.starting_price,
       min_price: productData.min_price,
