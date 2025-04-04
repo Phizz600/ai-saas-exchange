@@ -1,3 +1,4 @@
+
 import { supabase, storage, PRODUCT_IMAGES_BUCKET } from "@/integrations/supabase/client";
 import { ListProductFormData } from "../types";
 import { generateUniqueId } from "@/lib/utils";
@@ -179,7 +180,8 @@ export const handleProductSubmission = async (
     }
     
     let imageUrl = null;
-    if (data.image) {
+    // Add proper check for image existence before processing
+    if (data.image && data.image instanceof File) {
       const fileExt = data.image.name.split(".").pop();
       const imageName = `${generateUniqueId()}.${fileExt}`;
       const filePath = `products/${imageName}`;
@@ -208,6 +210,10 @@ export const handleProductSubmission = async (
       // Use the correct way to build the image URL for Vite
       const supabaseUrl = import.meta.env.NEXT_PUBLIC_SUPABASE_URL || 'https://pxadbwlidclnfoodjtpd.supabase.co';
       imageUrl = `${supabaseUrl}/storage/v1/object/public/${PRODUCT_IMAGES_BUCKET}/${filePath}`;
+    } else {
+      // Log missing image for debugging
+      console.warn("No image provided or image is not a valid File object");
+      return { success: false, error: "Please upload a product image." };
     }
     
     // Calculate price based on auction or fixed price
