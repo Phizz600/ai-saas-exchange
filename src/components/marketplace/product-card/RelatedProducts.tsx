@@ -44,7 +44,7 @@ export const RelatedProducts = ({ currentProductCategory, currentProductId }: Re
   if (isLoading) {
     return (
       <Card className="p-4 mt-4 bg-white/80 backdrop-blur-xl">
-        <h3 className="text-lg font-semibold mb-4">Related Products</h3>
+        <h3 className="text-lg font-semibold mb-4 exo-2-heading">Related Products</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {[1, 2, 3].map((item) => (
             <Skeleton key={item} className="h-[350px] w-full rounded-md" />

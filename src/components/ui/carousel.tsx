@@ -97,6 +97,7 @@ const Carousel = React.forwardRef<
       [scrollPrev, scrollNext]
     )
 
+    // Only call setApi if it exists and api exists
     React.useEffect(() => {
       if (!api || !setApi) {
         return
@@ -105,6 +106,7 @@ const Carousel = React.forwardRef<
       setApi(api)
     }, [api, setApi])
 
+    // Only set up the event listeners if api exists
     React.useEffect(() => {
       if (!api) {
         return
@@ -115,7 +117,7 @@ const Carousel = React.forwardRef<
       api.on("select", onSelect)
 
       return () => {
-        api?.off("select", onSelect)
+        api.off("select", onSelect)
       }
     }, [api, onSelect])
 

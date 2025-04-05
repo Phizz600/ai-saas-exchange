@@ -1,6 +1,7 @@
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { lazy, Suspense } from "react";
 import Index from "@/pages/Index";
 import { Marketplace } from "@/pages/Marketplace";
 import Auth from "@/pages/Auth";
@@ -25,17 +26,18 @@ import { ToastProvider } from "@/hooks/use-toast";
 import NdaPolicy from "@/pages/NdaPolicy";
 import "./App.css";
 
-// Create a client
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 60 * 1000, // 1 minute
-      retry: 1,
-    },
-  },
-});
-
+// Create a client INSIDE the function component to avoid hooks being called outside component context
 function App() {
+  // Create a new QueryClient instance inside the component
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: 60 * 1000, // 1 minute
+        retry: 1,
+      },
+    },
+  });
+
   return (
     <QueryClientProvider client={queryClient}>
       <ToastProvider>
