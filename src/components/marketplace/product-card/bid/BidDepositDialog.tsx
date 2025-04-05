@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -8,7 +9,9 @@ import { loadStripe } from "@stripe/stripe-js";
 
 // Initialize Stripe with the public key
 // Use a valid publishable key format that doesn't include the full key text
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || "pk_test_51OC6VZFv3qy1KhE7jnKFZuqYvlUQ6GFWHZjIXfOy3vHEPLyfGxLCFE90rS7AO9VJkrP0bXpPOyQwVCHZkCdTDy7I00cMcNKl6D");
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || "");
+
+console.log("Stripe publishable key:", import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY ? "Exists (masked)" : "Missing");
 
 interface BidDepositDialogProps {
   open: boolean;
@@ -27,6 +30,15 @@ function PaymentForm({ onConfirm, onClose }: { onConfirm: (paymentMethodId: stri
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [elementReady, setElementReady] = useState(false);
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (!stripe) {
+      console.log("Stripe.js hasn't loaded yet");
+    }
+    if (!elements) {
+      console.log("Elements haven't loaded yet");
+    }
+  }, [stripe, elements]);
 
   // Track when the element is ready
   const handleReady = () => {
@@ -181,16 +193,38 @@ export function BidDepositDialog({
 
   useEffect(() => {
     // Check if Stripe is properly initialized
-    if (open && !stripePromise) {
-      console.error("Stripe could not be initialized. Check your publishable key.");
-      setStripeError("Payment system configuration error. Please contact support.");
-      toast({
-        title: "Payment System Error",
-        description: "We're experiencing technical difficulties with our payment processor. Please try again later.",
-        variant: "destructive",
+    if (open) {
+      if (!stripePromise) {
+        console.error("Stripe could not be initialized. Check your publishable key.");
+        setStripeError("Payment system configuration error. Please contact support.");
+        toast({
+          title: "Payment System Error",
+          description: "We're experiencing technical difficulties with our payment processor. Please try again later.",
+          variant: "destructive",
+        });
+      } else {
+        console.log("Stripe initialized successfully");
+      }
+      
+      if (!clientSecret) {
+        console.warn("Dialog opened but no client secret provided");
+      } else {
+        console.log("Client secret available:", clientSecret.substring(0, 10) + "...");
+      }
+    }
+  }, [open, toast, clientSecret]);
+
+  // Debug output for troubleshooting
+  useEffect(() => {
+    if (open) {
+      console.log("BidDepositDialog debug info:", {
+        stripePromise: !!stripePromise,
+        clientSecret: !!clientSecret,
+        paymentElementVisible,
+        stripeError
       });
     }
-  }, [open, toast]);
+  }, [open, clientSecret, paymentElementVisible, stripeError]);
 
   if (!clientSecret) {
     return null;

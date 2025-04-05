@@ -12,12 +12,15 @@ export async function createPaymentAuthorization(
     
     // Ensure amount is valid
     if (!amount || isNaN(amount) || amount <= 0) {
+      console.error("Invalid amount provided for payment authorization:", amount);
       return { 
         clientSecret: null, 
         paymentIntentId: null, 
         error: "Invalid amount provided"
       };
     }
+    
+    console.log("Calling stripe-payment-intent edge function");
     
     // Call our edge function to create a payment intent
     const { data, error } = await supabase.functions.invoke('stripe-payment-intent', {
@@ -35,6 +38,15 @@ export async function createPaymentAuthorization(
     }
 
     console.log("Payment intent created successfully:", data);
+    
+    if (!data?.clientSecret) {
+      console.error("Missing client secret in response:", data);
+      return { 
+        clientSecret: null, 
+        paymentIntentId: null, 
+        error: "Server returned invalid response. Missing client secret."
+      };
+    }
     
     return { 
       clientSecret: data.clientSecret, 

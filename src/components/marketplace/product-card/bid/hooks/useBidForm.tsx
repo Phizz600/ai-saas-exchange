@@ -96,6 +96,8 @@ export function useBidForm({ productId, productTitle, currentPrice }: UseBidForm
         return;
       }
 
+      console.log(`Creating bid for product ${productId} with amount ${amount}`);
+
       // Create a pending bid in the database
       const { data: bid, error: bidError } = await supabase
         .from('bids')
@@ -118,7 +120,7 @@ export function useBidForm({ productId, productTitle, currentPrice }: UseBidForm
         return;
       }
 
-      console.log('Bid created:', bid);
+      console.log('Bid created successfully:', bid);
       setBidId(bid.id);
 
       // Create payment authorization
@@ -140,6 +142,8 @@ export function useBidForm({ productId, productTitle, currentPrice }: UseBidForm
         return;
       }
 
+      console.log('Payment authorization created successfully with client secret');
+      
       // Store the client secret for the payment form
       setPaymentClientSecret(clientSecret);
       
@@ -167,6 +171,8 @@ export function useBidForm({ productId, productTitle, currentPrice }: UseBidForm
         throw new Error("Missing bid information");
       }
       
+      console.log(`Updating bid ${bidId} with payment intent ${paymentIntentId}`);
+      
       // Update the bid with the payment status and intent ID
       const { error: updateError } = await supabase
         .from('bids')
@@ -181,6 +187,8 @@ export function useBidForm({ productId, productTitle, currentPrice }: UseBidForm
         throw new Error(`Failed to update bid: ${updateError.message}`);
       }
       
+      console.log('Bid updated successfully with payment information');
+      
       // Now update the highest bid on the product through our edge function
       const { data: bidData, error: bidFetchError } = await supabase
         .from('bids')
@@ -191,6 +199,8 @@ export function useBidForm({ productId, productTitle, currentPrice }: UseBidForm
       if (bidFetchError) {
         throw new Error(`Failed to get bid details: ${bidFetchError.message}`);
       }
+      
+      console.log('Updating highest bid on product with edge function');
       
       // Call the update-highest-bid edge function
       const { error: highestBidError } = await supabase.functions.invoke(

@@ -10,10 +10,13 @@ const corsHeaders = {
 serve(async (req) => {
   // Handle OPTIONS request for CORS
   if (req.method === "OPTIONS") {
+    console.log("Handling OPTIONS request for CORS");
     return new Response("ok", { headers: corsHeaders });
   }
   
   try {
+    console.log("Starting stripe-payment-intent function");
+    
     // Initialize Stripe with the secret key
     const stripeSecretKey = Deno.env.get("STRIPE_SECRET_KEY");
     if (!stripeSecretKey) {
@@ -25,6 +28,8 @@ serve(async (req) => {
       apiVersion: "2022-11-15",
     });
     
+    console.log("Initialized Stripe client successfully");
+    
     // Get request body
     const { amount, bidId, productId, mode } = await req.json();
     
@@ -33,6 +38,7 @@ serve(async (req) => {
     
     // Validate inputs
     if (!amount || amount <= 0) {
+      console.error("Invalid amount provided:", amount);
       return new Response(
         JSON.stringify({ error: "Invalid amount" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -40,6 +46,7 @@ serve(async (req) => {
     }
     
     if (!bidId) {
+      console.error("Missing bid ID");
       return new Response(
         JSON.stringify({ error: "Missing bid ID" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -65,26 +72,51 @@ serve(async (req) => {
       statement_descriptor_suffix: "AIBID"  // Use suffix instead of full descriptor
     };
     
-    const paymentIntent = await stripe.paymentIntents.create(paymentIntentOptions);
+    console.log("Creating payment intent with options:", JSON.stringify({
+      ...paymentIntentOptions,
+      currency: paymentIntentOptions.currency,
+      capture_method: paymentIntentOptions.capture_method,
+    }));
     
-    console.log("Created payment intent:", paymentIntent.id);
-    
-    // Return the client secret
-    return new Response(
-      JSON.stringify({ 
-        clientSecret: paymentIntent.client_secret,
-        paymentIntentId: paymentIntent.id
-      }),
-      { 
-        status: 200, 
-        headers: { ...corsHeaders, "Content-Type": "application/json" } 
-      }
-    );
+    try {
+      const paymentIntent = await stripe.paymentIntents.create(paymentIntentOptions);
+      
+      console.log("Created payment intent:", paymentIntent.id);
+      console.log("Client secret (first 10 chars):", paymentIntent.client_secret?.substring(0, 10) + "...");
+      
+      // Return the client secret
+      return new Response(
+        JSON.stringify({ 
+          clientSecret: paymentIntent.client_secret,
+          paymentIntentId: paymentIntent.id
+        }),
+        { 
+          status: 200, 
+          headers: { ...corsHeaders, "Content-Type": "application/json" } 
+        }
+      );
+    } catch (stripeError) {
+      console.error("Error creating Stripe payment intent:", stripeError);
+      return new Response(
+        JSON.stringify({ 
+          error: stripeError.message,
+          type: "stripe_error",
+          code: stripeError.code
+        }),
+        { 
+          status: 500, 
+          headers: { ...corsHeaders, "Content-Type": "application/json" } 
+        }
+      );
+    }
     
   } catch (error) {
-    console.error("Error creating payment intent:", error);
+    console.error("General error creating payment intent:", error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ 
+        error: error.message,
+        type: "server_error"
+      }),
       { 
         status: 500, 
         headers: { ...corsHeaders, "Content-Type": "application/json" } 
