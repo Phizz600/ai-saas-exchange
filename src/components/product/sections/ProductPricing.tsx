@@ -1,5 +1,6 @@
+
 import { useState, useEffect } from "react";
-import { Timer, TrendingDown } from "lucide-react";
+import { Timer, TrendingDown, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
@@ -8,6 +9,8 @@ import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { OfferDialog } from "@/components/marketplace/product-card/offer/OfferDialog";
 import { BidForm } from "@/components/marketplace/product-card/bid/BidForm";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 
 interface ProductPricingProps {
   product: {
@@ -25,6 +28,15 @@ interface ProductPricingProps {
   };
 }
 
+interface Bid {
+  id: string;
+  amount: number;
+  created_at: string;
+  bidder: {
+    full_name: string | null;
+  };
+}
+
 export function ProductPricing({ product }: ProductPricingProps) {
   const [timeLeft, setTimeLeft] = useState("");
   const [nextDrop, setNextDrop] = useState("");
@@ -32,6 +44,7 @@ export function ProductPricing({ product }: ProductPricingProps) {
   const [currentPrice, setCurrentPrice] = useState(product.highest_bid || product.current_price);
   const [highestBid, setHighestBid] = useState(product.highest_bid);
   const [offerDialogOpen, setOfferDialogOpen] = useState(false);
+  const [bidHistoryDialogOpen, setBidHistoryDialogOpen] = useState(false);
   const { toast } = useToast();
 
   // Subscribe to real-time price updates
@@ -79,6 +92,24 @@ export function ProductPricing({ product }: ProductPricingProps) {
     },
   });
 
+  // Fetch all bids for the full history
+  const { data: allBids } = useQuery({
+    queryKey: ['all-bids', product.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('bids')
+        .select(`
+          *,
+          bidder:profiles!bids_bidder_id_fkey(full_name)
+        `)
+        .eq('product_id', product.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      return data;
+    },
+  });
+
   const formatBidderName = (fullName: string | null) => {
     if (!fullName) return "Anonymous";
     const initial = fullName.charAt(0).toUpperCase();
@@ -91,6 +122,16 @@ export function ProductPricing({ product }: ProductPricingProps) {
     const hours = Math.floor(minutes / 60);
     if (hours < 24) return `${hours}h ago`;
     return `${Math.floor(hours / 24)}d ago`;
+  };
+
+  const formatDate = (timestamp: string) => {
+    return new Date(timestamp).toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   };
 
   useEffect(() => {
@@ -191,14 +232,62 @@ export function ProductPricing({ product }: ProductPricingProps) {
               <div className="text-sm text-gray-600">
                 <p>{recentBids.length} bid{recentBids.length !== 1 ? 's' : ''} placed in the last 12h</p>
               </div>
-              <div className="bg-gray-50 p-3 rounded-md">
-                <p className="text-sm text-gray-600">
-                  Last bid placed by: <span className="font-medium">{formatBidderName(recentBids[0].bidder?.full_name)}</span>
-                  <br />
-                  <span className="text-gray-500">
-                    ${recentBids[0].amount.toLocaleString()} • {formatTimeAgo(recentBids[0].created_at)}
-                  </span>
-                </p>
+              
+              <div className="space-y-2">
+                <ScrollArea className="h-36 rounded-md border">
+                  <div className="p-3">
+                    {recentBids.slice(0, 3).map((bid: Bid, index: number) => (
+                      <div key={bid.id} className={`bg-gray-50 p-3 rounded-md mb-2 ${index === 0 ? 'border-l-4 border-green-500' : ''}`}>
+                        <p className="text-sm text-gray-600">
+                          <span className="font-medium">{formatBidderName(bid.bidder?.full_name)}</span>
+                          <br />
+                          <span className="text-gray-500">
+                            ${bid.amount.toLocaleString()} • {formatTimeAgo(bid.created_at)}
+                          </span>
+                        </p>
+                      </div>
+                    ))}
+                    
+                    {recentBids.length > 3 && (
+                      <Dialog open={bidHistoryDialogOpen} onOpenChange={setBidHistoryDialogOpen}>
+                        <DialogTrigger asChild>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            className="w-full mt-2 flex items-center justify-center gap-1"
+                          >
+                            View More Bids <ChevronDown className="h-4 w-4" />
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-[600px]">
+                          <div className="py-4">
+                            <h3 className="text-lg font-semibold mb-4">Bid History</h3>
+                            <ScrollArea className="h-[400px]">
+                              <Table>
+                                <TableHeader>
+                                  <TableRow>
+                                    <TableHead>Bidder</TableHead>
+                                    <TableHead className="text-right">Amount</TableHead>
+                                    <TableHead className="text-right">Date</TableHead>
+                                  </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                  {allBids?.map((bid: Bid) => (
+                                    <TableRow key={bid.id}>
+                                      <TableCell className="font-medium">{formatBidderName(bid.bidder?.full_name)}</TableCell>
+                                      <TableCell className="text-right">${bid.amount.toLocaleString()}</TableCell>
+                                      <TableCell className="text-right">{formatDate(bid.created_at)}</TableCell>
+                                    </TableRow>
+                                  ))}
+                                </TableBody>
+                              </Table>
+                            </ScrollArea>
+                          </div>
+                        </DialogContent>
+                      </Dialog>
+                    )}
+                  </div>
+                </ScrollArea>
               </div>
             </div>
           )}
