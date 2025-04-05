@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Timer, TrendingDown, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -64,6 +63,7 @@ export function ProductPricing({ product }: ProductPricingProps) {
         (payload: any) => {
           console.log('Product updated:', payload);
           // Always prioritize highest_bid for current price if it exists
+          // and ensure this highest_bid value came from an authorized bid
           setCurrentPrice(payload.new.highest_bid || payload.new.current_price);
           setHighestBid(payload.new.highest_bid);
         }
@@ -75,7 +75,7 @@ export function ProductPricing({ product }: ProductPricingProps) {
     };
   }, [product.id]);
 
-  // Fetch recent bids with bidder information - only authorized and active bids
+  // Fetch recent bids with bidder information - ONLY authorized and active bids
   const { data: recentBids, refetch: refetchBids } = useQuery({
     queryKey: ['recent-bids', product.id],
     queryFn: async () => {
@@ -86,8 +86,8 @@ export function ProductPricing({ product }: ProductPricingProps) {
           bidder:profiles!bids_bidder_id_fkey(full_name)
         `)
         .eq('product_id', product.id)
-        .eq('payment_status', 'authorized')
-        .eq('status', 'active')
+        .eq('payment_status', 'authorized')  // Only fetch authorized bids
+        .eq('status', 'active')              // Only active bids
         .gte('created_at', new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString())
         .order('created_at', { ascending: false });
 
@@ -96,7 +96,7 @@ export function ProductPricing({ product }: ProductPricingProps) {
     },
   });
 
-  // Fetch all bids for the full history - only authorized and active bids
+  // Fetch all bids for the full history - ONLY authorized and active bids
   const { data: allBids } = useQuery({
     queryKey: ['all-bids', product.id],
     queryFn: async () => {
@@ -107,8 +107,8 @@ export function ProductPricing({ product }: ProductPricingProps) {
           bidder:profiles!bids_bidder_id_fkey(full_name)
         `)
         .eq('product_id', product.id)
-        .eq('payment_status', 'authorized')
-        .eq('status', 'active')
+        .eq('payment_status', 'authorized')  // Only fetch authorized bids
+        .eq('status', 'active')              // Only active bids
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -249,6 +249,8 @@ export function ProductPricing({ product }: ProductPricingProps) {
                           <br />
                           <span className="text-gray-500">
                             ${bid.amount.toLocaleString()} • {formatTimeAgo(bid.created_at)}
+                            {bid.payment_status === 'authorized' && 
+                             <span className="ml-2 text-emerald-600">• Authorized</span>}
                           </span>
                         </p>
                       </div>

@@ -28,13 +28,13 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
       try {
         setIsLoadingBids(true);
         
-        // Fetch the highest authorized bid
+        // Fetch the highest authorized bid - explicitly only get authorized and active bids
         const { data: highestBidData, error: bidError } = await supabase
           .from('bids')
           .select('amount')
           .eq('product_id', productId)
           .eq('payment_status', 'authorized') // Only get authorized bids
-          .eq('status', 'active')
+          .eq('status', 'active')            // Only get active bids
           .order('amount', { ascending: false })
           .limit(1)
           .single();

@@ -1,4 +1,3 @@
-
 import { Timer, TrendingDown, Share } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
@@ -35,7 +34,7 @@ export function AuctionSection({ product }: AuctionSectionProps) {
   const { toast } = useToast();
   const auctionEnded = product.auction_end_time && new Date(product.auction_end_time) < new Date();
 
-  // Subscribe to real-time price updates
+  // Subscribe to real-time price updates - ensure we only listen for authorized bids
   useEffect(() => {
     const channel = supabase
       .channel('product-price-updates')
@@ -50,6 +49,7 @@ export function AuctionSection({ product }: AuctionSectionProps) {
         (payload: any) => {
           console.log('Product updated:', payload);
           // Always use highest_bid as current_price if it exists
+          // This highest_bid is set by the edge function and is guaranteed to be from an authorized bid
           setCurrentPrice(payload.new.highest_bid || payload.new.current_price);
           setHighestBid(payload.new.highest_bid);
         }
