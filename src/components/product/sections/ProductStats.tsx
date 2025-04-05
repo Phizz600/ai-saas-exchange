@@ -1,3 +1,4 @@
+
 import { Card } from "@/components/ui/card";
 import { TrendingUp, Users, Star, Shield, Zap, Building2, Info, Eye, Mouse, Bookmark, Flame, History } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
@@ -313,7 +314,7 @@ export function ProductStats({ product }: ProductStatsProps) {
               <Eye className="h-4 w-4" />
               <span>Monthly Traffic</span>
             </div>
-            <p className="text-lg font-semibold">{product.monthly_traffic.toLocaleString()}</p>
+            <p className="text-lg font-semibold">{product.monthly_traffic !== null ? product.monthly_traffic.toLocaleString() : '0'}</p>
             <p className="text-sm text-gray-600">Monthly visitors</p>
           </div>}
 
