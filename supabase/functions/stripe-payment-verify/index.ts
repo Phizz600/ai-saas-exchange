@@ -48,6 +48,7 @@ serve(async (req) => {
     
     try {
       // Retrieve the payment intent to check its status
+      console.log(`Retrieving payment intent with ID: ${paymentIntentId}`);
       const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
       
       console.log(`Retrieved payment intent ${paymentIntentId}:`, {

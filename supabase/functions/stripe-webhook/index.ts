@@ -15,15 +15,19 @@ serve(async (req) => {
   }
   
   try {
+    console.log("Receiving Stripe webhook request");
+    
     // Get the stripe webhook secret from environment variables
     const stripeWebhookSecret = Deno.env.get("STRIPE_WEBHOOK_SECRET");
     if (!stripeWebhookSecret) {
+      console.error("Missing Stripe webhook secret");
       throw new Error("Missing Stripe webhook secret");
     }
 
     // Initialize Stripe with the secret key
     const stripeSecretKey = Deno.env.get("STRIPE_SECRET_KEY");
     if (!stripeSecretKey) {
+      console.error("Missing Stripe secret key");
       throw new Error("Missing Stripe secret key");
     }
     
@@ -37,8 +41,11 @@ serve(async (req) => {
     // Get the signature from headers
     const signature = req.headers.get("stripe-signature");
     if (!signature) {
+      console.error("No Stripe signature found in request");
       throw new Error("No Stripe signature found in request");
     }
+    
+    console.log("Verifying webhook signature");
     
     // Verify the event using the webhook secret and signature
     let event;
@@ -84,6 +91,7 @@ serve(async (req) => {
     }
     
     // Return a 200 response to acknowledge receipt of the event
+    console.log("Webhook processed successfully");
     return new Response(
       JSON.stringify({ received: true }),
       { 

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -6,21 +5,18 @@ import { AlertCircle, CreditCard, LockIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
+import { testStripeVerification } from "@/services/stripe-service";
 
 // Initialize Stripe with the public key
-const stripePublishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
-const stripePromise = loadStripe(stripePublishableKey);
+// Make sure this is using the full key value, not an environment variable
+const stripePublishableKey = "pk_test_your_actual_key_here"; // Replace with your actual publishable key
+const stripePromise = stripePublishableKey ? loadStripe(stripePublishableKey) : null;
 
 console.log("Stripe publishable key available:", !!stripePublishableKey);
 
-interface BidDepositDialogProps {
-  open: boolean;
-  onClose: () => void;
-  onConfirm: (paymentMethodId: string) => void;
-  productId: string;
-  bidAmount: number;
-  productTitle: string;
-  clientSecret?: string | null;
+// If the publishable key is not set, we show an error message
+if (!stripePublishableKey) {
+  console.error("Stripe publishable key is not configured! This will cause payment forms to fail.");
 }
 
 function PaymentForm({ onConfirm, onClose }: { onConfirm: (paymentMethodId: string) => void; onClose: () => void }) {
@@ -191,6 +187,14 @@ export function BidDepositDialog({
     }
   }, [open, clientSecret]);
 
+  // Generate test logs for Stripe verification on first open
+  useEffect(() => {
+    if (open) {
+      // This will help generate logs for the stripe-payment-verify function
+      testStripeVerification().catch(console.error);
+    }
+  }, [open]);
+
   useEffect(() => {
     // Check if Stripe is properly initialized
     if (open) {
@@ -221,7 +225,8 @@ export function BidDepositDialog({
         stripePromise: !!stripePromise,
         clientSecret: !!clientSecret,
         paymentElementVisible,
-        stripeError
+        stripeError,
+        publishableKeyConfigured: !!stripePublishableKey
       });
     }
   }, [open, clientSecret, paymentElementVisible, stripeError]);

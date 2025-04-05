@@ -68,6 +68,8 @@ export async function capturePaymentAuthorization(
   paymentIntentId: string
 ): Promise<{ success: boolean; error: string | null }> {
   try {
+    console.log("Capturing payment authorization:", paymentIntentId);
+    
     const { data, error } = await supabase.functions.invoke('stripe-payment-capture', {
       body: {
         paymentIntentId
@@ -97,6 +99,8 @@ export async function cancelPaymentAuthorization(
   paymentIntentId: string
 ): Promise<{ success: boolean; error: string | null }> {
   try {
+    console.log("Canceling payment authorization:", paymentIntentId);
+    
     const { data, error } = await supabase.functions.invoke('stripe-payment-cancel', {
       body: {
         paymentIntentId
@@ -137,11 +141,17 @@ export async function verifyPaymentIntent(
       };
     }
     
+    // Log before making the API call
+    console.log("Invoking stripe-payment-verify function with payload:", { paymentIntentId });
+    
     const { data, error } = await supabase.functions.invoke('stripe-payment-verify', {
       body: {
         paymentIntentId
       }
     });
+
+    // Log the response
+    console.log("Received response from stripe-payment-verify:", { data, error });
 
     if (error) {
       console.error('Error verifying payment intent:', error);
@@ -192,5 +202,21 @@ export async function registerPaymentHook(
       success: false, 
       error: error.message || 'Failed to register payment hook' 
     };
+  }
+}
+
+// Added a test function to generate logs
+export async function testStripeVerification(): Promise<void> {
+  try {
+    console.log("Running test verification to generate logs");
+    
+    // This is a test payment intent ID format (will fail but generate logs)
+    const testPaymentIntentId = "pi_test_verification_" + Date.now();
+    
+    await verifyPaymentIntent(testPaymentIntentId);
+    
+    console.log("Test verification completed");
+  } catch (error) {
+    console.error("Test verification failed:", error);
   }
 }
