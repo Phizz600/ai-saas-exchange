@@ -59,7 +59,9 @@ serve(async (req) => {
         bidId,
         productId,
         environment: Deno.env.get("ENVIRONMENT") || "development",
-      }
+      },
+      description: `Bid Authorization for product ID: ${productId}`,
+      statement_descriptor: "AI EXCHANGE BID"
     });
     
     console.log("Created payment intent:", paymentIntent.id);

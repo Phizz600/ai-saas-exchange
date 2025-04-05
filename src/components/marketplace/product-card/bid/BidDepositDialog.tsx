@@ -30,6 +30,7 @@ function PaymentForm({ onConfirm, onClose }: { onConfirm: (paymentMethodId: stri
 
   // Track when the element is ready
   const handleReady = () => {
+    console.log("Payment element is ready");
     setElementReady(true);
   };
 
@@ -46,6 +47,8 @@ function PaymentForm({ onConfirm, onClose }: { onConfirm: (paymentMethodId: stri
     setErrorMessage(null);
 
     try {
+      console.log("Starting payment confirmation process");
+      
       // Get the PaymentElement instance
       const paymentElement = elements.getElement(PaymentElement);
       
@@ -63,6 +66,7 @@ function PaymentForm({ onConfirm, onClose }: { onConfirm: (paymentMethodId: stri
       });
 
       if (error) {
+        console.error("Payment confirmation error:", error);
         setErrorMessage(error.message || "Payment failed");
         toast({
           title: "Payment Error",
@@ -71,6 +75,7 @@ function PaymentForm({ onConfirm, onClose }: { onConfirm: (paymentMethodId: stri
         });
       } else if (paymentIntent) {
         // The payment was successfully authorized
+        console.log("Payment authorized successfully:", paymentIntent);
         toast({
           title: "Payment Authorized",
           description: "Your payment method has been authorized for your bid",
@@ -161,6 +166,7 @@ export function BidDepositDialog({
   // Control the visibility of the payment element based on dialog state
   useEffect(() => {
     if (open && clientSecret) {
+      console.log("BidDepositDialog opened with client secret, preparing to show payment element");
       // Small delay to ensure the dialog is fully open
       const timer = setTimeout(() => {
         setPaymentElementVisible(true);
@@ -172,6 +178,7 @@ export function BidDepositDialog({
   }, [open, clientSecret]);
 
   if (!clientSecret) {
+    console.log("No client secret available, not rendering dialog");
     return null;
   }
 
@@ -192,11 +199,11 @@ export function BidDepositDialog({
             </p>
           </div>
           
-          {paymentElementVisible && (
+          {paymentElementVisible && clientSecret && (
             <Elements
               stripe={stripePromise}
               options={{
-                clientSecret: clientSecret,
+                clientSecret,
                 appearance: {
                   theme: 'stripe',
                   variables: {
