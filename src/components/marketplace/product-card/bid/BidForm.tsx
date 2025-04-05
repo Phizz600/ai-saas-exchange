@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useBidForm } from "./hooks/useBidForm";
 import { BidDepositDialog } from "./BidDepositDialog";
@@ -23,34 +24,69 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
     const fetchHighestBid = async () => {
       try {
         setIsLoadingBids(true);
-        const { data: product, error } = await supabase
-          .from('products')
-          .select('highest_bid, current_price')
-          .eq('id', productId)
+        
+        // Fetch the highest authorized bid
+        const { data: highestBidData, error: bidError } = await supabase
+          .from('bids')
+          .select('amount')
+          .eq('product_id', productId)
+          .eq('payment_status', 'authorized') // Only get authorized bids
+          .eq('status', 'active')
+          .order('amount', { ascending: false })
+          .limit(1)
           .single();
 
-        if (error) {
-          console.error('Error fetching highest bid:', error);
-          return;
-        }
+        if (!bidError && highestBidData) {
+          setHighestBid(highestBidData.amount);
+        } else {
+          // If no authorized bids, fall back to the product's current price
+          const { data: product, error } = await supabase
+            .from('products')
+            .select('current_price')
+            .eq('id', productId)
+            .single();
 
-        // Set the highest bid from the database value
-        setHighestBid(product.highest_bid);
+          if (error) {
+            console.error('Error fetching product pricing:', error);
+            return;
+          }
+
+          setHighestBid(null); // No authorized highest bid
+        }
         
         // Subscribe to real-time product updates to keep the price current
         const channel = supabase
-          .channel('product-price-updates')
+          .channel('authorized-bids-updates')
+          .on(
+            'postgres_changes',
+            {
+              event: 'INSERT',
+              schema: 'public',
+              table: 'bids',
+              filter: `product_id=eq.${productId} AND payment_status=eq.authorized AND status=eq.active`
+            },
+            (payload: any) => {
+              console.log('New authorized bid:', payload);
+              // Check if the new bid is higher than current highest
+              if (!highestBid || payload.new.amount > highestBid) {
+                setHighestBid(payload.new.amount);
+              }
+            }
+          )
           .on(
             'postgres_changes',
             {
               event: 'UPDATE',
               schema: 'public',
-              table: 'products',
-              filter: `id=eq.${productId}`
+              table: 'bids',
+              filter: `product_id=eq.${productId} AND payment_status=eq.authorized AND status=eq.active`
             },
             (payload: any) => {
-              console.log('Product updated:', payload);
-              setHighestBid(payload.new.highest_bid);
+              console.log('Bid updated to authorized:', payload);
+              // Check if the updated bid is higher than current highest
+              if (!highestBid || payload.new.amount > highestBid) {
+                setHighestBid(payload.new.amount);
+              }
             }
           )
           .subscribe();
@@ -66,7 +102,7 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
     };
 
     fetchHighestBid();
-  }, [productId]);
+  }, [productId, highestBid]);
 
   const {
     bidAmount,

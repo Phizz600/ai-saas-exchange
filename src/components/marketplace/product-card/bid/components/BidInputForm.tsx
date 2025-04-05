@@ -1,17 +1,18 @@
 
-import { Input } from "@/components/ui/input";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { CreditCard } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Loader2 } from "lucide-react";
 
 interface BidInputFormProps {
   bidAmount: string;
   handleAmountChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   isLoadingBids: boolean;
   highestBid: number | null;
-  currentPrice?: number;
+  currentPrice: number | undefined;
   isSubmitting: boolean;
   validateAndBid: () => void;
-  clearBidError?: () => void;
+  clearBidError: () => void;
 }
 
 export function BidInputForm({
@@ -24,50 +25,55 @@ export function BidInputForm({
   validateAndBid,
   clearBidError
 }: BidInputFormProps) {
+  // Format the current price for display
+  const displayPrice = highestBid || currentPrice || 0;
+  const formattedDisplayPrice = displayPrice.toLocaleString();
+  
   return (
-    <div className="space-y-3">
-      <div className="flex flex-col">
-        <label htmlFor="bidAmount" className="text-sm mb-1 font-medium">
-          Your Bid Amount
-        </label>
-        <Input
-          id="bidAmount"
-          type="text"
-          value={bidAmount}
-          onChange={(e) => {
-            handleAmountChange(e);
-            if (clearBidError) clearBidError();
-          }}
-          placeholder="$0.00"
-          className="font-mono"
-        />
-        {isLoadingBids ? (
-          <p className="text-xs text-gray-500 mt-1">Loading current bid information...</p>
-        ) : (
-          <>
-            {highestBid ? (
-              <p className="text-xs text-gray-500 mt-1">
-                Current highest bid: ${highestBid.toLocaleString()} - Your bid must be higher
-              </p>
-            ) : currentPrice ? (
-              <p className="text-xs text-gray-500 mt-1">
-                Starting price: ${currentPrice.toLocaleString()} - Your bid must be higher
-              </p>
-            ) : null}
-          </>
-        )}
-        <p className="text-xs text-gray-500 mt-1 flex items-center gap-1">
-          <CreditCard className="h-3 w-3" />
-          Your card will be authorized but not charged until you win
+    <div>
+      <div className="flex flex-col space-y-2">
+        <div className="relative">
+          <Input
+            type="text"
+            value={bidAmount}
+            onChange={(e) => {
+              handleAmountChange(e);
+              clearBidError();
+            }}
+            placeholder="Enter bid amount"
+            className="pl-8"
+            disabled={isSubmitting}
+          />
+          <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</div>
+        </div>
+        
+        <p className="text-xs text-gray-500 mt-1">
+          {isLoadingBids ? (
+            <span className="flex items-center">
+              <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+              Loading current bid...
+            </span>
+          ) : (
+            <>
+              Current highest bid: ${formattedDisplayPrice} - Your bid must be higher
+            </>
+          )}
         </p>
       </div>
-      
-      <Button 
+
+      <Button
         onClick={validateAndBid}
-        className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90"
-        disabled={isSubmitting || !bidAmount || isLoadingBids}
+        disabled={isSubmitting || isLoadingBids}
+        className="w-full mt-3 bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9]"
       >
-        {isSubmitting ? "Processing..." : "Place Bid"}
+        {isSubmitting ? (
+          <span className="flex items-center gap-1">
+            <Loader2 className="h-4 w-4 animate-spin" />
+            Processing...
+          </span>
+        ) : (
+          "Place Bid"
+        )}
       </Button>
     </div>
   );

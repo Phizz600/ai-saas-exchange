@@ -32,6 +32,8 @@ interface Bid {
   id: string;
   amount: number;
   created_at: string;
+  payment_status: string;
+  status: string;
   bidder: {
     full_name: string | null;
   };
@@ -73,7 +75,7 @@ export function ProductPricing({ product }: ProductPricingProps) {
     };
   }, [product.id]);
 
-  // Fetch recent bids with bidder information
+  // Fetch recent bids with bidder information - only authorized and active bids
   const { data: recentBids, refetch: refetchBids } = useQuery({
     queryKey: ['recent-bids', product.id],
     queryFn: async () => {
@@ -84,6 +86,8 @@ export function ProductPricing({ product }: ProductPricingProps) {
           bidder:profiles!bids_bidder_id_fkey(full_name)
         `)
         .eq('product_id', product.id)
+        .eq('payment_status', 'authorized')
+        .eq('status', 'active')
         .gte('created_at', new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString())
         .order('created_at', { ascending: false });
 
@@ -92,7 +96,7 @@ export function ProductPricing({ product }: ProductPricingProps) {
     },
   });
 
-  // Fetch all bids for the full history
+  // Fetch all bids for the full history - only authorized and active bids
   const { data: allBids } = useQuery({
     queryKey: ['all-bids', product.id],
     queryFn: async () => {
@@ -103,6 +107,8 @@ export function ProductPricing({ product }: ProductPricingProps) {
           bidder:profiles!bids_bidder_id_fkey(full_name)
         `)
         .eq('product_id', product.id)
+        .eq('payment_status', 'authorized')
+        .eq('status', 'active')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -190,7 +196,7 @@ export function ProductPricing({ product }: ProductPricingProps) {
                 <>
                   {hasActiveBids && (
                     <p className="text-sm text-emerald-600 font-medium">
-                      Current price set by highest bid
+                      Current price set by highest authorized bid
                     </p>
                   )}
                   {product.min_price && (
@@ -222,7 +228,7 @@ export function ProductPricing({ product }: ProductPricingProps) {
             <div className="bg-blue-50 p-3 rounded-md text-sm text-blue-700 mt-3">
               <p>
                 <span className="font-medium">How Dutch Auctions Work:</span> The price starts high and 
-                decreases over time until someone places a bid. The highest bid always sets the current price.
+                decreases over time until someone places a bid. The highest authorized bid always sets the current price.
               </p>
             </div>
           )}
@@ -230,7 +236,7 @@ export function ProductPricing({ product }: ProductPricingProps) {
           {recentBids && recentBids.length > 0 && (
             <div className="space-y-2">
               <div className="text-sm text-gray-600">
-                <p>{recentBids.length} bid{recentBids.length !== 1 ? 's' : ''} placed in the last 12h</p>
+                <p>{recentBids.length} authorized bid{recentBids.length !== 1 ? 's' : ''} placed in the last 12h</p>
               </div>
               
               <div className="space-y-2">
@@ -261,7 +267,7 @@ export function ProductPricing({ product }: ProductPricingProps) {
                         </DialogTrigger>
                         <DialogContent className="sm:max-w-[600px]">
                           <div className="py-4">
-                            <h3 className="text-lg font-semibold mb-4">Bid History</h3>
+                            <h3 className="text-lg font-semibold mb-4">Authorized Bid History</h3>
                             <ScrollArea className="h-[400px]">
                               <Table>
                                 <TableHeader>

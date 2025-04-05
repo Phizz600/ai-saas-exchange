@@ -47,19 +47,21 @@ serve(async (req) => {
       );
     }
     
-    // Fetch the bid to make sure it exists and is properly authorized
+    // Fetch the bid to make sure it exists, is properly authorized and active
     const { data: bid, error: bidError } = await supabase
       .from('bids')
       .select('id, payment_status, status')
       .eq('product_id', productId)
       .eq('bidder_id', bidderId)
       .eq('amount', bidAmount)
+      .eq('payment_status', 'authorized') // Only accept authorized bids
+      .eq('status', 'active')             // Only accept active bids
       .single();
     
     if (bidError) {
-      console.error(`Error fetching bid: ${bidError.message}`);
+      console.error(`Error fetching bid or bid not authorized: ${bidError.message}`);
       return new Response(
-        JSON.stringify({ error: `Error fetching bid: ${bidError.message}` }),
+        JSON.stringify({ error: `Error fetching bid or bid not properly authorized: ${bidError.message}` }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
