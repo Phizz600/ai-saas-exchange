@@ -2,6 +2,7 @@
 import { Header } from "@/components/Header";
 import { TestEmailSender } from "@/components/admin/TestEmailSender";
 import { WelcomeEmailTester } from "@/components/admin/WelcomeEmailTester";
+import { AuctionResultEmailTester } from "@/components/admin/AuctionResultEmailTester";
 import { ProductListingsManager } from "@/components/admin/ProductListingsManager";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -45,6 +46,8 @@ export const Admin = () => {
                   <div className="grid gap-6">
                     <TestEmailSender />
                     
+                    <AuctionResultEmailTester />
+                    
                     <WelcomeEmailTester />
                     
                     <Card className="shadow-md opacity-60">
@@ -85,7 +88,7 @@ export const Admin = () => {
               <div className="text-sm text-gray-600 space-y-2">
                 <p>Environment: {import.meta.env.DEV ? "Development" : "Production"}</p>
                 <p>Supabase Project ID: pxadbwlidclnfoodjtpd</p>
-                <p>Edge Functions: send-welcome-email, send-test-email</p>
+                <p>Edge Functions: send-welcome-email, send-test-email, send-auction-result-email</p>
               </div>
             </CardContent>
           </Card>
