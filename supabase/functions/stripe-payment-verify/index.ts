@@ -58,7 +58,16 @@ serve(async (req) => {
         metadata: paymentIntent.metadata,
       });
       
-      // Return the payment intent status and details
+      // Verify if the payment is properly authorized
+      let isAuthorized = false;
+      
+      // Check for proper authorization status
+      if (paymentIntent.status === 'requires_capture' || 
+          paymentIntent.status === 'succeeded') {
+        isAuthorized = true;
+      }
+      
+      // Return the payment intent status and details with authorization flag
       return new Response(
         JSON.stringify({ 
           status: paymentIntent.status,
@@ -66,7 +75,8 @@ serve(async (req) => {
           metadata: paymentIntent.metadata,
           created: new Date(paymentIntent.created * 1000).toISOString(),
           customer: paymentIntent.customer,
-          latest_charge: paymentIntent.latest_charge
+          latest_charge: paymentIntent.latest_charge,
+          isAuthorized: isAuthorized
         }),
         { 
           status: 200, 

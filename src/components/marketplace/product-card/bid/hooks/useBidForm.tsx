@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -203,7 +202,7 @@ export function useBidForm({ productId, productTitle, currentPrice }: UseBidForm
       console.log('Updating highest bid on product with edge function');
       
       // Call the update-highest-bid edge function
-      const { error: highestBidError } = await supabase.functions.invoke(
+      const { data: updateResult, error: highestBidError } = await supabase.functions.invoke(
         'update-highest-bid',
         {
           body: {
@@ -217,6 +216,11 @@ export function useBidForm({ productId, productTitle, currentPrice }: UseBidForm
       if (highestBidError) {
         console.error('Error updating highest bid:', highestBidError);
         // Don't throw here, as the bid is already placed
+      } else {
+        console.log('Result from update-highest-bid function:', updateResult);
+        if (!updateResult.success) {
+          console.warn('Bid not set as highest bid:', updateResult.message);
+        }
       }
       
       // Show success message

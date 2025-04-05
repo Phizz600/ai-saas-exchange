@@ -47,6 +47,37 @@ serve(async (req) => {
       );
     }
     
+    // Fetch the bid to make sure it exists and is properly authorized
+    const { data: bid, error: bidError } = await supabase
+      .from('bids')
+      .select('id, payment_status, status')
+      .eq('product_id', productId)
+      .eq('bidder_id', bidderId)
+      .eq('amount', bidAmount)
+      .single();
+    
+    if (bidError) {
+      console.error(`Error fetching bid: ${bidError.message}`);
+      return new Response(
+        JSON.stringify({ error: `Error fetching bid: ${bidError.message}` }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    
+    // Only update if the bid is active and payment is authorized
+    if (bid.status !== 'active' || bid.payment_status !== 'authorized') {
+      console.log(`Bid is not valid for highest bid update: status=${bid.status}, payment_status=${bid.payment_status}`);
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          message: "Bid is not active or payment is not authorized",
+          bidStatus: bid.status,
+          paymentStatus: bid.payment_status
+        }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    
     // Only update if the new bid is higher than the current highest bid
     if (!product.highest_bid || bidAmount > product.highest_bid) {
       console.log(`Updating bid: Current highest: ${product.highest_bid || 'None'}, New bid: ${bidAmount}`);
