@@ -1,6 +1,7 @@
 
 import { DollarSign, Users, Star, Clock, Shield, CheckCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { formatCurrency } from "@/lib/utils";
 
 interface ProductMetricsProps {
   monthlyRevenue?: number;
@@ -28,7 +29,7 @@ export function ProductMetrics({
         {monthlyRevenue !== undefined && monthlyRevenue > 0 && (
           <div className="flex items-center gap-2 text-gray-700">
             <DollarSign className="h-5 w-5 text-green-500" />
-            <span className="text-gray-600">MRR: ${new Intl.NumberFormat('en-US').format(monthlyRevenue)}</span>
+            <span className="text-gray-600">MRR: {formatCurrency(monthlyRevenue)}</span>
           </div>
         )}
         

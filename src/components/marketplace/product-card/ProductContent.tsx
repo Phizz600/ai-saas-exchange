@@ -1,6 +1,7 @@
 
 import { ProductBadges } from "./ProductBadges";
 import { ProductMetrics } from "./ProductMetrics";
+import { formatCurrency } from "@/lib/utils";
 
 interface ProductContentProps {
   title: string;
@@ -64,7 +65,7 @@ export function ProductContent({
       
       {/* Price in green - making the font size smaller and left aligned */}
       <div className="text-xl font-bold text-green-600 text-left">
-        ${new Intl.NumberFormat('en-US').format(displayPrice)}
+        {formatCurrency(displayPrice)}
       </div>
       
       {/* Show metrics for ALL products, whether NDA is required or not */}

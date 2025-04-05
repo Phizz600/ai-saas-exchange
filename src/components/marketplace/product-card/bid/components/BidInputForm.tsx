@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
+import { formatCurrency } from "@/lib/utils";
 
 interface BidInputFormProps {
   bidAmount: string;
@@ -26,7 +27,6 @@ export function BidInputForm({
 }: BidInputFormProps) {
   // Format the current price for display
   const displayPrice = highestBid || currentPrice || 0;
-  const formattedDisplayPrice = displayPrice.toLocaleString();
   
   return (
     <div>
@@ -54,11 +54,11 @@ export function BidInputForm({
             </span>
           ) : highestBid ? (
             <>
-              Current highest bid: ${formattedDisplayPrice} - Your bid must be higher
+              Current highest bid: {formatCurrency(displayPrice)} - Your bid must be higher
             </>
           ) : (
             <>
-              Current price: ${formattedDisplayPrice} - Your bid must be higher
+              Current price: {formatCurrency(displayPrice)} - Your bid must be higher
             </>
           )}
         </p>
