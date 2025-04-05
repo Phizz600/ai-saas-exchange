@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,9 +8,10 @@ interface UseBidFormProps {
   productId: string;
   productTitle: string;
   currentPrice?: number;
+  onValidationError?: (error: string) => void;
 }
 
-export function useBidForm({ productId, productTitle, currentPrice }: UseBidFormProps) {
+export function useBidForm({ productId, productTitle, currentPrice, onValidationError }: UseBidFormProps) {
   const [bidAmount, setBidAmount] = useState("");
   const [formattedBidAmount, setFormattedBidAmount] = useState(""); 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -66,9 +68,11 @@ export function useBidForm({ productId, productTitle, currentPrice }: UseBidForm
       // Validate amount
       const amount = parseFloat(bidAmount);
       if (isNaN(amount) || amount <= 0) {
+        const errorMsg = "Please enter a valid bid amount";
+        if (onValidationError) onValidationError(errorMsg);
         toast({
           title: "Invalid amount",
-          description: "Please enter a valid bid amount",
+          description: errorMsg,
           variant: "destructive"
         });
         return;
@@ -76,9 +80,11 @@ export function useBidForm({ productId, productTitle, currentPrice }: UseBidForm
 
       // Validate against current price - only against authorized highest bid or system price
       if (currentPrice && amount <= currentPrice) {
+        const errorMsg = `Your bid must be higher than the current price of $${currentPrice.toLocaleString()}`;
+        if (onValidationError) onValidationError(errorMsg);
         toast({
           title: "Bid too low",
-          description: `Your bid must be higher than the current price of $${currentPrice.toLocaleString()}`,
+          description: errorMsg,
           variant: "destructive"
         });
         return;
@@ -97,6 +103,35 @@ export function useBidForm({ productId, productTitle, currentPrice }: UseBidForm
 
       console.log(`Creating bid for product ${productId} with amount ${amount}`);
 
+      // Get the latest product data to verify the highest bid
+      const { data: product, error: productError } = await supabase
+        .from('products')
+        .select('highest_bid, current_price')
+        .eq('id', productId)
+        .single();
+        
+      if (productError) {
+        console.error('Error fetching product for validation:', productError);
+        toast({
+          title: "Error validating bid",
+          description: "Could not verify current highest bid",
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      // Additional validation against the latest highest bid from the database
+      if (product.highest_bid && amount <= product.highest_bid) {
+        const errorMsg = `Your bid must be higher than the current highest bid of $${product.highest_bid.toLocaleString()}`;
+        if (onValidationError) onValidationError(errorMsg);
+        toast({
+          title: "Bid too low",
+          description: errorMsg,
+          variant: "destructive"
+        });
+        return;
+      }
+
       // Create a pending bid in the database
       const { data: bid, error: bidError } = await supabase
         .from('bids')
@@ -111,6 +146,19 @@ export function useBidForm({ productId, productTitle, currentPrice }: UseBidForm
 
       if (bidError) {
         console.error('Error creating bid:', bidError);
+        
+        // Special handling for validation errors from Postgres triggers
+        if (bidError.code === 'P0001' && bidError.message.includes('higher than')) {
+          const errorMsg = bidError.message || "Your bid must be higher than the current highest bid";
+          if (onValidationError) onValidationError(errorMsg);
+          toast({
+            title: "Bid too low",
+            description: errorMsg,
+            variant: "destructive"
+          });
+          return;
+        }
+        
         toast({
           title: "Bid creation failed",
           description: bidError.message,

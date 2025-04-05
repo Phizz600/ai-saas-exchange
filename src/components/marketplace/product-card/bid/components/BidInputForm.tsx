@@ -54,7 +54,7 @@ export function BidInputForm({
             </span>
           ) : highestBid ? (
             <>
-              Current highest bid: {formatCurrency(displayPrice)} - Your bid must be higher
+              Current highest bid: {formatCurrency(highestBid)} - Your bid must be higher
             </>
           ) : (
             <>

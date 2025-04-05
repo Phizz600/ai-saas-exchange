@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useBidForm } from "./hooks/useBidForm";
 import { BidDepositDialog } from "./BidDepositDialog";
@@ -29,36 +30,53 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
       try {
         setIsLoadingBids(true);
         
-        // Fetch the highest authorized bid - explicitly only get authorized and active bids
+        // First try to get the highest bid directly from the product
+        const { data: product, error: productError } = await supabase
+          .from('products')
+          .select('highest_bid, current_price')
+          .eq('id', productId)
+          .single();
+        
+        if (productError) {
+          console.error('Error fetching product:', productError);
+          setIsLoadingBids(false);
+          return;
+        }
+        
+        console.log('Product data:', product);
+        
+        // If there's a highest bid, use that
+        if (product && product.highest_bid) {
+          if (mounted) {
+            console.log('Setting highest bid from product:', product.highest_bid);
+            setHighestBid(product.highest_bid);
+          }
+          setIsLoadingBids(false);
+          return;
+        }
+        
+        // As a fallback, fetch the highest authorized bid
         const { data: highestBidData, error: bidError } = await supabase
           .from('bids')
           .select('amount')
           .eq('product_id', productId)
-          .eq('payment_status', 'authorized') // Only get authorized bids
-          .eq('status', 'active')            // Only get active bids
+          .eq('payment_status', 'authorized')
+          .eq('status', 'active')
           .order('amount', { ascending: false })
           .limit(1);
 
         if (!bidError && highestBidData && highestBidData.length > 0) {
           if (mounted) {
+            console.log('Setting highest bid from bids table:', highestBidData[0].amount);
             setHighestBid(highestBidData[0].amount);
           }
         } else {
-          // If no authorized bids, fall back to the product's current price
-          const { data: product, error } = await supabase
-            .from('products')
-            .select('current_price, starting_price')
-            .eq('id', productId)
-            .single();
-
-          if (error) {
-            console.error('Error fetching product pricing:', error);
-            return;
-          }
-
-          if (mounted) {
-            // Use starting_price as fallback if no current_price and no highest bid
-            setHighestBid(null); // No authorized highest bid
+          // If no authorized bids, use the product's current price
+          if (mounted && product) {
+            console.log('No highest bid found, using current price:', product.current_price);
+            // Don't set highest bid here, as we want to differentiate between
+            // a real bid and just the current price
+            setHighestBid(null);
           }
         }
       } catch (err) {
@@ -142,7 +160,7 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
       supabase.removeChannel(productChannel);
       supabase.removeChannel(bidChannel);
     };
-  }, [productId]);
+  }, [productId, highestBid]);
 
   const {
     bidAmount,
@@ -162,7 +180,8 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
   } = useBidForm({
     productId,
     productTitle,
-    currentPrice: highestBid || currentPrice
+    currentPrice: highestBid || currentPrice,
+    onValidationError: (error) => setBidError(error)
   });
 
   // Handle dialog closing without completing the process
