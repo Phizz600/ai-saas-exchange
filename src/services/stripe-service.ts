@@ -6,7 +6,7 @@ export async function createPaymentAuthorization(
   amount: number,
   bidId: string,
   productId: string
-): Promise<{ clientSecret: string | null; error: string | null }> {
+): Promise<{ clientSecret: string | null; paymentIntentId: string | null; error: string | null }> {
   try {
     // Call our edge function to create a payment intent
     const { data, error } = await supabase.functions.invoke('stripe-payment-intent', {
@@ -20,17 +20,19 @@ export async function createPaymentAuthorization(
 
     if (error) {
       console.error('Error creating payment authorization:', error);
-      return { clientSecret: null, error: error.message };
+      return { clientSecret: null, paymentIntentId: null, error: error.message };
     }
 
     return { 
       clientSecret: data.clientSecret, 
+      paymentIntentId: data.paymentIntentId,
       error: null 
     };
   } catch (error: any) {
     console.error('Exception creating payment authorization:', error);
     return { 
       clientSecret: null, 
+      paymentIntentId: null,
       error: error.message || 'Failed to create payment authorization' 
     };
   }

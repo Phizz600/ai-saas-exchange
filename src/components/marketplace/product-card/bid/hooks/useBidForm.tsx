@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { createPaymentAuthorization } from "@/services/stripe-service";
+import { createPaymentAuthorization, capturePaymentAuthorization } from "@/services/stripe-service";
 
 interface UseBidFormProps {
   productId: string;
@@ -17,6 +17,7 @@ export function useBidForm({ productId, productTitle, currentPrice = 0 }: UseBid
   const [depositDialogOpen, setDepositDialogOpen] = useState(false);
   const [formattedBidAmount, setFormattedBidAmount] = useState("");
   const [paymentClientSecret, setPaymentClientSecret] = useState<string | null>(null);
+  const [paymentIntentId, setPaymentIntentId] = useState<string | null>(null);
   const [bidId, setBidId] = useState<string | null>(null);
   const { toast } = useToast();
 
@@ -82,7 +83,8 @@ export function useBidForm({ productId, productTitle, currentPrice = 0 }: UseBid
           bidder_id: user.id,
           amount: numericAmount,
           status: 'pending',
-          payment_status: 'pending'
+          payment_status: 'pending',
+          payment_amount: numericAmount
         })
         .select()
         .single();
@@ -102,7 +104,7 @@ export function useBidForm({ productId, productTitle, currentPrice = 0 }: UseBid
       setBidId(bid.id);
       
       // 3. Create a payment authorization with Stripe
-      const { clientSecret, error: stripeError } = await createPaymentAuthorization(
+      const { clientSecret, paymentIntentId, error: stripeError } = await createPaymentAuthorization(
         numericAmount, 
         bid.id,
         productId
@@ -126,8 +128,9 @@ export function useBidForm({ productId, productTitle, currentPrice = 0 }: UseBid
         return;
       }
       
-      // Store the client secret for use in the payment form
+      // Store the client secret and payment intent ID for use in the payment form
       setPaymentClientSecret(clientSecret);
+      setPaymentIntentId(paymentIntentId);
       
       // 4. Open the deposit dialog to complete payment
       setDepositDialogOpen(true);
@@ -158,7 +161,7 @@ export function useBidForm({ productId, productTitle, currentPrice = 0 }: UseBid
         .update({ 
           payment_method_id: paymentMethodId,
           status: 'active',
-          payment_status: 'processing'
+          payment_status: 'authorized'
         })
         .eq('id', bidId);
         
@@ -197,6 +200,7 @@ export function useBidForm({ productId, productTitle, currentPrice = 0 }: UseBid
     setSuccess(false);
     setBidId(null);
     setPaymentClientSecret(null);
+    setPaymentIntentId(null);
   };
 
   return {
@@ -206,6 +210,7 @@ export function useBidForm({ productId, productTitle, currentPrice = 0 }: UseBid
     success,
     depositDialogOpen,
     paymentClientSecret,
+    paymentIntentId,
     bidId,
     setDepositDialogOpen,
     handleAmountChange,

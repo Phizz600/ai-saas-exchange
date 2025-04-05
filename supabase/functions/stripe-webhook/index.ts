@@ -71,7 +71,8 @@ serve(async (req) => {
             .from('bids')
             .update({ 
               payment_intent_id: paymentIntent.id,
-              payment_status: 'authorized'
+              payment_status: 'authorized',
+              payment_amount: paymentIntent.amount / 100 // Convert from cents to dollars
             })
             .eq('id', paymentIntent.metadata.bidId);
             
@@ -89,11 +90,34 @@ serve(async (req) => {
         if (succeededIntent.metadata.bidId) {
           const { error } = await supabase
             .from('bids')
-            .update({ payment_status: 'captured' })
+            .update({ 
+              payment_status: 'captured',
+              payment_amount: succeededIntent.amount / 100 // Convert from cents to dollars
+            })
             .eq('id', succeededIntent.metadata.bidId);
             
           if (error) {
             console.error(`Error updating bid: ${error.message}`);
+          }
+          
+          // Get the bid details
+          const { data: bid } = await supabase
+            .from('bids')
+            .select('product_id, amount, bidder_id')
+            .eq('id', succeededIntent.metadata.bidId)
+            .single();
+            
+          if (bid) {
+            // Call the RPC function to update highest bid if higher
+            const { error: rpcError } = await supabase.rpc('update_highest_bid_if_higher', {
+              p_product_id: bid.product_id,
+              p_bid_amount: bid.amount,
+              p_bidder_id: bid.bidder_id
+            });
+            
+            if (rpcError) {
+              console.error(`Error updating highest bid: ${rpcError.message}`);
+            }
           }
         }
         break;
@@ -106,7 +130,10 @@ serve(async (req) => {
         if (canceledIntent.metadata.bidId) {
           const { error } = await supabase
             .from('bids')
-            .update({ payment_status: 'canceled' })
+            .update({ 
+              payment_status: 'canceled',
+              status: 'canceled'
+            })
             .eq('id', canceledIntent.metadata.bidId);
             
           if (error) {
