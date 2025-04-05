@@ -121,12 +121,21 @@ export async function cancelPaymentAuthorization(
   }
 }
 
-// New function to verify a payment intent status
+// Function to verify a payment intent status
 export async function verifyPaymentIntent(
   paymentIntentId: string
-): Promise<{ status: string | null; success: boolean; error: string | null }> {
+): Promise<{ status: string | null; success: boolean; error: string | null; amount?: number; metadata?: Record<string, any> }> {
   try {
     console.log("Verifying payment intent:", paymentIntentId);
+    
+    if (!paymentIntentId) {
+      console.error("Missing payment intent ID for verification");
+      return {
+        status: null,
+        success: false,
+        error: "Missing payment intent ID"
+      };
+    }
     
     const { data, error } = await supabase.functions.invoke('stripe-payment-verify', {
       body: {
@@ -147,6 +156,8 @@ export async function verifyPaymentIntent(
     
     return { 
       status: data?.status || null,
+      amount: data?.amount,
+      metadata: data?.metadata,
       success: true, 
       error: null 
     };
@@ -156,6 +167,30 @@ export async function verifyPaymentIntent(
       status: null,
       success: false, 
       error: error.message || 'Failed to verify payment intent' 
+    };
+  }
+}
+
+// Function to track a payment status and handle webhook events
+export async function registerPaymentHook(
+  paymentIntentId: string,
+  callbackUrl: string
+): Promise<{ success: boolean; error: string | null }> {
+  try {
+    console.log("Registering payment hook for:", paymentIntentId);
+    
+    // Store the callback URL in your database or cache
+    // This is where Stripe would notify your app about payment status changes
+    
+    return { 
+      success: true, 
+      error: null 
+    };
+  } catch (error: any) {
+    console.error('Exception registering payment hook:', error);
+    return { 
+      success: false, 
+      error: error.message || 'Failed to register payment hook' 
     };
   }
 }

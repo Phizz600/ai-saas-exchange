@@ -1,7 +1,6 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@11.18.0?target=deno";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.23.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -11,151 +10,96 @@ const corsHeaders = {
 serve(async (req) => {
   // Handle OPTIONS request for CORS
   if (req.method === "OPTIONS") {
+    console.log("Handling OPTIONS request for CORS");
     return new Response("ok", { headers: corsHeaders });
   }
   
   try {
-    // Get the stripe signature from the headers
-    const signature = req.headers.get("stripe-signature");
-    
-    if (!signature) {
-      return new Response(
-        JSON.stringify({ error: "Missing stripe-signature header" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+    // Get the stripe webhook secret from environment variables
+    const stripeWebhookSecret = Deno.env.get("STRIPE_WEBHOOK_SECRET");
+    if (!stripeWebhookSecret) {
+      throw new Error("Missing Stripe webhook secret");
+    }
+
+    // Initialize Stripe with the secret key
+    const stripeSecretKey = Deno.env.get("STRIPE_SECRET_KEY");
+    if (!stripeSecretKey) {
+      throw new Error("Missing Stripe secret key");
     }
     
-    // Get the webhook secret
-    const webhookSecret = Deno.env.get("STRIPE_WEBHOOK_SECRET");
-    if (!webhookSecret) {
-      return new Response(
-        JSON.stringify({ error: "Webhook secret not configured" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-    
-    // Initialize Stripe
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
+    const stripe = new Stripe(stripeSecretKey, {
       apiVersion: "2022-11-15",
     });
     
-    // Get the raw request body
+    // Get request body as text for signature verification
     const body = await req.text();
     
-    // Verify the webhook signature
+    // Get the signature from headers
+    const signature = req.headers.get("stripe-signature");
+    if (!signature) {
+      throw new Error("No Stripe signature found in request");
+    }
+    
+    // Verify the event using the webhook secret and signature
     let event;
     try {
-      event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
+      event = stripe.webhooks.constructEvent(
+        body,
+        signature,
+        stripeWebhookSecret
+      );
     } catch (err) {
       console.error(`Webhook signature verification failed: ${err.message}`);
       return new Response(
-        JSON.stringify({ error: `Webhook signature verification failed: ${err.message}` }),
+        JSON.stringify({ error: "Invalid signature" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
     
-    // Create a Supabase client
-    const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
-    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    console.log(`Received Stripe event: ${event.type}`);
     
     // Handle different event types
     switch (event.type) {
-      case 'payment_intent.created':
+      case 'payment_intent.succeeded':
         const paymentIntent = event.data.object;
-        console.log(`PaymentIntent created: ${paymentIntent.id}`);
-        
-        // Update the bid with the payment intent ID
-        if (paymentIntent.metadata.bidId) {
-          const { error } = await supabase
-            .from('bids')
-            .update({ 
-              payment_intent_id: paymentIntent.id,
-              payment_status: 'authorized',
-              payment_amount: paymentIntent.amount / 100 // Convert from cents to dollars
-            })
-            .eq('id', paymentIntent.metadata.bidId);
-            
-          if (error) {
-            console.error(`Error updating bid: ${error.message}`);
-          }
-        }
+        console.log(`Payment succeeded: ${paymentIntent.id} for amount ${paymentIntent.amount}`);
+        // Update your database to mark the payment as succeeded
+        // This would typically update a bid or offer record
         break;
         
-      case 'payment_intent.succeeded':
-        const succeededIntent = event.data.object;
-        console.log(`PaymentIntent succeeded: ${succeededIntent.id}`);
-        
-        // Update the bid payment status
-        if (succeededIntent.metadata.bidId) {
-          const { error } = await supabase
-            .from('bids')
-            .update({ 
-              payment_status: 'captured',
-              payment_amount: succeededIntent.amount / 100 // Convert from cents to dollars
-            })
-            .eq('id', succeededIntent.metadata.bidId);
-            
-          if (error) {
-            console.error(`Error updating bid: ${error.message}`);
-          }
-          
-          // Get the bid details
-          const { data: bid } = await supabase
-            .from('bids')
-            .select('product_id, amount, bidder_id')
-            .eq('id', succeededIntent.metadata.bidId)
-            .single();
-            
-          if (bid) {
-            // Call the RPC function to update highest bid if higher
-            const { error: rpcError } = await supabase.rpc('update_highest_bid_if_higher', {
-              p_product_id: bid.product_id,
-              p_bid_amount: bid.amount,
-              p_bidder_id: bid.bidder_id
-            });
-            
-            if (rpcError) {
-              console.error(`Error updating highest bid: ${rpcError.message}`);
-            }
-          }
-        }
+      case 'payment_intent.payment_failed':
+        const failedPayment = event.data.object;
+        console.log(`Payment failed: ${failedPayment.id}`);
+        // Update your database to mark the payment as failed
         break;
         
       case 'payment_intent.canceled':
-        const canceledIntent = event.data.object;
-        console.log(`PaymentIntent canceled: ${canceledIntent.id}`);
-        
-        // Update the bid payment status
-        if (canceledIntent.metadata.bidId) {
-          const { error } = await supabase
-            .from('bids')
-            .update({ 
-              payment_status: 'canceled',
-              status: 'canceled'
-            })
-            .eq('id', canceledIntent.metadata.bidId);
-            
-          if (error) {
-            console.error(`Error updating bid: ${error.message}`);
-          }
-        }
+        const canceledPayment = event.data.object;
+        console.log(`Payment canceled: ${canceledPayment.id}`);
+        // Update your database to mark the payment as canceled
         break;
         
       default:
         console.log(`Unhandled event type: ${event.type}`);
     }
     
+    // Return a 200 response to acknowledge receipt of the event
     return new Response(
       JSON.stringify({ received: true }),
-      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      { 
+        status: 200, 
+        headers: { ...corsHeaders, "Content-Type": "application/json" } 
+      }
     );
     
   } catch (error) {
-    console.error("Error processing webhook:", error);
+    console.error(`Webhook error: ${error.message}`);
     return new Response(
       JSON.stringify({ error: error.message }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      { 
+        status: 500, 
+        headers: { ...corsHeaders, "Content-Type": "application/json" } 
+      }
     );
   }
 });

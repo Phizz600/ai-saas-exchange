@@ -8,10 +8,10 @@ import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-
 import { loadStripe } from "@stripe/stripe-js";
 
 // Initialize Stripe with the public key
-// Use a valid publishable key format that doesn't include the full key text
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || "");
+const stripePublishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
+const stripePromise = loadStripe(stripePublishableKey);
 
-console.log("Stripe publishable key:", import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY ? "Exists (masked)" : "Missing");
+console.log("Stripe publishable key available:", !!stripePublishableKey);
 
 interface BidDepositDialogProps {
   open: boolean;
@@ -195,7 +195,7 @@ export function BidDepositDialog({
     // Check if Stripe is properly initialized
     if (open) {
       if (!stripePromise) {
-        console.error("Stripe could not be initialized. Check your publishable key.");
+        console.error("Stripe could not be initialized. Check your publishable key:", stripePublishableKey);
         setStripeError("Payment system configuration error. Please contact support.");
         toast({
           title: "Payment System Error",

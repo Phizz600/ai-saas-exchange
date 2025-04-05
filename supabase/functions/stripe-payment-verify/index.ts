@@ -31,7 +31,8 @@ serve(async (req) => {
     console.log("Initialized Stripe client successfully");
     
     // Get request body
-    const { paymentIntentId } = await req.json();
+    const requestData = await req.json();
+    const { paymentIntentId } = requestData;
     
     // Log input parameters
     console.log("Stripe Payment Verify Request:", { paymentIntentId });
