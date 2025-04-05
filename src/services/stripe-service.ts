@@ -120,3 +120,42 @@ export async function cancelPaymentAuthorization(
     };
   }
 }
+
+// New function to verify a payment intent status
+export async function verifyPaymentIntent(
+  paymentIntentId: string
+): Promise<{ status: string | null; success: boolean; error: string | null }> {
+  try {
+    console.log("Verifying payment intent:", paymentIntentId);
+    
+    const { data, error } = await supabase.functions.invoke('stripe-payment-verify', {
+      body: {
+        paymentIntentId
+      }
+    });
+
+    if (error) {
+      console.error('Error verifying payment intent:', error);
+      return { 
+        status: null,
+        success: false, 
+        error: error.message 
+      };
+    }
+
+    console.log("Payment intent verified:", data);
+    
+    return { 
+      status: data?.status || null,
+      success: true, 
+      error: null 
+    };
+  } catch (error: any) {
+    console.error('Exception verifying payment intent:', error);
+    return { 
+      status: null,
+      success: false, 
+      error: error.message || 'Failed to verify payment intent' 
+    };
+  }
+}
