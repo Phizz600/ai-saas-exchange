@@ -1,3 +1,4 @@
+
 import { Timer, TrendingDown, Share } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
@@ -39,13 +40,15 @@ export function AuctionSection({ product }: AuctionSectionProps) {
 
   // Subscribe to real-time product updates
   useEffect(() => {
+    let isMounted = true;
+
     // First, get the current state of the product to initialize correctly
     const fetchCurrentProductState = async () => {
       try {
         // Get the product's current state including highest_bid and current_price
         const { data: productData, error: productError } = await supabase
           .from('products')
-          .select('highest_bid, current_price, starting_price')
+          .select('highest_bid, current_price, starting_price, highest_bidder_id')
           .eq('id', product.id)
           .single();
           
@@ -54,14 +57,37 @@ export function AuctionSection({ product }: AuctionSectionProps) {
           return;
         }
         
-        // If highest_bid exists, it means there's an authorized bid
-        if (productData.highest_bid) {
-          setHighestBid(productData.highest_bid);
-          setCurrentPrice(productData.highest_bid);
+        // Verify the highest bid is valid (active and authorized)
+        if (productData.highest_bid && productData.highest_bidder_id) {
+          const { data: bidData, error: bidError } = await supabase
+            .from('bids')
+            .select('amount, status, payment_status')
+            .eq('product_id', product.id)
+            .eq('bidder_id', productData.highest_bidder_id)
+            .eq('amount', productData.highest_bid)
+            .eq('status', 'active')
+            .eq('payment_status', 'authorized')
+            .single();
+            
+          if (bidError || !bidData) {
+            console.log('Stored highest bid is not valid (cancelled or unauthorized)');
+            if (isMounted) {
+              setHighestBid(undefined);
+              setCurrentPrice(productData.current_price || productData.starting_price);
+            }
+          } else {
+            // Valid highest bid found
+            if (isMounted) {
+              setHighestBid(productData.highest_bid);
+              setCurrentPrice(productData.highest_bid);
+            }
+          }
         } else {
-          // No authorized highest bid, use system-calculated price or starting price
-          setHighestBid(undefined);
-          setCurrentPrice(productData.current_price || productData.starting_price);
+          // No highest bid or bidder
+          if (isMounted) {
+            setHighestBid(undefined);
+            setCurrentPrice(productData.current_price || productData.starting_price);
+          }
         }
       } catch (error) {
         console.error('Error in fetchCurrentProductState:', error);
@@ -81,17 +107,49 @@ export function AuctionSection({ product }: AuctionSectionProps) {
           table: 'products',
           filter: `id=eq.${product.id}`
         },
-        (payload: any) => {
+        async (payload: any) => {
           console.log('Product updated:', payload);
           
-          // If we have a highest_bid from an authorized bid, use that
-          if (payload.new.highest_bid) {
-            setHighestBid(payload.new.highest_bid);
-            setCurrentPrice(payload.new.highest_bid);
-          } else {
-            // Otherwise use the system-calculated current_price or starting price
-            setHighestBid(undefined);
-            setCurrentPrice(payload.new.current_price || payload.new.starting_price);
+          // If the highest_bid has changed
+          if (payload.new.highest_bid !== payload.old.highest_bid) {
+            // If we have a new highest_bid
+            if (payload.new.highest_bid) {
+              // Verify it's still valid
+              const { data: bidData, error: bidError } = await supabase
+                .from('bids')
+                .select('amount, status, payment_status')
+                .eq('product_id', product.id)
+                .eq('bidder_id', payload.new.highest_bidder_id)
+                .eq('amount', payload.new.highest_bid)
+                .eq('status', 'active')
+                .eq('payment_status', 'authorized')
+                .single();
+                
+              if (bidError || !bidData) {
+                console.log('New highest bid is not valid');
+                if (isMounted) {
+                  setHighestBid(undefined);
+                  setCurrentPrice(payload.new.current_price || payload.new.starting_price);
+                }
+              } else {
+                if (isMounted) {
+                  setHighestBid(payload.new.highest_bid);
+                  setCurrentPrice(payload.new.highest_bid);
+                }
+              }
+            } else {
+              // Highest bid was reset to null
+              if (isMounted) {
+                setHighestBid(undefined);
+                setCurrentPrice(payload.new.current_price || payload.new.starting_price);
+              }
+            }
+          } 
+          // If only current_price changed (auction price decrements)
+          else if (payload.new.current_price !== payload.old.current_price && !payload.new.highest_bid) {
+            if (isMounted) {
+              setCurrentPrice(payload.new.current_price);
+            }
           }
         }
       )
@@ -120,6 +178,7 @@ export function AuctionSection({ product }: AuctionSectionProps) {
       .subscribe();
 
     return () => {
+      isMounted = false;
       supabase.removeChannel(channel);
       supabase.removeChannel(bidChannel);
     };

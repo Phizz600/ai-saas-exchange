@@ -56,8 +56,6 @@ serve(async (req) => {
       .eq('amount', bidAmount)
       .eq('payment_status', 'authorized') // Only accept authorized bids
       .eq('status', 'active')             // Only accept active bids
-      .is('status', 'not.cancelled')      // Explicitly exclude cancelled bids
-      .is('payment_status', 'not.cancelled') // Explicitly exclude cancelled payments
       .single();
     
     if (bidError) {
@@ -82,13 +80,13 @@ serve(async (req) => {
       );
     }
     
-    // Check if there are any existing authorized higher bids that are also active
+    // Check if this is still the highest bid (no higher authorized bids)
     const { data: higherBids, error: higherBidsError } = await supabase
       .from('bids')
       .select('amount')
       .eq('product_id', productId)
-      .eq('status', 'active')
-      .eq('payment_status', 'authorized')
+      .eq('status', 'active')             // Only consider active bids
+      .eq('payment_status', 'authorized') // Only consider authorized bids
       .gt('amount', bidAmount)
       .order('amount', { ascending: false })
       .limit(1);
@@ -110,9 +108,10 @@ serve(async (req) => {
       );
     }
     
-    // Only update if the new bid is higher than the current highest bid
+    // Check if this bid is actually higher than the current highest bid
+    // Only update if this is truly the highest bid
     if (!product.highest_bid || bidAmount > product.highest_bid) {
-      console.log(`Updating bid: Current highest: ${product.highest_bid || 'None'}, New bid: ${bidAmount}`);
+      console.log(`Updating product with new highest bid: Current highest: ${product.highest_bid || 'None'}, New bid: ${bidAmount}`);
       
       // IMPORTANT: Always set current_price equal to the new highest bid
       const { data, error: updateError } = await supabase

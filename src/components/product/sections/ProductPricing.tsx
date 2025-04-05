@@ -22,6 +22,7 @@ interface ProductPricingProps {
     min_price?: number;
     demo_url?: string;
     highest_bid?: number;
+    highest_bidder_id?: string;
     starting_price?: number;
     title?: string;
   };
@@ -48,8 +49,57 @@ export function ProductPricing({ product }: ProductPricingProps) {
   const [bidHistoryDialogOpen, setBidHistoryDialogOpen] = useState(false);
   const { toast } = useToast();
 
+  // Function to fetch and verify the highest bid
+  const fetchHighestBid = async () => {
+    try {
+      // Get the latest product data
+      const { data: productData, error: productError } = await supabase
+        .from('products')
+        .select('highest_bid, highest_bidder_id, current_price, starting_price')
+        .eq('id', product.id)
+        .single();
+        
+      if (productError) {
+        console.error('Error fetching product:', productError);
+        return;
+      }
+      
+      if (productData.highest_bid && productData.highest_bidder_id) {
+        // Verify that the highest bid is still valid
+        const { data: validBid, error: bidError } = await supabase
+          .from('bids')
+          .select('amount')
+          .eq('product_id', product.id)
+          .eq('bidder_id', productData.highest_bidder_id)
+          .eq('amount', productData.highest_bid)
+          .eq('status', 'active')
+          .eq('payment_status', 'authorized')
+          .single();
+          
+        if (bidError || !validBid) {
+          console.log('Highest bid is not valid (cancelled or unauthorized)');
+          setHighestBid(null);
+          setCurrentPrice(productData.current_price || productData.starting_price);
+        } else {
+          setHighestBid(productData.highest_bid);
+          setCurrentPrice(productData.highest_bid);
+        }
+      } else {
+        setHighestBid(null);
+        setCurrentPrice(productData.current_price || productData.starting_price);
+      }
+    } catch (err) {
+      console.error('Error verifying highest bid:', err);
+    }
+  };
+
   // Subscribe to real-time price updates
   useEffect(() => {
+    let isMounted = true;
+    
+    // Initial fetch
+    fetchHighestBid();
+    
     const channel = supabase
       .channel('product-price-updates')
       .on(
@@ -60,18 +110,47 @@ export function ProductPricing({ product }: ProductPricingProps) {
           table: 'products',
           filter: `id=eq.${product.id}`
         },
-        (payload: any) => {
+        async (payload: any) => {
           console.log('Product updated:', payload);
-          // Always prioritize highest_bid for current price if it exists
-          // and ensure this highest_bid value came from an authorized bid
-          setCurrentPrice(payload.new.highest_bid || payload.new.current_price);
-          setHighestBid(payload.new.highest_bid);
+          
+          if (isMounted) {
+            // Re-fetch and validate the highest bid
+            await fetchHighestBid();
+          }
+        }
+      )
+      .subscribe();
+      
+    // Listen for bid status changes
+    const bidChannel = supabase
+      .channel('bid-status-updates')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'bids',
+          filter: `product_id=eq.${product.id}`
+        },
+        async (payload: any) => {
+          console.log('Bid updated:', payload);
+          
+          // If a bid was cancelled or payment status changed
+          if (payload.new.status === 'cancelled' || payload.new.payment_status === 'cancelled') {
+            if (isMounted) {
+              console.log('Bid cancelled, refreshing highest bid');
+              await fetchHighestBid();
+              refetchBids();
+            }
+          }
         }
       )
       .subscribe();
 
     return () => {
+      isMounted = false;
       supabase.removeChannel(channel);
+      supabase.removeChannel(bidChannel);
     };
   }, [product.id]);
 
@@ -171,8 +250,8 @@ export function ProductPricing({ product }: ProductPricingProps) {
     calculateTimeLeft();
 
     // Update the initial current price based on highest bid if available
-    setCurrentPrice(product.highest_bid || product.current_price);
-  }, [product.auction_end_time, product.price_decrement_interval, product.highest_bid, product.current_price]);
+    setCurrentPrice(highestBid || product.current_price);
+  }, [product.auction_end_time, product.price_decrement_interval, highestBid, product.current_price]);
 
   // Determine the price information to display
   const isAuction = !!product.auction_end_time;
