@@ -23,6 +23,8 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
 
   // Fetch the current highest bid
   useEffect(() => {
+    let mounted = true;
+
     const fetchHighestBid = async () => {
       try {
         setIsLoadingBids(true);
@@ -35,16 +37,17 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
           .eq('payment_status', 'authorized') // Only get authorized bids
           .eq('status', 'active')            // Only get active bids
           .order('amount', { ascending: false })
-          .limit(1)
-          .single();
+          .limit(1);
 
-        if (!bidError && highestBidData) {
-          setHighestBid(highestBidData.amount);
+        if (!bidError && highestBidData && highestBidData.length > 0) {
+          if (mounted) {
+            setHighestBid(highestBidData[0].amount);
+          }
         } else {
           // If no authorized bids, fall back to the product's current price
           const { data: product, error } = await supabase
             .from('products')
-            .select('current_price')
+            .select('current_price, starting_price')
             .eq('id', productId)
             .single();
 
@@ -53,58 +56,93 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
             return;
           }
 
-          setHighestBid(null); // No authorized highest bid
+          if (mounted) {
+            // Use starting_price as fallback if no current_price and no highest bid
+            setHighestBid(null); // No authorized highest bid
+          }
         }
-        
-        // Subscribe to real-time product updates to keep the price current
-        const channel = supabase
-          .channel('authorized-bids-updates')
-          .on(
-            'postgres_changes',
-            {
-              event: 'INSERT',
-              schema: 'public',
-              table: 'bids',
-              filter: `product_id=eq.${productId} AND payment_status=eq.authorized AND status=eq.active`
-            },
-            (payload: any) => {
-              console.log('New authorized bid:', payload);
-              // Check if the new bid is higher than current highest
-              if (!highestBid || payload.new.amount > highestBid) {
-                setHighestBid(payload.new.amount);
-              }
-            }
-          )
-          .on(
-            'postgres_changes',
-            {
-              event: 'UPDATE',
-              schema: 'public',
-              table: 'bids',
-              filter: `product_id=eq.${productId} AND payment_status=eq.authorized AND status=eq.active`
-            },
-            (payload: any) => {
-              console.log('Bid updated to authorized:', payload);
-              // Check if the updated bid is higher than current highest
-              if (!highestBid || payload.new.amount > highestBid) {
-                setHighestBid(payload.new.amount);
-              }
-            }
-          )
-          .subscribe();
-
-        return () => {
-          supabase.removeChannel(channel);
-        };
       } catch (err) {
         console.error('Error fetching bid data:', err);
       } finally {
-        setIsLoadingBids(false);
+        if (mounted) {
+          setIsLoadingBids(false);
+        }
       }
     };
 
     fetchHighestBid();
-  }, [productId, highestBid]);
+
+    // Subscribe to real-time product updates to keep the price current
+    const productChannel = supabase
+      .channel('product-price-updates')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'products',
+          filter: `id=eq.${productId}`
+        },
+        (payload: any) => {
+          console.log('Product updated:', payload);
+          // Update highest bid if changed
+          if (mounted && payload.new.highest_bid) {
+            setHighestBid(payload.new.highest_bid);
+          }
+        }
+      )
+      .subscribe();
+
+    // Listen for new authorized bids
+    const bidChannel = supabase
+      .channel('authorized-bids-updates')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'bids',
+          filter: `product_id=eq.${productId} AND payment_status=eq.authorized AND status=eq.active`
+        },
+        (payload: any) => {
+          console.log('New authorized bid:', payload);
+          // Check if the new bid is higher than current highest
+          if (mounted && (!highestBid || payload.new.amount > highestBid)) {
+            setHighestBid(payload.new.amount);
+          }
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'bids',
+          filter: `product_id=eq.${productId}`
+        },
+        (payload: any) => {
+          console.log('Bid updated:', payload);
+          
+          // If a bid was cancelled, we might need to update the UI
+          if (payload.new.status === 'cancelled' || payload.new.payment_status === 'cancelled') {
+            // Refetch the highest bid to get the new state
+            fetchHighestBid();
+          } else if (payload.new.payment_status === 'authorized' && payload.new.status === 'active') {
+            // A bid just became authorized
+            if (mounted && (!highestBid || payload.new.amount > highestBid)) {
+              setHighestBid(payload.new.amount);
+            }
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      mounted = false;
+      supabase.removeChannel(productChannel);
+      supabase.removeChannel(bidChannel);
+    };
+  }, [productId]);
 
   const {
     bidAmount,
@@ -160,6 +198,9 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
     if (highestBid && numericAmount <= highestBid) {
       setBidError(`Your bid must be higher than the current highest bid of $${highestBid.toLocaleString()}`);
       return;
+    } else if (!highestBid && currentPrice && numericAmount <= currentPrice) {
+      setBidError(`Your bid must be higher than the current price of $${currentPrice.toLocaleString()}`);
+      return;
     }
     
     // If validation passes, proceed with bid
@@ -174,6 +215,9 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
   if (success) {
     return <BidSuccessMessage resetForm={resetForm} />;
   }
+
+  // Use the most accurate price information available
+  const displayPrice = highestBid || currentPrice;
 
   return (
     <>

@@ -68,7 +68,7 @@ serve(async (req) => {
       );
     }
     
-    // Only update if the bid is active and payment is authorized
+    // Double-check that the bid is active and payment is authorized
     if (bid.status !== 'active' || bid.payment_status !== 'authorized') {
       console.log(`Bid is not valid for highest bid update: status=${bid.status}, payment_status=${bid.payment_status}`);
       return new Response(
@@ -82,7 +82,7 @@ serve(async (req) => {
       );
     }
     
-    // Check if there are any existing authorized higher bids
+    // Check if there are any existing authorized higher bids that are also active
     const { data: higherBids, error: higherBidsError } = await supabase
       .from('bids')
       .select('amount')

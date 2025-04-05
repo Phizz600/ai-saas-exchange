@@ -1,5 +1,4 @@
 
-import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
@@ -53,9 +52,13 @@ export function BidInputForm({
               <Loader2 className="h-3 w-3 mr-1 animate-spin" />
               Loading current bid...
             </span>
-          ) : (
+          ) : highestBid ? (
             <>
               Current highest bid: ${formattedDisplayPrice} - Your bid must be higher
+            </>
+          ) : (
+            <>
+              Current price: ${formattedDisplayPrice} - Your bid must be higher
             </>
           )}
         </p>

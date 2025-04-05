@@ -31,9 +31,11 @@ BEGIN
       WHERE id = NEW.product_id;
     ELSE
       -- If no active authorized bids exist, clear the highest bid
+      -- AND reset the current_price to the starting_price (or NULL if not available)
       UPDATE products
       SET highest_bid = NULL,
-          highest_bidder_id = NULL
+          highest_bidder_id = NULL,
+          current_price = starting_price
       WHERE id = NEW.product_id;
     END IF;
   END IF;

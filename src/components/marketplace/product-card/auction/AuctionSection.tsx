@@ -1,4 +1,3 @@
-
 import { Timer, TrendingDown, Share } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
@@ -19,6 +18,7 @@ interface AuctionSectionProps {
     id: string;
     title?: string;
     current_price?: number;
+    starting_price?: number;
     min_price?: number;
     price_decrement?: number;
     auction_end_time?: string;
@@ -27,16 +27,50 @@ interface AuctionSectionProps {
 }
 
 export function AuctionSection({ product }: AuctionSectionProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);
-  const [currentPrice, setCurrentPrice] = useState(product.highest_bid || product.current_price);
-  const [highestBid, setHighestBid] = useState(product.highest_bid);
+  const [currentPrice, setCurrentPrice] = useState<number | undefined>(undefined);
+  const [highestBid, setHighestBid] = useState<number | undefined>(product.highest_bid);
   const [showBidForm, setShowBidForm] = useState(false);
   const { toast } = useToast();
   const auctionEnded = product.auction_end_time && new Date(product.auction_end_time) < new Date();
 
+  // Use starting_price as fallback if neither highest_bid nor current_price is available
+  const startingPrice = product.starting_price;
+
   // Subscribe to real-time product updates
   useEffect(() => {
+    // First, get the current state of the product to initialize correctly
+    const fetchCurrentProductState = async () => {
+      try {
+        // Get the product's current state including highest_bid and current_price
+        const { data: productData, error: productError } = await supabase
+          .from('products')
+          .select('highest_bid, current_price, starting_price')
+          .eq('id', product.id)
+          .single();
+          
+        if (productError) {
+          console.error('Error fetching product data:', productError);
+          return;
+        }
+        
+        // If highest_bid exists, it means there's an authorized bid
+        if (productData.highest_bid) {
+          setHighestBid(productData.highest_bid);
+          setCurrentPrice(productData.highest_bid);
+        } else {
+          // No authorized highest bid, use system-calculated price or starting price
+          setHighestBid(undefined);
+          setCurrentPrice(productData.current_price || productData.starting_price);
+        }
+      } catch (error) {
+        console.error('Error in fetchCurrentProductState:', error);
+      }
+    };
+    
+    fetchCurrentProductState();
+    
+    // Subscribe to product updates in real-time
     const channel = supabase
       .channel('product-price-updates')
       .on(
@@ -49,20 +83,21 @@ export function AuctionSection({ product }: AuctionSectionProps) {
         },
         (payload: any) => {
           console.log('Product updated:', payload);
-          // Only update if highest_bid exists and is from an authorized bid
+          
+          // If we have a highest_bid from an authorized bid, use that
           if (payload.new.highest_bid) {
-            setCurrentPrice(payload.new.highest_bid);
             setHighestBid(payload.new.highest_bid);
+            setCurrentPrice(payload.new.highest_bid);
           } else {
-            // Fall back to current_price if no authorized highest bid
-            setCurrentPrice(payload.new.current_price);
-            setHighestBid(null);
+            // Otherwise use the system-calculated current_price or starting price
+            setHighestBid(undefined);
+            setCurrentPrice(payload.new.current_price || payload.new.starting_price);
           }
         }
       )
       .subscribe();
 
-    // Also subscribe to bid updates to catch bid cancellations
+    // Also subscribe to bid updates to catch status changes
     const bidChannel = supabase
       .channel('bid-status-updates')
       .on(
@@ -74,40 +109,11 @@ export function AuctionSection({ product }: AuctionSectionProps) {
           filter: `product_id=eq.${product.id}`
         },
         async (payload: any) => {
-          // If a bid is cancelled or payment fails, we need to check for the new highest bid
+          // If a bid status changes (especially cancellations), check product state
+          console.log('Bid updated:', payload);
           if (payload.new.status === 'cancelled' || payload.new.payment_status === 'cancelled') {
-            console.log('Bid cancelled or payment failed, refreshing highest bid');
-            
-            // Fetch the new highest authorized bid
-            const { data: highestBidData } = await supabase
-              .from('bids')
-              .select('amount')
-              .eq('product_id', product.id)
-              .eq('payment_status', 'authorized')
-              .eq('status', 'active')
-              .order('amount', { ascending: false })
-              .limit(1)
-              .single();
-            
-            if (highestBidData) {
-              console.log('New highest authorized bid:', highestBidData.amount);
-              setHighestBid(highestBidData.amount);
-              setCurrentPrice(highestBidData.amount);
-            } else {
-              console.log('No authorized bids found after cancellation');
-              // If there are no authorized bids, fall back to the system-calculated price
-              const { data: productData } = await supabase
-                .from('products')
-                .select('current_price')
-                .eq('id', product.id)
-                .single();
-                
-              if (productData) {
-                console.log('Setting to system current price:', productData.current_price);
-                setCurrentPrice(productData.current_price);
-                setHighestBid(null);
-              }
-            }
+            console.log('Detected bid cancellation, refreshing product state');
+            await fetchCurrentProductState();
           }
         }
       )
@@ -118,13 +124,6 @@ export function AuctionSection({ product }: AuctionSectionProps) {
       supabase.removeChannel(bidChannel);
     };
   }, [product.id]);
-
-  // Initialize with the highest bid if available
-  useEffect(() => {
-    // Always prioritize product.highest_bid because it comes from authorized bids only
-    setCurrentPrice(product.highest_bid || product.current_price);
-    setHighestBid(product.highest_bid);
-  }, [product.highest_bid, product.current_price]);
 
   const handleShare = async (url: string) => {
     try {
@@ -144,8 +143,8 @@ export function AuctionSection({ product }: AuctionSectionProps) {
     }
   };
 
-  // Calculate the display price - always use the highest bid if available
-  const displayPrice = highestBid || currentPrice;
+  // Calculate the display price - prioritize highest bid if available
+  const displayPrice = highestBid || currentPrice || startingPrice;
 
   return (
     <div className="w-full p-4 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg border border-purple-200">
