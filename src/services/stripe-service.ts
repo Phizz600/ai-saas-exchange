@@ -8,6 +8,17 @@ export async function createPaymentAuthorization(
   productId: string
 ): Promise<{ clientSecret: string | null; paymentIntentId: string | null; error: string | null }> {
   try {
+    console.log("Creating payment authorization for amount:", amount, "bidId:", bidId);
+    
+    // Ensure amount is valid
+    if (!amount || isNaN(amount) || amount <= 0) {
+      return { 
+        clientSecret: null, 
+        paymentIntentId: null, 
+        error: "Invalid amount provided"
+      };
+    }
+    
     // Call our edge function to create a payment intent
     const { data, error } = await supabase.functions.invoke('stripe-payment-intent', {
       body: {
@@ -23,6 +34,8 @@ export async function createPaymentAuthorization(
       return { clientSecret: null, paymentIntentId: null, error: error.message };
     }
 
+    console.log("Payment intent created successfully:", data);
+    
     return { 
       clientSecret: data.clientSecret, 
       paymentIntentId: data.paymentIntentId,

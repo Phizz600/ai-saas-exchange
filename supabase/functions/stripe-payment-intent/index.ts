@@ -15,12 +15,20 @@ serve(async (req) => {
   
   try {
     // Initialize Stripe with the secret key
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
+    const stripeSecretKey = Deno.env.get("STRIPE_SECRET_KEY");
+    if (!stripeSecretKey) {
+      throw new Error("STRIPE_SECRET_KEY is not configured in environment variables");
+    }
+    
+    const stripe = new Stripe(stripeSecretKey, {
       apiVersion: "2022-11-15",
     });
     
     // Get request body
     const { amount, bidId, productId, mode } = await req.json();
+    
+    // Log input parameters
+    console.log("Stripe Payment Intent Request:", { amount, bidId, productId, mode });
     
     // Validate inputs
     if (!amount || amount <= 0) {
@@ -37,8 +45,10 @@ serve(async (req) => {
       );
     }
     
-    // Convert amount to cents for Stripe
-    const amountInCents = Math.floor(amount * 100);
+    // Convert amount to cents for Stripe (ensuring it's an integer)
+    const amountInCents = Math.round(amount * 100);
+    
+    console.log(`Creating payment intent for ${amountInCents} cents`);
     
     // Create a payment intent with capture_method: manual for auth-only mode
     const paymentIntent = await stripe.paymentIntents.create({
@@ -51,6 +61,8 @@ serve(async (req) => {
         environment: Deno.env.get("ENVIRONMENT") || "development",
       }
     });
+    
+    console.log("Created payment intent:", paymentIntent.id);
     
     // Return the client secret
     return new Response(

@@ -25,13 +25,20 @@ function PaymentForm({ onConfirm, onClose }: { onConfirm: (paymentMethodId: stri
   const elements = useElements();
   const [isProcessing, setIsProcessing] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [elementReady, setElementReady] = useState(false);
   const { toast } = useToast();
+
+  // Track when the element is ready
+  const handleReady = () => {
+    setElementReady(true);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!stripe || !elements) {
-      // Stripe.js hasn't loaded yet
+    if (!stripe || !elements || !elementReady) {
+      // Stripe.js hasn't loaded yet or elements aren't ready
+      setErrorMessage("Payment processing is still initializing. Please wait a moment.");
       return;
     }
 
@@ -39,6 +46,13 @@ function PaymentForm({ onConfirm, onClose }: { onConfirm: (paymentMethodId: stri
     setErrorMessage(null);
 
     try {
+      // Get the PaymentElement instance
+      const paymentElement = elements.getElement(PaymentElement);
+      
+      if (!paymentElement) {
+        throw new Error("Payment element not found");
+      }
+
       // Confirm the PaymentIntent with the card element
       const { paymentIntent, error } = await stripe.confirmPayment({
         elements,
@@ -66,6 +80,7 @@ function PaymentForm({ onConfirm, onClose }: { onConfirm: (paymentMethodId: stri
         onConfirm(paymentIntent.id);
       }
     } catch (err: any) {
+      console.error("Payment error:", err);
       setErrorMessage(err.message || "An unexpected error occurred");
       toast({
         title: "Error",
@@ -95,7 +110,7 @@ function PaymentForm({ onConfirm, onClose }: { onConfirm: (paymentMethodId: stri
       </div>
       
       <div className="border rounded-md p-4">
-        <PaymentElement />
+        <PaymentElement onReady={handleReady} />
       </div>
       
       <div className="flex justify-end gap-2 mt-4">
@@ -109,7 +124,7 @@ function PaymentForm({ onConfirm, onClose }: { onConfirm: (paymentMethodId: stri
         </Button>
         <Button 
           type="submit" 
-          disabled={!stripe || isProcessing}
+          disabled={!stripe || isProcessing || !elementReady}
           className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9]"
         >
           {isProcessing ? (
@@ -141,6 +156,21 @@ export function BidDepositDialog({
   productTitle,
   clientSecret
 }: BidDepositDialogProps) {
+  const [paymentElementVisible, setPaymentElementVisible] = useState(false);
+
+  // Control the visibility of the payment element based on dialog state
+  useEffect(() => {
+    if (open && clientSecret) {
+      // Small delay to ensure the dialog is fully open
+      const timer = setTimeout(() => {
+        setPaymentElementVisible(true);
+      }, 100);
+      return () => clearTimeout(timer);
+    } else {
+      setPaymentElementVisible(false);
+    }
+  }, [open, clientSecret]);
+
   if (!clientSecret) {
     return null;
   }
@@ -162,20 +192,22 @@ export function BidDepositDialog({
             </p>
           </div>
           
-          <Elements
-            stripe={stripePromise}
-            options={{
-              clientSecret: clientSecret,
-              appearance: {
-                theme: 'stripe',
-                variables: {
-                  colorPrimary: '#8B5CF6',
+          {paymentElementVisible && (
+            <Elements
+              stripe={stripePromise}
+              options={{
+                clientSecret: clientSecret,
+                appearance: {
+                  theme: 'stripe',
+                  variables: {
+                    colorPrimary: '#8B5CF6',
+                  }
                 }
-              }
-            }}
-          >
-            <PaymentForm onConfirm={onConfirm} onClose={onClose} />
-          </Elements>
+              }}
+            >
+              <PaymentForm onConfirm={onConfirm} onClose={onClose} />
+            </Elements>
+          )}
         </div>
       </DialogContent>
     </Dialog>
