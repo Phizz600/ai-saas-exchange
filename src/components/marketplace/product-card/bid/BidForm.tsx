@@ -5,7 +5,8 @@ import { useBidForm } from "./hooks/useBidForm";
 import { BidDepositDialog } from "./BidDepositDialog";
 import { Alert, AlertDescription } from "@/components/ui/alert"; 
 import { AlertCircle, CreditCard } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface BidFormProps {
   productId: string;
@@ -14,6 +15,36 @@ interface BidFormProps {
 }
 
 export function BidForm({ productId, productTitle, currentPrice }: BidFormProps) {
+  const [highestBid, setHighestBid] = useState<number | null>(null);
+  const [isLoadingBids, setIsLoadingBids] = useState(true);
+
+  // Fetch the current highest bid
+  useEffect(() => {
+    const fetchHighestBid = async () => {
+      try {
+        setIsLoadingBids(true);
+        const { data: product, error } = await supabase
+          .from('products')
+          .select('highest_bid')
+          .eq('id', productId)
+          .single();
+
+        if (error) {
+          console.error('Error fetching highest bid:', error);
+          return;
+        }
+
+        setHighestBid(product.highest_bid);
+      } catch (err) {
+        console.error('Error fetching bid data:', err);
+      } finally {
+        setIsLoadingBids(false);
+      }
+    };
+
+    fetchHighestBid();
+  }, [productId]);
+
   const {
     bidAmount,
     formattedBidAmount,
@@ -29,7 +60,7 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
   } = useBidForm({
     productId,
     productTitle,
-    currentPrice
+    currentPrice: highestBid || currentPrice
   });
 
   const [bidError, setBidError] = useState<string | null>(null);
@@ -46,9 +77,9 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
       return;
     }
 
-    // Validate against the current price
-    if (currentPrice && numericAmount <= currentPrice) {
-      setBidError(`Your bid must be higher than the current price of $${currentPrice.toLocaleString()}`);
+    // Validate against the current highest bid
+    if (highestBid && numericAmount <= highestBid) {
+      setBidError(`Your bid must be higher than the current highest bid of $${highestBid.toLocaleString()}`);
       return;
     }
     
@@ -90,7 +121,7 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
         <Input
           id="bidAmount"
           type="text"
-          value={formattedBidAmount}
+          value={bidAmount}
           onChange={(e) => {
             handleAmountChange(e);
             // Clear error when user starts typing
@@ -99,10 +130,20 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
           placeholder="$0.00"
           className="font-mono"
         />
-        {currentPrice && (
-          <p className="text-xs text-gray-500 mt-1">
-            Current price: ${currentPrice.toLocaleString()} - Your bid must be higher
-          </p>
+        {isLoadingBids ? (
+          <p className="text-xs text-gray-500 mt-1">Loading current bid information...</p>
+        ) : (
+          <>
+            {highestBid ? (
+              <p className="text-xs text-gray-500 mt-1">
+                Current highest bid: ${highestBid.toLocaleString()} - Your bid must be higher
+              </p>
+            ) : currentPrice ? (
+              <p className="text-xs text-gray-500 mt-1">
+                Current price: ${currentPrice.toLocaleString()} - Your bid must be higher
+              </p>
+            ) : null}
+          </>
         )}
         <p className="text-xs text-gray-500 mt-1 flex items-center gap-1">
           <CreditCard className="h-3 w-3" />
@@ -113,7 +154,7 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
       <Button 
         onClick={validateAndBid}
         className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90"
-        disabled={isSubmitting || !bidAmount}
+        disabled={isSubmitting || !bidAmount || isLoadingBids}
       >
         {isSubmitting ? "Processing..." : "Place Bid"}
       </Button>

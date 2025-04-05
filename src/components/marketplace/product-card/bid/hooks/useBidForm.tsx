@@ -55,10 +55,10 @@ export function useBidForm({ productId, productTitle, currentPrice = 0 }: UseBid
     const numericAmount = parseFloat(bidAmount);
     
     // Basic validation (more validation in the UI component)
-    if (isNaN(numericAmount) || numericAmount <= 0 || (currentPrice && numericAmount <= currentPrice)) {
+    if (isNaN(numericAmount) || numericAmount <= 0) {
       toast({
         title: "Invalid bid amount",
-        description: `Your bid must be higher than the current price of $${currentPrice.toLocaleString()}`,
+        description: "Please enter a valid amount for your bid",
         variant: "destructive",
       });
       return;
@@ -80,7 +80,31 @@ export function useBidForm({ productId, productTitle, currentPrice = 0 }: UseBid
         return;
       }
       
-      // 2. First check if user already has a pending or active bid on this product
+      // 2. Verify the current highest bid to ensure our bid is valid
+      const { data: product, error: productError } = await supabase
+        .from('products')
+        .select('highest_bid, current_price')
+        .eq('id', productId)
+        .single();
+        
+      if (productError) {
+        console.error("Error fetching product details:", productError);
+        throw new Error("Failed to fetch product details");
+      }
+      
+      const highestBid = product.highest_bid || product.current_price || 0;
+      
+      if (numericAmount <= highestBid) {
+        toast({
+          title: "Bid too low",
+          description: `Your bid must be higher than the current highest bid of $${highestBid.toLocaleString()}`,
+          variant: "destructive",
+        });
+        setIsSubmitting(false);
+        return;
+      }
+      
+      // 3. Check if user already has a pending or active bid on this product
       const { data: existingBids, error: bidsCheckError } = await supabase
         .from('bids')
         .select('id, status, amount')
@@ -92,10 +116,13 @@ export function useBidForm({ productId, productTitle, currentPrice = 0 }: UseBid
         console.error("Error checking existing bids:", bidsCheckError);
         throw new Error("Failed to check existing bids");
       }
+
+      let existingBidId = null;
       
       if (existingBids && existingBids.length > 0) {
         // Check if the existing bid is lower than the new bid
         const existingBid = existingBids[0];
+        
         if (existingBid.amount >= numericAmount) {
           toast({
             title: "You already have a higher bid",
@@ -106,56 +133,84 @@ export function useBidForm({ productId, productTitle, currentPrice = 0 }: UseBid
           return;
         }
         
-        // If the user wants to increase their bid, we'll handle that later
+        // If the user wants to increase their bid
         toast({
           title: "Updating your bid",
           description: `Increasing your bid from $${existingBid.amount.toLocaleString()} to $${numericAmount.toLocaleString()}`,
         });
+        
+        existingBidId = existingBid.id;
       }
       
-      // 3. Create a bid record with pending status
-      const { data: bid, error: bidError } = await supabase
-        .from('bids')
-        .insert({
-          product_id: productId,
-          bidder_id: user.id,
-          amount: numericAmount,
-          status: 'pending',
-          payment_status: 'pending',
-          payment_amount: numericAmount
-        })
-        .select()
-        .single();
-        
-      if (bidError) {
-        console.error("Error creating bid:", bidError);
-        
-        // Handle specific error messages from the database
-        if (bidError.message.includes("higher than current highest bid")) {
-          toast({
-            title: "Bid too low",
-            description: "Your bid must be higher than the current highest bid",
-            variant: "destructive",
-          });
-        } else {
-          toast({
-            title: "Bid Error",
-            description: "Failed to place your bid. Please try again.",
-            variant: "destructive",
-          });
+      // 4. Create a new bid or update existing bid
+      let bidRecord;
+      
+      if (existingBidId) {
+        // Update existing bid
+        const { data: updatedBid, error: updateError } = await supabase
+          .from('bids')
+          .update({
+            amount: numericAmount,
+            status: 'pending',
+            payment_status: 'pending',
+            payment_amount: numericAmount
+          })
+          .eq('id', existingBidId)
+          .select()
+          .single();
+          
+        if (updateError) {
+          console.error("Error updating bid:", updateError);
+          throw updateError;
         }
         
-        setIsSubmitting(false);
-        return;
+        bidRecord = updatedBid;
+      } else {
+        // Create new bid
+        const { data: newBid, error: bidError } = await supabase
+          .from('bids')
+          .insert({
+            product_id: productId,
+            bidder_id: user.id,
+            amount: numericAmount,
+            status: 'pending',
+            payment_status: 'pending',
+            payment_amount: numericAmount
+          })
+          .select()
+          .single();
+          
+        if (bidError) {
+          console.error("Error creating bid:", bidError);
+          
+          if (bidError.message.includes("higher than current highest bid")) {
+            toast({
+              title: "Bid too low",
+              description: "Your bid must be higher than the current highest bid",
+              variant: "destructive",
+            });
+          } else {
+            toast({
+              title: "Bid Error",
+              description: "Failed to place your bid. Please try again.",
+              variant: "destructive",
+            });
+          }
+          
+          setIsSubmitting(false);
+          return;
+        }
+        
+        bidRecord = newBid;
       }
       
       // Store the bid ID for use in payment processing
-      setBidId(bid.id);
+      setBidId(bidRecord.id);
       
-      // 4. Create a payment authorization with Stripe
+      // 5. Create a payment authorization with Stripe
       const { clientSecret, paymentIntentId, error: stripeError } = await createPaymentAuthorization(
         numericAmount, 
-        bid.id,
+        bidRecord.id,
         productId
       );
       
@@ -167,11 +222,13 @@ export function useBidForm({ productId, productTitle, currentPrice = 0 }: UseBid
           variant: "destructive",
         });
         
-        // Clean up the bid record
-        await supabase
-          .from('bids')
-          .delete()
-          .eq('id', bid.id);
+        // Clean up the bid record if it's a new bid
+        if (!existingBidId) {
+          await supabase
+            .from('bids')
+            .delete()
+            .eq('id', bidRecord.id);
+        }
           
         setIsSubmitting(false);
         return;
@@ -181,7 +238,7 @@ export function useBidForm({ productId, productTitle, currentPrice = 0 }: UseBid
       setPaymentClientSecret(clientSecret);
       setPaymentIntentId(paymentIntentId);
       
-      // 5. Open the deposit dialog to complete payment
+      // 6. Open the deposit dialog to complete payment
       setDepositDialogOpen(true);
       
     } catch (error: any) {
@@ -216,6 +273,28 @@ export function useBidForm({ productId, productTitle, currentPrice = 0 }: UseBid
         
       if (updateError) {
         throw updateError;
+      }
+      
+      // Call the update-highest-bid function to ensure the highest bid is updated
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        const numericAmount = parseFloat(bidAmount);
+        
+        const { data, error } = await supabase.functions.invoke('update-highest-bid', {
+          body: {
+            productId: productId,
+            bidAmount: numericAmount,
+            bidderId: user?.id
+          }
+        });
+        
+        if (error) {
+          console.error("Error updating highest bid:", error);
+        } else {
+          console.log("Highest bid updated:", data);
+        }
+      } catch (error) {
+        console.error("Error calling update-highest-bid function:", error);
       }
       
       // Show success message

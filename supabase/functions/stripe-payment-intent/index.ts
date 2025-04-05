@@ -51,7 +51,7 @@ serve(async (req) => {
     console.log(`Creating payment intent for ${amountInCents} cents`);
     
     // Create a payment intent with capture_method: manual for auth-only mode
-    const paymentIntent = await stripe.paymentIntents.create({
+    const paymentIntentOptions = {
       amount: amountInCents,
       currency: "usd",
       capture_method: "manual", // This makes it an authorization only
@@ -61,8 +61,10 @@ serve(async (req) => {
         environment: Deno.env.get("ENVIRONMENT") || "development",
       },
       description: `Bid Authorization for product ID: ${productId}`,
-      statement_descriptor: "AI EXCHANGE BID"
-    });
+      statement_descriptor_suffix: "AIBID"  // Use suffix instead of full descriptor
+    };
+    
+    const paymentIntent = await stripe.paymentIntents.create(paymentIntentOptions);
     
     console.log("Created payment intent:", paymentIntent.id);
     
