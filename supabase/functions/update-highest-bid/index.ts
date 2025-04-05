@@ -56,6 +56,8 @@ serve(async (req) => {
       .eq('amount', bidAmount)
       .eq('payment_status', 'authorized') // Only accept authorized bids
       .eq('status', 'active')             // Only accept active bids
+      .is('status', 'not.cancelled')      // Explicitly exclude cancelled bids
+      .is('payment_status', 'not.cancelled') // Explicitly exclude cancelled payments
       .single();
     
     if (bidError) {
@@ -75,6 +77,34 @@ serve(async (req) => {
           message: "Bid is not active or payment is not authorized",
           bidStatus: bid.status,
           paymentStatus: bid.payment_status
+        }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    
+    // Check if there are any existing authorized higher bids
+    const { data: higherBids, error: higherBidsError } = await supabase
+      .from('bids')
+      .select('amount')
+      .eq('product_id', productId)
+      .eq('status', 'active')
+      .eq('payment_status', 'authorized')
+      .gt('amount', bidAmount)
+      .order('amount', { ascending: false })
+      .limit(1);
+      
+    if (higherBidsError) {
+      console.error(`Error checking for higher bids: ${higherBidsError.message}`);
+    }
+    
+    if (higherBids && higherBids.length > 0) {
+      console.log(`Found a higher authorized bid: ${higherBids[0].amount}`);
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          message: "A higher authorized bid already exists",
+          currentHighestBid: higherBids[0].amount,
+          submittedBid: bidAmount
         }),
         { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );

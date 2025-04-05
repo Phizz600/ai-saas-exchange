@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useBidForm } from "./hooks/useBidForm";
 import { BidDepositDialog } from "./BidDepositDialog";
@@ -115,10 +114,12 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
     depositDialogOpen,
     paymentClientSecret,
     paymentError,
+    bidId,
     setDepositDialogOpen,
     handleAmountChange,
     handleInitiateBid,
     handleBidSubmit,
+    handleBidCancellation,
     resetForm
   } = useBidForm({
     productId,
@@ -128,8 +129,9 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
 
   // Handle dialog closing without completing the process
   useEffect(() => {
-    if (!depositDialogOpen && paymentClientSecret && !success && !isSubmitting) {
+    if (!depositDialogOpen && paymentClientSecret && !success && !isSubmitting && bidId) {
       // If dialog is closed, client secret exists, but bid isn't successful or in process
+      handleBidCancellation();
       setBidCancelled(true);
       
       // Auto-hide the cancelled message after 5 seconds
@@ -139,7 +141,7 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
       
       return () => clearTimeout(timer);
     }
-  }, [depositDialogOpen, paymentClientSecret, success, isSubmitting]);
+  }, [depositDialogOpen, paymentClientSecret, success, isSubmitting, bidId, handleBidCancellation]);
 
   const validateAndBid = () => {
     // Clear any previous errors and statuses

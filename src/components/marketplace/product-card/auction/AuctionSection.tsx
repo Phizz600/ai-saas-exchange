@@ -35,7 +35,7 @@ export function AuctionSection({ product }: AuctionSectionProps) {
   const { toast } = useToast();
   const auctionEnded = product.auction_end_time && new Date(product.auction_end_time) < new Date();
 
-  // Subscribe to real-time price updates - ensure we only listen for authorized bids
+  // Subscribe to real-time product updates
   useEffect(() => {
     const channel = supabase
       .channel('product-price-updates')
@@ -49,21 +49,79 @@ export function AuctionSection({ product }: AuctionSectionProps) {
         },
         (payload: any) => {
           console.log('Product updated:', payload);
-          // Always use highest_bid as current_price if it exists
-          // This highest_bid is set by the edge function and is guaranteed to be from an authorized bid
-          setCurrentPrice(payload.new.highest_bid || payload.new.current_price);
-          setHighestBid(payload.new.highest_bid);
+          // Only update if highest_bid exists and is from an authorized bid
+          if (payload.new.highest_bid) {
+            setCurrentPrice(payload.new.highest_bid);
+            setHighestBid(payload.new.highest_bid);
+          } else {
+            // Fall back to current_price if no authorized highest bid
+            setCurrentPrice(payload.new.current_price);
+            setHighestBid(null);
+          }
+        }
+      )
+      .subscribe();
+
+    // Also subscribe to bid updates to catch bid cancellations
+    const bidChannel = supabase
+      .channel('bid-status-updates')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'bids',
+          filter: `product_id=eq.${product.id}`
+        },
+        async (payload: any) => {
+          // If a bid is cancelled or payment fails, we need to check for the new highest bid
+          if (payload.new.status === 'cancelled' || payload.new.payment_status === 'cancelled') {
+            console.log('Bid cancelled or payment failed, refreshing highest bid');
+            
+            // Fetch the new highest authorized bid
+            const { data: highestBidData } = await supabase
+              .from('bids')
+              .select('amount')
+              .eq('product_id', product.id)
+              .eq('payment_status', 'authorized')
+              .eq('status', 'active')
+              .order('amount', { ascending: false })
+              .limit(1)
+              .single();
+            
+            if (highestBidData) {
+              console.log('New highest authorized bid:', highestBidData.amount);
+              setHighestBid(highestBidData.amount);
+              setCurrentPrice(highestBidData.amount);
+            } else {
+              console.log('No authorized bids found after cancellation');
+              // If there are no authorized bids, fall back to the system-calculated price
+              const { data: productData } = await supabase
+                .from('products')
+                .select('current_price')
+                .eq('id', product.id)
+                .single();
+                
+              if (productData) {
+                console.log('Setting to system current price:', productData.current_price);
+                setCurrentPrice(productData.current_price);
+                setHighestBid(null);
+              }
+            }
+          }
         }
       )
       .subscribe();
 
     return () => {
       supabase.removeChannel(channel);
+      supabase.removeChannel(bidChannel);
     };
   }, [product.id]);
 
   // Initialize with the highest bid if available
   useEffect(() => {
+    // Always prioritize product.highest_bid because it comes from authorized bids only
     setCurrentPrice(product.highest_bid || product.current_price);
     setHighestBid(product.highest_bid);
   }, [product.highest_bid, product.current_price]);

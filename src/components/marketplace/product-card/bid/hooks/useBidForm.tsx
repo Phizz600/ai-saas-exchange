@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -246,6 +245,34 @@ export function useBidForm({ productId, productTitle, currentPrice }: UseBidForm
       setIsSubmitting(false);
     }
   };
+
+  // When dialog is closed without completion or payment is cancelled
+  const handleBidCancellation = async () => {
+    try {
+      if (!bidId) {
+        return;
+      }
+      
+      console.log(`Cancelling bid ${bidId} due to payment cancellation`);
+      
+      // Mark the bid as cancelled in the database
+      const { error: updateError } = await supabase
+        .from('bids')
+        .update({
+          status: 'cancelled',
+          payment_status: 'cancelled'
+        })
+        .eq('id', bidId);
+        
+      if (updateError) {
+        console.error(`Failed to update bid as cancelled: ${updateError.message}`);
+      } else {
+        console.log(`Bid ${bidId} successfully marked as cancelled`);
+      }
+    } catch (err) {
+      console.error('Error cancelling bid:', err);
+    }
+  };
   
   const resetForm = () => {
     setBidAmount("");
@@ -264,10 +291,12 @@ export function useBidForm({ productId, productTitle, currentPrice }: UseBidForm
     depositDialogOpen,
     paymentClientSecret,
     paymentError,
+    bidId,
     setDepositDialogOpen,
     handleAmountChange,
     handleInitiateBid,
     handleBidSubmit,
+    handleBidCancellation,
     resetForm
   };
 }
