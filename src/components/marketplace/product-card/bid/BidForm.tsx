@@ -1,3 +1,4 @@
+
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useBidForm } from "./hooks/useBidForm";
@@ -74,6 +75,7 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
     success,
     depositDialogOpen,
     paymentClientSecret,
+    paymentError,
     setDepositDialogOpen,
     handleAmountChange,
     handleInitiateBid,
@@ -136,6 +138,15 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
         <Alert variant="destructive" className="mb-2">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>{bidError}</AlertDescription>
+        </Alert>
+      )}
+      
+      {paymentError && (
+        <Alert variant="destructive" className="mb-2">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            Payment error: {paymentError}. Please try again with a different payment method.
+          </AlertDescription>
         </Alert>
       )}
       

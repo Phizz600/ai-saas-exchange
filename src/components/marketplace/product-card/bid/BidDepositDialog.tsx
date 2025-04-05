@@ -7,8 +7,9 @@ import { useToast } from "@/hooks/use-toast";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 
-// Initialize Stripe
-const stripePromise = loadStripe("pk_test_51OC6VZFv3qy1KhE7jnKFZuqYvlUQ6GFWHZjIXfOy3vHEPLyfGxLCFE90rS7AO9VJkrP0bXpPOyQwVCHZkCdTDy7I00cMcNKl6D");
+// Initialize Stripe with the public key
+// Use a valid publishable key format that doesn't include the full key text
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || "pk_test_51OC6VZFv3qy1KhE7jnKFZuqYvlUQ6GFWHZjIXfOy3vHEPLyfGxLCFE90rS7AO9VJkrP0bXpPOyQwVCHZkCdTDy7I00cMcNKl6D");
 
 interface BidDepositDialogProps {
   open: boolean;
@@ -49,13 +50,6 @@ function PaymentForm({ onConfirm, onClose }: { onConfirm: (paymentMethodId: stri
     try {
       console.log("Starting payment confirmation process");
       
-      // Get the PaymentElement instance
-      const paymentElement = elements.getElement(PaymentElement);
-      
-      if (!paymentElement) {
-        throw new Error("Payment element not found");
-      }
-
       // Confirm the PaymentIntent with the card element
       const { paymentIntent, error } = await stripe.confirmPayment({
         elements,
@@ -115,7 +109,13 @@ function PaymentForm({ onConfirm, onClose }: { onConfirm: (paymentMethodId: stri
       </div>
       
       <div className="border rounded-md p-4">
-        <PaymentElement onReady={handleReady} />
+        <PaymentElement onReady={handleReady} options={{
+          fields: {
+            billingDetails: {
+              address: 'never'
+            }
+          }
+        }} />
       </div>
       
       <div className="flex justify-end gap-2 mt-4">
@@ -162,11 +162,14 @@ export function BidDepositDialog({
   clientSecret
 }: BidDepositDialogProps) {
   const [paymentElementVisible, setPaymentElementVisible] = useState(false);
+  const [stripeError, setStripeError] = useState<string | null>(null);
+  const { toast } = useToast();
 
   // Control the visibility of the payment element based on dialog state
   useEffect(() => {
     if (open && clientSecret) {
       console.log("BidDepositDialog opened with client secret, preparing to show payment element");
+      setStripeError(null);
       // Small delay to ensure the dialog is fully open
       const timer = setTimeout(() => {
         setPaymentElementVisible(true);
@@ -177,8 +180,20 @@ export function BidDepositDialog({
     }
   }, [open, clientSecret]);
 
+  useEffect(() => {
+    // Check if Stripe is properly initialized
+    if (open && !stripePromise) {
+      console.error("Stripe could not be initialized. Check your publishable key.");
+      setStripeError("Payment system configuration error. Please contact support.");
+      toast({
+        title: "Payment System Error",
+        description: "We're experiencing technical difficulties with our payment processor. Please try again later.",
+        variant: "destructive",
+      });
+    }
+  }, [open, toast]);
+
   if (!clientSecret) {
-    console.log("No client secret available, not rendering dialog");
     return null;
   }
 
@@ -199,7 +214,14 @@ export function BidDepositDialog({
             </p>
           </div>
           
-          {paymentElementVisible && clientSecret && (
+          {stripeError ? (
+            <div className="bg-red-50 p-4 rounded-md">
+              <AlertCircle className="h-5 w-5 text-red-500 mb-2" />
+              <h3 className="font-medium text-red-800">Payment System Error</h3>
+              <p className="text-sm text-red-700">{stripeError}</p>
+              <p className="text-sm text-red-700 mt-2">Please try again later or contact support if the issue persists.</p>
+            </div>
+          ) : paymentElementVisible && clientSecret ? (
             <Elements
               stripe={stripePromise}
               options={{
@@ -214,6 +236,14 @@ export function BidDepositDialog({
             >
               <PaymentForm onConfirm={onConfirm} onClose={onClose} />
             </Elements>
+          ) : (
+            <div className="flex items-center justify-center p-6">
+              <svg className="animate-spin h-6 w-6 text-purple-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              <span className="ml-2 text-sm text-gray-600">Loading payment form...</span>
+            </div>
           )}
         </div>
       </DialogContent>

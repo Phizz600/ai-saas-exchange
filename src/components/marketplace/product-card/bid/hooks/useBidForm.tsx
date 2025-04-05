@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { createPaymentAuthorization, capturePaymentAuthorization } from "@/services/stripe-service";
+import { createPaymentAuthorization } from "@/services/stripe-service";
 
 interface UseBidFormProps {
   productId: string;
@@ -10,30 +10,37 @@ interface UseBidFormProps {
   currentPrice?: number;
 }
 
-export function useBidForm({ productId, productTitle, currentPrice = 0 }: UseBidFormProps) {
+export function useBidForm({ productId, productTitle, currentPrice }: UseBidFormProps) {
   const [bidAmount, setBidAmount] = useState("");
+  const [formattedBidAmount, setFormattedBidAmount] = useState(""); 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [depositDialogOpen, setDepositDialogOpen] = useState(false);
-  const [formattedBidAmount, setFormattedBidAmount] = useState("");
   const [paymentClientSecret, setPaymentClientSecret] = useState<string | null>(null);
-  const [paymentIntentId, setPaymentIntentId] = useState<string | null>(null);
+  const [paymentError, setPaymentError] = useState<string | null>(null);
   const [bidId, setBidId] = useState<string | null>(null);
+  
   const { toast } = useToast();
 
+  // Format the amount as currency
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Remove non-numeric characters except period
-    let value = e.target.value.replace(/[^0-9.]/g, '');
+    let value = e.target.value;
+    
+    // Remove all non-numeric characters except decimal point
+    value = value.replace(/[^0-9.]/g, '');
     
     // Ensure only one decimal point
-    const parts = value.split('.');
-    if (parts.length > 2) {
-      value = parts[0] + '.' + parts.slice(1).join('');
+    const decimalCount = (value.match(/\./g) || []).length;
+    if (decimalCount > 1) {
+      value = value.replace(/\./g, (match, index, string) => {
+        return index === string.indexOf('.') ? '.' : '';
+      });
     }
     
-    // Limit decimal places to 2
-    if (parts.length === 2 && parts[1].length > 2) {
-      value = parts[0] + '.' + parts[1].slice(0, 2);
+    // Limit to 2 decimal places
+    if (value.includes('.')) {
+      const parts = value.split('.');
+      value = `${parts[0]}.${parts[1].slice(0, 2)}`;
     }
     
     setBidAmount(value);
@@ -42,7 +49,7 @@ export function useBidForm({ productId, productTitle, currentPrice = 0 }: UseBid
     if (value) {
       const numericValue = parseFloat(value);
       if (!isNaN(numericValue)) {
-        setFormattedBidAmount(`$${numericValue.toLocaleString()}`);
+        setFormattedBidAmount(`$${numericValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
       } else {
         setFormattedBidAmount("");
       }
@@ -51,286 +58,189 @@ export function useBidForm({ productId, productTitle, currentPrice = 0 }: UseBid
     }
   };
 
+  // First step: Create bid and prepare payment
   const handleInitiateBid = async () => {
-    const numericAmount = parseFloat(bidAmount);
-    
-    // Basic validation (more validation in the UI component)
-    if (isNaN(numericAmount) || numericAmount <= 0) {
-      toast({
-        title: "Invalid bid amount",
-        description: "Please enter a valid amount for your bid",
-        variant: "destructive",
-      });
-      return;
-    }
-    
     try {
       setIsSubmitting(true);
+      setPaymentError(null);
       
-      // 1. Get the current user
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
+      // Validate amount
+      const amount = parseFloat(bidAmount);
+      if (isNaN(amount) || amount <= 0) {
         toast({
-          title: "Authentication required",
-          description: "Please log in to place a bid",
-          variant: "destructive",
+          title: "Invalid amount",
+          description: "Please enter a valid bid amount",
+          variant: "destructive"
         });
-        setIsSubmitting(false);
         return;
-      }
-      
-      // 2. Verify the current highest bid to ensure our bid is valid
-      const { data: product, error: productError } = await supabase
-        .from('products')
-        .select('highest_bid, current_price')
-        .eq('id', productId)
-        .single();
-        
-      if (productError) {
-        console.error("Error fetching product details:", productError);
-        throw new Error("Failed to fetch product details");
-      }
-      
-      const highestBid = product.highest_bid || product.current_price || 0;
-      
-      if (numericAmount <= highestBid) {
-        toast({
-          title: "Bid too low",
-          description: `Your bid must be higher than the current highest bid of $${highestBid.toLocaleString()}`,
-          variant: "destructive",
-        });
-        setIsSubmitting(false);
-        return;
-      }
-      
-      // 3. Check if user already has a pending or active bid on this product
-      const { data: existingBids, error: bidsCheckError } = await supabase
-        .from('bids')
-        .select('id, status, amount')
-        .eq('product_id', productId)
-        .eq('bidder_id', user.id)
-        .in('status', ['pending', 'active']);
-        
-      if (bidsCheckError) {
-        console.error("Error checking existing bids:", bidsCheckError);
-        throw new Error("Failed to check existing bids");
       }
 
-      let existingBidId = null;
-      
-      if (existingBids && existingBids.length > 0) {
-        // Check if the existing bid is lower than the new bid
-        const existingBid = existingBids[0];
-        
-        if (existingBid.amount >= numericAmount) {
-          toast({
-            title: "You already have a higher bid",
-            description: `You already have a bid for $${existingBid.amount.toLocaleString()} on this product`,
-            variant: "destructive",
-          });
-          setIsSubmitting(false);
-          return;
-        }
-        
-        // If the user wants to increase their bid
+      // Validate against current price
+      if (currentPrice && amount <= currentPrice) {
         toast({
-          title: "Updating your bid",
-          description: `Increasing your bid from $${existingBid.amount.toLocaleString()} to $${numericAmount.toLocaleString()}`,
+          title: "Bid too low",
+          description: `Your bid must be higher than the current price of $${currentPrice.toLocaleString()}`,
+          variant: "destructive"
         });
-        
-        existingBidId = existingBid.id;
-      }
-      
-      // 4. Create a new bid or update existing bid
-      let bidRecord;
-      
-      if (existingBidId) {
-        // Update existing bid
-        const { data: updatedBid, error: updateError } = await supabase
-          .from('bids')
-          .update({
-            amount: numericAmount,
-            status: 'pending',
-            payment_status: 'pending',
-            payment_amount: numericAmount
-          })
-          .eq('id', existingBidId)
-          .select()
-          .single();
-          
-        if (updateError) {
-          console.error("Error updating bid:", updateError);
-          throw updateError;
-        }
-        
-        bidRecord = updatedBid;
-      } else {
-        // Create new bid
-        const { data: newBid, error: bidError } = await supabase
-          .from('bids')
-          .insert({
-            product_id: productId,
-            bidder_id: user.id,
-            amount: numericAmount,
-            status: 'pending',
-            payment_status: 'pending',
-            payment_amount: numericAmount
-          })
-          .select()
-          .single();
-          
-        if (bidError) {
-          console.error("Error creating bid:", bidError);
-          
-          if (bidError.message.includes("higher than current highest bid")) {
-            toast({
-              title: "Bid too low",
-              description: "Your bid must be higher than the current highest bid",
-              variant: "destructive",
-            });
-          } else {
-            toast({
-              title: "Bid Error",
-              description: "Failed to place your bid. Please try again.",
-              variant: "destructive",
-            });
-          }
-          
-          setIsSubmitting(false);
-          return;
-        }
-        
-        bidRecord = newBid;
-      }
-      
-      // Store the bid ID for use in payment processing
-      setBidId(bidRecord.id);
-      
-      // 5. Create a payment authorization with Stripe
-      const { clientSecret, paymentIntentId, error: stripeError } = await createPaymentAuthorization(
-        numericAmount, 
-        bidRecord.id,
-        productId
-      );
-      
-      if (stripeError || !clientSecret) {
-        console.error("Stripe authorization error:", stripeError);
-        toast({
-          title: "Payment Authorization Error",
-          description: stripeError || "Failed to create payment authorization. Please try again.",
-          variant: "destructive",
-        });
-        
-        // Clean up the bid record if it's a new bid
-        if (!existingBidId) {
-          await supabase
-            .from('bids')
-            .delete()
-            .eq('id', bidRecord.id);
-        }
-          
-        setIsSubmitting(false);
         return;
       }
-      
-      // Store the client secret and payment intent ID for use in the payment form
+
+      // Get current user
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      if (userError || !user) {
+        toast({
+          title: "Authentication required",
+          description: "Please sign in to place a bid",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Create a pending bid in the database
+      const { data: bid, error: bidError } = await supabase
+        .from('bids')
+        .insert({
+          product_id: productId,
+          bidder_id: user.id,
+          amount: amount,
+          status: 'pending'
+        })
+        .select()
+        .single();
+
+      if (bidError) {
+        console.error('Error creating bid:', bidError);
+        toast({
+          title: "Bid creation failed",
+          description: bidError.message,
+          variant: "destructive"
+        });
+        return;
+      }
+
+      console.log('Bid created:', bid);
+      setBidId(bid.id);
+
+      // Create payment authorization
+      console.log(`Creating payment authorization for amount: ${amount}, bidId: ${bid.id}`);
+      const { clientSecret, paymentIntentId, error } = await createPaymentAuthorization(
+        amount,
+        bid.id,
+        productId
+      );
+
+      if (error || !clientSecret) {
+        console.error('Payment authorization error:', error);
+        setPaymentError(error || "Failed to create payment authorization");
+        toast({
+          title: "Payment setup failed",
+          description: error || "There was an error setting up the payment. Please try again.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Store the client secret for the payment form
       setPaymentClientSecret(clientSecret);
-      setPaymentIntentId(paymentIntentId);
       
-      // 6. Open the deposit dialog to complete payment
+      // Open the payment dialog
       setDepositDialogOpen(true);
       
-    } catch (error: any) {
-      console.error("Error initiating bid:", error);
+    } catch (err: any) {
+      console.error('Error initiating bid:', err);
       toast({
         title: "Error",
-        description: error.message || "An unexpected error occurred. Please try again.",
-        variant: "destructive",
+        description: err.message || "An unexpected error occurred",
+        variant: "destructive"
       });
     } finally {
       setIsSubmitting(false);
     }
   };
-
-  const handleBidSubmit = async (paymentMethodId: string) => {
+  
+  // Second step: After payment method is confirmed
+  const handleBidSubmit = async (paymentIntentId: string) => {
     try {
       setIsSubmitting(true);
       
       if (!bidId) {
-        throw new Error("Bid ID is missing");
+        throw new Error("Missing bid information");
       }
       
-      // Update the bid record with the payment method ID
+      // Update the bid with the payment status and intent ID
       const { error: updateError } = await supabase
         .from('bids')
-        .update({ 
-          payment_method_id: paymentMethodId,
-          status: 'active',
-          payment_status: 'authorized'
+        .update({
+          payment_intent_id: paymentIntentId,
+          payment_status: 'authorized',
+          status: 'active'
         })
         .eq('id', bidId);
         
       if (updateError) {
-        throw updateError;
+        throw new Error(`Failed to update bid: ${updateError.message}`);
       }
       
-      // Call the update-highest-bid function to ensure the highest bid is updated
-      try {
-        const { data: { user } } = await supabase.auth.getUser();
-        const numericAmount = parseFloat(bidAmount);
+      // Now update the highest bid on the product through our edge function
+      const { data: bidData, error: bidFetchError } = await supabase
+        .from('bids')
+        .select('amount, bidder_id')
+        .eq('id', bidId)
+        .single();
         
-        const { data, error } = await supabase.functions.invoke('update-highest-bid', {
+      if (bidFetchError) {
+        throw new Error(`Failed to get bid details: ${bidFetchError.message}`);
+      }
+      
+      // Call the update-highest-bid edge function
+      const { error: highestBidError } = await supabase.functions.invoke(
+        'update-highest-bid',
+        {
           body: {
             productId: productId,
-            bidAmount: numericAmount,
-            bidderId: user?.id
+            bidAmount: bidData.amount,
+            bidderId: bidData.bidder_id
           }
-        });
-        
-        if (error) {
-          console.error("Error updating highest bid:", error);
-        } else {
-          console.log("Highest bid updated:", data);
         }
-      } catch (error) {
-        console.error("Error calling update-highest-bid function:", error);
+      );
+      
+      if (highestBidError) {
+        console.error('Error updating highest bid:', highestBidError);
+        // Don't throw here, as the bid is already placed
       }
       
       // Show success message
-      setSuccess(true);
-      
       toast({
-        title: "Bid Placed Successfully",
-        description: "Your bid has been placed and your payment method has been authorized.",
+        title: "Bid placed successfully!",
+        description: `Your bid of $${parseFloat(bidAmount).toLocaleString()} has been placed and your payment method has been authorized.`,
       });
       
-      // Reset the form
-      setBidAmount("");
-      setFormattedBidAmount("");
+      // Close the deposit dialog and show success state
+      setDepositDialogOpen(false);
+      setSuccess(true);
       
-    } catch (error: any) {
-      console.error("Error finalizing bid:", error);
+    } catch (err: any) {
+      console.error('Error submitting bid:', err);
+      setPaymentError(err.message || "Failed to complete bid submission");
       toast({
         title: "Error",
-        description: error.message || "Failed to complete your bid. Please try again.",
-        variant: "destructive",
+        description: err.message || "An unexpected error occurred",
+        variant: "destructive"
       });
     } finally {
       setIsSubmitting(false);
-      setDepositDialogOpen(false);
     }
   };
-
+  
   const resetForm = () => {
     setBidAmount("");
     setFormattedBidAmount("");
     setSuccess(false);
-    setBidId(null);
     setPaymentClientSecret(null);
-    setPaymentIntentId(null);
+    setPaymentError(null);
+    setBidId(null);
   };
-
+  
   return {
     bidAmount,
     formattedBidAmount,
@@ -338,8 +248,7 @@ export function useBidForm({ productId, productTitle, currentPrice = 0 }: UseBid
     success,
     depositDialogOpen,
     paymentClientSecret,
-    paymentIntentId,
-    bidId,
+    paymentError,
     setDepositDialogOpen,
     handleAmountChange,
     handleInitiateBid,

@@ -17,7 +17,8 @@ serve(async (req) => {
     // Initialize Stripe with the secret key
     const stripeSecretKey = Deno.env.get("STRIPE_SECRET_KEY");
     if (!stripeSecretKey) {
-      throw new Error("STRIPE_SECRET_KEY is not configured in environment variables");
+      console.error("STRIPE_SECRET_KEY is not configured in environment variables");
+      throw new Error("Payment system is not properly configured. Please contact support.");
     }
     
     const stripe = new Stripe(stripeSecretKey, {
