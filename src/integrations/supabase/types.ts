@@ -62,7 +62,14 @@ export type Database = {
           amount: number
           bidder_id: string
           created_at: string
+          deposit_amount: number | null
+          deposit_status: string | null
+          deposit_transaction_id: string | null
           id: string
+          payment_amount: number | null
+          payment_intent_id: string | null
+          payment_method_id: string | null
+          payment_status: string | null
           product_id: string
           status: string
           updated_at: string
@@ -71,7 +78,14 @@ export type Database = {
           amount: number
           bidder_id: string
           created_at?: string
+          deposit_amount?: number | null
+          deposit_status?: string | null
+          deposit_transaction_id?: string | null
           id?: string
+          payment_amount?: number | null
+          payment_intent_id?: string | null
+          payment_method_id?: string | null
+          payment_status?: string | null
           product_id: string
           status?: string
           updated_at?: string
@@ -80,7 +94,14 @@ export type Database = {
           amount?: number
           bidder_id?: string
           created_at?: string
+          deposit_amount?: number | null
+          deposit_status?: string | null
+          deposit_transaction_id?: string | null
           id?: string
+          payment_amount?: number | null
+          payment_intent_id?: string | null
+          payment_method_id?: string | null
+          payment_status?: string | null
           product_id?: string
           status?: string
           updated_at?: string
@@ -193,6 +214,7 @@ export type Database = {
       deposit_transactions: {
         Row: {
           amount: number
+          bid_id: string | null
           created_at: string
           escrow_transaction_id: string | null
           id: string
@@ -202,6 +224,7 @@ export type Database = {
         }
         Insert: {
           amount: number
+          bid_id?: string | null
           created_at?: string
           escrow_transaction_id?: string | null
           id?: string
@@ -211,6 +234,7 @@ export type Database = {
         }
         Update: {
           amount?: number
+          bid_id?: string | null
           created_at?: string
           escrow_transaction_id?: string | null
           id?: string
@@ -219,6 +243,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "deposit_transactions_bid_id_fkey"
+            columns: ["bid_id"]
+            isOneToOne: false
+            referencedRelation: "bids"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "deposit_transactions_escrow_transaction_id_fkey"
             columns: ["escrow_transaction_id"]
@@ -1184,6 +1215,12 @@ export type Database = {
       }
     }
     Functions: {
+      calculate_bid_deposit_amount: {
+        Args: {
+          bid_amount: number
+        }
+        Returns: number
+      }
       calculate_match_score: {
         Args: {
           product_id: string
