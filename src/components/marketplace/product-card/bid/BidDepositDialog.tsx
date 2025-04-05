@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -6,6 +7,17 @@ import { useToast } from "@/hooks/use-toast";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { testStripeVerification } from "@/services/stripe-service";
+
+// Define the missing interface
+interface BidDepositDialogProps {
+  open: boolean;
+  onClose: () => void;
+  onConfirm: (paymentMethodId: string) => void;
+  productId: string;
+  bidAmount: number;
+  productTitle: string;
+  clientSecret: string | null;
+}
 
 // Initialize Stripe with the public key
 // Make sure this is using the full key value, not an environment variable
