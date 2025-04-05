@@ -1,3 +1,4 @@
+
 import { Timer, TrendingDown, Share } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";

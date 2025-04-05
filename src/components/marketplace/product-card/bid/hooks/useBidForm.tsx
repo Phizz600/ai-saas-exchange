@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -74,7 +75,7 @@ export function useBidForm({ productId, productTitle, currentPrice }: UseBidForm
         return;
       }
 
-      // Validate against current price
+      // Validate against current price - only against authorized highest bid or system price
       if (currentPrice && amount <= currentPrice) {
         toast({
           title: "Bid too low",
