@@ -51,3 +51,9 @@ verify_jwt = false
 
 [functions.get-stripe-publishable-key]
 verify_jwt = false
+
+[functions.send-auction-result-email]
+verify_jwt = false
+
+[functions.check-ended-auctions]
+verify_jwt = false

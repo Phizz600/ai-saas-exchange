@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { Timer, TrendingDown, ChevronDown } from "lucide-react";
+import { Timer, TrendingDown, ChevronDown, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
@@ -11,6 +11,7 @@ import { OfferDialog } from "@/components/marketplace/product-card/offer/OfferDi
 import { BidForm } from "@/components/marketplace/product-card/bid/BidForm";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
+import { sendAuctionResultEmail } from "@/integrations/supabase/functions";
 
 interface ProductPricingProps {
   product: {
@@ -26,6 +27,7 @@ interface ProductPricingProps {
     highest_bidder_id?: string;
     starting_price?: number;
     title?: string;
+    status?: string;
   };
 }
 
@@ -51,6 +53,7 @@ export function ProductPricing({ product }: ProductPricingProps) {
   const [offerDialogOpen, setOfferDialogOpen] = useState(false);
   const [bidHistoryDialogOpen, setBidHistoryDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
   const { toast } = useToast();
 
   // Function to fetch and verify the highest bid
@@ -97,6 +100,28 @@ export function ProductPricing({ product }: ProductPricingProps) {
     } catch (err) {
       console.error('Error verifying highest bid:', err);
       setIsLoading(false);
+    }
+  };
+
+  // Function to handle manual sending of auction result email
+  const handleSendAuctionResultEmail = async () => {
+    try {
+      setIsSendingEmail(true);
+      const result = await sendAuctionResultEmail(product.id);
+      toast({
+        title: "Email sent successfully",
+        description: "The auction result email has been sent to all participants.",
+      });
+      console.log("Sent auction result email:", result);
+    } catch (error) {
+      console.error("Error sending auction result email:", error);
+      toast({
+        title: "Error sending email",
+        description: "Failed to send the auction result email. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSendingEmail(false);
     }
   };
 
@@ -267,6 +292,11 @@ export function ProductPricing({ product }: ProductPricingProps) {
   // Always use highest bid as the displayed price if available
   const displayPrice = highestBid || currentPrice || 0;
   const hasActiveBids = !!highestBid;
+  
+  // Check if auction has ended
+  const now = new Date();
+  const auctionEndTime = product.auction_end_time ? new Date(product.auction_end_time) : null;
+  const isAuctionEnded = auctionEndTime && auctionEndTime < now;
 
   return (
     <Card className="p-6">
@@ -311,17 +341,46 @@ export function ProductPricing({ product }: ProductPricingProps) {
                     Drops ${product.price_decrement?.toLocaleString() || 0}/{product.price_decrement_interval || 'day'}
                   </span>
                 </div>
-                <p className="text-sm text-amber-600 mt-1">Next drop in: {nextDrop}</p>
+                {!isAuctionEnded && (
+                  <p className="text-sm text-amber-600 mt-1">Next drop in: {nextDrop}</p>
+                )}
               </div>
             )}
           </div>
 
-          {isAuction && (
+          {isAuction && !isAuctionEnded && (
             <div className="bg-blue-50 p-3 rounded-md text-sm text-blue-700 mt-3">
               <p>
                 <span className="font-medium">How Dutch Auctions Work:</span> The price starts high and 
                 decreases over time until someone places a bid. The highest authorized bid always sets the current price.
               </p>
+            </div>
+          )}
+
+          {isAuctionEnded && (
+            <div className="bg-amber-50 p-3 rounded-md text-sm text-amber-700 mt-3">
+              <p>
+                <span className="font-medium">Auction Ended:</span> This auction has ended.
+                {highestBid ? ` The winning bid was $${highestBid.toLocaleString()}.` : ' There were no bids placed.'}
+              </p>
+              
+              {/* Admin button for sending result emails (for testing) */}
+              <div className="mt-2">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={handleSendAuctionResultEmail}
+                  disabled={isSendingEmail}
+                  className="flex items-center gap-1 text-xs"
+                >
+                  {isSendingEmail ? 'Sending...' : (
+                    <>
+                      <Mail className="h-3 w-3" />
+                      Send Result Email
+                    </>
+                  )}
+                </Button>
+              </div>
             </div>
           )}
 
@@ -392,7 +451,7 @@ export function ProductPricing({ product }: ProductPricingProps) {
             </div>
           )}
           
-          {product.auction_end_time && (
+          {product.auction_end_time && !isAuctionEnded && (
             <div className="space-y-3 border p-4 rounded-md">
               <h3 className="font-medium">Place Your Bid</h3>
               <BidForm 

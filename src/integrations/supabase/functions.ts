@@ -87,3 +87,50 @@ export const sendWelcomeEmail = async (
     status: "disabled" 
   };
 };
+
+// Function to send auction result emails
+export const sendAuctionResultEmail = async (productId: string) => {
+  console.log(`Sending auction result email for product ${productId}`);
+  try {
+    const { data, error } = await supabase.functions.invoke('send-auction-result-email', {
+      body: { 
+        productId,
+        mode: 'manual' // Indicate this is a manual trigger, not automated
+      }
+    });
+    
+    if (error) {
+      console.error("Error from send-auction-result-email function:", error);
+      throw error;
+    }
+    
+    console.log("Auction result email function response:", data);
+    return data;
+  } catch (err) {
+    console.error("Error sending auction result email:", err);
+    throw err;
+  }
+};
+
+// Function to check for and process ended auctions
+export const checkEndedAuctions = async () => {
+  console.log("Checking for ended auctions...");
+  try {
+    const { data, error } = await supabase.functions.invoke('check-ended-auctions', {
+      body: { 
+        timestamp: new Date().toISOString()
+      }
+    });
+    
+    if (error) {
+      console.error("Error from check-ended-auctions function:", error);
+      throw error;
+    }
+    
+    console.log("Check ended auctions function response:", data);
+    return data;
+  } catch (err) {
+    console.error("Error checking ended auctions:", err);
+    throw err;
+  }
+};
