@@ -31,6 +31,7 @@ export function ProductPricing({ product }: ProductPricingProps) {
   const [nextDrop, setNextDrop] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentPrice, setCurrentPrice] = useState(product.current_price);
+  const [highestBid, setHighestBid] = useState(product.highest_bid);
   const [offerDialogOpen, setOfferDialogOpen] = useState(false);
   const { toast } = useToast();
 
@@ -49,6 +50,7 @@ export function ProductPricing({ product }: ProductPricingProps) {
         (payload: any) => {
           console.log('Product updated:', payload);
           setCurrentPrice(payload.new.current_price);
+          setHighestBid(payload.new.highest_bid);
         }
       )
       .subscribe();
@@ -126,8 +128,8 @@ export function ProductPricing({ product }: ProductPricingProps) {
 
   // Determine the price information to display
   const isAuction = !!product.auction_end_time;
-  const displayPrice = currentPrice || product.highest_bid || product.starting_price || product.price || 0;
-  const hasActiveBids = !!product.highest_bid;
+  const displayPrice = currentPrice || product.price || 0;
+  const hasActiveBids = !!highestBid;
 
   return (
     <Card className="p-6">
@@ -145,7 +147,7 @@ export function ProductPricing({ product }: ProductPricingProps) {
                 <>
                   {hasActiveBids && (
                     <p className="text-sm text-emerald-600 font-medium">
-                      Current highest bid: ${product.highest_bid?.toLocaleString()}
+                      Current price set by highest bid
                     </p>
                   )}
                   {product.min_price && (

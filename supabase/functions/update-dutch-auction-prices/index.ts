@@ -28,7 +28,7 @@ Deno.serve(async (req) => {
     // Get all active Dutch auctions
     const { data: auctions, error: fetchError } = await supabase
       .from('products')
-      .select('id, price_decrement, price_decrement_interval, current_price, min_price, auction_end_time')
+      .select('id, price_decrement, price_decrement_interval, current_price, min_price, auction_end_time, highest_bid')
       .gte('auction_end_time', new Date().toISOString())
       .lt('current_price', 'starting_price')
       .gt('current_price', 'min_price')
@@ -94,7 +94,12 @@ Deno.serve(async (req) => {
 
       if (shouldUpdate) {
         // Calculate new price (don't go below min_price)
-        const newPrice = Math.max(auction.current_price - decrementAmount, auction.min_price);
+        let newPrice = Math.max(auction.current_price - decrementAmount, auction.min_price);
+        
+        // If there's a highest bid, make sure the price doesn't go below it
+        if (auction.highest_bid) {
+          newPrice = Math.max(newPrice, auction.highest_bid);
+        }
         
         if (newPrice < auction.current_price) {
           console.log(`Updating auction ${auction.id}: ${auction.current_price} -> ${newPrice}`);

@@ -48,6 +48,7 @@ export function AuctionSection({ product }: AuctionSectionProps) {
           filter: `id=eq.${product.id}`
         },
         (payload: any) => {
+          console.log('Product updated:', payload);
           if (payload.new.current_price !== currentPrice) {
             setCurrentPrice(payload.new.current_price);
           }
@@ -80,10 +81,6 @@ export function AuctionSection({ product }: AuctionSectionProps) {
       });
     }
   };
-
-  // Determine the display price (will be the highest of the Dutch auction price or the highest bid)
-  const displayPrice = currentPrice;
-  const hasActiveBids = !!highestBid;
 
   return (
     <div className="w-full p-4 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg border border-purple-200">
@@ -124,11 +121,11 @@ export function AuctionSection({ product }: AuctionSectionProps) {
         <div>
           <span className="text-sm font-semibold text-gray-600">Current Price</span>
           <div className="text-lg font-bold text-purple-600">
-            ${displayPrice?.toLocaleString()}
+            ${currentPrice?.toLocaleString()}
           </div>
-          {hasActiveBids && (
+          {highestBid && (
             <div className="text-xs text-emerald-600 font-medium">
-              Highest bid: ${highestBid?.toLocaleString()}
+              Current price set by highest bid
             </div>
           )}
         </div>
@@ -165,7 +162,7 @@ export function AuctionSection({ product }: AuctionSectionProps) {
           <BidForm
             productId={product.id}
             productTitle={product.title || "Product"}
-            currentPrice={displayPrice}
+            currentPrice={currentPrice}
           />
           
           <Button 
