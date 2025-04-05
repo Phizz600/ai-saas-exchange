@@ -149,13 +149,6 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
         </Alert>
       )}
       
-      <Alert className="bg-blue-50 border-blue-100 mb-2">
-        <ShieldCheck className="h-4 w-4 text-blue-600" />
-        <AlertDescription className="text-blue-700 text-sm">
-          Your bid will only be considered valid after you complete payment pre-authorization.
-        </AlertDescription>
-      </Alert>
-      
       <div className="flex flex-col">
         <label htmlFor="bidAmount" className="text-sm mb-1 font-medium">
           Your Bid Amount
