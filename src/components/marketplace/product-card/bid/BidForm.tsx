@@ -7,6 +7,8 @@ import { BidErrorAlert } from "./components/BidErrorAlert";
 import { PaymentErrorAlert } from "./components/PaymentErrorAlert";
 import { BidSuccessMessage } from "./components/BidSuccessMessage";
 import { BidInputForm } from "./components/BidInputForm";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
 
 interface BidFormProps {
   productId: string;
@@ -18,6 +20,7 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
   const [highestBid, setHighestBid] = useState<number | null>(null);
   const [isLoadingBids, setIsLoadingBids] = useState(true);
   const [bidError, setBidError] = useState<string | null>(null);
+  const [bidCancelled, setBidCancelled] = useState(false);
 
   // Fetch the current highest bid
   useEffect(() => {
@@ -123,9 +126,25 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
     currentPrice: highestBid || currentPrice
   });
 
+  // Handle dialog closing without completing the process
+  useEffect(() => {
+    if (!depositDialogOpen && paymentClientSecret && !success && !isSubmitting) {
+      // If dialog is closed, client secret exists, but bid isn't successful or in process
+      setBidCancelled(true);
+      
+      // Auto-hide the cancelled message after 5 seconds
+      const timer = setTimeout(() => {
+        setBidCancelled(false);
+      }, 5000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [depositDialogOpen, paymentClientSecret, success, isSubmitting]);
+
   const validateAndBid = () => {
-    // Clear any previous errors
+    // Clear any previous errors and statuses
     setBidError(null);
+    setBidCancelled(false);
     
     const numericAmount = parseFloat(bidAmount);
     
@@ -147,6 +166,7 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
 
   const clearBidError = () => {
     if (bidError) setBidError(null);
+    if (bidCancelled) setBidCancelled(false);
   };
 
   if (success) {
@@ -157,6 +177,13 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
     <>
       <BidErrorAlert bidError={bidError} />
       <PaymentErrorAlert paymentError={paymentError} />
+      
+      {bidCancelled && (
+        <Alert variant="destructive" className="mb-3">
+          <AlertCircle className="h-4 w-4 mr-2" />
+          <AlertDescription>Bid cancelled. Your payment was not processed.</AlertDescription>
+        </Alert>
+      )}
       
       <BidInputForm 
         bidAmount={bidAmount}
