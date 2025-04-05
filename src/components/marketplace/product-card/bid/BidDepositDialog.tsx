@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { testStripeVerification } from "@/services/stripe-service";
+import { supabase } from "@/integrations/supabase/client";
 
 // Define the interface for the component props
 interface BidDepositDialogProps {
@@ -19,17 +20,35 @@ interface BidDepositDialogProps {
   clientSecret: string | null;
 }
 
-// Initialize Stripe with the public key
-// Replace this with your actual Stripe publishable key from your Stripe dashboard
-const stripePublishableKey = "pk_test_51PXA..."; // Only the beginning shown for security
-const stripePromise = stripePublishableKey ? loadStripe(stripePublishableKey) : null;
+// Initialize Stripe with the public key from Supabase edge function secrets
+let stripePublishableKey: string | null = null;
 
-console.log("Stripe publishable key available:", !!stripePublishableKey);
-
-// If the publishable key is not set, we show an error message
-if (!stripePublishableKey) {
-  console.error("Stripe publishable key is not configured! This will cause payment forms to fail.");
+// Fetch the publishable key from Supabase
+async function initializeStripe() {
+  try {
+    const { data, error } = await supabase.functions.invoke('get-stripe-publishable-key');
+    
+    if (error) {
+      console.error("Error fetching Stripe publishable key:", error);
+      return null;
+    }
+    
+    if (data?.publishableKey) {
+      console.log("Successfully retrieved Stripe publishable key");
+      stripePublishableKey = data.publishableKey;
+      return loadStripe(data.publishableKey);
+    } else {
+      console.error("No Stripe publishable key returned from function");
+      return null;
+    }
+  } catch (err) {
+    console.error("Exception fetching Stripe key:", err);
+    return null;
+  }
 }
+
+// Create a promise for the Stripe instance
+const stripePromise = initializeStripe();
 
 function PaymentForm({ onConfirm, onClose }: { onConfirm: (paymentMethodId: string) => void; onClose: () => void }) {
   const stripe = useStripe();
