@@ -91,46 +91,55 @@ export const ProductCard = ({
 };
 
 const ProductCardDetails = ({ product }: { product: ProductCardProps['product'] }) => {
+  // Make sure all numeric values have fallbacks
+  const displayPrice = product.isAuction 
+    ? (product.currentPrice || 0)
+    : (product.price || 0);
+  
+  const monthlyRevenue = product.monthlyRevenue || 0;
+  const monthlyTraffic = product.monthlyTraffic || 0;
+  const grossProfitMargin = product.grossProfitMargin || 0;
+  const monthlyChurnRate = typeof product.monthlyChurnRate === 'number' ? product.monthlyChurnRate : 0;
+  const minPrice = product.minPrice || 0;
+
   return (
     <div className="space-y-3">
       <div className="flex items-baseline gap-2">
         <span className="text-lg font-semibold text-green-600">
-          {product.isAuction 
-            ? formatCurrency(product.currentPrice || 0) 
-            : formatCurrency(product.price || 0)}
+          {formatCurrency(displayPrice)}
         </span>
-        {product.isAuction && product.minPrice && (
+        {product.isAuction && (
           <span className="text-sm text-gray-500">
-            (Min: {formatCurrency(product.minPrice)})
+            (Min: {formatCurrency(minPrice)})
           </span>
         )}
       </div>
 
-      {product.monthlyRevenue && (
+      {product.monthlyRevenue !== undefined && (
         <div className="flex items-center gap-2 text-gray-600">
           <DollarSign className="w-4 h-4 text-green-500" />
-          <span>MRR: {formatCurrency(product.monthlyRevenue)}</span>
+          <span>MRR: {formatCurrency(monthlyRevenue)}</span>
         </div>
       )}
 
-      {product.monthlyTraffic && (
+      {product.monthlyTraffic !== undefined && (
         <div className="flex items-center gap-2 text-gray-600">
           <Users className="w-4 h-4 text-blue-500" />
-          <span>{product.monthlyTraffic.toLocaleString()} monthly visitors</span>
+          <span>{monthlyTraffic.toLocaleString()} monthly visitors</span>
         </div>
       )}
       
-      {product.grossProfitMargin && (
+      {product.grossProfitMargin !== undefined && (
         <div className="flex items-center gap-2 text-gray-600">
           <Star className="w-4 h-4 text-amber-500" />
-          <span>{product.grossProfitMargin}% profit margin</span>
+          <span>{grossProfitMargin}% profit margin</span>
         </div>
       )}
 
       {typeof product.monthlyChurnRate === 'number' && (
         <div className="flex items-center gap-2 text-gray-600">
           <History className="w-4 h-4 text-purple-500" />
-          <span>{product.monthlyChurnRate}% monthly churn</span>
+          <span>{monthlyChurnRate}% monthly churn</span>
         </div>
       )}
     </div>

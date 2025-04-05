@@ -244,7 +244,7 @@ export function AuctionSection({ product }: AuctionSectionProps) {
         <div>
           <span className="text-sm font-semibold text-gray-600">Current Price</span>
           <div className="text-lg font-bold text-purple-600">
-            ${displayPrice?.toLocaleString()}
+            ${displayPrice?.toLocaleString() || "0"}
           </div>
           {highestBid && (
             <div className="text-xs text-emerald-600 font-medium">
@@ -267,7 +267,7 @@ export function AuctionSection({ product }: AuctionSectionProps) {
         </div>
         <div className="flex items-center gap-2 text-amber-600">
           <TrendingDown className="h-4 w-4" />
-          <span>Drops ${product.price_decrement?.toLocaleString()}/hour</span>
+          <span>Drops ${product.price_decrement?.toLocaleString() || "0"}/hour</span>
         </div>
       </div>
 
@@ -285,7 +285,7 @@ export function AuctionSection({ product }: AuctionSectionProps) {
           <BidForm
             productId={product.id}
             productTitle={product.title || "Product"}
-            currentPrice={displayPrice}
+            currentPrice={displayPrice || 0}
           />
           
           <Button 

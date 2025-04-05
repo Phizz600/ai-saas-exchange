@@ -35,6 +35,9 @@ export function ProductContent({
   is_traffic_verified,
   requires_nda
 }: ProductContentProps) {
+  // Ensure price values are either valid numbers or 0
+  const displayPrice = (current_price || price || 0);
+  
   return (
     <div className="p-5 space-y-4">
       {/* Category & Stage Pills at the top */}
@@ -61,7 +64,7 @@ export function ProductContent({
       
       {/* Price in green - making the font size smaller and left aligned */}
       <div className="text-xl font-bold text-green-600 text-left">
-        ${new Intl.NumberFormat('en-US').format((current_price || price || 0))}
+        ${new Intl.NumberFormat('en-US').format(displayPrice)}
       </div>
       
       {/* Show metrics for ALL products, whether NDA is required or not */}

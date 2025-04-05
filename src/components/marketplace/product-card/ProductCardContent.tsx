@@ -52,7 +52,8 @@ export function ProductCardContent({
     created_at
   });
   
-  const displayPrice = isAuction ? currentPrice || current_price || price : price;
+  // Ensure display price is a valid number
+  const displayPrice = isAuction ? (currentPrice || current_price || price || 0) : (price || 0);
   
   const getCategoryColor = (category: string) => {
     const colors: Record<string, { bg: string; text: string }> = {
@@ -106,15 +107,15 @@ export function ProductCardContent({
           <div className="font-medium text-green-600">
             {isAuction ? (
               <>
-                {formatCurrency(displayPrice || 0)}
-                {min_price && (
+                {formatCurrency(displayPrice)}
+                {min_price !== undefined && min_price !== null && (
                   <span className="text-sm text-gray-500 ml-1">
                     (Min: {formatCurrency(min_price)})
                   </span>
                 )}
               </>
             ) : (
-              formatCurrency(price)
+              formatCurrency(price || 0)
             )}
           </div>
         </div>
@@ -127,23 +128,27 @@ export function ProductCardContent({
         <div>
           <span className="text-sm font-semibold text-gray-600">Stage</span>
           <div>
-            <Badge 
-              variant="secondary" 
-              className={`${getStageColor(stage).bg} ${getStageColor(stage).text}`}
-            >
-              {stage}
-            </Badge>
+            {stage && (
+              <Badge 
+                variant="secondary" 
+                className={`${getStageColor(stage).bg} ${getStageColor(stage).text}`}
+              >
+                {stage}
+              </Badge>
+            )}
           </div>
         </div>
         <div>
           <span className="text-sm font-semibold text-gray-600">Category</span>
           <div>
-            <Badge 
-              variant="secondary" 
-              className={`${getCategoryColor(category).bg} ${getCategoryColor(category).text}`}
-            >
-              {category}
-            </Badge>
+            {category && (
+              <Badge 
+                variant="secondary" 
+                className={`${getCategoryColor(category).bg} ${getCategoryColor(category).text}`}
+              >
+                {category}
+              </Badge>
+            )}
           </div>
         </div>
       </div>
@@ -161,7 +166,7 @@ export function ProductCardContent({
             <div className="flex items-center gap-2 text-sm text-gray-600">
               <Timer className="h-4 w-4" />
               <span>{timeLeft}</span>
-              {price_decrement && price_decrement_interval && (
+              {price_decrement !== undefined && price_decrement !== null && price_decrement_interval && (
                 <span className="text-amber-600 ml-2">
                   Drops {formatCurrency(price_decrement)}/{formatDecrementInterval(price_decrement_interval)}
                 </span>
