@@ -1,11 +1,15 @@
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { Resend } from 'npm:resend@2.0.0';
 
 // Define the Supabase URL and key from environment variables
 const supabaseUrl = Deno.env.get('SUPABASE_URL') || '';
 const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY') || '';
 const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
-const brevoApiKey = Deno.env.get('BREVO_API_KEY') || '';
+const resendApiKey = Deno.env.get('RESEND_API_KEY') || '';
+
+// Create Resend client
+const resend = new Resend(resendApiKey);
 
 // Create Supabase client with service role key for admin access
 const supabase = createClient(supabaseUrl, serviceRoleKey);
@@ -80,10 +84,10 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // Check if Brevo API key is configured
-    if (!brevoApiKey) {
-      console.error('BREVO_API_KEY is not configured');
-      throw new Error('BREVO_API_KEY is not configured');
+    // Check if Resend API key is configured
+    if (!resendApiKey) {
+      console.error('RESEND_API_KEY is not configured');
+      throw new Error('RESEND_API_KEY is not configured');
     }
 
     // Get request body
@@ -159,52 +163,30 @@ Deno.serve(async (req) => {
 
       console.log(`Sending winner email to ${winnerEmail} and seller email to ${sellerEmail}`);
 
-      // Send email to winner
-      const winnerResponse = await fetch('https://api.brevo.com/v3/smtp/email', {
-        method: 'POST',
-        headers: {
-          'api-key': brevoApiKey,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          sender: {
-            name: 'AI Exchange',
-            email: 'notifications@ai-exchange.club'
-          },
-          to: [{ email: winnerEmail }],
-          subject: `Congratulations! You won the auction for ${product.title}`,
-          htmlContent: getWinnerEmailTemplate(product, product.highest_bid)
-        })
+      // Send email to winner using Resend
+      const winnerResponse = await resend.emails.send({
+        from: 'AI Exchange <notifications@ai-exchange.club>',
+        to: [winnerEmail],
+        subject: `Congratulations! You won the auction for ${product.title}`,
+        html: getWinnerEmailTemplate(product, product.highest_bid)
       });
 
-      if (!winnerResponse.ok) {
-        const winnerError = await winnerResponse.json();
-        console.error('Error sending winner email:', winnerError);
-        throw new Error(`Failed to send winner email: ${JSON.stringify(winnerError)}`);
+      if (!winnerResponse || winnerResponse.error) {
+        console.error('Error sending winner email:', winnerResponse?.error);
+        throw new Error(`Failed to send winner email: ${JSON.stringify(winnerResponse?.error)}`);
       }
 
       // Send email to seller
-      const sellerResponse = await fetch('https://api.brevo.com/v3/smtp/email', {
-        method: 'POST',
-        headers: {
-          'api-key': brevoApiKey,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          sender: {
-            name: 'AI Exchange',
-            email: 'notifications@ai-exchange.club'
-          },
-          to: [{ email: sellerEmail }],
-          subject: `Your auction for ${product.title} has ended successfully!`,
-          htmlContent: getSellerEmailTemplate(product, product.highest_bid, winnerEmail)
-        })
+      const sellerResponse = await resend.emails.send({
+        from: 'AI Exchange <notifications@ai-exchange.club>',
+        to: [sellerEmail],
+        subject: `Your auction for ${product.title} has ended successfully!`,
+        html: getSellerEmailTemplate(product, product.highest_bid, winnerEmail)
       });
 
-      if (!sellerResponse.ok) {
-        const sellerError = await sellerResponse.json();
-        console.error('Error sending seller email:', sellerError);
-        throw new Error(`Failed to send seller email: ${JSON.stringify(sellerError)}`);
+      if (!sellerResponse || sellerResponse.error) {
+        console.error('Error sending seller email:', sellerResponse?.error);
+        throw new Error(`Failed to send seller email: ${JSON.stringify(sellerResponse?.error)}`);
       }
 
       // Update product status if needed
@@ -225,7 +207,7 @@ Deno.serve(async (req) => {
       return new Response(
         JSON.stringify({ 
           success: true, 
-          message: 'Auction result emails sent successfully',
+          message: 'Auction result emails sent successfully using Resend',
           winner: {
             email: winnerEmail,
             bid: product.highest_bid
@@ -240,27 +222,16 @@ Deno.serve(async (req) => {
       // No winner - notify seller only
       console.log(`No winner for auction ${productId}, sending no-winner email to ${sellerEmail}`);
       
-      const response = await fetch('https://api.brevo.com/v3/smtp/email', {
-        method: 'POST',
-        headers: {
-          'api-key': brevoApiKey,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          sender: {
-            name: 'AI Exchange',
-            email: 'notifications@ai-exchange.club'
-          },
-          to: [{ email: sellerEmail }],
-          subject: `Your auction for ${product.title} has ended`,
-          htmlContent: getNoWinnerEmailTemplate(product)
-        })
+      const response = await resend.emails.send({
+        from: 'AI Exchange <notifications@ai-exchange.club>',
+        to: [sellerEmail],
+        subject: `Your auction for ${product.title} has ended`,
+        html: getNoWinnerEmailTemplate(product)
       });
 
-      if (!response.ok) {
-        const responseError = await response.json();
-        console.error('Error sending no-winner email:', responseError);
-        throw new Error(`Failed to send no-winner email: ${JSON.stringify(responseError)}`);
+      if (!response || response.error) {
+        console.error('Error sending no-winner email:', response?.error);
+        throw new Error(`Failed to send no-winner email: ${JSON.stringify(response?.error)}`);
       }
 
       // Update product status if needed
@@ -281,7 +252,7 @@ Deno.serve(async (req) => {
       return new Response(
         JSON.stringify({ 
           success: true, 
-          message: 'No-winner auction result email sent successfully'
+          message: 'No-winner auction result email sent successfully using Resend'
         }),
         { 
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },

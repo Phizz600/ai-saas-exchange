@@ -37,7 +37,7 @@ export const AuctionResultEmailTester = () => {
       setResponse(result);
       toast({
         title: "Auction Result Email Sent",
-        description: "The auction result email was triggered successfully",
+        description: "The auction result email was triggered successfully using Resend",
       });
     } catch (err: any) {
       console.error("Error sending auction result email:", err);
@@ -64,7 +64,7 @@ export const AuctionResultEmailTester = () => {
       setResponse(result);
       toast({
         title: "Auctions Processed",
-        description: `Processed ${result.processed || 0} ended auctions successfully`,
+        description: `Processed ${result.processed || 0} ended auctions successfully with Resend`,
       });
     } catch (err: any) {
       console.error("Error processing ended auctions:", err);
@@ -85,7 +85,7 @@ export const AuctionResultEmailTester = () => {
       <CardHeader>
         <CardTitle className="text-lg">Auction Result Email Tester</CardTitle>
         <CardDescription>
-          Send auction result emails to test the notification flow
+          Send auction result emails to test the notification flow with Resend
         </CardDescription>
       </CardHeader>
       
@@ -93,7 +93,7 @@ export const AuctionResultEmailTester = () => {
         <Alert className="bg-blue-50 border-blue-200">
           <InfoIcon className="h-4 w-4 text-blue-500" />
           <AlertDescription className="text-blue-700">
-            These tools help test the auction email notification system. You can either send an email for a specific product
+            These tools help test the auction email notification system using Resend. You can either send an email for a specific product
             or check for all ended auctions.
           </AlertDescription>
         </Alert>
