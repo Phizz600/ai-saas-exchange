@@ -274,6 +274,9 @@ export function BidDepositDialog({
     return null;
   }
 
+  // Make sure bidAmount is a valid number and format it safely
+  const formattedBidAmount = bidAmount ? bidAmount.toLocaleString() : "0";
+
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
       <DialogContent className="sm:max-w-md">
@@ -287,7 +290,7 @@ export function BidDepositDialog({
               <span className="font-medium">Product:</span> {productTitle}
             </p>
             <p className="text-sm text-gray-700">
-              <span className="font-medium">Bid Amount:</span> ${bidAmount.toLocaleString()}
+              <span className="font-medium">Bid Amount:</span> ${formattedBidAmount}
             </p>
           </div>
           

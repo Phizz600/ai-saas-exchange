@@ -203,7 +203,7 @@ export function AuctionSection({ product }: AuctionSectionProps) {
   };
 
   // Calculate the display price - prioritize highest bid if available
-  const displayPrice = highestBid || currentPrice || startingPrice;
+  const displayPrice = highestBid || currentPrice || startingPrice || 0; // Add fallback to 0
 
   return (
     <div className="w-full p-4 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg border border-purple-200">
@@ -255,7 +255,7 @@ export function AuctionSection({ product }: AuctionSectionProps) {
         <div>
           <span className="text-sm font-semibold text-gray-600">Min Price</span>
           <div className="font-medium text-gray-900">
-            ${product.min_price?.toLocaleString()}
+            ${product.min_price?.toLocaleString() || "0"}
           </div>
         </div>
       </div>
