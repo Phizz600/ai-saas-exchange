@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Timer, TrendingDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -30,7 +29,7 @@ export function ProductPricing({ product }: ProductPricingProps) {
   const [timeLeft, setTimeLeft] = useState("");
   const [nextDrop, setNextDrop] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [currentPrice, setCurrentPrice] = useState(product.current_price);
+  const [currentPrice, setCurrentPrice] = useState(product.highest_bid || product.current_price);
   const [highestBid, setHighestBid] = useState(product.highest_bid);
   const [offerDialogOpen, setOfferDialogOpen] = useState(false);
   const { toast } = useToast();
@@ -49,7 +48,8 @@ export function ProductPricing({ product }: ProductPricingProps) {
         },
         (payload: any) => {
           console.log('Product updated:', payload);
-          setCurrentPrice(payload.new.current_price);
+          // Always prioritize highest_bid for current price if it exists
+          setCurrentPrice(payload.new.highest_bid || payload.new.current_price);
           setHighestBid(payload.new.highest_bid);
         }
       )
@@ -122,13 +122,15 @@ export function ProductPricing({ product }: ProductPricingProps) {
     };
 
     calculateTimeLeft();
-    const timer = setInterval(calculateTimeLeft, 60000);
-    return () => clearInterval(timer);
-  }, [product.auction_end_time, product.price_decrement_interval]);
+
+    // Update the initial current price based on highest bid if available
+    setCurrentPrice(product.highest_bid || product.current_price);
+  }, [product.auction_end_time, product.price_decrement_interval, product.highest_bid, product.current_price]);
 
   // Determine the price information to display
   const isAuction = !!product.auction_end_time;
-  const displayPrice = currentPrice || product.price || 0;
+  // Always use highest bid as the displayed price if available
+  const displayPrice = highestBid || currentPrice || product.price || 0;
   const hasActiveBids = !!highestBid;
 
   return (

@@ -51,13 +51,13 @@ serve(async (req) => {
     if (!product.highest_bid || bidAmount > product.highest_bid) {
       console.log(`Updating bid: Current highest: ${product.highest_bid || 'None'}, New bid: ${bidAmount}`);
       
-      // Always set current_price to match the highest bid in Dutch auctions
+      // IMPORTANT: Always set current_price equal to the new highest bid
       const { data, error: updateError } = await supabase
         .from('products')
         .update({
           highest_bid: bidAmount,
           highest_bidder_id: bidderId,
-          current_price: bidAmount  // This ensures current_price always equals the highest bid
+          current_price: bidAmount  // Current price should always match the highest bid
         })
         .eq('id', productId)
         .select();

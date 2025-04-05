@@ -127,8 +127,8 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
     );
   }
 
-  // Determine the effective minimum bid amount
-  const effectiveMinBid = highestBid ? highestBid : currentPrice;
+  // Determine the effective minimum bid amount - prioritize highest bid
+  const effectiveMinBid = highestBid || currentPrice;
 
   return (
     <div className="space-y-3">

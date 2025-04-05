@@ -96,9 +96,11 @@ Deno.serve(async (req) => {
         // Calculate new price (don't go below min_price)
         let newPrice = Math.max(auction.current_price - decrementAmount, auction.min_price);
         
-        // If there's a highest bid, make sure the price doesn't go below it
+        // IMPORTANT: If there's a highest bid, make sure the price doesn't go below it
+        // The highest bid should always take precedence in setting the current price
         if (auction.highest_bid) {
           newPrice = Math.max(newPrice, auction.highest_bid);
+          console.log(`Auction ${auction.id} has highest bid of ${auction.highest_bid}, ensuring price doesn't go below it`);
         }
         
         if (newPrice < auction.current_price) {

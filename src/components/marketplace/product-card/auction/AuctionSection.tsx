@@ -29,7 +29,7 @@ interface AuctionSectionProps {
 export function AuctionSection({ product }: AuctionSectionProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);
-  const [currentPrice, setCurrentPrice] = useState(product.current_price);
+  const [currentPrice, setCurrentPrice] = useState(product.highest_bid || product.current_price);
   const [highestBid, setHighestBid] = useState(product.highest_bid);
   const [showBidForm, setShowBidForm] = useState(false);
   const { toast } = useToast();
@@ -49,12 +49,9 @@ export function AuctionSection({ product }: AuctionSectionProps) {
         },
         (payload: any) => {
           console.log('Product updated:', payload);
-          if (payload.new.current_price !== currentPrice) {
-            setCurrentPrice(payload.new.current_price);
-          }
-          if (payload.new.highest_bid !== highestBid) {
-            setHighestBid(payload.new.highest_bid);
-          }
+          // Always use highest_bid as current_price if it exists
+          setCurrentPrice(payload.new.highest_bid || payload.new.current_price);
+          setHighestBid(payload.new.highest_bid);
         }
       )
       .subscribe();
@@ -62,7 +59,13 @@ export function AuctionSection({ product }: AuctionSectionProps) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [product.id, currentPrice, highestBid]);
+  }, [product.id]);
+
+  // Initialize with the highest bid if available
+  useEffect(() => {
+    setCurrentPrice(product.highest_bid || product.current_price);
+    setHighestBid(product.highest_bid);
+  }, [product.highest_bid, product.current_price]);
 
   const handleShare = async (url: string) => {
     try {
@@ -81,6 +84,9 @@ export function AuctionSection({ product }: AuctionSectionProps) {
       });
     }
   };
+
+  // Calculate the display price - always use the highest bid if available
+  const displayPrice = highestBid || currentPrice;
 
   return (
     <div className="w-full p-4 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg border border-purple-200">
@@ -121,7 +127,7 @@ export function AuctionSection({ product }: AuctionSectionProps) {
         <div>
           <span className="text-sm font-semibold text-gray-600">Current Price</span>
           <div className="text-lg font-bold text-purple-600">
-            ${currentPrice?.toLocaleString()}
+            ${displayPrice?.toLocaleString()}
           </div>
           {highestBid && (
             <div className="text-xs text-emerald-600 font-medium">
@@ -162,7 +168,7 @@ export function AuctionSection({ product }: AuctionSectionProps) {
           <BidForm
             productId={product.id}
             productTitle={product.title || "Product"}
-            currentPrice={currentPrice}
+            currentPrice={displayPrice}
           />
           
           <Button 
