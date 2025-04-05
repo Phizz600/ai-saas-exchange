@@ -1,11 +1,11 @@
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { useState, useEffect } from "react";
 import { useBidForm } from "./hooks/useBidForm";
 import { BidDepositDialog } from "./BidDepositDialog";
-import { Alert, AlertDescription } from "@/components/ui/alert"; 
-import { AlertCircle, CreditCard, ShieldCheck } from "lucide-react";
-import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { BidErrorAlert } from "./components/BidErrorAlert";
+import { PaymentErrorAlert } from "./components/PaymentErrorAlert";
+import { BidSuccessMessage } from "./components/BidSuccessMessage";
+import { BidInputForm } from "./components/BidInputForm";
 
 interface BidFormProps {
   productId: string;
@@ -16,6 +16,7 @@ interface BidFormProps {
 export function BidForm({ productId, productTitle, currentPrice }: BidFormProps) {
   const [highestBid, setHighestBid] = useState<number | null>(null);
   const [isLoadingBids, setIsLoadingBids] = useState(true);
+  const [bidError, setBidError] = useState<string | null>(null);
 
   // Fetch the current highest bid
   useEffect(() => {
@@ -86,8 +87,6 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
     currentPrice: highestBid || currentPrice
   });
 
-  const [bidError, setBidError] = useState<string | null>(null);
-
   const validateAndBid = () => {
     // Clear any previous errors
     setBidError(null);
@@ -110,89 +109,29 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
     handleInitiateBid();
   };
 
+  const clearBidError = () => {
+    if (bidError) setBidError(null);
+  };
+
   if (success) {
-    return (
-      <div className="space-y-4 bg-green-50 p-4 rounded-md">
-        <h3 className="font-medium text-green-800">Bid Successfully Submitted!</h3>
-        <p className="text-sm text-green-700">
-          Your bid has been received and your payment method has been authorized. No charges have been made to your card yet - you'll only be charged if you win this auction.
-        </p>
-        <Button
-          onClick={resetForm}
-          variant="outline"
-          size="sm"
-        >
-          Place Another Bid
-        </Button>
-      </div>
-    );
+    return <BidSuccessMessage resetForm={resetForm} />;
   }
 
-  // Determine the effective minimum bid amount - prioritize highest bid
-  const effectiveMinBid = highestBid || currentPrice;
-
   return (
-    <div className="space-y-3">
-      {bidError && (
-        <Alert variant="destructive" className="mb-2">
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>{bidError}</AlertDescription>
-        </Alert>
-      )}
+    <>
+      <BidErrorAlert bidError={bidError} />
+      <PaymentErrorAlert paymentError={paymentError} />
       
-      {paymentError && (
-        <Alert variant="destructive" className="mb-2">
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>
-            Payment error: {paymentError}. Please try again with a different payment method.
-          </AlertDescription>
-        </Alert>
-      )}
-      
-      <div className="flex flex-col">
-        <label htmlFor="bidAmount" className="text-sm mb-1 font-medium">
-          Your Bid Amount
-        </label>
-        <Input
-          id="bidAmount"
-          type="text"
-          value={bidAmount}
-          onChange={(e) => {
-            handleAmountChange(e);
-            // Clear error when user starts typing
-            if (bidError) setBidError(null);
-          }}
-          placeholder="$0.00"
-          className="font-mono"
-        />
-        {isLoadingBids ? (
-          <p className="text-xs text-gray-500 mt-1">Loading current bid information...</p>
-        ) : (
-          <>
-            {highestBid ? (
-              <p className="text-xs text-gray-500 mt-1">
-                Current highest bid: ${highestBid.toLocaleString()} - Your bid must be higher
-              </p>
-            ) : currentPrice ? (
-              <p className="text-xs text-gray-500 mt-1">
-                Starting price: ${currentPrice.toLocaleString()} - Your bid must be higher
-              </p>
-            ) : null}
-          </>
-        )}
-        <p className="text-xs text-gray-500 mt-1 flex items-center gap-1">
-          <CreditCard className="h-3 w-3" />
-          Your card will be authorized but not charged until you win
-        </p>
-      </div>
-      
-      <Button 
-        onClick={validateAndBid}
-        className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90"
-        disabled={isSubmitting || !bidAmount || isLoadingBids}
-      >
-        {isSubmitting ? "Processing..." : "Place Bid"}
-      </Button>
+      <BidInputForm 
+        bidAmount={bidAmount}
+        handleAmountChange={handleAmountChange}
+        isLoadingBids={isLoadingBids}
+        highestBid={highestBid}
+        currentPrice={currentPrice}
+        isSubmitting={isSubmitting}
+        validateAndBid={validateAndBid}
+        clearBidError={clearBidError}
+      />
 
       <BidDepositDialog
         open={depositDialogOpen}
@@ -203,6 +142,6 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
         productTitle={productTitle}
         clientSecret={paymentClientSecret}
       />
-    </div>
+    </>
   );
 }
