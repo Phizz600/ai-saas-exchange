@@ -93,6 +93,14 @@ function PaymentForm({ onConfirm, onClose }: { onConfirm: (paymentMethodId: stri
         elements,
         confirmParams: {
           return_url: window.location.origin + "/marketplace", // Redirect after payment
+          payment_method_data: {
+            billing_details: {
+              // Add a default country to prevent Stripe from requiring full address
+              address: {
+                country: 'US'
+              }
+            }
+          }
         },
         redirect: "if_required",
       });
