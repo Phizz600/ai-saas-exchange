@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Timer, TrendingDown, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -40,18 +41,22 @@ interface Bid {
 }
 
 export function ProductPricing({ product }: ProductPricingProps) {
+  // Initialize price with current_price or starting_price to avoid flashing
+  const initialPrice = product.highest_bid || product.current_price || product.starting_price || 0;
   const [timeLeft, setTimeLeft] = useState("");
   const [nextDrop, setNextDrop] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [currentPrice, setCurrentPrice] = useState(product.highest_bid || product.current_price);
-  const [highestBid, setHighestBid] = useState(product.highest_bid);
+  const [currentPrice, setCurrentPrice] = useState<number>(initialPrice);
+  const [highestBid, setHighestBid] = useState<number | null>(product.highest_bid || null);
   const [offerDialogOpen, setOfferDialogOpen] = useState(false);
   const [bidHistoryDialogOpen, setBidHistoryDialogOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
   // Function to fetch and verify the highest bid
   const fetchHighestBid = async () => {
     try {
+      setIsLoading(true);
       // Get the latest product data
       const { data: productData, error: productError } = await supabase
         .from('products')
@@ -79,17 +84,19 @@ export function ProductPricing({ product }: ProductPricingProps) {
         if (bidError || !validBid) {
           console.log('Highest bid is not valid (cancelled or unauthorized)');
           setHighestBid(null);
-          setCurrentPrice(productData.current_price || productData.starting_price);
+          setCurrentPrice(productData.current_price || productData.starting_price || 0);
         } else {
           setHighestBid(productData.highest_bid);
           setCurrentPrice(productData.highest_bid);
         }
       } else {
         setHighestBid(null);
-        setCurrentPrice(productData.current_price || productData.starting_price);
+        setCurrentPrice(productData.current_price || productData.starting_price || 0);
       }
+      setIsLoading(false);
     } catch (err) {
       console.error('Error verifying highest bid:', err);
+      setIsLoading(false);
     }
   };
 
@@ -248,15 +255,17 @@ export function ProductPricing({ product }: ProductPricingProps) {
     };
 
     calculateTimeLeft();
-
-    // Update the initial current price based on highest bid if available
-    setCurrentPrice(highestBid || product.current_price);
-  }, [product.auction_end_time, product.price_decrement_interval, highestBid, product.current_price]);
+    
+    // Update the countdown every minute
+    const timer = setInterval(calculateTimeLeft, 60000);
+    
+    return () => clearInterval(timer);
+  }, [product.auction_end_time, product.price_decrement_interval]);
 
   // Determine the price information to display
   const isAuction = !!product.auction_end_time;
   // Always use highest bid as the displayed price if available
-  const displayPrice = highestBid || currentPrice || product.price || 0;
+  const displayPrice = highestBid || currentPrice || 0;
   const hasActiveBids = !!highestBid;
 
   return (
@@ -269,7 +278,11 @@ export function ProductPricing({ product }: ProductPricingProps) {
                 {isAuction ? "Current Price" : "Price"}
               </p>
               <p className="text-3xl font-bold">
-                ${displayPrice.toLocaleString()}
+                {isLoading ? (
+                  <span className="inline-block w-16 h-8 bg-gray-200 animate-pulse rounded"></span>
+                ) : (
+                  `$${displayPrice.toLocaleString()}`
+                )}
               </p>
               {isAuction && (
                 <>
@@ -295,7 +308,7 @@ export function ProductPricing({ product }: ProductPricingProps) {
                 <div className="flex items-center gap-2 text-sm text-gray-600">
                   <TrendingDown className="h-4 w-4" />
                   <span>
-                    Drops ${product.price_decrement?.toLocaleString()}/{product.price_decrement_interval || 'day'}
+                    Drops ${product.price_decrement?.toLocaleString() || 0}/{product.price_decrement_interval || 'day'}
                   </span>
                 </div>
                 <p className="text-sm text-amber-600 mt-1">Next drop in: {nextDrop}</p>
