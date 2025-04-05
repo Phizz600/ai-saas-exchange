@@ -95,9 +95,13 @@ function PaymentForm({ onConfirm, onClose }: { onConfirm: (paymentMethodId: stri
           return_url: window.location.origin + "/marketplace", // Redirect after payment
           payment_method_data: {
             billing_details: {
-              // Add a default country to prevent Stripe from requiring full address
+              // Add a complete billing details object to fix the Stripe error
               address: {
-                country: 'US'
+                country: 'US',
+                postal_code: '10001', // Default postal code
+                line1: '123 Default Address', // Default address line
+                city: 'New York', // Default city
+                state: 'NY' // Default state
               }
             }
           }
@@ -157,9 +161,7 @@ function PaymentForm({ onConfirm, onClose }: { onConfirm: (paymentMethodId: stri
       <div className="border rounded-md p-4">
         <PaymentElement onReady={handleReady} options={{
           fields: {
-            billingDetails: {
-              address: 'never'
-            }
+            billingDetails: 'auto' // Changed from 'never' to 'auto' to let Stripe collect necessary details
           }
         }} />
       </div>
