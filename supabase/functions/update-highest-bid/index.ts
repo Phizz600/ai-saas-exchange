@@ -33,7 +33,7 @@ serve(async (req) => {
     // Get current product information
     const { data: product, error: productError } = await supabase
       .from('products')
-      .select('highest_bid, current_price')
+      .select('highest_bid, current_price, starting_price, min_price, price_decrement, price_decrement_interval, created_at')
       .eq('id', productId)
       .single();
     
@@ -46,12 +46,13 @@ serve(async (req) => {
     
     // Only update if the new bid is higher than the current highest bid
     if (!product.highest_bid || bidAmount > product.highest_bid) {
+      // The current_price should be the maximum of the auction's calculated price and the highest bid
       const { error: updateError } = await supabase
         .from('products')
         .update({
           highest_bid: bidAmount,
           highest_bidder_id: bidderId,
-          current_price: bidAmount
+          current_price: bidAmount  // Always set current_price to match the highest bid
         })
         .eq('id', productId);
       

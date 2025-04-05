@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Timer, TrendingDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -123,8 +124,10 @@ export function ProductPricing({ product }: ProductPricingProps) {
     return () => clearInterval(timer);
   }, [product.auction_end_time, product.price_decrement_interval]);
 
-  // Determine the current price to display
-  const displayPrice = currentPrice || product.starting_price || product.price || 0;
+  // Determine the price information to display
+  const isAuction = !!product.auction_end_time;
+  const displayPrice = currentPrice || product.highest_bid || product.starting_price || product.price || 0;
+  const hasActiveBids = !!product.highest_bid;
 
   return (
     <Card className="p-6">
@@ -132,14 +135,25 @@ export function ProductPricing({ product }: ProductPricingProps) {
         <div className="space-y-4">
           <div className="flex justify-between items-center">
             <div>
-              <p className="text-sm text-gray-600">Current Price</p>
+              <p className="text-sm text-gray-600">
+                {isAuction ? "Current Price" : "Price"}
+              </p>
               <p className="text-3xl font-bold">
                 ${displayPrice.toLocaleString()}
               </p>
-              {product.min_price && (
-                <p className="text-sm text-gray-600 mt-1">
-                  Min Price: ${product.min_price.toLocaleString()}
-                </p>
+              {isAuction && (
+                <>
+                  {hasActiveBids && (
+                    <p className="text-sm text-emerald-600 font-medium">
+                      Current highest bid: ${product.highest_bid?.toLocaleString()}
+                    </p>
+                  )}
+                  {product.min_price && (
+                    <p className="text-sm text-gray-600 mt-1">
+                      Min Price: ${product.min_price.toLocaleString()}
+                    </p>
+                  )}
+                </>
               )}
             </div>
             {product.auction_end_time && (
@@ -158,6 +172,15 @@ export function ProductPricing({ product }: ProductPricingProps) {
               </div>
             )}
           </div>
+
+          {isAuction && (
+            <div className="bg-blue-50 p-3 rounded-md text-sm text-blue-700 mt-3">
+              <p>
+                <span className="font-medium">How Dutch Auctions Work:</span> The price starts high and 
+                decreases over time until someone places a bid. The highest bid always sets the current price.
+              </p>
+            </div>
+          )}
 
           {recentBids && recentBids.length > 0 && (
             <div className="space-y-2">

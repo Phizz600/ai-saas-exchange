@@ -22,6 +22,7 @@ interface AuctionSectionProps {
     min_price?: number;
     price_decrement?: number;
     auction_end_time?: string;
+    highest_bid?: number;
   };
 }
 
@@ -29,6 +30,7 @@ export function AuctionSection({ product }: AuctionSectionProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);
   const [currentPrice, setCurrentPrice] = useState(product.current_price);
+  const [highestBid, setHighestBid] = useState(product.highest_bid);
   const [showBidForm, setShowBidForm] = useState(false);
   const { toast } = useToast();
   const auctionEnded = product.auction_end_time && new Date(product.auction_end_time) < new Date();
@@ -49,6 +51,9 @@ export function AuctionSection({ product }: AuctionSectionProps) {
           if (payload.new.current_price !== currentPrice) {
             setCurrentPrice(payload.new.current_price);
           }
+          if (payload.new.highest_bid !== highestBid) {
+            setHighestBid(payload.new.highest_bid);
+          }
         }
       )
       .subscribe();
@@ -56,7 +61,7 @@ export function AuctionSection({ product }: AuctionSectionProps) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [product.id]);
+  }, [product.id, currentPrice, highestBid]);
 
   const handleShare = async (url: string) => {
     try {
@@ -75,6 +80,10 @@ export function AuctionSection({ product }: AuctionSectionProps) {
       });
     }
   };
+
+  // Determine the display price (will be the highest of the Dutch auction price or the highest bid)
+  const displayPrice = currentPrice;
+  const hasActiveBids = !!highestBid;
 
   return (
     <div className="w-full p-4 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg border border-purple-200">
@@ -115,8 +124,13 @@ export function AuctionSection({ product }: AuctionSectionProps) {
         <div>
           <span className="text-sm font-semibold text-gray-600">Current Price</span>
           <div className="text-lg font-bold text-purple-600">
-            ${currentPrice?.toLocaleString()}
+            ${displayPrice?.toLocaleString()}
           </div>
+          {hasActiveBids && (
+            <div className="text-xs text-emerald-600 font-medium">
+              Highest bid: ${highestBid?.toLocaleString()}
+            </div>
+          )}
         </div>
         <div>
           <span className="text-sm font-semibold text-gray-600">Min Price</span>
@@ -151,7 +165,7 @@ export function AuctionSection({ product }: AuctionSectionProps) {
           <BidForm
             productId={product.id}
             productTitle={product.title || "Product"}
-            currentPrice={currentPrice}
+            currentPrice={displayPrice}
           />
           
           <Button 

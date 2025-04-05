@@ -1,4 +1,3 @@
-
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useBidForm } from "./hooks/useBidForm";
@@ -25,7 +24,7 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
         setIsLoadingBids(true);
         const { data: product, error } = await supabase
           .from('products')
-          .select('highest_bid')
+          .select('highest_bid, current_price')
           .eq('id', productId)
           .single();
 
@@ -34,7 +33,30 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
           return;
         }
 
+        // Set the highest bid from the database value
         setHighestBid(product.highest_bid);
+        
+        // Subscribe to real-time product updates to keep the price current
+        const channel = supabase
+          .channel('product-price-updates')
+          .on(
+            'postgres_changes',
+            {
+              event: 'UPDATE',
+              schema: 'public',
+              table: 'products',
+              filter: `id=eq.${productId}`
+            },
+            (payload: any) => {
+              console.log('Product updated:', payload);
+              setHighestBid(payload.new.highest_bid);
+            }
+          )
+          .subscribe();
+
+        return () => {
+          supabase.removeChannel(channel);
+        };
       } catch (err) {
         console.error('Error fetching bid data:', err);
       } finally {
@@ -105,6 +127,9 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
     );
   }
 
+  // Determine the effective minimum bid amount
+  const effectiveMinBid = highestBid ? highestBid : currentPrice;
+
   return (
     <div className="space-y-3">
       {bidError && (
@@ -140,7 +165,7 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
               </p>
             ) : currentPrice ? (
               <p className="text-xs text-gray-500 mt-1">
-                Current price: ${currentPrice.toLocaleString()} - Your bid must be higher
+                Starting price: ${currentPrice.toLocaleString()} - Your bid must be higher
               </p>
             ) : null}
           </>
