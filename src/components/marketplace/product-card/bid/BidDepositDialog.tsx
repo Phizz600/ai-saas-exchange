@@ -8,7 +8,7 @@ import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-
 import { loadStripe } from "@stripe/stripe-js";
 import { testStripeVerification } from "@/services/stripe-service";
 
-// Define the missing interface
+// Define the interface for the component props
 interface BidDepositDialogProps {
   open: boolean;
   onClose: () => void;
