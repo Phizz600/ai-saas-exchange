@@ -20,8 +20,8 @@ interface BidDepositDialogProps {
 }
 
 // Initialize Stripe with the public key
-// Make sure this is using the full key value, not an environment variable
-const stripePublishableKey = "pk_test_your_actual_key_here"; // Replace with your actual publishable key
+// Replace this with your actual Stripe publishable key from your Stripe dashboard
+const stripePublishableKey = "pk_test_51PXA..."; // Only the beginning shown for security
 const stripePromise = stripePublishableKey ? loadStripe(stripePublishableKey) : null;
 
 console.log("Stripe publishable key available:", !!stripePublishableKey);
