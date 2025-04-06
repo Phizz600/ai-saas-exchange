@@ -2,8 +2,8 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, InfoIcon } from "lucide-react";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Loader2, InfoIcon, AlertCircle, CheckCircle2 } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -83,7 +83,7 @@ export const AuctionResultEmailTester = () => {
   return (
     <Card className="shadow-md">
       <CardHeader>
-        <CardTitle className="exo-2-header text-lg bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-transparent bg-clip-text">Auction Result Email Tester</CardTitle>
+        <CardTitle className="exo-2-header text-xl bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-transparent bg-clip-text">Auction Email Tester</CardTitle>
         <CardDescription>
           Send auction result emails to test the notification flow with Resend
         </CardDescription>
@@ -113,6 +113,8 @@ export const AuctionResultEmailTester = () => {
         
         {error && (
           <Alert variant="destructive" className="mt-4">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Error</AlertTitle>
             <AlertDescription>
               {error}
             </AlertDescription>
@@ -121,6 +123,8 @@ export const AuctionResultEmailTester = () => {
         
         {response && (
           <Alert className="mt-4 bg-green-50 border-green-200">
+            <CheckCircle2 className="h-4 w-4 text-green-500" />
+            <AlertTitle className="text-green-700">Success</AlertTitle>
             <AlertDescription className="text-green-700">
               <p className="font-semibold">Response:</p>
               <pre className="mt-2 text-xs overflow-auto bg-green-100 p-2 rounded">

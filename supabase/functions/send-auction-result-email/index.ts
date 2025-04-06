@@ -99,7 +99,7 @@ Deno.serve(async (req) => {
 
     console.log(`Processing auction result email for product ${productId}, mode: ${mode || 'auto'}`);
 
-    // Get product details - Let's fix the query to properly fetch the product and seller email
+    // Get product details - Using a simpler query to avoid join issues
     const { data: product, error: productError } = await supabase
       .from('products')
       .select('*')
