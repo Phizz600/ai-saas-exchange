@@ -99,16 +99,28 @@ Deno.serve(async (req) => {
 
     console.log(`Processing auction result email for product ${productId}, mode: ${mode || 'auto'}`);
 
-    // Get product details - Fixed the query syntax here
+    // Get product details - Let's fix the query to properly fetch the product and seller email
     const { data: product, error: productError } = await supabase
       .from('products')
-      .select('*, seller:profiles!products_seller_id_fkey(email, full_name)')
+      .select('*')
       .eq('id', productId)
       .single();
 
     if (productError || !product) {
       console.error('Error fetching product:', productError);
       throw new Error(`Product not found: ${productError?.message || 'Unknown error'}`);
+    }
+
+    // Separately fetch the seller's email
+    const { data: seller, error: sellerError } = await supabase
+      .from('profiles')
+      .select('email, full_name')
+      .eq('id', product.seller_id)
+      .single();
+
+    if (sellerError || !seller || !seller.email) {
+      console.error('Error fetching seller:', sellerError);
+      throw new Error(`Seller not found: ${sellerError?.message || 'Unknown error'}`);
     }
 
     // Check if product is an auction and has ended
@@ -137,7 +149,7 @@ Deno.serve(async (req) => {
     }
 
     // Get seller email
-    const sellerEmail = product.seller?.email;
+    const sellerEmail = seller.email;
     if (!sellerEmail) {
       throw new Error('Seller email not found');
     }
