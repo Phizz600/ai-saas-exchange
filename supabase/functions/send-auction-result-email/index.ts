@@ -99,10 +99,10 @@ Deno.serve(async (req) => {
 
     console.log(`Processing auction result email for product ${productId}, mode: ${mode || 'auto'}`);
 
-    // Get product details
+    // Get product details - Fixed the query syntax here
     const { data: product, error: productError } = await supabase
       .from('products')
-      .select('*, seller:seller_id(email:auth.users(email), full_name)')
+      .select('*, seller:profiles!products_seller_id_fkey(email, full_name)')
       .eq('id', productId)
       .single();
 
@@ -137,7 +137,7 @@ Deno.serve(async (req) => {
     }
 
     // Get seller email
-    const sellerEmail = product.seller?.email?.email;
+    const sellerEmail = product.seller?.email;
     if (!sellerEmail) {
       throw new Error('Seller email not found');
     }
@@ -147,7 +147,7 @@ Deno.serve(async (req) => {
       // There's a winner - get winner details
       const { data: winner, error: winnerError } = await supabase
         .from('profiles')
-        .select('*, auth_user:id(email:auth.users(email))')
+        .select('email')
         .eq('id', product.highest_bidder_id)
         .single();
 
@@ -156,7 +156,7 @@ Deno.serve(async (req) => {
         throw new Error(`Winner not found: ${winnerError?.message || 'Unknown error'}`);
       }
 
-      const winnerEmail = winner.auth_user?.email?.email;
+      const winnerEmail = winner.email;
       if (!winnerEmail) {
         throw new Error('Winner email not found');
       }

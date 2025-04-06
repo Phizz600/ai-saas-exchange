@@ -83,7 +83,7 @@ export const AuctionResultEmailTester = () => {
   return (
     <Card className="shadow-md">
       <CardHeader>
-        <CardTitle className="text-lg">Auction Result Email Tester</CardTitle>
+        <CardTitle className="exo-2-title text-lg bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-transparent bg-clip-text">Auction Result Email Tester</CardTitle>
         <CardDescription>
           Send auction result emails to test the notification flow with Resend
         </CardDescription>
