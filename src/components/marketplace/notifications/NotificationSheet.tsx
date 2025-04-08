@@ -1,4 +1,3 @@
-
 import { Bell } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -43,14 +42,7 @@ export const NotificationSheet = ({
   };
   return <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetTrigger asChild>
-        <Button variant="ghost" size="icon" className="relative">
-          <Bell className="h-5 w-5" />
-          {unreadCount > 0 && (
-            <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-[0.65rem] text-white font-medium">
-              {unreadCount}
-            </span>
-          )}
-        </Button>
+        
       </SheetTrigger>
       <SheetContent side="right" className="w-[400px] sm:w-[540px] p-0">
         <SheetHeader className="p-6 border-b border-border">
