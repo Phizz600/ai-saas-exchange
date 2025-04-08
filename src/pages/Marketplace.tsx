@@ -11,19 +11,11 @@ import { Timer, TrendingDown } from "lucide-react";
 export const Marketplace = () => {
   console.log('Marketplace page component rendered');
   const [activeTab, setActiveTab] = useState("all");
-  const { currentItems, isLoading } = useMarketplaceProducts({
-    searchQuery: "",
-    industryFilter: "all",
-    stageFilter: "all",
-    priceFilter: "all",
-    timeFilter: "all",
-    sortBy: "recent",
-    currentPage: 1
-  });
+  const { products, isLoading } = useMarketplaceProducts();
   
   // Filter products by auction vs non-auction
-  const auctionProducts = currentItems?.filter(product => !!product.auction_end_time) || [];
-  const regularProducts = currentItems?.filter(product => !product.auction_end_time) || [];
+  const auctionProducts = products?.filter(product => !!product.auction_end_time) || [];
+  const regularProducts = products?.filter(product => !product.auction_end_time) || [];
 
   return (
     <div className="bg-gray-50 min-h-screen flex flex-col">
@@ -57,7 +49,7 @@ export const Marketplace = () => {
             
             <TabsContent value="all" className="mt-0">
               <ProductGrid 
-                products={currentItems || []} 
+                products={products || []} 
                 isLoading={isLoading}
               />
             </TabsContent>
