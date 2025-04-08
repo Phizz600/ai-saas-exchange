@@ -138,9 +138,20 @@ export const AuctionAnalytics = ({ productId }: AuctionAnalyticsProps) => {
         console.error('Error fetching price history:', priceHistoryError);
       }
 
+      // We need to transform the data to match our interfaces
+      const transformedBids = bids ? bids.map((bid: any) => ({
+        id: bid.id,
+        amount: bid.amount,
+        created_at: bid.created_at,
+        status: bid.status,
+        payment_status: bid.payment_status,
+        bidder_id: bid.bidder_id,
+        bidder: bid.bidder ? { full_name: bid.bidder.full_name } : null
+      })) : [];
+
       return {
         product,
-        bids: bids as BidData[],
+        bids: transformedBids as BidData[],
         analytics: analytics as AnalyticsData[],
         priceHistory: (priceHistory || []) as PriceHistoryData[]
       };
@@ -348,7 +359,7 @@ export const AuctionAnalytics = ({ productId }: AuctionAnalyticsProps) => {
             Views & Engagement
           </TabsTrigger>
           <TabsTrigger value="price" className="flex items-center gap-2">
-            {/* Use the LineChart from recharts by importing it with a different name */}
+            {/* Use an SVG for the chart icon instead of the LineChart component */}
             <svg className="h-4 w-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M3 3v18h18"></path>
               <path d="m19 9-5 5-4-4-3 3"></path>
