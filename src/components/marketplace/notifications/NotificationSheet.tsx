@@ -1,18 +1,9 @@
-
 import { Bell } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Database } from "@/integrations/supabase/types";
 import { Button } from "@/components/ui/button";
-
 type Notification = Database['public']['Tables']['notifications']['Row'];
-
 interface NotificationSheetProps {
   notifications: Notification[];
   unreadCount: number;
@@ -20,10 +11,9 @@ interface NotificationSheetProps {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
 }
-
-export const NotificationSheet = ({ 
-  notifications = [], 
-  unreadCount = 0, 
+export const NotificationSheet = ({
+  notifications = [],
+  unreadCount = 0,
   onMarkAsRead,
   open,
   onOpenChange
@@ -31,7 +21,6 @@ export const NotificationSheet = ({
   // Helper function to get appropriate background color based on notification type
   const getNotificationBgColor = (type: string, read: boolean | null) => {
     if (read) return 'bg-background';
-    
     switch (type) {
       case 'auction_ending_soon':
         return 'bg-amber-50';
@@ -51,13 +40,9 @@ export const NotificationSheet = ({
         return 'bg-[#8B5CF6]/5';
     }
   };
-
-  return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
+  return <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetTrigger asChild>
-        <Button variant="ghost" size="icon" className="relative p-2">
-          <Bell className="h-5 w-5 text-[#0EA4E9]" />
-        </Button>
+        
       </SheetTrigger>
       <SheetContent side="right" className="w-[400px] sm:w-[540px] p-0">
         <SheetHeader className="p-6 border-b border-border">
@@ -65,8 +50,7 @@ export const NotificationSheet = ({
         </SheetHeader>
         <ScrollArea className="h-[calc(100vh-85px)]">
           <div className="p-6">
-            {(!notifications || notifications.length === 0) ? (
-              <div className="flex flex-col items-center justify-center py-8 text-center">
+            {!notifications || notifications.length === 0 ? <div className="flex flex-col items-center justify-center py-8 text-center">
                 <Bell className="h-12 w-12 text-muted-foreground/50 mb-4" />
                 <p className="text-lg font-medium text-muted-foreground">
                   No notifications yet
@@ -74,17 +58,8 @@ export const NotificationSheet = ({
                 <p className="text-sm text-muted-foreground/70">
                   When you get notifications, they'll show up here
                 </p>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {notifications.map((notification) => (
-                  <div
-                    key={notification.id}
-                    className={`p-4 rounded-lg border transition-colors cursor-pointer hover:bg-accent ${
-                      getNotificationBgColor(notification.type, notification.read)
-                    }`}
-                    onClick={() => onMarkAsRead(notification.id)}
-                  >
+              </div> : <div className="space-y-4">
+                {notifications.map(notification => <div key={notification.id} className={`p-4 rounded-lg border transition-colors cursor-pointer hover:bg-accent ${getNotificationBgColor(notification.type, notification.read)}`} onClick={() => onMarkAsRead(notification.id)}>
                     <h4 className="font-semibold text-black hover:text-white transition-colors">
                       {notification.title}
                     </h4>
@@ -94,13 +69,10 @@ export const NotificationSheet = ({
                     <span className="text-xs text-muted-foreground/70 mt-2 block">
                       {new Date(notification.created_at).toLocaleDateString()}
                     </span>
-                  </div>
-                ))}
-              </div>
-            )}
+                  </div>)}
+              </div>}
           </div>
         </ScrollArea>
       </SheetContent>
-    </Sheet>
-  );
+    </Sheet>;
 };
