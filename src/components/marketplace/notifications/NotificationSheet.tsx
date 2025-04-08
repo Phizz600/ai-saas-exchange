@@ -1,3 +1,4 @@
+
 import { Bell } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -5,8 +6,10 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
+  SheetTrigger,
 } from "@/components/ui/sheet";
 import { Database } from "@/integrations/supabase/types";
+import { Button } from "@/components/ui/button";
 
 type Notification = Database['public']['Tables']['notifications']['Row'];
 
@@ -36,6 +39,8 @@ export const NotificationSheet = ({
         return 'bg-blue-50';
       case 'new_bid':
         return 'bg-green-50';
+      case 'outbid':
+        return 'bg-red-50';
       case 'product_saved':
         return 'bg-purple-50';
       case 'product_liked':
@@ -49,9 +54,14 @@ export const NotificationSheet = ({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetTrigger asChild>
+        <Button variant="ghost" size="icon" className="relative p-2">
+          <Bell className="h-5 w-5 text-[#0EA4E9]" />
+        </Button>
+      </SheetTrigger>
       <SheetContent side="right" className="w-[400px] sm:w-[540px] p-0">
         <SheetHeader className="p-6 border-b border-border">
-          <SheetTitle className="text-xl font-semibold">Notifications</SheetTitle>
+          <SheetTitle className="text-xl font-semibold exo-2-header">Notifications</SheetTitle>
         </SheetHeader>
         <ScrollArea className="h-[calc(100vh-85px)]">
           <div className="p-6">

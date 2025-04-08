@@ -1,6 +1,8 @@
 
 import { SearchFilters } from "@/components/marketplace/SearchFilters";
 import { NotificationSheet } from "./notifications/NotificationSheet";
+import { Bell } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 interface MarketplaceHeaderProps {
   searchQuery: string;
@@ -69,11 +71,20 @@ export const MarketplaceHeader = ({
         setShowBuyNowOnly={setShowBuyNowOnly}
       />
 
-      <NotificationSheet 
-        notifications={notifications}
-        unreadCount={unreadCount}
-        onMarkAsRead={onMarkAsRead}
-      />
+      <div className="relative">
+        <NotificationSheet 
+          notifications={notifications}
+          unreadCount={unreadCount}
+          onMarkAsRead={onMarkAsRead}
+        />
+        {unreadCount > 0 && (
+          <Badge 
+            className="absolute -top-1 -right-1 flex items-center justify-center h-5 w-5 p-0 rounded-full bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white text-xs font-bold"
+          >
+            {unreadCount}
+          </Badge>
+        )}
+      </div>
     </div>
   );
 };

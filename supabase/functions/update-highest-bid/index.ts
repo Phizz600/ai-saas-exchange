@@ -35,7 +35,7 @@ serve(async (req) => {
     // Get current product information
     const { data: product, error: productError } = await supabase
       .from('products')
-      .select('highest_bid, current_price, starting_price, min_price, price_decrement, price_decrement_interval, created_at')
+      .select('highest_bid, current_price, starting_price, min_price, price_decrement, price_decrement_interval, created_at, title, highest_bidder_id')
       .eq('id', productId)
       .single();
     
@@ -112,6 +112,29 @@ serve(async (req) => {
     // Only update if this is truly the highest bid
     if (!product.highest_bid || bidAmount > product.highest_bid) {
       console.log(`Updating product with new highest bid: Current highest: ${product.highest_bid || 'None'}, New bid: ${bidAmount}`);
+      
+      // If there's a previous highest bidder, notify them that they've been outbid
+      if (product.highest_bidder_id && product.highest_bidder_id !== bidderId) {
+        console.log(`Creating outbid notification for previous bidder: ${product.highest_bidder_id}`);
+        
+        // Create notification for outbid user
+        const { error: notificationError } = await supabase
+          .from('notifications')
+          .insert({
+            user_id: product.highest_bidder_id,
+            title: 'You\'ve Been Outbid!',
+            message: `Someone has placed a higher bid on ${product.title}. Your bid of $${product.highest_bid.toLocaleString()} has been surpassed.`,
+            type: 'outbid',
+            related_product_id: productId
+          });
+          
+        if (notificationError) {
+          console.error(`Error creating outbid notification: ${notificationError.message}`);
+          // We don't want to block the bid update if notification creation fails
+        } else {
+          console.log(`Outbid notification created successfully for user ${product.highest_bidder_id}`);
+        }
+      }
       
       // IMPORTANT: Always set current_price equal to the new highest bid
       const { data, error: updateError } = await supabase
