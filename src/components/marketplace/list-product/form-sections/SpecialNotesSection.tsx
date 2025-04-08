@@ -101,7 +101,7 @@ export function SpecialNotesSection() {
               className="flex-shrink-0"
               variant="secondary"
             >
-              <PlusCircle className="h-5 w-5 mr-1 text-[#8B5CF6]" /> Add
+              <PlusCircle className="h-5 w-5 mr-1 text-white" /> Add
             </Button>
           </div>
           
