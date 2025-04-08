@@ -3,26 +3,26 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
 interface UseMarketplaceProductsProps {
-  searchQuery: string;
-  industryFilter: string;
-  stageFilter: string;
-  priceFilter: string;
-  timeFilter: string;
-  sortBy: string;
-  currentPage: number;
+  searchQuery?: string;
+  industryFilter?: string;
+  stageFilter?: string;
+  priceFilter?: string;
+  timeFilter?: string;
+  sortBy?: string;
+  currentPage?: number;
   showVerifiedOnly?: boolean;
 }
 
 export const useMarketplaceProducts = ({
-  searchQuery,
-  industryFilter,
-  stageFilter,
-  priceFilter,
-  timeFilter,
-  sortBy,
-  currentPage,
+  searchQuery = "",
+  industryFilter = "all",
+  stageFilter = "all",
+  priceFilter = "all",
+  timeFilter = "all",
+  sortBy = "recent",
+  currentPage = 1,
   showVerifiedOnly = false,
-}: UseMarketplaceProductsProps) => {
+}: UseMarketplaceProductsProps = {}) => {
   const itemsPerPage = 6;
 
   const fetchProducts = async () => {

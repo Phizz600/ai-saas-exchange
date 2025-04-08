@@ -11,7 +11,7 @@ import { Timer, TrendingDown } from "lucide-react";
 export const Marketplace = () => {
   console.log('Marketplace page component rendered');
   const [activeTab, setActiveTab] = useState("all");
-  const { products, isLoading } = useMarketplaceProducts();
+  const { currentItems: products, isLoading } = useMarketplaceProducts();
   
   // Filter products by auction vs non-auction
   const auctionProducts = products?.filter(product => !!product.auction_end_time) || [];
