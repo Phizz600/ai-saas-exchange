@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Timer, TrendingDown, ChevronDown, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -12,7 +11,6 @@ import { BidForm } from "@/components/marketplace/product-card/bid/BidForm";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { sendAuctionResultEmail } from "@/integrations/supabase/functions";
-
 interface ProductPricingProps {
   product: {
     id: string;
@@ -30,7 +28,6 @@ interface ProductPricingProps {
     status?: string;
   };
 }
-
 interface Bid {
   id: string;
   amount: number;
@@ -41,8 +38,9 @@ interface Bid {
     full_name: string | null;
   };
 }
-
-export function ProductPricing({ product }: ProductPricingProps) {
+export function ProductPricing({
+  product
+}: ProductPricingProps) {
   // Initialize price with current_price or starting_price to avoid flashing
   const initialPrice = product.highest_bid || product.current_price || product.starting_price || 0;
   const [timeLeft, setTimeLeft] = useState("");
@@ -54,36 +52,29 @@ export function ProductPricing({ product }: ProductPricingProps) {
   const [bidHistoryDialogOpen, setBidHistoryDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isSendingEmail, setIsSendingEmail] = useState(false);
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
 
   // Function to fetch and verify the highest bid
   const fetchHighestBid = async () => {
     try {
       setIsLoading(true);
       // Get the latest product data
-      const { data: productData, error: productError } = await supabase
-        .from('products')
-        .select('highest_bid, highest_bidder_id, current_price, starting_price')
-        .eq('id', product.id)
-        .single();
-        
+      const {
+        data: productData,
+        error: productError
+      } = await supabase.from('products').select('highest_bid, highest_bidder_id, current_price, starting_price').eq('id', product.id).single();
       if (productError) {
         console.error('Error fetching product:', productError);
         return;
       }
-      
       if (productData.highest_bid && productData.highest_bidder_id) {
         // Verify that the highest bid is still valid
-        const { data: validBid, error: bidError } = await supabase
-          .from('bids')
-          .select('amount')
-          .eq('product_id', product.id)
-          .eq('bidder_id', productData.highest_bidder_id)
-          .eq('amount', productData.highest_bid)
-          .eq('status', 'active')
-          .eq('payment_status', 'authorized')
-          .single();
-          
+        const {
+          data: validBid,
+          error: bidError
+        } = await supabase.from('bids').select('amount').eq('product_id', product.id).eq('bidder_id', productData.highest_bidder_id).eq('amount', productData.highest_bid).eq('status', 'active').eq('payment_status', 'authorized').single();
         if (bidError || !validBid) {
           console.log('Highest bid is not valid (cancelled or unauthorized)');
           setHighestBid(null);
@@ -110,7 +101,7 @@ export function ProductPricing({ product }: ProductPricingProps) {
       const result = await sendAuctionResultEmail(product.id);
       toast({
         title: "Email sent successfully",
-        description: "The auction result email has been sent to all participants.",
+        description: "The auction result email has been sent to all participants."
       });
       console.log("Sent auction result email:", result);
     } catch (error) {
@@ -118,7 +109,7 @@ export function ProductPricing({ product }: ProductPricingProps) {
       toast({
         title: "Error sending email",
         description: "Failed to send the auction result email. Please try again.",
-        variant: "destructive",
+        variant: "destructive"
       });
     } finally {
       setIsSendingEmail(false);
@@ -128,57 +119,40 @@ export function ProductPricing({ product }: ProductPricingProps) {
   // Subscribe to real-time price updates
   useEffect(() => {
     let isMounted = true;
-    
+
     // Initial fetch
     fetchHighestBid();
-    
-    const channel = supabase
-      .channel('product-price-updates')
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'products',
-          filter: `id=eq.${product.id}`
-        },
-        async (payload: any) => {
-          console.log('Product updated:', payload);
-          
-          if (isMounted) {
-            // Re-fetch and validate the highest bid
-            await fetchHighestBid();
-          }
-        }
-      )
-      .subscribe();
-      
-    // Listen for bid status changes
-    const bidChannel = supabase
-      .channel('bid-status-updates')
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'bids',
-          filter: `product_id=eq.${product.id}`
-        },
-        async (payload: any) => {
-          console.log('Bid updated:', payload);
-          
-          // If a bid was cancelled or payment status changed
-          if (payload.new.status === 'cancelled' || payload.new.payment_status === 'cancelled') {
-            if (isMounted) {
-              console.log('Bid cancelled, refreshing highest bid');
-              await fetchHighestBid();
-              refetchBids();
-            }
-          }
-        }
-      )
-      .subscribe();
+    const channel = supabase.channel('product-price-updates').on('postgres_changes', {
+      event: 'UPDATE',
+      schema: 'public',
+      table: 'products',
+      filter: `id=eq.${product.id}`
+    }, async (payload: any) => {
+      console.log('Product updated:', payload);
+      if (isMounted) {
+        // Re-fetch and validate the highest bid
+        await fetchHighestBid();
+      }
+    }).subscribe();
 
+    // Listen for bid status changes
+    const bidChannel = supabase.channel('bid-status-updates').on('postgres_changes', {
+      event: 'UPDATE',
+      schema: 'public',
+      table: 'bids',
+      filter: `product_id=eq.${product.id}`
+    }, async (payload: any) => {
+      console.log('Bid updated:', payload);
+
+      // If a bid was cancelled or payment status changed
+      if (payload.new.status === 'cancelled' || payload.new.payment_status === 'cancelled') {
+        if (isMounted) {
+          console.log('Bid cancelled, refreshing highest bid');
+          await fetchHighestBid();
+          refetchBids();
+        }
+      }
+    }).subscribe();
     return () => {
       isMounted = false;
       supabase.removeChannel(channel);
@@ -187,52 +161,54 @@ export function ProductPricing({ product }: ProductPricingProps) {
   }, [product.id]);
 
   // Fetch recent bids with bidder information - ONLY authorized and active bids
-  const { data: recentBids, refetch: refetchBids } = useQuery({
+  const {
+    data: recentBids,
+    refetch: refetchBids
+  } = useQuery({
     queryKey: ['recent-bids', product.id],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('bids')
-        .select(`
+      const {
+        data,
+        error
+      } = await supabase.from('bids').select(`
           *,
           bidder:profiles!bids_bidder_id_fkey(full_name)
-        `)
-        .eq('product_id', product.id)
-        .eq('payment_status', 'authorized')  // Only fetch authorized bids
-        .eq('status', 'active')              // Only active bids
-        .gte('created_at', new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString())
-        .order('created_at', { ascending: false });
-
+        `).eq('product_id', product.id).eq('payment_status', 'authorized') // Only fetch authorized bids
+      .eq('status', 'active') // Only active bids
+      .gte('created_at', new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString()).order('created_at', {
+        ascending: false
+      });
       if (error) throw error;
       return data;
-    },
+    }
   });
 
   // Fetch all bids for the full history - ONLY authorized and active bids
-  const { data: allBids } = useQuery({
+  const {
+    data: allBids
+  } = useQuery({
     queryKey: ['all-bids', product.id],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('bids')
-        .select(`
+      const {
+        data,
+        error
+      } = await supabase.from('bids').select(`
           *,
           bidder:profiles!bids_bidder_id_fkey(full_name)
-        `)
-        .eq('product_id', product.id)
-        .eq('payment_status', 'authorized')  // Only fetch authorized bids
-        .eq('status', 'active')              // Only active bids
-        .order('created_at', { ascending: false });
-
+        `).eq('product_id', product.id).eq('payment_status', 'authorized') // Only fetch authorized bids
+      .eq('status', 'active') // Only active bids
+      .order('created_at', {
+        ascending: false
+      });
       if (error) throw error;
       return data;
-    },
+    }
   });
-
   const formatBidderName = (fullName: string | null) => {
     if (!fullName) return "Anonymous";
     const initial = fullName.charAt(0).toUpperCase();
     return `${initial}${'*'.repeat(6)}`;
   };
-
   const formatTimeAgo = (timestamp: string) => {
     const minutes = Math.floor((Date.now() - new Date(timestamp).getTime()) / 60000);
     if (minutes < 60) return `${minutes}m ago`;
@@ -240,7 +216,6 @@ export function ProductPricing({ product }: ProductPricingProps) {
     if (hours < 24) return `${hours}h ago`;
     return `${Math.floor(hours / 24)}d ago`;
   };
-
   const formatDate = (timestamp: string) => {
     return new Date(timestamp).toLocaleString('en-US', {
       month: 'short',
@@ -250,24 +225,19 @@ export function ProductPricing({ product }: ProductPricingProps) {
       minute: '2-digit'
     });
   };
-
   useEffect(() => {
     const calculateTimeLeft = () => {
       if (!product.auction_end_time) return;
-
       const now = new Date().getTime();
       const endTime = new Date(product.auction_end_time).getTime();
       const difference = endTime - now;
-
       if (difference <= 0) {
         setTimeLeft("Auction ended");
         return;
       }
-
       const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-
+      const hours = Math.floor(difference % (1000 * 60 * 60 * 24) / (1000 * 60 * 60));
+      const minutes = Math.floor(difference % (1000 * 60 * 60) / (1000 * 60));
       setTimeLeft(`${days}d ${hours}h ${minutes}m`);
 
       // Calculate next price drop
@@ -275,15 +245,13 @@ export function ProductPricing({ product }: ProductPricingProps) {
       const nextDropTime = Math.ceil(now / interval) * interval;
       const timeToNextDrop = nextDropTime - now;
       const nextDropHours = Math.floor(timeToNextDrop / (1000 * 60 * 60));
-      const nextDropMinutes = Math.floor((timeToNextDrop % (1000 * 60 * 60)) / (1000 * 60));
+      const nextDropMinutes = Math.floor(timeToNextDrop % (1000 * 60 * 60) / (1000 * 60));
       setNextDrop(`${nextDropHours}h ${nextDropMinutes}m`);
     };
-
     calculateTimeLeft();
-    
+
     // Update the countdown every minute
     const timer = setInterval(calculateTimeLeft, 60000);
-    
     return () => clearInterval(timer);
   }, [product.auction_end_time, product.price_decrement_interval]);
 
@@ -292,14 +260,12 @@ export function ProductPricing({ product }: ProductPricingProps) {
   // Always use highest bid as the displayed price if available
   const displayPrice = highestBid || currentPrice || 0;
   const hasActiveBids = !!highestBid;
-  
+
   // Check if auction has ended
   const now = new Date();
   const auctionEndTime = product.auction_end_time ? new Date(product.auction_end_time) : null;
   const isAuctionEnded = auctionEndTime && auctionEndTime < now;
-
-  return (
-    <Card className="p-6">
+  return <Card className="p-6">
       <div className="space-y-6">
         <div className="space-y-4">
           <div className="flex justify-between items-center">
@@ -308,29 +274,18 @@ export function ProductPricing({ product }: ProductPricingProps) {
                 {isAuction ? "Current Price" : "Price"}
               </p>
               <p className="text-3xl font-bold">
-                {isLoading ? (
-                  <span className="inline-block w-16 h-8 bg-gray-200 animate-pulse rounded"></span>
-                ) : (
-                  `$${displayPrice.toLocaleString()}`
-                )}
+                {isLoading ? <span className="inline-block w-16 h-8 bg-gray-200 animate-pulse rounded"></span> : `$${displayPrice.toLocaleString()}`}
               </p>
-              {isAuction && (
-                <>
-                  {hasActiveBids && (
-                    <p className="text-sm text-emerald-600 font-medium">
+              {isAuction && <>
+                  {hasActiveBids && <p className="text-sm text-emerald-600 font-medium">
                       Current price set by highest authorized bid
-                    </p>
-                  )}
-                  {product.min_price && (
-                    <p className="text-sm text-gray-600 mt-1">
+                    </p>}
+                  {product.min_price && <p className="text-sm text-gray-600 mt-1">
                       Min Price: ${product.min_price.toLocaleString()}
-                    </p>
-                  )}
-                </>
-              )}
+                    </p>}
+                </>}
             </div>
-            {product.auction_end_time && (
-              <div className="text-right">
+            {product.auction_end_time && <div className="text-right">
                 <div className="flex items-center gap-2 text-sm text-gray-600">
                   <Timer className="h-4 w-4" />
                   <span>{timeLeft}</span>
@@ -341,24 +296,18 @@ export function ProductPricing({ product }: ProductPricingProps) {
                     Drops ${product.price_decrement?.toLocaleString() || 0}/{product.price_decrement_interval || 'day'}
                   </span>
                 </div>
-                {!isAuctionEnded && (
-                  <p className="text-sm text-amber-600 mt-1">Next drop in: {nextDrop}</p>
-                )}
-              </div>
-            )}
+                {!isAuctionEnded && <p className="text-sm text-amber-600 mt-1">Next drop in: {nextDrop}</p>}
+              </div>}
           </div>
 
-          {isAuction && !isAuctionEnded && (
-            <div className="bg-blue-50 p-3 rounded-md text-sm text-blue-700 mt-3">
+          {isAuction && !isAuctionEnded && <div className="bg-blue-50 p-3 rounded-md text-sm text-blue-700 mt-3">
               <p>
                 <span className="font-medium">How Dutch Auctions Work:</span> The price starts high and 
                 decreases over time until someone places a bid. The highest authorized bid always sets the current price.
               </p>
-            </div>
-          )}
+            </div>}
 
-          {isAuctionEnded && (
-            <div className="bg-amber-50 p-3 rounded-md text-sm text-amber-700 mt-3">
+          {isAuctionEnded && <div className="bg-amber-50 p-3 rounded-md text-sm text-amber-700 mt-3">
               <p>
                 <span className="font-medium">Auction Ended:</span> This auction has ended.
                 {highestBid ? ` The winning bid was $${highestBid.toLocaleString()}.` : ' There were no bids placed.'}
@@ -366,26 +315,16 @@ export function ProductPricing({ product }: ProductPricingProps) {
               
               {/* Admin button for sending result emails (for testing) */}
               <div className="mt-2">
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={handleSendAuctionResultEmail}
-                  disabled={isSendingEmail}
-                  className="flex items-center gap-1 text-xs"
-                >
-                  {isSendingEmail ? 'Sending...' : (
-                    <>
+                <Button variant="outline" size="sm" onClick={handleSendAuctionResultEmail} disabled={isSendingEmail} className="flex items-center gap-1 text-xs">
+                  {isSendingEmail ? 'Sending...' : <>
                       <Mail className="h-3 w-3" />
                       Send Result Email
-                    </>
-                  )}
+                    </>}
                 </Button>
               </div>
-            </div>
-          )}
+            </div>}
 
-          {recentBids && recentBids.length > 0 && (
-            <div className="space-y-2">
+          {recentBids && recentBids.length > 0 && <div className="space-y-2">
               <div className="text-sm text-gray-600">
                 <p>{recentBids.length} authorized bid{recentBids.length !== 1 ? 's' : ''} placed in the last 12h</p>
               </div>
@@ -393,28 +332,20 @@ export function ProductPricing({ product }: ProductPricingProps) {
               <div className="space-y-2">
                 <ScrollArea className="h-36 rounded-md border">
                   <div className="p-3">
-                    {recentBids.slice(0, 3).map((bid: Bid, index: number) => (
-                      <div key={bid.id} className={`bg-gray-50 p-3 rounded-md mb-2 ${index === 0 ? 'border-l-4 border-green-500' : ''}`}>
+                    {recentBids.slice(0, 3).map((bid: Bid, index: number) => <div key={bid.id} className={`bg-gray-50 p-3 rounded-md mb-2 ${index === 0 ? 'border-l-4 border-green-500' : ''}`}>
                         <p className="text-sm text-gray-600">
                           <span className="font-medium">{formatBidderName(bid.bidder?.full_name)}</span>
                           <br />
                           <span className="text-gray-500">
                             ${bid.amount.toLocaleString()} • {formatTimeAgo(bid.created_at)}
-                            {bid.payment_status === 'authorized' && 
-                             <span className="ml-2 text-emerald-600">• Authorized</span>}
+                            {bid.payment_status === 'authorized' && <span className="ml-2 text-emerald-600">• Authorized</span>}
                           </span>
                         </p>
-                      </div>
-                    ))}
+                      </div>)}
                     
-                    {recentBids.length > 3 && (
-                      <Dialog open={bidHistoryDialogOpen} onOpenChange={setBidHistoryDialogOpen}>
+                    {recentBids.length > 3 && <Dialog open={bidHistoryDialogOpen} onOpenChange={setBidHistoryDialogOpen}>
                         <DialogTrigger asChild>
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            className="w-full mt-2 flex items-center justify-center gap-1"
-                          >
+                          <Button variant="outline" size="sm" className="w-full mt-2 flex items-center justify-center gap-1">
                             View More Bids <ChevronDown className="h-4 w-4" />
                           </Button>
                         </DialogTrigger>
@@ -431,71 +362,42 @@ export function ProductPricing({ product }: ProductPricingProps) {
                                   </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                  {allBids?.map((bid: Bid) => (
-                                    <TableRow key={bid.id}>
+                                  {allBids?.map((bid: Bid) => <TableRow key={bid.id}>
                                       <TableCell className="font-medium">{formatBidderName(bid.bidder?.full_name)}</TableCell>
                                       <TableCell className="text-right">${bid.amount.toLocaleString()}</TableCell>
                                       <TableCell className="text-right">{formatDate(bid.created_at)}</TableCell>
-                                    </TableRow>
-                                  ))}
+                                    </TableRow>)}
                                 </TableBody>
                               </Table>
                             </ScrollArea>
                           </div>
                         </DialogContent>
-                      </Dialog>
-                    )}
+                      </Dialog>}
                   </div>
                 </ScrollArea>
               </div>
-            </div>
-          )}
+            </div>}
           
-          {product.auction_end_time && !isAuctionEnded && (
-            <div className="space-y-3 border p-4 rounded-md">
+          {product.auction_end_time && !isAuctionEnded && <div className="space-y-3 border p-4 rounded-md">
               <h3 className="font-medium">Place Your Bid</h3>
-              <BidForm 
-                productId={product.id}
-                productTitle={product.title || "Product"} 
-                currentPrice={displayPrice}
-              />
-            </div>
-          )}
+              <BidForm productId={product.id} productTitle={product.title || "Product"} currentPrice={displayPrice} />
+            </div>}
 
           <div className="space-y-3 mt-4 pt-4 border-t border-gray-200">
             <Dialog open={offerDialogOpen} onOpenChange={setOfferDialogOpen}>
               <DialogTrigger asChild>
-                <Button 
-                  variant="outline"
-                  className="w-full border-2 hover:bg-gray-50"
-                >
+                <Button variant="outline" className="w-full border-2 hover:bg-gray-50">
                   Make an Offer
                 </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-[500px]">
-                <OfferDialog 
-                  productId={product.id}
-                  productTitle={product.title || "Product"}
-                  isAuction={!!product.auction_end_time}
-                  currentPrice={displayPrice}
-                  onClose={() => setOfferDialogOpen(false)}
-                />
+                <OfferDialog productId={product.id} productTitle={product.title || "Product"} isAuction={!!product.auction_end_time} currentPrice={displayPrice} onClose={() => setOfferDialogOpen(false)} />
               </DialogContent>
             </Dialog>
           </div>
         </div>
 
-        {product.demo_url && (
-          <a 
-            href={product.demo_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 text-sm text-blue-600 hover:underline mt-4"
-          >
-            View Live Demo
-          </a>
-        )}
+        {product.demo_url}
       </div>
-    </Card>
-  );
+    </Card>;
 }
