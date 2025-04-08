@@ -5,19 +5,46 @@ import { useFormContext } from "react-hook-form";
 import { ListProductFormData } from "../types";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, X } from "lucide-react";
+import { 
+  PlusCircle, 
+  X, 
+  FileCode, 
+  Globe, 
+  Users, 
+  Mail, 
+  MessageSquare, 
+  BookOpen, 
+  Database,
+  Package
+} from "lucide-react";
 import { useState } from "react";
+
+// Common deliverables that might be exchanged during a business exit
+const commonDeliverables = [
+  { id: 'source-code', label: 'Source Code', icon: FileCode },
+  { id: 'domains', label: 'Domain Names', icon: Globe },
+  { id: 'customer-list', label: 'Customer Lists', icon: Users },
+  { id: 'email-list', label: 'Email Lists', icon: Mail },
+  { id: 'social-media', label: 'Social Media Accounts', icon: MessageSquare },
+  { id: 'documentation', label: 'Documentation', icon: BookOpen },
+  { id: 'database', label: 'Database', icon: Database },
+  { id: 'assets', label: 'Digital Assets', icon: Package },
+];
 
 export function SpecialNotesSection() {
   const { register, watch, setValue, getValues } = useFormContext<ListProductFormData>();
   const formData = watch();
   const [newDeliverable, setNewDeliverable] = useState("");
 
-  const addDeliverable = () => {
-    if (!newDeliverable.trim()) return;
+  const addDeliverable = (text?: string) => {
+    const deliverableToAdd = text || newDeliverable.trim();
+    if (!deliverableToAdd) return;
     
+    // Check if it's already in the list to avoid duplicates
     const currentDeliverables = getValues("deliverables") || [];
-    setValue("deliverables", [...currentDeliverables, newDeliverable]);
+    if (currentDeliverables.includes(deliverableToAdd)) return;
+    
+    setValue("deliverables", [...currentDeliverables, deliverableToAdd]);
     setNewDeliverable("");
   };
 
@@ -36,6 +63,24 @@ export function SpecialNotesSection() {
           List what buyers will receive with the purchase (source code, domains, customer lists, etc.)
         </p>
         
+        {/* Quick Add Buttons */}
+        <div className="flex flex-wrap gap-2 mb-4">
+          {commonDeliverables.map((item) => (
+            <Button
+              key={item.id}
+              type="button"
+              onClick={() => addDeliverable(item.label)}
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-1 bg-gray-50 hover:bg-gray-100"
+            >
+              <item.icon className="h-4 w-4" />
+              <span>{item.label}</span>
+              <PlusCircle className="h-3 w-3 ml-1 text-green-500" />
+            </Button>
+          ))}
+        </div>
+        
         <div className="space-y-4">
           <div className="flex gap-2">
             <Input
@@ -52,7 +97,7 @@ export function SpecialNotesSection() {
             />
             <Button 
               type="button" 
-              onClick={addDeliverable}
+              onClick={() => addDeliverable()}
               className="flex-shrink-0"
               variant="secondary"
             >
