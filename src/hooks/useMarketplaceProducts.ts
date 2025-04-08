@@ -12,6 +12,7 @@ interface UseMarketplaceProductsProps {
   currentPage: number;
   showVerifiedOnly?: boolean;
   showAuctionsOnly?: boolean;
+  showBuyNowOnly?: boolean;
 }
 
 export const useMarketplaceProducts = ({
@@ -24,6 +25,7 @@ export const useMarketplaceProducts = ({
   currentPage,
   showVerifiedOnly = false,
   showAuctionsOnly = false,
+  showBuyNowOnly = false,
 }: UseMarketplaceProductsProps) => {
   const itemsPerPage = 6;
 
@@ -36,7 +38,8 @@ export const useMarketplaceProducts = ({
       sortBy,
       currentPage,
       showVerifiedOnly,
-      showAuctionsOnly
+      showAuctionsOnly,
+      showBuyNowOnly
     });
 
     try {
@@ -66,9 +69,11 @@ export const useMarketplaceProducts = ({
         query = query.or('is_revenue_verified.eq.true,is_code_audited.eq.true,is_traffic_verified.eq.true');
       }
       
-      // Apply auctions filter
+      // Apply listing type filters
       if (showAuctionsOnly) {
         query = query.not('auction_end_time', 'is', null);
+      } else if (showBuyNowOnly) {
+        query = query.is('auction_end_time', null);
       }
 
       // Apply sorting
@@ -125,7 +130,7 @@ export const useMarketplaceProducts = ({
   };
 
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ['products', searchQuery, industryFilter, stageFilter, priceFilter, sortBy, currentPage, showVerifiedOnly, showAuctionsOnly],
+    queryKey: ['products', searchQuery, industryFilter, stageFilter, priceFilter, sortBy, currentPage, showVerifiedOnly, showAuctionsOnly, showBuyNowOnly],
     queryFn: fetchProducts,
   });
 

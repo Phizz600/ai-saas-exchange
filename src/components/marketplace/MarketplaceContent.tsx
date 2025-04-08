@@ -23,6 +23,7 @@ export const MarketplaceContent = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [showVerifiedOnly, setShowVerifiedOnly] = useState(false);
   const [showAuctionsOnly, setShowAuctionsOnly] = useState(false);
+  const [showBuyNowOnly, setShowBuyNowOnly] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   
   const {
@@ -39,7 +40,8 @@ export const MarketplaceContent = () => {
     sortBy,
     currentPage,
     showVerifiedOnly,
-    showAuctionsOnly
+    showAuctionsOnly,
+    showBuyNowOnly
   });
   
   const {
@@ -118,6 +120,8 @@ export const MarketplaceContent = () => {
         onMarkAsRead={markAsRead} 
         showAuctionsOnly={showAuctionsOnly}
         setShowAuctionsOnly={setShowAuctionsOnly}
+        showBuyNowOnly={showBuyNowOnly}
+        setShowBuyNowOnly={setShowBuyNowOnly}
       />
 
       {isLoading ? 

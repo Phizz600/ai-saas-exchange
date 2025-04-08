@@ -1,5 +1,4 @@
-
-import { Search, SlidersHorizontal, X, Loader2, Timer } from "lucide-react";
+import { Search, SlidersHorizontal, X, Loader2, Timer, Tag } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -103,6 +102,8 @@ interface SearchFiltersProps {
   isLoading?: boolean;
   showAuctionsOnly: boolean;
   setShowAuctionsOnly: (show: boolean) => void;
+  showBuyNowOnly: boolean;
+  setShowBuyNowOnly: (show: boolean) => void;
 }
 
 export const SearchFilters = ({
@@ -120,7 +121,9 @@ export const SearchFilters = ({
   setSortBy,
   isLoading = false,
   showAuctionsOnly,
-  setShowAuctionsOnly
+  setShowAuctionsOnly,
+  showBuyNowOnly,
+  setShowBuyNowOnly
 }: SearchFiltersProps) => {
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
   const [debouncedSearchQuery] = useDebounce(localSearchQuery, 300);
@@ -136,7 +139,15 @@ export const SearchFilters = ({
     setSearchQuery(debouncedSearchQuery);
   }, [debouncedSearchQuery, setSearchQuery]);
   
-  const hasActiveFilters = searchQuery || industryFilter !== 'all' || stageFilter !== 'all' || priceFilter !== 'all' || timeFilter !== 'all' || showAuctionsOnly;
+  // Keep track of filter exclusivity
+  useEffect(() => {
+    if (showBuyNowOnly && showAuctionsOnly) {
+      // If both are enabled, disable auctions (prioritize the most recently enabled one)
+      setShowAuctionsOnly(false);
+    }
+  }, [showBuyNowOnly, showAuctionsOnly, setShowAuctionsOnly]);
+  
+  const hasActiveFilters = searchQuery || industryFilter !== 'all' || stageFilter !== 'all' || priceFilter !== 'all' || timeFilter !== 'all' || showAuctionsOnly || showBuyNowOnly;
   
   const clearAllFilters = () => {
     setLocalSearchQuery('');
@@ -147,6 +158,7 @@ export const SearchFilters = ({
     setTimeFilter('all');
     setSortBy('relevant');
     setShowAuctionsOnly(false);
+    setShowBuyNowOnly(false);
     setIsSheetOpen(false);
   };
 
@@ -191,6 +203,7 @@ export const SearchFilters = ({
         </Badge>
       );
     }
+    
     if (showAuctionsOnly) {
       filters.push(
         <Badge key="auctions" variant="secondary" className="gap-1 bg-amber-100 text-amber-800 hover:bg-amber-200">
@@ -200,10 +213,35 @@ export const SearchFilters = ({
       );
     }
     
+    if (showBuyNowOnly) {
+      filters.push(
+        <Badge key="buynow" variant="secondary" className="gap-1 bg-blue-100 text-blue-800 hover:bg-blue-200">
+          Buy It Now Only
+          <X className="h-3 w-3 cursor-pointer" onClick={() => setShowBuyNowOnly(false)} />
+        </Badge>
+      );
+    }
+    
     return filters;
   };
 
   const activeFilters = renderActiveFilters();
+
+  // Handle toggling Buy Now filter
+  const handleBuyNowToggle = (pressed: boolean) => {
+    setShowBuyNowOnly(pressed);
+    if (pressed) {
+      setShowAuctionsOnly(false); // Turn off auctions filter when Buy Now is enabled
+    }
+  };
+
+  // Handle toggling Auctions filter
+  const handleAuctionsToggle = (pressed: boolean) => {
+    setShowAuctionsOnly(pressed);
+    if (pressed) {
+      setShowBuyNowOnly(false); // Turn off Buy Now filter when Auctions is enabled
+    }
+  };
 
   return (
     <div className="space-y-4">
@@ -234,8 +272,18 @@ export const SearchFilters = ({
 
         <div className="flex gap-2">
           <Toggle 
+            pressed={showBuyNowOnly}
+            onPressedChange={handleBuyNowToggle}
+            variant="outline"
+            className="bg-white border-gray-200 hover:bg-blue-50 shadow-sm hover:shadow-md data-[state=on]:bg-blue-100 data-[state=on]:text-blue-800"
+          >
+            <Tag className="h-4 w-4 mr-2" />
+            Buy It Now
+          </Toggle>
+          
+          <Toggle 
             pressed={showAuctionsOnly}
-            onPressedChange={setShowAuctionsOnly}
+            onPressedChange={handleAuctionsToggle}
             variant="outline"
             className="bg-white border-gray-200 hover:bg-amber-50 shadow-sm hover:shadow-md data-[state=on]:bg-amber-100 data-[state=on]:text-amber-800"
           >
@@ -287,16 +335,30 @@ export const SearchFilters = ({
                   value={sortBy}
                   onValueChange={setSortBy}
                 />
-                <div className="flex items-center space-x-2">
-                  <Toggle 
-                    pressed={showAuctionsOnly}
-                    onPressedChange={setShowAuctionsOnly}
-                    variant="outline"
-                    className="w-full justify-start bg-white border-gray-200 hover:bg-amber-50 data-[state=on]:bg-amber-100 data-[state=on]:text-amber-800"
-                  >
-                    <Timer className="h-4 w-4 mr-2" />
-                    Show Auctions Only
-                  </Toggle>
+                <div className="flex flex-col space-y-2">
+                  <div className="text-sm font-medium mb-1">Listing Type</div>
+                  <div className="flex items-center space-x-2">
+                    <Toggle 
+                      pressed={showBuyNowOnly}
+                      onPressedChange={handleBuyNowToggle}
+                      variant="outline"
+                      className="flex-1 justify-start bg-white border-gray-200 hover:bg-blue-50 data-[state=on]:bg-blue-100 data-[state=on]:text-blue-800"
+                    >
+                      <Tag className="h-4 w-4 mr-2" />
+                      Buy It Now Only
+                    </Toggle>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Toggle 
+                      pressed={showAuctionsOnly}
+                      onPressedChange={handleAuctionsToggle}
+                      variant="outline"
+                      className="flex-1 justify-start bg-white border-gray-200 hover:bg-amber-50 data-[state=on]:bg-amber-100 data-[state=on]:text-amber-800"
+                    >
+                      <Timer className="h-4 w-4 mr-2" />
+                      Auctions Only
+                    </Toggle>
+                  </div>
                 </div>
                 {hasActiveFilters && (
                   <Button 

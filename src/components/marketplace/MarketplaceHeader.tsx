@@ -21,6 +21,8 @@ interface MarketplaceHeaderProps {
   onMarkAsRead: (notificationId: string) => Promise<void>;
   showAuctionsOnly: boolean;
   setShowAuctionsOnly: (show: boolean) => void;
+  showBuyNowOnly: boolean;
+  setShowBuyNowOnly: (show: boolean) => void;
 }
 
 export const MarketplaceHeader = ({
@@ -41,7 +43,9 @@ export const MarketplaceHeader = ({
   unreadCount,
   onMarkAsRead,
   showAuctionsOnly,
-  setShowAuctionsOnly
+  setShowAuctionsOnly,
+  showBuyNowOnly,
+  setShowBuyNowOnly
 }: MarketplaceHeaderProps) => {
   return (
     <div className="flex justify-between items-center mb-6">
@@ -61,6 +65,8 @@ export const MarketplaceHeader = ({
         isLoading={isLoading}
         showAuctionsOnly={showAuctionsOnly}
         setShowAuctionsOnly={setShowAuctionsOnly}
+        showBuyNowOnly={showBuyNowOnly}
+        setShowBuyNowOnly={setShowBuyNowOnly}
       />
 
       <NotificationSheet 
