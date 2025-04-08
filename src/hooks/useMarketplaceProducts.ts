@@ -11,6 +11,7 @@ interface UseMarketplaceProductsProps {
   sortBy: string;
   currentPage: number;
   showVerifiedOnly?: boolean;
+  showAuctionsOnly?: boolean;
 }
 
 export const useMarketplaceProducts = ({
@@ -22,6 +23,7 @@ export const useMarketplaceProducts = ({
   sortBy,
   currentPage,
   showVerifiedOnly = false,
+  showAuctionsOnly = false,
 }: UseMarketplaceProductsProps) => {
   const itemsPerPage = 6;
 
@@ -33,7 +35,8 @@ export const useMarketplaceProducts = ({
       priceFilter,
       sortBy,
       currentPage,
-      showVerifiedOnly
+      showVerifiedOnly,
+      showAuctionsOnly
     });
 
     try {
@@ -61,6 +64,11 @@ export const useMarketplaceProducts = ({
       // Apply verification filter
       if (showVerifiedOnly) {
         query = query.or('is_revenue_verified.eq.true,is_code_audited.eq.true,is_traffic_verified.eq.true');
+      }
+      
+      // Apply auctions filter
+      if (showAuctionsOnly) {
+        query = query.not('auction_end_time', 'is', null);
       }
 
       // Apply sorting
@@ -117,7 +125,7 @@ export const useMarketplaceProducts = ({
   };
 
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ['products', searchQuery, industryFilter, stageFilter, priceFilter, sortBy, currentPage, showVerifiedOnly],
+    queryKey: ['products', searchQuery, industryFilter, stageFilter, priceFilter, sortBy, currentPage, showVerifiedOnly, showAuctionsOnly],
     queryFn: fetchProducts,
   });
 

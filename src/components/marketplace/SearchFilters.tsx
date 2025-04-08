@@ -1,5 +1,5 @@
 
-import { Search, SlidersHorizontal, X, Loader2 } from "lucide-react";
+import { Search, SlidersHorizontal, X, Loader2, Timer } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -8,6 +8,7 @@ import { useDebounce } from "use-debounce";
 import { useEffect, useState } from "react";
 import { FilterSection } from "./filters/FilterSection";
 import { motion } from "framer-motion";
+import { Toggle } from "@/components/ui/toggle";
 
 const industries = [{
   value: "all",
@@ -100,6 +101,8 @@ interface SearchFiltersProps {
   sortBy: string;
   setSortBy: (sort: string) => void;
   isLoading?: boolean;
+  showAuctionsOnly: boolean;
+  setShowAuctionsOnly: (show: boolean) => void;
 }
 
 export const SearchFilters = ({
@@ -115,7 +118,9 @@ export const SearchFilters = ({
   setTimeFilter,
   sortBy,
   setSortBy,
-  isLoading = false
+  isLoading = false,
+  showAuctionsOnly,
+  setShowAuctionsOnly
 }: SearchFiltersProps) => {
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
   const [debouncedSearchQuery] = useDebounce(localSearchQuery, 300);
@@ -131,7 +136,7 @@ export const SearchFilters = ({
     setSearchQuery(debouncedSearchQuery);
   }, [debouncedSearchQuery, setSearchQuery]);
   
-  const hasActiveFilters = searchQuery || industryFilter !== 'all' || stageFilter !== 'all' || priceFilter !== 'all' || timeFilter !== 'all';
+  const hasActiveFilters = searchQuery || industryFilter !== 'all' || stageFilter !== 'all' || priceFilter !== 'all' || timeFilter !== 'all' || showAuctionsOnly;
   
   const clearAllFilters = () => {
     setLocalSearchQuery('');
@@ -141,6 +146,7 @@ export const SearchFilters = ({
     setPriceFilter('all');
     setTimeFilter('all');
     setSortBy('relevant');
+    setShowAuctionsOnly(false);
     setIsSheetOpen(false);
   };
 
@@ -185,6 +191,14 @@ export const SearchFilters = ({
         </Badge>
       );
     }
+    if (showAuctionsOnly) {
+      filters.push(
+        <Badge key="auctions" variant="secondary" className="gap-1 bg-amber-100 text-amber-800 hover:bg-amber-200">
+          Auctions Only
+          <X className="h-3 w-3 cursor-pointer" onClick={() => setShowAuctionsOnly(false)} />
+        </Badge>
+      );
+    }
     
     return filters;
   };
@@ -219,6 +233,16 @@ export const SearchFilters = ({
         </div>
 
         <div className="flex gap-2">
+          <Toggle 
+            pressed={showAuctionsOnly}
+            onPressedChange={setShowAuctionsOnly}
+            variant="outline"
+            className="bg-white border-gray-200 hover:bg-amber-50 shadow-sm hover:shadow-md data-[state=on]:bg-amber-100 data-[state=on]:text-amber-800"
+          >
+            <Timer className="h-4 w-4 mr-2" />
+            Auctions
+          </Toggle>
+          
           <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
             <SheetTrigger asChild>
               <Button variant="outline" className="bg-white border-gray-200 shadow-sm hover:shadow-md">
@@ -263,6 +287,17 @@ export const SearchFilters = ({
                   value={sortBy}
                   onValueChange={setSortBy}
                 />
+                <div className="flex items-center space-x-2">
+                  <Toggle 
+                    pressed={showAuctionsOnly}
+                    onPressedChange={setShowAuctionsOnly}
+                    variant="outline"
+                    className="w-full justify-start bg-white border-gray-200 hover:bg-amber-50 data-[state=on]:bg-amber-100 data-[state=on]:text-amber-800"
+                  >
+                    <Timer className="h-4 w-4 mr-2" />
+                    Show Auctions Only
+                  </Toggle>
+                </div>
                 {hasActiveFilters && (
                   <Button 
                     variant="destructive" 

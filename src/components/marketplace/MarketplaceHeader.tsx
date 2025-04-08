@@ -1,3 +1,4 @@
+
 import { SearchFilters } from "@/components/marketplace/SearchFilters";
 import { NotificationSheet } from "./notifications/NotificationSheet";
 
@@ -18,6 +19,8 @@ interface MarketplaceHeaderProps {
   notifications: any[];
   unreadCount: number;
   onMarkAsRead: (notificationId: string) => Promise<void>;
+  showAuctionsOnly: boolean;
+  setShowAuctionsOnly: (show: boolean) => void;
 }
 
 export const MarketplaceHeader = ({
@@ -36,7 +39,9 @@ export const MarketplaceHeader = ({
   isLoading,
   notifications,
   unreadCount,
-  onMarkAsRead
+  onMarkAsRead,
+  showAuctionsOnly,
+  setShowAuctionsOnly
 }: MarketplaceHeaderProps) => {
   return (
     <div className="flex justify-between items-center mb-6">
@@ -54,6 +59,8 @@ export const MarketplaceHeader = ({
         sortBy={sortBy}
         setSortBy={setSortBy}
         isLoading={isLoading}
+        showAuctionsOnly={showAuctionsOnly}
+        setShowAuctionsOnly={setShowAuctionsOnly}
       />
 
       <NotificationSheet 

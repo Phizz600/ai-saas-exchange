@@ -22,6 +22,7 @@ export const MarketplaceContent = () => {
   const [sortBy, setSortBy] = useState("relevant");
   const [currentPage, setCurrentPage] = useState(1);
   const [showVerifiedOnly, setShowVerifiedOnly] = useState(false);
+  const [showAuctionsOnly, setShowAuctionsOnly] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   
   const {
@@ -37,7 +38,8 @@ export const MarketplaceContent = () => {
     timeFilter,
     sortBy,
     currentPage,
-    showVerifiedOnly
+    showVerifiedOnly,
+    showAuctionsOnly
   });
   
   const {
@@ -114,6 +116,8 @@ export const MarketplaceContent = () => {
         notifications={notifications} 
         unreadCount={unreadCount} 
         onMarkAsRead={markAsRead} 
+        showAuctionsOnly={showAuctionsOnly}
+        setShowAuctionsOnly={setShowAuctionsOnly}
       />
 
       {isLoading ? 
