@@ -2,6 +2,7 @@
 import { ProductBadges } from "./ProductBadges";
 import { ProductMetrics } from "./ProductMetrics";
 import { formatCurrency } from "@/lib/utils";
+import { AuctionTimer } from "./auction/AuctionTimer";
 
 interface ProductContentProps {
   title: string;
@@ -18,6 +19,10 @@ interface ProductContentProps {
   is_code_audited?: boolean;
   is_traffic_verified?: boolean;
   requires_nda?: boolean;
+  auction_end_time?: string;
+  min_price?: number;
+  price_decrement?: number;
+  price_decrement_interval?: string;
 }
 
 export function ProductContent({
@@ -34,10 +39,15 @@ export function ProductContent({
   is_revenue_verified,
   is_code_audited,
   is_traffic_verified,
-  requires_nda
+  requires_nda,
+  auction_end_time,
+  min_price,
+  price_decrement,
+  price_decrement_interval
 }: ProductContentProps) {
   // Ensure price values are either valid numbers or 0
   const displayPrice = (current_price || price || 0);
+  const isAuction = !!auction_end_time;
   
   return (
     <div className="p-5 space-y-4">
@@ -67,6 +77,17 @@ export function ProductContent({
       <div className="text-xl font-bold text-green-600 text-left">
         {formatCurrency(displayPrice)}
       </div>
+      
+      {/* Add the new AuctionTimer component for auction products */}
+      {isAuction && (
+        <AuctionTimer 
+          auctionEndTime={auction_end_time}
+          currentPrice={current_price}
+          minPrice={min_price}
+          priceDecrement={price_decrement}
+          decrementInterval={price_decrement_interval}
+        />
+      )}
       
       {/* Show metrics for ALL products, whether NDA is required or not */}
       <ProductMetrics 

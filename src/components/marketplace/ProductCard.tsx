@@ -33,6 +33,9 @@ interface ProductCardProps {
     nda_content?: string;
     auction_end_time?: string;
     current_price?: number;
+    min_price?: number;
+    price_decrement?: number;
+    price_decrement_interval?: string;
   };
 }
 
@@ -114,6 +117,10 @@ export function ProductCard({ product }: ProductCardProps) {
         is_code_audited={product.is_code_audited}
         is_traffic_verified={product.is_traffic_verified}
         requires_nda={showLimitedInfo}
+        auction_end_time={product.auction_end_time}
+        min_price={product.min_price}
+        price_decrement={product.price_decrement}
+        price_decrement_interval={product.price_decrement_interval}
       />
       
       <CardFooter className="p-5 pt-0 space-y-3 flex flex-col">
