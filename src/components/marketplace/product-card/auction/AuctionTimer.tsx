@@ -82,8 +82,10 @@ export function AuctionTimer({
           <span className="text-gray-600">Current: {formatCurrency(displayPrice)}</span>
           <span className="text-gray-600">Min: {formatCurrency(minPriceValue)}</span>
         </div>
-        <Progress value={progressPercentage} className="h-1.5" 
-          indicatorClassName="bg-gradient-to-r from-amber-500 to-purple-500" />
+        <Progress 
+          value={progressPercentage} 
+          className="h-1.5 bg-gradient-to-r from-amber-500 to-purple-500" 
+        />
       </div>
     </div>
   );

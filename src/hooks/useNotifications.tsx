@@ -81,7 +81,7 @@ export function useNotifications() {
         toast({
           title: "Auction Ending Soon",
           description: newNotification.message,
-          variant: "warning",
+          variant: "default",
         });
       }
     });
