@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, BarChart3, LineChart, TrendingUp, Timer } from "lucide-react";
+import { Loader2, BarChart3, TrendingUp, Timer } from "lucide-react";
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { formatCurrency } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,33 @@ import { useState } from "react";
 
 interface AuctionAnalyticsProps {
   productId?: string;
+}
+
+// Add type definitions for our data
+interface BidderProfile {
+  full_name: string | null;
+}
+
+interface BidData {
+  id: string;
+  amount: number;
+  created_at: string;
+  status: string;
+  payment_status: string;
+  bidder_id: string;
+  bidder: BidderProfile | null;
+}
+
+interface AnalyticsData {
+  date: string;
+  views: number;
+  clicks: number;
+}
+
+interface PriceHistoryData {
+  price: number;
+  created_at: string;
+  type: string;
 }
 
 export const AuctionAnalytics = ({ productId }: AuctionAnalyticsProps) => {
@@ -113,9 +140,9 @@ export const AuctionAnalytics = ({ productId }: AuctionAnalyticsProps) => {
 
       return {
         product,
-        bids,
-        analytics,
-        priceHistory: priceHistory || []
+        bids: bids as BidData[],
+        analytics: analytics as AnalyticsData[],
+        priceHistory: (priceHistory || []) as PriceHistoryData[]
       };
     },
     enabled: !!productId,
@@ -321,7 +348,11 @@ export const AuctionAnalytics = ({ productId }: AuctionAnalyticsProps) => {
             Views & Engagement
           </TabsTrigger>
           <TabsTrigger value="price" className="flex items-center gap-2">
-            <LineChart className="h-4 w-4" />
+            {/* Use the LineChart from recharts by importing it with a different name */}
+            <svg className="h-4 w-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 3v18h18"></path>
+              <path d="m19 9-5 5-4-4-3 3"></path>
+            </svg>
             Price Tracking
           </TabsTrigger>
         </TabsList>
@@ -379,7 +410,9 @@ export const AuctionAnalytics = ({ productId }: AuctionAnalyticsProps) => {
                                         Amount
                                       </span>
                                       <span className="font-bold text-sm">
-                                        {formatCurrency(payload[0].value)}
+                                        {typeof payload[0].value === 'number' 
+                                          ? formatCurrency(payload[0].value) 
+                                          : payload[0].value}
                                       </span>
                                     </div>
                                   </div>
@@ -578,7 +611,9 @@ export const AuctionAnalytics = ({ productId }: AuctionAnalyticsProps) => {
                                         Price
                                       </span>
                                       <span className="font-bold text-sm">
-                                        {formatCurrency(payload[0].value)}
+                                        {typeof payload[0].value === 'number' 
+                                          ? formatCurrency(payload[0].value) 
+                                          : payload[0].value}
                                       </span>
                                     </div>
                                   </div>
