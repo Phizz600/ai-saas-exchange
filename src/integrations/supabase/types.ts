@@ -1216,19 +1216,28 @@ export type Database = {
     }
     Functions: {
       calculate_bid_deposit_amount: {
-        Args: { bid_amount: number }
+        Args: {
+          bid_amount: number
+        }
         Returns: number
       }
       calculate_match_score: {
-        Args: { product_id: string; investor_id: string }
+        Args: {
+          product_id: string
+          investor_id: string
+        }
         Returns: number
       }
       calculate_offer_deposit_amount: {
-        Args: { offer_amount: number }
+        Args: {
+          offer_amount: number
+        }
         Returns: number
       }
       calculate_platform_fee: {
-        Args: { amount: number }
+        Args: {
+          amount: number
+        }
         Returns: number
       }
       check_auctions_ending_soon: {
@@ -1240,11 +1249,16 @@ export type Database = {
         Returns: undefined
       }
       check_product_liked: {
-        Args: { check_user_id: string; check_product_id: string }
+        Args: {
+          check_user_id: string
+          check_product_id: string
+        }
         Returns: boolean
       }
       get_daily_views_count: {
-        Args: { user_uuid: string }
+        Args: {
+          user_uuid: string
+        }
         Returns: number
       }
       has_role: {
@@ -1255,19 +1269,29 @@ export type Database = {
         Returns: boolean
       }
       increment_product_views: {
-        Args: { input_product_id: string }
+        Args: {
+          input_product_id: string
+        }
         Returns: undefined
       }
       is_high_traffic: {
-        Args: { p_views: number; p_clicks: number; p_saves: number }
+        Args: {
+          p_views: number
+          p_clicks: number
+          p_saves: number
+        }
         Returns: boolean
       }
       is_valid_user_type: {
-        Args: { user_type: string }
+        Args: {
+          user_type: string
+        }
         Returns: boolean
       }
       truncate_to_date: {
-        Args: { ts: string }
+        Args: {
+          ts: string
+        }
         Returns: string
       }
       update_dutch_auction_prices: {
@@ -1337,29 +1361,27 @@ export type Database = {
   }
 }
 
-type DefaultSchema = Database[Extract<keyof Database, "public">]
+type PublicSchema = Database[Extract<keyof Database, "public">]
 
 export type Tables<
-  DefaultSchemaTableNameOrOptions extends
-    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+  PublicTableNameOrOptions extends
+    | keyof (PublicSchema["Tables"] & PublicSchema["Views"])
     | { schema: keyof Database },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof Database
-  }
-    ? keyof (Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-        Database[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
+    ? keyof (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
+        Database[PublicTableNameOrOptions["schema"]]["Views"])
     : never = never,
-> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
-  ? (Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-      Database[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
+      Database[PublicTableNameOrOptions["schema"]]["Views"])[TableName] extends {
       Row: infer R
     }
     ? R
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
-        DefaultSchema["Views"])
-    ? (DefaultSchema["Tables"] &
-        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+  : PublicTableNameOrOptions extends keyof (PublicSchema["Tables"] &
+        PublicSchema["Views"])
+    ? (PublicSchema["Tables"] &
+        PublicSchema["Views"])[PublicTableNameOrOptions] extends {
         Row: infer R
       }
       ? R
@@ -1367,22 +1389,20 @@ export type Tables<
     : never
 
 export type TablesInsert<
-  DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema["Tables"]
+  PublicTableNameOrOptions extends
+    | keyof PublicSchema["Tables"]
     | { schema: keyof Database },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof Database
-  }
-    ? keyof Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
+    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
     : never = never,
-> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
-  ? Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Insert: infer I
     }
     ? I
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
-    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+  : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
+    ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
         Insert: infer I
       }
       ? I
@@ -1390,22 +1410,20 @@ export type TablesInsert<
     : never
 
 export type TablesUpdate<
-  DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema["Tables"]
+  PublicTableNameOrOptions extends
+    | keyof PublicSchema["Tables"]
     | { schema: keyof Database },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof Database
-  }
-    ? keyof Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
+    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
     : never = never,
-> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
-  ? Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Update: infer U
     }
     ? U
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
-    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+  : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
+    ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
         Update: infer U
       }
       ? U
@@ -1413,23 +1431,21 @@ export type TablesUpdate<
     : never
 
 export type Enums<
-  DefaultSchemaEnumNameOrOptions extends
-    | keyof DefaultSchema["Enums"]
+  PublicEnumNameOrOptions extends
+    | keyof PublicSchema["Enums"]
     | { schema: keyof Database },
-  EnumName extends DefaultSchemaEnumNameOrOptions extends {
-    schema: keyof Database
-  }
-    ? keyof Database[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+  EnumName extends PublicEnumNameOrOptions extends { schema: keyof Database }
+    ? keyof Database[PublicEnumNameOrOptions["schema"]]["Enums"]
     : never = never,
-> = DefaultSchemaEnumNameOrOptions extends { schema: keyof Database }
-  ? Database[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
-  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
-    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+> = PublicEnumNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
+    ? PublicSchema["Enums"][PublicEnumNameOrOptions]
     : never
 
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
-    | keyof DefaultSchema["CompositeTypes"]
+    | keyof PublicSchema["CompositeTypes"]
     | { schema: keyof Database },
   CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
     schema: keyof Database
@@ -1438,71 +1454,6 @@ export type CompositeTypes<
     : never = never,
 > = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
   ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
-  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
-    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+  : PublicCompositeTypeNameOrOptions extends keyof PublicSchema["CompositeTypes"]
+    ? PublicSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
-
-export const Constants = {
-  public: {
-    Enums: {
-      app_role: ["admin", "moderator", "user"],
-      escrow_status: [
-        "pending",
-        "agreement_reached",
-        "escrow_created",
-        "payment_secured",
-        "delivery_in_progress",
-        "inspection_period",
-        "completed",
-        "disputed",
-        "cancelled",
-        "deposit_pending",
-        "deposit_paid",
-      ],
-      investment_preference: [
-        "early_stage",
-        "growth_stage",
-        "established",
-        "high_risk",
-        "moderate_risk",
-        "low_risk",
-        "b2b",
-        "b2c",
-        "enterprise",
-        "healthcare",
-        "fintech",
-        "ecommerce",
-        "autonomous_vehicles",
-        "nlp",
-        "computer_vision",
-        "other",
-      ],
-      monetization_type: [
-        "subscription",
-        "pay_per_use",
-        "freemium",
-        "one_time_purchase",
-        "usage_based",
-        "tiered_pricing",
-        "enterprise_licensing",
-        "marketplace_commission",
-        "advertising",
-        "data_monetization",
-      ],
-      notification_type: [
-        "sale",
-        "liked_product_sold",
-        "product_liked",
-        "product_viewed",
-        "product_offer",
-        "high_traffic",
-        "product_saved",
-        "auction_ending_soon",
-        "auction_ended",
-        "new_bid",
-        "product_status_change",
-      ],
-      user_type: ["ai_builder", "ai_investor"],
-    },
-  },
-} as const

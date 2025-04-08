@@ -7,9 +7,6 @@ import { useNdaStatus } from "./product-card/useNdaStatus";
 import { NdaButton } from "./product-card/NdaButton";
 import { ProductActions } from "./product-card/ProductActions";
 import { useProductCard } from "./product-card/useProductCard";
-import { AuctionTimer } from "./product-card/auction/AuctionTimer";
-import { Badge } from "@/components/ui/badge";
-import { TrendingDown } from "lucide-react";
 
 interface ProductCardProps {
   product: {
@@ -36,11 +33,6 @@ interface ProductCardProps {
     nda_content?: string;
     auction_end_time?: string;
     current_price?: number;
-    starting_price?: number;
-    min_price?: number;
-    price_decrement?: number;
-    price_decrement_interval?: string;
-    created_at?: string;
   };
 }
 
@@ -88,17 +80,7 @@ export function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <Card className="overflow-hidden transition-all duration-300 group hover:shadow-md relative">
-      {/* Auction indicator badge that shows at the top of the card */}
-      {isAuction && (
-        <div className="absolute top-2 left-2 z-30">
-          <Badge variant="secondary" className="bg-amber-500/90 text-white border-0 flex items-center">
-            <TrendingDown className="w-3.5 h-3.5 mr-1" />
-            Dutch Auction
-          </Badge>
-        </div>
-      )}
-      
+    <Card className="overflow-hidden transition-all duration-300 group hover:shadow-md">
       <CardHeader className="p-0">
         <ProductImage
           image={product.image_url || "/placeholder.svg"}
@@ -117,23 +99,11 @@ export function ProductCard({ product }: ProductCardProps) {
         />
       </CardHeader>
       
-      {/* Show enhanced auction timer if it's an auction */}
-      {isAuction && !showLimitedInfo && (
-        <AuctionTimer 
-          auctionEndTime={product.auction_end_time}
-          startingPrice={product.starting_price}
-          currentPrice={product.current_price}
-          minPrice={product.min_price}
-          priceDecrement={product.price_decrement}
-          decrementInterval={product.price_decrement_interval}
-          createdAt={product.created_at}
-        />
-      )}
-      
       <ProductContent
         title={product.title}
         description={showLimitedInfo ? undefined : product.description}
         price={product.price}
+        current_price={product.current_price}
         category={product.category}
         stage={product.stage}
         monthlyRevenue={product.monthly_revenue}
@@ -144,13 +114,6 @@ export function ProductCard({ product }: ProductCardProps) {
         is_code_audited={product.is_code_audited}
         is_traffic_verified={product.is_traffic_verified}
         requires_nda={showLimitedInfo}
-        current_price={product.current_price}
-        auction_end_time={product.auction_end_time}
-        min_price={product.min_price}
-        price_decrement={product.price_decrement}
-        price_decrement_interval={product.price_decrement_interval}
-        created_at={product.created_at || ""}
-        starting_price={product.starting_price}
       />
       
       <CardFooter className="p-5 pt-0 space-y-3 flex flex-col">
