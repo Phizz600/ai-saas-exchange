@@ -1,3 +1,4 @@
+
 import { DashboardLayout } from "@/components/product-dashboard/DashboardLayout";
 import { MarketplaceStats } from "@/components/product-dashboard/MarketplaceStats";
 import { ProductDashboardContent } from "@/components/product-dashboard/ProductDashboardContent";
@@ -10,8 +11,37 @@ import { MatchedProducts } from "@/components/product-dashboard/MatchedProducts"
 import { ProductOffers } from "@/components/product-dashboard/ProductOffers";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { AuctionAnalytics } from "@/components/product-dashboard/AuctionAnalytics";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+
 export const ProductDashboard = () => {
   const [showVerifiedOnly, setShowVerifiedOnly] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState<string | undefined>(undefined);
+
+  // Fetch user's auction products
+  const { data: auctionProducts } = useQuery({
+    queryKey: ['user-auction-products'],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return [];
+
+      const { data, error } = await supabase
+        .from('products')
+        .select('id, title, auction_end_time')
+        .eq('seller_id', user.id)
+        .not('auction_end_time', 'is', null)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching auction products:', error);
+        return [];
+      }
+
+      return data;
+    },
+  });
+
   return <DashboardLayout>
       <Tabs defaultValue="seller" className="space-y-8">
         <TabsList className="grid w-full grid-cols-2 max-w-[400px]">
@@ -28,14 +58,41 @@ export const ProductDashboard = () => {
         <TabsContent value="seller" className="space-y-8">
           <div className="flex justify-between items-center">
             <MarketplaceStats />
-            
           </div>
+          
+          {auctionProducts && auctionProducts.length > 0 && (
+            <div>
+              <h2 className="text-xl font-semibold mb-4 exo-2-header">Auction Analytics</h2>
+              <div className="mb-4">
+                <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
+                  <label htmlFor="auction-select" className="text-sm font-medium">
+                    Select auction to view:
+                  </label>
+                  <select 
+                    id="auction-select"
+                    value={selectedProductId || ''}
+                    onChange={(e) => setSelectedProductId(e.target.value || undefined)}
+                    className="border rounded p-2 bg-background"
+                  >
+                    <option value="">Select an auction</option>
+                    {auctionProducts.map(product => (
+                      <option key={product.id} value={product.id}>
+                        {product.title}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <AuctionAnalytics productId={selectedProductId} />
+            </div>
+          )}
+          
           <div>
-            <h2 className="text-xl font-semibold mb-4 font-exo">Offers on Your Products</h2>
+            <h2 className="text-xl font-semibold mb-4 exo-2-header">Offers on Your Products</h2>
             <ProductOffers />
           </div>
           <div>
-            <h2 className="text-xl font-semibold mb-4 font-exo">Your Products</h2>
+            <h2 className="text-xl font-semibold mb-4 exo-2-header">Your Products</h2>
             <ProductDashboardContent showVerifiedOnly={showVerifiedOnly} />
           </div>
         </TabsContent>
@@ -61,15 +118,15 @@ export const ProductDashboard = () => {
           </div>
           <div className="space-y-8">
             <div>
-              <h2 className="text-xl font-semibold mb-4 font-exo">Your Matches</h2>
+              <h2 className="text-xl font-semibold mb-4 exo-2-header">Your Matches</h2>
               <MatchedProducts />
             </div>
             <div>
-              <h2 className="text-xl font-semibold mb-4 font-exo">Your Active Bids</h2>
+              <h2 className="text-xl font-semibold mb-4 exo-2-header">Your Active Bids</h2>
               <ActiveBidsProducts />
             </div>
             <div>
-              <h2 className="text-xl font-semibold mb-4 font-exo">Products You've Saved</h2>
+              <h2 className="text-xl font-semibold mb-4 exo-2-header">Products You've Saved</h2>
               <WatchedProducts />
             </div>
           </div>
