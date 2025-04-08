@@ -19,7 +19,6 @@ export function AuctionTimer({
   decrementInterval
 }: AuctionTimerProps) {
   const [timeLeft, setTimeLeft] = useState<string>("");
-  const [nextDrop, setNextDrop] = useState<string>("");
   const [progressValue, setProgressValue] = useState<number>(0);
   
   // Format a numeric value with commas for thousands
@@ -69,45 +68,37 @@ export function AuctionTimer({
   if (!auctionEndTime) return null;
 
   return (
-    <div className="w-full bg-white border-b border-gray-200">
-      {/* Dutch Auction Label at Top */}
-      <div className="bg-amber-500 text-white px-4 py-2 inline-flex items-center gap-2 rounded-br-md">
-        <TrendingDown className="h-4 w-4" />
-        <span className="font-medium">Dutch Auction</span>
+    <div className="w-full bg-gradient-to-r from-amber-50 to-purple-50 py-2 px-3 border-b border-gray-200">
+      <div className="flex justify-between items-center mb-1">
+        <div className="flex items-center gap-1.5">
+          <Timer className="h-4 w-4 text-amber-600" />
+          <span className="font-medium text-sm text-amber-800">{timeLeft}</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <TrendingDown className="h-4 w-4 text-purple-600" />
+          <span className="font-medium text-sm text-purple-700">Price dropping</span>
+        </div>
       </div>
       
-      <div className="p-4">
-        <div className="flex justify-between items-center mb-2">
-          <div className="flex items-center gap-2 text-gray-700">
-            <Timer className="h-5 w-5 text-amber-600" />
-            <span className="font-medium">{timeLeft}</span>
-          </div>
-          <div className="flex items-center gap-2 text-purple-600">
-            <TrendingDown className="h-5 w-5" />
-            <span className="font-medium">Price dropping</span>
+      <div className="grid grid-cols-2 gap-2 mb-2">
+        <div>
+          <span className="text-xs font-medium text-gray-600">Current:</span>
+          <div className="text-sm font-bold text-gray-800">
+            ${formatNumber(currentPrice)}
           </div>
         </div>
-        
-        <div className="grid grid-cols-2 gap-4 mb-3">
-          <div>
-            <span className="text-sm font-medium text-gray-600">Current:</span>
-            <div className="text-lg font-bold text-gray-800">
-              ${formatNumber(currentPrice)}
-            </div>
-          </div>
-          <div>
-            <span className="text-sm font-medium text-gray-600">Min:</span>
-            <div className="text-lg font-medium text-gray-800">
-              ${formatNumber(minPrice)}
-            </div>
+        <div className="text-right">
+          <span className="text-xs font-medium text-gray-600">Min:</span>
+          <div className="text-sm font-medium text-gray-800">
+            ${formatNumber(minPrice)}
           </div>
         </div>
-        
-        <Progress 
-          value={progressValue} 
-          className="h-2 bg-amber-200"
-        />
       </div>
+      
+      <Progress 
+        value={progressValue} 
+        className="h-1.5 bg-amber-200"
+      />
     </div>
   );
 }

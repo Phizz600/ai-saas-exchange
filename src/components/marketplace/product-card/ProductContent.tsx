@@ -51,7 +51,7 @@ export function ProductContent({
   
   return (
     <div className="p-0 space-y-4">
-      {/* Add the new AuctionTimer component for auction products */}
+      {/* Add the AuctionTimer component for auction products */}
       {isAuction && (
         <AuctionTimer 
           auctionEndTime={auction_end_time}
