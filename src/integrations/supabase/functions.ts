@@ -1,4 +1,3 @@
-
 // Re-export all functions from the separate modules
 export * from './product-analytics';
 export * from './products';
@@ -131,6 +130,41 @@ export const checkEndedAuctions = async () => {
     return data;
   } catch (err) {
     console.error("Error checking ended auctions:", err);
+    throw err;
+  }
+};
+
+// Function to send listing notification emails
+export const sendListingNotification = async (
+  type: 'submitted' | 'approved' | 'rejected',
+  email: string,
+  productTitle: string,
+  firstName?: string,
+  adminFeedback?: string,
+  productId?: string
+) => {
+  console.log(`Sending ${type} notification email for product: ${productTitle}`);
+  try {
+    const { data, error } = await supabase.functions.invoke('send-listing-notification', {
+      body: { 
+        type,
+        email,
+        productTitle,
+        firstName,
+        adminFeedback,
+        productId
+      }
+    });
+    
+    if (error) {
+      console.error("Error from send-listing-notification function:", error);
+      throw error;
+    }
+    
+    console.log("Listing notification email function response:", data);
+    return data;
+  } catch (err) {
+    console.error("Error sending listing notification email:", err);
     throw err;
   }
 };

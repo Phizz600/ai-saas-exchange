@@ -1,7 +1,7 @@
-
 import { supabase, storage, PRODUCT_IMAGES_BUCKET } from "@/integrations/supabase/client";
 import { ListProductFormData } from "../types";
 import { generateUniqueId } from "@/lib/utils";
+import { sendListingNotification } from "@/integrations/supabase/functions";
 
 export const submitProductForm = async (
   formData: ListProductFormData,
@@ -149,6 +149,33 @@ export const submitProductForm = async (
       title: "Success",
       description: "Product submitted successfully!",
     });
+    
+    // Send submission confirmation email
+    try {
+      // Get user details for personalized email
+      const { data: userData } = await supabase.auth.getUser();
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('first_name, full_name')
+        .eq('id', user_id)
+        .single();
+      
+      const userFirstName = profileData?.first_name || profileData?.full_name?.split(' ')[0] || '';
+      const userEmail = userData?.user?.email || '';
+      
+      if (userEmail) {
+        await sendListingNotification(
+          'submitted',
+          userEmail,
+          formData.title,
+          userFirstName
+        );
+      }
+    } catch (emailError) {
+      console.error("Error sending confirmation email:", emailError);
+      // Don't fail the submission if email fails
+    }
+    
     resetForm();
     router.push("/marketplace");
     return true;
@@ -297,6 +324,32 @@ export const handleProductSubmission = async (
     if (error) {
       console.error("Product submission error:", error);
       return { success: false, error: "Failed to submit product. Please try again." };
+    }
+    
+    // Send confirmation email
+    try {
+      // Get user details for personalized email
+      const { data: userData } = await supabase.auth.getUser();
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('first_name, full_name')
+        .eq('id', user.id)
+        .single();
+      
+      const userFirstName = profileData?.first_name || profileData?.full_name?.split(' ')[0] || '';
+      const userEmail = userData?.user?.email || '';
+      
+      if (userEmail) {
+        await sendListingNotification(
+          'submitted',
+          userEmail,
+          data.title,
+          userFirstName
+        );
+      }
+    } catch (emailError) {
+      console.error("Error sending confirmation email:", emailError);
+      // Don't fail the submission if email fails
     }
     
     return { 

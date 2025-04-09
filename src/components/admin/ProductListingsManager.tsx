@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { format } from "date-fns";
 import { Check, X, Eye, ChevronDown, Filter } from "lucide-react";
 import { ProductReviewDialog } from "./ProductReviewDialog";
+import { sendListingNotification } from "@/integrations/supabase/functions";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -83,6 +84,16 @@ export const ProductListingsManager = () => {
 
   const handleStatusChange = async (productId: string, newStatus: string, feedback?: string) => {
     try {
+      // Get the product details before updating
+      const { data: productData, error: productError } = await supabase
+        .from('products')
+        .select('title, seller_id')
+        .eq('id', productId)
+        .single();
+      
+      if (productError) throw productError;
+      
+      // Update the product status
       const { error } = await supabase
         .from('products')
         .update({ 
@@ -94,6 +105,46 @@ export const ProductListingsManager = () => {
         .eq('id', productId);
 
       if (error) throw error;
+      
+      // Send email notification based on status change
+      try {
+        // Get seller email
+        const { data: sellerData, error: sellerError } = await supabase
+          .from('profiles')
+          .select('id, first_name, full_name')
+          .eq('id', productData.seller_id)
+          .single();
+          
+        const { data: userData, error: userError } = await supabase.auth.admin.getUserById(
+          productData.seller_id
+        );
+        
+        if (!sellerError && !userError && userData?.user?.email) {
+          const sellerFirstName = sellerData?.first_name || sellerData?.full_name?.split(' ')[0] || '';
+          
+          if (newStatus === 'approved') {
+            await sendListingNotification(
+              'approved',
+              userData.user.email,
+              productData.title,
+              sellerFirstName,
+              '',
+              productId
+            );
+          } else if (newStatus === 'rejected') {
+            await sendListingNotification(
+              'rejected',
+              userData.user.email,
+              productData.title,
+              sellerFirstName,
+              feedback || 'Your listing requires updates before it can be approved.'
+            );
+          }
+        }
+      } catch (emailError) {
+        console.error("Error sending status notification email:", emailError);
+        // Don't fail the status update if email fails
+      }
       
       toast.success(`Product ${newStatus === 'approved' ? 'approved' : 'rejected'} successfully`);
       fetchProducts();
