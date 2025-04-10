@@ -255,7 +255,7 @@ export function AuctionSection({
                     </TooltipProvider>
                   </FormLabel>
                   <FormControl>
-                    <Input type="text" placeholder="Enter reserve price (0 for no reserve)" value={formatCurrencyInput(field.value?.toString() || '')} onChange={e => {
+                    <Input type="text" placeholder="Enter reserve price" value={formatCurrencyInput(field.value?.toString() || '')} onChange={e => {
                 const value = parseCurrencyValue(e.target.value);
                 field.onChange(value >= 0 ? value : undefined);
               }} className="font-mono" />
