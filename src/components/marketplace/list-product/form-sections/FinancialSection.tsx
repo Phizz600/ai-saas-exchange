@@ -63,21 +63,21 @@ export function FinancialSection({ form }: FinancialSectionProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel className="flex items-center gap-2">
-                MRR (Monthly Recurring Revenue)
+                MRR or AMR (Monthly Revenue)
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Info className="h-4 w-4 text-gray-500 cursor-help" />
                     </TooltipTrigger>
                     <TooltipContent className="bg-white">
-                      <p>Monthly recurring revenue from your AI product</p>
+                      <p>Monthly Recurring Revenue (MRR) or Average Monthly Revenue (AMR) from your AI product</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
               </FormLabel>
               <FormControl>
                 <Input 
-                  placeholder="Enter MRR in USD"
+                  placeholder="Enter monthly revenue in USD"
                   value={field.value ? formatValue(field.value.toString()) : ''}
                   onChange={(e) => {
                     const value = parseValue(e.target.value);

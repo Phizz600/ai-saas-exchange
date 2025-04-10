@@ -25,11 +25,11 @@ export function ProductMetrics({
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        {/* MRR */}
+        {/* Monthly Revenue */}
         {monthlyRevenue !== undefined && monthlyRevenue > 0 && (
           <div className="flex items-center gap-2 text-gray-700">
             <DollarSign className="h-5 w-5 text-green-500" />
-            <span className="text-gray-600">MRR: {formatCurrency(monthlyRevenue)}</span>
+            <span className="text-gray-600">Monthly Revenue: {formatCurrency(monthlyRevenue)}</span>
           </div>
         )}
         

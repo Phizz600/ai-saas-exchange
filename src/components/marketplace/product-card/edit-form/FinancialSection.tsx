@@ -16,7 +16,7 @@ export const FinancialSection = ({ form }: FinancialSectionProps) => {
         name="monthlyRevenue"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Monthly Revenue</FormLabel>
+            <FormLabel>MRR or AMR (Monthly Revenue)</FormLabel>
             <FormControl>
               <Input 
                 type="number" 
