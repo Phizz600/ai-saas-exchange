@@ -15,7 +15,7 @@ export interface ListProductFormData {
   image: File | null;
   isAuction: boolean;
   startingPrice?: number;
-  minPrice?: number;
+  reservePrice?: number;  // Renamed from minPrice
   priceDecrement?: number;
   priceDecrementInterval: string;
   techStack: string;
@@ -41,6 +41,7 @@ export interface ListProductFormData {
   businessModel?: string;
   investmentTimeline?: string;
   auctionEndTime?: Date;
+  auctionDuration?: string; // Adding duration field
   llmType?: string;
   llmTypeOther?: string;
   integrations_other?: string;
@@ -53,4 +54,5 @@ export interface ListProductFormData {
   numberOfEmployees?: string;
   requires_nda?: boolean;
   nda_content?: string;
+  noReserve?: boolean; // Option for no reserve auctions
 }

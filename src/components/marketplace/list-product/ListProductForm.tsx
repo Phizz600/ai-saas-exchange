@@ -51,11 +51,11 @@ export function ListProductForm() {
       activeUsers: "",
       grossProfitMargin: undefined,
       image: null,
-      isAuction: false, // Keep this for form state, even if DB doesn't have column yet
+      isAuction: false, // Keep this for form state
       startingPrice: undefined,
-      minPrice: undefined,
+      reservePrice: undefined, // Changed from minPrice to reservePrice
       priceDecrement: undefined,
-      priceDecrementInterval: "minute",
+      priceDecrementInterval: "hour", // Changed default to hourly
       techStack: "",
       techStackOther: "",
       teamSize: "",
@@ -68,6 +68,8 @@ export function ListProductForm() {
       termsAgreement: false,
       deliverables: [],
       productLink: "",
+      auctionDuration: "7days", // Default auction duration
+      noReserve: false, // Default to having a reserve price
     },
   });
 
@@ -118,14 +120,23 @@ export function ListProductForm() {
       if (!data.startingPrice || data.startingPrice <= 0) {
         return { valid: false, message: "Starting price must be greater than 0" };
       }
-      if (!data.minPrice || data.minPrice <= 0) {
-        return { valid: false, message: "Minimum price must be greater than 0" };
+      
+      // Only validate reserve price if not a "no reserve" auction
+      if (!data.noReserve) {
+        if (!data.reservePrice || data.reservePrice <= 0) {
+          return { valid: false, message: "Reserve price must be greater than 0" };
+        }
+        if (data.reservePrice >= data.startingPrice) {
+          return { valid: false, message: "Reserve price must be less than the starting price" };
+        }
       }
-      if (data.minPrice >= data.startingPrice) {
-        return { valid: false, message: "Minimum price must be less than the starting price" };
-      }
+      
       if (!data.priceDecrement || data.priceDecrement <= 0) {
         return { valid: false, message: "Price decrement must be greater than 0" };
+      }
+
+      if (!data.auctionDuration) {
+        return { valid: false, message: "Auction duration must be selected" };
       }
     } else {
       // Validate fixed price

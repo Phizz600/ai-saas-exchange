@@ -20,9 +20,10 @@ interface ProductContentProps {
   is_traffic_verified?: boolean;
   requires_nda?: boolean;
   auction_end_time?: string;
-  min_price?: number;
+  reserve_price?: number; // Renamed from min_price
   price_decrement?: number;
   price_decrement_interval?: string;
+  no_reserve?: boolean; // Added no_reserve field
 }
 
 export function ProductContent({
@@ -41,9 +42,10 @@ export function ProductContent({
   is_traffic_verified,
   requires_nda,
   auction_end_time,
-  min_price,
+  reserve_price, // Renamed from min_price
   price_decrement,
-  price_decrement_interval
+  price_decrement_interval,
+  no_reserve
 }: ProductContentProps) {
   // Ensure price values are either valid numbers or 0
   const displayPrice = (current_price || price || 0);
@@ -56,9 +58,10 @@ export function ProductContent({
         <AuctionTimer 
           auctionEndTime={auction_end_time}
           currentPrice={current_price}
-          minPrice={min_price}
+          reservePrice={reserve_price} // Renamed from minPrice
           priceDecrement={price_decrement}
           decrementInterval={price_decrement_interval}
+          noReserve={no_reserve}
         />
       )}
       

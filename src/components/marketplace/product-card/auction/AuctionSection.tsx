@@ -20,10 +20,11 @@ interface AuctionSectionProps {
     title?: string;
     current_price?: number;
     starting_price?: number;
-    min_price?: number;
+    reserve_price?: number;  // Renamed from min_price
     price_decrement?: number;
     auction_end_time?: string;
     highest_bid?: number;
+    no_reserve?: boolean;    // Added no_reserve field
   };
 }
 
@@ -252,12 +253,24 @@ export function AuctionSection({ product }: AuctionSectionProps) {
             </div>
           )}
         </div>
-        <div>
-          <span className="text-sm font-semibold text-gray-600">Min Price</span>
-          <div className="font-medium text-gray-900">
-            ${product.min_price?.toLocaleString() || "0"}
+        {!product.no_reserve && (
+          <div>
+            <span className="text-sm font-semibold text-gray-600">Reserve Price</span>
+            <div className="font-medium text-gray-900">
+              ${product.reserve_price?.toLocaleString() || "0"}
+            </div>
           </div>
-        </div>
+        )}
+        {product.no_reserve && (
+          <div>
+            <div className="font-medium text-amber-600 flex items-center gap-1">
+              <span className="py-1 px-2 bg-amber-100 text-amber-800 rounded-md text-xs">No Reserve</span>
+            </div>
+            <div className="text-xs text-gray-600 mt-1">
+              This auction will sell at any price
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="flex items-center justify-between text-sm mb-4">
