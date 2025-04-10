@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useForm } from "react-hook-form";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
@@ -304,8 +303,6 @@ export function EditProductDialog({ product, isOpen, onClose }: EditProductDialo
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="minute">Per Minute</SelectItem>
-                            <SelectItem value="hour">Per Hour</SelectItem>
                             <SelectItem value="day">Per Day</SelectItem>
                             <SelectItem value="week">Per Week</SelectItem>
                             <SelectItem value="month">Per Month</SelectItem>

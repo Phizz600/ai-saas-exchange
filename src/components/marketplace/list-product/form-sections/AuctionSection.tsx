@@ -160,10 +160,6 @@ export function AuctionSection({
   // Helper function to get the display text for price decrement interval
   const getDecrementIntervalLabel = (interval: string) => {
     switch (interval) {
-      case "minute":
-        return "Per Minute";
-      case "hour":
-        return "Per Hour";
       case "day":
         return "Per Day";
       case "week":
@@ -332,7 +328,7 @@ export function AuctionSection({
                   <FormMessage />
                 </FormItem>} />
 
-            {/* 6. Decrement Interval */}
+            {/* 6. Decrement Interval - MODIFIED: Removed minute and hour options */}
             <FormField control={form.control} name="priceDecrementInterval" render={({
           field
         }) => <FormItem>
@@ -349,7 +345,7 @@ export function AuctionSection({
                       </Tooltip>
                     </TooltipProvider>
                   </FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value || "hour"}>
+                  <Select onValueChange={field.onChange} defaultValue={field.value || "day"}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select interval">
@@ -358,8 +354,6 @@ export function AuctionSection({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="minute">Per Minute</SelectItem>
-                      <SelectItem value="hour">Per Hour</SelectItem>
                       <SelectItem value="day">Per Day</SelectItem>
                       <SelectItem value="week">Per Week</SelectItem>
                       <SelectItem value="month">Per Month</SelectItem>
