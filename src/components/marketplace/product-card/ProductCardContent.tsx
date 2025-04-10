@@ -1,4 +1,3 @@
-
 import { Badge } from "@/components/ui/badge";
 import { formatCurrency } from "@/lib/utils";
 import { Database } from "@/integrations/supabase/types";

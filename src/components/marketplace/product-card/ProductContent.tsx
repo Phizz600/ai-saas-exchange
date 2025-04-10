@@ -23,6 +23,7 @@ interface ProductContentProps {
   reserve_price?: number; // Renamed from min_price
   price_decrement?: number;
   price_decrement_interval?: string;
+  no_reserve?: boolean; // Added no_reserve field
 }
 
 export function ProductContent({
@@ -43,14 +44,15 @@ export function ProductContent({
   auction_end_time,
   reserve_price, // Renamed from min_price
   price_decrement,
-  price_decrement_interval
+  price_decrement_interval,
+  no_reserve
 }: ProductContentProps) {
   // Ensure price values are either valid numbers or 0
   const displayPrice = (current_price || price || 0);
   const isAuction = !!auction_end_time;
   
-  // Check if this is a no-reserve auction (reserve_price is undefined or 0)
-  const isNoReserve = !reserve_price || reserve_price === 0;
+  // Check if this is a no-reserve auction (reserve_price is undefined or 0 or no_reserve is true)
+  const isNoReserve = no_reserve || !reserve_price || reserve_price === 0;
   
   return (
     <div className="p-0 space-y-4">
