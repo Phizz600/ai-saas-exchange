@@ -54,5 +54,4 @@ export interface ListProductFormData {
   numberOfEmployees?: string;
   requires_nda?: boolean;
   nda_content?: string;
-  noReserve?: boolean; // Option for no reserve auctions
 }

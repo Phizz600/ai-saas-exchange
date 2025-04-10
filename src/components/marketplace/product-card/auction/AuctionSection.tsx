@@ -24,7 +24,6 @@ interface AuctionSectionProps {
     price_decrement?: number;
     auction_end_time?: string;
     highest_bid?: number;
-    no_reserve?: boolean;    // Added no_reserve field
   };
 }
 
@@ -38,6 +37,9 @@ export function AuctionSection({ product }: AuctionSectionProps) {
 
   // Use starting_price as fallback if neither highest_bid nor current_price is available
   const startingPrice = product.starting_price;
+  
+  // Check if this is a no-reserve auction (reserve_price is undefined or 0)
+  const isNoReserve = !product.reserve_price || product.reserve_price === 0;
 
   // Subscribe to real-time product updates
   useEffect(() => {
@@ -253,7 +255,7 @@ export function AuctionSection({ product }: AuctionSectionProps) {
             </div>
           )}
         </div>
-        {!product.no_reserve && (
+        {!isNoReserve && (
           <div>
             <span className="text-sm font-semibold text-gray-600">Reserve Price</span>
             <div className="font-medium text-gray-900">
@@ -261,7 +263,7 @@ export function AuctionSection({ product }: AuctionSectionProps) {
             </div>
           </div>
         )}
-        {product.no_reserve && (
+        {isNoReserve && (
           <div>
             <div className="font-medium text-amber-600 flex items-center gap-1">
               <span className="py-1 px-2 bg-amber-100 text-amber-800 rounded-md text-xs">No Reserve</span>
