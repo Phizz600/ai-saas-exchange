@@ -1,4 +1,3 @@
-
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { UseFormReturn } from "react-hook-form";
@@ -16,15 +15,12 @@ import { calculateValuation, formatCurrency } from "../utils/valuationCalculator
 import { Card } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { Slider } from "@/components/ui/slider";
-
 interface AuctionSectionProps {
   form: UseFormReturn<ListProductFormData>;
 }
-
 export function AuctionSection({
   form
 }: AuctionSectionProps) {
-  
   const [valuation, setValuation] = useState<{
     low: number;
     high: number;
@@ -32,17 +28,15 @@ export function AuctionSection({
     low: 0,
     high: 0
   });
-  
   const [recommendedDecrement, setRecommendedDecrement] = useState<number>(0);
   const monthlyRevenue = form.watch("monthlyRevenue");
   const isAuction = form.watch("isAuction");
   const startingPrice = form.watch("startingPrice");
   const reservePrice = form.watch("reservePrice");
-  
   if (monthlyRevenue && !form.getValues("startingPrice")) {
     form.setValue("startingPrice", monthlyRevenue * 10);
   }
-  
+
   // Auto-calculate reserve price as 60% of starting price if not already set
   useEffect(() => {
     if (startingPrice && isAuction && !form.getValues("reservePrice")) {
@@ -50,17 +44,16 @@ export function AuctionSection({
       form.setValue("reservePrice", calculatedReserve);
     }
   }, [startingPrice, isAuction, form]);
-  
+
   // Calculate recommended price decrement
   useEffect(() => {
     if (startingPrice && form.getValues("auctionDuration")) {
       const duration = form.getValues("auctionDuration") || "30days";
       const reservePriceValue = form.getValues("reservePrice") || 0;
       const priceDiff = startingPrice - reservePriceValue;
-      
       let decrementDivisor = 720; // Default for 30 days with hourly decrements
-      
-      switch(duration) {
+
+      switch (duration) {
         case "14days":
           decrementDivisor = 336; // 336 hourly decrements in 14 days
           break;
@@ -74,30 +67,28 @@ export function AuctionSection({
           decrementDivisor = 2160; // 2160 hourly decrements in 90 days
           break;
       }
-      
+
       // Set decrement interval to hourly by default for better UX
       if (!form.getValues("priceDecrementInterval")) {
         form.setValue("priceDecrementInterval", "hour");
       }
-      
+
       // Calculate recommended decrement as priceDiff / decrementDivisor, rounded to nearest dollar
       const recommended = Math.max(1, Math.round(priceDiff / decrementDivisor));
       setRecommendedDecrement(recommended);
-      
+
       // Auto-set price decrement if not already set
       if (!form.getValues("priceDecrement")) {
         form.setValue("priceDecrement", recommended);
       }
     }
   }, [startingPrice, reservePrice, form]);
-  
   const watchMonthlyRevenue = form.watch("monthlyRevenue") || 0;
   const watchMonthlyChurnRate = form.watch("monthlyChurnRate") || 0;
   const watchGrossProfitMargin = (form.watch("grossProfitMargin") || 0) / 100;
   const watchIndustry = form.watch("industry") || "";
   const watchHasPatents = form.watch("hasPatents") || false;
   const watchCustomerAcquisitionCost = form.watch("customerAcquisitionCost");
-  
   const formatCurrencyInput = (value: string) => {
     let numericValue = value.replace(/[^0-9.]/g, '');
     const parts = numericValue.split('.');
@@ -118,12 +109,10 @@ export function AuctionSection({
     }
     return '';
   };
-  
   const parseCurrencyValue = (value: string) => {
     const numericValue = parseFloat(value.replace(/[$,]/g, ''));
     return isNaN(numericValue) ? 0 : numericValue;
   };
-  
   const handleValuationClick = (e: React.MouseEvent, value: number, isHigh: boolean) => {
     e.preventDefault();
     if (isAuction) {
@@ -136,13 +125,12 @@ export function AuctionSection({
       form.setValue("price", value);
     }
   };
-  
+
   // Calculate auction end date based on duration
   const setAuctionEndDate = (duration: string) => {
     const today = new Date();
     let endDate: Date;
-    
-    switch(duration) {
+    switch (duration) {
       case "14days":
         endDate = addDays(today, 14);
         break;
@@ -156,12 +144,11 @@ export function AuctionSection({
         endDate = addDays(today, 90);
         break;
       default:
-        endDate = addDays(today, 30); // Default to 30 days
+        endDate = addDays(today, 30);
+      // Default to 30 days
     }
-    
     form.setValue("auctionEndTime", endDate);
   };
-  
   useEffect(() => {
     const updateValuation = async () => {
       const newValuation = await calculateValuation(watchMonthlyRevenue, watchMonthlyChurnRate / 100, watchGrossProfitMargin, watchIndustry, watchHasPatents, undefined, undefined, watchCustomerAcquisitionCost);
@@ -173,26 +160,36 @@ export function AuctionSection({
   // Helper function to get the display text for price decrement interval
   const getDecrementIntervalLabel = (interval: string) => {
     switch (interval) {
-      case "minute": return "Per Minute";
-      case "hour": return "Per Hour";
-      case "day": return "Per Day";
-      case "week": return "Per Week";
-      case "month": return "Per Month";
-      default: return "Select interval";
+      case "minute":
+        return "Per Minute";
+      case "hour":
+        return "Per Hour";
+      case "day":
+        return "Per Day";
+      case "week":
+        return "Per Week";
+      case "month":
+        return "Per Month";
+      default:
+        return "Select interval";
     }
   };
 
   // Helper to get auction duration label
   const getAuctionDurationLabel = (duration: string) => {
     switch (duration) {
-      case "14days": return "14 Days";
-      case "30days": return "30 Days";
-      case "60days": return "60 Days";
-      case "90days": return "90 Days";
-      default: return "Select duration";
+      case "14days":
+        return "14 Days";
+      case "30days":
+        return "30 Days";
+      case "60days":
+        return "60 Days";
+      case "90days":
+        return "90 Days";
+      default:
+        return "Select duration";
     }
   };
-
   return <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
@@ -213,8 +210,8 @@ export function AuctionSection({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Starting Price */}
             <FormField control={form.control} name="startingPrice" render={({
-              field
-            }) => <FormItem>
+          field
+        }) => <FormItem>
                   <FormLabel className="flex items-center gap-2">
                     Starting Price (USD)
                     <TooltipProvider>
@@ -230,17 +227,17 @@ export function AuctionSection({
                   </FormLabel>
                   <FormControl>
                     <Input type="text" placeholder="Enter starting price" value={formatCurrencyInput(field.value?.toString() || '')} onChange={e => {
-                  const value = parseCurrencyValue(e.target.value);
-                  field.onChange(value > 0 ? value : undefined);
-                }} className="font-mono" />
+              const value = parseCurrencyValue(e.target.value);
+              field.onChange(value > 0 ? value : undefined);
+            }} className="font-mono" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>} />
 
             {/* Reserve Price */}
             <FormField control={form.control} name="reservePrice" render={({
-              field
-            }) => <FormItem>
+          field
+        }) => <FormItem>
                   <FormLabel className="flex items-center gap-2">
                     Reserve Price (USD)
                     <TooltipProvider>
@@ -256,21 +253,19 @@ export function AuctionSection({
                   </FormLabel>
                   <FormControl>
                     <Input type="text" placeholder="Enter reserve price" value={formatCurrencyInput(field.value?.toString() || '')} onChange={e => {
-                const value = parseCurrencyValue(e.target.value);
-                field.onChange(value >= 0 ? value : undefined);
-              }} className="font-mono" />
+              const value = parseCurrencyValue(e.target.value);
+              field.onChange(value >= 0 ? value : undefined);
+            }} className="font-mono" />
                   </FormControl>
                   <FormMessage />
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {field.value === 0 ? "No reserve auction: will sell at any price" : field.value ? "" : "Enter 0 for a no-reserve auction"}
-                  </p>
+                  
                 </FormItem>} />
           </div>
 
           {/* 4. Auction Duration */}
           <FormField control={form.control} name="auctionDuration" render={({
-          field
-        }) => <FormItem>
+        field
+      }) => <FormItem>
                   <FormLabel className="flex items-center gap-2">
                     Auction Duration
                     <TooltipProvider>
@@ -284,10 +279,10 @@ export function AuctionSection({
                       </Tooltip>
                     </TooltipProvider>
                   </FormLabel>
-                  <Select onValueChange={(value) => {
-                field.onChange(value);
-                setAuctionEndDate(value);
-              }} defaultValue={field.value || "30days"}>
+                  <Select onValueChange={value => {
+          field.onChange(value);
+          setAuctionEndDate(value);
+        }} defaultValue={field.value || "30days"}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select duration">
@@ -329,17 +324,11 @@ export function AuctionSection({
               field.onChange(value > 0 ? value : undefined);
             }} className="font-mono" />
                   </FormControl>
-                  {recommendedDecrement > 0 && (
-                    <div className="text-xs text-muted-foreground mt-1 flex items-center">
-                      <button 
-                        type="button" 
-                        onClick={() => form.setValue("priceDecrement", recommendedDecrement)}
-                        className="text-primary hover:underline flex items-center"
-                      >
+                  {recommendedDecrement > 0 && <div className="text-xs text-muted-foreground mt-1 flex items-center">
+                      <button type="button" onClick={() => form.setValue("priceDecrement", recommendedDecrement)} className="text-primary hover:underline flex items-center">
                         Recommended: ${recommendedDecrement}/interval
                       </button>
-                    </div>
-                  )}
+                    </div>}
                   <FormMessage />
                 </FormItem>} />
 
@@ -381,30 +370,22 @@ export function AuctionSection({
           </div>
 
           {/* Fix for the auctionEndTime field - return a proper React element instead of void */}
-          <FormField 
-            control={form.control} 
-            name="auctionEndTime" 
-            render={({ field }) => (
-              <FormItem className="hidden">
+          <FormField control={form.control} name="auctionEndTime" render={({
+        field
+      }) => <FormItem className="hidden">
                 <FormControl>
                   <Input type="hidden" />
                 </FormControl>
-              </FormItem>
-            )} 
-          />
+              </FormItem>} />
           
           {/* Hidden field for noReserve to track it internally based on reservePrice */}
-          <FormField 
-            control={form.control} 
-            name="noReserve" 
-            render={({ field }) => (
-              <FormItem className="hidden">
+          <FormField control={form.control} name="noReserve" render={({
+        field
+      }) => <FormItem className="hidden">
                 <FormControl>
                   <Input type="hidden" />
                 </FormControl>
-              </FormItem>
-            )} 
-          />
+              </FormItem>} />
           
         </div> : <div className="space-y-4">
           <FormField control={form.control} name="price" render={({
