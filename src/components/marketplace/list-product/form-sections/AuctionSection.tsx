@@ -24,6 +24,7 @@ interface AuctionSectionProps {
 export function AuctionSection({
   form
 }: AuctionSectionProps) {
+  
   const [valuation, setValuation] = useState<{
     low: number;
     high: number;
@@ -215,10 +216,12 @@ export function AuctionSection({
       </div>
       
       {isAuction ? <div className="space-y-4">
-          {/* 1. Starting Price */}
-          <FormField control={form.control} name="startingPrice" render={({
-          field
-        }) => <FormItem>
+          {/* 1. Starting Price and Reserve Price side by side */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Starting Price */}
+            <FormField control={form.control} name="startingPrice" render={({
+              field
+            }) => <FormItem>
                   <FormLabel className="flex items-center gap-2">
                     Starting Price (USD)
                     <TooltipProvider>
@@ -234,69 +237,68 @@ export function AuctionSection({
                   </FormLabel>
                   <FormControl>
                     <Input type="text" placeholder="Enter starting price" value={formatCurrencyInput(field.value?.toString() || '')} onChange={e => {
-              const value = parseCurrencyValue(e.target.value);
-              field.onChange(value > 0 ? value : undefined);
-            }} className="font-mono" />
+                  const value = parseCurrencyValue(e.target.value);
+                  field.onChange(value > 0 ? value : undefined);
+                }} className="font-mono" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>} />
 
-          {/* 2. Reserve Price and 3. No Reserve Option */}
-          <div className="border-t pt-4">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
-                <FormField control={form.control} name="noReserve" render={({
-              field
-            }) => <FormItem className="flex items-center space-x-2 mb-0">
-                  <FormControl>
-                    <Checkbox 
-                      checked={field.value || false} 
-                      onCheckedChange={field.onChange}
-                      id="noReserve"
-                    />
-                  </FormControl>
-                  <FormLabel htmlFor="noReserve" className="text-sm font-medium cursor-pointer mb-0">
-                    No Reserve Auction
-                  </FormLabel>
-                </FormItem>} />
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Info className="h-4 w-4 text-gray-500 cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="bg-white">
-                      <p>With no reserve, your auction will sell at any price. This can attract more buyers.</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
+            {/* 2. No Reserve Option and Reserve Price */}
+            <div className="space-y-2">
+              <FormField control={form.control} name="noReserve" render={({
+                field
+              }) => <FormItem className="flex items-center space-x-2 mb-0">
+                    <FormControl>
+                      <Checkbox 
+                        checked={field.value || false} 
+                        onCheckedChange={field.onChange}
+                        id="noReserve"
+                      />
+                    </FormControl>
+                    <FormLabel htmlFor="noReserve" className="text-sm font-medium cursor-pointer mb-0 flex items-center gap-2">
+                      No Reserve Auction
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Info className="h-4 w-4 text-gray-500 cursor-help" />
+                          </TooltipTrigger>
+                          <TooltipContent className="bg-white">
+                            <p>With no reserve, your auction will sell at any price. This can attract more buyers.</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </FormLabel>
+                  </FormItem>} />
+
+              {!noReserve && (
+                <FormField control={form.control} name="reservePrice" render={({
+                  field
+                }) => <FormItem>
+                        <FormLabel className="flex items-center gap-2">
+                          Reserve Price (USD)
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Info className="h-4 w-4 text-gray-500 cursor-help" />
+                              </TooltipTrigger>
+                              <TooltipContent className="bg-white">
+                                <p>The lowest price you're willing to accept. The auction will stop at this price</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </FormLabel>
+                        <FormControl>
+                          <Input type="text" placeholder="Enter reserve price" value={formatCurrencyInput(field.value?.toString() || '')} onChange={e => {
+                    const value = parseCurrencyValue(e.target.value);
+                    field.onChange(value > 0 ? value : undefined);
+                  }} className="font-mono" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>} />
+              )}
             </div>
           </div>
-
-          {!noReserve && <FormField control={form.control} name="reservePrice" render={({
-            field
-          }) => <FormItem>
-                  <FormLabel className="flex items-center gap-2">
-                    Reserve Price (USD)
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Info className="h-4 w-4 text-gray-500 cursor-help" />
-                        </TooltipTrigger>
-                        <TooltipContent className="bg-white">
-                          <p>The lowest price you're willing to accept. The auction will stop at this price</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </FormLabel>
-                  <FormControl>
-                    <Input type="text" placeholder="Enter reserve price" value={formatCurrencyInput(field.value?.toString() || '')} onChange={e => {
-              const value = parseCurrencyValue(e.target.value);
-              field.onChange(value > 0 ? value : undefined);
-            }} className="font-mono" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>} />}
 
           {/* 4. Auction Duration */}
           <FormField control={form.control} name="auctionDuration" render={({
