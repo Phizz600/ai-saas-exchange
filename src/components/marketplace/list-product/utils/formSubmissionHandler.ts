@@ -80,9 +80,9 @@ export const submitProductForm = async (
       status: "pending",
       is_auction: formData.isAuction || false,
       starting_price: formData.isAuction ? Math.max(1, Number(formData.startingPrice || 1)) : null,
-      min_price: formData.isAuction ? Math.max(1, Number(formData.minPrice || 1)) : null,
+      reserve_price: formData.isAuction ? Math.max(1, Number(formData.reservePrice || 1)) : null, // Changed from min_price to reserve_price
       price_decrement: formData.isAuction ? Math.max(1, Number(formData.priceDecrement || 1)) : null,
-      price_decrement_interval: formData.isAuction ? formData.priceDecrementInterval : null,
+      price_decrement_interval: formData.priceDecrementInterval,
       auction_end_time: formData.isAuction && formData.auctionEndTime ? formData.auctionEndTime.toISOString() : null,
       auction_status: formData.isAuction ? "pending" : null,
       business_type: formData.businessType,
@@ -103,13 +103,8 @@ export const submitProductForm = async (
       product_link: formData.productLink,
       requires_nda: formData.requires_nda === true, // Ensure boolean value
       nda_content: formData.nda_content,
+      no_reserve: formData.noReserve === true, // Add no_reserve field
     };
-
-    // Add console.log to debug NDA fields
-    console.log("Product submission - NDA fields:", {
-      requires_nda: formData.requires_nda,
-      nda_content: formData.nda_content
-    });
 
     // Submit the product data to Supabase
     const { data, error } = await supabase
@@ -277,7 +272,7 @@ export const handleProductSubmission = async (
       // Handle auction specific fields - use the actual database column names
       auction_status: data.isAuction ? "pending" : null,
       starting_price: data.isAuction ? Math.max(1, Number(data.startingPrice || 1)) : null,
-      min_price: data.isAuction ? Math.max(1, Number(data.minPrice || 1)) : null,
+      reserve_price: data.isAuction ? Math.max(1, Number(data.reservePrice || 1)) : null, // Changed from min_price to reserve_price
       price_decrement: data.isAuction ? Math.max(1, Number(data.priceDecrement || 1)) : null,
       price_decrement_interval: data.isAuction ? data.priceDecrementInterval : null,
       auction_end_time: data.isAuction && data.auctionEndTime ? data.auctionEndTime.toISOString() : null,
@@ -300,13 +295,14 @@ export const handleProductSubmission = async (
       product_link: data.productLink,
       requires_nda: data.requires_nda === true, // Ensure boolean value
       nda_content: data.nda_content || null,
+      no_reserve: data.noReserve === true, // Add no_reserve field
     };
     
     // Additional debug logs
     console.log("Final product data - Price fields:", {
       price: productData.price,
       starting_price: productData.starting_price,
-      min_price: productData.min_price,
+      reserve_price: productData.reserve_price,
       current_price: productData.current_price
     });
     

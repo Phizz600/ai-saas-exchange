@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { calculateCurrentAuctionPrice } from "@/integrations/supabase/auction";
 

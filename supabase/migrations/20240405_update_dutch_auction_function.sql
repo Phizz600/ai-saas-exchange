@@ -30,6 +30,7 @@ BEGIN
   WHERE 
     auction_end_time > NOW()
     AND current_price > reserve_price  -- Using reserve_price instead of min_price
-    AND price_decrement IS NOT NULL;
+    AND price_decrement IS NOT NULL
+    AND (no_reserve = FALSE OR reserve_price IS NOT NULL); -- Only check reserve_price if it's not a no_reserve auction
 END;
 $function$;
