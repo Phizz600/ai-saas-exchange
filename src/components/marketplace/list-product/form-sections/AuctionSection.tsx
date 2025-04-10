@@ -1,4 +1,3 @@
-
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { UseFormReturn } from "react-hook-form";
@@ -54,27 +53,24 @@ export function AuctionSection({
   // Calculate recommended price decrement
   useEffect(() => {
     if (startingPrice && form.getValues("auctionDuration")) {
-      const duration = form.getValues("auctionDuration") || "7days";
+      const duration = form.getValues("auctionDuration") || "30days";
       const reservePrice = form.getValues("reservePrice") || 0;
       const priceDiff = startingPrice - reservePrice;
       
-      let decrementDivisor = 168; // Default for 7 days with hourly decrements
+      let decrementDivisor = 720; // Default for 30 days with hourly decrements
       
       switch(duration) {
-        case "1day":
-          decrementDivisor = 24; // 24 hourly decrements in 1 day
-          break;
-        case "3days":
-          decrementDivisor = 72; // 72 hourly decrements in 3 days
-          break;
-        case "7days":
-          decrementDivisor = 168; // 168 hourly decrements in 7 days
-          break;
         case "14days":
           decrementDivisor = 336; // 336 hourly decrements in 14 days
           break;
         case "30days":
           decrementDivisor = 720; // 720 hourly decrements in 30 days
+          break;
+        case "60days":
+          decrementDivisor = 1440; // 1440 hourly decrements in 60 days
+          break;
+        case "90days":
+          decrementDivisor = 2160; // 2160 hourly decrements in 90 days
           break;
       }
       
@@ -146,23 +142,20 @@ export function AuctionSection({
     let endDate: Date;
     
     switch(duration) {
-      case "1day":
-        endDate = addDays(today, 1);
-        break;
-      case "3days":
-        endDate = addDays(today, 3);
-        break;
-      case "7days":
-        endDate = addDays(today, 7);
-        break;
       case "14days":
         endDate = addDays(today, 14);
         break;
       case "30days":
         endDate = addDays(today, 30);
         break;
+      case "60days":
+        endDate = addDays(today, 60);
+        break;
+      case "90days":
+        endDate = addDays(today, 90);
+        break;
       default:
-        endDate = addDays(today, 7); // Default to 7 days
+        endDate = addDays(today, 30); // Default to 30 days
     }
     
     form.setValue("auctionEndTime", endDate);
@@ -191,11 +184,10 @@ export function AuctionSection({
   // Helper to get auction duration label
   const getAuctionDurationLabel = (duration: string) => {
     switch (duration) {
-      case "1day": return "1 Day";
-      case "3days": return "3 Days";
-      case "7days": return "7 Days";
       case "14days": return "14 Days";
       case "30days": return "30 Days";
+      case "60days": return "60 Days";
+      case "90days": return "90 Days";
       default: return "Select duration";
     }
   };
@@ -291,20 +283,19 @@ export function AuctionSection({
                   <Select onValueChange={(value) => {
                 field.onChange(value);
                 setAuctionEndDate(value);
-              }} defaultValue={field.value || "7days"}>
+              }} defaultValue={field.value || "30days"}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select duration">
-                          {field.value ? getAuctionDurationLabel(field.value) : "7 Days"}
+                          {field.value ? getAuctionDurationLabel(field.value) : "30 Days"}
                         </SelectValue>
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="1day">1 Day</SelectItem>
-                      <SelectItem value="3days">3 Days</SelectItem>
-                      <SelectItem value="7days">7 Days</SelectItem>
                       <SelectItem value="14days">14 Days</SelectItem>
                       <SelectItem value="30days">30 Days</SelectItem>
+                      <SelectItem value="60days">60 Days</SelectItem>
+                      <SelectItem value="90days">90 Days</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />

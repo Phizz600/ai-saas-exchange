@@ -68,7 +68,7 @@ export function ListProductForm() {
       termsAgreement: false,
       deliverables: [],
       productLink: "",
-      auctionDuration: "7days", // Default auction duration
+      auctionDuration: "30days", // Updated default auction duration
       noReserve: false, // Default to having a reserve price
     },
   });
