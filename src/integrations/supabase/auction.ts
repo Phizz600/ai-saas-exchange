@@ -42,11 +42,18 @@ export const calculateCurrentAuctionPrice = (
       // Approximate a month as 30 days
       decrementCount = Math.floor(timeDiffMs / (30 * 24 * 60 * 60 * 1000));
       break;
+    default:
+      decrementCount = Math.floor(timeDiffMs / (60 * 60 * 1000)); // Default to hourly
   }
   
   // Calculate current price
   const totalDecrement = decrementCount * priceDecrement;
   const calculatedPrice = startingPrice - totalDecrement;
+  
+  // If this is a no-reserve auction (reservePrice is 0), allow price to go as low as 1
+  if (!reservePrice) {
+    return Math.max(calculatedPrice, 1);
+  }
   
   // Don't go below reserve price
   return Math.max(calculatedPrice, reservePrice);
@@ -106,6 +113,39 @@ export const placeBid = async (productId: string, amount: number) => {
     return bid;
   } catch (error) {
     console.error('Error in placeBid:', error);
+    throw error;
+  }
+};
+
+/**
+ * Checks if a bid meets the reserve price for a product
+ * @param productId ID of the product
+ * @param bidAmount Bid amount to check
+ * @returns Object containing whether the bid meets the reserve price
+ */
+export const checkReservePriceMet = async (productId: string, bidAmount: number) => {
+  try {
+    const { data: product, error } = await supabase
+      .from('products')
+      .select('reserve_price, no_reserve')
+      .eq('id', productId)
+      .single();
+    
+    if (error) {
+      throw new Error('Product not found');
+    }
+    
+    // If it's a no-reserve auction or has no reserve price set, any bid meets the reserve
+    if (product.no_reserve || !product.reserve_price) {
+      return { reserveMet: true, reservePrice: null };
+    }
+    
+    return { 
+      reserveMet: bidAmount >= product.reserve_price,
+      reservePrice: product.reserve_price
+    };
+  } catch (error) {
+    console.error('Error checking reserve price:', error);
     throw error;
   }
 };

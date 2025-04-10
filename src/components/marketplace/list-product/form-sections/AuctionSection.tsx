@@ -1,3 +1,4 @@
+
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { UseFormReturn } from "react-hook-form";
@@ -37,6 +38,7 @@ export function AuctionSection({
   const monthlyRevenue = form.watch("monthlyRevenue");
   const isAuction = form.watch("isAuction");
   const startingPrice = form.watch("startingPrice");
+  const noReserve = form.watch("noReserve");
   
   if (monthlyRevenue && !form.getValues("startingPrice")) {
     form.setValue("startingPrice", monthlyRevenue * 10);
@@ -44,11 +46,22 @@ export function AuctionSection({
   
   // Auto-calculate reserve price as 60% of starting price if not already set
   useEffect(() => {
-    if (startingPrice && isAuction && !form.getValues("reservePrice")) {
+    if (startingPrice && isAuction && !form.getValues("reservePrice") && !noReserve) {
       const calculatedReserve = Math.round(startingPrice * 0.6);
       form.setValue("reservePrice", calculatedReserve);
     }
-  }, [startingPrice, isAuction, form]);
+  }, [startingPrice, isAuction, form, noReserve]);
+  
+  // When noReserve is toggled, clear the reserve price
+  useEffect(() => {
+    if (noReserve) {
+      form.setValue("reservePrice", undefined);
+    } else if (startingPrice && !form.getValues("reservePrice")) {
+      // Re-calculate reserve price when switching back to reserve auction
+      const calculatedReserve = Math.round(startingPrice * 0.6);
+      form.setValue("reservePrice", calculatedReserve);
+    }
+  }, [noReserve, form, startingPrice]);
   
   // Calculate recommended price decrement
   useEffect(() => {
@@ -236,7 +249,40 @@ export function AuctionSection({
                   <FormMessage />
                 </FormItem>} />
 
-            {/* Reserve Price */}
+            {/* No Reserve Checkbox */}
+            <FormField
+              control={form.control}
+              name="noReserve"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 mt-8">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel className="flex items-center gap-2 cursor-pointer">
+                      No Reserve Auction
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Info className="h-4 w-4 text-gray-500 cursor-help" />
+                          </TooltipTrigger>
+                          <TooltipContent className="bg-white max-w-xs">
+                            <p>A no-reserve auction will sell to the highest bidder regardless of price. This can attract more bidders but may result in a lower final price.</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </FormLabel>
+                  </div>
+                </FormItem>
+              )}
+            />
+          </div>
+
+          {/* Reserve Price (only shown if noReserve is false) */}
+          {!noReserve && (
             <FormField control={form.control} name="reservePrice" render={({
               field
             }) => <FormItem>
@@ -248,7 +294,7 @@ export function AuctionSection({
                           <Info className="h-4 w-4 text-gray-500 cursor-help" />
                         </TooltipTrigger>
                         <TooltipContent className="bg-white">
-                          <p>The lowest price you're willing to accept. Leave blank or set to 0 for a no-reserve auction that will sell at any price.</p>
+                          <p>The lowest price you're willing to accept. The auction will not sell below this price.</p>
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
@@ -261,7 +307,7 @@ export function AuctionSection({
                   </FormControl>
                   <FormMessage />
                 </FormItem>} />
-          </div>
+          )}
 
           {/* 4. Auction Duration */}
           <FormField control={form.control} name="auctionDuration" render={({

@@ -22,16 +22,35 @@ const corsHeaders = {
 
 // Email templates for different scenarios
 const getWinnerEmailTemplate = (product: any, bidAmount: number) => {
+  const hasMissedReserve = !product.no_reserve && product.reserve_price && bidAmount < product.reserve_price;
+  
   return `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-      <h2 style="color: #8B5CF6;">Congratulations! You've won an auction</h2>
-      <p>You are the winning bidder for <strong>${product.title}</strong> with a bid of $${bidAmount.toLocaleString()}.</p>
-      <p>The seller will be in touch with you soon to arrange the next steps. You can also start a conversation with the seller in your messages.</p>
+      <h2 style="color: #8B5CF6;">${hasMissedReserve ? 'You placed the highest bid' : 'Congratulations! You\'ve won an auction'}</h2>
+      <p>You are the highest bidder for <strong>${product.title}</strong> with a bid of $${bidAmount.toLocaleString()}.</p>
+      
+      ${hasMissedReserve ? 
+        `<div style="margin: 20px 0; padding: 15px; background-color: #fff4e5; border-left: 4px solid #ff9800; border-radius: 5px;">
+          <p style="margin: 0; color: #ff6d00;"><strong>Important:</strong> Your bid of $${bidAmount.toLocaleString()} is below the seller's reserve price of $${product.reserve_price.toLocaleString()}.</p>
+          <p style="margin: 5px 0; color: #ff6d00;">The seller can choose to accept or decline this bid. Please check your messages for updates.</p>
+        </div>` 
+        : 
+        `<p>The seller will be in touch with you soon to arrange the next steps. You can also start a conversation with the seller in your messages.</p>`
+      }
+      
       <div style="margin: 20px 0; padding: 15px; background-color: #f7f7f7; border-radius: 5px;">
         <p style="margin: 0;"><strong>Product:</strong> ${product.title}</p>
         <p style="margin: 5px 0;"><strong>Final Price:</strong> $${bidAmount.toLocaleString()}</p>
+        ${!product.no_reserve && product.reserve_price ? 
+          `<p style="margin: 5px 0;"><strong>Reserve Price:</strong> $${product.reserve_price.toLocaleString()}</p>` 
+          : ''}
+        ${product.no_reserve ? 
+          `<p style="margin: 5px 0;"><strong>No Reserve Auction:</strong> This was a no-reserve auction, meaning it will sell at the highest bid price.</p>` 
+          : ''}
       </div>
+      
       <p>Thank you for participating in our Dutch auction platform!</p>
+      
       <a href="${supabaseUrl.replace('.supabase.co', '.vercel.app')}/messages" 
          style="display: inline-block; background-color: #8B5CF6; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-top: 15px;">
         Go to Messages
@@ -41,16 +60,31 @@ const getWinnerEmailTemplate = (product: any, bidAmount: number) => {
 };
 
 const getSellerEmailTemplate = (product: any, bidAmount: number, winnerEmail: string) => {
+  const hasMissedReserve = !product.no_reserve && product.reserve_price && bidAmount < product.reserve_price;
+  
   return `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-      <h2 style="color: #8B5CF6;">Your auction has ended successfully!</h2>
-      <p>Your auction for <strong>${product.title}</strong> has ended with a winning bid of $${bidAmount.toLocaleString()}.</p>
-      <p>Please contact the buyer at <strong>${winnerEmail}</strong> to arrange the next steps. You can also use the messaging system on our platform.</p>
+      <h2 style="color: #8B5CF6;">Your auction has ended!</h2>
+      <p>Your auction for <strong>${product.title}</strong> has ended with a highest bid of $${bidAmount.toLocaleString()}.</p>
+      
+      ${hasMissedReserve ? 
+        `<div style="margin: 20px 0; padding: 15px; background-color: #fff4e5; border-left: 4px solid #ff9800; border-radius: 5px;">
+          <p style="margin: 0; color: #ff6d00;"><strong>Important:</strong> The highest bid of $${bidAmount.toLocaleString()} is below your reserve price of $${product.reserve_price.toLocaleString()}.</p>
+          <p style="margin: 5px 0; color: #ff6d00;">You can choose to accept or decline this bid. Please use the messaging system to communicate with the buyer.</p>
+        </div>`
+        :
+        `<p>Please contact the buyer at <strong>${winnerEmail}</strong> to arrange the next steps. You can also use the messaging system on our platform.</p>`
+      }
+      
       <div style="margin: 20px 0; padding: 15px; background-color: #f7f7f7; border-radius: 5px;">
         <p style="margin: 0;"><strong>Product:</strong> ${product.title}</p>
-        <p style="margin: 5px 0;"><strong>Final Price:</strong> $${bidAmount.toLocaleString()}</p>
+        <p style="margin: 5px 0;"><strong>Highest Bid:</strong> $${bidAmount.toLocaleString()}</p>
+        ${!product.no_reserve && product.reserve_price ? 
+          `<p style="margin: 5px 0;"><strong>Your Reserve Price:</strong> $${product.reserve_price.toLocaleString()}</p>` 
+          : ''}
         <p style="margin: 5px 0;"><strong>Buyer Email:</strong> ${winnerEmail}</p>
       </div>
+      
       <a href="${supabaseUrl.replace('.supabase.co', '.vercel.app')}/messages" 
          style="display: inline-block; background-color: #8B5CF6; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-top: 15px;">
         Go to Messages
@@ -67,6 +101,12 @@ const getNoWinnerEmailTemplate = (product: any) => {
       <p>You may want to consider relisting the product with a different starting price or as a fixed-price listing.</p>
       <div style="margin: 20px 0; padding: 15px; background-color: #f7f7f7; border-radius: 5px;">
         <p style="margin: 0;"><strong>Product:</strong> ${product.title}</p>
+        ${!product.no_reserve && product.reserve_price ? 
+          `<p style="margin: 5px 0;"><strong>Reserve Price:</strong> $${product.reserve_price.toLocaleString()}</p>` 
+          : ''}
+        ${product.no_reserve ? 
+          `<p style="margin: 5px 0;"><strong>No Reserve:</strong> This was a no-reserve auction.</p>` 
+          : ''}
       </div>
       <a href="${supabaseUrl.replace('.supabase.co', '.vercel.app')}/product-dashboard" 
          style="display: inline-block; background-color: #8B5CF6; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-top: 15px;">
@@ -175,11 +215,17 @@ Deno.serve(async (req) => {
 
       console.log(`Sending winner email to ${winnerEmail} and seller email to ${sellerEmail}`);
 
+      // Check if bid meets reserve price
+      const reservePriceMet = product.no_reserve || !product.reserve_price || product.highest_bid >= product.reserve_price;
+      console.log(`Reserve price met: ${reservePriceMet}, no_reserve: ${product.no_reserve}, reserve_price: ${product.reserve_price}, highest_bid: ${product.highest_bid}`);
+
       // Send email to winner using Resend
       const winnerResponse = await resend.emails.send({
         from: 'AI Exchange <notifications@ai-exchange.club>',
         to: [winnerEmail],
-        subject: `Congratulations! You won the auction for ${product.title}`,
+        subject: reservePriceMet 
+          ? `Congratulations! You won the auction for ${product.title}`
+          : `Your bid for ${product.title} - Reserve price not met`,
         html: getWinnerEmailTemplate(product, product.highest_bid)
       });
 
@@ -192,7 +238,9 @@ Deno.serve(async (req) => {
       const sellerResponse = await resend.emails.send({
         from: 'AI Exchange <notifications@ai-exchange.club>',
         to: [sellerEmail],
-        subject: `Your auction for ${product.title} has ended successfully!`,
+        subject: reservePriceMet
+          ? `Your auction for ${product.title} has ended successfully!`
+          : `Your auction for ${product.title} has ended - Reserve price not met`,
         html: getSellerEmailTemplate(product, product.highest_bid, winnerEmail)
       });
 
@@ -201,11 +249,13 @@ Deno.serve(async (req) => {
         throw new Error(`Failed to send seller email: ${JSON.stringify(sellerResponse?.error)}`);
       }
 
-      // Update product status if needed
-      if (product.status !== 'ended') {
+      // Update product status 
+      const newStatus = reservePriceMet ? 'ended' : 'reserve_not_met';
+      
+      if (product.status !== newStatus) {
         const { error: updateError } = await supabase
           .from('products')
-          .update({ status: 'ended' })
+          .update({ status: newStatus })
           .eq('id', productId);
 
         if (updateError) {
@@ -214,7 +264,7 @@ Deno.serve(async (req) => {
         }
       }
 
-      console.log('Successfully sent auction result emails for winner auction');
+      console.log(`Successfully sent auction result emails. Reserve price met: ${reservePriceMet}`);
       
       return new Response(
         JSON.stringify({ 
@@ -222,7 +272,8 @@ Deno.serve(async (req) => {
           message: 'Auction result emails sent successfully using Resend',
           winner: {
             email: winnerEmail,
-            bid: product.highest_bid
+            bid: product.highest_bid,
+            reservePriceMet
           }
         }),
         { 
