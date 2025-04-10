@@ -24,8 +24,8 @@ export const ProductGrid = ({ products, isLoading = false, onProductView }: Prod
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 py-8 px-4">
-        {Array.from({ length: 6 }).map((_, index) => (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 py-8 px-4">
+        {Array.from({ length: 8 }).map((_, index) => (
           <ProductCardSkeleton key={index} />
         ))}
       </div>
@@ -47,7 +47,7 @@ export const ProductGrid = ({ products, isLoading = false, onProductView }: Prod
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 py-8 px-4 max-w-[1400px] mx-auto">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 py-8 px-4 max-w-[1400px] mx-auto">
       {products.map((product, index) => (
         <motion.div
           key={product.id}
