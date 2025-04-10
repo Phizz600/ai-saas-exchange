@@ -4,7 +4,7 @@ import { supabase } from './client';
 /**
  * Calculates the current price of a Dutch auction based on the auction parameters
  * @param startingPrice The initial auction price
- * @param minPrice The minimum auction price
+ * @param reservePrice The minimum auction price (renamed from minPrice)
  * @param priceDecrement How much the price decreases per interval
  * @param priceDecrementInterval The interval for price decreases (minute, hour, day, etc.)
  * @param auctionStartTime When the auction started
@@ -13,7 +13,7 @@ import { supabase } from './client';
  */
 export const calculateCurrentAuctionPrice = (
   startingPrice: number,
-  minPrice: number,
+  reservePrice: number,
   priceDecrement: number,
   priceDecrementInterval: string,
   auctionStartTime: string,
@@ -48,8 +48,8 @@ export const calculateCurrentAuctionPrice = (
   const totalDecrement = decrementCount * priceDecrement;
   const calculatedPrice = startingPrice - totalDecrement;
   
-  // Don't go below minimum price
-  return Math.max(calculatedPrice, minPrice);
+  // Don't go below reserve price
+  return Math.max(calculatedPrice, reservePrice);
 };
 
 /**

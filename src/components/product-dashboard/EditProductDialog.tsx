@@ -89,7 +89,7 @@ export function EditProductDialog({ product, isOpen, onClose }: EditProductDialo
           monthly_revenue: data.monthly_revenue,
           monthly_traffic: data.monthly_traffic,
           starting_price: data.starting_price,
-          min_price: data.min_price,
+          min_price: data.min_price, // Keep as min_price in database
           price_decrement: data.price_decrement,
           price_decrement_interval: data.price_decrement_interval,
           auction_end_time: data.auction_end_time?.toISOString(),
@@ -231,7 +231,7 @@ export function EditProductDialog({ product, isOpen, onClose }: EditProductDialo
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="flex items-center gap-2">
-                          Minimum Price ($)
+                          Reserve Price ($)
                           <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger asChild>

@@ -80,7 +80,7 @@ export const submitProductForm = async (
       status: "pending",
       is_auction: formData.isAuction || false,
       starting_price: formData.isAuction ? Math.max(1, Number(formData.startingPrice || 1)) : null,
-      min_price: formData.isAuction ? Math.max(1, Number(formData.minPrice || 1)) : null,
+      min_price: formData.isAuction ? Math.max(1, Number(formData.reservePrice || 1)) : null,
       price_decrement: formData.isAuction ? Math.max(1, Number(formData.priceDecrement || 1)) : null,
       price_decrement_interval: formData.isAuction ? formData.priceDecrementInterval : null,
       auction_end_time: formData.isAuction && formData.auctionEndTime ? formData.auctionEndTime.toISOString() : null,
@@ -249,6 +249,16 @@ export const handleProductSubmission = async (
     // Set current_price initially equal to price or starting_price
     const currentPrice = data.isAuction ? Math.max(1, Number(data.startingPrice)) : Math.max(1, Number(data.price));
     
+    // Calculate auction end time if duration is specified
+    let auctionEndTime = data.auctionEndTime;
+    if (data.isAuction && data.auctionDuration && !data.auctionEndTime) {
+      const durationDays = parseInt(data.auctionDuration);
+      if (!isNaN(durationDays)) {
+        const today = new Date();
+        auctionEndTime = new Date(today.setDate(today.getDate() + durationDays));
+      }
+    }
+    
     // Prepare product data - remove is_auction field and use database-compatible fields
     const productData = {
       title: data.title,
@@ -277,10 +287,10 @@ export const handleProductSubmission = async (
       // Handle auction specific fields - use the actual database column names
       auction_status: data.isAuction ? "pending" : null,
       starting_price: data.isAuction ? Math.max(1, Number(data.startingPrice || 1)) : null,
-      min_price: data.isAuction ? Math.max(1, Number(data.minPrice || 1)) : null,
+      min_price: data.isAuction ? Math.max(1, Number(data.reservePrice || 1)) : null, // Changed from reservePrice to min_price for database
       price_decrement: data.isAuction ? Math.max(1, Number(data.priceDecrement || 1)) : null,
       price_decrement_interval: data.isAuction ? data.priceDecrementInterval : null,
-      auction_end_time: data.isAuction && data.auctionEndTime ? data.auctionEndTime.toISOString() : null,
+      auction_end_time: data.isAuction && auctionEndTime ? auctionEndTime.toISOString() : null,
       current_price: currentPrice, // Add current price field
       business_type: data.businessType,
       deliverables: data.deliverables || [],
