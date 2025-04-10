@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Timer, TrendingDown, ChevronDown, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,7 @@ import { BidForm } from "@/components/marketplace/product-card/bid/BidForm";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { sendAuctionResultEmail } from "@/integrations/supabase/functions";
+
 interface ProductPricingProps {
   product: {
     id: string;
@@ -19,15 +21,17 @@ interface ProductPricingProps {
     auction_end_time?: string;
     price_decrement?: number;
     price_decrement_interval?: string;
-    min_price?: number;
+    reserve_price?: number; // Changed from min_price
     demo_url?: string;
     highest_bid?: number;
     highest_bidder_id?: string;
     starting_price?: number;
     title?: string;
     status?: string;
+    no_reserve?: boolean; // Added no_reserve field
   };
 }
+
 interface Bid {
   id: string;
   amount: number;
@@ -38,6 +42,7 @@ interface Bid {
     full_name: string | null;
   };
 }
+
 export function ProductPricing({
   product
 }: ProductPricingProps) {
@@ -280,8 +285,11 @@ export function ProductPricing({
                   {hasActiveBids && <p className="text-sm text-emerald-600 font-medium">
                       Current price set by highest authorized bid
                     </p>}
-                  {product.min_price && <p className="text-sm text-gray-600 mt-1">
-                      Min Price: ${product.min_price.toLocaleString()}
+                  {!product.no_reserve && product.reserve_price && <p className="text-sm text-gray-600 mt-1">
+                      Reserve Price: ${product.reserve_price.toLocaleString()}
+                    </p>}
+                  {product.no_reserve && <p className="text-sm text-amber-600 mt-1">
+                      No Reserve - Sells at any price
                     </p>}
                 </>}
             </div>

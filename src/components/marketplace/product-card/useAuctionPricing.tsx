@@ -9,10 +9,11 @@ export function useAuctionPricing(product: {
   auction_end_time?: string;
   starting_price?: number;
   current_price?: number;
-  min_price?: number;
+  reserve_price?: number; // Changed from min_price to reserve_price
   price_decrement?: number;
   price_decrement_interval?: string;
   created_at: string;
+  no_reserve?: boolean; // Added no_reserve field
 }) {
   const [timeLeft, setTimeLeft] = useState<string>("");
   const [currentPrice, setCurrentPrice] = useState<number | null>(product.current_price || null);
@@ -47,7 +48,7 @@ export function useAuctionPricing(product: {
     const updateCurrentPrice = () => {
       if (
         product.starting_price !== undefined &&
-        product.min_price !== undefined &&
+        product.reserve_price !== undefined && // Changed from min_price to reserve_price
         product.price_decrement !== undefined &&
         product.price_decrement_interval !== undefined &&
         product.created_at !== undefined &&
@@ -55,7 +56,7 @@ export function useAuctionPricing(product: {
       ) {
         const calculatedPrice = calculateCurrentAuctionPrice(
           product.starting_price,
-          product.min_price,
+          product.reserve_price, // Changed from min_price to reserve_price
           product.price_decrement,
           product.price_decrement_interval,
           product.created_at
@@ -79,7 +80,7 @@ export function useAuctionPricing(product: {
   }, [
     product.auction_end_time,
     product.starting_price,
-    product.min_price,
+    product.reserve_price, // Changed from min_price to reserve_price
     product.price_decrement,
     product.price_decrement_interval,
     product.created_at,

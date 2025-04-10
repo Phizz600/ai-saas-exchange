@@ -33,9 +33,10 @@ interface ProductCardProps {
     nda_content?: string;
     auction_end_time?: string;
     current_price?: number;
-    min_price?: number;
+    reserve_price?: number; // Changed from min_price to reserve_price
     price_decrement?: number;
     price_decrement_interval?: string;
+    no_reserve?: boolean; // Added no_reserve field
   };
 }
 
@@ -118,9 +119,10 @@ export function ProductCard({ product }: ProductCardProps) {
         is_traffic_verified={product.is_traffic_verified}
         requires_nda={showLimitedInfo}
         auction_end_time={product.auction_end_time}
-        min_price={product.min_price}
+        reserve_price={product.reserve_price} // Changed from min_price to reserve_price
         price_decrement={product.price_decrement}
         price_decrement_interval={product.price_decrement_interval}
+        no_reserve={product.no_reserve} // Added no_reserve prop
       />
       
       <CardFooter className="p-5 pt-0 space-y-3 flex flex-col">

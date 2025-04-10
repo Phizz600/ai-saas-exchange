@@ -20,8 +20,9 @@ interface ProductCardActionsProps {
     image?: string;
     auction_end_time?: string;
     current_price?: number;
-    min_price?: number;
+    reserve_price?: number; // Changed from min_price to reserve_price
     price_decrement?: number;
+    no_reserve?: boolean; // Added no_reserve field
   };
 }
 

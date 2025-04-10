@@ -17,12 +17,13 @@ interface ProductCardContentProps {
   monthlyRevenue: Product['monthly_revenue'];
   auction_end_time?: Product['auction_end_time'];
   current_price?: Product['current_price'];
-  min_price?: Product['min_price'];
+  reserve_price?: Product['min_price']; // Changed from min_price to reserve_price
   price_decrement?: Product['price_decrement'];
   auction_status?: Product['auction_status'];
   price_decrement_interval?: Product['price_decrement_interval'];
   created_at: string;
   starting_price?: Product['starting_price'];
+  no_reserve?: boolean; // Added no_reserve field
 }
 
 export function ProductCardContent({
@@ -34,22 +35,24 @@ export function ProductCardContent({
   monthlyRevenue,
   auction_end_time,
   current_price,
-  min_price,
+  reserve_price, // Changed from min_price to reserve_price
   price_decrement,
   auction_status,
   price_decrement_interval,
   created_at,
   starting_price,
+  no_reserve,
 }: ProductCardContentProps) {
   const isAuction = !!auction_end_time;
   const { timeLeft, currentPrice, isAuctionEnded } = useAuctionPricing({
     auction_end_time,
     starting_price,
     current_price,
-    min_price,
+    reserve_price, // Changed from min_price to reserve_price
     price_decrement,
     price_decrement_interval,
-    created_at
+    created_at,
+    no_reserve,
   });
   
   // Ensure display price is a valid number
@@ -108,9 +111,9 @@ export function ProductCardContent({
             {isAuction ? (
               <>
                 {formatCurrency(displayPrice)}
-                {min_price !== undefined && min_price !== null && (
+                {!no_reserve && reserve_price !== undefined && reserve_price !== null && (
                   <span className="text-sm text-gray-500 ml-1">
-                    (Min: {formatCurrency(min_price)})
+                    (Min: {formatCurrency(reserve_price)})
                   </span>
                 )}
               </>
@@ -172,6 +175,12 @@ export function ProductCardContent({
                 </span>
               )}
             </div>
+          )}
+          
+          {no_reserve && (
+            <Badge variant="outline" className="bg-amber-50 text-amber-800 border-amber-200">
+              No Reserve
+            </Badge>
           )}
         </div>
       )}

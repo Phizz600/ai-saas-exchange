@@ -72,11 +72,15 @@ export const ProductGrid = ({ products, isLoading = false, onProductView }: Prod
               image_url: product.image_url || "/placeholder.svg",
               auction_end_time: product.auction_end_time,
               current_price: product.current_price,
+              reserve_price: product.min_price, // Map min_price to reserve_price in database transition period
               is_revenue_verified: product.is_revenue_verified,
               is_code_audited: product.is_code_audited, 
               is_traffic_verified: product.is_traffic_verified,
               requires_nda: product.requires_nda,
               nda_content: product.nda_content,
+              price_decrement: product.price_decrement,
+              price_decrement_interval: product.price_decrement_interval,
+              no_reserve: product.no_reserve,
               seller: {
                 id: product.seller?.id || "",
                 full_name: product.seller?.full_name || "Anonymous",
@@ -88,4 +92,4 @@ export const ProductGrid = ({ products, isLoading = false, onProductView }: Prod
       ))}
     </div>
   );
-};
+}
