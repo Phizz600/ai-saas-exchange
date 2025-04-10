@@ -1,4 +1,3 @@
-
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { UseFormReturn } from "react-hook-form";
@@ -216,8 +215,8 @@ export function AuctionSection({
       </div>
       
       {isAuction ? <div className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormField control={form.control} name="startingPrice" render={({
+          {/* 1. Starting Price */}
+          <FormField control={form.control} name="startingPrice" render={({
           field
         }) => <FormItem>
                   <FormLabel className="flex items-center gap-2">
@@ -242,45 +241,7 @@ export function AuctionSection({
                   <FormMessage />
                 </FormItem>} />
 
-            <FormField control={form.control} name="auctionDuration" render={({
-          field
-        }) => <FormItem>
-                  <FormLabel className="flex items-center gap-2">
-                    Auction Duration
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Info className="h-4 w-4 text-gray-500 cursor-help" />
-                        </TooltipTrigger>
-                        <TooltipContent className="bg-white">
-                          <p>How long your auction will run before it ends</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </FormLabel>
-                  <Select onValueChange={(value) => {
-                field.onChange(value);
-                setAuctionEndDate(value);
-              }} defaultValue={field.value || "7days"}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select duration">
-                          {field.value ? getAuctionDurationLabel(field.value) : "7 Days"}
-                        </SelectValue>
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="1day">1 Day</SelectItem>
-                      <SelectItem value="3days">3 Days</SelectItem>
-                      <SelectItem value="7days">7 Days</SelectItem>
-                      <SelectItem value="14days">14 Days</SelectItem>
-                      <SelectItem value="30days">30 Days</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>} />
-          </div>
-
+          {/* 2. Reserve Price and 3. No Reserve Option */}
           <div className="border-t pt-4">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
@@ -337,7 +298,47 @@ export function AuctionSection({
                   <FormMessage />
                 </FormItem>} />}
 
+          {/* 4. Auction Duration */}
+          <FormField control={form.control} name="auctionDuration" render={({
+          field
+        }) => <FormItem>
+                  <FormLabel className="flex items-center gap-2">
+                    Auction Duration
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Info className="h-4 w-4 text-gray-500 cursor-help" />
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-white">
+                          <p>How long your auction will run before it ends</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </FormLabel>
+                  <Select onValueChange={(value) => {
+                field.onChange(value);
+                setAuctionEndDate(value);
+              }} defaultValue={field.value || "7days"}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select duration">
+                          {field.value ? getAuctionDurationLabel(field.value) : "7 Days"}
+                        </SelectValue>
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="1day">1 Day</SelectItem>
+                      <SelectItem value="3days">3 Days</SelectItem>
+                      <SelectItem value="7days">7 Days</SelectItem>
+                      <SelectItem value="14days">14 Days</SelectItem>
+                      <SelectItem value="30days">30 Days</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>} />
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* 5. Price Decrement */}
             <FormField control={form.control} name="priceDecrement" render={({
           field
         }) => <FormItem>
@@ -374,6 +375,7 @@ export function AuctionSection({
                   <FormMessage />
                 </FormItem>} />
 
+            {/* 6. Decrement Interval */}
             <FormField control={form.control} name="priceDecrementInterval" render={({
           field
         }) => <FormItem>
