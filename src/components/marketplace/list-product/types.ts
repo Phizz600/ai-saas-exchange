@@ -55,4 +55,13 @@ export interface ListProductFormData {
   requires_nda?: boolean;
   nda_content?: string;
   noReserve?: boolean; // Added field for no-reserve auctions
+  monthlyExpenses?: ExpenseItem[]; // New field for monthly expenses
+}
+
+// Define the expense item interface
+export interface ExpenseItem {
+  id: string;
+  name: string;
+  amount: number;
+  category: string;
 }

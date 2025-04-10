@@ -69,10 +69,10 @@ export function ListProductForm() {
       productLink: "",
       auctionDuration: "30days", // Updated default auction duration
       noReserve: false, // Will be auto-set based on reservePrice
+      monthlyExpenses: [], // Initialize empty array for monthly expenses
     },
   });
 
-  // Auto-update noReserve flag based on reservePrice
   const reservePrice = form.watch("reservePrice");
   useEffect(() => {
     // If reservePrice is 0 or undefined, set noReserve to true

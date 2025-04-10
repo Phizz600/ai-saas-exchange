@@ -1,8 +1,15 @@
+
 import { ListProductForm } from "@/components/marketplace/list-product/ListProductForm";
 import { HelpCircle } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Link } from "react-router-dom";
+import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
+
 export const ListProduct = () => {
+  const [helpDialogOpen, setHelpDialogOpen] = useState(false);
+  
   console.log('ListProduct page rendered');
   return <div className="min-h-screen bg-gradient-to-br from-[#9b87f5] via-[#D946EF] to-[#0EA5E9]">
       {/* Promotional Banner */}
@@ -28,17 +35,33 @@ export const ListProduct = () => {
         </div>
       </div>
 
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button className="fixed bottom-6 right-6 bg-white/90 p-3 rounded-full shadow-lg hover:bg-white transition-colors">
-              <HelpCircle className="h-6 w-6 text-[#8B5CF6]" />
-            </button>
-          </TooltipTrigger>
-          <TooltipContent side="left" className="max-w-xs bg-white">
-            <p>Need help listing your product? Contact our support team at support@aiexchange.com</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      {/* Help Button */}
+      <button 
+        className="fixed bottom-6 right-6 bg-white/90 p-3 rounded-full shadow-lg hover:bg-white transition-colors"
+        onClick={() => setHelpDialogOpen(true)}
+      >
+        <HelpCircle className="h-6 w-6 text-[#8B5CF6]" />
+      </button>
+
+      {/* Help Dialog */}
+      <Dialog open={helpDialogOpen} onOpenChange={setHelpDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogTitle>Need Help?</DialogTitle>
+          <DialogDescription>
+            Need help listing? Book a free call and we'll walk you through the entire process.
+          </DialogDescription>
+          <DialogFooter>
+            <Button asChild>
+              <a 
+                href="https://calendly.com/aiexchangeclub/listing-walkthrough" 
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Book a Free Call
+              </a>
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>;
 };

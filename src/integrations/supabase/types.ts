@@ -854,6 +854,7 @@ export type Database = {
           monetization: string | null
           monetization_other: string | null
           monthly_churn_rate: number | null
+          monthly_expenses: Json | null
           monthly_profit: number | null
           monthly_revenue: number | null
           monthly_traffic: number | null
@@ -917,6 +918,7 @@ export type Database = {
           monetization?: string | null
           monetization_other?: string | null
           monthly_churn_rate?: number | null
+          monthly_expenses?: Json | null
           monthly_profit?: number | null
           monthly_revenue?: number | null
           monthly_traffic?: number | null
@@ -980,6 +982,7 @@ export type Database = {
           monetization?: string | null
           monetization_other?: string | null
           monthly_churn_rate?: number | null
+          monthly_expenses?: Json | null
           monthly_profit?: number | null
           monthly_revenue?: number | null
           monthly_traffic?: number | null

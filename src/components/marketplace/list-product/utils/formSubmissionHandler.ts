@@ -104,6 +104,7 @@ export const submitProductForm = async (
       requires_nda: formData.requires_nda === true, // Ensure boolean value
       nda_content: formData.nda_content,
       no_reserve: formData.noReserve === true, // Add no_reserve field
+      monthly_expenses: formData.monthlyExpenses || [], // Add monthly expenses
     };
 
     // Submit the product data to Supabase
@@ -296,6 +297,7 @@ export const handleProductSubmission = async (
       requires_nda: data.requires_nda === true, // Ensure boolean value
       nda_content: data.nda_content || null,
       no_reserve: data.noReserve === true, // Add no_reserve field
+      monthly_expenses: data.monthlyExpenses || [], // Add monthly expenses
     };
     
     // Additional debug logs
@@ -405,6 +407,7 @@ export const handleProductUpdate = async (
       // Ensure NDA fields are properly included
       requires_nda: data.requires_nda !== undefined ? data.requires_nda === true : undefined,
       nda_content: data.nda_content,
+      monthly_expenses: data.monthlyExpenses,
     };
     
     // Log NDA fields for debugging
