@@ -1,177 +1,104 @@
 
 import { useState, useEffect } from "react";
-import { Clock, ArrowDownRight } from "lucide-react";
-import { formatCurrency } from "@/lib/utils";
-import { format, differenceInSeconds, differenceInHours, differenceInDays } from "date-fns";
+import { Timer, TrendingDown } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
 
 interface AuctionTimerProps {
   auctionEndTime?: string;
   currentPrice?: number;
-  reservePrice?: number; // Renamed from minPrice to reservePrice
+  minPrice?: number;
   priceDecrement?: number;
   decrementInterval?: string;
 }
 
-export function AuctionTimer({ 
-  auctionEndTime, 
-  currentPrice, 
-  reservePrice, 
-  priceDecrement, 
-  decrementInterval 
+export function AuctionTimer({
+  auctionEndTime,
+  currentPrice,
+  minPrice,
+  priceDecrement,
+  decrementInterval
 }: AuctionTimerProps) {
   const [timeLeft, setTimeLeft] = useState<string>("");
-  const [nextDropIn, setNextDropIn] = useState<string>("");
-  const [nextPrice, setNextPrice] = useState<number | null>(null);
+  const [progressValue, setProgressValue] = useState<number>(0);
   
-  // Get color based on time remaining
-  const getTimeColor = () => {
-    if (!auctionEndTime) return "text-gray-500";
-    
-    const now = new Date();
-    const end = new Date(auctionEndTime);
-    const hoursLeft = differenceInHours(end, now);
-    
-    if (hoursLeft < 12) return "text-red-500";
-    if (hoursLeft < 48) return "text-orange-500";
-    return "text-green-500";
-  };
-
-  const calculateNextDecrement = () => {
-    if (!decrementInterval || !priceDecrement || !currentPrice) return;
-    
-    const now = new Date();
-    let nextDecrementTime = new Date(now);
-    
-    // Calculate next decrement time
-    switch (decrementInterval) {
-      case "minute":
-        nextDecrementTime.setMinutes(now.getMinutes() + 1, 0, 0);
-        break;
-      case "hour":
-        nextDecrementTime.setHours(now.getHours() + 1, 0, 0, 0);
-        break;
-      case "day":
-        nextDecrementTime.setHours(0, 0, 0, 0);
-        nextDecrementTime.setDate(now.getDate() + 1);
-        break;
-      case "week":
-        const dayOfWeek = now.getDay();
-        const daysUntilNextWeek = 7 - dayOfWeek;
-        nextDecrementTime.setDate(now.getDate() + daysUntilNextWeek);
-        nextDecrementTime.setHours(0, 0, 0, 0);
-        break;
-      case "month":
-        nextDecrementTime.setDate(1);
-        nextDecrementTime.setMonth(now.getMonth() + 1);
-        nextDecrementTime.setHours(0, 0, 0, 0);
-        break;
-    }
-    
-    // Calculate time until next decrement
-    const secondsToNextDecrement = differenceInSeconds(nextDecrementTime, now);
-    
-    if (secondsToNextDecrement <= 0) return;
-    
-    // Format time until next drop
-    const hours = Math.floor(secondsToNextDecrement / 3600);
-    const minutes = Math.floor((secondsToNextDecrement % 3600) / 60);
-    const seconds = Math.floor(secondsToNextDecrement % 60);
-    
-    let nextDropText = "";
-    if (hours > 0) {
-      nextDropText = `${hours}h ${minutes}m`;
-    } else if (minutes > 0) {
-      nextDropText = `${minutes}m ${seconds}s`;
-    } else {
-      nextDropText = `${seconds}s`;
-    }
-    
-    setNextDropIn(nextDropText);
-    
-    // Calculate next price
-    const minimumReserve = reservePrice || 0;
-    const nextPriceValue = Math.max(currentPrice - priceDecrement, minimumReserve);
-    setNextPrice(nextPriceValue);
+  // Format a numeric value with commas for thousands
+  const formatNumber = (num?: number) => {
+    if (num === undefined || num === null) return "0";
+    return num.toLocaleString();
   };
   
+  // Calculate the progress percentage for price drop visualization
+  useEffect(() => {
+    if (currentPrice && minPrice !== undefined && currentPrice >= minPrice) {
+      // If starting price is available, use it, otherwise use a default multiplier
+      const startingPrice = currentPrice * 1.5; // Estimate starting price if not available
+      const range = startingPrice - minPrice;
+      const current = startingPrice - currentPrice;
+      const percentage = Math.min(100, Math.max(0, (current / range) * 100));
+      setProgressValue(percentage);
+    }
+  }, [currentPrice, minPrice]);
+  
+  // Handle countdown timer
   useEffect(() => {
     if (!auctionEndTime) return;
-    
+
     const calculateTimeLeft = () => {
-      const now = new Date();
-      const end = new Date(auctionEndTime);
-      
-      if (now >= end) {
+      const now = new Date().getTime();
+      const endTime = new Date(auctionEndTime).getTime();
+      const difference = endTime - now;
+
+      if (difference <= 0) {
         setTimeLeft("Auction ended");
         return;
       }
-      
-      const secondsDiff = differenceInSeconds(end, now);
-      const days = Math.floor(secondsDiff / 86400);
-      const hours = Math.floor((secondsDiff % 86400) / 3600);
-      const minutes = Math.floor((secondsDiff % 3600) / 60);
-      
-      if (days > 0) {
-        setTimeLeft(`${days}d ${hours}h ${minutes}m`);
-      } else if (hours > 0) {
-        setTimeLeft(`${hours}h ${minutes}m`);
-      } else if (minutes > 0) {
-        const seconds = Math.floor(secondsDiff % 60);
-        setTimeLeft(`${minutes}m ${seconds}s`);
-      } else {
-        setTimeLeft(`${secondsDiff}s`);
-      }
+
+      const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+
+      setTimeLeft(`${days}d ${hours}h ${minutes}m`);
     };
-    
+
     calculateTimeLeft();
-    calculateNextDecrement();
-    
-    const timerInterval = setInterval(() => {
-      calculateTimeLeft();
-    }, 1000);
-    
-    const decrementInterval = setInterval(() => {
-      calculateNextDecrement();
-    }, 10000); // Check for next decrement every 10 seconds
-    
-    return () => {
-      clearInterval(timerInterval);
-      clearInterval(decrementInterval);
-    };
-  }, [auctionEndTime, currentPrice, reservePrice, priceDecrement, decrementInterval]);
-  
-  if (!auctionEndTime || !currentPrice) return null;
-  
+    const timer = setInterval(calculateTimeLeft, 60000);
+    return () => clearInterval(timer);
+  }, [auctionEndTime]);
+
+  if (!auctionEndTime) return null;
+
   return (
-    <div className="bg-gray-50 px-5 py-3 border-b">
-      <div className="flex flex-col space-y-1">
-        <div className="flex justify-between items-center">
-          <div className="flex items-center gap-1.5 text-sm font-medium">
-            <Clock className={`h-4 w-4 ${getTimeColor()}`} />
-            <span>Ends in: </span>
-            <span className={`font-mono ${getTimeColor()}`}>{timeLeft}</span>
-          </div>
-          
-          {nextPrice && nextPrice < currentPrice && (
-            <div className="flex items-center gap-1.5 text-xs text-gray-500">
-              <ArrowDownRight className="h-3.5 w-3.5 text-amber-500" />
-              <div className="flex flex-col">
-                <span>Next: {formatCurrency(nextPrice)}</span>
-                <span className="text-xs text-gray-400">in {nextDropIn}</span>
-              </div>
-            </div>
-          )}
+    <div className="w-full bg-gradient-to-r from-amber-50 to-purple-50 py-2 px-3 border-b border-gray-200">
+      <div className="flex justify-between items-center mb-1">
+        <div className="flex items-center gap-1.5">
+          <Timer className="h-4 w-4 text-amber-600" />
+          <span className="font-medium text-sm text-amber-800">{timeLeft}</span>
         </div>
-        
-        {reservePrice && reservePrice > 0 && (
-          <div className="text-xs text-gray-500 flex justify-between">
-            <span>Reserve price: {formatCurrency(reservePrice)}</span>
-            {decrementInterval && priceDecrement && (
-              <span>Drops {formatCurrency(priceDecrement)} {decrementInterval.toLowerCase()}</span>
-            )}
-          </div>
-        )}
+        <div className="flex items-center gap-1.5">
+          <TrendingDown className="h-4 w-4 text-purple-600" />
+          <span className="font-medium text-sm text-purple-700">Price dropping</span>
+        </div>
       </div>
+      
+      <div className="grid grid-cols-2 gap-2 mb-2">
+        <div>
+          <span className="text-xs font-medium text-gray-600">Current:</span>
+          <div className="text-sm font-bold text-gray-800">
+            ${formatNumber(currentPrice)}
+          </div>
+        </div>
+        <div className="text-right">
+          <span className="text-xs font-medium text-gray-600">Min:</span>
+          <div className="text-sm font-medium text-gray-800">
+            ${formatNumber(minPrice)}
+          </div>
+        </div>
+      </div>
+      
+      <Progress 
+        value={progressValue} 
+        className="h-1.5 bg-amber-200"
+      />
     </div>
   );
 }

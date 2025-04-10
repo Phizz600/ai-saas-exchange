@@ -20,7 +20,7 @@ interface ProductContentProps {
   is_traffic_verified?: boolean;
   requires_nda?: boolean;
   auction_end_time?: string;
-  min_price?: number; // This remains min_price from the database
+  min_price?: number;
   price_decrement?: number;
   price_decrement_interval?: string;
 }
@@ -41,7 +41,7 @@ export function ProductContent({
   is_traffic_verified,
   requires_nda,
   auction_end_time,
-  min_price, // This remains min_price from the database but represents the reserve price
+  min_price,
   price_decrement,
   price_decrement_interval
 }: ProductContentProps) {
@@ -56,7 +56,7 @@ export function ProductContent({
         <AuctionTimer 
           auctionEndTime={auction_end_time}
           currentPrice={current_price}
-          reservePrice={min_price} // Display as Reserve Price in UI
+          minPrice={min_price}
           priceDecrement={price_decrement}
           decrementInterval={price_decrement_interval}
         />

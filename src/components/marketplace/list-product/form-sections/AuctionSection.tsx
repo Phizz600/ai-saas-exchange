@@ -6,8 +6,8 @@ import { ListProductFormData } from "../types";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import { CalendarIcon, Info, Sparkle, PercentIcon, XCircle } from "lucide-react";
-import { format, addDays, addHours } from "date-fns";
+import { CalendarIcon, Info, Sparkle } from "lucide-react";
+import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Switch } from "@/components/ui/switch";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -15,8 +15,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { calculateValuation, formatCurrency } from "../utils/valuationCalculator";
 import { Card } from "@/components/ui/card";
 import { useEffect, useState } from "react";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
 
 interface AuctionSectionProps {
   form: UseFormReturn<ListProductFormData>;
@@ -33,108 +31,12 @@ export function AuctionSection({
     high: 0
   });
   
-  const [reservePriceType, setReservePriceType] = useState<'fixed' | 'percent' | 'none'>('fixed');
-  const [recommendedDecrement, setRecommendedDecrement] = useState<number | null>(null);
-  
   const monthlyRevenue = form.watch("monthlyRevenue");
   const isAuction = form.watch("isAuction");
-  const startingPrice = form.watch("startingPrice");
-  const reservePrice = form.watch("reservePrice");
-  const auctionDuration = form.watch("auctionDuration");
   
-  useEffect(() => {
-    // Set default starting price if not set
-    if (monthlyRevenue && !form.getValues("startingPrice")) {
-      form.setValue("startingPrice", monthlyRevenue * 10);
-    }
-    
-    // Set default auction duration if not set
-    if (isAuction && !form.getValues("auctionDuration")) {
-      form.setValue("auctionDuration", "7");
-    }
-    
-    // Set default auction end time if not set
-    if (isAuction && !form.getValues("auctionEndTime") && form.getValues("auctionDuration")) {
-      const duration = parseInt(form.getValues("auctionDuration") || "7");
-      const endTime = addDays(new Date(), duration);
-      form.setValue("auctionEndTime", endTime);
-    }
-  }, [monthlyRevenue, isAuction, form]);
-  
-  // Calculate recommended price decrement based on starting price and reserve price
-  useEffect(() => {
-    if (startingPrice && reservePrice && auctionDuration) {
-      const duration = parseInt(auctionDuration);
-      const priceDifference = startingPrice - reservePrice;
-      
-      // Calculate recommended decrement based on auction duration
-      // For longer auctions, we want fewer decrements per day
-      let decrementInterval: string;
-      let decrementCount: number;
-      
-      if (duration <= 3) {
-        // For short auctions (1-3 days), decrement hourly
-        decrementInterval = 'hour';
-        decrementCount = duration * 24; // hours in the duration
-      } else if (duration <= 14) {
-        // For medium auctions (4-14 days), decrement every 6 hours
-        decrementInterval = 'hour';
-        decrementCount = duration * 4; // 4 decrements per day
-      } else {
-        // For long auctions (more than 14 days), decrement daily
-        decrementInterval = 'day';
-        decrementCount = duration;
-      }
-      
-      // Calculate the recommended decrement amount
-      const recommendedAmount = Math.ceil(priceDifference / decrementCount);
-      
-      setRecommendedDecrement(recommendedAmount > 0 ? recommendedAmount : null);
-      
-      // Update the form with the recommended values if not already set
-      if (!form.getValues("priceDecrementInterval")) {
-        form.setValue("priceDecrementInterval", decrementInterval);
-      }
-      
-      if (!form.getValues("priceDecrement") && recommendedAmount > 0) {
-        form.setValue("priceDecrement", recommendedAmount);
-      }
-    } else {
-      setRecommendedDecrement(null);
-    }
-  }, [startingPrice, reservePrice, auctionDuration, form]);
-  
-  // Update reserve price based on type selection
-  useEffect(() => {
-    if (reservePriceType === 'percent' && startingPrice) {
-      const percentValue = form.getValues("reservePricePercent") || 70;
-      const calculatedReservePrice = Math.round(startingPrice * (percentValue / 100));
-      form.setValue("reservePrice", calculatedReservePrice);
-    } else if (reservePriceType === 'none') {
-      form.setValue("reservePrice", 1); // Minimum possible value
-    }
-  }, [reservePriceType, startingPrice, form]);
-  
-  // Handle reserve price percent change
-  const handleReservePricePercentChange = (percent: number) => {
-    form.setValue("reservePricePercent", percent);
-    if (startingPrice) {
-      const calculatedReservePrice = Math.round(startingPrice * (percent / 100));
-      form.setValue("reservePrice", calculatedReservePrice);
-    }
-  };
-  
-  // Handle auction duration change
-  const handleAuctionDurationChange = (duration: string) => {
-    form.setValue("auctionDuration", duration);
-    
-    // Update auction end time based on duration
-    const durationDays = parseInt(duration);
-    if (!isNaN(durationDays)) {
-      const endTime = addDays(new Date(), durationDays);
-      form.setValue("auctionEndTime", endTime);
-    }
-  };
+  if (monthlyRevenue && !form.getValues("startingPrice")) {
+    form.setValue("startingPrice", monthlyRevenue * 10);
+  }
   
   const watchMonthlyRevenue = form.watch("monthlyRevenue") || 0;
   const watchMonthlyChurnRate = form.watch("monthlyChurnRate") || 0;
@@ -175,7 +77,7 @@ export function AuctionSection({
       if (isHigh) {
         form.setValue("startingPrice", value);
       } else {
-        form.setValue("reservePrice", value);
+        form.setValue("minPrice", value);
       }
     } else {
       form.setValue("price", value);
@@ -200,20 +102,6 @@ export function AuctionSection({
       case "month": return "Per Month";
       default: return "Select interval";
     }
-  };
-  
-  // Get auction duration options
-  const getDurationOptions = () => {
-    return [
-      { value: "1", label: "1 Day" },
-      { value: "3", label: "3 Days" },
-      { value: "5", label: "5 Days" },
-      { value: "7", label: "7 Days" },
-      { value: "10", label: "10 Days" },
-      { value: "14", label: "14 Days" },
-      { value: "21", label: "21 Days" },
-      { value: "30", label: "30 Days" }
-    ];
   };
 
   return <div className="space-y-6">
@@ -244,7 +132,7 @@ export function AuctionSection({
                           <Info className="h-4 w-4 text-gray-500 cursor-help" />
                         </TooltipTrigger>
                         <TooltipContent className="bg-white">
-                          <p>Starting price for your Dutch auction. Price drops until sold or reaching reserve price.</p>
+                          <p>Starting price for your Dutch auction. Price drops until sold.</p>
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
@@ -258,133 +146,30 @@ export function AuctionSection({
                   <FormMessage />
                 </FormItem>} />
 
-            <FormField control={form.control} name="auctionDuration" render={({
+            <FormField control={form.control} name="minPrice" render={({
           field
         }) => <FormItem>
                   <FormLabel className="flex items-center gap-2">
-                    Auction Duration
+                    Minimum Price (USD)
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Info className="h-4 w-4 text-gray-500 cursor-help" />
                         </TooltipTrigger>
                         <TooltipContent className="bg-white">
-                          <p>How long your auction will run before ending automatically</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </FormLabel>
-                  <Select onValueChange={handleAuctionDurationChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select duration" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {getDurationOptions().map(option => (
-                        <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>} />
-          </div>
-          
-          {/* Reserve Price Settings */}
-          <div className="border rounded-md p-4 bg-gray-50">
-            <h3 className="text-sm font-medium mb-3">Reserve Price Settings</h3>
-            
-            <RadioGroup defaultValue="fixed" className="mb-4" onValueChange={(value) => setReservePriceType(value as 'fixed' | 'percent' | 'none')}>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="fixed" id="fixed" />
-                <Label htmlFor="fixed">Fixed Amount</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="percent" id="percent" />
-                <Label htmlFor="percent">Percentage of Starting Price</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="none" id="none" />
-                <Label htmlFor="none">No Reserve (Allow Any Price)</Label>
-              </div>
-            </RadioGroup>
-            
-            {reservePriceType === 'fixed' && (
-              <FormField control={form.control} name="reservePrice" render={({
-                field
-              }) => <FormItem>
-                <FormLabel className="flex items-center gap-2">
-                  Reserve Price (USD)
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Info className="h-4 w-4 text-gray-500 cursor-help" />
-                      </TooltipTrigger>
-                      <TooltipContent className="bg-white">
-                        <p>The lowest price you're willing to accept. The auction will stop at this price.</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </FormLabel>
-                <FormControl>
-                  <Input type="text" placeholder="Enter reserve price" value={formatCurrencyInput(field.value?.toString() || '')} onChange={e => {
-                    const value = parseCurrencyValue(e.target.value);
-                    field.onChange(value > 0 ? value : undefined);
-                  }} className="font-mono" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>} />
-            )}
-            
-            {reservePriceType === 'percent' && (
-              <div className="space-y-3">
-                <FormField control={form.control} name="reservePricePercent" render={({
-                  field
-                }) => <FormItem>
-                  <FormLabel className="flex items-center gap-2">
-                    Reserve Price Percentage
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Info className="h-4 w-4 text-gray-500 cursor-help" />
-                        </TooltipTrigger>
-                        <TooltipContent className="bg-white">
-                          <p>Set reserve price as a percentage of starting price</p>
+                          <p>The lowest price you're willing to accept. The auction will stop at this price</p>
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
                   </FormLabel>
                   <FormControl>
-                    <div className="flex items-center">
-                      <Input 
-                        type="number" 
-                        min="1" 
-                        max="99" 
-                        value={field.value || 70} 
-                        onChange={e => handleReservePricePercentChange(parseInt(e.target.value))} 
-                        className="w-24 mr-2" 
-                      />
-                      <PercentIcon className="h-4 w-4 text-gray-500" />
-                    </div>
+                    <Input type="text" placeholder="Enter minimum price" value={formatCurrencyInput(field.value?.toString() || '')} onChange={e => {
+              const value = parseCurrencyValue(e.target.value);
+              field.onChange(value > 0 ? value : undefined);
+            }} className="font-mono" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>} />
-                
-                <div className="text-sm text-gray-500 flex items-center gap-2">
-                  <span>Calculated reserve price:</span> 
-                  <span className="font-medium">{formatCurrency(form.getValues("reservePrice") || 0)}</span>
-                </div>
-              </div>
-            )}
-            
-            {reservePriceType === 'none' && (
-              <div className="bg-amber-50 p-3 rounded border border-amber-200 text-amber-800 text-sm">
-                <p className="flex items-center gap-2">
-                  <Info className="h-4 w-4" />
-                  Your auction will run with no reserve price. The item will sell to the highest bidder regardless of price.
-                </p>
-              </div>
-            )}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -399,31 +184,16 @@ export function AuctionSection({
                           <Info className="h-4 w-4 text-gray-500 cursor-help" />
                         </TooltipTrigger>
                         <TooltipContent className="bg-white">
-                          <p>How much the price will decrease per selected time interval until reaching the reserve price</p>
+                          <p>How much the price will decrease per selected time interval until reaching the minimum price</p>
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
                   </FormLabel>
                   <FormControl>
-                    <div>
-                      <Input type="text" placeholder="Enter price decrement" value={formatCurrencyInput(field.value?.toString() || '')} onChange={e => {
-                const value = parseCurrencyValue(e.target.value);
-                field.onChange(value > 0 ? value : undefined);
-              }} className="font-mono" />
-                      
-                      {/* Recommended decrement display */}
-                      {recommendedDecrement && (
-                        <div className="mt-1.5 flex items-center text-sm text-green-600">
-                          <button 
-                            type="button" 
-                            className="underline flex items-center" 
-                            onClick={() => field.onChange(recommendedDecrement)}
-                          >
-                            Recommended: {formatCurrency(recommendedDecrement)}
-                          </button>
-                        </div>
-                      )}
-                    </div>
+                    <Input type="text" placeholder="Enter price decrement" value={formatCurrencyInput(field.value?.toString() || '')} onChange={e => {
+              const value = parseCurrencyValue(e.target.value);
+              field.onChange(value > 0 ? value : undefined);
+            }} className="font-mono" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>} />
@@ -444,7 +214,7 @@ export function AuctionSection({
                       </Tooltip>
                     </TooltipProvider>
                   </FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select interval">
@@ -464,7 +234,7 @@ export function AuctionSection({
                 </FormItem>} />
           </div>
 
-          {/* Auction End Time - Hidden but populated automatically based on duration */}
+          {/* Fix for the auctionEndTime field - return a proper React element instead of void */}
           <FormField 
             control={form.control} 
             name="auctionEndTime" 

@@ -28,7 +28,7 @@ Deno.serve(async (req) => {
     // Get all active Dutch auctions
     const { data: auctions, error: fetchError } = await supabase
       .from('products')
-      .select('id, price_decrement, price_decrement_interval, current_price, min_price, starting_price, auction_end_time, highest_bid, created_at, updated_at, auction_duration')
+      .select('id, price_decrement, price_decrement_interval, current_price, min_price, starting_price, auction_end_time, highest_bid, created_at, updated_at')
       .gte('auction_end_time', new Date().toISOString())
       .is('price_decrement', 'not.null');
 
@@ -81,7 +81,6 @@ Deno.serve(async (req) => {
       }
 
       // Calculate the expected price based on decrementCount
-      // Note: min_price in the database represents the reserve price
       const totalDecrement = decrementCount * (auction.price_decrement || 0);
       const expectedPrice = Math.max(
         auction.starting_price - totalDecrement, 

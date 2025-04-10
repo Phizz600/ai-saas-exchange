@@ -15,8 +15,7 @@ export interface ListProductFormData {
   image: File | null;
   isAuction: boolean;
   startingPrice?: number;
-  reservePrice?: number; // Renamed from minPrice
-  reservePricePercent?: number; // New field for percentage-based reserve price
+  minPrice?: number;
   priceDecrement?: number;
   priceDecrementInterval: string;
   techStack: string;
@@ -42,7 +41,6 @@ export interface ListProductFormData {
   businessModel?: string;
   investmentTimeline?: string;
   auctionEndTime?: Date;
-  auctionDuration?: string; // New field for auction duration in days
   llmType?: string;
   llmTypeOther?: string;
   integrations_other?: string;

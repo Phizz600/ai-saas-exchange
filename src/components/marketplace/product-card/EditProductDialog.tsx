@@ -48,12 +48,6 @@ export const EditProductDialog = ({ product, isOpen, onClose }: EditProductDialo
       customerAcquisitionCost: product.customer_acquisition_cost,
       monetization: product.monetization_other ? 'other' : product.monetization,
       monetizationOther: product.monetization_other,
-      // Update names for Dutch Auction fields
-      startingPrice: product.starting_price,
-      reservePrice: product.min_price, // Use min_price for reservePrice
-      priceDecrement: product.price_decrement,
-      priceDecrementInterval: product.price_decrement_interval,
-      auctionEndTime: product.auction_end_time ? new Date(product.auction_end_time) : undefined,
     },
   });
 
