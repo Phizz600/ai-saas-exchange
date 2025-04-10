@@ -51,7 +51,7 @@ export const calculateCurrentAuctionPrice = (
   const calculatedPrice = startingPrice - totalDecrement;
   
   // If this is a no-reserve auction (reservePrice is 0), allow price to go as low as 1
-  if (!reservePrice) {
+  if (reservePrice === 0) {
     return Math.max(calculatedPrice, 1);
   }
   

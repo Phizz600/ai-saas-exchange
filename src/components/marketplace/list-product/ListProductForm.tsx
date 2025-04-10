@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { BasicInfoSection } from "./form-sections/BasicInfoSection";
@@ -69,9 +68,20 @@ export function ListProductForm() {
       deliverables: [],
       productLink: "",
       auctionDuration: "30days", // Updated default auction duration
-      noReserve: false, // Default to having a reserve price
+      noReserve: false, // Will be auto-set based on reservePrice
     },
   });
+
+  // Auto-update noReserve flag based on reservePrice
+  const reservePrice = form.watch("reservePrice");
+  useEffect(() => {
+    // If reservePrice is 0 or undefined, set noReserve to true
+    if (reservePrice === 0) {
+      form.setValue("noReserve", true);
+    } else if (reservePrice !== undefined) {
+      form.setValue("noReserve", false);
+    }
+  }, [reservePrice, form]);
 
   const { currentSection, handleSectionClick, nextSection, previousSection } = 
     useFormNavigation(sections.length);
@@ -121,14 +131,16 @@ export function ListProductForm() {
         return { valid: false, message: "Starting price must be greater than 0" };
       }
       
+      // Set noReserve flag based on reservePrice
+      data.noReserve = data.reservePrice === 0;
+      
       // Only validate reserve price if not a "no reserve" auction
-      if (!data.noReserve) {
-        if (!data.reservePrice || data.reservePrice <= 0) {
-          return { valid: false, message: "Reserve price must be greater than 0" };
-        }
-        if (data.reservePrice >= data.startingPrice) {
-          return { valid: false, message: "Reserve price must be less than the starting price" };
-        }
+      if (!data.noReserve && (data.reservePrice === undefined || data.reservePrice < 0)) {
+        return { valid: false, message: "Reserve price must be 0 or greater" };
+      }
+      
+      if (!data.noReserve && data.reservePrice && data.startingPrice && data.reservePrice >= data.startingPrice) {
+        return { valid: false, message: "Reserve price must be less than the starting price" };
       }
       
       if (!data.priceDecrement || data.priceDecrement <= 0) {

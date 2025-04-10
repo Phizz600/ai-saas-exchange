@@ -53,12 +53,12 @@ export function useAuctionPricing(product: {
         product.created_at !== undefined &&
         !isAuctionEnded
       ) {
-        // Use 0 as the reserve price if it's undefined or 0 or no_reserve is true
-        const reservePrice = (product.no_reserve || !product.reserve_price) ? 0 : product.reserve_price;
+        // Determine reserve price - treat it as 0 for no-reserve auctions
+        const reservePrice = product.no_reserve || product.reserve_price === 0 ? 0 : (product.reserve_price || 0);
         
         const calculatedPrice = calculateCurrentAuctionPrice(
           product.starting_price,
-          reservePrice, // Changed from min_price to reserve_price
+          reservePrice,
           product.price_decrement,
           product.price_decrement_interval,
           product.created_at
@@ -82,11 +82,11 @@ export function useAuctionPricing(product: {
   }, [
     product.auction_end_time,
     product.starting_price,
-    product.reserve_price, // Changed from min_price to reserve_price
+    product.reserve_price,
     product.price_decrement,
     product.price_decrement_interval,
     product.created_at,
-    product.no_reserve, // Added no_reserve to dependency array
+    product.no_reserve,
     isAuctionEnded
   ]);
 
