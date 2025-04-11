@@ -3,7 +3,7 @@ import { DashboardLayout } from "@/components/product-dashboard/DashboardLayout"
 import { MarketplaceStats } from "@/components/product-dashboard/MarketplaceStats";
 import { ProductDashboardContent } from "@/components/product-dashboard/ProductDashboardContent";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Store, ShoppingBag, ToggleLeft, ToggleRight } from "lucide-react";
+import { Store, ShoppingBag, ToggleLeft, ToggleRight, Edit } from "lucide-react";
 import { StatsCard } from "@/components/product-dashboard/StatsCard";
 import { ActiveBidsProducts } from "@/components/product-dashboard/ActiveBidsProducts";
 import { WatchedProducts } from "@/components/product-dashboard/WatchedProducts";
@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { AuctionAnalytics } from "@/components/product-dashboard/AuctionAnalytics";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { EditListingForm } from "@/components/product-dashboard/EditListingForm";
 
 export const ProductDashboard = () => {
   const [showVerifiedOnly, setShowVerifiedOnly] = useState(false);
@@ -91,6 +92,12 @@ export const ProductDashboard = () => {
             <h2 className="text-xl font-semibold mb-4 exo-2-header">Offers on Your Products</h2>
             <ProductOffers />
           </div>
+          
+          <div>
+            <h2 className="text-xl font-semibold mb-4 exo-2-header">Edit Your Listings</h2>
+            <EditListingForm />
+          </div>
+          
           <div>
             <h2 className="text-xl font-semibold mb-4 exo-2-header">Your Products</h2>
             <ProductDashboardContent showVerifiedOnly={showVerifiedOnly} />
