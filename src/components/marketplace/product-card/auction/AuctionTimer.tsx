@@ -1,8 +1,6 @@
-
 import { useEffect, useState } from "react";
 import { Timer, TrendingDown } from "lucide-react";
 import { calculateCurrentAuctionPrice } from "@/integrations/supabase/auction";
-
 interface AuctionTimerProps {
   auctionEndTime?: string;
   currentPrice?: number;
@@ -11,7 +9,6 @@ interface AuctionTimerProps {
   decrementInterval?: string;
   noReserve?: boolean;
 }
-
 export function AuctionTimer({
   auctionEndTime,
   currentPrice = 0,
@@ -23,14 +20,12 @@ export function AuctionTimer({
   const [timeRemaining, setTimeRemaining] = useState<string | null>(null);
   const [calculatedPrice, setCalculatedPrice] = useState(currentPrice);
   const [progressPercentage, setProgressPercentage] = useState("0%");
-
   useEffect(() => {
     if (auctionEndTime) {
       const intervalId = setInterval(() => {
         const now = new Date();
         const end = new Date(auctionEndTime);
         const diff = end.getTime() - now.getTime();
-        
         if (diff > 0) {
           const days = Math.floor(diff / (1000 * 60 * 60 * 24));
           const hours = Math.floor(diff % (1000 * 60 * 60 * 24) / (1000 * 60 * 60));
@@ -40,11 +35,11 @@ export function AuctionTimer({
           // Calculate current price
           const calculatedCurrentPrice = calculateCurrentAuctionPrice(currentPrice, reservePrice, priceDecrement, decrementInterval, auctionEndTime, now);
           setCalculatedPrice(calculatedCurrentPrice);
-          
+
           // Calculate auction progress percentage
           const totalAuctionTime = end.getTime() - new Date(auctionEndTime).getTime() + diff; // Initial date to end date
           const elapsedTime = totalAuctionTime - diff; // Time passed
-          const progress = (elapsedTime / totalAuctionTime) * 100;
+          const progress = elapsedTime / totalAuctionTime * 100;
           setProgressPercentage(`${Math.min(100, Math.max(0, progress))}%`);
         } else {
           setTimeRemaining("Auction Ended");
@@ -74,7 +69,6 @@ export function AuctionTimer({
     const priceProgressPercentage = currentPriceDrop / totalPriceDrop * 100;
     return `${Math.min(100, Math.max(0, priceProgressPercentage))}%`;
   };
-
   return <div className="rounded-md overflow-hidden">
       <div className="p-4" style={{
       background: 'linear-gradient(to right, #FEFBEA, #FBF5FF)'
@@ -104,13 +98,7 @@ export function AuctionTimer({
         </div>
         
         {/* Progress Bar with gradient - shows auction time progress */}
-        <div className="w-full bg-yellow-100 rounded-full h-2 mt-2">
-          <div className="h-2 rounded-full" 
-               style={{
-                 width: progressPercentage,
-                 background: 'linear-gradient(to right, #D946EE, #8B5CF6, #0EA4E9)'
-               }}></div>
-        </div>
+        
       </div>
     </div>;
 }
