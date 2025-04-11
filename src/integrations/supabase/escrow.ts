@@ -182,7 +182,7 @@ export const updateEscrowStatus = async (
   try {
     const { data, error } = await supabase
       .from('escrow_transactions')
-      .update({ status })
+      .update({ status, updated_at: new Date().toISOString() })
       .eq('id', transactionId)
       .select()
       .single();
@@ -363,4 +363,70 @@ const calculatePlatformFee = (amount: number): number => {
   }
   
   return parseFloat((amount * feePercentage).toFixed(2));
+};
+
+/**
+ * Check if any delivery proof files exist for a transaction
+ */
+export const getDeliveryProofFiles = async (transactionId: string) => {
+  try {
+    const { data, error } = await supabase.storage
+      .from('escrow-deliveries')
+      .list(transactionId);
+    
+    if (error) {
+      console.error('Error listing delivery files:', error);
+      return [];
+    }
+    
+    return data || [];
+  } catch (error) {
+    console.error('Error in getDeliveryProofFiles:', error);
+    return [];
+  }
+};
+
+/**
+ * Send automated reminder for pending escrow actions
+ */
+export const sendEscrowActionReminder = async (
+  conversationId: string,
+  transactionId: string,
+  userRole: "buyer" | "seller",
+  status: string,
+  hoursRemaining: number
+) => {
+  try {
+    let reminderMessage = "";
+    
+    if (status === "agreement_reached" && userRole === "buyer") {
+      reminderMessage = `⏰ **Reminder: Payment Due Soon**\n\nYour payment for this transaction is due within ${Math.floor(hoursRemaining)} hours. Please complete the payment to proceed with the transaction.`;
+    } else if (status === "payment_secured" && userRole === "seller") {
+      reminderMessage = `⏰ **Reminder: Delivery Due Soon**\n\nYou need to confirm delivery of this transaction within ${Math.floor(hoursRemaining)} hours. Please provide delivery details to proceed.`;
+    } else if (status === "delivery_in_progress" && userRole === "buyer") {
+      reminderMessage = `⏰ **Reminder: Confirmation Due Soon**\n\nPlease confirm receipt of your purchase within ${Math.floor(hoursRemaining)} hours.`;
+    } else if (status === "inspection_period" && userRole === "buyer") {
+      reminderMessage = `⏰ **Reminder: Inspection Period Ending Soon**\n\nYour inspection period will end in ${Math.floor(hoursRemaining)} hours. Please complete your verification to release funds to the seller.`;
+    } else {
+      return false; // No applicable reminder
+    }
+    
+    const { error } = await supabase
+      .from('messages')
+      .insert({
+        conversation_id: conversationId,
+        content: reminderMessage,
+        sender_id: 'system'
+      });
+    
+    if (error) {
+      console.error('Error sending escrow reminder:', error);
+      return false;
+    }
+    
+    return true;
+  } catch (error) {
+    console.error('Error in sendEscrowActionReminder:', error);
+    return false;
+  }
 };

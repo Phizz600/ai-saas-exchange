@@ -1,14 +1,18 @@
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { EscrowTransaction, updateEscrowStatus, generateEscrowSummaryForDownload } from "@/integrations/supabase/escrow";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { EscrowTransaction, updateEscrowStatus, generateEscrowSummaryForDownload, addPaymentReceiptMessage } from "@/integrations/supabase/escrow";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { AlertTriangle, Clock, Download, MessageSquare, ShieldAlert, CreditCard, DollarSign, AlertCircle } from "lucide-react";
+import { AlertTriangle, Clock, Download, MessageSquare, ShieldAlert, CreditCard, DollarSign, AlertCircle, Upload, CheckCircle, ClipboardCheck, Bell } from "lucide-react";
 import { PaymentMethodDialog } from "./PaymentMethodDialog";
 import { verifyPaymentIntent } from "@/services/stripe-service";
 
@@ -46,6 +50,23 @@ export const EscrowStatus = ({
   const [showPaymentDialog, setShowPaymentDialog] = useState(false);
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [verifyingPayment, setVerifyingPayment] = useState(false);
+  
+  // New state for delivery features
+  const [showDeliveryDialog, setShowDeliveryDialog] = useState(false);
+  const [deliveryDetails, setDeliveryDetails] = useState("");
+  const [deliveryFiles, setDeliveryFiles] = useState<File[]>([]);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isUploading, setIsUploading] = useState(false);
+  const [showVerificationDialog, setShowVerificationDialog] = useState(false);
+  const [verificationChecklist, setVerificationChecklist] = useState({
+    receivedAsDescribed: false,
+    qualityAsExpected: false,
+    functionalityWorks: false,
+    documentationComplete: false,
+  });
+  const [reminderSent, setReminderSent] = useState(false);
+  
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   
   // Calculate remaining time for the current stage
@@ -70,6 +91,12 @@ export const EscrowStatus = ({
         deadlineDate.setDate(deadlineDate.getDate() + 7);
         stageName = "Delivery";
         break;
+      case "delivery_in_progress":
+        // 3 days to receive
+        deadlineDate = new Date(transaction.updated_at || transaction.created_at);
+        deadlineDate.setDate(deadlineDate.getDate() + 3);
+        stageName = "Receipt";
+        break;
       case "inspection_period":
         // 2 days for inspection
         deadlineDate = new Date(transaction.updated_at || transaction.created_at);
@@ -90,11 +117,57 @@ export const EscrowStatus = ({
     return {
       days: diffDays,
       hours: diffHours,
-      stageName
+      stageName,
+      deadline: deadlineDate
     };
   };
   
   const remainingTime = getRemainingTime();
+
+  // Auto reminder for pending actions
+  useEffect(() => {
+    if (!remainingTime || reminderSent) return;
+    
+    // If less than 24 hours remaining and reminder not sent
+    const hoursTillDeadline = (remainingTime.deadline.getTime() - new Date().getTime()) / (1000 * 60 * 60);
+    if (hoursTillDeadline <= 24 && !reminderSent) {
+      // Send reminder based on current status and role
+      const sendReminder = async () => {
+        try {
+          // Determine message based on status and user role
+          let reminderMessage = "";
+          
+          if (transaction.status === "agreement_reached" && userRole === "buyer") {
+            reminderMessage = `⏰ **Reminder: Payment Due Soon**\n\nYour payment for this transaction is due within ${Math.floor(hoursTillDeadline)} hours. Please complete the payment to proceed with the transaction.`;
+          } else if (transaction.status === "payment_secured" && userRole === "seller") {
+            reminderMessage = `⏰ **Reminder: Delivery Due Soon**\n\nYou need to confirm delivery of this transaction within ${Math.floor(hoursTillDeadline)} hours. Please provide delivery details to proceed.`;
+          } else if (transaction.status === "delivery_in_progress" && userRole === "buyer") {
+            reminderMessage = `⏰ **Reminder: Confirmation Due Soon**\n\nPlease confirm receipt of your purchase within ${Math.floor(hoursTillDeadline)} hours.`;
+          } else if (transaction.status === "inspection_period" && userRole === "buyer") {
+            reminderMessage = `⏰ **Reminder: Inspection Period Ending Soon**\n\nYour inspection period will end in ${Math.floor(hoursTillDeadline)} hours. Please complete your verification to release funds to the seller.`;
+          } else {
+            return; // No applicable reminder
+          }
+          
+          if (reminderMessage) {
+            await supabase
+              .from('messages')
+              .insert({
+                conversation_id: conversationId,
+                content: reminderMessage,
+                sender_id: 'system'
+              });
+            
+            setReminderSent(true);
+          }
+        } catch (error) {
+          console.error("Error sending reminder:", error);
+        }
+      };
+      
+      sendReminder();
+    }
+  }, [remainingTime, reminderSent, transaction.status, userRole, conversationId]);
 
   const getStatusActions = () => {
     const { status } = transaction;
@@ -111,9 +184,9 @@ export const EscrowStatus = ({
           };
         case "delivery_in_progress":
           return {
-            label: "Mark as Received",
-            action: "updateStatus",
-            nextStatus: "inspection_period"
+            label: "Verify Receipt",
+            action: "showVerification",
+            nextStatus: null
           };
         case "inspection_period":
           return {
@@ -128,9 +201,9 @@ export const EscrowStatus = ({
       switch (status) {
         case "payment_secured":
           return {
-            label: "Start Delivery",
-            action: "updateStatus",
-            nextStatus: "delivery_in_progress"
+            label: "Confirm Delivery",
+            action: "showDelivery",
+            nextStatus: null
           };
         default:
           return null;
@@ -186,6 +259,10 @@ export const EscrowStatus = ({
       setShowPaymentDialog(true);
     } else if (action.action === "updateStatus") {
       handleStatusUpdate();
+    } else if (action.action === "showDelivery") {
+      setShowDeliveryDialog(true);
+    } else if (action.action === "showVerification") {
+      setShowVerificationDialog(true);
     }
   };
   
@@ -311,14 +388,13 @@ export const EscrowStatus = ({
         // Update transaction status
         await updateEscrowStatus(transaction.id, "payment_secured");
         
-        // Add payment confirmation message to the conversation
-        await supabase
-          .from('messages')
-          .insert({
-            conversation_id: conversationId,
-            content: `💰 **Payment Confirmed**\n\nPayment of $${transaction.amount.toFixed(2)} has been successfully processed and secured in escrow.\n\nTransaction ID: ${paymentIntentId.substring(0, 8)}...\n\nThe seller can now begin the delivery process.`,
-            sender_id: 'system'
-          });
+        // Add payment receipt message to the conversation
+        await addPaymentReceiptMessage(
+          conversationId, 
+          transaction.id, 
+          paymentIntentId, 
+          transaction.amount + transaction.platform_fee + transaction.escrow_fee
+        );
         
         toast({
           title: "Payment successful",
@@ -335,6 +411,178 @@ export const EscrowStatus = ({
       setPaymentError(`Error verifying payment: ${err.message}`);
     } finally {
       setVerifyingPayment(false);
+    }
+  };
+  
+  // Handle delivery confirmation (seller)
+  const handleConfirmDelivery = async () => {
+    if (!deliveryDetails.trim()) {
+      toast({
+        title: "Delivery details required",
+        description: "Please provide information about how the product was delivered",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    try {
+      setLoading(true);
+      
+      let fileUrls: string[] = [];
+      
+      // Upload files if any
+      if (deliveryFiles.length > 0) {
+        setIsUploading(true);
+        
+        for (let i = 0; i < deliveryFiles.length; i++) {
+          const file = deliveryFiles[i];
+          const fileExt = file.name.split('.').pop();
+          const fileName = `${transaction.id}-delivery-${Date.now()}.${fileExt}`;
+          
+          const { data, error } = await supabase.storage
+            .from('escrow-deliveries')
+            .upload(fileName, file, {
+              cacheControl: '3600',
+              upsert: false,
+              onUploadProgress: (progress) => {
+                const progressPercent = (progress.loaded / progress.total) * 100 * ((i + 1) / deliveryFiles.length);
+                setUploadProgress(progressPercent);
+              }
+            });
+            
+          if (error) {
+            console.error('Error uploading file:', error);
+            throw error;
+          }
+          
+          const { data: urlData } = supabase.storage
+            .from('escrow-deliveries')
+            .getPublicUrl(fileName);
+            
+          fileUrls.push(urlData.publicUrl);
+        }
+        
+        setIsUploading(false);
+      }
+      
+      // Update transaction status
+      await updateEscrowStatus(transaction.id, "delivery_in_progress");
+      
+      // Add delivery confirmation message with file links
+      let messageContent = `📦 **DELIVERY CONFIRMATION**\n\n${deliveryDetails}\n\n`;
+      
+      if (fileUrls.length > 0) {
+        messageContent += "**Delivery proof:**\n\n";
+        fileUrls.forEach((url, index) => {
+          messageContent += `[Attachment ${index + 1}](${url})\n`;
+        });
+      }
+      
+      await supabase
+        .from('messages')
+        .insert({
+          conversation_id: conversationId,
+          content: messageContent,
+          sender_id: (await supabase.auth.getUser()).data.user?.id
+        });
+      
+      toast({
+        title: "Delivery confirmed",
+        description: "Your delivery confirmation has been sent to the buyer."
+      });
+      
+      setShowDeliveryDialog(false);
+      setDeliveryDetails("");
+      setDeliveryFiles([]);
+      setUploadProgress(0);
+      
+      onStatusChange();
+    } catch (error: any) {
+      console.error("Error confirming delivery:", error);
+      toast({
+        title: "Error confirming delivery",
+        description: error.message || "An error occurred while confirming delivery.",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+      setIsUploading(false);
+    }
+  };
+  
+  // Handle file selection for delivery proof
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newFiles = Array.from(e.target.files || []);
+    setDeliveryFiles(prev => [...prev, ...newFiles]);
+  };
+  
+  // Handle removing a file from the list
+  const handleRemoveFile = (indexToRemove: number) => {
+    setDeliveryFiles(prev => prev.filter((_, index) => index !== indexToRemove));
+  };
+  
+  // Handle verification checklist (buyer)
+  const handleSubmitVerification = async () => {
+    // Check if at least one item in checklist is checked
+    const isAnyItemChecked = Object.values(verificationChecklist).some(value => value);
+    
+    if (!isAnyItemChecked) {
+      toast({
+        title: "Verification required",
+        description: "Please verify at least one item on the checklist",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    try {
+      setLoading(true);
+      
+      // Generate verification message
+      let verificationMessage = "✅ **RECEIPT VERIFICATION**\n\nThe following items have been verified:\n\n";
+      
+      if (verificationChecklist.receivedAsDescribed) {
+        verificationMessage += "- ✓ Received as described\n";
+      }
+      if (verificationChecklist.qualityAsExpected) {
+        verificationMessage += "- ✓ Quality meets expectations\n";
+      }
+      if (verificationChecklist.functionalityWorks) {
+        verificationMessage += "- ✓ Functionality works properly\n";
+      }
+      if (verificationChecklist.documentationComplete) {
+        verificationMessage += "- ✓ Documentation is complete\n";
+      }
+      
+      // Update transaction status
+      await updateEscrowStatus(transaction.id, "inspection_period");
+      
+      // Add verification message
+      await supabase
+        .from('messages')
+        .insert({
+          conversation_id: conversationId,
+          content: verificationMessage,
+          sender_id: (await supabase.auth.getUser()).data.user?.id
+        });
+      
+      toast({
+        title: "Receipt verified",
+        description: "You have confirmed receipt of the product and can now inspect it before releasing funds."
+      });
+      
+      setShowVerificationDialog(false);
+      
+      onStatusChange();
+    } catch (error: any) {
+      console.error("Error verifying receipt:", error);
+      toast({
+        title: "Error verifying receipt",
+        description: error.message || "An error occurred while verifying receipt.",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -405,6 +653,8 @@ export const EscrowStatus = ({
               disabled={loading}
             >
               {action.action === "showPayment" && <CreditCard className="h-4 w-4 mr-1" />}
+              {action.action === "showDelivery" && <Upload className="h-4 w-4 mr-1" />}
+              {action.action === "showVerification" && <ClipboardCheck className="h-4 w-4 mr-1" />}
               {loading ? 
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current"></div> : 
                 action.label
@@ -540,6 +790,245 @@ export const EscrowStatus = ({
         error={paymentError}
         isVerifying={verifyingPayment}
       />
+      
+      {/* Delivery Dialog */}
+      <Dialog open={showDeliveryDialog} onOpenChange={setShowDeliveryDialog}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogTitle className="flex items-center">
+            <Upload className="h-5 w-5 text-[#8B5CF6] mr-2" />
+            Confirm Delivery
+          </DialogTitle>
+          <DialogDescription>
+            Provide details about the delivery and upload any proof or documentation.
+            This will notify the buyer that the product has been delivered.
+          </DialogDescription>
+          
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="delivery-details">Delivery Information</Label>
+              <Textarea 
+                id="delivery-details"
+                placeholder="Explain how the product was delivered, access details, or any instructions for the buyer..."
+                value={deliveryDetails}
+                onChange={(e) => setDeliveryDetails(e.target.value)}
+                className="min-h-[100px]"
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label>Delivery Proof (optional)</Label>
+              <div className="flex items-center justify-center w-full">
+                <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-muted/50 hover:bg-muted">
+                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                    <Upload className="w-8 h-8 text-muted-foreground" />
+                    <p className="mb-2 text-sm text-muted-foreground">
+                      <span className="font-semibold">Click to upload</span> or drag and drop
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      Screenshots, documents, or videos (max 10MB)
+                    </p>
+                  </div>
+                  <input 
+                    ref={fileInputRef}
+                    type="file" 
+                    className="hidden" 
+                    multiple
+                    onChange={handleFileChange}
+                  />
+                </label>
+              </div>
+            </div>
+            
+            {/* Show selected files */}
+            {deliveryFiles.length > 0 && (
+              <div className="space-y-2">
+                <Label>Selected Files:</Label>
+                <div className="space-y-2">
+                  {deliveryFiles.map((file, index) => (
+                    <div key={index} className="flex items-center justify-between p-2 bg-muted rounded">
+                      <span className="truncate max-w-[300px]">{file.name}</span>
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => handleRemoveFile(index)}
+                      >
+                        &times;
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            {isUploading && (
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span>Uploading...</span>
+                  <span>{Math.round(uploadProgress)}%</span>
+                </div>
+                <div className="w-full bg-muted rounded-full h-2.5">
+                  <div 
+                    className="bg-primary h-2.5 rounded-full" 
+                    style={{ width: `${uploadProgress}%` }}
+                  ></div>
+                </div>
+              </div>
+            )}
+          </div>
+          
+          <DialogFooter>
+            <Button 
+              variant="outline" 
+              onClick={() => setShowDeliveryDialog(false)}
+              disabled={loading || isUploading}
+            >
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleConfirmDelivery}
+              disabled={loading || isUploading || !deliveryDetails.trim()}
+            >
+              {loading || isUploading ? (
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2"></div>
+              ) : (
+                <CheckCircle className="h-4 w-4 mr-1" />
+              )}
+              Confirm Delivery
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Verification Dialog */}
+      <Dialog open={showVerificationDialog} onOpenChange={setShowVerificationDialog}>
+        <DialogContent>
+          <DialogTitle className="flex items-center">
+            <ClipboardCheck className="h-5 w-5 text-[#8B5CF6] mr-2" />
+            Verify Receipt
+          </DialogTitle>
+          <DialogDescription>
+            Please verify that you have received the product by checking the items below.
+            You'll have an inspection period after confirming receipt.
+          </DialogDescription>
+          
+          <div className="space-y-4 py-4">
+            <div className="space-y-3">
+              <div className="flex items-start space-x-2">
+                <Checkbox 
+                  id="received-as-described" 
+                  checked={verificationChecklist.receivedAsDescribed}
+                  onCheckedChange={(checked) => 
+                    setVerificationChecklist(prev => ({ ...prev, receivedAsDescribed: checked as boolean }))
+                  }
+                />
+                <div className="grid gap-1.5 leading-none">
+                  <Label
+                    htmlFor="received-as-described"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Received as described
+                  </Label>
+                  <p className="text-sm text-muted-foreground">
+                    The product matches the description in the listing.
+                  </p>
+                </div>
+              </div>
+              
+              <div className="flex items-start space-x-2">
+                <Checkbox 
+                  id="quality-as-expected" 
+                  checked={verificationChecklist.qualityAsExpected}
+                  onCheckedChange={(checked) => 
+                    setVerificationChecklist(prev => ({ ...prev, qualityAsExpected: checked as boolean }))
+                  }
+                />
+                <div className="grid gap-1.5 leading-none">
+                  <Label
+                    htmlFor="quality-as-expected"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Quality meets expectations
+                  </Label>
+                  <p className="text-sm text-muted-foreground">
+                    The quality of the product meets your expectations.
+                  </p>
+                </div>
+              </div>
+              
+              <div className="flex items-start space-x-2">
+                <Checkbox 
+                  id="functionality-works" 
+                  checked={verificationChecklist.functionalityWorks}
+                  onCheckedChange={(checked) => 
+                    setVerificationChecklist(prev => ({ ...prev, functionalityWorks: checked as boolean }))
+                  }
+                />
+                <div className="grid gap-1.5 leading-none">
+                  <Label
+                    htmlFor="functionality-works"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Functionality works properly
+                  </Label>
+                  <p className="text-sm text-muted-foreground">
+                    The product functions as described and expected.
+                  </p>
+                </div>
+              </div>
+              
+              <div className="flex items-start space-x-2">
+                <Checkbox 
+                  id="documentation-complete" 
+                  checked={verificationChecklist.documentationComplete}
+                  onCheckedChange={(checked) => 
+                    setVerificationChecklist(prev => ({ ...prev, documentationComplete: checked as boolean }))
+                  }
+                />
+                <div className="grid gap-1.5 leading-none">
+                  <Label
+                    htmlFor="documentation-complete"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Documentation is complete
+                  </Label>
+                  <p className="text-sm text-muted-foreground">
+                    All necessary documentation and instructions were provided.
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <Alert>
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                After confirming receipt, you'll have a 48-hour inspection period to thoroughly evaluate
+                the product before funds are released to the seller.
+              </AlertDescription>
+            </Alert>
+          </div>
+          
+          <DialogFooter>
+            <Button 
+              variant="outline" 
+              onClick={() => setShowVerificationDialog(false)}
+              disabled={loading}
+            >
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleSubmitVerification}
+              disabled={loading || !Object.values(verificationChecklist).some(v => v)}
+            >
+              {loading ? (
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2"></div>
+              ) : (
+                <CheckCircle className="h-4 w-4 mr-1" />
+              )}
+              Confirm Receipt
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
