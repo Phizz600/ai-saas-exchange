@@ -1,4 +1,3 @@
-
 import { supabase } from './client';
 
 export interface EscrowTransaction {
@@ -254,7 +253,7 @@ export const initializeEscrowWithApi = async (transactionId: string) => {
 };
 
 /**
- * Download escrow transaction details as fallback
+ * Generate escrow transaction summary for download
  */
 export const generateEscrowSummaryForDownload = (transaction: EscrowTransaction): string => {
   const summary = {

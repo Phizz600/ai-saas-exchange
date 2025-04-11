@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { EscrowTransaction, updateEscrowStatus, generateEscrowSummaryForDownload } from "@/integrations/supabase/escrow";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { AlertTriangle, Download, MessageSquare, ShieldAlert } from "lucide-react";
+import { AlertTriangle, Clock, Download, MessageSquare, ShieldAlert } from "lucide-react";
 
 const statusColors: Record<string, string> = {
   pending: "bg-gray-200 text-gray-800",
@@ -42,6 +42,54 @@ export const EscrowStatus = ({
   const [showEvidenceDialog, setShowEvidenceDialog] = useState(false);
   const [evidenceDescription, setEvidenceDescription] = useState("");
   const { toast } = useToast();
+  
+  // Calculate remaining time for the current stage
+  const getRemainingTime = () => {
+    if (!transaction.created_at) return null;
+    
+    let deadlineDate: Date | null = null;
+    let stageName = "";
+    
+    switch (transaction.status) {
+      case "agreement_reached":
+      case "escrow_created":
+      case "manual_setup":
+        // 3 days to make payment
+        deadlineDate = new Date(transaction.created_at);
+        deadlineDate.setDate(deadlineDate.getDate() + 3);
+        stageName = "Payment";
+        break;
+      case "payment_secured":
+        // 7 days to deliver
+        deadlineDate = new Date(transaction.updated_at || transaction.created_at);
+        deadlineDate.setDate(deadlineDate.getDate() + 7);
+        stageName = "Delivery";
+        break;
+      case "inspection_period":
+        // 2 days for inspection
+        deadlineDate = new Date(transaction.updated_at || transaction.created_at);
+        deadlineDate.setDate(deadlineDate.getDate() + 2);
+        stageName = "Inspection";
+        break;
+      default:
+        return null;
+    }
+    
+    const now = new Date();
+    if (deadlineDate < now) return null;
+    
+    const diffTime = Math.abs(deadlineDate.getTime() - now.getTime());
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    const diffHours = Math.floor((diffTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    
+    return {
+      days: diffDays,
+      hours: diffHours,
+      stageName
+    };
+  };
+  
+  const remainingTime = getRemainingTime();
 
   const getStatusActions = () => {
     const { status } = transaction;
@@ -95,6 +143,20 @@ export const EscrowStatus = ({
         title: "Status updated",
         description: `Transaction status has been updated to ${action.nextStatus.replace(/_/g, ' ')}.`
       });
+      
+      // Add a message to the conversation about the status change
+      try {
+        await supabase
+          .from('messages')
+          .insert({
+            conversation_id: conversationId,
+            sender_id: 'system',
+            content: `🔄 **Escrow Status Updated**\n\nStatus changed from "${getStatusText(transaction.status)}" to "${getStatusText(action.nextStatus)}"\n\nThe transaction is progressing to the next stage.`
+          });
+      } catch (msgError) {
+        console.error("Error adding status message to conversation:", msgError);
+      }
+      
       onStatusChange();
     } catch (error: any) {
       console.error("Error updating status:", error);
@@ -133,13 +195,13 @@ export const EscrowStatus = ({
         .from('messages')
         .insert({
           conversation_id: conversationId,
-          content: `🚨 DISPUTE INITIATED: ${disputeReason}`,
+          content: `🚨 **DISPUTE INITIATED**\n\nReason: ${disputeReason}\n\nThe transaction has been marked as disputed. Both parties will be contacted shortly.`,
           sender_id: (await supabase.auth.getUser()).data.user?.id
         });
       
       toast({
         title: "Dispute initiated",
-        description: "The transaction has been marked as disputed. Escrow.com will contact both parties."
+        description: "The transaction has been marked as disputed. Support will contact both parties."
       });
       
       setShowDisputeDialog(false);
@@ -174,7 +236,7 @@ export const EscrowStatus = ({
         .from('messages')
         .insert({
           conversation_id: conversationId,
-          content: `📝 EVIDENCE SUBMITTED: ${evidenceDescription}`,
+          content: `📝 **EVIDENCE SUBMITTED**\n\n${evidenceDescription}`,
           sender_id: (await supabase.auth.getUser()).data.user?.id
         });
       
@@ -217,7 +279,7 @@ export const EscrowStatus = ({
 
   return (
     <>
-      <Card className="mb-4">
+      <Card className="mb-4 border-t-4" style={{ borderTopColor: transaction.status === 'disputed' ? '#ef4444' : '#8B5CF6' }}>
         <CardHeader className="pb-2">
           <div className="flex justify-between items-center">
             <CardTitle className="text-lg">Escrow Transaction</CardTitle>
@@ -261,12 +323,23 @@ export const EscrowStatus = ({
                 <span className="text-sm">{transaction.description}</span>
               </div>
             )}
+            
+            {remainingTime && (
+              <div className="pt-2 mt-2 border-t">
+                <div className="flex items-center text-sm text-amber-600">
+                  <Clock className="h-4 w-4 mr-1" />
+                  <span>
+                    {remainingTime.stageName} deadline: {remainingTime.days}d {remainingTime.hours}h remaining
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
         </CardContent>
         <CardFooter className="flex flex-col gap-2">
           {action && (
             <Button 
-              className="w-full"
+              className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90"
               onClick={handleStatusUpdate}
               disabled={loading}
             >
@@ -322,7 +395,7 @@ export const EscrowStatus = ({
             Initiate Dispute
           </DialogTitle>
           <DialogDescription>
-            This will notify Escrow.com of a dispute with this transaction. 
+            This will notify support of a dispute with this transaction. 
             Please provide a clear reason for the dispute.
           </DialogDescription>
           

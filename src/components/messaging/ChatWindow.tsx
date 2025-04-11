@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { 
@@ -86,8 +87,27 @@ export const ChatWindow = () => {
       markMessagesAsRead(conversationId);
     });
     
+    // Subscribe to escrow status changes
+    const escrowChannel = supabase
+      .channel('escrow-status-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'escrow_transactions',
+          filter: `conversation_id=eq.${conversationId}`
+        },
+        () => {
+          // Reload the escrow transaction when its status changes
+          loadEscrowTransaction();
+        }
+      )
+      .subscribe();
+    
     return () => {
       unsubscribe();
+      supabase.removeChannel(escrowChannel);
     };
   }, [conversationId, navigate, toast]);
   
@@ -234,6 +254,24 @@ export const ChatWindow = () => {
         ) : (
           messages.map((message) => {
             const isCurrentUser = currentUser?.id === message.sender_id;
+            const isSystemMessage = message.sender_id === 'system';
+            
+            // Special rendering for system messages
+            if (isSystemMessage) {
+              return (
+                <div key={message.id} className="flex justify-center">
+                  <div className="max-w-[90%] bg-muted rounded-lg p-3 text-center">
+                    <div className="text-sm" dangerouslySetInnerHTML={{ __html: message.content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br/>') }} />
+                    <p className="text-xs mt-1 text-muted-foreground">
+                      {formatDistance(new Date(message.created_at), new Date(), { 
+                        addSuffix: true 
+                      })}
+                    </p>
+                  </div>
+                </div>
+              );
+            }
+            
             return (
               <div 
                 key={message.id} 
