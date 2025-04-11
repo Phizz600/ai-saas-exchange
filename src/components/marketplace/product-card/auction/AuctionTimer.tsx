@@ -1,6 +1,9 @@
+
 import { useEffect, useState } from "react";
 import { Timer, TrendingDown } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
 import { calculateCurrentAuctionPrice } from "@/integrations/supabase/auction";
+
 interface AuctionTimerProps {
   auctionEndTime?: string;
   currentPrice?: number;
@@ -9,6 +12,7 @@ interface AuctionTimerProps {
   decrementInterval?: string;
   noReserve?: boolean;
 }
+
 export function AuctionTimer({
   auctionEndTime,
   currentPrice = 0,
@@ -19,12 +23,22 @@ export function AuctionTimer({
 }: AuctionTimerProps) {
   const [timeRemaining, setTimeRemaining] = useState<string | null>(null);
   const [calculatedPrice, setCalculatedPrice] = useState(currentPrice);
+  const [auctionProgress, setAuctionProgress] = useState(0);
+  
   useEffect(() => {
     if (auctionEndTime) {
       const intervalId = setInterval(() => {
         const now = new Date();
         const end = new Date(auctionEndTime);
+        const start = new Date(end.getTime() - (7 * 24 * 60 * 60 * 1000)); // Assume 7-day auction
+        const totalDuration = end.getTime() - start.getTime();
+        const elapsed = now.getTime() - start.getTime();
         const diff = end.getTime() - now.getTime();
+        
+        // Calculate progress percentage (0-100)
+        const progressPercentage = Math.min(100, Math.max(0, (elapsed / totalDuration) * 100));
+        setAuctionProgress(progressPercentage);
+        
         if (diff > 0) {
           const days = Math.floor(diff / (1000 * 60 * 60 * 24));
           const hours = Math.floor(diff % (1000 * 60 * 60 * 24) / (1000 * 60 * 60));
@@ -36,6 +50,7 @@ export function AuctionTimer({
           setCalculatedPrice(calculatedCurrentPrice);
         } else {
           setTimeRemaining("Auction Ended");
+          setAuctionProgress(100);
           clearInterval(intervalId);
         }
       }, 1000);
@@ -48,23 +63,11 @@ export function AuctionTimer({
     return `$${price.toLocaleString()}`;
   };
 
-  // Calculate the progress percentage for the progress bar
-  const calculateProgress = (): string => {
-    if (noReserve) return "100%";
-
-    // For auctions with a reserve price
-    const startingPrice = currentPrice;
-    const currentCalculatedPrice = calculatedPrice;
-    if (startingPrice === reservePrice) return "0%";
-    const totalPriceDrop = startingPrice - reservePrice;
-    const currentPriceDrop = startingPrice - currentCalculatedPrice;
-    const progressPercentage = currentPriceDrop / totalPriceDrop * 100;
-    return `${Math.min(100, Math.max(0, progressPercentage))}%`;
-  };
-  return <div className="rounded-md overflow-hidden">
+  return (
+    <div className="rounded-md overflow-hidden">
       <div className="p-4" style={{
-      background: 'linear-gradient(to right, #FEFBEA, #FBF5FF)'
-    }}>
+        background: 'linear-gradient(to right, #FEFBEA, #FBF5FF)'
+      }}>
         <div className="flex justify-between items-center mb-2">
           <div className="flex items-center text-amber-700">
             <Timer className="w-5 h-5 mr-1" />
@@ -90,12 +93,12 @@ export function AuctionTimer({
         </div>
         
         {/* Progress Bar with gradient */}
-        <div className="w-full bg-yellow-100 rounded-full h-2 mt-2">
-          <div className="h-2 rounded-full" style={{
-          width: "100%",
-          background: 'linear-gradient(to right, #D946EE, #8B5CF6, #0EA4E9)'
-        }}></div>
-        </div>
+        <Progress 
+          value={auctionProgress} 
+          className="h-2 mt-2 bg-yellow-100"
+          // The Progress component already has the color gradient defined
+        />
       </div>
-    </div>;
+    </div>
+  );
 }
