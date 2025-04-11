@@ -23,6 +23,7 @@ interface ProductCardActionsProps {
     auction_end_time?: string;
     current_price?: number;
     reserve_price?: number;
+    investment_timeline?: string;
   };
 }
 
