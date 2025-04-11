@@ -1,3 +1,4 @@
+
 import { supabase } from './client';
 
 export interface EscrowTransaction {
@@ -194,6 +195,36 @@ export const updateEscrowStatus = async (
     return data;
   } catch (error) {
     console.error('Error in updateEscrowStatus:', error);
+    throw error;
+  }
+};
+
+/**
+ * Add a payment receipt message to the conversation
+ */
+export const addPaymentReceiptMessage = async (
+  conversationId: string,
+  transactionId: string, 
+  paymentIntentId: string,
+  amount: number
+) => {
+  try {
+    const { error } = await supabase
+      .from('messages')
+      .insert({
+        conversation_id: conversationId,
+        sender_id: 'system',
+        content: `📜 **Payment Receipt**\n\n**Amount:** $${amount.toFixed(2)}\n**Transaction ID:** ${transactionId.substring(0, 8)}...\n**Payment Reference:** ${paymentIntentId.substring(0, 8)}...\n**Date:** ${new Date().toLocaleDateString()}\n\nThe payment has been received and the funds are now held in escrow. They will be released to the seller upon completion of the transaction.`
+      });
+
+    if (error) {
+      console.error('Error adding payment receipt message:', error);
+      throw error;
+    }
+    
+    return true;
+  } catch (error) {
+    console.error('Error in addPaymentReceiptMessage:', error);
     throw error;
   }
 };

@@ -8,7 +8,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { EscrowTransaction, updateEscrowStatus, generateEscrowSummaryForDownload } from "@/integrations/supabase/escrow";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { AlertTriangle, Clock, Download, MessageSquare, ShieldAlert } from "lucide-react";
+import { AlertTriangle, Clock, Download, MessageSquare, ShieldAlert, CreditCard, DollarSign, AlertCircle } from "lucide-react";
+import { PaymentMethodDialog } from "./PaymentMethodDialog";
+import { verifyPaymentIntent } from "@/services/stripe-service";
 
 const statusColors: Record<string, string> = {
   pending: "bg-gray-200 text-gray-800",
@@ -41,6 +43,9 @@ export const EscrowStatus = ({
   const [disputeReason, setDisputeReason] = useState("");
   const [showEvidenceDialog, setShowEvidenceDialog] = useState(false);
   const [evidenceDescription, setEvidenceDescription] = useState("");
+  const [showPaymentDialog, setShowPaymentDialog] = useState(false);
+  const [paymentError, setPaymentError] = useState<string | null>(null);
+  const [verifyingPayment, setVerifyingPayment] = useState(false);
   const { toast } = useToast();
   
   // Calculate remaining time for the current stage
@@ -100,17 +105,20 @@ export const EscrowStatus = ({
         case "escrow_created":
         case "manual_setup":
           return {
-            label: "Pay to Escrow",
-            nextStatus: "payment_secured"
+            label: "Pay Now",
+            action: "showPayment",
+            nextStatus: null
           };
         case "delivery_in_progress":
           return {
             label: "Mark as Received",
+            action: "updateStatus",
             nextStatus: "inspection_period"
           };
         case "inspection_period":
           return {
             label: "Accept & Release Funds",
+            action: "updateStatus",
             nextStatus: "completed"
           };
         default:
@@ -121,6 +129,7 @@ export const EscrowStatus = ({
         case "payment_secured":
           return {
             label: "Start Delivery",
+            action: "updateStatus",
             nextStatus: "delivery_in_progress"
           };
         default:
@@ -134,7 +143,7 @@ export const EscrowStatus = ({
   const action = getStatusActions();
   
   const handleStatusUpdate = async () => {
-    if (!action) return;
+    if (!action || !action.nextStatus) return;
     
     try {
       setLoading(true);
@@ -167,6 +176,16 @@ export const EscrowStatus = ({
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleActionClick = () => {
+    if (!action) return;
+    
+    if (action.action === "showPayment") {
+      setShowPaymentDialog(true);
+    } else if (action.action === "updateStatus") {
+      handleStatusUpdate();
     }
   };
   
@@ -277,6 +296,48 @@ export const EscrowStatus = ({
     });
   };
 
+  const handlePaymentComplete = async (paymentIntentId: string) => {
+    if (!paymentIntentId) {
+      setPaymentError("Missing payment information");
+      return;
+    }
+    
+    // Verify the payment intent status
+    try {
+      setVerifyingPayment(true);
+      const { status, success, error } = await verifyPaymentIntent(paymentIntentId);
+      
+      if (success && (status === 'requires_capture' || status === 'succeeded')) {
+        // Update transaction status
+        await updateEscrowStatus(transaction.id, "payment_secured");
+        
+        // Add payment confirmation message to the conversation
+        await supabase
+          .from('messages')
+          .insert({
+            conversation_id: conversationId,
+            content: `💰 **Payment Confirmed**\n\nPayment of $${transaction.amount.toFixed(2)} has been successfully processed and secured in escrow.\n\nTransaction ID: ${paymentIntentId.substring(0, 8)}...\n\nThe seller can now begin the delivery process.`,
+            sender_id: 'system'
+          });
+        
+        toast({
+          title: "Payment successful",
+          description: "Your payment has been processed and the funds are now in escrow."
+        });
+        
+        setShowPaymentDialog(false);
+        onStatusChange();
+      } else {
+        setPaymentError(`Payment verification failed: ${error || `Status: ${status}`}`);
+      }
+    } catch (err: any) {
+      console.error("Error verifying payment:", err);
+      setPaymentError(`Error verifying payment: ${err.message}`);
+    } finally {
+      setVerifyingPayment(false);
+    }
+  };
+
   return (
     <>
       <Card className="mb-4 border-t-4" style={{ borderTopColor: transaction.status === 'disputed' ? '#ef4444' : '#8B5CF6' }}>
@@ -340,9 +401,10 @@ export const EscrowStatus = ({
           {action && (
             <Button 
               className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90"
-              onClick={handleStatusUpdate}
+              onClick={handleActionClick}
               disabled={loading}
             >
+              {action.action === "showPayment" && <CreditCard className="h-4 w-4 mr-1" />}
               {loading ? 
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current"></div> : 
                 action.label
@@ -468,6 +530,16 @@ export const EscrowStatus = ({
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      
+      {/* Payment Method Dialog */}
+      <PaymentMethodDialog
+        open={showPaymentDialog}
+        onOpenChange={setShowPaymentDialog}
+        transaction={transaction}
+        onPaymentComplete={handlePaymentComplete}
+        error={paymentError}
+        isVerifying={verifyingPayment}
+      />
     </>
   );
 };
