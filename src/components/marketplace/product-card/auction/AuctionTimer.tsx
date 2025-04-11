@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Timer, TrendingDown } from "lucide-react";
 import { calculateCurrentAuctionPrice } from "@/integrations/supabase/auction";
@@ -61,36 +62,44 @@ export function AuctionTimer({
     const progressPercentage = currentPriceDrop / totalPriceDrop * 100;
     return `${Math.min(100, Math.max(0, progressPercentage))}%`;
   };
-  return <div className="bg-white p-4 rounded-md shadow-sm">
-      <div className="flex justify-between items-center mb-3">
-        <div className="flex items-center text-orange-500">
-          <Timer className="w-4 h-4 mr-1" />
-          <span className="font-medium text-xs text-left">{timeRemaining}</span>
+  
+  return (
+    <div className="rounded-md overflow-hidden">
+      <div className="bg-gradient-to-r from-yellow-100 to-purple-100 p-4">
+        <div className="flex justify-between items-center mb-2">
+          <div className="flex items-center text-amber-700">
+            <Timer className="w-5 h-5 mr-1" />
+            <span className="font-medium text-lg">{timeRemaining}</span>
+          </div>
+          <div className="flex items-center text-purple-700">
+            <TrendingDown className="w-5 h-5 mr-1" />
+            <span className="font-medium text-lg">Price dropping</span>
+          </div>
         </div>
-        <div className="flex items-center text-[#8B5CF6]">
-          <TrendingDown className="w-4 h-4 mr-1" />
-          <span className="font-medium text-xs text-left">Price dropping</span>
+        
+        <div className="flex justify-between items-center mb-1">
+          <div>
+            <span className="text-gray-700 text-sm">Current:</span>
+            <p className="text-xl font-bold text-gray-800">{formatPrice(calculatedPrice)}</p>
+          </div>
+          <div className="text-right">
+            <span className="text-gray-700 text-sm">Min:</span>
+            <p className="text-xl font-bold text-gray-800">
+              {noReserve ? "$0" : formatPrice(reservePrice)}
+            </p>
+          </div>
+        </div>
+        
+        {/* Progress Bar with gradient */}
+        <div className="w-full bg-yellow-200 rounded-full h-2 mt-2">
+          <div 
+            className="bg-gradient-to-r from-amber-300 via-pink-400 to-purple-500 h-2 rounded-full" 
+            style={{
+              width: "100%"
+            }}
+          ></div>
         </div>
       </div>
-      
-      <div className="flex justify-between items-center mb-1">
-        <div>
-          <span className="text-xs text-gray-600">Current:</span>
-          <p className="text-sm font-bold">{formatPrice(calculatedPrice)}</p>
-        </div>
-        <div className="text-right">
-          <span className="text-xs text-gray-600">Min:</span>
-          <p className="text-sm font-bold">
-            {noReserve ? "$0" : formatPrice(reservePrice)}
-          </p>
-        </div>
-      </div>
-      
-      {/* Progress Bar */}
-      <div className="w-full bg-yellow-100 rounded-full h-2 mt-2">
-        <div className="bg-yellow-200 h-2 rounded-full" style={{
-        width: "100%"
-      }}></div>
-      </div>
-    </div>;
+    </div>
+  );
 }
