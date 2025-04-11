@@ -1,137 +1,113 @@
 
-import { type ToastProps, type ToastActionElement, type ToastActionProps } from "@/components/ui/toast"
+import { type ToastProps } from "@/components/ui/toast"
 import {
   toast as sonnerToast,
-  ToastT,
+  type Toast as SonnerToast,
 } from "sonner"
 
-type ToasterToast = ToastProps & {
-  id: string
-  title?: React.ReactNode
-  description?: React.ReactNode
-  action?: ToastActionElement
-  cancel?: ToastActionElement
-}
-
-const actionPropsToToastAction = (props: ToastActionProps): ToastActionElement => {
-  const { altText, ...actionProps } = props
-  return {
-    altText,
-    ...actionProps,
-  }
-}
+type ExternalToast = SonnerToast;
 
 export const toast = Object.assign(
-  (props: ToastProps) => {
+  (props: {
+    title?: React.ReactNode
+    description?: React.ReactNode
+    variant?: "default" | "destructive"
+    duration?: number
+    action?: {
+      label: string
+      onClick: () => void
+      altText: string
+    }
+    cancel?: {
+      label: string
+      onClick: () => void
+      altText: string
+    },
+    [key: string]: any
+  }) => {
     const { title, description, variant, action, cancel, ...restProps } = props
 
-    // Transform toast action props to toast action if needed
-    let actionElement = action
-    if (action && "altText" in action) {
-      actionElement = actionPropsToToastAction(action as ToastActionProps)
-    }
-
-    let cancelElement = cancel
-    if (cancel && "altText" in cancel) {
-      cancelElement = actionPropsToToastAction(cancel as ToastActionProps)
-    }
-
-    const toastOptions = {
+    const options = {
       className: variant === "destructive" ? "destructive" : "",
+      duration: restProps.duration,
       ...restProps,
     }
 
-    if (actionElement && cancelElement) {
+    if (action && cancel) {
       return sonnerToast(title as string, {
         description,
-        action: actionElement,
-        cancel: cancelElement,
-        ...toastOptions,
+        action: {
+          label: action.label,
+          onClick: action.onClick,
+        },
+        cancel: {
+          label: cancel.label,
+          onClick: cancel.onClick,
+        },
+        ...options,
       })
     }
 
-    if (actionElement) {
+    if (action) {
       return sonnerToast(title as string, {
         description,
-        action: actionElement,
-        ...toastOptions,
+        action: {
+          label: action.label,
+          onClick: action.onClick,
+        },
+        ...options,
       })
     }
 
     return sonnerToast(title as string, {
       description,
-      ...toastOptions,
+      ...options,
     })
   },
   {
-    success: (props: Omit<ToastProps, "variant">) => {
+    success: (props: { title?: React.ReactNode, description?: React.ReactNode, duration?: number }) => {
       return toast({ ...props, variant: "default" })
     },
-    error: (props: Omit<ToastProps, "variant">) => {
+    error: (props: { title?: React.ReactNode, description?: React.ReactNode, duration?: number }) => {
       return toast({ ...props, variant: "destructive" })
     },
-    warn: (props: Omit<ToastProps, "variant">) => {
+    warn: (props: { title?: React.ReactNode, description?: React.ReactNode, duration?: number }) => {
       return toast({ ...props })
     },
-    info: (props: Omit<ToastProps, "variant">) => {
+    info: (props: { title?: React.ReactNode, description?: React.ReactNode, duration?: number }) => {
       return toast({ ...props })
     },
-    message: (props: ToastProps) => {
+    message: (props: { title?: React.ReactNode, description?: React.ReactNode, variant?: "default" | "destructive", duration?: number }) => {
       return toast(props)
     },
     promise: sonnerToast.promise,
     dismiss: (toastId?: string) => {
       sonnerToast.dismiss(toastId)
     },
-    update: (toastId: string, props: ToastProps) => {
-      const { title, description, variant, action, cancel, ...restProps } = props
-
-      let actionElement = action
-      if (action && "altText" in action) {
-        actionElement = actionPropsToToastAction(action as ToastActionProps)
-      }
-
-      let cancelElement = cancel
-      if (cancel && "altText" in cancel) {
-        cancelElement = actionPropsToToastAction(cancel as ToastActionProps)
-      }
-
-      const toastOptions = {
-        className: variant === "destructive" ? "destructive" : "",
-        ...restProps,
-      }
-
-      if (actionElement && cancelElement) {
-        return sonnerToast.update(toastId, title as string, {
-          description,
-          action: actionElement,
-          cancel: cancelElement,
-          ...toastOptions,
-        })
-      }
-
-      if (actionElement) {
-        return sonnerToast.update(toastId, title as string, {
-          description,
-          action: actionElement,
-          ...toastOptions,
-        })
-      }
-
-      return sonnerToast.update(toastId, title as string, {
-        description,
-        ...toastOptions,
-      })
-    },
+    custom: sonnerToast.custom,
   }
 )
 
-export type Toast = ToasterToast
+export type Toast = {
+  id: string
+  title?: React.ReactNode
+  description?: React.ReactNode
+  action?: {
+    label: string
+    onClick: () => void
+    altText: string
+  }
+  variant?: "default" | "destructive"
+}
+
+// This is the provider we need to wrap the app with
+export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
+  return children
+}
 
 export function useToast() {
   return {
     toast,
     dismiss: toast.dismiss,
-    update: toast.update,
   }
 }
