@@ -2,10 +2,10 @@
 import { type ToastProps } from "@/components/ui/toast"
 import {
   toast as sonnerToast,
-  type Toast as SonnerToast,
+  type Toast as SonnerToastType,
 } from "sonner"
 
-type ExternalToast = SonnerToast;
+type ExternalToast = SonnerToastType;
 
 export const toast = Object.assign(
   (props: {
