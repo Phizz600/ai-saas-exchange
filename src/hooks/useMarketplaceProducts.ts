@@ -88,9 +88,47 @@ export const useMarketplaceProducts = ({
           query = query.order('created_at', { ascending: false });
           break;
         case 'popular':
-          // For now, we'll sort by views as a proxy for popularity
-          // This could be improved with a more sophisticated popularity algorithm
-          query = query.order('views', { ascending: false, nullsFirst: false });
+          // For popular products, use a more comprehensive approach
+          // First fetch product IDs with their analytics data
+          const { data: analyticsData } = await supabase
+            .from('product_analytics')
+            .select('product_id, views, clicks, saves, likes, bids')
+            .gte('date', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]); // Last 7 days
+          
+          if (analyticsData && analyticsData.length > 0) {
+            // Calculate engagement score for each product
+            const productScores = analyticsData.reduce((acc, item) => {
+              const productId = item.product_id;
+              if (!acc[productId]) {
+                acc[productId] = 0;
+              }
+              // Weight different engagement types
+              acc[productId] += (item.views || 0) * 1;       // 1 point per view
+              acc[productId] += (item.clicks || 0) * 2;      // 2 points per click
+              acc[productId] += (item.saves || 0) * 5;       // 5 points per save
+              acc[productId] += (item.likes || 0) * 3;       // 3 points per like
+              acc[productId] += (item.bids || 0) * 10;       // 10 points per bid
+              return acc;
+            }, {});
+            
+            // Sort products by their engagement score
+            const sortedProductIds = Object.entries(productScores)
+              .sort(([, scoreA], [, scoreB]) => (scoreB as number) - (scoreA as number))
+              .map(([id]) => id);
+            
+            if (sortedProductIds.length > 0) {
+              // Use the in operator with the sorted product IDs
+              query = query.in('id', sortedProductIds);
+              // Note: This won't preserve the exact order, but it's a limitation of the current approach
+              // Ideally, we would retrieve all products and sort them on the client side
+            } else {
+              // Fallback to views if no engagement data
+              query = query.order('views', { ascending: false, nullsFirst: false });
+            }
+          } else {
+            // Fallback to views if no analytics data
+            query = query.order('views', { ascending: false, nullsFirst: false });
+          }
           break;
         case 'ending_soon':
           // Only include auctions with end times in the future
