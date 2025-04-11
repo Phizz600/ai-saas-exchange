@@ -309,7 +309,7 @@ export function ProductPricing({
           </div>
 
           {isAuction && !isAuctionEnded && (
-            <div className="bg-amber-100 p-3 rounded-md text-sm text-amber-700">
+            <div className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] p-3 rounded-md text-white text-sm">
               <p>
                 Time Remaining: {timeLeft}
                 <br />

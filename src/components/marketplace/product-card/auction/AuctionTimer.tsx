@@ -5,19 +5,19 @@ import { calculateCurrentAuctionPrice } from "@/integrations/supabase/auction";
 interface AuctionTimerProps {
   auctionEndTime?: string;
   currentPrice?: number; 
-  reservePrice?: number; // Changed from minPrice
+  reservePrice?: number;
   priceDecrement?: number;
   decrementInterval?: string;
-  noReserve?: boolean; // Added no_reserve field
+  noReserve?: boolean;
 }
 
 export function AuctionTimer({ 
   auctionEndTime, 
   currentPrice = 0,
-  reservePrice = 0, // Changed from minPrice
+  reservePrice = 0,
   priceDecrement = 0,
   decrementInterval = "hour",
-  noReserve = false // Added no_reserve prop
+  noReserve = false
 }: AuctionTimerProps) {
   const [timeRemaining, setTimeRemaining] = useState<string | null>(null);
   const [calculatedPrice, setCalculatedPrice] = useState(currentPrice);
@@ -58,7 +58,7 @@ export function AuctionTimer({
   }, [auctionEndTime, currentPrice, reservePrice, priceDecrement, decrementInterval]);
 
   return (
-    <div className="bg-amber-100 text-amber-700 p-3 rounded-md text-sm">
+    <div className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] p-3 rounded-md text-white text-sm">
       {timeRemaining ? (
         <>
           Time Remaining: {timeRemaining}
