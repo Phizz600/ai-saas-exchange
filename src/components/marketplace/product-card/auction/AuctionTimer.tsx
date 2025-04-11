@@ -66,30 +66,30 @@ export function AuctionTimer({
     <div className="bg-white p-4 rounded-md shadow-sm">
       <div className="flex justify-between items-center mb-3">
         <div className="flex items-center text-orange-500">
-          <Timer className="w-6 h-6 mr-2" />
-          <span className="font-medium text-lg">{timeRemaining}</span>
+          <Timer className="w-4 h-4 mr-1" />
+          <span className="font-medium text-sm">{timeRemaining}</span>
         </div>
         <div className="flex items-center text-[#8B5CF6]">
-          <TrendingDown className="w-5 h-5 mr-1" />
-          <span className="font-medium">Price dropping</span>
+          <TrendingDown className="w-4 h-4 mr-1" />
+          <span className="font-medium text-sm">Price dropping</span>
         </div>
       </div>
       
       <div className="flex justify-between items-center mb-1">
         <div>
-          <span className="text-gray-600">Current:</span>
-          <p className="text-2xl font-bold">{formatPrice(calculatedPrice)}</p>
+          <span className="text-xs text-gray-600">Current:</span>
+          <p className="text-lg font-bold">{formatPrice(calculatedPrice)}</p>
         </div>
         <div className="text-right">
-          <span className="text-gray-600">Min:</span>
-          <p className="text-2xl font-bold">
+          <span className="text-xs text-gray-600">Min:</span>
+          <p className="text-lg font-bold">
             {noReserve ? "$0" : formatPrice(reservePrice)}
           </p>
         </div>
       </div>
       
       {/* Progress Bar */}
-      <div className="w-full bg-yellow-100 rounded-full h-2 mt-3">
+      <div className="w-full bg-yellow-100 rounded-full h-2 mt-2">
         <div 
           className="bg-yellow-200 h-2 rounded-full" 
           style={{ 
