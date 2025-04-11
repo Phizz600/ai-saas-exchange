@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -907,3 +908,101 @@ export const EscrowStatus = ({
           </DialogTitle>
           <DialogDescription>
             Please verify that you have received the product by checking the items below.
+          </DialogDescription>
+          
+          <div className="space-y-4 py-4">
+            <div>
+              <div className="space-y-3">
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id="received-as-described" 
+                    checked={verificationChecklist.receivedAsDescribed}
+                    onCheckedChange={(checked) => 
+                      setVerificationChecklist(prev => ({
+                        ...prev,
+                        receivedAsDescribed: checked === true
+                      }))
+                    }
+                  />
+                  <Label htmlFor="received-as-described">Product received as described</Label>
+                </div>
+                
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id="quality-as-expected" 
+                    checked={verificationChecklist.qualityAsExpected}
+                    onCheckedChange={(checked) => 
+                      setVerificationChecklist(prev => ({
+                        ...prev,
+                        qualityAsExpected: checked === true
+                      }))
+                    }
+                  />
+                  <Label htmlFor="quality-as-expected">Quality meets expectations</Label>
+                </div>
+                
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id="functionality-works" 
+                    checked={verificationChecklist.functionalityWorks}
+                    onCheckedChange={(checked) => 
+                      setVerificationChecklist(prev => ({
+                        ...prev,
+                        functionalityWorks: checked === true
+                      }))
+                    }
+                  />
+                  <Label htmlFor="functionality-works">Functionality works properly</Label>
+                </div>
+                
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id="documentation-complete" 
+                    checked={verificationChecklist.documentationComplete}
+                    onCheckedChange={(checked) => 
+                      setVerificationChecklist(prev => ({
+                        ...prev,
+                        documentationComplete: checked === true
+                      }))
+                    }
+                  />
+                  <Label htmlFor="documentation-complete">Documentation is complete</Label>
+                </div>
+              </div>
+              
+              {!Object.values(verificationChecklist).some(value => value) && (
+                <Alert className="mt-4">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>
+                    Please check at least one item to confirm receipt.
+                  </AlertDescription>
+                </Alert>
+              )}
+            </div>
+          </div>
+          
+          <DialogFooter>
+            <Button 
+              variant="outline" 
+              onClick={() => setShowVerificationDialog(false)}
+              disabled={loading}
+            >
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleSubmitVerification}
+              disabled={loading || !Object.values(verificationChecklist).some(value => value)}
+            >
+              {loading ? (
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2"></div>
+              ) : (
+                <CheckCircle className="h-4 w-4 mr-1" />
+              )}
+              Verify Receipt
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+};
