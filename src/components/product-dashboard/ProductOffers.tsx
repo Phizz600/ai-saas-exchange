@@ -1,3 +1,4 @@
+
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Check, X, StoreIcon } from "lucide-react";
 import { getProductOffers, updateOfferStatus } from "@/integrations/supabase/functions";
@@ -6,6 +7,26 @@ import { Card } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
+
+// Define the offer type
+interface Offer {
+  id: string;
+  product_id: string;
+  bidder_id: string;
+  amount: number;
+  message: string | null;
+  status: 'pending' | 'accepted' | 'declined';
+  created_at: string;
+  products?: {
+    title: string;
+    image_url: string | null;
+  };
+  bidder?: {
+    full_name: string | null;
+    avatar_url: string | null;
+  };
+}
+
 export const ProductOffers = () => {
   const {
     toast
@@ -14,7 +35,7 @@ export const ProductOffers = () => {
   const {
     data: offers = [],
     isLoading
-  } = useQuery({
+  } = useQuery<Offer[]>({
     queryKey: ['product-offers'],
     queryFn: getProductOffers
   });
@@ -62,7 +83,9 @@ export const ProductOffers = () => {
               When you list products and receive offers from buyers, they'll appear here.
             </p>
             <Button asChild>
-              
+              <Link to="/list-product" className="flex items-center gap-2">
+                List a Product
+              </Link>
             </Button>
           </div>
         </div>

@@ -13,6 +13,19 @@ import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { InvestorQuestionnaire } from "@/components/investor/InvestorQuestionnaire";
 
+// Define the matched product type
+interface MatchedProduct {
+  product_id: string;
+  investor_id: string;
+  match_score: number;
+  title: string;
+  description: string | null;
+  price: number;
+  category: string;
+  stage: string;
+  image_url: string | null;
+}
+
 export const MatchedProducts = () => {
   const [hasCompletedQuestionnaire, setHasCompletedQuestionnaire] = useState<boolean | null>(null);
   const [showQuestionnaire, setShowQuestionnaire] = useState(false);
@@ -34,7 +47,7 @@ export const MatchedProducts = () => {
     checkQuestionnaireStatus();
   }, []);
 
-  const { data: matchedProducts = [], isLoading } = useQuery({
+  const { data: matchedProducts = [], isLoading } = useQuery<MatchedProduct[]>({
     queryKey: ['matchedProducts'],
     queryFn: getMatchedProducts,
     enabled: hasCompletedQuestionnaire === true
