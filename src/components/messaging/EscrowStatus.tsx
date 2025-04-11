@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -35,16 +34,16 @@ import { verifyPaymentIntent } from "@/services/stripe-service";
 import { TransactionSummary } from "./TransactionSummary";
 
 const statusColors: Record<string, string> = {
-  pending: "bg-gray-200 text-gray-800",
   agreement_reached: "bg-blue-100 text-blue-800",
-  escrow_created: "bg-purple-100 text-purple-800",
   payment_secured: "bg-green-100 text-green-800",
-  delivery_in_progress: "bg-yellow-100 text-yellow-800",
-  inspection_period: "bg-cyan-100 text-cyan-800",
+  delivery_in_progress: "bg-purple-100 text-purple-800",
+  inspection_period: "bg-indigo-100 text-indigo-800",
   completed: "bg-emerald-100 text-emerald-800",
   disputed: "bg-red-100 text-red-800",
   cancelled: "bg-gray-100 text-gray-800",
-  manual_setup: "bg-orange-100 text-orange-800"
+  manual_setup: "bg-yellow-100 text-yellow-800",
+  deposit_pending: "bg-orange-100 text-orange-800",
+  deposit_paid: "bg-teal-100 text-teal-800"
 };
 
 interface EscrowStatusProps {
@@ -60,178 +59,113 @@ export const EscrowStatus = ({
   conversationId,
   onStatusChange
 }: EscrowStatusProps) => {
-  
   const [loading, setLoading] = useState(false);
   const [showDisputeDialog, setShowDisputeDialog] = useState(false);
   const [disputeReason, setDisputeReason] = useState("");
+  const [disputeEvidence, setDisputeEvidence] = useState("");
   const [showEvidenceDialog, setShowEvidenceDialog] = useState(false);
-  const [evidenceDescription, setEvidenceDescription] = useState("");
+  const [evidenceText, setEvidenceText] = useState("");
   const [showPaymentDialog, setShowPaymentDialog] = useState(false);
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [verifyingPayment, setVerifyingPayment] = useState(false);
-  
-  // New state for delivery features
   const [showDeliveryDialog, setShowDeliveryDialog] = useState(false);
   const [deliveryDetails, setDeliveryDetails] = useState("");
   const [deliveryFiles, setDeliveryFiles] = useState<File[]>([]);
-  const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [showVerificationDialog, setShowVerificationDialog] = useState(false);
   const [verificationChecklist, setVerificationChecklist] = useState({
     receivedAsDescribed: false,
     qualityAsExpected: false,
     functionalityWorks: false,
-    documentationComplete: false,
+    documentationComplete: false
   });
-  const [reminderSent, setReminderSent] = useState(false);
-  
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [autoReminderSent, setAutoReminderSent] = useState(false);
   const { toast } = useToast();
-  
-  
-  const getRemainingTime = () => {
-    if (!transaction.created_at) return null;
-    
-    let deadlineDate: Date | null = null;
-    let stageName = "";
-    
-    switch (transaction.status) {
-      case "agreement_reached":
-      case "escrow_created":
-      case "manual_setup":
-        // 3 days to make payment
-        deadlineDate = new Date(transaction.created_at);
-        deadlineDate.setDate(deadlineDate.getDate() + 3);
-        stageName = "Payment";
-        break;
-      case "payment_secured":
-        // 7 days to deliver
-        deadlineDate = new Date(transaction.updated_at || transaction.created_at);
-        deadlineDate.setDate(deadlineDate.getDate() + 7);
-        stageName = "Delivery";
-        break;
-      case "delivery_in_progress":
-        // 3 days to receive
-        deadlineDate = new Date(transaction.updated_at || transaction.created_at);
-        deadlineDate.setDate(deadlineDate.getDate() + 3);
-        stageName = "Receipt";
-        break;
-      case "inspection_period":
-        // 2 days for inspection
-        deadlineDate = new Date(transaction.updated_at || transaction.created_at);
-        deadlineDate.setDate(deadlineDate.getDate() + 2);
-        stageName = "Inspection";
-        break;
-      default:
-        return null;
+
+  // Calculate remaining time for inspection period
+  const getRemainingTime = (status: string) => {
+    if (status === "agreement_reached") {
+      return 24; // 24 hours for payment
+    } else if (status === "payment_secured") {
+      return 48; // 48 hours for delivery
+    } else if (status === "delivery_in_progress") {
+      return 24; // 24 hours for confirmation
+    } else if (status === "inspection_period") {
+      return 72; // 72 hours for inspection
     }
-    
-    const now = new Date();
-    if (deadlineDate < now) return null;
-    
-    const diffTime = Math.abs(deadlineDate.getTime() - now.getTime());
-    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-    const diffHours = Math.floor((diffTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    
-    return {
-      days: diffDays,
-      hours: diffHours,
-      stageName,
-      deadline: deadlineDate
-    };
+    return 0;
   };
-  
-  const remainingTime = getRemainingTime();
 
-  // Auto reminder for pending actions
+  const remainingTime = getRemainingTime(transaction.status);
+
+  // Send automated reminder
   useEffect(() => {
-    if (!remainingTime || reminderSent) return;
+    if (autoReminderSent) return;
     
-    // If less than 24 hours remaining and reminder not sent
-    const hoursTillDeadline = (remainingTime.deadline.getTime() - new Date().getTime()) / (1000 * 60 * 60);
-    if (hoursTillDeadline <= 24 && !reminderSent) {
-      // Send reminder based on current status and role
-      const sendReminder = async () => {
-        try {
-          // Determine message based on status and user role
-          let reminderMessage = "";
-          
-          if (transaction.status === "agreement_reached" && userRole === "buyer") {
-            reminderMessage = `⏰ **Reminder: Payment Due Soon**\n\nYour payment for this transaction is due within ${Math.floor(hoursTillDeadline)} hours. Please complete the payment to proceed with the transaction.`;
-          } else if (transaction.status === "payment_secured" && userRole === "seller") {
-            reminderMessage = `⏰ **Reminder: Delivery Due Soon**\n\nYou need to confirm delivery of this transaction within ${Math.floor(hoursTillDeadline)} hours. Please provide delivery details to proceed.`;
-          } else if (transaction.status === "delivery_in_progress" && userRole === "buyer") {
-            reminderMessage = `⏰ **Reminder: Confirmation Due Soon**\n\nPlease confirm receipt of your purchase within ${Math.floor(hoursTillDeadline)} hours.`;
-          } else if (transaction.status === "inspection_period" && userRole === "buyer") {
-            reminderMessage = `⏰ **Reminder: Inspection Period Ending Soon**\n\nYour inspection period will end in ${Math.floor(hoursTillDeadline)} hours. Please complete your verification to release funds to the seller.`;
-          } else {
-            return; // No applicable reminder
-          }
-          
-          if (reminderMessage) {
-            await supabase
-              .from('messages')
-              .insert({
-                conversation_id: conversationId,
-                content: reminderMessage,
-                sender_id: 'system'
-              });
-            
-            setReminderSent(true);
-          }
-        } catch (error) {
-          console.error("Error sending reminder:", error);
-        }
-      };
+    const sendReminder = async () => {
+      const hoursRemaining = remainingTime;
       
-      sendReminder();
-    }
-  }, [remainingTime, reminderSent, transaction.status, userRole, conversationId]);
+      if (hoursRemaining > 0) {
+        // Send reminder 6 hours before deadline
+        if (hoursRemaining <= 6) {
+          try {
+            const { error } = await supabase.functions.invoke('send-escrow-reminder', {
+              body: {
+                conversationId: conversationId,
+                transactionId: transaction.id,
+                userRole: userRole,
+                status: transaction.status,
+                hoursRemaining: hoursRemaining
+              }
+            });
+            
+            if (error) {
+              console.error('Error sending escrow reminder:', error);
+            } else {
+              setAutoReminderSent(true);
+            }
+          } catch (error) {
+            console.error('Error invoking send-escrow-reminder function:', error);
+          }
+        }
+      }
+    };
+    
+    sendReminder();
+  }, [transaction.status, userRole, conversationId, remainingTime, autoReminderSent]);
 
+  // Define available actions based on status and user role
   const getStatusActions = () => {
-    const { status } = transaction;
-    
-    if (userRole === "buyer") {
-      switch (status) {
-        case "agreement_reached":
-        case "escrow_created":
-        case "manual_setup":
-          return {
-            label: "Pay Now",
-            action: "showPayment",
-            nextStatus: null
-          };
-        case "delivery_in_progress":
-          return {
-            label: "Verify Receipt",
-            action: "showVerification",
-            nextStatus: null
-          };
-        case "inspection_period":
-          return {
-            label: "Accept & Release Funds",
-            action: "updateStatus",
-            nextStatus: "completed"
-          };
-        default:
-          return null;
-      }
-    } else if (userRole === "seller") {
-      switch (status) {
-        case "payment_secured":
-          return {
-            label: "Confirm Delivery",
-            action: "showDelivery",
-            nextStatus: null
-          };
-        default:
-          return null;
-      }
+    if (transaction.status === "agreement_reached" && userRole === "buyer") {
+      return {
+        action: "showPayment",
+        label: "Make Payment",
+        nextStatus: "payment_secured"
+      };
+    } else if (transaction.status === "payment_secured" && userRole === "seller") {
+      return {
+        action: "showDelivery",
+        label: "Confirm Delivery",
+        nextStatus: "delivery_in_progress"
+      };
+    } else if (transaction.status === "delivery_in_progress" && userRole === "buyer") {
+      return {
+        action: "showVerification",
+        label: "Verify Receipt",
+        nextStatus: "inspection_period"
+      };
+    } else if (transaction.status === "inspection_period" && userRole === "buyer") {
+      return {
+        action: "updateStatus",
+        label: "Accept & Release Funds",
+        nextStatus: "completed"
+      };
     }
-    
     return null;
   };
-  
+
   const action = getStatusActions();
   
   const handleStatusUpdate = async () => {
@@ -291,61 +225,71 @@ export const EscrowStatus = ({
   };
 
   const handleActionClick = () => {
-    if (!action) return;
-    
-    if (action.action === "showPayment") {
+    if (action?.action === "showPayment") {
       setShowPaymentDialog(true);
-    } else if (action.action === "updateStatus") {
-      handleStatusUpdate();
-    } else if (action.action === "showDelivery") {
+    } else if (action?.action === "showDelivery") {
       setShowDeliveryDialog(true);
-    } else if (action.action === "showVerification") {
+    } else if (action?.action === "showVerification") {
       setShowVerificationDialog(true);
+    } else {
+      handleStatusUpdate();
     }
   };
-  
+
   const getStatusText = (status: string) => {
-    return status.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    return status
+      .replace(/_/g, " ")
+      .replace(/\b\w/g, (l) => l.toUpperCase());
   };
 
   const handleInitiateDispute = async () => {
-    if (!disputeReason.trim()) {
+    if (!disputeReason || !disputeEvidence) {
       toast({
-        title: "Reason required",
-        description: "Please provide a reason for the dispute",
-        variant: "destructive"
+        title: "Missing information",
+        description: "Please provide a reason and evidence for the dispute.",
+        variant: "destructive",
       });
       return;
     }
-    
+
     try {
       setLoading(true);
-      
-      // Update transaction status
-      await updateEscrowStatus(transaction.id, "disputed");
-      
-      // Add dispute reason as a message
-      await supabase
-        .from('messages')
-        .insert({
-          conversation_id: conversationId,
-          content: `🚨 **DISPUTE INITIATED**\n\nReason: ${disputeReason}\n\nThe transaction has been marked as disputed. Both parties will be contacted shortly.`,
-          sender_id: (await supabase.auth.getUser()).data.user?.id
-        });
-      
-      toast({
-        title: "Dispute initiated",
-        description: "The transaction has been marked as disputed. Support will contact both parties."
+      // Call the escrow-api function to initiate the dispute
+      const { data, error } = await supabase.functions.invoke("escrow-api", {
+        body: {
+          action: "dispute",
+          transactionId: transaction.escrow_api_id,
+          data: {
+            reason: disputeReason,
+            description: disputeEvidence,
+            user_id: (await supabase.auth.getUser()).data.user?.id,
+          },
+        },
       });
-      
-      setShowDisputeDialog(false);
-      onStatusChange();
+
+      if (error) {
+        console.error("Error initiating dispute:", error);
+        toast({
+          title: "Error initiating dispute",
+          description: error.message || "An error occurred while initiating the dispute.",
+          variant: "destructive",
+        });
+      } else {
+        // Update the escrow status to "disputed"
+        await updateEscrowStatus(transaction.id, "disputed");
+        toast({
+          title: "Dispute initiated",
+          description: "The dispute has been initiated. We will review the evidence and contact both parties.",
+        });
+        setShowDisputeDialog(false);
+        onStatusChange();
+      }
     } catch (error: any) {
       console.error("Error initiating dispute:", error);
       toast({
         title: "Error initiating dispute",
         description: error.message || "An error occurred while initiating the dispute.",
-        variant: "destructive"
+        variant: "destructive",
       });
     } finally {
       setLoading(false);
@@ -353,39 +297,35 @@ export const EscrowStatus = ({
   };
 
   const handleSubmitEvidence = async () => {
-    if (!evidenceDescription.trim()) {
+    if (!evidenceText) {
       toast({
-        title: "Description required",
-        description: "Please provide a description of your evidence",
-        variant: "destructive"
+        title: "Missing information",
+        description: "Please provide evidence for your claim.",
+        variant: "destructive",
       });
       return;
     }
-    
+
     try {
       setLoading(true);
-      
-      // Add evidence as a message
-      await supabase
-        .from('messages')
-        .insert({
-          conversation_id: conversationId,
-          content: `📝 **EVIDENCE SUBMITTED**\n\n${evidenceDescription}`,
-          sender_id: (await supabase.auth.getUser()).data.user?.id
-        });
-      
+      // Add the evidence as a message to the conversation
+      await supabase.from("messages").insert({
+        conversation_id: conversationId,
+        sender_id: (await supabase.auth.getUser()).data.user?.id,
+        content: `📢 **EVIDENCE SUBMITTED**\n\n${evidenceText}`,
+      });
+
       toast({
         title: "Evidence submitted",
-        description: "Your evidence has been added to the conversation history."
+        description: "Your evidence has been submitted and added to the conversation.",
       });
-      
       setShowEvidenceDialog(false);
     } catch (error: any) {
       console.error("Error submitting evidence:", error);
       toast({
         title: "Error submitting evidence",
-        description: error.message || "An error occurred while submitting evidence.",
-        variant: "destructive"
+        description: error.message || "An error occurred while submitting the evidence.",
+        variant: "destructive",
       });
     } finally {
       setLoading(false);
@@ -393,71 +333,81 @@ export const EscrowStatus = ({
   };
 
   const handleDownloadSummary = () => {
-    // Create a blob and download
-    const htmlContent = generateEscrowSummaryForDownload(transaction);
-    const blob = new Blob([htmlContent], { type: 'text/html' });
+    const summary = generateEscrowSummaryForDownload(transaction);
+    const blob = new Blob([summary], { type: "text/html" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = `escrow-transaction-${transaction.id.substring(0, 8)}.html`;
+    a.download = `escrow-summary-${transaction.id.substring(0, 8)}.html`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    
-    toast({
-      title: "Transaction summary downloaded",
-      description: "The transaction summary has been downloaded to your device."
-    });
   };
-
+  
   const handlePaymentComplete = async (paymentIntentId: string) => {
-    if (!paymentIntentId) {
-      setPaymentError("Missing payment information");
-      return;
-    }
+    setPaymentError(null);
+    setVerifyingPayment(true);
     
-    // Verify the payment intent status
     try {
-      setVerifyingPayment(true);
-      const { status, success, error } = await verifyPaymentIntent(paymentIntentId);
+      // Verify the payment intent status
+      const { status, error } = await verifyPaymentIntent(paymentIntentId);
       
-      if (success && (status === 'requires_capture' || status === 'succeeded')) {
-        // Update transaction status
-        await updateEscrowStatus(transaction.id, "payment_secured");
-        
-        // Add payment receipt message to the conversation
+      if (error) {
+        setPaymentError(error);
+        toast({
+          title: "Payment verification failed",
+          description: error,
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      if (status === 'succeeded') {
+        // Add a payment receipt message to the conversation
         await addPaymentReceiptMessage(
-          conversationId, 
-          transaction.id, 
-          paymentIntentId, 
-          transaction.amount + transaction.platform_fee + transaction.escrow_fee
+          conversationId,
+          transaction.id,
+          paymentIntentId,
+          transaction.amount
         );
+        
+        // Update the escrow status to "payment_secured"
+        await updateEscrowStatus(transaction.id, "payment_secured");
         
         toast({
           title: "Payment successful",
-          description: "Your payment has been processed and the funds are now in escrow."
+          description: "The payment has been secured and the funds are now held in escrow."
         });
         
         setShowPaymentDialog(false);
         onStatusChange();
       } else {
-        setPaymentError(`Payment verification failed: ${error || `Status: ${status}`}`);
+        setPaymentError(`Payment verification failed. Status: ${status}`);
+        toast({
+          title: "Payment verification failed",
+          description: `Payment verification failed. Status: ${status}`,
+          variant: "destructive"
+        });
       }
-    } catch (err: any) {
-      console.error("Error verifying payment:", err);
-      setPaymentError(`Error verifying payment: ${err.message}`);
+    } catch (error: any) {
+      console.error("Error verifying payment:", error);
+      setPaymentError(error.message || "An error occurred while verifying the payment.");
+      toast({
+        title: "Error verifying payment",
+        description: error.message || "An error occurred while verifying the payment.",
+        variant: "destructive"
+      });
     } finally {
       setVerifyingPayment(false);
     }
   };
   
-  // Handle delivery confirmation (seller)
   const handleConfirmDelivery = async () => {
     if (!deliveryDetails.trim()) {
       toast({
         title: "Delivery details required",
-        description: "Please provide information about how the product was delivered",
+        description: "Please provide details about the delivery.",
         variant: "destructive"
       });
       return;
@@ -465,74 +415,52 @@ export const EscrowStatus = ({
     
     try {
       setLoading(true);
+      setIsUploading(true);
       
-      let fileUrls: string[] = [];
-      
-      // Upload files if any
-      if (deliveryFiles.length > 0) {
-        setIsUploading(true);
+      // Upload files to storage
+      const uploadPromises = deliveryFiles.map(async (file) => {
+        const { data, error } = await supabase.storage
+          .from('escrow-deliveries')
+          .upload(`${transaction.id}/${file.name}`, file, {
+            cacheControl: '3600',
+            upsert: false
+          });
         
-        for (let i = 0; i < deliveryFiles.length; i++) {
-          const file = deliveryFiles[i];
-          const fileExt = file.name.split('.').pop();
-          const fileName = `${transaction.id}-delivery-${Date.now()}.${fileExt}`;
-          
-          // Use separate progress tracking
-          const { data, error } = await supabase.storage
-            .from('escrow-deliveries')
-            .upload(fileName, file, {
-              cacheControl: '3600',
-              upsert: false
-            });
-            
-          if (error) {
-            console.error('Error uploading file:', error);
-            throw error;
-          }
-          
-          // Update progress manually after each file
-          setUploadProgress((i + 1) / deliveryFiles.length * 100);
-          
-          const { data: urlData } = supabase.storage
-            .from('escrow-deliveries')
-            .getPublicUrl(fileName);
-            
-          fileUrls.push(urlData.publicUrl);
+        if (error) {
+          console.error('Error uploading file:', error);
+          throw error;
         }
         
-        setIsUploading(false);
-      }
+        return data;
+      });
+      
+      // Track upload progress
+      let uploadedBytes = 0;
+      deliveryFiles.forEach(file => {
+        uploadedBytes += file.size;
+      });
+      
+      // Wait for all files to upload
+      await Promise.all(uploadPromises);
       
       // Update transaction status
       await updateEscrowStatus(transaction.id, "delivery_in_progress");
       
-      // Add delivery confirmation message with file links
-      let messageContent = `📦 **DELIVERY CONFIRMATION**\n\n${deliveryDetails}\n\n`;
-      
-      if (fileUrls.length > 0) {
-        messageContent += "**Delivery proof:**\n\n";
-        fileUrls.forEach((url, index) => {
-          messageContent += `[Attachment ${index + 1}](${url})\n`;
-        });
-      }
-      
+      // Add delivery message
       await supabase
         .from('messages')
         .insert({
           conversation_id: conversationId,
-          content: messageContent,
+          content: `🚚 **DELIVERY CONFIRMATION**\n\nThe seller has confirmed delivery of the product.\n\n${deliveryDetails}`,
           sender_id: (await supabase.auth.getUser()).data.user?.id
         });
       
       toast({
         title: "Delivery confirmed",
-        description: "Your delivery confirmation has been sent to the buyer."
+        description: "You have confirmed delivery of the product. The buyer will be notified."
       });
       
       setShowDeliveryDialog(false);
-      setDeliveryDetails("");
-      setDeliveryFiles([]);
-      setUploadProgress(0);
       
       onStatusChange();
     } catch (error: any) {
@@ -545,20 +473,23 @@ export const EscrowStatus = ({
     } finally {
       setLoading(false);
       setIsUploading(false);
+      setUploadProgress(0);
     }
   };
   
-  // Handle file selection for delivery proof
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newFiles = Array.from(e.target.files || []);
-    setDeliveryFiles(prev => [...prev, ...newFiles]);
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      const files = Array.from(event.target.files);
+      setDeliveryFiles(files);
+    }
   };
   
-  // Handle removing a file from the list
-  const handleRemoveFile = (indexToRemove: number) => {
-    setDeliveryFiles(prev => prev.filter((_, index) => index !== indexToRemove));
+  const handleRemoveFile = (index: number) => {
+    const newFiles = [...deliveryFiles];
+    newFiles.splice(index, 1);
+    setDeliveryFiles(newFiles);
   };
-  
+
   // Handle verification checklist (buyer)
   const handleSubmitVerification = async () => {
     // Check if at least one item in checklist is checked
@@ -636,59 +567,40 @@ export const EscrowStatus = ({
       )}
       
       <Card className="mb-4 border-t-4" style={{ borderTopColor: transaction.status === 'disputed' ? '#ef4444' : '#8B5CF6' }}>
-        <CardHeader className="pb-2">
-          <div className="flex justify-between items-center">
-            <CardTitle className="text-lg">Escrow Transaction</CardTitle>
-            <Badge className={statusColors[transaction.status]}>
-              {getStatusText(transaction.status)}
-            </Badge>
-          </div>
+        <CardHeader>
+          <CardTitle className="text-lg">Escrow Transaction</CardTitle>
           <CardDescription>
-            Transaction ID: {transaction.id.substring(0, 8)}...
-            {transaction.timeline && (
-              <span className="ml-2">Timeline: {transaction.timeline}</span>
-            )}
+            Status: <Badge className={statusColors[transaction.status]}>{getStatusText(transaction.status)}</Badge>
           </CardDescription>
         </CardHeader>
-        <CardContent className="pb-2">
+        <CardContent>
           <div className="space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Amount:</span>
-              <span className="font-medium">${transaction.amount.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Platform Fee:</span>
-              <span className="font-medium">${transaction.platform_fee.toFixed(2)}</span>
-            </div>
-            {transaction.escrow_fee > 0 && (
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Escrow Fee:</span>
-                <span className="font-medium">${transaction.escrow_fee.toFixed(2)}</span>
-              </div>
+            <p>
+              <strong>Amount:</strong> ${transaction.amount.toFixed(2)}
+            </p>
+            <p>
+              <strong>Description:</strong> {transaction.description}
+            </p>
+            <p>
+              <strong>Timeline:</strong> {transaction.timeline || "Not specified"}
+            </p>
+            {transaction.status === "disputed" && (
+              <Alert variant="destructive">
+                <AlertTriangle className="h-4 w-4" />
+                <AlertDescription>
+                  This transaction is currently under dispute. Please provide
+                  evidence to support your claim.
+                </AlertDescription>
+              </Alert>
             )}
-            <div className="flex justify-between text-sm pt-2 border-t">
-              <span className="text-muted-foreground">Seller Receives:</span>
-              <span className="font-medium">
-                ${(transaction.amount - transaction.platform_fee - transaction.escrow_fee).toFixed(2)}
-              </span>
-            </div>
-            
-            {transaction.description && (
-              <div className="pt-2 border-t mt-2">
-                <span className="text-sm text-muted-foreground">Description: </span>
-                <span className="text-sm">{transaction.description}</span>
-              </div>
-            )}
-            
-            {remainingTime && (
-              <div className="pt-2 mt-2 border-t">
-                <div className="flex items-center text-sm text-amber-600">
-                  <Clock className="h-4 w-4 mr-1" />
-                  <span>
-                    {remainingTime.stageName} deadline: {remainingTime.days}d {remainingTime.hours}h remaining
-                  </span>
-                </div>
-              </div>
+            {transaction.status === "manual_setup" && (
+              <Alert variant="warning">
+                <ShieldAlert className="h-4 w-4" />
+                <AlertDescription>
+                  This transaction requires manual setup on Escrow.com. Please
+                  follow the instructions in the transaction summary.
+                </AlertDescription>
+              </Alert>
             )}
           </div>
         </CardContent>
@@ -713,81 +625,72 @@ export const EscrowStatus = ({
             </Button>
           )}
           
-          <div className="flex w-full gap-2">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="flex-1"
-              onClick={() => setShowDisputeDialog(true)}
-              disabled={transaction.status === "disputed" || transaction.status === "completed"}
+          {(transaction.status === "disputed" || transaction.status === "inspection_period") && (
+            <Button
+              variant="secondary"
+              className="w-full"
+              onClick={() => setShowEvidenceDialog(true)}
+              disabled={loading}
             >
-              <ShieldAlert className="h-4 w-4 mr-1" />
-              Dispute
+              <MessageSquare className="h-4 w-4 mr-2" />
+              Submit Evidence
             </Button>
-            
-            {transaction.status === "disputed" && (
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="flex-1"
-                onClick={() => setShowEvidenceDialog(true)}
-              >
-                <MessageSquare className="h-4 w-4 mr-1" />
-                Evidence
-              </Button>
-            )}
-            
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="flex-1"
+          )}
+          
+          {transaction.status === "manual_setup" && (
+            <Button
+              variant="secondary"
+              className="w-full"
               onClick={handleDownloadSummary}
+              disabled={loading}
             >
-              <Download className="h-4 w-4 mr-1" />
-              Download
+              <Download className="h-4 w-4 mr-2" />
+              Download Summary
             </Button>
-          </div>
+          )}
         </CardFooter>
       </Card>
       
       {/* Dispute Dialog */}
       <Dialog open={showDisputeDialog} onOpenChange={setShowDisputeDialog}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-[425px]">
           <DialogTitle className="flex items-center">
             <AlertTriangle className="h-5 w-5 text-red-500 mr-2" />
             Initiate Dispute
           </DialogTitle>
           <DialogDescription>
-            This will notify support of a dispute with this transaction. 
-            Please provide a clear reason for the dispute.
+            Please provide a reason for the dispute and any supporting evidence.
           </DialogDescription>
-          
-          <div className="py-4">
-            <Textarea 
-              placeholder="Describe the issue in detail..."
-              value={disputeReason}
-              onChange={(e) => setDisputeReason(e.target.value)}
-              className="min-h-[100px]"
-            />
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="reason">Reason</Label>
+              <Input
+                id="reason"
+                value={disputeReason}
+                onChange={(e) => setDisputeReason(e.target.value)}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="evidence">Evidence</Label>
+              <Textarea
+                id="evidence"
+                placeholder="Provide details about the issue..."
+                className="min-h-[80px]"
+                value={disputeEvidence}
+                onChange={(e) => setDisputeEvidence(e.target.value)}
+              />
+            </div>
           </div>
-          
           <DialogFooter>
-            <Button 
-              variant="outline" 
-              onClick={() => setShowDisputeDialog(false)}
-              disabled={loading}
-            >
+            <Button type="button" variant="secondary" onClick={() => setShowDisputeDialog(false)}>
               Cancel
             </Button>
-            <Button 
-              variant="destructive" 
-              onClick={handleInitiateDispute}
-              disabled={loading || !disputeReason.trim()}
-            >
+            <Button type="submit" onClick={handleInitiateDispute} disabled={loading}>
               {loading ? 
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current"></div> : 
-                "Submit Dispute"
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2"></div> : 
+                null
               }
+              Submit Dispute
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -795,38 +698,36 @@ export const EscrowStatus = ({
       
       {/* Evidence Dialog */}
       <Dialog open={showEvidenceDialog} onOpenChange={setShowEvidenceDialog}>
-        <DialogContent>
-          <DialogTitle>Submit Evidence</DialogTitle>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogTitle className="flex items-center">
+            <AlertCircle className="h-5 w-5 text-yellow-500 mr-2" />
+            Submit Evidence
+          </DialogTitle>
           <DialogDescription>
-            Provide supporting details or evidence for the dispute.
-            This will be added to the conversation history.
+            Please provide evidence to support your claim.
           </DialogDescription>
-          
-          <div className="py-4">
-            <Textarea 
-              placeholder="Describe your evidence or justification..."
-              value={evidenceDescription}
-              onChange={(e) => setEvidenceDescription(e.target.value)}
-              className="min-h-[100px]"
-            />
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="evidence-text">Evidence</Label>
+              <Textarea
+                id="evidence-text"
+                placeholder="Provide details about the issue..."
+                className="min-h-[100px]"
+                value={evidenceText}
+                onChange={(e) => setEvidenceText(e.target.value)}
+              />
+            </div>
           </div>
-          
           <DialogFooter>
-            <Button 
-              variant="outline" 
-              onClick={() => setShowEvidenceDialog(false)}
-              disabled={loading}
-            >
+            <Button type="button" variant="secondary" onClick={() => setShowEvidenceDialog(false)}>
               Cancel
             </Button>
-            <Button 
-              onClick={handleSubmitEvidence}
-              disabled={loading || !evidenceDescription.trim()}
-            >
+            <Button type="submit" onClick={handleSubmitEvidence} disabled={loading}>
               {loading ? 
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current"></div> : 
-                "Submit Evidence"
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2"></div> : 
+                null
               }
+              Submit Evidence
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -953,87 +854,69 @@ export const EscrowStatus = ({
       <Dialog open={showVerificationDialog} onOpenChange={setShowVerificationDialog}>
         <DialogContent>
           <DialogTitle className="flex items-center">
-            <ClipboardCheck className="h-5 w-5 text-[#8B5CF6] mr-2" />
+            <ClipboardCheck className="h-5 w-5 text-green-500 mr-2" />
             Verify Receipt
           </DialogTitle>
           <DialogDescription>
-            Please verify the receipt of your purchase by confirming the items below.
-            This will start the inspection period before releasing funds.
+            Please confirm that you have received the product and verify the following items as applicable.
           </DialogDescription>
           
-          <div className="py-4 space-y-4">
-            <div className="space-y-2">
-              <div className="flex items-center space-x-2">
-                <Checkbox 
-                  id="received-as-described"
-                  checked={verificationChecklist.receivedAsDescribed}
-                  onCheckedChange={(checked) => 
-                    setVerificationChecklist(prev => ({
-                      ...prev, 
-                      receivedAsDescribed: checked as boolean
-                    }))
-                  }
-                />
-                <Label htmlFor="received-as-described">
-                  Product received as described
-                </Label>
-              </div>
-              
-              <div className="flex items-center space-x-2">
-                <Checkbox 
-                  id="quality-as-expected"
-                  checked={verificationChecklist.qualityAsExpected}
-                  onCheckedChange={(checked) => 
-                    setVerificationChecklist(prev => ({
-                      ...prev, 
-                      qualityAsExpected: checked as boolean
-                    }))
-                  }
-                />
-                <Label htmlFor="quality-as-expected">
-                  Quality meets expectations
-                </Label>
-              </div>
-              
-              <div className="flex items-center space-x-2">
-                <Checkbox 
-                  id="functionality-works"
-                  checked={verificationChecklist.functionalityWorks}
-                  onCheckedChange={(checked) => 
-                    setVerificationChecklist(prev => ({
-                      ...prev, 
-                      functionalityWorks: checked as boolean
-                    }))
-                  }
-                />
-                <Label htmlFor="functionality-works">
-                  Functionality works properly
-                </Label>
-              </div>
-              
-              <div className="flex items-center space-x-2">
-                <Checkbox 
-                  id="documentation-complete"
-                  checked={verificationChecklist.documentationComplete}
-                  onCheckedChange={(checked) => 
-                    setVerificationChecklist(prev => ({
-                      ...prev, 
-                      documentationComplete: checked as boolean
-                    }))
-                  }
-                />
-                <Label htmlFor="documentation-complete">
-                  Documentation is complete
-                </Label>
-              </div>
+          <div className="space-y-4 py-4">
+            <div className="flex items-center space-x-2">
+              <Checkbox 
+                id="receivedAsDescribed" 
+                checked={verificationChecklist.receivedAsDescribed}
+                onCheckedChange={(checked) => 
+                  setVerificationChecklist({
+                    ...verificationChecklist,
+                    receivedAsDescribed: checked === true
+                  })
+                }
+              />
+              <Label htmlFor="receivedAsDescribed">Received as described</Label>
             </div>
             
-            <Alert>
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription>
-                Verifying receipt will start the inspection period. You will have 48 hours to thoroughly inspect the product before releasing funds.
-              </AlertDescription>
-            </Alert>
+            <div className="flex items-center space-x-2">
+              <Checkbox 
+                id="qualityAsExpected" 
+                checked={verificationChecklist.qualityAsExpected}
+                onCheckedChange={(checked) => 
+                  setVerificationChecklist({
+                    ...verificationChecklist,
+                    qualityAsExpected: checked === true
+                  })
+                }
+              />
+              <Label htmlFor="qualityAsExpected">Quality meets expectations</Label>
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <Checkbox 
+                id="functionalityWorks" 
+                checked={verificationChecklist.functionalityWorks}
+                onCheckedChange={(checked) => 
+                  setVerificationChecklist({
+                    ...verificationChecklist,
+                    functionalityWorks: checked === true
+                  })
+                }
+              />
+              <Label htmlFor="functionalityWorks">Functionality works properly</Label>
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <Checkbox 
+                id="documentationComplete" 
+                checked={verificationChecklist.documentationComplete}
+                onCheckedChange={(checked) => 
+                  setVerificationChecklist({
+                    ...verificationChecklist,
+                    documentationComplete: checked === true
+                  })
+                }
+              />
+              <Label htmlFor="documentationComplete">Documentation is complete</Label>
+            </div>
           </div>
           
           <DialogFooter>
