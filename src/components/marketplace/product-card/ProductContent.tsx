@@ -20,10 +20,10 @@ interface ProductContentProps {
   is_traffic_verified?: boolean;
   requires_nda?: boolean;
   auction_end_time?: string;
-  reserve_price?: number; // Renamed from min_price
+  reserve_price?: number;
   price_decrement?: number;
   price_decrement_interval?: string;
-  no_reserve?: boolean; // Added no_reserve field
+  no_reserve?: boolean;
 }
 
 export function ProductContent({
@@ -42,7 +42,7 @@ export function ProductContent({
   is_traffic_verified,
   requires_nda,
   auction_end_time,
-  reserve_price, // Renamed from min_price
+  reserve_price,
   price_decrement,
   price_decrement_interval,
   no_reserve

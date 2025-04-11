@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Timer, TrendingDown, ChevronDown, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -20,14 +21,14 @@ interface ProductPricingProps {
     auction_end_time?: string;
     price_decrement?: number;
     price_decrement_interval?: string;
-    reserve_price?: number; // Changed from min_price
+    reserve_price?: number;
     demo_url?: string;
     highest_bid?: number;
     highest_bidder_id?: string;
     starting_price?: number;
     title?: string;
     status?: string;
-    no_reserve?: boolean; // Added no_reserve field
+    no_reserve?: boolean;
   };
 }
 
@@ -309,18 +310,51 @@ export function ProductPricing({
           </div>
 
           {isAuction && !isAuctionEnded && (
-            <div className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] p-3 rounded-md text-white text-sm">
-              <p>
-                Time Remaining: {timeLeft}
-                <br />
-                Current Price: ${displayPrice.toLocaleString()}
-                {!product.no_reserve && product.reserve_price > 0 && (
-                  <>
-                    <br />
-                    Reserve Price: ${product.reserve_price.toLocaleString()}
-                  </>
-                )}
-              </p>
+            <div className="border rounded-md overflow-hidden">
+              {/* Auction Header with Dutch Auction badge */}
+              <div className="bg-gradient-to-r from-amber-500 to-amber-400 text-white p-2 px-4 flex items-center">
+                <TrendingDown className="w-5 h-5 mr-2" />
+                <span className="font-medium">Dutch Auction</span>
+              </div>
+              
+              {/* Time and Price Information */}
+              <div className="p-4 bg-white">
+                <div className="flex justify-between items-center mb-3">
+                  <div className="flex items-center text-orange-800">
+                    <Timer className="w-5 h-5 mr-2 text-orange-600" />
+                    <span className="font-medium text-lg">{timeLeft.replace(/\s\d+s$/, "").trim()}</span>
+                  </div>
+                  <div className="flex items-center text-purple-700">
+                    <TrendingDown className="w-5 h-5 mr-2" />
+                    <span>Price dropping</span>
+                  </div>
+                </div>
+                
+                <div className="flex justify-between items-center mb-1">
+                  <div>
+                    <span className="text-gray-600">Current:</span>
+                    <p className="text-2xl font-bold">${displayPrice.toLocaleString()}</p>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-gray-600">Min:</span>
+                    <p className="text-2xl font-bold">
+                      {product.no_reserve ? "$0" : `$${product.reserve_price?.toLocaleString()}`}
+                    </p>
+                  </div>
+                </div>
+                
+                {/* Progress Bar */}
+                <div className="w-full bg-gray-100 rounded-full h-2 mt-2">
+                  <div 
+                    className="bg-gradient-to-r from-yellow-200 to-yellow-300 h-2 rounded-full" 
+                    style={{ 
+                      width: product.no_reserve 
+                        ? `${100 - (displayPrice / (product.starting_price || displayPrice * 2)) * 100}%` 
+                        : `${100 - ((displayPrice - (product.reserve_price || 0)) / ((product.starting_price || displayPrice) - (product.reserve_price || 0))) * 100}%` 
+                    }}
+                  ></div>
+                </div>
+              </div>
             </div>
           )}
 
