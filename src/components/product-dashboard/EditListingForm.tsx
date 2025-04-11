@@ -226,8 +226,10 @@ export const EditListingForm = () => {
               <h3 className="text-lg font-semibold">{selectedProduct.title}</h3>
               <div className="flex items-center mt-1 gap-3">
                 <Badge 
-                  variant={selectedProduct.status === 'approved' ? 'success' : 
-                          selectedProduct.status === 'pending' ? 'warning' : 'destructive'}
+                  variant={selectedProduct.status === 'approved' ? 'default' : 
+                          selectedProduct.status === 'pending' ? 'secondary' : 'destructive'}
+                  className={selectedProduct.status === 'approved' ? 'bg-green-500 hover:bg-green-600' : 
+                             selectedProduct.status === 'pending' ? 'bg-amber-500 hover:bg-amber-600' : ''}
                 >
                   {selectedProduct.status.charAt(0).toUpperCase() + selectedProduct.status.slice(1)}
                 </Badge>
