@@ -28,7 +28,7 @@ export interface ListProductFormData {
   specialNotes: string;
   accuracyAgreement: boolean;
   termsAgreement: boolean;
-  businessType: "B2B" | "B2C";
+  businessType: "B2B" | "B2C" | string;
   deliverables: string[];
   productLink?: string;
   
@@ -41,9 +41,10 @@ export interface ListProductFormData {
   businessModel?: string;
   investmentTimeline?: string;
   auctionEndTime?: Date;
-  auctionDuration?: string; // Adding duration field
+  auctionDuration?: string;
   llmType?: string;
   llmTypeOther?: string;
+  integrations?: string[];
   integrations_other?: string;
   isGoogleAnalyticsVerified?: boolean;
   isRevenueVerified?: boolean;
@@ -54,8 +55,8 @@ export interface ListProductFormData {
   numberOfEmployees?: string;
   requires_nda?: boolean;
   nda_content?: string;
-  noReserve?: boolean; // Added field for no-reserve auctions
-  monthlyExpenses?: ExpenseItem[]; // New field for monthly expenses
+  noReserve?: boolean;
+  monthlyExpenses?: ExpenseItem[];
 }
 
 // Define the expense item interface

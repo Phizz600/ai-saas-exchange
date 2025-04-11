@@ -1,3 +1,4 @@
+
 import { supabase, storage, PRODUCT_IMAGES_BUCKET } from "@/integrations/supabase/client";
 import { ListProductFormData } from "../types";
 import { generateUniqueId } from "@/lib/utils";
@@ -245,6 +246,9 @@ export const handleProductSubmission = async (
     // Set current_price initially equal to price or starting_price
     const currentPrice = data.isAuction ? Math.max(1, Number(data.startingPrice)) : Math.max(1, Number(data.price));
     
+    // Ensure data.integrations is not undefined before spreading it
+    const integrations = data.integrations || [];
+    
     // Prepare product data - remove is_auction field and use database-compatible fields
     const productData = {
       title: data.title,
@@ -256,7 +260,7 @@ export const handleProductSubmission = async (
       industry: data.industry,
       industry_other: data.industryOther,
       monthly_revenue: Number(data.monthlyRevenue || 0),
-      monthly_traffic: Number(data.monthlyTraffic || 0),
+      monthly_traffic: data.monthlyTraffic ? Number(data.monthlyTraffic) : 0,
       active_users: data.activeUsers,
       gross_profit_margin: Number(data.grossProfitMargin || 0),
       image_url: imageUrl,
@@ -273,7 +277,7 @@ export const handleProductSubmission = async (
       // Handle auction specific fields - use the actual database column names
       auction_status: data.isAuction ? "pending" : null,
       starting_price: data.isAuction ? Math.max(1, Number(data.startingPrice || 1)) : null,
-      reserve_price: data.isAuction ? Math.max(1, Number(data.reservePrice || 1)) : null, // Changed from min_price to reserve_price
+      reserve_price: data.isAuction ? Math.max(0, Number(data.reservePrice || 0)) : null, // Changed from min_price to reserve_price
       price_decrement: data.isAuction ? Math.max(1, Number(data.priceDecrement || 1)) : null,
       price_decrement_interval: data.isAuction ? data.priceDecrementInterval : null,
       auction_end_time: data.isAuction && data.auctionEndTime ? data.auctionEndTime.toISOString() : null,
@@ -289,6 +293,7 @@ export const handleProductSubmission = async (
       investment_timeline: data.investmentTimeline,
       llm_type: data.llmType,
       llm_type_other: data.llmTypeOther,
+      integrations: integrations,
       integrations_other: data.integrations_other,
       product_age: data.productAge,
       business_location: data.businessLocation,
@@ -298,6 +303,10 @@ export const handleProductSubmission = async (
       nda_content: data.nda_content || null,
       no_reserve: data.noReserve === true, // Add no_reserve field
       monthly_expenses: data.monthlyExpenses || [], // Add monthly expenses
+      // Add verification fields
+      is_revenue_verified: data.isRevenueVerified || false,
+      is_code_audited: data.isCodeAudited || false,
+      is_traffic_verified: data.isTrafficVerified || false,
     };
     
     // Additional debug logs
