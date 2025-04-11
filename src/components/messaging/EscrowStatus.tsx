@@ -59,6 +59,7 @@ export const EscrowStatus = ({
   conversationId,
   onStatusChange
 }: EscrowStatusProps) => {
+  
   const [loading, setLoading] = useState(false);
   const [showDisputeDialog, setShowDisputeDialog] = useState(false);
   const [disputeReason, setDisputeReason] = useState("");
@@ -86,7 +87,7 @@ export const EscrowStatus = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   
-  // Calculate remaining time for the current stage
+  
   const getRemainingTime = () => {
     if (!transaction.created_at) return null;
     
@@ -917,4 +918,4 @@ export const EscrowStatus = ({
                 </div>
                 <div className="w-full bg-muted rounded-full h-2.5">
                   <div 
-                    className="bg-primary
+                    className="bg-primary h-2.5 rounded
