@@ -16,24 +16,28 @@ export const Admin = () => {
     <div className="min-h-screen bg-gray-50">
       <Header />
       <main className="container mx-auto px-4 py-8 mt-16">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <h1 className="exo-2-heading text-3xl font-bold mb-2">Admin Tools</h1>
-          <p className="text-gray-600 mb-6">Manage your application settings and test functionality</p>
+          <p className="text-gray-600 mb-6">Manage your application settings and monitor site performance</p>
           
           <Alert className="mb-6 border-blue-200 bg-blue-50">
             <Info className="h-4 w-4 text-blue-500" />
             <AlertDescription className="text-blue-700">
-              This admin panel is only visible in development mode. Use these tools to test and debug your application.
+              This admin panel is only visible in development mode. Use these tools to test, debug, and analyze your application.
             </AlertDescription>
           </Alert>
           
-          <Tabs defaultValue="products" className="mb-6">
+          <Tabs defaultValue="analytics" className="mb-6">
             <TabsList className="mb-4">
+              <TabsTrigger value="analytics">Analytics</TabsTrigger>
               <TabsTrigger value="products">Product Listings</TabsTrigger>
               <TabsTrigger value="emails">Email Testing</TabsTrigger>
-              <TabsTrigger value="analytics">Analytics</TabsTrigger>
               <TabsTrigger value="settings">Settings</TabsTrigger>
             </TabsList>
+            
+            <TabsContent value="analytics">
+              <AnalyticsTab />
+            </TabsContent>
             
             <TabsContent value="products">
               <ProductListingsManager />
@@ -66,10 +70,6 @@ export const Admin = () => {
                   </div>
                 </CardContent>
               </Card>
-            </TabsContent>
-            
-            <TabsContent value="analytics">
-              <AnalyticsTab />
             </TabsContent>
             
             <TabsContent value="settings">
