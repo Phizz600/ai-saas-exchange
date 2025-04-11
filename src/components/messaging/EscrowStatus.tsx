@@ -906,4 +906,4 @@ export const EscrowStatus = ({
             Verify Receipt
           </DialogTitle>
           <DialogDescription>
-            Please verify that you have received the product by checking the items below
+            Please verify that you have received the product by checking the items below.
