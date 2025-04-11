@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -439,21 +438,21 @@ export const EscrowStatus = ({
           const fileExt = file.name.split('.').pop();
           const fileName = `${transaction.id}-delivery-${Date.now()}.${fileExt}`;
           
+          // Use separate progress tracking
           const { data, error } = await supabase.storage
             .from('escrow-deliveries')
             .upload(fileName, file, {
               cacheControl: '3600',
-              upsert: false,
-              onUploadProgress: (progress) => {
-                const progressPercent = (progress.loaded / progress.total) * 100 * ((i + 1) / deliveryFiles.length);
-                setUploadProgress(progressPercent);
-              }
+              upsert: false
             });
             
           if (error) {
             console.error('Error uploading file:', error);
             throw error;
           }
+          
+          // Update progress manually after each file
+          setUploadProgress((i + 1) / deliveryFiles.length * 100);
           
           const { data: urlData } = supabase.storage
             .from('escrow-deliveries')
@@ -908,127 +907,3 @@ export const EscrowStatus = ({
           </DialogTitle>
           <DialogDescription>
             Please verify that you have received the product by checking the items below.
-            You'll have an inspection period after confirming receipt.
-          </DialogDescription>
-          
-          <div className="space-y-4 py-4">
-            <div className="space-y-3">
-              <div className="flex items-start space-x-2">
-                <Checkbox 
-                  id="received-as-described" 
-                  checked={verificationChecklist.receivedAsDescribed}
-                  onCheckedChange={(checked) => 
-                    setVerificationChecklist(prev => ({ ...prev, receivedAsDescribed: checked as boolean }))
-                  }
-                />
-                <div className="grid gap-1.5 leading-none">
-                  <Label
-                    htmlFor="received-as-described"
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                  >
-                    Received as described
-                  </Label>
-                  <p className="text-sm text-muted-foreground">
-                    The product matches the description in the listing.
-                  </p>
-                </div>
-              </div>
-              
-              <div className="flex items-start space-x-2">
-                <Checkbox 
-                  id="quality-as-expected" 
-                  checked={verificationChecklist.qualityAsExpected}
-                  onCheckedChange={(checked) => 
-                    setVerificationChecklist(prev => ({ ...prev, qualityAsExpected: checked as boolean }))
-                  }
-                />
-                <div className="grid gap-1.5 leading-none">
-                  <Label
-                    htmlFor="quality-as-expected"
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                  >
-                    Quality meets expectations
-                  </Label>
-                  <p className="text-sm text-muted-foreground">
-                    The quality of the product meets your expectations.
-                  </p>
-                </div>
-              </div>
-              
-              <div className="flex items-start space-x-2">
-                <Checkbox 
-                  id="functionality-works" 
-                  checked={verificationChecklist.functionalityWorks}
-                  onCheckedChange={(checked) => 
-                    setVerificationChecklist(prev => ({ ...prev, functionalityWorks: checked as boolean }))
-                  }
-                />
-                <div className="grid gap-1.5 leading-none">
-                  <Label
-                    htmlFor="functionality-works"
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                  >
-                    Functionality works properly
-                  </Label>
-                  <p className="text-sm text-muted-foreground">
-                    The product functions as described and expected.
-                  </p>
-                </div>
-              </div>
-              
-              <div className="flex items-start space-x-2">
-                <Checkbox 
-                  id="documentation-complete" 
-                  checked={verificationChecklist.documentationComplete}
-                  onCheckedChange={(checked) => 
-                    setVerificationChecklist(prev => ({ ...prev, documentationComplete: checked as boolean }))
-                  }
-                />
-                <div className="grid gap-1.5 leading-none">
-                  <Label
-                    htmlFor="documentation-complete"
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                  >
-                    Documentation is complete
-                  </Label>
-                  <p className="text-sm text-muted-foreground">
-                    All necessary documentation and instructions were provided.
-                  </p>
-                </div>
-              </div>
-            </div>
-            
-            <Alert>
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription>
-                After confirming receipt, you'll have a 48-hour inspection period to thoroughly evaluate
-                the product before funds are released to the seller.
-              </AlertDescription>
-            </Alert>
-          </div>
-          
-          <DialogFooter>
-            <Button 
-              variant="outline" 
-              onClick={() => setShowVerificationDialog(false)}
-              disabled={loading}
-            >
-              Cancel
-            </Button>
-            <Button 
-              onClick={handleSubmitVerification}
-              disabled={loading || !Object.values(verificationChecklist).some(v => v)}
-            >
-              {loading ? (
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2"></div>
-              ) : (
-                <CheckCircle className="h-4 w-4 mr-1" />
-              )}
-              Confirm Receipt
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </>
-  );
-};
