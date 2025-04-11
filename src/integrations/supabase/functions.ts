@@ -1,170 +1,90 @@
-// Re-export all functions from the separate modules
-export * from './product-analytics';
-export * from './products';
-export * from './brevo';
-export * from './pitch-deck';
-export * from './utils/validation';
-export * from './contact';
 
-import { supabase } from './client';
+import { supabase } from "./client";
 
-// Export function to send a test email
-export const sendTestEmail = async () => {
-  console.log("Invoking send-test-email edge function...");
+/**
+ * Send an escrow action reminder
+ */
+export const sendEscrowReminder = async (
+  conversationId: string,
+  transactionId: string,
+  userRole: "buyer" | "seller",
+  status: string,
+  hoursRemaining: number
+) => {
   try {
-    // Include timing information for debugging
-    const startTime = performance.now();
-    
-    const { data, error } = await supabase.functions.invoke('send-test-email', {
-      // Add some additional debugging info to track request
-      body: { 
-        timestamp: new Date().toISOString(), 
-        debug: true,
-        client_info: {
-          userAgent: navigator.userAgent,
-          platform: navigator.platform
-        }
+    const { data, error } = await supabase.functions.invoke("send-escrow-reminder", {
+      body: {
+        conversationId,
+        transactionId,
+        userRole,
+        status,
+        hoursRemaining
       }
     });
-    
-    const endTime = performance.now();
-    console.log(`Edge function call took ${endTime - startTime}ms`);
-    
+
     if (error) {
-      console.error("Error from edge function:", error);
-      throw error;
+      console.error("Error sending escrow reminder:", error);
+      return false;
     }
-    
-    // Check for errors in the response data
-    if (data?.error) {
-      console.error("Error response from edge function:", data.error);
-      throw new Error(data.error);
-    }
-    
-    console.log("Edge function response:", data);
-    return data;
-  } catch (err) {
-    console.error("Error sending test email:", err);
-    
-    // Provide more specific error messages based on error type
-    if (err instanceof TypeError && err.message.includes('NetworkError')) {
-      throw new Error('Network error connecting to the Edge Function. Check your connection and CORS settings.');
-    }
-    
-    if (err.message?.includes('Failed to fetch')) {
-      throw new Error('Failed to reach the Edge Function. Ensure it is deployed properly and accessible.');
-    }
-    
-    throw err;
+
+    return data.success;
+  } catch (error) {
+    console.error("Error in sendEscrowReminder:", error);
+    return false;
   }
 };
 
-// Function to schedule a welcome email to be sent after a delay - DISABLED
-export const scheduleWelcomeEmail = async (
-  email: string, 
-  firstName: string, 
-  userType: 'ai_builder' | 'ai_investor',
-  siteUrl?: string
-) => {
-  console.log(`Welcome email functionality is currently disabled.`);
-  return { 
-    message: "Welcome email functionality is currently disabled", 
-    status: "disabled" 
-  };
-};
-
-// Function to send a welcome email directly - DISABLED
-export const sendWelcomeEmail = async (
-  email: string, 
-  firstName: string, 
-  userType: 'ai_builder' | 'ai_investor',
-  siteUrl?: string
-) => {
-  console.log(`Welcome email functionality is currently disabled.`);
-  return { 
-    message: "Welcome email functionality is currently disabled", 
-    status: "disabled" 
-  };
-};
-
-// Function to send auction result emails
+/**
+ * Send auction result email notification
+ */
 export const sendAuctionResultEmail = async (productId: string) => {
-  console.log(`Sending auction result email for product ${productId}`);
   try {
-    const { data, error } = await supabase.functions.invoke('send-auction-result-email', {
-      body: { 
-        productId,
-        mode: 'manual' // Indicate this is a manual trigger, not automated
-      }
-    });
-    
-    if (error) {
-      console.error("Error from send-auction-result-email function:", error);
-      throw error;
-    }
-    
-    console.log("Auction result email function response:", data);
-    return data;
-  } catch (err) {
-    console.error("Error sending auction result email:", err);
-    throw err;
-  }
-};
-
-// Function to check for and process ended auctions
-export const checkEndedAuctions = async () => {
-  console.log("Checking for ended auctions...");
-  try {
-    const { data, error } = await supabase.functions.invoke('check-ended-auctions', {
-      body: { 
-        timestamp: new Date().toISOString()
-      }
-    });
-    
-    if (error) {
-      console.error("Error from check-ended-auctions function:", error);
-      throw error;
-    }
-    
-    console.log("Check ended auctions function response:", data);
-    return data;
-  } catch (err) {
-    console.error("Error checking ended auctions:", err);
-    throw err;
-  }
-};
-
-// Function to send listing notification emails
-export const sendListingNotification = async (
-  type: 'submitted' | 'approved' | 'rejected',
-  email: string,
-  productTitle: string,
-  firstName?: string,
-  adminFeedback?: string,
-  productId?: string
-) => {
-  console.log(`Sending ${type} notification email for product: ${productTitle}`);
-  try {
-    const { data, error } = await supabase.functions.invoke('send-listing-notification', {
-      body: { 
-        type,
-        email,
-        productTitle,
-        firstName,
-        adminFeedback,
+    const { data, error } = await supabase.functions.invoke("send-auction-result", {
+      body: {
         productId
       }
     });
-    
+
     if (error) {
-      console.error("Error from send-listing-notification function:", error);
-      throw error;
+      console.error("Error sending auction result email:", error);
+      throw new Error("Failed to send auction result email");
     }
-    
-    console.log("Listing notification email function response:", data);
+
     return data;
-  } catch (err) {
-    console.error("Error sending listing notification email:", err);
-    throw err;
+  } catch (error) {
+    console.error("Error in sendAuctionResultEmail:", error);
+    throw error;
+  }
+};
+
+/**
+ * Check and update escrow transaction status
+ */
+export const updateEscrowLifecycle = async (
+  transactionId: string,
+  newStatus: string,
+  message?: string
+) => {
+  try {
+    const { data, error } = await supabase.functions.invoke("escrow-api", {
+      body: {
+        action: "lifecycle_update",
+        data: {
+          transaction_id: transactionId,
+          new_status: newStatus,
+          message
+        }
+      }
+    });
+
+    if (error) {
+      console.error("Error updating transaction lifecycle:", error);
+      throw new Error("Failed to update transaction status");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Error in updateEscrowLifecycle:", error);
+    throw error;
   }
 };

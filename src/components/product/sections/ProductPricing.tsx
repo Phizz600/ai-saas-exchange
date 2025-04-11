@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Timer, TrendingDown, ChevronDown, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,7 @@ import { BidForm } from "@/components/marketplace/product-card/bid/BidForm";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { sendAuctionResultEmail } from "@/integrations/supabase/functions";
+
 interface ProductPricingProps {
   product: {
     id: string;
@@ -29,6 +31,7 @@ interface ProductPricingProps {
     no_reserve?: boolean;
   };
 }
+
 interface Bid {
   id: string;
   amount: number;
@@ -39,6 +42,7 @@ interface Bid {
     full_name: string | null;
   };
 }
+
 export function ProductPricing({
   product
 }: ProductPricingProps) {
@@ -53,6 +57,7 @@ export function ProductPricing({
   const [bidHistoryDialogOpen, setBidHistoryDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isSendingEmail, setIsSendingEmail] = useState(false);
+  
   const {
     toast
   } = useToast();
@@ -66,16 +71,19 @@ export function ProductPricing({
         data: productData,
         error: productError
       } = await supabase.from('products').select('highest_bid, highest_bidder_id, current_price, starting_price').eq('id', product.id).single();
+      
       if (productError) {
         console.error('Error fetching product:', productError);
         return;
       }
+      
       if (productData.highest_bid && productData.highest_bidder_id) {
         // Verify that the highest bid is still valid
         const {
           data: validBid,
           error: bidError
         } = await supabase.from('bids').select('amount').eq('product_id', product.id).eq('bidder_id', productData.highest_bidder_id).eq('amount', productData.highest_bid).eq('status', 'active').eq('payment_status', 'authorized').single();
+        
         if (bidError || !validBid) {
           console.log('Highest bid is not valid (cancelled or unauthorized)');
           setHighestBid(null);
@@ -88,6 +96,7 @@ export function ProductPricing({
         setHighestBid(null);
         setCurrentPrice(productData.current_price || productData.starting_price || 0);
       }
+      
       setIsLoading(false);
     } catch (err) {
       console.error('Error verifying highest bid:', err);
@@ -100,13 +109,16 @@ export function ProductPricing({
     try {
       setIsSendingEmail(true);
       const result = await sendAuctionResultEmail(product.id);
+      
       toast({
         title: "Email sent successfully",
         description: "The auction result email has been sent to all participants."
       });
+      
       console.log("Sent auction result email:", result);
     } catch (error) {
       console.error("Error sending auction result email:", error);
+      
       toast({
         title: "Error sending email",
         description: "Failed to send the auction result email. Please try again.",
@@ -123,37 +135,43 @@ export function ProductPricing({
 
     // Initial fetch
     fetchHighestBid();
-    const channel = supabase.channel('product-price-updates').on('postgres_changes', {
-      event: 'UPDATE',
-      schema: 'public',
-      table: 'products',
-      filter: `id=eq.${product.id}`
-    }, async (payload: any) => {
-      console.log('Product updated:', payload);
-      if (isMounted) {
-        // Re-fetch and validate the highest bid
-        await fetchHighestBid();
-      }
-    }).subscribe();
+    
+    const channel = supabase.channel('product-price-updates')
+      .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'products',
+        filter: `id=eq.${product.id}`
+      }, async (payload: any) => {
+        console.log('Product updated:', payload);
+        if (isMounted) {
+          // Re-fetch and validate the highest bid
+          await fetchHighestBid();
+        }
+      })
+      .subscribe();
 
     // Listen for bid status changes
-    const bidChannel = supabase.channel('bid-status-updates').on('postgres_changes', {
-      event: 'UPDATE',
-      schema: 'public',
-      table: 'bids',
-      filter: `product_id=eq.${product.id}`
-    }, async (payload: any) => {
-      console.log('Bid updated:', payload);
+    const bidChannel = supabase.channel('bid-status-updates')
+      .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'bids',
+        filter: `product_id=eq.${product.id}`
+      }, async (payload: any) => {
+        console.log('Bid updated:', payload);
 
-      // If a bid was cancelled or payment status changed
-      if (payload.new.status === 'cancelled' || payload.new.payment_status === 'cancelled') {
-        if (isMounted) {
-          console.log('Bid cancelled, refreshing highest bid');
-          await fetchHighestBid();
-          refetchBids();
+        // If a bid was cancelled or payment status changed
+        if (payload.new.status === 'cancelled' || payload.new.payment_status === 'cancelled') {
+          if (isMounted) {
+            console.log('Bid cancelled, refreshing highest bid');
+            await fetchHighestBid();
+            refetchBids();
+          }
         }
-      }
-    }).subscribe();
+      })
+      .subscribe();
+      
     return () => {
       isMounted = false;
       supabase.removeChannel(channel);
@@ -205,11 +223,13 @@ export function ProductPricing({
       return data;
     }
   });
+  
   const formatBidderName = (fullName: string | null) => {
     if (!fullName) return "Anonymous";
     const initial = fullName.charAt(0).toUpperCase();
     return `${initial}${'*'.repeat(6)}`;
   };
+  
   const formatTimeAgo = (timestamp: string) => {
     const minutes = Math.floor((Date.now() - new Date(timestamp).getTime()) / 60000);
     if (minutes < 60) return `${minutes}m ago`;
@@ -217,6 +237,7 @@ export function ProductPricing({
     if (hours < 24) return `${hours}h ago`;
     return `${Math.floor(hours / 24)}d ago`;
   };
+  
   const formatDate = (timestamp: string) => {
     return new Date(timestamp).toLocaleString('en-US', {
       month: 'short',
@@ -226,19 +247,23 @@ export function ProductPricing({
       minute: '2-digit'
     });
   };
+  
   useEffect(() => {
     const calculateTimeLeft = () => {
       if (!product.auction_end_time) return;
       const now = new Date().getTime();
       const endTime = new Date(product.auction_end_time).getTime();
       const difference = endTime - now;
+      
       if (difference <= 0) {
         setTimeLeft("Auction ended");
         return;
       }
+      
       const days = Math.floor(difference / (1000 * 60 * 60 * 24));
       const hours = Math.floor(difference % (1000 * 60 * 60 * 24) / (1000 * 60 * 60));
       const minutes = Math.floor(difference % (1000 * 60 * 60) / (1000 * 60));
+      
       setTimeLeft(`${days}d ${hours}h ${minutes}m`);
 
       // Calculate next price drop
@@ -247,12 +272,15 @@ export function ProductPricing({
       const timeToNextDrop = nextDropTime - now;
       const nextDropHours = Math.floor(timeToNextDrop / (1000 * 60 * 60));
       const nextDropMinutes = Math.floor(timeToNextDrop % (1000 * 60 * 60) / (1000 * 60));
+      
       setNextDrop(`${nextDropHours}h ${nextDropMinutes}m`);
     };
+    
     calculateTimeLeft();
 
     // Update the countdown every minute
     const timer = setInterval(calculateTimeLeft, 60000);
+    
     return () => clearInterval(timer);
   }, [product.auction_end_time, product.price_decrement_interval]);
 
@@ -266,7 +294,9 @@ export function ProductPricing({
   const now = new Date();
   const auctionEndTime = product.auction_end_time ? new Date(product.auction_end_time) : null;
   const isAuctionEnded = auctionEndTime && auctionEndTime < now;
-  return <Card className="p-6">
+  
+  return (
+    <Card className="p-6">
       <div className="space-y-6">
         <div className="space-y-4">
           <div className="flex justify-between items-center">
@@ -404,5 +434,6 @@ export function ProductPricing({
 
         {product.demo_url}
       </div>
-    </Card>;
+    </Card>
+  );
 }
