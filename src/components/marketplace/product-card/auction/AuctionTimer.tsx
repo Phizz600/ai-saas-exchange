@@ -64,7 +64,7 @@ export function AuctionTimer({
           Time Remaining: {timeRemaining}
           <br />
           Current Price: ${calculatedPrice?.toLocaleString()}
-          {!noReserve && (
+          {!noReserve && reservePrice > 0 && (
             <>
               <br />
               Reserve Price: ${reservePrice?.toLocaleString()}

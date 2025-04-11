@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Timer, TrendingDown, ChevronDown, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -270,6 +269,7 @@ export function ProductPricing({
   const now = new Date();
   const auctionEndTime = product.auction_end_time ? new Date(product.auction_end_time) : null;
   const isAuctionEnded = auctionEndTime && auctionEndTime < now;
+  
   return <Card className="p-6">
       <div className="space-y-6">
         <div className="space-y-4">
@@ -308,12 +308,21 @@ export function ProductPricing({
               </div>}
           </div>
 
-          {isAuction && !isAuctionEnded && <div className="bg-blue-50 p-3 rounded-md text-sm text-blue-700 mt-3">
+          {isAuction && !isAuctionEnded && (
+            <div className="bg-amber-100 p-3 rounded-md text-sm text-amber-700">
               <p>
-                <span className="font-medium">How Dutch Auctions Work:</span> The price starts high and 
-                decreases over time until someone places a bid. The highest authorized bid always sets the current price.
+                Time Remaining: {timeLeft}
+                <br />
+                Current Price: ${displayPrice.toLocaleString()}
+                {!product.no_reserve && product.reserve_price > 0 && (
+                  <>
+                    <br />
+                    Reserve Price: ${product.reserve_price.toLocaleString()}
+                  </>
+                )}
               </p>
-            </div>}
+            </div>
+          )}
 
           {isAuctionEnded && <div className="bg-amber-50 p-3 rounded-md text-sm text-amber-700 mt-3">
               <p>

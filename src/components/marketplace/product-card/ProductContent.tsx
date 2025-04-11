@@ -61,7 +61,7 @@ export function ProductContent({
         <AuctionTimer 
           auctionEndTime={auction_end_time}
           currentPrice={current_price}
-          reservePrice={reserve_price} // Renamed from minPrice
+          reservePrice={reserve_price}
           priceDecrement={price_decrement}
           decrementInterval={price_decrement_interval}
           noReserve={isNoReserve}
