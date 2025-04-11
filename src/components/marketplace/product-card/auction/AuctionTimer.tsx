@@ -65,11 +65,11 @@ export function AuctionTimer({
       <div className="flex justify-between items-center mb-3">
         <div className="flex items-center text-orange-500">
           <Timer className="w-4 h-4 mr-1" />
-          <span className="font-medium text-sm">{timeRemaining}</span>
+          <span className="font-medium text-xs text-left">{timeRemaining}</span>
         </div>
         <div className="flex items-center text-[#8B5CF6]">
           <TrendingDown className="w-4 h-4 mr-1" />
-          <span className="font-medium text-sm">Price dropping</span>
+          <span className="font-medium text-xs text-left">Price dropping</span>
         </div>
       </div>
       
