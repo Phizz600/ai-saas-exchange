@@ -73,6 +73,7 @@ export function ProductTableRow({ product, onView, onEdit, onDelete }: ProductTa
                 variant="ghost" 
                 size="icon"
                 onClick={() => onDelete(product.id)}
+                className="hover:bg-red-100 hover:text-red-600 transition-colors"
               >
                 <Trash className="h-4 w-4" />
               </Button>
