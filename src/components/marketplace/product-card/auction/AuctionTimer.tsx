@@ -62,6 +62,23 @@ export function AuctionTimer({
     return `$${price.toLocaleString()}`;
   };
 
+  // Calculate the progress percentage for the progress bar
+  const calculateProgress = (): string => {
+    if (noReserve) return "100%";
+    
+    // For auctions with a reserve price
+    const startingPrice = currentPrice;
+    const currentCalculatedPrice = calculatedPrice;
+    
+    if (startingPrice === reservePrice) return "0%";
+    
+    const totalPriceDrop = startingPrice - reservePrice;
+    const currentPriceDrop = startingPrice - currentCalculatedPrice;
+    const progressPercentage = (currentPriceDrop / totalPriceDrop) * 100;
+    
+    return `${Math.min(100, Math.max(0, progressPercentage))}%`;
+  };
+
   return (
     <div className="bg-white p-4 rounded-md shadow-sm">
       <div className="flex justify-between items-center mb-3">
