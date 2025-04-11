@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,12 +8,30 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { EscrowTransaction, updateEscrowStatus, generateEscrowSummaryForDownload, addPaymentReceiptMessage } from "@/integrations/supabase/escrow";
+import { 
+  EscrowTransaction, 
+  updateEscrowStatus, 
+  generateEscrowSummaryForDownload, 
+  addPaymentReceiptMessage,
+  notifyFundsReleased
+} from "@/integrations/supabase/escrow";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { AlertTriangle, Clock, Download, MessageSquare, ShieldAlert, CreditCard, DollarSign, AlertCircle, Upload, CheckCircle, ClipboardCheck, Bell } from "lucide-react";
+import { 
+  AlertTriangle, 
+  Clock, 
+  Download, 
+  MessageSquare, 
+  ShieldAlert, 
+  CreditCard, 
+  AlertCircle, 
+  Upload, 
+  CheckCircle, 
+  ClipboardCheck 
+} from "lucide-react";
 import { PaymentMethodDialog } from "./PaymentMethodDialog";
 import { verifyPaymentIntent } from "@/services/stripe-service";
+import { TransactionSummary } from "./TransactionSummary";
 
 const statusColors: Record<string, string> = {
   pending: "bg-gray-200 text-gray-800",
@@ -221,10 +238,21 @@ export const EscrowStatus = ({
     try {
       setLoading(true);
       await updateEscrowStatus(transaction.id, action.nextStatus);
-      toast({
-        title: "Status updated",
-        description: `Transaction status has been updated to ${action.nextStatus.replace(/_/g, ' ')}.`
-      });
+      
+      // If completing the transaction, send the funds release notification
+      if (action.nextStatus === "completed") {
+        await notifyFundsReleased(transaction.id, conversationId);
+        
+        toast({
+          title: "Funds released",
+          description: "The funds have been released to the seller. Transaction completed!"
+        });
+      } else {
+        toast({
+          title: "Status updated",
+          description: `Transaction status has been updated to ${action.nextStatus.replace(/_/g, ' ')}.`
+        });
+      }
       
       // Add a message to the conversation about the status change
       try {
@@ -239,7 +267,15 @@ export const EscrowStatus = ({
         console.error("Error adding status message to conversation:", msgError);
       }
       
-      onStatusChange();
+      // If transaction is completed, show automated feedback request after a short delay
+      if (action.nextStatus === "completed") {
+        setTimeout(() => {
+          // This will be handled by the TransactionSummary component
+          onStatusChange();
+        }, 1500);
+      } else {
+        onStatusChange();
+      }
     } catch (error: any) {
       console.error("Error updating status:", error);
       toast({
@@ -588,6 +624,15 @@ export const EscrowStatus = ({
 
   return (
     <>
+      {/* Show the transaction summary for completed transactions */}
+      {transaction.status === "completed" && (
+        <TransactionSummary 
+          transaction={transaction}
+          userRole={userRole}
+          conversationId={conversationId}
+        />
+      )}
+      
       <Card className="mb-4 border-t-4" style={{ borderTopColor: transaction.status === 'disputed' ? '#ef4444' : '#8B5CF6' }}>
         <CardHeader className="pb-2">
           <div className="flex justify-between items-center">
@@ -645,6 +690,7 @@ export const EscrowStatus = ({
             )}
           </div>
         </CardContent>
+        
         <CardFooter className="flex flex-col gap-2">
           {action && (
             <Button 
@@ -655,6 +701,9 @@ export const EscrowStatus = ({
               {action.action === "showPayment" && <CreditCard className="h-4 w-4 mr-1" />}
               {action.action === "showDelivery" && <Upload className="h-4 w-4 mr-1" />}
               {action.action === "showVerification" && <ClipboardCheck className="h-4 w-4 mr-1" />}
+              {action.action === "updateStatus" && transaction.status === "inspection_period" && (
+                <CheckCircle className="h-4 w-4 mr-1" />
+              )}
               {loading ? 
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current"></div> : 
                 action.label
@@ -868,141 +917,4 @@ export const EscrowStatus = ({
                 </div>
                 <div className="w-full bg-muted rounded-full h-2.5">
                   <div 
-                    className="bg-primary h-2.5 rounded-full" 
-                    style={{ width: `${uploadProgress}%` }}
-                  ></div>
-                </div>
-              </div>
-            )}
-          </div>
-          
-          <DialogFooter>
-            <Button 
-              variant="outline" 
-              onClick={() => setShowDeliveryDialog(false)}
-              disabled={loading || isUploading}
-            >
-              Cancel
-            </Button>
-            <Button 
-              onClick={handleConfirmDelivery}
-              disabled={loading || isUploading || !deliveryDetails.trim()}
-            >
-              {loading || isUploading ? (
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2"></div>
-              ) : (
-                <CheckCircle className="h-4 w-4 mr-1" />
-              )}
-              Confirm Delivery
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-      
-      {/* Verification Dialog */}
-      <Dialog open={showVerificationDialog} onOpenChange={setShowVerificationDialog}>
-        <DialogContent>
-          <DialogTitle className="flex items-center">
-            <ClipboardCheck className="h-5 w-5 text-[#8B5CF6] mr-2" />
-            Verify Receipt
-          </DialogTitle>
-          <DialogDescription>
-            Please verify that you have received the product by checking the items below.
-          </DialogDescription>
-          
-          <div className="space-y-4 py-4">
-            <div>
-              <div className="space-y-3">
-                <div className="flex items-center space-x-2">
-                  <Checkbox 
-                    id="received-as-described" 
-                    checked={verificationChecklist.receivedAsDescribed}
-                    onCheckedChange={(checked) => 
-                      setVerificationChecklist(prev => ({
-                        ...prev,
-                        receivedAsDescribed: checked === true
-                      }))
-                    }
-                  />
-                  <Label htmlFor="received-as-described">Product received as described</Label>
-                </div>
-                
-                <div className="flex items-center space-x-2">
-                  <Checkbox 
-                    id="quality-as-expected" 
-                    checked={verificationChecklist.qualityAsExpected}
-                    onCheckedChange={(checked) => 
-                      setVerificationChecklist(prev => ({
-                        ...prev,
-                        qualityAsExpected: checked === true
-                      }))
-                    }
-                  />
-                  <Label htmlFor="quality-as-expected">Quality meets expectations</Label>
-                </div>
-                
-                <div className="flex items-center space-x-2">
-                  <Checkbox 
-                    id="functionality-works" 
-                    checked={verificationChecklist.functionalityWorks}
-                    onCheckedChange={(checked) => 
-                      setVerificationChecklist(prev => ({
-                        ...prev,
-                        functionalityWorks: checked === true
-                      }))
-                    }
-                  />
-                  <Label htmlFor="functionality-works">Functionality works properly</Label>
-                </div>
-                
-                <div className="flex items-center space-x-2">
-                  <Checkbox 
-                    id="documentation-complete" 
-                    checked={verificationChecklist.documentationComplete}
-                    onCheckedChange={(checked) => 
-                      setVerificationChecklist(prev => ({
-                        ...prev,
-                        documentationComplete: checked === true
-                      }))
-                    }
-                  />
-                  <Label htmlFor="documentation-complete">Documentation is complete</Label>
-                </div>
-              </div>
-              
-              {!Object.values(verificationChecklist).some(value => value) && (
-                <Alert className="mt-4">
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertDescription>
-                    Please check at least one item to confirm receipt.
-                  </AlertDescription>
-                </Alert>
-              )}
-            </div>
-          </div>
-          
-          <DialogFooter>
-            <Button 
-              variant="outline" 
-              onClick={() => setShowVerificationDialog(false)}
-              disabled={loading}
-            >
-              Cancel
-            </Button>
-            <Button 
-              onClick={handleSubmitVerification}
-              disabled={loading || !Object.values(verificationChecklist).some(value => value)}
-            >
-              {loading ? (
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2"></div>
-              ) : (
-                <CheckCircle className="h-4 w-4 mr-1" />
-              )}
-              Verify Receipt
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </>
-  );
-};
+                    className="bg-primary

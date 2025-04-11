@@ -1,4 +1,3 @@
-
 import { supabase } from './client';
 
 export interface EscrowTransaction {
@@ -428,5 +427,62 @@ export const sendEscrowActionReminder = async (
   } catch (error) {
     console.error('Error in sendEscrowActionReminder:', error);
     return false;
+  }
+};
+
+// Add a new notification function for funds release
+export const notifyFundsReleased = async (
+  transactionId: string,
+  conversationId: string
+) => {
+  try {
+    // Get the transaction details
+    const { data: transaction, error } = await supabase
+      .from('escrow_transactions')
+      .select(`
+        *,
+        product:product_id (title)
+      `)
+      .eq('id', transactionId)
+      .single();
+    
+    if (error || !transaction) {
+      console.error('Error fetching transaction for notification:', error);
+      throw error;
+    }
+    
+    // Add a message to the conversation
+    await supabase
+      .from('messages')
+      .insert({
+        conversation_id: conversationId,
+        sender_id: 'system',
+        content: `💰 **FUNDS RELEASED**\n\nThe funds for this transaction ($${transaction.amount.toFixed(2)}) have been released to the seller. Thank you for using our escrow service!\n\nTransaction ID: ${transactionId.substring(0, 8)}\nProduct: ${transaction.product.title}`
+      });
+    
+    // Create notifications for both buyer and seller
+    await Promise.all([
+      // Notify the seller
+      supabase.from('notifications').insert({
+        user_id: transaction.seller_id,
+        title: 'Funds Released!',
+        message: `Payment of $${transaction.amount.toFixed(2)} has been released to your account for the sale of ${transaction.product.title}`,
+        type: 'escrow_completed',
+        related_product_id: transaction.product_id
+      }),
+      // Notify the buyer
+      supabase.from('notifications').insert({
+        user_id: transaction.buyer_id,
+        title: 'Transaction Completed',
+        message: `Your payment of $${transaction.amount.toFixed(2)} for ${transaction.product.title} has been released to the seller. Transaction complete!`,
+        type: 'escrow_completed',
+        related_product_id: transaction.product_id
+      })
+    ]);
+    
+    return true;
+  } catch (error) {
+    console.error('Error sending funds release notifications:', error);
+    throw error;
   }
 };

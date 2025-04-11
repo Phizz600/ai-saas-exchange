@@ -1,6 +1,8 @@
+
 import { useEffect, useState } from "react";
 import { Timer, TrendingDown } from "lucide-react";
 import { calculateCurrentAuctionPrice } from "@/integrations/supabase/auction";
+
 interface AuctionTimerProps {
   auctionEndTime?: string;
   currentPrice?: number;
@@ -9,6 +11,7 @@ interface AuctionTimerProps {
   decrementInterval?: string;
   noReserve?: boolean;
 }
+
 export function AuctionTimer({
   auctionEndTime,
   currentPrice = 0,
@@ -20,6 +23,7 @@ export function AuctionTimer({
   const [timeRemaining, setTimeRemaining] = useState<string | null>(null);
   const [calculatedPrice, setCalculatedPrice] = useState(currentPrice);
   const [progressPercentage, setProgressPercentage] = useState("0%");
+
   useEffect(() => {
     if (auctionEndTime) {
       const intervalId = setInterval(() => {
@@ -69,6 +73,7 @@ export function AuctionTimer({
     const priceProgressPercentage = currentPriceDrop / totalPriceDrop * 100;
     return `${Math.min(100, Math.max(0, priceProgressPercentage))}%`;
   };
+
   return <div className="rounded-md overflow-hidden">
       <div className="p-4" style={{
       background: 'linear-gradient(to right, #FEFBEA, #FBF5FF)'
@@ -98,7 +103,20 @@ export function AuctionTimer({
         </div>
         
         {/* Progress Bar with gradient - shows auction time progress */}
+        <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden mb-2">
+          <div 
+            className="h-full bg-gradient-to-r from-amber-400 to-purple-500" 
+            style={{ width: progressPercentage }}
+          ></div>
+        </div>
         
+        {/* Price drop progress bar */}
+        <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
+          <div 
+            className="h-full bg-gradient-to-r from-purple-500 to-blue-500" 
+            style={{ width: calculatePriceProgress() }}
+          ></div>
+        </div>
       </div>
     </div>;
 }
