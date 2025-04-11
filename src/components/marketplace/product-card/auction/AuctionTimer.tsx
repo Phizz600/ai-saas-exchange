@@ -34,9 +34,8 @@ export function AuctionTimer({
           const days = Math.floor(diff / (1000 * 60 * 60 * 24));
           const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
           const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-          const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-          setTimeRemaining(`${days}d ${hours}h ${minutes}m ${seconds}s`);
+          setTimeRemaining(`${days}d ${hours}h ${minutes}m`);
 
           // Calculate current price
           const calculatedCurrentPrice = calculateCurrentAuctionPrice(
@@ -58,60 +57,45 @@ export function AuctionTimer({
     }
   }, [auctionEndTime, currentPrice, reservePrice, priceDecrement, decrementInterval]);
 
-  // Format the timeRemaining to display as in the screenshot (e.g., "19d 9h 8m")
-  const formatTimeRemaining = (time: string | null): string => {
-    if (!time) return "";
-    if (time === "Auction Ended") return time;
-    
-    // Remove seconds from display and trailing spaces
-    return time.replace(/\s\d+s$/, "").trim();
+  // Format currency
+  const formatPrice = (price: number): string => {
+    return `$${price.toLocaleString()}`;
   };
 
   return (
-    <div className="border rounded-md overflow-hidden">
-      {/* Auction Header with Dutch Auction badge */}
-      <div className="bg-gradient-to-r from-amber-500 to-amber-400 text-white p-2 px-4 flex items-center">
-        <TrendingDown className="w-5 h-5 mr-2" />
-        <span className="font-medium">Dutch Auction</span>
+    <div className="bg-white p-4 rounded-md shadow-sm">
+      <div className="flex justify-between items-center mb-3">
+        <div className="flex items-center text-orange-500">
+          <Timer className="w-6 h-6 mr-2" />
+          <span className="font-medium text-lg">{timeRemaining}</span>
+        </div>
+        <div className="flex items-center text-[#8B5CF6]">
+          <TrendingDown className="w-5 h-5 mr-1" />
+          <span className="font-medium">Price dropping</span>
+        </div>
       </div>
       
-      {/* Time and Price Information */}
-      <div className="p-4 bg-white">
-        <div className="flex justify-between items-center mb-3">
-          <div className="flex items-center text-orange-800">
-            <Timer className="w-5 h-5 mr-2 text-orange-600" />
-            <span className="font-medium text-lg">{formatTimeRemaining(timeRemaining)}</span>
-          </div>
-          <div className="flex items-center text-purple-700">
-            <TrendingDown className="w-5 h-5 mr-2" />
-            <span>Price dropping</span>
-          </div>
+      <div className="flex justify-between items-center mb-1">
+        <div>
+          <span className="text-gray-600">Current:</span>
+          <p className="text-2xl font-bold">{formatPrice(calculatedPrice)}</p>
         </div>
-        
-        <div className="flex justify-between items-center mb-1">
-          <div>
-            <span className="text-gray-600">Current:</span>
-            <p className="text-2xl font-bold">${calculatedPrice?.toLocaleString()}</p>
-          </div>
-          <div className="text-right">
-            <span className="text-gray-600">Min:</span>
-            <p className="text-2xl font-bold">
-              {noReserve ? "$0" : `$${reservePrice?.toLocaleString()}`}
-            </p>
-          </div>
+        <div className="text-right">
+          <span className="text-gray-600">Min:</span>
+          <p className="text-2xl font-bold">
+            {noReserve ? "$0" : formatPrice(reservePrice)}
+          </p>
         </div>
-        
-        {/* Progress Bar */}
-        <div className="w-full bg-gray-100 rounded-full h-2 mt-2">
-          <div 
-            className="bg-gradient-to-r from-yellow-200 to-yellow-300 h-2 rounded-full" 
-            style={{ 
-              width: noReserve 
-                ? `${100 - (calculatedPrice / (currentPrice * 2)) * 100}%` 
-                : `${100 - ((calculatedPrice - reservePrice) / (currentPrice - reservePrice)) * 100}%` 
-            }}
-          ></div>
-        </div>
+      </div>
+      
+      {/* Progress Bar */}
+      <div className="w-full bg-yellow-100 rounded-full h-2 mt-3">
+        <div 
+          className="bg-yellow-200 h-2 rounded-full" 
+          style={{ 
+            width: "100%" 
+          }}
+        ></div>
       </div>
     </div>
   );
