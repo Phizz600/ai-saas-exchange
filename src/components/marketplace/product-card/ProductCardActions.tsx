@@ -5,8 +5,10 @@ import { CardFooter } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { AuctionSection } from "./auction/AuctionSection";
 import { OfferDialog } from "./offer/OfferDialog";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuctionEnd } from "@/hooks/useAuctionEnd";
 
 interface ProductCardActionsProps {
   product: {
@@ -20,15 +22,52 @@ interface ProductCardActionsProps {
     image?: string;
     auction_end_time?: string;
     current_price?: number;
-    reserve_price?: number; // Changed from min_price to reserve_price
+    reserve_price?: number;
   };
 }
 
 export function ProductCardActions({ product }: ProductCardActionsProps) {
   const [isOfferDialogOpen, setIsOfferDialogOpen] = useState(false);
+  const [conversationId, setConversationId] = useState<string | undefined>(undefined);
   const { toast } = useToast();
   const isAuction = !!product.auction_end_time;
   const auctionEnded = isAuction && new Date(product.auction_end_time) < new Date();
+
+  // Fetch the conversation if auction has ended
+  useEffect(() => {
+    if (auctionEnded) {
+      const fetchConversation = async () => {
+        try {
+          const { data: { user } } = await supabase.auth.getUser();
+          if (!user) return;
+
+          const { data, error } = await supabase
+            .from('conversations')
+            .select('id')
+            .eq('product_id', product.id)
+            .eq('transaction_type', 'auction')
+            .single();
+
+          if (data && !error) {
+            setConversationId(data.id);
+          }
+        } catch (error) {
+          console.error("Error fetching conversation:", error);
+        }
+      };
+
+      fetchConversation();
+    }
+  }, [auctionEnded, product.id]);
+
+  // Use the auction end hook to trigger escrow proposal creation
+  useAuctionEnd({
+    auctionEndTime: product.auction_end_time,
+    productId: product.id,
+    conversationId,
+    currentPrice: product.current_price,
+    productTitle: product.title
+  });
 
   return (
     <CardFooter className="flex flex-col gap-3">
