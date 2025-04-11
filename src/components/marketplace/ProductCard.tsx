@@ -37,7 +37,6 @@ interface ProductCardProps {
     price_decrement?: number;
     price_decrement_interval?: string;
     no_reserve?: boolean; // Added no_reserve field
-    demo_url?: string; // Ensure demo_url is included in the interface
   };
 }
 
@@ -71,8 +70,7 @@ export function ProductCard({ product }: ProductCardProps) {
     requiresNda,
     hasSigned,
     showLimitedInfo,
-    ndaContentProvided: !!product.nda_content,
-    demoUrlProvided: !!product.demo_url // Add debug for demo URL
+    ndaContentProvided: !!product.nda_content
   });
 
   const handleEditClick = (e: React.MouseEvent) => {
@@ -121,10 +119,10 @@ export function ProductCard({ product }: ProductCardProps) {
         is_traffic_verified={product.is_traffic_verified}
         requires_nda={showLimitedInfo}
         auction_end_time={product.auction_end_time}
-        reserve_price={product.reserve_price}
+        reserve_price={product.reserve_price} // Changed from min_price to reserve_price
         price_decrement={product.price_decrement}
         price_decrement_interval={product.price_decrement_interval}
-        no_reserve={product.no_reserve}
+        no_reserve={product.no_reserve} // Added no_reserve prop
       />
       
       <CardFooter className="p-5 pt-0 space-y-3 flex flex-col">
@@ -136,11 +134,7 @@ export function ProductCard({ product }: ProductCardProps) {
             onSignSuccess={handleNdaSuccess}
           />
         ) : (
-          <ProductActions 
-            isAuction={isAuction} 
-            productId={product.id} 
-            demoUrl={product.demo_url} 
-          />
+          <ProductActions isAuction={isAuction} productId={product.id} />
         )}
       </CardFooter>
     </Card>
