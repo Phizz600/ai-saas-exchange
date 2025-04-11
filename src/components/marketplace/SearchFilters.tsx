@@ -1,4 +1,5 @@
-import { Search, SlidersHorizontal, X, Loader2, Timer, Tag } from "lucide-react";
+
+import { Search, SlidersHorizontal, X, Loader2, Timer, Tag, ArrowDownUp, Clock, TrendingUp } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -8,6 +9,13 @@ import { useEffect, useState } from "react";
 import { FilterSection } from "./filters/FilterSection";
 import { motion } from "framer-motion";
 import { Toggle } from "@/components/ui/toggle";
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from "@/components/ui/select";
 
 const industries = [{
   value: "all",
@@ -71,19 +79,28 @@ const priceRanges = [{
 
 const sortOptions = [{
   value: "relevant",
-  label: "Most Relevant"
+  label: "Most Relevant",
+  icon: <ArrowDownUp className="h-4 w-4 mr-2" />
 }, {
   value: "price_asc",
-  label: "Lowest Price"
+  label: "Lowest Price",
+  icon: <ArrowDownUp className="h-4 w-4 mr-2" />
 }, {
   value: "price_desc",
-  label: "Highest Price"
+  label: "Highest Price",
+  icon: <ArrowDownUp className="h-4 w-4 mr-2" />
 }, {
   value: "recent",
-  label: "Most Recent"
+  label: "Newly Listed",
+  icon: <ArrowDownUp className="h-4 w-4 mr-2" />
 }, {
   value: "popular",
-  label: "Most Popular"
+  label: "Most Popular",
+  icon: <TrendingUp className="h-4 w-4 mr-2" />
+}, {
+  value: "ending_soon",
+  label: "Auctions Ending Soon",
+  icon: <Clock className="h-4 w-4 mr-2" />
 }];
 
 interface SearchFiltersProps {
@@ -222,6 +239,16 @@ export const SearchFilters = ({
       );
     }
     
+    if (sortBy !== 'relevant') {
+      const sortLabel = sortOptions.find(s => s.value === sortBy)?.label;
+      filters.push(
+        <Badge key="sort" variant="secondary" className="gap-1 bg-purple-100 text-purple-800 hover:bg-purple-200">
+          Sort: {sortLabel}
+          <X className="h-3 w-3 cursor-pointer" onClick={() => setSortBy('relevant')} />
+        </Badge>
+      );
+    }
+    
     return filters;
   };
 
@@ -242,6 +269,9 @@ export const SearchFilters = ({
       setShowBuyNowOnly(false); // Turn off Buy Now filter when Auctions is enabled
     }
   };
+
+  // Find the icon for the current sort option
+  const currentSortOption = sortOptions.find(option => option.value === sortBy);
 
   return (
     <div className="space-y-4">
@@ -270,7 +300,25 @@ export const SearchFilters = ({
           )}
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
+          {/* Sort Dropdown */}
+          <Select value={sortBy} onValueChange={setSortBy}>
+            <SelectTrigger className="w-[180px] bg-white border-gray-200 shadow-sm hover:shadow-md flex gap-1">
+              {currentSortOption?.icon}
+              <SelectValue placeholder="Sort by" />
+            </SelectTrigger>
+            <SelectContent>
+              {sortOptions.map((option) => (
+                <SelectItem key={option.value} value={option.value} className="flex items-center">
+                  <div className="flex items-center">
+                    {option.icon}
+                    {option.label}
+                  </div>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          
           <Toggle 
             pressed={showBuyNowOnly}
             onPressedChange={handleBuyNowToggle}

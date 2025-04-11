@@ -87,6 +87,18 @@ export const useMarketplaceProducts = ({
         case 'recent':
           query = query.order('created_at', { ascending: false });
           break;
+        case 'popular':
+          // For now, we'll sort by views as a proxy for popularity
+          // This could be improved with a more sophisticated popularity algorithm
+          query = query.order('views', { ascending: false, nullsFirst: false });
+          break;
+        case 'ending_soon':
+          // Only include auctions with end times in the future
+          query = query
+            .gt('auction_end_time', new Date().toISOString())
+            .not('auction_end_time', 'is', null)
+            .order('auction_end_time', { ascending: true });
+          break;
         default:
           query = query.order('created_at', { ascending: false });
       }
