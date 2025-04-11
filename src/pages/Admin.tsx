@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { Info } from "lucide-react";
+import { AnalyticsTab } from "@/components/admin/AnalyticsTab";
 
 export const Admin = () => {
   return (
@@ -30,6 +31,7 @@ export const Admin = () => {
             <TabsList className="mb-4">
               <TabsTrigger value="products">Product Listings</TabsTrigger>
               <TabsTrigger value="emails">Email Testing</TabsTrigger>
+              <TabsTrigger value="analytics">Analytics</TabsTrigger>
               <TabsTrigger value="settings">Settings</TabsTrigger>
             </TabsList>
             
@@ -64,6 +66,10 @@ export const Admin = () => {
                   </div>
                 </CardContent>
               </Card>
+            </TabsContent>
+            
+            <TabsContent value="analytics">
+              <AnalyticsTab />
             </TabsContent>
             
             <TabsContent value="settings">
