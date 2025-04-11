@@ -65,15 +65,15 @@ export function AuctionTimer({
   
   return (
     <div className="rounded-md overflow-hidden">
-      <div className="bg-gradient-to-r from-yellow-100 to-purple-100 p-4">
+      <div className="p-4" style={{ background: 'linear-gradient(to right, #FEFBEA, #FBF5FF)' }}>
         <div className="flex justify-between items-center mb-2">
           <div className="flex items-center text-amber-700">
             <Timer className="w-5 h-5 mr-1" />
-            <span className="font-medium text-lg">{timeRemaining}</span>
+            <span className="font-medium text-lg exo-2-header">{timeRemaining}</span>
           </div>
           <div className="flex items-center text-purple-700">
             <TrendingDown className="w-5 h-5 mr-1" />
-            <span className="font-medium text-lg">Price dropping</span>
+            <span className="font-medium text-lg exo-2-header">Price dropping</span>
           </div>
         </div>
         
@@ -91,11 +91,12 @@ export function AuctionTimer({
         </div>
         
         {/* Progress Bar with gradient */}
-        <div className="w-full bg-yellow-200 rounded-full h-2 mt-2">
+        <div className="w-full bg-yellow-100 rounded-full h-2 mt-2">
           <div 
-            className="bg-gradient-to-r from-amber-300 via-pink-400 to-purple-500 h-2 rounded-full" 
+            className="h-2 rounded-full" 
             style={{
-              width: "100%"
+              width: "100%",
+              background: 'linear-gradient(to right, #D946EE, #8B5CF6, #0EA4E9)'
             }}
           ></div>
         </div>
