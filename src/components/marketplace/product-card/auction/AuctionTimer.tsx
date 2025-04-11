@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Timer, TrendingDown } from "lucide-react";
 import { calculateCurrentAuctionPrice } from "@/integrations/supabase/auction";
@@ -62,29 +61,29 @@ export function AuctionTimer({
     const progressPercentage = currentPriceDrop / totalPriceDrop * 100;
     return `${Math.min(100, Math.max(0, progressPercentage))}%`;
   };
-  
-  return (
-    <div className="rounded-md overflow-hidden">
-      <div className="p-4" style={{ background: 'linear-gradient(to right, #FEFBEA, #FBF5FF)' }}>
+  return <div className="rounded-md overflow-hidden">
+      <div className="p-4" style={{
+      background: 'linear-gradient(to right, #FEFBEA, #FBF5FF)'
+    }}>
         <div className="flex justify-between items-center mb-2">
           <div className="flex items-center text-amber-700">
             <Timer className="w-5 h-5 mr-1" />
-            <span className="font-medium text-lg exo-2-header">{timeRemaining}</span>
+            <span className="exo-2-header text-sm font-bold">{timeRemaining}</span>
           </div>
           <div className="flex items-center text-purple-700">
             <TrendingDown className="w-5 h-5 mr-1" />
-            <span className="font-medium text-lg exo-2-header">Price dropping</span>
+            <span className="exo-2-header text-sm font-bold">Price dropping</span>
           </div>
         </div>
         
         <div className="flex justify-between items-center mb-1">
           <div>
             <span className="text-gray-700 text-sm">Current:</span>
-            <p className="text-xl font-bold text-gray-800">{formatPrice(calculatedPrice)}</p>
+            <p className="font-bold text-gray-800 text-sm">{formatPrice(calculatedPrice)}</p>
           </div>
           <div className="text-right">
             <span className="text-gray-700 text-sm">Min:</span>
-            <p className="text-xl font-bold text-gray-800">
+            <p className="font-bold text-gray-800 text-sm">
               {noReserve ? "$0" : formatPrice(reservePrice)}
             </p>
           </div>
@@ -92,15 +91,11 @@ export function AuctionTimer({
         
         {/* Progress Bar with gradient */}
         <div className="w-full bg-yellow-100 rounded-full h-2 mt-2">
-          <div 
-            className="h-2 rounded-full" 
-            style={{
-              width: "100%",
-              background: 'linear-gradient(to right, #D946EE, #8B5CF6, #0EA4E9)'
-            }}
-          ></div>
+          <div className="h-2 rounded-full" style={{
+          width: "100%",
+          background: 'linear-gradient(to right, #D946EE, #8B5CF6, #0EA4E9)'
+        }}></div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 }
