@@ -93,12 +93,11 @@ export function AuctionTimer({
         </div>
         
         {/* Progress Bar with gradient */}
-        <div className="w-full bg-yellow-100 rounded-full h-2 mt-2">
-          <div className="h-2 rounded-full" style={{
-            width: `${auctionProgress}%`,
-            background: 'linear-gradient(to right, #D946EE, #8B5CF6, #0EA4E9)'
-          }}></div>
-        </div>
+        <Progress 
+          value={auctionProgress} 
+          className="h-2 mt-2 bg-yellow-100"
+          // The Progress component already has the color gradient defined
+        />
       </div>
     </div>
   );
