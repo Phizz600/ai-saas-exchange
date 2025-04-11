@@ -1118,6 +1118,54 @@ export type Database = {
           },
         ]
       }
+      transaction_feedback: {
+        Row: {
+          conversation_id: string
+          created_at: string
+          feedback: string | null
+          id: string
+          rating: number
+          transaction_id: string
+          user_id: string
+          user_role: string
+        }
+        Insert: {
+          conversation_id: string
+          created_at?: string
+          feedback?: string | null
+          id?: string
+          rating: number
+          transaction_id: string
+          user_id: string
+          user_role: string
+        }
+        Update: {
+          conversation_id?: string
+          created_at?: string
+          feedback?: string | null
+          id?: string
+          rating?: number
+          transaction_id?: string
+          user_id?: string
+          user_role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transaction_feedback_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transaction_feedback_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "escrow_transactions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string

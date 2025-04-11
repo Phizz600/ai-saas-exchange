@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -594,7 +595,7 @@ export const EscrowStatus = ({
               </Alert>
             )}
             {transaction.status === "manual_setup" && (
-              <Alert variant="warning">
+              <Alert>
                 <ShieldAlert className="h-4 w-4" />
                 <AlertDescription>
                   This transaction requires manual setup on Escrow.com. Please
