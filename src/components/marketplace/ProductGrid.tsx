@@ -8,7 +8,8 @@ import { useSession } from '@supabase/auth-helpers-react';
 
 type ProductWithSeller = Database['public']['Tables']['products']['Row'] & {
   seller: Database['public']['Tables']['profiles']['Row'] | null;
-  no_reserve?: boolean; // Added this property to the type
+  no_reserve?: boolean;
+  reserve_price?: number; // Added this property to the type
 };
 
 interface ProductGridProps {
