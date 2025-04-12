@@ -213,7 +213,9 @@ export const handleProductSubmission = async (
       description: data.description?.substring(0, 30) + "...",
       category: data.category,
       hasImage: !!data.image,
-      isAuction: data.isAuction
+      isAuction: data.isAuction,
+      reservePrice: data.reservePrice,
+      noReserve: data.noReserve
     });
     
     setIsSubmitting(true);
@@ -306,6 +308,10 @@ export const handleProductSubmission = async (
     
     // Ensure data.integrations is not undefined before spreading it
     const integrations = data.integrations || [];
+
+    // Double-check noReserve flag is set correctly based on reservePrice
+    const noReserve = data.isAuction && (data.reservePrice === 0 || data.noReserve === true);
+    console.log("Final noReserve value:", noReserve);
     
     // Prepare product data - remove is_auction field and use database-compatible fields
     const productData = {
@@ -359,7 +365,7 @@ export const handleProductSubmission = async (
       product_link: data.productLink,
       requires_nda: data.requires_nda === true, // Ensure boolean value
       nda_content: data.nda_content || null,
-      no_reserve: data.noReserve === true, // Add no_reserve field
+      no_reserve: noReserve, // Use calculated noReserve value
       monthly_expenses: data.monthlyExpenses || [], // Add monthly expenses
       // Add verification fields
       is_revenue_verified: data.isRevenueVerified || false,
@@ -368,16 +374,12 @@ export const handleProductSubmission = async (
     };
     
     // Additional debug logs
-    console.log("Final product data - Price fields:", {
+    console.log("Final product data - Auction fields:", {
       price: productData.price,
       starting_price: productData.starting_price,
       reserve_price: productData.reserve_price,
-      current_price: productData.current_price
-    });
-    
-    console.log("Final product data - NDA fields:", {
-      requires_nda: productData.requires_nda,
-      nda_content: productData.nda_content ? 'Content provided' : 'No content'
+      current_price: productData.current_price,
+      no_reserve: productData.no_reserve
     });
     
     // Submit the product to the database

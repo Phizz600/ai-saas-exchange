@@ -59,7 +59,7 @@ export function ListProductForm() {
       startingPrice: undefined,
       reservePrice: undefined, // Changed from minPrice to reservePrice
       priceDecrement: undefined,
-      priceDecrementInterval: "hour", // Changed default to hourly
+      priceDecrementInterval: "day", // Changed default to daily
       techStack: "",
       techStackOther: "",
       teamSize: "",
@@ -73,7 +73,7 @@ export function ListProductForm() {
       deliverables: [],
       productLink: "",
       auctionDuration: "30days", // Updated default auction duration
-      noReserve: false, // Will be auto-set based on reservePrice
+      noReserve: false, // Initialize noReserve field
       monthlyExpenses: [], // Initialize empty array for monthly expenses
     },
   });
@@ -200,6 +200,12 @@ export function ListProductForm() {
             }
           });
           return;
+        }
+        
+        // Make sure noReserve is set correctly based on reservePrice
+        if (data.isAuction) {
+          data.noReserve = data.reservePrice === 0;
+          console.log("Setting noReserve flag:", data.noReserve, "based on reservePrice:", data.reservePrice);
         }
         
         // Submit product data and handle response

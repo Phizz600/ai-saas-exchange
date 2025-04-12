@@ -33,6 +33,8 @@ export function AuctionSection({
   const isAuction = form.watch("isAuction");
   const startingPrice = form.watch("startingPrice");
   const reservePrice = form.watch("reservePrice");
+  
+  // Auto-set starting price based on monthly revenue if not already set
   if (monthlyRevenue && !form.getValues("startingPrice")) {
     form.setValue("startingPrice", monthlyRevenue * 10);
   }
@@ -70,7 +72,7 @@ export function AuctionSection({
 
       // Set decrement interval to hourly by default for better UX
       if (!form.getValues("priceDecrementInterval")) {
-        form.setValue("priceDecrementInterval", "hour");
+        form.setValue("priceDecrementInterval", "day");
       }
 
       // Calculate recommended decrement as priceDiff / decrementDivisor, rounded to nearest dollar
@@ -83,6 +85,17 @@ export function AuctionSection({
       }
     }
   }, [startingPrice, reservePrice, form]);
+  
+  // Update noReserve flag whenever reservePrice changes
+  useEffect(() => {
+    // If reservePrice is 0, set noReserve to true
+    if (reservePrice === 0) {
+      form.setValue("noReserve", true);
+    } else if (reservePrice !== undefined) {
+      form.setValue("noReserve", false);
+    }
+  }, [reservePrice, form]);
+  
   const watchMonthlyRevenue = form.watch("monthlyRevenue") || 0;
   const watchMonthlyChurnRate = form.watch("monthlyChurnRate") || 0;
   const watchGrossProfitMargin = (form.watch("grossProfitMargin") || 0) / 100;
@@ -254,7 +267,11 @@ export function AuctionSection({
             }} className="font-mono" />
                   </FormControl>
                   <FormMessage />
-                  
+                  {field.value === 0 && (
+                    <div className="text-xs text-amber-500 mt-1 flex items-center">
+                      This will be a no-reserve auction (will sell at any price)
+                    </div>
+                  )}
                 </FormItem>} />
           </div>
 

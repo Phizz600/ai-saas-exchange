@@ -35,5 +35,10 @@ WHERE is_auction = TRUE
 AND reserve_price IS NULL
 AND starting_price IS NOT NULL;
 
+-- Set no_reserve flag for any products with reserve_price = 0
+UPDATE products 
+SET no_reserve = TRUE
+WHERE reserve_price = 0;
+
 COMMENT ON COLUMN products.reserve_price IS 'The minimum acceptable price for an auction (renamed from min_price)';
 COMMENT ON COLUMN products.no_reserve IS 'Whether this is a no-reserve auction (sells at any price)';

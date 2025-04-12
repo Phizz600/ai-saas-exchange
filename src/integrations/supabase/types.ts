@@ -859,6 +859,7 @@ export type Database = {
           monthly_revenue: number | null
           monthly_traffic: number | null
           nda_content: string | null
+          no_reserve: boolean | null
           number_of_employees: string | null
           payment_status: string | null
           price: number
@@ -923,6 +924,7 @@ export type Database = {
           monthly_revenue?: number | null
           monthly_traffic?: number | null
           nda_content?: string | null
+          no_reserve?: boolean | null
           number_of_employees?: string | null
           payment_status?: string | null
           price: number
@@ -987,6 +989,7 @@ export type Database = {
           monthly_revenue?: number | null
           monthly_traffic?: number | null
           nda_content?: string | null
+          no_reserve?: boolean | null
           number_of_employees?: string | null
           payment_status?: string | null
           price?: number
