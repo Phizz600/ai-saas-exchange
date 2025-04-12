@@ -236,25 +236,30 @@ export const handleProductSubmission = async (
         type: data.image.type 
       });
 
-      const { error: uploadError } = await storage
-        .from(PRODUCT_IMAGES_BUCKET)
-        .upload(filePath, data.image, {
-          cacheControl: "3600",
-          upsert: false,
-        });
+      try {
+        const { error: uploadError } = await storage
+          .from(PRODUCT_IMAGES_BUCKET)
+          .upload(filePath, data.image, {
+            cacheControl: "3600",
+            upsert: false,
+          });
 
-      if (uploadError) {
-        console.error("Image upload error", uploadError);
-        console.error("Upload error details:", JSON.stringify(uploadError));
-        return { success: false, error: "Failed to upload image. Please try again." };
+        if (uploadError) {
+          console.error("Image upload error", uploadError);
+          console.error("Upload error details:", JSON.stringify(uploadError));
+          return { success: false, error: "Failed to upload image: " + uploadError.message };
+        }
+
+        console.log("Image uploaded successfully to path:", filePath);
+
+        // Use the correct way to build the image URL for Vite
+        const supabaseUrl = import.meta.env.NEXT_PUBLIC_SUPABASE_URL || 'https://pxadbwlidclnfoodjtpd.supabase.co';
+        imageUrl = `${supabaseUrl}/storage/v1/object/public/${PRODUCT_IMAGES_BUCKET}/${filePath}`;
+        console.log("Generated image URL:", imageUrl);
+      } catch (uploadException) {
+        console.error("Exception during image upload:", uploadException);
+        return { success: false, error: "Image upload failed: " + (uploadException instanceof Error ? uploadException.message : String(uploadException)) };
       }
-
-      console.log("Image uploaded successfully to path:", filePath);
-
-      // Use the correct way to build the image URL for Vite
-      const supabaseUrl = import.meta.env.NEXT_PUBLIC_SUPABASE_URL || 'https://pxadbwlidclnfoodjtpd.supabase.co';
-      imageUrl = `${supabaseUrl}/storage/v1/object/public/${PRODUCT_IMAGES_BUCKET}/${filePath}`;
-      console.log("Generated image URL:", imageUrl);
     } else {
       // Log missing image for debugging
       console.warn("No image provided or image is not a valid File object");
@@ -347,52 +352,67 @@ export const handleProductSubmission = async (
     
     // Submit the product to the database
     console.log("Submitting product to database...");
-    const { data: newProduct, error } = await supabase
-      .from("products")
-      .insert([productData])
-      .select();
-      
-    if (error) {
-      console.error("Product submission error:", error);
-      console.error("Error details:", JSON.stringify(error));
-      return { success: false, error: "Failed to submit product. Please try again." };
-    }
-    
-    console.log("Product submitted successfully:", newProduct?.[0]?.id);
-    
-    // Send confirmation email
     try {
-      // Get user details for personalized email
-      const { data: userData } = await supabase.auth.getUser();
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('first_name, full_name')
-        .eq('id', user.id)
-        .single();
-      
-      const userFirstName = profileData?.first_name || profileData?.full_name?.split(' ')[0] || '';
-      const userEmail = userData?.user?.email || '';
-      
-      if (userEmail) {
-        console.log("Sending confirmation email to:", userEmail);
-        await sendListingNotification(
-          'submitted',
-          userEmail,
-          data.title,
-          userFirstName
-        );
-        console.log("Confirmation email sent successfully");
+      const { data: newProduct, error } = await supabase
+        .from("products")
+        .insert([productData])
+        .select();
+        
+      if (error) {
+        console.error("Product submission error:", error);
+        console.error("Error details:", JSON.stringify(error));
+        
+        // Check for specific error types
+        if (error.code === '23505') {
+          return { success: false, error: "A product with this title already exists. Please use a different title." };
+        } else if (error.code === '23502') {
+          return { success: false, error: "Missing required fields: " + error.details };
+        } else if (error.code === '23503') {
+          return { success: false, error: "Invalid reference: " + error.details };
+        }
+        
+        return { success: false, error: "Failed to submit product: " + error.message };
       }
-    } catch (emailError) {
-      console.error("Error sending confirmation email:", emailError);
-      console.error("Email error details:", JSON.stringify(emailError));
-      // Don't fail the submission if email fails
+      
+      console.log("Product submitted successfully:", newProduct?.[0]?.id);
+      
+      // Send confirmation email
+      try {
+        // Get user details for personalized email
+        const { data: userData } = await supabase.auth.getUser();
+        const { data: profileData } = await supabase
+          .from('profiles')
+          .select('first_name, full_name')
+          .eq('id', user.id)
+          .single();
+        
+        const userFirstName = profileData?.first_name || profileData?.full_name?.split(' ')[0] || '';
+        const userEmail = userData?.user?.email || '';
+        
+        if (userEmail) {
+          console.log("Sending confirmation email to:", userEmail);
+          await sendListingNotification(
+            'submitted',
+            userEmail,
+            data.title,
+            userFirstName
+          );
+          console.log("Confirmation email sent successfully");
+        }
+      } catch (emailError) {
+        console.error("Error sending confirmation email:", emailError);
+        console.error("Email error details:", JSON.stringify(emailError));
+        // Don't fail the submission if email fails
+      }
+      
+      return { 
+        success: true, 
+        productId: newProduct?.[0]?.id
+      };
+    } catch (dbError) {
+      console.error("Database operation error:", dbError);
+      return { success: false, error: "Database error: " + (dbError instanceof Error ? dbError.message : String(dbError)) };
     }
-    
-    return { 
-      success: true, 
-      productId: newProduct?.[0]?.id
-    };
     
   } catch (error: any) {
     console.error("Product submission error:", error);

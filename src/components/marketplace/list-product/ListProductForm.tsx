@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -17,14 +18,16 @@ import { ListProductFormData } from "./types";
 import { useAutosave } from "./hooks/useAutosave";
 import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert"; 
-import { CheckCircle2, AlertTriangle } from "lucide-react";
+import { CheckCircle2, AlertTriangle, AlertCircle } from "lucide-react";
+import { logError, validateProductSubmission } from "@/integrations/supabase/products";
 
 export function ListProductForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
   const [submissionError, setSubmissionError] = useState<string | null>(null);
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [submissionSuccess, setSubmissionSuccess] = useState(false);
   const navigate = useNavigate();
 
@@ -88,15 +91,18 @@ export function ListProductForm() {
 
   const { isLoading, saveForLater } = useAutosave(form, currentSection);
 
+  // Function to clear all errors
+  const clearErrors = () => {
+    setSubmissionError(null);
+    setFormErrors({});
+  };
+
   const handleRedirectToPayment = (productId: string) => {
     try {
       setRedirecting(true);
       setSubmissionSuccess(true);
       
-      toast({
-        title: "Product submitted successfully!",
-        description: "Redirecting to payment page in a moment...",
-      });
+      toast.success("Product submitted successfully! Redirecting to payment page...");
       
       // Use a longer delay to ensure state updates and toast display
       setTimeout(() => {
@@ -105,106 +111,60 @@ export function ListProductForm() {
           // Use the FULL URL including protocol to ensure it works correctly
           const currentHost = window.location.origin;
           const successUrl = `${currentHost}/listing-thank-you?payment_status=success&product_id=${productId}`;
+          console.log("Redirect URL:", `https://buy.stripe.com/9AQ3dz3lmf2yccE288?client_reference_id=${productId}&success_url=${encodeURIComponent(successUrl)}`);
+          
           window.location.href = `https://buy.stripe.com/9AQ3dz3lmf2yccE288?client_reference_id=${productId}&success_url=${encodeURIComponent(successUrl)}`;
         } catch (error) {
+          // Log the error for debugging
+          logError("ListProductForm-Redirect", error, { productId });
           console.error("Redirect error:", error);
+          
           // Fallback if redirect fails
+          toast.error("Redirect failed. Navigating to thank you page...");
           navigate("/listing-thank-you?payment_needed=true&product_id=" + productId);
         }
       }, 3000);
     } catch (error) {
       console.error("Error in redirect handler:", error);
-      toast({
-        title: "Redirect Error",
-        description: "There was a problem redirecting to the payment page. Please try again.",
-        variant: "destructive",
-      });
+      logError("ListProductForm-RedirectHandler", error, { productId });
+      
+      toast.error("There was a problem redirecting to the payment page. Please try again.");
       setRedirecting(false);
       setSubmissionSuccess(false);
     }
   };
 
-  const validatePricing = (data: ListProductFormData): { valid: boolean; message?: string } => {
-    if (data.isAuction) {
-      // Validate auction pricing
-      if (!data.startingPrice || data.startingPrice <= 0) {
-        return { valid: false, message: "Starting price must be greater than 0" };
-      }
-      
-      // Set noReserve flag based on reservePrice
-      data.noReserve = data.reservePrice === 0;
-      
-      // Only validate reserve price if not a "no reserve" auction
-      if (!data.noReserve && (data.reservePrice === undefined || data.reservePrice < 0)) {
-        return { valid: false, message: "Reserve price must be 0 or greater" };
-      }
-      
-      if (!data.noReserve && data.reservePrice && data.startingPrice && data.reservePrice >= data.startingPrice) {
-        return { valid: false, message: "Reserve price must be less than the starting price" };
-      }
-      
-      if (!data.priceDecrement || data.priceDecrement <= 0) {
-        return { valid: false, message: "Price decrement must be greater than 0" };
-      }
-
-      if (!data.auctionDuration) {
-        return { valid: false, message: "Auction duration must be selected" };
-      }
-    } else {
-      // Validate fixed price
-      if (!data.price || data.price <= 0) {
-        return { valid: false, message: "Price must be greater than 0" };
-      }
-    }
-    
-    return { valid: true };
-  };
-
   const onSubmit = async (data: ListProductFormData) => {
     // Reset states
-    setSubmissionError(null);
+    clearErrors();
     
-    // Validate agreements
-    if (!data.accuracyAgreement || !data.termsAgreement) {
-      toast({
-        title: "Agreement Required",
-        description: "Please accept both the accuracy statement and terms & conditions before submitting.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Basic validation
-    if (!data.title || !data.description || !data.category) {
-      toast({
-        title: "Missing Information",
-        description: "Please fill in all required fields in the Basics section.",
-        variant: "destructive",
-      });
-      handleSectionClick(0); // Go back to the basics section
-      return;
-    }
-
-    // Image validation
-    if (!data.image) {
-      toast({
-        title: "Image Required",
-        description: "Please upload a product logo image.",
-        variant: "destructive",
-      });
-      handleSectionClick(0); // Go back to the basics section
-      return;
-    }
-
-    // Price validation
-    const priceValidation = validatePricing(data);
-    if (!priceValidation.valid) {
-      toast({
-        title: "Invalid Pricing",
-        description: priceValidation.message,
-        variant: "destructive",
-      });
-      handleSectionClick(5); // Go to the pricing section
+    // Run client-side form validation first
+    const validation = validateProductSubmission(data);
+    if (!validation.isValid) {
+      setFormErrors(validation.errors);
+      
+      // Find first section with error and navigate to it
+      const errorFields = Object.keys(validation.errors);
+      
+      if (errorFields.includes('title') || errorFields.includes('description') || 
+          errorFields.includes('category') || errorFields.includes('image')) {
+        handleSectionClick(0); // Basics
+        toast.error("Please fix the errors in the Basics section");
+      }
+      else if (errorFields.includes('price')) {
+        handleSectionClick(1); // Financials
+        toast.error("Please fix the errors in the Financials section");
+      }
+      else if (errorFields.includes('startingPrice') || errorFields.includes('reservePrice') || 
+              errorFields.includes('priceDecrement') || errorFields.includes('auctionDuration')) {
+        handleSectionClick(5); // Selling Method
+        toast.error("Please fix the errors in the Selling Method section");
+      }
+      else if (errorFields.includes('accuracyAgreement') || errorFields.includes('termsAgreement')) {
+        handleSectionClick(5); // Selling Method (where agreements are)
+        toast.error("You must accept the agreements before submitting");
+      }
+      
       return;
     }
 
@@ -246,24 +206,24 @@ export function ListProductForm() {
         } else {
           // Handle submission failure
           console.error("Product submission failed:", error);
+          logError("ListProductForm-Submission", new Error(error || "Submission failed"), data);
+          
           setSubmissionError(error || "Failed to submit your product. Please try again.");
           setIsSubmitting(false);
           
-          toast({
-            title: "Submission Failed",
+          toast.error("Submission Failed", {
             description: error || "There was a problem submitting your product. Please try again.",
-            variant: "destructive",
           });
         }
       } catch (error) {
         console.error("Unexpected error during submission:", error);
+        logError("ListProductForm-UnexpectedError", error, { formData: data });
+        
         setSubmissionError("An unexpected error occurred. Please try again or contact support.");
         setIsSubmitting(false);
         
-        toast({
-          title: "Error",
+        toast.error("Unexpected Error", {
           description: "An unexpected error occurred. Please try again or contact support.",
-          variant: "destructive",
         });
       }
     } else {
@@ -322,6 +282,9 @@ export function ListProductForm() {
   const CurrentSectionComponent = sections[currentSection].component;
   const showAgreements = currentSection === 5; // Only show agreements in Selling Method section
 
+  // Display field-level errors if any exist
+  const hasErrors = Object.keys(formErrors).length > 0;
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -329,6 +292,20 @@ export function ListProductForm() {
           currentSection={currentSection} 
           onSectionClick={handleSectionClick}
         />
+        
+        {hasErrors && (
+          <Alert variant="destructive" className="mb-4">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Form Validation Errors</AlertTitle>
+            <AlertDescription>
+              <ul className="list-disc pl-5 mt-2 space-y-1">
+                {Object.entries(formErrors).map(([field, message]) => (
+                  <li key={field}>{message}</li>
+                ))}
+              </ul>
+            </AlertDescription>
+          </Alert>
+        )}
         
         <div className="space-y-8 min-h-[400px]">
           <CurrentSectionComponent form={form} />

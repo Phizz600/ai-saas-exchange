@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ImagePlus, X, AlertCircle } from "lucide-react";
 import { PRODUCT_IMAGES_BUCKET } from "@/integrations/supabase/client";
+import { logError } from "@/integrations/supabase/products";
 
 interface ImageUploadProps {
   value: File | null;
@@ -17,11 +18,22 @@ export function ImageUpload({ value, onChange }: ImageUploadProps) {
   // Load preview if we already have a file
   useEffect(() => {
     if (value instanceof File) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result as string);
-      };
-      reader.readAsDataURL(value);
+      try {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setPreview(reader.result as string);
+        };
+        reader.onerror = (e) => {
+          console.error("Error reading file:", e);
+          logError("ImageUpload-FileReader", e, { fileName: value.name });
+          setUploadError("Error previewing image. Please try again.");
+        };
+        reader.readAsDataURL(value);
+      } catch (error) {
+        console.error("Error creating preview:", error);
+        logError("ImageUpload-Preview", error, { fileName: value?.name });
+        setUploadError("Failed to create image preview. Please try a different image.");
+      }
     } else {
       setPreview(null);
     }
@@ -31,7 +43,11 @@ export function ImageUpload({ value, onChange }: ImageUploadProps) {
     const file = e.target.files?.[0];
     setUploadError(null);
     
-    if (file) {
+    if (!file) {
+      return;
+    }
+    
+    try {
       // Validate file type and size
       if (!file.type.match(/image\/(jpeg|jpg|png|gif|webp)/i)) {
         setUploadError("Please select a valid image file (JPG, PNG, GIF, or WebP)");
@@ -51,7 +67,16 @@ export function ImageUpload({ value, onChange }: ImageUploadProps) {
       reader.onloadend = () => {
         setPreview(reader.result as string);
       };
+      reader.onerror = (e) => {
+        console.error("Error reading file:", e);
+        logError("ImageUpload-FileReader", e, { fileName: file.name });
+        setUploadError("Error reading image. Please try again.");
+      };
       reader.readAsDataURL(file);
+    } catch (error) {
+      console.error("Error processing file:", error);
+      logError("ImageUpload-FileProcess", error, { fileName: file?.name });
+      setUploadError("Failed to process image. Please try again.");
     }
   };
 
@@ -76,6 +101,11 @@ export function ImageUpload({ value, onChange }: ImageUploadProps) {
               src={preview}
               alt="Logo Preview"
               className="w-32 h-32 object-contain mx-auto"
+              onError={(e) => {
+                console.error("Error displaying image preview");
+                logError("ImageUpload-ImgDisplay", new Error("Image preview display failed"), {});
+                setUploadError("Error displaying image preview. Please try a different image.");
+              }}
             />
             <Button
               type="button"
@@ -93,10 +123,13 @@ export function ImageUpload({ value, onChange }: ImageUploadProps) {
             <span className="mt-2 text-sm text-gray-500">
               Click to upload your logo
             </span>
+            <span className="text-xs text-gray-400">
+              (JPG, PNG, GIF or WebP, max 5MB)
+            </span>
             <input
               type="file"
               className="hidden"
-              accept="image/*"
+              accept="image/jpeg,image/png,image/gif,image/webp"
               onChange={handleFileChange}
             />
           </label>

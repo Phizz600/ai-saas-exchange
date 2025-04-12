@@ -161,3 +161,78 @@ export const logError = async (source: string, error: any, context: Record<strin
   // Return the original error for chaining
   return error;
 };
+
+/**
+ * Validates a product submission form against common errors
+ * @param formData The form data to validate
+ * @returns Object with isValid flag and any error messages
+ */
+export const validateProductSubmission = (formData: any) => {
+  const errors: Record<string, string> = {};
+  
+  // Required fields validation
+  if (!formData.title || formData.title.trim() === '') {
+    errors.title = 'Product name is required';
+  }
+  
+  if (!formData.description || formData.description.trim() === '') {
+    errors.description = 'Description is required';
+  }
+  
+  if (!formData.category) {
+    errors.category = 'Category is required';
+  }
+  
+  if (formData.category === 'Other' && (!formData.categoryOther || formData.categoryOther.trim() === '')) {
+    errors.categoryOther = 'Please specify the category';
+  }
+  
+  // Image validation
+  if (!formData.image) {
+    errors.image = 'Product image is required';
+  }
+  
+  // Price validation for fixed price listings
+  if (!formData.isAuction && (!formData.price || Number(formData.price) <= 0)) {
+    errors.price = 'Price must be greater than zero';
+  }
+  
+  // Auction validation
+  if (formData.isAuction) {
+    if (!formData.startingPrice || Number(formData.startingPrice) <= 0) {
+      errors.startingPrice = 'Starting price must be greater than zero';
+    }
+    
+    if (formData.reservePrice !== undefined && formData.reservePrice !== null) {
+      if (Number(formData.reservePrice) < 0) {
+        errors.reservePrice = 'Reserve price cannot be negative';
+      }
+      
+      if (Number(formData.reservePrice) > 0 && Number(formData.reservePrice) >= Number(formData.startingPrice)) {
+        errors.reservePrice = 'Reserve price must be less than starting price';
+      }
+    }
+    
+    if (!formData.priceDecrement || Number(formData.priceDecrement) <= 0) {
+      errors.priceDecrement = 'Price decrement must be greater than zero';
+    }
+    
+    if (!formData.auctionDuration) {
+      errors.auctionDuration = 'Please select an auction duration';
+    }
+  }
+  
+  // Agreements validation
+  if (!formData.accuracyAgreement) {
+    errors.accuracyAgreement = 'You must confirm that the information provided is accurate';
+  }
+  
+  if (!formData.termsAgreement) {
+    errors.termsAgreement = 'You must agree to the terms and conditions';
+  }
+  
+  return {
+    isValid: Object.keys(errors).length === 0,
+    errors
+  };
+};

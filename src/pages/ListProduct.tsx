@@ -5,10 +5,42 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Link } from "react-router-dom";
 import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export const ListProduct = () => {
   const [helpDialogOpen, setHelpDialogOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  
+  // Check authentication on page load
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        setIsAuthenticated(!!user);
+        
+        if (!user) {
+          console.log("User not authenticated, showing warning");
+          toast.warning("Please sign in", {
+            description: "You need to be signed in to list a product",
+            duration: 10000,
+            action: {
+              label: "Sign In",
+              onClick: () => window.location.href = "/auth?redirect=/list-product"
+            }
+          });
+        } else {
+          console.log("User authenticated:", user.email);
+        }
+      } catch (error) {
+        console.error("Error checking authentication:", error);
+        setIsAuthenticated(false);
+      }
+    };
+    
+    checkAuth();
+  }, []);
   
   console.log('ListProduct page rendered');
   return <div className="min-h-screen bg-gradient-to-br from-[#9b87f5] via-[#D946EF] to-[#0EA5E9]">
@@ -30,6 +62,18 @@ export const ListProduct = () => {
               Complete this form with detailed and accurate information to showcase your product's value and increase buyer interest.
             </p>
             
+            {isAuthenticated === false && (
+              <div className="w-full p-4 bg-amber-50 border border-amber-200 rounded-md text-amber-800">
+                <p className="font-medium">You need to be signed in to list a product</p>
+                <Button 
+                  variant="outline" 
+                  className="mt-2" 
+                  onClick={() => window.location.href = "/auth?redirect=/list-product"}
+                >
+                  Sign In / Register
+                </Button>
+              </div>
+            )}
           </div>
           <ListProductForm />
         </div>
