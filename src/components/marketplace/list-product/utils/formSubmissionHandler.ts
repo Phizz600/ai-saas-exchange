@@ -1,3 +1,4 @@
+
 import { supabase, storage, PRODUCT_IMAGES_BUCKET } from "@/integrations/supabase/client";
 import { ListProductFormData } from "../types";
 import { generateUniqueId } from "@/lib/utils";
@@ -313,8 +314,8 @@ export const handleProductSubmission = async (
     const noReserve = data.isAuction && (data.reservePrice === 0 || data.noReserve === true);
     console.log("Final noReserve value:", noReserve);
     
-    // Prepare product data - remove is_auction field and use database-compatible fields
-    const productData = {
+    // Prepare product data with fallback - try to use both column names to handle schema cache issues
+    const productData: any = {
       title: data.title,
       description: data.description,
       price: Math.max(1, Number(data.price || 1)), // Ensure minimum price of 1
@@ -341,10 +342,6 @@ export const handleProductSubmission = async (
       // Handle auction specific fields - use the actual database column names
       auction_status: data.isAuction ? "pending" : null,
       starting_price: data.isAuction ? Math.max(1, Number(data.startingPrice || 1)) : null,
-      reserve_price: data.isAuction ? Math.max(0, Number(data.reservePrice || 0)) : null, // Changed from min_price to reserve_price
-      price_decrement: data.isAuction ? Math.max(1, Number(data.priceDecrement || 1)) : null,
-      price_decrement_interval: data.isAuction ? data.priceDecrementInterval : null,
-      auction_end_time: data.isAuction && data.auctionEndTime ? data.auctionEndTime.toISOString() : null,
       current_price: currentPrice, // Add current price field
       business_type: data.businessType,
       deliverables: data.deliverables || [],
@@ -373,11 +370,19 @@ export const handleProductSubmission = async (
       is_traffic_verified: data.isTrafficVerified || false,
     };
     
+    // IMPORTANT: Add support for both column names to handle schema cache issues
+    // Try to use reserve_price, but also set min_price as fallback
+    if (data.isAuction) {
+      productData.reserve_price = Math.max(0, Number(data.reservePrice || 0));
+      productData.min_price = Math.max(0, Number(data.reservePrice || 0)); // Set min_price as fallback for compatibility
+    }
+    
     // Additional debug logs
     console.log("Final product data - Auction fields:", {
       price: productData.price,
       starting_price: productData.starting_price,
       reserve_price: productData.reserve_price,
+      min_price: productData.min_price,
       current_price: productData.current_price,
       no_reserve: productData.no_reserve
     });
@@ -405,6 +410,30 @@ export const handleProductSubmission = async (
           return { success: false, error: "Invalid data format: " + error.message };
         } else if (error.code === 'PGRST116') {
           return { success: false, error: "Permission denied. You may not have rights to create products." };
+        }
+        
+        // Special error handling for schema cache issues
+        if (error.message && error.message.includes("reserve_price")) {
+          console.log("Detected schema cache issue with reserve_price column, trying fallback approach...");
+          
+          // Try using only min_price as a fallback
+          delete productData.reserve_price;
+          
+          const { data: fallbackProduct, error: fallbackError } = await supabase
+            .from("products")
+            .insert([productData])
+            .select();
+            
+          if (fallbackError) {
+            console.error("Fallback submission also failed:", fallbackError);
+            return { success: false, error: "Failed to submit product even with fallback approach. Please try again later or contact support." };
+          }
+          
+          console.log("Product submitted successfully using fallback approach:", fallbackProduct?.[0]?.id);
+          return { 
+            success: true, 
+            productId: fallbackProduct?.[0]?.id
+          };
         }
         
         return { success: false, error: "Failed to submit product: " + error.message };
