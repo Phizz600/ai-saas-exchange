@@ -20,8 +20,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert"; 
-import { CheckCircle2, AlertTriangle, AlertCircle } from "lucide-react";
+import { CheckCircle2, AlertTriangle, AlertCircle, XCircle } from "lucide-react";
 import { logError, validateProductSubmission } from "@/integrations/supabase/products";
+import { Button } from "@/components/ui/button";
 
 export function ListProductForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -29,6 +30,7 @@ export function ListProductForm() {
   const [submissionError, setSubmissionError] = useState<string | null>(null);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [submissionSuccess, setSubmissionSuccess] = useState(false);
+  const [submissionAttempted, setSubmissionAttempted] = useState(false);
   const navigate = useNavigate();
 
   const sections = [
@@ -137,6 +139,7 @@ export function ListProductForm() {
   const onSubmit = async (data: ListProductFormData) => {
     // Reset states
     clearErrors();
+    setSubmissionAttempted(true);
     
     // Run client-side form validation first
     const validation = validateProductSubmission(data);
@@ -174,6 +177,30 @@ export function ListProductForm() {
       
       try {
         console.log("Starting product submission process...");
+        
+        // Validate authentication first
+        const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+        if (sessionError) {
+          setSubmissionError("Authentication error: " + sessionError.message);
+          setIsSubmitting(false);
+          toast.error("Authentication Error", {
+            description: "Please sign in to submit your product"
+          });
+          return;
+        }
+        
+        if (!sessionData.session) {
+          setSubmissionError("You must be signed in to list a product");
+          setIsSubmitting(false);
+          toast.error("Authentication Required", {
+            description: "Please sign in to submit your product",
+            action: {
+              label: "Sign In",
+              onClick: () => navigate("/auth?redirect=/list-product")
+            }
+          });
+          return;
+        }
         
         // Submit product data and handle response
         const { success, productId, error } = await handleProductSubmission(data, setIsSubmitting);
@@ -245,18 +272,36 @@ export function ListProductForm() {
   // Display error alert if there's a submission error
   if (submissionError) {
     return (
-      <Alert variant="destructive" className="mb-6">
-        <AlertTriangle className="h-4 w-4" />
-        <AlertTitle>Error</AlertTitle>
-        <AlertDescription>
-          {submissionError}
-          <div className="mt-4">
-            <button 
+      <Alert variant="destructive" className="mb-6 bg-red-50 border-red-200">
+        <XCircle className="h-4 w-4" />
+        <AlertTitle>Submission Failed</AlertTitle>
+        <AlertDescription className="space-y-4">
+          <p>{submissionError}</p>
+          <div className="mt-4 space-x-4">
+            <Button 
               onClick={() => setSubmissionError(null)} 
-              className="bg-white text-destructive px-4 py-2 rounded font-medium hover:bg-gray-100"
+              variant="outline"
+              className="border-red-200 text-red-700 hover:bg-red-100"
             >
               Try Again
-            </button>
+            </Button>
+            <Button 
+              onClick={() => {
+                saveForLater();
+                toast.success("Progress saved. You can return to this later.");
+              }}
+              variant="ghost"
+            >
+              Save for Later
+            </Button>
+            <Button 
+              onClick={() => {
+                window.open("https://calendly.com/aiexchangeclub/listing-walkthrough", "_blank");
+              }}
+              variant="default"
+            >
+              Get Help
+            </Button>
           </div>
         </AlertDescription>
       </Alert>
@@ -302,6 +347,22 @@ export function ListProductForm() {
                 {Object.entries(formErrors).map(([field, message]) => (
                   <li key={field}>{message}</li>
                 ))}
+              </ul>
+            </AlertDescription>
+          </Alert>
+        )}
+        
+        {submissionAttempted && !hasErrors && submissionError === null && !submissionSuccess && (
+          <Alert className="mb-4 bg-amber-50 border-amber-200">
+            <AlertTriangle className="h-4 w-4 text-amber-500" />
+            <AlertTitle>Submission Tips</AlertTitle>
+            <AlertDescription>
+              <p>Please ensure all required fields are filled and that you have:</p>
+              <ul className="list-disc pl-5 mt-2 space-y-1">
+                <li>Uploaded a valid product image (JPG, PNG, or WebP format)</li>
+                <li>Provided a unique product title</li>
+                <li>Completed all required fields in each section</li>
+                <li>Accepted the terms and agreements in the final section</li>
               </ul>
             </AlertDescription>
           </Alert>

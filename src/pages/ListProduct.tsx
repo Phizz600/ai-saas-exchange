@@ -12,12 +12,24 @@ import { toast } from "sonner";
 export const ListProduct = () => {
   const [helpDialogOpen, setHelpDialogOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   
   // Check authentication on page load
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const { data: { user } } = await supabase.auth.getUser();
+        setIsLoading(true);
+        const { data: { user }, error } = await supabase.auth.getUser();
+        
+        if (error) {
+          console.error("Authentication error:", error.message);
+          toast.error("Authentication Error", {
+            description: "There was a problem verifying your account. Please try signing in again.",
+          });
+          setIsAuthenticated(false);
+          return;
+        }
+        
         setIsAuthenticated(!!user);
         
         if (!user) {
@@ -35,7 +47,12 @@ export const ListProduct = () => {
         }
       } catch (error) {
         console.error("Error checking authentication:", error);
+        toast.error("Connection Error", {
+          description: "Unable to verify your account. Please check your internet connection and try again."
+        });
         setIsAuthenticated(false);
+      } finally {
+        setIsLoading(false);
       }
     };
     
@@ -62,7 +79,14 @@ export const ListProduct = () => {
               Complete this form with detailed and accurate information to showcase your product's value and increase buyer interest.
             </p>
             
-            {isAuthenticated === false && (
+            {isLoading ? (
+              <div className="w-full p-4 bg-gray-100 border border-gray-200 rounded-md">
+                <div className="flex items-center space-x-2">
+                  <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                  <p className="text-gray-600">Checking authentication status...</p>
+                </div>
+              </div>
+            ) : isAuthenticated === false ? (
               <div className="w-full p-4 bg-amber-50 border border-amber-200 rounded-md text-amber-800">
                 <p className="font-medium">You need to be signed in to list a product</p>
                 <Button 
@@ -73,7 +97,7 @@ export const ListProduct = () => {
                   Sign In / Register
                 </Button>
               </div>
-            )}
+            ) : null}
           </div>
           <ListProductForm />
         </div>
@@ -92,9 +116,19 @@ export const ListProduct = () => {
         <DialogContent className="sm:max-w-md">
           <DialogTitle>Need Help?</DialogTitle>
           <DialogDescription>
-            Need help listing? Book a free call and we'll walk you through the entire process.
+            <p className="mb-2">Having trouble with your listing? Here are some quick tips:</p>
+            <ul className="list-disc pl-5 space-y-1 mb-4">
+              <li>Make sure your product image is under 5MB and in JPG, PNG, or WebP format</li>
+              <li>Provide a unique product title that hasn't been used before</li>
+              <li>Fill out all required fields in each section</li>
+              <li>Check your internet connection if you're having trouble submitting</li>
+            </ul>
+            <p>Still need help? Book a free call and we'll walk you through the entire process.</p>
           </DialogDescription>
-          <DialogFooter>
+          <DialogFooter className="flex justify-between sm:justify-between">
+            <Button variant="outline" onClick={() => setHelpDialogOpen(false)}>
+              Close
+            </Button>
             <Button asChild>
               <a 
                 href="https://calendly.com/aiexchangeclub/listing-walkthrough" 

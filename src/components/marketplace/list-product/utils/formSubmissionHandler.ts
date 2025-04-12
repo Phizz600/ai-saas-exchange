@@ -1,9 +1,21 @@
-
 import { supabase, storage, PRODUCT_IMAGES_BUCKET } from "@/integrations/supabase/client";
 import { ListProductFormData } from "../types";
 import { generateUniqueId } from "@/lib/utils";
 import { sendListingNotification } from "@/integrations/supabase/functions";
+import { toast } from "sonner";
 
+/**
+ * Submits the product form data to Supabase.
+ * @param formData The form data to submit
+ * @param user_id The ID of the user submitting the form
+ * @param router The router object for navigation
+ * @param storage The Supabase storage client
+ * @param setIsSubmitting Function to set the submitting state
+ * @param toast Function to display toast notifications
+ * @param resetForm Function to reset the form
+ * @param draftId (Optional) The ID of the draft to delete after successful submission
+ * @returns True if the submission was successful, false otherwise
+ */
 export const submitProductForm = async (
   formData: ListProductFormData,
   user_id: string,
@@ -207,7 +219,12 @@ export const handleProductSubmission = async (
     setIsSubmitting(true);
     
     // Get the current user
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError) {
+      console.error("Authentication error:", authError);
+      return { success: false, error: "Authentication error: " + authError.message };
+    }
+    
     if (!user) {
       console.error("Authentication failed: No user found");
       return { success: false, error: "You must be signed in to list a product" };
@@ -237,7 +254,7 @@ export const handleProductSubmission = async (
       });
 
       try {
-        const { error: uploadError } = await storage
+        const { error: uploadError, data: uploadData } = await storage
           .from(PRODUCT_IMAGES_BUCKET)
           .upload(filePath, data.image, {
             cacheControl: "3600",
@@ -247,14 +264,27 @@ export const handleProductSubmission = async (
         if (uploadError) {
           console.error("Image upload error", uploadError);
           console.error("Upload error details:", JSON.stringify(uploadError));
+          
+          // Check for specific upload errors
+          if (uploadError.message.includes("storage_limit_exceeded")) {
+            return { success: false, error: "Storage limit exceeded. Please try a smaller image or contact support." };
+          } else if (uploadError.message.includes("invalid_format")) {
+            return { success: false, error: "Invalid image format. Please use JPG, PNG, or WebP format." };
+          } else if (uploadError.message.includes("size_exceeded")) {
+            return { success: false, error: "Image size exceeded. Maximum size is 5MB." };
+          }
+          
           return { success: false, error: "Failed to upload image: " + uploadError.message };
         }
 
         console.log("Image uploaded successfully to path:", filePath);
 
-        // Use the correct way to build the image URL for Vite
-        const supabaseUrl = import.meta.env.NEXT_PUBLIC_SUPABASE_URL || 'https://pxadbwlidclnfoodjtpd.supabase.co';
-        imageUrl = `${supabaseUrl}/storage/v1/object/public/${PRODUCT_IMAGES_BUCKET}/${filePath}`;
+        // Get the public URL for the uploaded image
+        const { data: publicUrlData } = await storage
+          .from(PRODUCT_IMAGES_BUCKET)
+          .getPublicUrl(filePath);
+        
+        imageUrl = publicUrlData.publicUrl;
         console.log("Generated image URL:", imageUrl);
       } catch (uploadException) {
         console.error("Exception during image upload:", uploadException);
@@ -369,6 +399,10 @@ export const handleProductSubmission = async (
           return { success: false, error: "Missing required fields: " + error.details };
         } else if (error.code === '23503') {
           return { success: false, error: "Invalid reference: " + error.details };
+        } else if (error.code.startsWith('22')) {
+          return { success: false, error: "Invalid data format: " + error.message };
+        } else if (error.code === 'PGRST116') {
+          return { success: false, error: "Permission denied. You may not have rights to create products." };
         }
         
         return { success: false, error: "Failed to submit product: " + error.message };
