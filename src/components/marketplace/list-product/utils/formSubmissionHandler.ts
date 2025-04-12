@@ -195,13 +195,25 @@ export const handleProductSubmission = async (
   setIsSubmitting: (isSubmitting: boolean) => void
 ): Promise<{ success: boolean; productId?: string; error?: string }> => {
   try {
+    console.log("Starting product submission process...");
+    console.log("Form data summary:", { 
+      title: data.title,
+      description: data.description?.substring(0, 30) + "...",
+      category: data.category,
+      hasImage: !!data.image,
+      isAuction: data.isAuction
+    });
+    
     setIsSubmitting(true);
     
     // Get the current user
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
+      console.error("Authentication failed: No user found");
       return { success: false, error: "You must be signed in to list a product" };
     }
+    
+    console.log("Authenticated as:", user.email);
     
     let imageUrl = null;
     // Add proper check for image existence before processing
@@ -213,11 +225,16 @@ export const handleProductSubmission = async (
       // Debug log for NDA settings
       console.log("Form Data NDA settings:", {
         requires_nda: data.requires_nda,
-        nda_content: data.nda_content
+        nda_content: data.nda_content?.substring(0, 30) + "..."
       });
 
       // Log the bucket name being used
       console.log("Uploading to bucket:", PRODUCT_IMAGES_BUCKET);
+      console.log("Image details:", { 
+        name: data.image.name,
+        size: data.image.size,
+        type: data.image.type 
+      });
 
       const { error: uploadError } = await storage
         .from(PRODUCT_IMAGES_BUCKET)
@@ -228,20 +245,26 @@ export const handleProductSubmission = async (
 
       if (uploadError) {
         console.error("Image upload error", uploadError);
+        console.error("Upload error details:", JSON.stringify(uploadError));
         return { success: false, error: "Failed to upload image. Please try again." };
       }
+
+      console.log("Image uploaded successfully to path:", filePath);
 
       // Use the correct way to build the image URL for Vite
       const supabaseUrl = import.meta.env.NEXT_PUBLIC_SUPABASE_URL || 'https://pxadbwlidclnfoodjtpd.supabase.co';
       imageUrl = `${supabaseUrl}/storage/v1/object/public/${PRODUCT_IMAGES_BUCKET}/${filePath}`;
+      console.log("Generated image URL:", imageUrl);
     } else {
       // Log missing image for debugging
       console.warn("No image provided or image is not a valid File object");
+      console.warn("Image value type:", typeof data.image);
       return { success: false, error: "Please upload a product image." };
     }
     
     // Calculate price based on auction or fixed price
     let finalPrice = data.isAuction ? Math.max(1, Number(data.startingPrice)) : Math.max(1, Number(data.price));
+    console.log("Calculated final price:", finalPrice);
     
     // Set current_price initially equal to price or starting_price
     const currentPrice = data.isAuction ? Math.max(1, Number(data.startingPrice)) : Math.max(1, Number(data.price));
@@ -319,10 +342,11 @@ export const handleProductSubmission = async (
     
     console.log("Final product data - NDA fields:", {
       requires_nda: productData.requires_nda,
-      nda_content: productData.nda_content
+      nda_content: productData.nda_content ? 'Content provided' : 'No content'
     });
     
     // Submit the product to the database
+    console.log("Submitting product to database...");
     const { data: newProduct, error } = await supabase
       .from("products")
       .insert([productData])
@@ -330,8 +354,11 @@ export const handleProductSubmission = async (
       
     if (error) {
       console.error("Product submission error:", error);
+      console.error("Error details:", JSON.stringify(error));
       return { success: false, error: "Failed to submit product. Please try again." };
     }
+    
+    console.log("Product submitted successfully:", newProduct?.[0]?.id);
     
     // Send confirmation email
     try {
@@ -347,15 +374,18 @@ export const handleProductSubmission = async (
       const userEmail = userData?.user?.email || '';
       
       if (userEmail) {
+        console.log("Sending confirmation email to:", userEmail);
         await sendListingNotification(
           'submitted',
           userEmail,
           data.title,
           userFirstName
         );
+        console.log("Confirmation email sent successfully");
       }
     } catch (emailError) {
       console.error("Error sending confirmation email:", emailError);
+      console.error("Email error details:", JSON.stringify(emailError));
       // Don't fail the submission if email fails
     }
     
@@ -366,6 +396,7 @@ export const handleProductSubmission = async (
     
   } catch (error: any) {
     console.error("Product submission error:", error);
+    console.error("Submission error stack:", error.stack);
     return { 
       success: false, 
       error: error.message || "An unexpected error occurred. Please try again."

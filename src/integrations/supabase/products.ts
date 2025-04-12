@@ -7,6 +7,7 @@ import { supabase } from './client';
  */
 export const getMatchedProducts = async () => {
   try {
+    console.log("Fetching matched products for current user");
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       console.error('User not authenticated');
@@ -24,6 +25,7 @@ export const getMatchedProducts = async () => {
       throw error;
     }
 
+    console.log(`Retrieved ${data?.length || 0} matched products`);
     return data || [];
   } catch (error) {
     console.error('Error in getMatchedProducts:', error);
@@ -37,22 +39,30 @@ export const getMatchedProducts = async () => {
  */
 export const getProductOffers = async () => {
   try {
+    console.log("Fetching product offers for current user");
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       console.error('User not authenticated');
       return [];
     }
 
-    const { data: userProducts } = await supabase
+    const { data: userProducts, error: productError } = await supabase
       .from('products')
       .select('id')
       .eq('seller_id', user.id);
 
+    if (productError) {
+      console.error('Error fetching user products:', productError);
+      return [];
+    }
+
     if (!userProducts?.length) {
+      console.log('User has no products, returning empty offers array');
       return [];
     }
 
     const productIds = userProducts.map(product => product.id);
+    console.log(`Found ${productIds.length} products for user`);
 
     const { data, error } = await supabase
       .from('offers')
@@ -75,6 +85,7 @@ export const getProductOffers = async () => {
       throw error;
     }
 
+    console.log(`Retrieved ${data?.length || 0} offers for user's products`);
     return data || [];
   } catch (error) {
     console.error('Error in getProductOffers:', error);
@@ -90,6 +101,7 @@ export const getProductOffers = async () => {
  */
 export const updateOfferStatus = async (offerId: string, status: 'accepted' | 'declined') => {
   try {
+    console.log(`Updating offer ${offerId} status to ${status}`);
     const { data, error } = await supabase
       .from('offers')
       .update({ status })
@@ -102,9 +114,50 @@ export const updateOfferStatus = async (offerId: string, status: 'accepted' | 'd
       throw error;
     }
 
+    console.log('Offer status updated successfully');
     return data;
   } catch (error) {
     console.error('Error in updateOfferStatus:', error);
     return null;
   }
+};
+
+/**
+ * Logs an error to both console and Supabase (for monitoring)
+ * @param source The source/component where the error occurred
+ * @param error The error object or message
+ * @param context Additional context data
+ */
+export const logError = async (source: string, error: any, context: Record<string, any> = {}) => {
+  const errorMessage = error instanceof Error ? error.message : String(error);
+  const stack = error instanceof Error ? error.stack : undefined;
+  
+  // Log to console
+  console.error(`[${source}] Error:`, errorMessage);
+  if (stack) console.error(stack);
+  if (Object.keys(context).length) console.error('Context:', context);
+  
+  try {
+    // Get current user for attribution if available
+    const { data: { user } } = await supabase.auth.getUser();
+    const userId = user?.id;
+    
+    // Log to error_logs table
+    await supabase
+      .from('error_logs')
+      .insert([{
+        source,
+        error_message: errorMessage,
+        error_stack: stack,
+        context_data: { ...context, userId },
+        user_id: userId
+      }]);
+      
+  } catch (logError) {
+    // Fallback to console if logging to Supabase fails
+    console.error('Failed to log error to database:', logError);
+  }
+  
+  // Return the original error for chaining
+  return error;
 };

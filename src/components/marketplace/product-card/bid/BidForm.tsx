@@ -9,6 +9,7 @@ import { BidSuccessMessage } from "./components/BidSuccessMessage";
 import { BidInputForm } from "./components/BidInputForm";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
+import { toast } from "sonner";
 
 interface BidFormProps {
   productId: string;
@@ -21,14 +22,19 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
   const [isLoadingBids, setIsLoadingBids] = useState(true);
   const [bidError, setBidError] = useState<string | null>(null);
   const [bidCancelled, setBidCancelled] = useState(false);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
   // Fetch the current highest bid
   useEffect(() => {
     let mounted = true;
+    console.log(`BidForm initialized for product ${productId} with currentPrice: ${currentPrice}`);
 
     const fetchHighestBid = async () => {
       try {
         setIsLoadingBids(true);
+        setFetchError(null);
+        
+        console.log("Fetching highest bid data for product:", productId);
         
         // First try to get the highest bid directly from the product
         const { data: product, error: productError } = await supabase
@@ -39,7 +45,13 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
         
         if (productError) {
           console.error('Error fetching product:', productError);
+          setFetchError(`Could not retrieve product data: ${productError.message}`);
           setIsLoadingBids(false);
+          
+          toast.error("Error loading bid data", {
+            description: "There was a problem retrieving current bid information."
+          });
+          
           return;
         }
         
@@ -65,6 +77,11 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
           .order('amount', { ascending: false })
           .limit(1);
 
+        if (bidError) {
+          console.error('Error fetching bids:', bidError);
+          setFetchError(`Could not retrieve bid data: ${bidError.message}`);
+        }
+
         if (!bidError && highestBidData && highestBidData.length > 0) {
           if (mounted) {
             console.log('Setting highest bid from bids table:', highestBidData[0].amount);
@@ -79,8 +96,13 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
             setHighestBid(null);
           }
         }
-      } catch (err) {
+      } catch (err: any) {
         console.error('Error fetching bid data:', err);
+        setFetchError(`Unexpected error: ${err.message}`);
+        
+        toast.error("Error loading bid data", {
+          description: "There was a problem retrieving current bid information."
+        });
       } finally {
         if (mounted) {
           setIsLoadingBids(false);
@@ -109,7 +131,9 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
           }
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        console.log(`Product channel subscription status: ${status}`);
+      });
 
     // Listen for new authorized bids
     const bidChannel = supabase
@@ -153,14 +177,17 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
           }
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        console.log(`Bid channel subscription status: ${status}`);
+      });
 
     return () => {
+      console.log("Cleaning up BidForm subscriptions");
       mounted = false;
       supabase.removeChannel(productChannel);
       supabase.removeChannel(bidChannel);
     };
-  }, [productId, highestBid]);
+  }, [productId, highestBid, currentPrice]);
 
   const {
     bidAmount,
@@ -188,6 +215,7 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
   useEffect(() => {
     if (!depositDialogOpen && paymentClientSecret && !success && !isSubmitting && bidId) {
       // If dialog is closed, client secret exists, but bid isn't successful or in process
+      console.log("Bid process interrupted, cancelling bid:", bidId);
       handleBidCancellation();
       setBidCancelled(true);
       
@@ -206,22 +234,27 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
     setBidCancelled(false);
     
     const numericAmount = parseFloat(bidAmount);
+    console.log("Validating bid amount:", numericAmount, "against highest bid:", highestBid, "or current price:", currentPrice);
     
     // Validate amount
     if (isNaN(numericAmount) || numericAmount <= 0) {
+      console.log("Invalid bid amount:", bidAmount);
       setBidError("Please enter a valid amount for your bid.");
       return;
     }
 
     // Validate against the current highest bid
     if (highestBid && numericAmount <= highestBid) {
+      console.log("Bid too low compared to highest bid:", numericAmount, "≤", highestBid);
       setBidError(`Your bid must be higher than the current highest bid of $${highestBid.toLocaleString()}`);
       return;
     } else if (!highestBid && currentPrice && numericAmount <= currentPrice) {
+      console.log("Bid too low compared to current price:", numericAmount, "≤", currentPrice);
       setBidError(`Your bid must be higher than the current price of $${currentPrice.toLocaleString()}`);
       return;
     }
     
+    console.log("Bid validation passed, proceeding with bid:", numericAmount);
     // If validation passes, proceed with bid
     handleInitiateBid();
   };
@@ -233,6 +266,26 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
 
   if (success) {
     return <BidSuccessMessage resetForm={resetForm} />;
+  }
+
+  // Display fetch error if there was a problem loading bid data
+  if (fetchError) {
+    return (
+      <Alert variant="destructive" className="mb-3">
+        <AlertCircle className="h-4 w-4 mr-2" />
+        <AlertDescription>
+          {fetchError}
+          <div className="mt-2">
+            <button 
+              onClick={() => window.location.reload()} 
+              className="bg-white text-destructive px-4 py-2 rounded font-medium hover:bg-gray-100"
+            >
+              Refresh Page
+            </button>
+          </div>
+        </AlertDescription>
+      </Alert>
+    );
   }
 
   // Use the most accurate price information available
