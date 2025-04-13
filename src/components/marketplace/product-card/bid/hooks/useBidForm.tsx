@@ -78,9 +78,10 @@ export function useBidForm({ productId, productTitle, currentPrice, onValidation
         return;
       }
 
-      // Validate against current price - only against authorized highest bid or system price
-      if (currentPrice && amount <= currentPrice) {
-        const errorMsg = `Your bid must be higher than the current price of $${currentPrice.toLocaleString()}`;
+      // Critical validation - bid must be AT LEAST the current price of the auction
+      // This maintains the Dutch auction principle that bids must meet the current price
+      if (currentPrice && amount < currentPrice) {
+        const errorMsg = `Your bid must be at least the current price of $${currentPrice.toLocaleString()}`;
         if (onValidationError) onValidationError(errorMsg);
         toast({
           title: "Bid too low",
@@ -103,10 +104,10 @@ export function useBidForm({ productId, productTitle, currentPrice, onValidation
 
       console.log(`Creating bid for product ${productId} with amount ${amount}`);
 
-      // Get the latest product data to verify the highest bid
+      // Get the latest product data to verify the current price and highest bid
       const { data: product, error: productError } = await supabase
         .from('products')
-        .select('highest_bid, current_price')
+        .select('highest_bid, current_price, reserve_price')
         .eq('id', productId)
         .single();
         
@@ -114,7 +115,19 @@ export function useBidForm({ productId, productTitle, currentPrice, onValidation
         console.error('Error fetching product for validation:', productError);
         toast({
           title: "Error validating bid",
-          description: "Could not verify current highest bid",
+          description: "Could not verify current auction price",
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      // Double-check that the bid meets the current price from the database
+      if (product.current_price && amount < product.current_price) {
+        const errorMsg = `Your bid must be at least the current price of $${product.current_price.toLocaleString()}`;
+        if (onValidationError) onValidationError(errorMsg);
+        toast({
+          title: "Bid too low",
+          description: errorMsg,
           variant: "destructive"
         });
         return;

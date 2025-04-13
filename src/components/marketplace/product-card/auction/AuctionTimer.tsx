@@ -1,7 +1,8 @@
 
-import { useEffect, useState } from "react";
-import { Timer, TrendingDown } from "lucide-react";
-import { calculateCurrentAuctionPrice } from "@/integrations/supabase/auction";
+import { useState, useEffect } from 'react';
+import { Timer, TrendingDown, AlertCircle } from 'lucide-react';
+import { formatCurrency } from '@/lib/utils';
+import { calculateCurrentAuctionPrice } from '@/integrations/supabase/auction';
 
 interface AuctionTimerProps {
   auctionEndTime?: string;
@@ -10,113 +11,101 @@ interface AuctionTimerProps {
   priceDecrement?: number;
   decrementInterval?: string;
   noReserve?: boolean;
+  created_at?: string;
 }
 
 export function AuctionTimer({
   auctionEndTime,
-  currentPrice = 0,
-  reservePrice = 0,
-  priceDecrement = 0,
-  decrementInterval = "hour",
-  noReserve = false
+  currentPrice,
+  reservePrice,
+  priceDecrement,
+  decrementInterval,
+  noReserve,
+  created_at
 }: AuctionTimerProps) {
-  const [timeRemaining, setTimeRemaining] = useState<string | null>(null);
-  const [calculatedPrice, setCalculatedPrice] = useState(currentPrice);
-  const [progressPercentage, setProgressPercentage] = useState("0%");
-
+  const [timeLeft, setTimeLeft] = useState("");
+  const [nextDrop, setNextDrop] = useState("");
+  const [isAuctionEnded, setIsAuctionEnded] = useState(false);
+  
   useEffect(() => {
-    if (auctionEndTime) {
-      const intervalId = setInterval(() => {
-        const now = new Date();
-        const end = new Date(auctionEndTime);
-        const diff = end.getTime() - now.getTime();
-        if (diff > 0) {
-          const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-          const hours = Math.floor(diff % (1000 * 60 * 60 * 24) / (1000 * 60 * 60));
-          const minutes = Math.floor(diff % (1000 * 60 * 60) / (1000 * 60));
-          setTimeRemaining(`${days}d ${hours}h ${minutes}m`);
+    if (!auctionEndTime) return;
 
-          // Calculate current price
-          const calculatedCurrentPrice = calculateCurrentAuctionPrice(currentPrice, reservePrice, priceDecrement, decrementInterval, auctionEndTime, now);
-          setCalculatedPrice(calculatedCurrentPrice);
+    const calculateTimeLeft = () => {
+      const now = new Date().getTime();
+      const endTime = new Date(auctionEndTime).getTime();
+      const difference = endTime - now;
+      
+      if (difference <= 0) {
+        setTimeLeft("Auction ended");
+        setIsAuctionEnded(true);
+        return;
+      }
+      
+      setIsAuctionEnded(false);
+      const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+      
+      setTimeLeft(`${days}d ${hours}h ${minutes}m`);
 
-          // Calculate auction progress percentage
-          const totalAuctionTime = end.getTime() - new Date(auctionEndTime).getTime() + diff; // Initial date to end date
-          const elapsedTime = totalAuctionTime - diff; // Time passed
-          const progress = elapsedTime / totalAuctionTime * 100;
-          setProgressPercentage(`${Math.min(100, Math.max(0, progress))}%`);
-        } else {
-          setTimeRemaining("Auction Ended");
-          setProgressPercentage("100%");
-          clearInterval(intervalId);
+      // Calculate next price drop time
+      if (decrementInterval && priceDecrement) {
+        let interval;
+        
+        switch (decrementInterval) {
+          case 'day':
+            interval = 24 * 60 * 60 * 1000;
+            break;
+          case 'week':
+            interval = 7 * 24 * 60 * 60 * 1000;
+            break;
+          case 'month':
+            interval = 30 * 24 * 60 * 60 * 1000;
+            break;
+          default:
+            interval = 24 * 60 * 60 * 1000; // Default to daily
         }
-      }, 1000);
-      return () => clearInterval(intervalId);
-    }
-  }, [auctionEndTime, currentPrice, reservePrice, priceDecrement, decrementInterval]);
-
-  // Format currency
-  const formatPrice = (price: number): string => {
-    return `$${price.toLocaleString()}`;
-  };
-
-  // Calculate the price progress percentage for the progress bar
-  const calculatePriceProgress = (): string => {
-    if (noReserve) return "100%";
-
-    // For auctions with a reserve price
-    const startingPrice = currentPrice;
-    const currentCalculatedPrice = calculatedPrice;
-    if (startingPrice === reservePrice) return "0%";
-    const totalPriceDrop = startingPrice - reservePrice;
-    const currentPriceDrop = startingPrice - currentCalculatedPrice;
-    const priceProgressPercentage = currentPriceDrop / totalPriceDrop * 100;
-    return `${Math.min(100, Math.max(0, priceProgressPercentage))}%`;
-  };
-
-  return <div className="rounded-md overflow-hidden">
-      <div className="p-4" style={{
-      background: 'linear-gradient(to right, #FEFBEA, #FBF5FF)'
-    }}>
-        <div className="flex justify-between items-center mb-2">
-          <div className="flex items-center text-amber-700">
-            <Timer className="w-5 h-5 mr-1" />
-            <span className="exo-2-header text-sm font-bold">{timeRemaining}</span>
-          </div>
-          <div className="flex items-center text-purple-700">
-            <TrendingDown className="w-5 h-5 mr-1" />
-            <span className="exo-2-header text-sm font-bold">Price dropping</span>
-          </div>
-        </div>
         
-        <div className="flex justify-between items-center mb-1">
-          <div>
-            <span className="text-gray-700 text-sm">Current:</span>
-            <p className="font-bold text-gray-800 text-sm">{formatPrice(calculatedPrice)}</p>
-          </div>
-          <div className="text-right">
-            <span className="text-gray-700 text-sm">Min:</span>
-            <p className="font-bold text-gray-800 text-sm">
-              {noReserve ? "$0" : formatPrice(reservePrice)}
-            </p>
-          </div>
-        </div>
+        const nextDropTime = Math.ceil(now / interval) * interval;
+        const timeToNextDrop = nextDropTime - now;
+        const nextDropHours = Math.floor(timeToNextDrop / (1000 * 60 * 60));
+        const nextDropMinutes = Math.floor((timeToNextDrop % (1000 * 60 * 60)) / (1000 * 60));
         
-        {/* Progress Bar with gradient - shows auction time progress */}
-        <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden mb-2">
-          <div 
-            className="h-full bg-gradient-to-r from-amber-400 to-purple-500" 
-            style={{ width: progressPercentage }}
-          ></div>
-        </div>
-        
-        {/* Price drop progress bar */}
-        <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
-          <div 
-            className="h-full bg-gradient-to-r from-purple-500 to-blue-500" 
-            style={{ width: calculatePriceProgress() }}
-          ></div>
-        </div>
+        setNextDrop(`${nextDropHours}h ${nextDropMinutes}m`);
+      }
+    };
+    
+    calculateTimeLeft();
+    
+    const interval = setInterval(calculateTimeLeft, 60000); // Update every minute
+    
+    return () => clearInterval(interval);
+  }, [auctionEndTime, decrementInterval, priceDecrement]);
+  
+  return (
+    <div className="border-b px-5 py-3 bg-blue-50 text-blue-800 rounded-t-md flex flex-col sm:flex-row gap-2 justify-between">
+      <div className="flex items-center gap-1.5">
+        <Timer className="h-4 w-4" />
+        <span className="text-sm font-medium">
+          {isAuctionEnded ? 'Auction ended' : timeLeft ? timeLeft : 'Loading...'}
+        </span>
       </div>
-    </div>;
+      
+      {!isAuctionEnded && priceDecrement && decrementInterval && (
+        <div className="flex items-center gap-1.5">
+          <TrendingDown className="h-4 w-4" />
+          <span className="text-sm font-medium">
+            {`Next price drop: ${nextDrop || 'Calculating...'} (-${formatCurrency(priceDecrement)})` }
+          </span>
+        </div>
+      )}
+      
+      {noReserve && (
+        <div className="flex items-center gap-1.5">
+          <AlertCircle className="h-4 w-4 text-amber-600" />
+          <span className="text-sm font-medium text-amber-600">No reserve auction</span>
+        </div>
+      )}
+    </div>
+  );
 }

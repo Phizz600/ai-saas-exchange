@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useBidForm } from "./hooks/useBidForm";
 import { BidDepositDialog } from "./BidDepositDialog";
@@ -243,14 +242,16 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
       return;
     }
 
-    // Validate against the current highest bid
+    // Validate against the current highest bid if one exists
     if (highestBid && numericAmount <= highestBid) {
       console.log("Bid too low compared to highest bid:", numericAmount, "≤", highestBid);
       setBidError(`Your bid must be higher than the current highest bid of $${highestBid.toLocaleString()}`);
       return;
-    } else if (!highestBid && currentPrice && numericAmount <= currentPrice) {
-      console.log("Bid too low compared to current price:", numericAmount, "≤", currentPrice);
-      setBidError(`Your bid must be higher than the current price of $${currentPrice.toLocaleString()}`);
+    } 
+    // Otherwise, validate against the current price - bid must be AT LEAST the current price
+    else if (!highestBid && currentPrice && numericAmount < currentPrice) {
+      console.log("Bid too low compared to current price:", numericAmount, "<", currentPrice);
+      setBidError(`Your bid must be at least the current price of $${currentPrice.toLocaleString()}`);
       return;
     }
     
