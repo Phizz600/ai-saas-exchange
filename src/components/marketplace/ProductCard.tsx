@@ -33,10 +33,11 @@ interface ProductCardProps {
     nda_content?: string;
     auction_end_time?: string;
     current_price?: number;
-    reserve_price?: number; // Changed from min_price to reserve_price
+    reserve_price?: number;
     price_decrement?: number;
     price_decrement_interval?: string;
-    no_reserve?: boolean; // Added no_reserve field
+    no_reserve?: boolean;
+    listing_type?: string;
   };
 }
 
@@ -53,7 +54,7 @@ export function ProductCard({ product }: ProductCardProps) {
   
   const { hasSigned, isCheckingStatus, setHasSigned } = useNdaStatus(product.id);
   
-  const isAuction = !!product.auction_end_time;
+  const isAuction = product.listing_type === 'dutch_auction' || !!product.auction_end_time;
   const isVerified = product.is_revenue_verified || product.is_code_audited || product.is_traffic_verified;
   
   // Debug the NDA content to make sure it's being passed correctly
@@ -119,10 +120,11 @@ export function ProductCard({ product }: ProductCardProps) {
         is_traffic_verified={product.is_traffic_verified}
         requires_nda={showLimitedInfo}
         auction_end_time={product.auction_end_time}
-        reserve_price={product.reserve_price} // Changed from min_price to reserve_price
+        reserve_price={product.reserve_price}
         price_decrement={product.price_decrement}
         price_decrement_interval={product.price_decrement_interval}
-        no_reserve={product.no_reserve} // Added no_reserve prop
+        no_reserve={product.no_reserve}
+        listing_type={product.listing_type}
       />
       
       <CardFooter className="p-5 pt-0 space-y-3 flex flex-col">

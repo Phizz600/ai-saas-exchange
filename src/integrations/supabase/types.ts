@@ -848,6 +848,7 @@ export type Database = {
           is_revenue_verified: boolean | null
           is_traffic_verified: boolean | null
           is_verified: boolean | null
+          listing_type: string
           llm_type: string | null
           llm_type_other: string | null
           min_price: number | null
@@ -913,6 +914,7 @@ export type Database = {
           is_revenue_verified?: boolean | null
           is_traffic_verified?: boolean | null
           is_verified?: boolean | null
+          listing_type?: string
           llm_type?: string | null
           llm_type_other?: string | null
           min_price?: number | null
@@ -978,6 +980,7 @@ export type Database = {
           is_revenue_verified?: boolean | null
           is_traffic_verified?: boolean | null
           is_verified?: boolean | null
+          listing_type?: string
           llm_type?: string | null
           llm_type_other?: string | null
           min_price?: number | null

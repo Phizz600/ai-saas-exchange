@@ -9,7 +9,8 @@ import { useSession } from '@supabase/auth-helpers-react';
 type ProductWithSeller = Database['public']['Tables']['products']['Row'] & {
   seller: Database['public']['Tables']['profiles']['Row'] | null;
   no_reserve?: boolean;
-  reserve_price?: number; // Added this property to the type
+  reserve_price?: number;
+  listing_type?: string;
 };
 
 interface ProductGridProps {
@@ -23,7 +24,7 @@ export const ProductGrid = ({ products, isLoading = false, onProductView }: Prod
 
   // Debug the products to see if they have requires_nda property
   console.log('ProductGrid - products with requires_nda:', products.map(p => ({ id: p.id, title: p.title, requires_nda: p.requires_nda })));
-
+  
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 py-8 px-4">
@@ -83,6 +84,7 @@ export const ProductGrid = ({ products, isLoading = false, onProductView }: Prod
               price_decrement: product.price_decrement,
               price_decrement_interval: product.price_decrement_interval,
               no_reserve: product.no_reserve,
+              listing_type: product.listing_type,
               seller: {
                 id: product.seller?.id || "",
                 full_name: product.seller?.full_name || "Anonymous",

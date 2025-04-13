@@ -1,8 +1,6 @@
 
-import { useState, useEffect } from 'react';
-import { Timer, TrendingDown, AlertCircle } from 'lucide-react';
-import { formatCurrency } from '@/lib/utils';
-import { calculateCurrentAuctionPrice } from '@/integrations/supabase/auction';
+import { Clock, TrendingDown } from "lucide-react";
+import { formatCurrency } from "@/lib/utils";
 
 interface AuctionTimerProps {
   auctionEndTime?: string;
@@ -11,7 +9,6 @@ interface AuctionTimerProps {
   priceDecrement?: number;
   decrementInterval?: string;
   noReserve?: boolean;
-  created_at?: string;
 }
 
 export function AuctionTimer({
@@ -20,90 +17,34 @@ export function AuctionTimer({
   reservePrice,
   priceDecrement,
   decrementInterval,
-  noReserve,
-  created_at
+  noReserve
 }: AuctionTimerProps) {
-  const [timeLeft, setTimeLeft] = useState("");
-  const [nextDrop, setNextDrop] = useState("");
-  const [isAuctionEnded, setIsAuctionEnded] = useState(false);
-  
-  useEffect(() => {
-    if (!auctionEndTime) return;
-
-    const calculateTimeLeft = () => {
-      const now = new Date().getTime();
-      const endTime = new Date(auctionEndTime).getTime();
-      const difference = endTime - now;
-      
-      if (difference <= 0) {
-        setTimeLeft("Auction ended");
-        setIsAuctionEnded(true);
-        return;
-      }
-      
-      setIsAuctionEnded(false);
-      const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-      
-      setTimeLeft(`${days}d ${hours}h ${minutes}m`);
-
-      // Calculate next price drop time
-      if (decrementInterval && priceDecrement) {
-        let interval;
-        
-        switch (decrementInterval) {
-          case 'day':
-            interval = 24 * 60 * 60 * 1000;
-            break;
-          case 'week':
-            interval = 7 * 24 * 60 * 60 * 1000;
-            break;
-          case 'month':
-            interval = 30 * 24 * 60 * 60 * 1000;
-            break;
-          default:
-            interval = 24 * 60 * 60 * 1000; // Default to daily
-        }
-        
-        const nextDropTime = Math.ceil(now / interval) * interval;
-        const timeToNextDrop = nextDropTime - now;
-        const nextDropHours = Math.floor(timeToNextDrop / (1000 * 60 * 60));
-        const nextDropMinutes = Math.floor((timeToNextDrop % (1000 * 60 * 60)) / (1000 * 60));
-        
-        setNextDrop(`${nextDropHours}h ${nextDropMinutes}m`);
-      }
-    };
-    
-    calculateTimeLeft();
-    
-    const interval = setInterval(calculateTimeLeft, 60000); // Update every minute
-    
-    return () => clearInterval(interval);
-  }, [auctionEndTime, decrementInterval, priceDecrement]);
+  if (!auctionEndTime) return null;
   
   return (
-    <div className="border-b px-5 py-3 bg-blue-50 text-blue-800 rounded-t-md flex flex-col sm:flex-row gap-2 justify-between">
-      <div className="flex items-center gap-1.5">
-        <Timer className="h-4 w-4" />
-        <span className="text-sm font-medium">
-          {isAuctionEnded ? 'Auction ended' : timeLeft ? timeLeft : 'Loading...'}
-        </span>
+    <div className="bg-amber-50 rounded-t-md p-3 border-b border-amber-100">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center text-amber-800">
+          <TrendingDown className="h-4 w-4 mr-1.5" />
+          <span className="text-sm font-medium">Dutch Auction</span>
+        </div>
+        {priceDecrement && decrementInterval && (
+          <div className="text-xs text-amber-700">
+            Drops ${priceDecrement} per {decrementInterval}
+          </div>
+        )}
       </div>
       
-      {!isAuctionEnded && priceDecrement && decrementInterval && (
-        <div className="flex items-center gap-1.5">
-          <TrendingDown className="h-4 w-4" />
-          <span className="text-sm font-medium">
-            {`Next price drop: ${nextDrop || 'Calculating...'} (-${formatCurrency(priceDecrement)})` }
-          </span>
+      {noReserve && (
+        <div className="mt-1 text-xs text-amber-700 flex items-center">
+          <span className="bg-amber-200 text-amber-800 text-xs px-1.5 py-0.5 rounded">No Reserve</span>
+          <span className="ml-1">Sells at any price!</span>
         </div>
       )}
       
-      {noReserve && (
-        <div className="flex items-center gap-1.5">
-          <AlertCircle className="h-4 w-4 text-amber-600" />
-          <span className="text-sm font-medium text-amber-600">No reserve auction</span>
+      {!noReserve && reservePrice && reservePrice > 0 && (
+        <div className="mt-1 text-xs text-amber-700">
+          Reserve price: {formatCurrency(reservePrice)}
         </div>
       )}
     </div>

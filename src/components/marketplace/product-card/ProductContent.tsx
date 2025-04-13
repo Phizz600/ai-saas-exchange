@@ -24,6 +24,7 @@ interface ProductContentProps {
   price_decrement?: number;
   price_decrement_interval?: string;
   no_reserve?: boolean;
+  listing_type?: string;
 }
 
 export function ProductContent({
@@ -45,17 +46,18 @@ export function ProductContent({
   reserve_price,
   price_decrement,
   price_decrement_interval,
-  no_reserve
+  no_reserve,
+  listing_type
 }: ProductContentProps) {
   // Ensure price values are either valid numbers or 0
   const displayPrice = (current_price || price || 0);
-  const isAuction = !!auction_end_time;
+  const isAuction = listing_type === 'dutch_auction' || !!auction_end_time;
   
   // Check if this is a no-reserve auction (reserve_price is undefined or 0 or no_reserve is true)
   const isNoReserve = no_reserve || !reserve_price || reserve_price === 0;
   
   return (
-    <div className="p-0 space-y-4">
+    <div className="p-0 space-y-0">
       {/* Add the AuctionTimer component for auction products */}
       {isAuction && (
         <AuctionTimer 
@@ -94,6 +96,11 @@ export function ProductContent({
         {/* Price in green - making the font size smaller and left aligned */}
         <div className="text-xl font-bold text-green-600 text-left">
           {formatCurrency(displayPrice)}
+          {isAuction && (
+            <span className="text-sm font-normal text-amber-600 ml-1">
+              (Current bid)
+            </span>
+          )}
         </div>
         
         {/* Show metrics for ALL products, whether NDA is required or not */}

@@ -9,18 +9,22 @@ export function useAuctionPricing(product: {
   auction_end_time?: string;
   starting_price?: number;
   current_price?: number;
-  reserve_price?: number; // Changed from min_price to reserve_price
+  reserve_price?: number;
   price_decrement?: number;
   price_decrement_interval?: string;
   created_at: string;
-  no_reserve?: boolean; // Added no_reserve field
+  no_reserve?: boolean;
+  listing_type?: string;
 }) {
   const [timeLeft, setTimeLeft] = useState<string>("");
   const [currentPrice, setCurrentPrice] = useState<number | null>(product.current_price || null);
   const [isAuctionEnded, setIsAuctionEnded] = useState(false);
   
   useEffect(() => {
-    if (!product.auction_end_time) return;
+    // Use listing_type as the primary way to check if this is an auction
+    const isAuction = product.listing_type === 'dutch_auction' || !!product.auction_end_time;
+    
+    if (!isAuction || !product.auction_end_time) return;
 
     const calculateTimeLeft = () => {
       const now = new Date().getTime();
@@ -87,6 +91,7 @@ export function useAuctionPricing(product: {
     product.price_decrement_interval,
     product.created_at,
     product.no_reserve,
+    product.listing_type,
     isAuctionEnded
   ]);
 
