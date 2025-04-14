@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;600;700&display=swap');
 
 @tailwind base;
@@ -93,3 +94,26 @@
   font-weight: 700;
   font-style: normal;
 }
+
+.exo-2-heading {
+  font-family: "Exo 2", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+}
+
+/* Add animation utilities for particle effects */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Glassmorphism utilities */
+.glass {
+  @apply backdrop-blur-lg bg-white/10 border border-white/20 rounded-xl shadow-xl;
+}
+
