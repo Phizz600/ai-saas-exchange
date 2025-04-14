@@ -141,3 +141,96 @@ function calculateAuctionEndTime(duration: string): string {
   
   return now.toISOString();
 }
+
+// Helper function to handle product update
+export const handleProductUpdate = async (
+  productId: string,
+  data: Partial<ListProductFormData>,
+  setIsSubmitting: (loading: boolean) => void
+): Promise<boolean> => {
+  try {
+    console.log("Starting product update process", { productId, data });
+    setIsSubmitting(true);
+
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      console.error("User not authenticated");
+      return false;
+    }
+
+    // Prepare the product data for update
+    const productData: Record<string, any> = {};
+    
+    // Map form fields to database fields
+    if (data.title) productData.title = data.title;
+    if (data.description) productData.description = data.description;
+    if (data.price !== undefined) productData.price = data.price;
+    if (data.category) productData.category = data.category;
+    if (data.stage) productData.stage = data.stage;
+    if (data.industry) productData.industry = data.industry;
+    if (data.monthlyRevenue !== undefined) productData.monthly_revenue = data.monthlyRevenue;
+    if (data.monthlyTraffic) productData.monthly_traffic = data.monthlyTraffic;
+    if (data.activeUsers) productData.active_users = data.activeUsers;
+    if (data.grossProfitMargin !== undefined) productData.gross_profit_margin = data.grossProfitMargin;
+    if (data.techStack) productData.tech_stack = data.techStack;
+    if (data.techStackOther) productData.tech_stack_other = data.techStackOther;
+    if (data.teamSize) productData.team_size = data.teamSize;
+    if (data.hasPatents !== undefined) productData.has_patents = data.hasPatents;
+    if (data.competitors) productData.competitors = data.competitors;
+    if (data.demoUrl) productData.demo_url = data.demoUrl;
+    if (data.specialNotes) productData.special_notes = data.specialNotes;
+    if (data.productLink) productData.product_link = data.productLink;
+    
+    // Update the product
+    const { error: updateError } = await supabase
+      .from('products')
+      .update(productData)
+      .eq('id', productId)
+      .eq('user_id', user.id); // Ensure the user owns this product
+
+    if (updateError) {
+      console.error("Error updating product:", updateError);
+      return false;
+    }
+
+    // If an image was selected, upload it
+    if (data.image) {
+      const fileName = `product-${productId}-${Date.now()}.${data.image.name.split('.').pop()}`;
+      
+      const { error: uploadError } = await supabase
+        .storage
+        .from('product_images')
+        .upload(fileName, data.image);
+
+      if (uploadError) {
+        console.error("Error uploading image:", uploadError);
+        return true; // Product updated but image upload failed
+      }
+
+      // Get the public URL for the uploaded image
+      const { data: { publicUrl } } = supabase
+        .storage
+        .from('product_images')
+        .getPublicUrl(fileName);
+
+      // Update the product with the image URL
+      const { error: imageUpdateError } = await supabase
+        .from('products')
+        .update({ image_url: publicUrl })
+        .eq('id', productId);
+
+      if (imageUpdateError) {
+        console.error("Error updating product with image URL:", imageUpdateError);
+      }
+    }
+
+    console.log("Product successfully updated with ID:", productId);
+    return true;
+  } catch (error) {
+    console.error("Unexpected error in product update:", error);
+    logError("handleProductUpdate", error as Error, { productId, data });
+    return false;
+  } finally {
+    setIsSubmitting(false);
+  }
+};
