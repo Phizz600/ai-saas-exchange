@@ -1,22 +1,21 @@
+
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import AnimatedGradientBackground from "@/components/ui/AnimatedGradientBackground";
 import { motion } from "framer-motion";
 import { Shield, ShieldCheck, FileText, HelpCircle } from "lucide-react";
+
 export const Policies = () => {
   return <AnimatedGradientBackground>
       <Navbar />
-      <div className="container mx-auto px-4 py-16 mt-24">
-        <motion.div initial={{
-        opacity: 0,
-        y: 20
-      }} animate={{
-        opacity: 1,
-        y: 0
-      }} transition={{
-        duration: 0.5
-      }} className="max-w-5xl mx-auto glass rounded-xl p-8 shadow-xl backdrop-blur-lg bg-white/10 border border-white/20 py-[38px] my-[42px]">
-          <h1 className="exo-2-heading text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-blue-200 mb-12 text-center">
+      <div className="container mx-auto px-4 py-8 mt-16">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }} 
+          animate={{ opacity: 1, y: 0 }} 
+          transition={{ duration: 0.5 }} 
+          className="max-w-5xl mx-auto glass rounded-xl p-8 shadow-xl backdrop-blur-lg bg-white/10 border border-white/20"
+        >
+          <h1 className="exo-2-heading text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-blue-200 mb-8 text-center">
             Platform Policies
           </h1>
           
