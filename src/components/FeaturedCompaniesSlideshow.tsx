@@ -26,12 +26,7 @@ const featuredCompanies = [{
 }];
 export const FeaturedCompaniesSlideshow = () => {
   return <div className="mb-8">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold text-gray-900 exo-2-heading">Featured Companies</h2>
-        <Link to="/marketplace" className="text-primary text-sm font-medium hover:underline">
-          View all
-        </Link>
-      </div>
+      
       
       
     </div>;
