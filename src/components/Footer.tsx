@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Mail, Linkedin, Youtube } from "lucide-react";
+import { Mail, Linkedin, Youtube, Instagram } from "lucide-react";
 
 export const Footer = () => {
   const [email, setEmail] = useState("");
@@ -123,8 +123,9 @@ export const Footer = () => {
                   href="https://www.instagram.com/aiexchange.club/?igsh=MWt0bTg1eG5iZzM1Mw%3D%3D&utm_source=qr#" 
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  className="text-white/80 hover:text-white"
+                  className="text-white/80 hover:text-white flex items-center justify-center md:justify-start"
                 >
+                  <Instagram className="h-4 w-4 mr-2" />
                   Instagram
                 </a>
               </li>
