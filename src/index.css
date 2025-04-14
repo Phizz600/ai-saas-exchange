@@ -117,3 +117,43 @@
   @apply backdrop-blur-lg bg-white/10 border border-white/20 rounded-xl shadow-xl;
 }
 
+/* Define brand colors for gradients */
+.accent {
+  color: #D946EE;
+}
+
+.accent2 {
+  color: #8B5CF6;
+}
+
+.accent3 {
+  color: #0EA4E9;
+}
+
+/* Custom form styling for the list product page */
+.list-product-form input,
+.list-product-form textarea,
+.list-product-form select {
+  @apply bg-white/10 backdrop-blur-md border border-white/20 text-white placeholder:text-white/50;
+}
+
+.list-product-form .form-label {
+  @apply text-white/90;
+}
+
+.list-product-form .radix-select-content {
+  @apply bg-white/10 backdrop-blur-lg border border-white/20 text-white;
+}
+
+.list-product-form .gradient-button {
+  @apply bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 text-white;
+}
+
+/* Multi-step form styling */
+.step-indicator {
+  @apply bg-white/20;
+}
+
+.step-indicator.active {
+  @apply bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9];
+}

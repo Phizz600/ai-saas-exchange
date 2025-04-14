@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import AnimatedGradientBackground from "@/components/ui/AnimatedGradientBackground";
+import { motion } from "framer-motion";
 
 export const ListProduct = () => {
   const [helpDialogOpen, setHelpDialogOpen] = useState(false);
@@ -60,38 +62,51 @@ export const ListProduct = () => {
   }, []);
   
   console.log('ListProduct page rendered');
-  return <div className="min-h-screen bg-gradient-to-br from-[#9b87f5] via-[#D946EF] to-[#0EA5E9]">
+  
+  return (
+    <AnimatedGradientBackground>
       {/* Promotional Banner */}
       <div className="w-full bg-black text-white py-3 text-center text-sm sm:text-base font-medium px-4">
         🚀 Early Bird Special: $10 Listing Fee (90% Off)! Lock in $10 for Life - Fee Jumps to $100 After Launch
       </div>
       
       <div className="container mx-auto px-4 py-8">
-        <div className="max-w-3xl mx-auto space-y-6 bg-white/90 rounded-xl shadow-xl p-8 backdrop-blur-sm">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="max-w-3xl mx-auto space-y-6 glass rounded-xl shadow-xl p-8 backdrop-blur-lg bg-white/10 border border-white/20"
+        >
           <div className="flex flex-col items-center space-y-4">
             <Link to="/">
-              <img src="/lovable-uploads/f74b20e6-6798-4aeb-badd-2da6c2dce40b.png" alt="AI Exchange Logo" className="w-20 h-20 object-contain animate-float" />
+              <motion.img 
+                src="/lovable-uploads/f74b20e6-6798-4aeb-badd-2da6c2dce40b.png" 
+                alt="AI Exchange Logo" 
+                className="w-20 h-20 object-contain" 
+                animate={{ y: [0, -10, 0] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              />
             </Link>
-            <h1 className="exo-2-heading font-bold bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] bg-clip-text text-stone-950 text-2xl">
+            <h1 className="exo-2-heading font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-blue-200 text-2xl">
               List Your AI Product
             </h1>
-            <p className="text-gray-600 text-center max-w-xl">
+            <p className="text-white/80 text-center max-w-xl">
               Complete this form with detailed and accurate information to showcase your product's value and increase buyer interest.
             </p>
             
             {isLoading ? (
-              <div className="w-full p-4 bg-gray-100 border border-gray-200 rounded-md">
+              <div className="w-full p-4 bg-white/5 backdrop-blur-md border border-white/10 rounded-md">
                 <div className="flex items-center space-x-2">
-                  <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
-                  <p className="text-gray-600">Checking authentication status...</p>
+                  <div className="w-4 h-4 border-2 border-blue-300 border-t-transparent rounded-full animate-spin"></div>
+                  <p className="text-white/80">Checking authentication status...</p>
                 </div>
               </div>
             ) : isAuthenticated === false ? (
-              <div className="w-full p-4 bg-amber-50 border border-amber-200 rounded-md text-amber-800">
+              <div className="w-full p-4 bg-amber-900/20 backdrop-blur-md border border-amber-500/20 rounded-md text-amber-200">
                 <p className="font-medium">You need to be signed in to list a product</p>
                 <Button 
                   variant="outline" 
-                  className="mt-2" 
+                  className="mt-2 bg-white/10 border-white/20 text-white hover:bg-white/20 transition-colors" 
                   onClick={() => window.location.href = "/auth?redirect=/list-product"}
                 >
                   Sign In / Register
@@ -100,22 +115,24 @@ export const ListProduct = () => {
             ) : null}
           </div>
           <ListProductForm />
-        </div>
+        </motion.div>
       </div>
 
       {/* Help Button */}
-      <button 
-        className="fixed bottom-6 right-6 bg-white/90 p-3 rounded-full shadow-lg hover:bg-white transition-colors"
+      <motion.button 
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        className="fixed bottom-6 right-6 bg-white/20 backdrop-blur-md p-3 rounded-full shadow-lg hover:bg-white/30 transition-colors border border-white/20 z-20"
         onClick={() => setHelpDialogOpen(true)}
       >
-        <HelpCircle className="h-6 w-6 text-[#8B5CF6]" />
-      </button>
+        <HelpCircle className="h-6 w-6 text-white" />
+      </motion.button>
 
       {/* Help Dialog */}
       <Dialog open={helpDialogOpen} onOpenChange={setHelpDialogOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogTitle>Need Help?</DialogTitle>
-          <DialogDescription>
+        <DialogContent className="sm:max-w-md glass backdrop-blur-lg bg-white/10 border border-white/20 text-white">
+          <DialogTitle className="exo-2-heading text-transparent bg-clip-text bg-gradient-to-r from-white to-blue-200">Need Help?</DialogTitle>
+          <DialogDescription className="text-white/80">
             <p className="mb-2">Having trouble with your listing? Here are some quick tips:</p>
             <ul className="list-disc pl-5 space-y-1 mb-4">
               <li>Make sure your product image is under 5MB and in JPG, PNG, or WebP format</li>
@@ -126,10 +143,17 @@ export const ListProduct = () => {
             <p>Still need help? Book a free call and we'll walk you through the entire process.</p>
           </DialogDescription>
           <DialogFooter className="flex justify-between sm:justify-between">
-            <Button variant="outline" onClick={() => setHelpDialogOpen(false)}>
+            <Button 
+              variant="outline" 
+              onClick={() => setHelpDialogOpen(false)}
+              className="bg-white/10 border-white/20 text-white hover:bg-white/20 transition-colors"
+            >
               Close
             </Button>
-            <Button asChild>
+            <Button 
+              className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 text-white"
+              asChild
+            >
               <a 
                 href="https://calendly.com/aiexchangeclub/listing-walkthrough" 
                 target="_blank"
@@ -141,5 +165,6 @@ export const ListProduct = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>;
+    </AnimatedGradientBackground>
+  );
 };
