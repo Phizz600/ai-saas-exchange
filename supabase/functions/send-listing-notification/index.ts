@@ -12,10 +12,10 @@ const corsHeaders = {
 
 interface ListingEmailRequest {
   type: 'submitted' | 'approved' | 'rejected';
-  email: string;
+  userEmail: string;
   productTitle: string;
   firstName?: string;
-  adminFeedback?: string;
+  feedback?: string;
   productId?: string;
 }
 
@@ -26,9 +26,9 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { type, email, productTitle, firstName = "there", adminFeedback = "", productId = "" }: ListingEmailRequest = await req.json();
+    const { type, userEmail, productTitle, firstName = "there", feedback = "", productId = "" }: ListingEmailRequest = await req.json();
     
-    console.log(`Processing ${type} email for product: ${productTitle} to: ${email}`);
+    console.log(`Processing ${type} email for product: ${productTitle} to: ${userEmail}`);
     
     let subject = "";
     let htmlContent = "";
@@ -117,7 +117,7 @@ const handler = async (req: Request): Promise<Response> => {
             
             <div style="${sectionStyle}">
               <p style="${paragraphStyle}"><strong>Feedback from our review team:</strong></p>
-              <p style="${paragraphStyle}">${adminFeedback || "Please review our listing guidelines and update your submission accordingly."}</p>
+              <p style="${paragraphStyle}">${feedback || "Please review our listing guidelines and update your submission accordingly."}</p>
             </div>
             
             <p style="${paragraphStyle}">This is quite common and easy to fix! You can update your listing through your dashboard and resubmit it for review.</p>
@@ -132,11 +132,11 @@ const handler = async (req: Request): Promise<Response> => {
         break;
     }
     
-    console.log(`Sending ${type} email to ${email}`);
+    console.log(`Sending ${type} email to ${userEmail}`);
     
     const emailResponse = await resend.emails.send({
       from: "AI Exchange <notifications@aiexchange.pro>",
-      to: [email],
+      to: [userEmail],
       subject: subject,
       html: htmlContent,
     });

@@ -2,6 +2,7 @@
 import { ListProductFormData } from "../types";
 import { supabase } from "@/integrations/supabase/client";
 import { logError } from "@/integrations/supabase/products";
+import { sendListingNotification } from "@/integrations/supabase/functions";
 
 // Helper function to handle product submission
 export const handleProductSubmission = async (
@@ -102,6 +103,36 @@ export const handleProductSubmission = async (
       if (updateError) {
         console.error("Error updating product with image URL:", updateError);
       }
+    }
+
+    // Send confirmation email to the user
+    try {
+      const { data: userData } = await supabase.auth.getUser();
+      if (userData.user) {
+        // Get user profile to get first name
+        const { data: profileData } = await supabase
+          .from('profiles')
+          .select('first_name')
+          .eq('id', userData.user.id)
+          .single();
+          
+        const firstName = profileData?.first_name || 'there';
+        
+        await sendListingNotification(
+          'submitted',
+          userData.user.email!,
+          data.title,
+          firstName,
+          undefined,
+          insertedProduct.id
+        );
+        
+        console.log("Submission confirmation email sent successfully");
+      }
+    } catch (emailError) {
+      // Log but don't fail if email sending fails
+      console.error("Error sending submission confirmation email:", emailError);
+      logError("emailNotification", emailError as Error, { productId: insertedProduct.id });
     }
 
     console.log("Product successfully submitted with ID:", insertedProduct.id);
