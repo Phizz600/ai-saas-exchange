@@ -1,568 +1,143 @@
 
-import { supabase, storage, PRODUCT_IMAGES_BUCKET } from "@/integrations/supabase/client";
 import { ListProductFormData } from "../types";
-import { generateUniqueId } from "@/lib/utils";
-import { sendListingNotification } from "@/integrations/supabase/functions";
-import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { logError } from "@/integrations/supabase/products";
 
-/**
- * Submits the product form data to Supabase.
- * @param formData The form data to submit
- * @param user_id The ID of the user submitting the form
- * @param router The router object for navigation
- * @param storage The Supabase storage client
- * @param setIsSubmitting Function to set the submitting state
- * @param toast Function to display toast notifications
- * @param resetForm Function to reset the form
- * @param draftId (Optional) The ID of the draft to delete after successful submission
- * @returns True if the submission was successful, false otherwise
- */
-export const submitProductForm = async (
-  formData: ListProductFormData,
-  user_id: string,
-  router: any,
-  storage: any,
-  setIsSubmitting: (isSubmitting: boolean) => void,
-  toast: any,
-  resetForm: () => void,
-  draftId?: string
-): Promise<boolean> => {
-  if (!formData) {
-    console.error("Form data is undefined");
-    return false;
-  }
-
-  try {
-    setIsSubmitting(true);
-
-    let imageUrl = null;
-    if (formData.image) {
-      const fileExt = formData.image.name.split(".").pop();
-      const imageName = `${generateUniqueId()}.${fileExt}`;
-      const filePath = `products/${imageName}`;
-
-      // Add console.log for debugging image upload attempts
-      console.log("Attempting to upload image to bucket:", PRODUCT_IMAGES_BUCKET);
-
-      const { error: uploadError } = await storage
-        .from(PRODUCT_IMAGES_BUCKET)
-        .upload(filePath, formData.image, {
-          cacheControl: "3600",
-          upsert: false,
-        });
-
-      if (uploadError) {
-        console.error("Image upload error", uploadError);
-        toast({
-          title: "Upload Error",
-          description: "Failed to upload image. Please try again.",
-          variant: "destructive",
-        });
-        setIsSubmitting(false);
-        return false;
-      }
-
-      // Use the correct way to build the image URL for Vite
-      const supabaseUrl = import.meta.env.NEXT_PUBLIC_SUPABASE_URL || 'https://pxadbwlidclnfoodjtpd.supabase.co';
-      imageUrl = `${supabaseUrl}/storage/v1/object/public/${PRODUCT_IMAGES_BUCKET}/${filePath}`;
-    }
-
-    // Prepare the product data for submission
-    const productData = {
-      title: formData.title,
-      description: formData.description,
-      price: formData.price ? Math.max(1, Number(formData.price)) : null, // Ensure minimum price of 1
-      category: formData.category,
-      category_other: formData.categoryOther,
-      stage: formData.stage,
-      industry: formData.industry,
-      // Remove industry_other as it doesn't exist in DB schema
-      monthly_revenue: Number(formData.monthlyRevenue || 0),
-      monthly_traffic: Number(formData.monthlyTraffic || 0),
-      active_users: formData.activeUsers,
-      gross_profit_margin: Number(formData.grossProfitMargin || 0),
-      image_url: imageUrl,
-      seller_id: user_id,
-      tech_stack: formData.techStack ? [formData.techStack] : [],
-      tech_stack_other: formData.techStackOther,
-      team_size: formData.teamSize,
-      has_patents: formData.hasPatents || false,
-      competitors: formData.competitors,
-      demo_url: formData.demoUrl,
-      is_verified: formData.isVerified || false,
-      special_notes: formData.specialNotes,
-      status: "pending",
-      is_auction: formData.isAuction || false,
-      starting_price: formData.isAuction ? Math.max(1, Number(formData.startingPrice || 1)) : null,
-      reserve_price: formData.isAuction ? Math.max(1, Number(formData.reservePrice || 1)) : null, // Changed from min_price to reserve_price
-      price_decrement: formData.isAuction ? Math.max(1, Number(formData.priceDecrement || 1)) : null,
-      price_decrement_interval: formData.priceDecrementInterval,
-      auction_end_time: formData.isAuction && formData.auctionEndTime ? formData.auctionEndTime.toISOString() : null,
-      auction_status: formData.isAuction ? "pending" : null,
-      business_type: formData.businessType,
-      deliverables: formData.deliverables || [],
-      monthly_profit: Number(formData.monthlyProfit || 0),
-      monthly_churn_rate: Number(formData.monthlyChurnRate || 0),
-      customer_acquisition_cost: Number(formData.customerAcquisitionCost || 0),
-      monetization: formData.monetization,
-      monetization_other: formData.monetizationOther,
-      business_model: formData.businessModel,
-      investment_timeline: formData.investmentTimeline,
-      llm_type: formData.llmType,
-      llm_type_other: formData.llmTypeOther,
-      integrations_other: formData.integrations_other,
-      product_age: formData.productAge,
-      business_location: formData.businessLocation,
-      number_of_employees: formData.numberOfEmployees,
-      product_link: formData.productLink,
-      requires_nda: formData.requires_nda === true, // Ensure boolean value
-      nda_content: formData.nda_content,
-      no_reserve: formData.noReserve === true, // Add no_reserve field
-      monthly_expenses: formData.monthlyExpenses || [], // Add monthly expenses
-    };
-
-    // Submit the product data to Supabase
-    const { data, error } = await supabase
-      .from("products")
-      .insert([productData])
-      .select()
-
-    if (error) {
-      console.error("Supabase submission error", error);
-      toast({
-        title: "Submission Error",
-        description: "Failed to submit product. Please try again.",
-        variant: "destructive",
-      });
-      setIsSubmitting(false);
-      return false;
-    }
-
-    // If draftId is provided, delete the draft
-    if (draftId) {
-      const { error: deleteError } = await supabase
-        .from("product_drafts")
-        .delete()
-        .eq("id", draftId);
-
-      if (deleteError) {
-        console.error("Error deleting draft:", deleteError);
-        toast({
-          title: "Error Deleting Draft",
-          description: "Failed to delete the draft. Please try again.",
-          variant: "destructive",
-        });
-      }
-    }
-
-    toast({
-      title: "Success",
-      description: "Product submitted successfully!",
-    });
-    
-    // Send submission confirmation email
-    try {
-      // Get user details for personalized email
-      const { data: userData } = await supabase.auth.getUser();
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('first_name, full_name')
-        .eq('id', user_id)
-        .single();
-      
-      const userFirstName = profileData?.first_name || profileData?.full_name?.split(' ')[0] || '';
-      const userEmail = userData?.user?.email || '';
-      
-      if (userEmail) {
-        await sendListingNotification(
-          'submitted',
-          userEmail,
-          formData.title,
-          userFirstName
-        );
-      }
-    } catch (emailError) {
-      console.error("Error sending confirmation email:", emailError);
-      // Don't fail the submission if email fails
-    }
-    
-    resetForm();
-    router.push("/marketplace");
-    return true;
-  } catch (error: any) {
-    console.error("Form submission failed", error);
-    toast({
-      title: "Submission Error",
-      description: error.message || "Failed to submit product. Please try again.",
-      variant: "destructive",
-    });
-    return false;
-  } finally {
-    setIsSubmitting(false);
-  }
-};
-
-// Add handleProductSubmission function for the ListProductForm
+// Helper function to handle product submission
 export const handleProductSubmission = async (
   data: ListProductFormData,
-  setIsSubmitting: (isSubmitting: boolean) => void
-): Promise<{ success: boolean; productId?: string; error?: string }> => {
+  setIsSubmitting: (loading: boolean) => void
+): Promise<{
+  success: boolean;
+  productId?: string;
+  error?: string;
+}> => {
   try {
-    console.log("Starting product submission process...");
-    console.log("Form data summary:", { 
-      title: data.title,
-      description: data.description?.substring(0, 30) + "...",
-      category: data.category,
-      hasImage: !!data.image,
-      isAuction: data.isAuction,
-      reservePrice: data.reservePrice,
-      noReserve: data.noReserve
-    });
-    
-    setIsSubmitting(true);
-    
-    // Get the current user
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (authError) {
-      console.error("Authentication error:", authError);
-      return { success: false, error: "Authentication error: " + authError.message };
-    }
-    
+    console.log("Starting product submission process", data);
+
+    const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
-      console.error("Authentication failed: No user found");
-      return { success: false, error: "You must be signed in to list a product" };
+      return { success: false, error: "User not authenticated" };
     }
-    
-    console.log("Authenticated as:", user.email);
-    
-    let imageUrl = null;
-    // Add proper check for image existence before processing
-    if (data.image && data.image instanceof File) {
-      const fileExt = data.image.name.split(".").pop();
-      const imageName = `${generateUniqueId()}.${fileExt}`;
-      const filePath = `products/${imageName}`;
 
-      // Debug log for NDA settings
-      console.log("Form Data NDA settings:", {
-        requires_nda: data.requires_nda,
-        nda_content: data.nda_content?.substring(0, 30) + "..."
-      });
-
-      // Log the bucket name being used
-      console.log("Uploading to bucket:", PRODUCT_IMAGES_BUCKET);
-      console.log("Image details:", { 
-        name: data.image.name,
-        size: data.image.size,
-        type: data.image.type 
-      });
-
-      try {
-        const { error: uploadError, data: uploadData } = await storage
-          .from(PRODUCT_IMAGES_BUCKET)
-          .upload(filePath, data.image, {
-            cacheControl: "3600",
-            upsert: false,
-          });
-
-        if (uploadError) {
-          console.error("Image upload error", uploadError);
-          console.error("Upload error details:", JSON.stringify(uploadError));
-          
-          // Check for specific upload errors
-          if (uploadError.message.includes("storage_limit_exceeded")) {
-            return { success: false, error: "Storage limit exceeded. Please try a smaller image or contact support." };
-          } else if (uploadError.message.includes("invalid_format")) {
-            return { success: false, error: "Invalid image format. Please use JPG, PNG, or WebP format." };
-          } else if (uploadError.message.includes("size_exceeded")) {
-            return { success: false, error: "Image size exceeded. Maximum size is 5MB." };
-          }
-          
-          return { success: false, error: "Failed to upload image: " + uploadError.message };
-        }
-
-        console.log("Image uploaded successfully to path:", filePath);
-
-        // Get the public URL for the uploaded image
-        const { data: publicUrlData } = await storage
-          .from(PRODUCT_IMAGES_BUCKET)
-          .getPublicUrl(filePath);
-        
-        imageUrl = publicUrlData.publicUrl;
-        console.log("Generated image URL:", imageUrl);
-      } catch (uploadException) {
-        console.error("Exception during image upload:", uploadException);
-        return { success: false, error: "Image upload failed: " + (uploadException instanceof Error ? uploadException.message : String(uploadException)) };
-      }
-    } else {
-      // Log missing image for debugging
-      console.warn("No image provided or image is not a valid File object");
-      console.warn("Image value type:", typeof data.image);
-      return { success: false, error: "Please upload a product image." };
-    }
-    
-    // Calculate price based on auction or fixed price
-    let finalPrice = data.isAuction ? Math.max(1, Number(data.startingPrice)) : Math.max(1, Number(data.price));
-    console.log("Calculated final price:", finalPrice);
-    
-    // Set current_price initially equal to price or starting_price
-    const currentPrice = data.isAuction ? Math.max(1, Number(data.startingPrice)) : Math.max(1, Number(data.price));
-    
-    // Ensure data.integrations is not undefined before spreading it
-    const integrations = data.integrations || [];
-
-    // Double-check noReserve flag is set correctly based on reservePrice
-    const noReserve = data.isAuction && (data.reservePrice === 0 || data.noReserve === true);
-    console.log("Final noReserve value:", noReserve);
-    
-    // Prepare product data with fallback - try to use both column names to handle schema cache issues
-    const productData: any = {
+    // Prepare the product data
+    const productData = {
       title: data.title,
       description: data.description,
-      price: Math.max(1, Number(data.price || 1)), // Ensure minimum price of 1
-      category: data.category,
-      category_other: data.categoryOther,
-      stage: data.stage,
-      industry: data.industry,
-      industry_other: data.industryOther,
-      monthly_revenue: Number(data.monthlyRevenue || 0),
-      monthly_traffic: data.monthlyTraffic ? Number(data.monthlyTraffic) : 0,
-      active_users: data.activeUsers,
-      gross_profit_margin: Number(data.grossProfitMargin || 0),
-      image_url: imageUrl,
-      seller_id: user.id,
-      tech_stack: data.techStack ? [data.techStack] : [],
-      tech_stack_other: data.techStackOther,
-      team_size: data.teamSize,
-      has_patents: data.hasPatents || false,
-      competitors: data.competitors,
-      demo_url: data.demoUrl,
-      is_verified: data.isVerified || false,
-      special_notes: data.specialNotes,
-      status: "pending",
-      // Handle auction specific fields - use the actual database column names
-      auction_status: data.isAuction ? "pending" : null,
-      starting_price: data.isAuction ? Math.max(1, Number(data.startingPrice || 1)) : null,
-      current_price: currentPrice, // Add current price field
-      business_type: data.businessType,
-      deliverables: data.deliverables || [],
-      monthly_profit: Number(data.monthlyProfit || 0),
-      monthly_churn_rate: Number(data.monthlyChurnRate || 0),
-      customer_acquisition_cost: Number(data.customerAcquisitionCost || 0),
-      monetization: data.monetization,
-      monetization_other: data.monetizationOther,
-      business_model: data.businessModel,
-      investment_timeline: data.investmentTimeline,
-      llm_type: data.llmType,
-      llm_type_other: data.llmTypeOther,
-      integrations: integrations,
-      integrations_other: data.integrations_other,
-      product_age: data.productAge,
-      business_location: data.businessLocation,
-      number_of_employees: data.numberOfEmployees,
-      product_link: data.productLink,
-      requires_nda: data.requires_nda === true, // Ensure boolean value
-      nda_content: data.nda_content || null,
-      no_reserve: noReserve, // Use calculated noReserve value
-      monthly_expenses: data.monthlyExpenses || [], // Add monthly expenses
-      // Add verification fields
-      is_revenue_verified: data.isRevenueVerified || false,
-      is_code_audited: data.isCodeAudited || false,
-      is_traffic_verified: data.isTrafficVerified || false,
-    };
-    
-    // IMPORTANT: Add support for both column names to handle schema cache issues
-    // Try to use reserve_price, but also set min_price as fallback
-    if (data.isAuction) {
-      productData.reserve_price = Math.max(0, Number(data.reservePrice || 0));
-      productData.min_price = Math.max(0, Number(data.reservePrice || 0)); // Set min_price as fallback for compatibility
-    }
-    
-    // Additional debug logs
-    console.log("Final product data - Auction fields:", {
-      price: productData.price,
-      starting_price: productData.starting_price,
-      reserve_price: productData.reserve_price,
-      min_price: productData.min_price,
-      current_price: productData.current_price,
-      no_reserve: productData.no_reserve
-    });
-    
-    // Submit the product to the database
-    console.log("Submitting product to database...");
-    try {
-      const { data: newProduct, error } = await supabase
-        .from("products")
-        .insert([productData])
-        .select();
-        
-      if (error) {
-        console.error("Product submission error:", error);
-        console.error("Error details:", JSON.stringify(error));
-        
-        // Check for specific error types
-        if (error.code === '23505') {
-          return { success: false, error: "A product with this title already exists. Please use a different title." };
-        } else if (error.code === '23502') {
-          return { success: false, error: "Missing required fields: " + error.details };
-        } else if (error.code === '23503') {
-          return { success: false, error: "Invalid reference: " + error.details };
-        } else if (error.code.startsWith('22')) {
-          return { success: false, error: "Invalid data format: " + error.message };
-        } else if (error.code === 'PGRST116') {
-          return { success: false, error: "Permission denied. You may not have rights to create products." };
-        }
-        
-        // Special error handling for schema cache issues
-        if (error.message && error.message.includes("reserve_price")) {
-          console.log("Detected schema cache issue with reserve_price column, trying fallback approach...");
-          
-          // Try using only min_price as a fallback
-          delete productData.reserve_price;
-          
-          const { data: fallbackProduct, error: fallbackError } = await supabase
-            .from("products")
-            .insert([productData])
-            .select();
-            
-          if (fallbackError) {
-            console.error("Fallback submission also failed:", fallbackError);
-            return { success: false, error: "Failed to submit product even with fallback approach. Please try again later or contact support." };
-          }
-          
-          console.log("Product submitted successfully using fallback approach:", fallbackProduct?.[0]?.id);
-          return { 
-            success: true, 
-            productId: fallbackProduct?.[0]?.id
-          };
-        }
-        
-        return { success: false, error: "Failed to submit product: " + error.message };
-      }
-      
-      console.log("Product submitted successfully:", newProduct?.[0]?.id);
-      
-      // Send confirmation email
-      try {
-        // Get user details for personalized email
-        const { data: userData } = await supabase.auth.getUser();
-        const { data: profileData } = await supabase
-          .from('profiles')
-          .select('first_name, full_name')
-          .eq('id', user.id)
-          .single();
-        
-        const userFirstName = profileData?.first_name || profileData?.full_name?.split(' ')[0] || '';
-        const userEmail = userData?.user?.email || '';
-        
-        if (userEmail) {
-          console.log("Sending confirmation email to:", userEmail);
-          await sendListingNotification(
-            'submitted',
-            userEmail,
-            data.title,
-            userFirstName
-          );
-          console.log("Confirmation email sent successfully");
-        }
-      } catch (emailError) {
-        console.error("Error sending confirmation email:", emailError);
-        console.error("Email error details:", JSON.stringify(emailError));
-        // Don't fail the submission if email fails
-      }
-      
-      return { 
-        success: true, 
-        productId: newProduct?.[0]?.id
-      };
-    } catch (dbError) {
-      console.error("Database operation error:", dbError);
-      return { success: false, error: "Database error: " + (dbError instanceof Error ? dbError.message : String(dbError)) };
-    }
-    
-  } catch (error: any) {
-    console.error("Product submission error:", error);
-    console.error("Submission error stack:", error.stack);
-    return { 
-      success: false, 
-      error: error.message || "An unexpected error occurred. Please try again."
-    };
-  } finally {
-    setIsSubmitting(false);
-  }
-};
-
-// Add handleProductUpdate function for the EditProductDialog
-export const handleProductUpdate = async (
-  productId: string, 
-  data: Partial<ListProductFormData>,
-  setIsSubmitting: (isSubmitting: boolean) => void
-): Promise<boolean> => {
-  try {
-    setIsSubmitting(true);
-    
-    // Prepare the update object
-    const updateData: any = {
-      title: data.title,
-      description: data.description,
-      price: data.price ? Math.max(1, Number(data.price)) : undefined, // Ensure minimum price of 1
+      price: data.isAuction ? null : data.price, // Only set price for fixed-price listings
       category: data.category,
       stage: data.stage,
       industry: data.industry,
-      industry_other: data.industryOther,
-      monthly_revenue: data.monthlyRevenue ? Number(data.monthlyRevenue) : undefined,
-      monthly_profit: data.monthlyProfit ? Number(data.monthlyProfit) : undefined,
-      gross_profit_margin: data.grossProfitMargin ? Number(data.grossProfitMargin) : undefined,
-      monthly_churn_rate: data.monthlyChurnRate ? Number(data.monthlyChurnRate) : undefined,
-      monthly_traffic: data.monthlyTraffic ? Number(data.monthlyTraffic) : undefined,
+      monthly_revenue: data.monthlyRevenue,
+      monthly_traffic: data.monthlyTraffic,
       active_users: data.activeUsers,
-      tech_stack: data.techStack ? [data.techStack] : undefined,
+      profit_margin: data.grossProfitMargin,
+      tech_stack: data.techStack,
       tech_stack_other: data.techStackOther,
       team_size: data.teamSize,
       has_patents: data.hasPatents,
       competitors: data.competitors,
       demo_url: data.demoUrl,
-      product_age: data.productAge,
-      business_location: data.businessLocation,
+      is_verified: data.isVerified,
       special_notes: data.specialNotes,
-      number_of_employees: data.numberOfEmployees,
-      customer_acquisition_cost: data.customerAcquisitionCost ? Number(data.customerAcquisitionCost) : undefined,
-      monetization: data.monetization !== 'other' ? data.monetization : undefined,
-      monetization_other: data.monetization === 'other' ? data.monetizationOther : undefined,
-      updated_at: new Date().toISOString(),
-      // Ensure NDA fields are properly included
-      requires_nda: data.requires_nda !== undefined ? data.requires_nda === true : undefined,
-      nda_content: data.nda_content,
-      monthly_expenses: data.monthlyExpenses,
+      listing_type: data.isAuction ? 'dutch_auction' : 'fixed_price',
+      // Auction fields
+      auction_end_time: data.isAuction 
+        ? calculateAuctionEndTime(data.auctionDuration)
+        : null,
+      starting_price: data.isAuction ? data.startingPrice : null,
+      reserve_price: data.isAuction ? data.reservePrice : null,
+      price_decrement: data.isAuction ? data.priceDecrement : null,
+      price_decrement_interval: data.isAuction ? data.priceDecrementInterval : null,
+      no_reserve: data.isAuction ? data.noReserve : null,
+      // Status and user fields
+      status: "pending",
+      user_id: user.id,
+      payment_status: "pending",
+      product_link: data.productLink,
     };
-    
-    // Log NDA fields for debugging
-    console.log("Product update - NDA fields:", {
-      requires_nda: updateData.requires_nda,
-      nda_content: updateData.nda_content
-    });
-    
-    // Filter out undefined values
-    Object.keys(updateData).forEach(key => {
-      if (updateData[key] === undefined) {
-        delete updateData[key];
-      }
-    });
-    
-    const { error } = await supabase
+
+    // Insert the product data
+    const { data: insertedProduct, error: insertError } = await supabase
       .from('products')
-      .update(updateData)
-      .eq('id', productId);
-      
-    if (error) {
-      console.error("Product update error:", error);
-      return false;
+      .insert(productData)
+      .select()
+      .single();
+
+    if (insertError || !insertedProduct) {
+      console.error("Error inserting product:", insertError);
+      return { success: false, error: insertError?.message || "Error creating product" };
     }
-    
-    return true;
+
+    // If an image was selected, upload it
+    if (data.image) {
+      const fileName = `product-${insertedProduct.id}-${Date.now()}.${data.image.name.split('.').pop()}`;
+      
+      const { error: uploadError } = await supabase
+        .storage
+        .from('product_images')
+        .upload(fileName, data.image);
+
+      if (uploadError) {
+        console.error("Error uploading image:", uploadError);
+        return { 
+          success: true, 
+          productId: insertedProduct.id,
+          error: "Product created but image upload failed"
+        };
+      }
+
+      // Get the public URL for the uploaded image
+      const { data: { publicUrl } } = supabase
+        .storage
+        .from('product_images')
+        .getPublicUrl(fileName);
+
+      // Update the product with the image URL
+      const { error: updateError } = await supabase
+        .from('products')
+        .update({ image_url: publicUrl })
+        .eq('id', insertedProduct.id);
+
+      if (updateError) {
+        console.error("Error updating product with image URL:", updateError);
+      }
+    }
+
+    console.log("Product successfully submitted with ID:", insertedProduct.id);
+    return { success: true, productId: insertedProduct.id };
   } catch (error) {
-    console.error("Error updating product:", error);
-    return false;
+    console.error("Unexpected error in product submission:", error);
+    logError("handleProductSubmission", error as Error, { data });
+    setIsSubmitting(false);
+    return { success: false, error: "An unexpected error occurred" };
   } finally {
     setIsSubmitting(false);
   }
 };
+
+// Helper function to calculate auction end time based on duration
+function calculateAuctionEndTime(duration: string): string {
+  const now = new Date();
+  
+  switch (duration) {
+    case '24hours':
+      now.setHours(now.getHours() + 24);
+      break;
+    case '3days':
+      now.setDate(now.getDate() + 3);
+      break;
+    case '7days':
+      now.setDate(now.getDate() + 7);
+      break;
+    case '14days':
+      now.setDate(now.getDate() + 14);
+      break;
+    case '30days':
+    default:
+      now.setDate(now.getDate() + 30);
+      break;
+  }
+  
+  return now.toISOString();
+}

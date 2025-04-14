@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -15,6 +16,7 @@ export const ListingThankYou = () => {
   const [isPaid, setIsPaid] = useState(false);
   const [productId, setProductId] = useState<string | null>(null);
   const [paymentNeeded, setPaymentNeeded] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState<string | null>(null);
 
   useEffect(() => {
     // Check for product ID in URL params first, then session storage as fallback
@@ -22,6 +24,13 @@ export const ListingThankYou = () => {
     const urlProductId = params.get('product_id');
     const paymentStatus = params.get('payment_status');
     const paymentNeededParam = params.get('payment_needed');
+    
+    console.log("URL parameters:", { 
+      urlProductId, 
+      paymentStatus, 
+      paymentNeededParam,
+      fullUrl: window.location.href
+    });
     
     // First try to get product ID from URL params
     if (urlProductId) {
@@ -33,17 +42,24 @@ export const ListingThankYou = () => {
       if (pendingProductId) {
         setProductId(pendingProductId);
         console.log("Found pending product ID in session storage:", pendingProductId);
+      } else {
+        console.log("No product ID found in URL or session storage");
+        // Still show the page even without a product ID
       }
     }
     
     // Check if redirected from payment success
     if (paymentStatus === 'success') {
       setIsPaid(true);
+      setLoadingMessage("Verifying payment status...");
       
       // If we have both payment success and a product ID, update the payment status
       const idToUpdate = urlProductId || sessionStorage.getItem('pendingProductId');
       if (idToUpdate) {
         updatePaymentStatus(idToUpdate);
+      } else {
+        console.log("Payment successful but no product ID found to update");
+        setLoadingMessage(null);
       }
     }
 
@@ -60,6 +76,7 @@ export const ListingThankYou = () => {
   const updatePaymentStatus = async (productId: string) => {
     setIsProcessing(true);
     try {
+      console.log("Updating payment status for product:", productId);
       const { error } = await supabase
         .from('products')
         .update({ payment_status: 'paid' })
@@ -81,6 +98,7 @@ export const ListingThankYou = () => {
       console.error("Error updating payment status:", error);
     } finally {
       setIsProcessing(false);
+      setLoadingMessage(null);
     }
   };
 
@@ -89,6 +107,7 @@ export const ListingThankYou = () => {
       // Use origin to ensure proper URL construction
       const currentHost = window.location.origin;
       const successUrl = `${currentHost}/listing-thank-you?payment_status=success&product_id=${productId}`;
+      console.log("Redirecting to payment page with success URL:", successUrl);
       window.location.href = `https://buy.stripe.com/9AQ3dz3lmf2yccE288?client_reference_id=${productId}&success_url=${encodeURIComponent(successUrl)}`;
     } else {
       toast({
@@ -122,6 +141,16 @@ export const ListingThankYou = () => {
               </p>
             </div>
             
+            {loadingMessage && (
+              <Alert className="w-full max-w-md">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500 mr-2"></div>
+                <AlertTitle>{loadingMessage}</AlertTitle>
+                <AlertDescription>
+                  Please wait while we process your information...
+                </AlertDescription>
+              </Alert>
+            )}
+            
             {isProcessing && (
               <Alert className="w-full max-w-md">
                 <CheckCircle className="h-5 w-5 text-blue-500 animate-pulse" />
@@ -132,7 +161,7 @@ export const ListingThankYou = () => {
               </Alert>
             )}
             
-            {(paymentNeeded || (!isPaid && !isProcessing)) && (
+            {(paymentNeeded || (!isPaid && !isProcessing && !loadingMessage)) && (
               <Alert variant="destructive" className="w-full max-w-md">
                 <AlertCircle className="h-5 w-5" />
                 <AlertTitle>Payment Required</AlertTitle>
@@ -150,7 +179,7 @@ export const ListingThankYou = () => {
               </Alert>
             )}
 
-            {isPaid && !isProcessing && (
+            {isPaid && !isProcessing && !loadingMessage && (
               <Alert className="w-full max-w-md bg-green-50 border-green-200">
                 <CheckCircle className="h-5 w-5 text-green-500" />
                 <AlertTitle>Payment Successful</AlertTitle>

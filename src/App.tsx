@@ -72,6 +72,7 @@ function App() {
                 </AuthGuard>
               } 
             />
+            {/* Use the SAME component for all possible URL structures of the thank you page */}
             <Route 
               path="/listing-thank-you" 
               element={
@@ -80,7 +81,6 @@ function App() {
                 </AuthGuard>
               } 
             />
-            {/* Make sure we also support the URL structure shown in the error */}
             <Route 
               path="listing-thank-you" 
               element={
