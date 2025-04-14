@@ -15,6 +15,7 @@ import { ComingSoon } from "@/pages/ComingSoon";
 import { ListingThankYou } from "@/pages/ListingThankYou";
 import { FeesPricing } from "@/pages/FeesPricing";
 import { Policies } from "@/pages/Policies";
+import { Terms } from "@/pages/Terms";
 import About from "@/pages/About";
 import Contact from "@/pages/Contact";
 import { ResolutionCenter } from "@/pages/ResolutionCenter";
@@ -50,6 +51,7 @@ function App() {
             <Route path="/coming-soon" element={<ComingSoon />} />
             <Route path="/fees-pricing" element={<FeesPricing />} />
             <Route path="/policies" element={<Policies />} />
+            <Route path="/terms" element={<Terms />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/faq" element={<FAQ />} />

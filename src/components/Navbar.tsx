@@ -1,22 +1,32 @@
+
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut, Menu, UserPlus } from "lucide-react";
+import { ChevronDown, FileText, LogOut, Menu, UserPlus } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTrigger } from "@/components/ui/sheet";
 import { useToast } from "@/hooks/use-toast";
 import { getUnreadMessagesCount } from "@/integrations/supabase/messages";
 import { Badge } from "@/components/ui/badge";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
 export const Navbar = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const location = useLocation();
   const navigate = useNavigate();
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
+  
   const isProfilePage = location.pathname === '/profile';
   const isHomePage = location.pathname === '/';
+  const isPolicyPage = location.pathname === '/policies' || location.pathname === '/terms' || 
+                      location.pathname === '/nda-policy' || location.pathname === '/fees-pricing';
+  
   useEffect(() => {
     const checkAuth = async () => {
       const {
@@ -56,6 +66,7 @@ export const Navbar = () => {
       supabase.removeChannel(channel);
     };
   }, [isAuthenticated]);
+
   const handleNavigationClick = (e: React.MouseEvent, path: string) => {
     e.preventDefault();
     if (!isAuthenticated) {
@@ -66,6 +77,7 @@ export const Navbar = () => {
       navigate(path);
     }
   };
+
   const handleSignOut = async () => {
     try {
       await supabase.auth.signOut();
@@ -83,6 +95,7 @@ export const Navbar = () => {
       });
     }
   };
+
   const navigationItems = [{
     title: "Buy an AI Business",
     href: isAuthenticated ? "/coming-soon" : "/auth",
@@ -100,6 +113,14 @@ export const Navbar = () => {
     href: "/contact",
     requiresAuth: false
   }];
+
+  const policyPages = [
+    { title: "Platform Policies", href: "/policies" },
+    { title: "Terms & Conditions", href: "/terms" },
+    { title: "NDA Policy", href: "/nda-policy" },
+    { title: "Fees & Pricing", href: "/fees-pricing" }
+  ];
+
   return <nav className="w-full absolute z-10">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-24 my-0 py-0 mx-0 px-0">
@@ -108,6 +129,27 @@ export const Navbar = () => {
           </Link>
 
           <div className="flex items-center space-x-6">
+            {isPolicyPage && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="secondary" className="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white">
+                    <FileText className="h-4 w-4 mr-2" />
+                    Policy Pages
+                    <ChevronDown className="h-4 w-4 ml-2" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="bg-white/90 backdrop-blur-md border border-white/20">
+                  {policyPages.map((page) => (
+                    <DropdownMenuItem key={page.href} className="hover:bg-white/30">
+                      <Link to={page.href} className="w-full">
+                        {page.title}
+                      </Link>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+            
             {isAuthenticated && <Link to="/messages" className="relative">
                 
                 {unreadCount > 0 && <Badge variant="destructive" className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0">
