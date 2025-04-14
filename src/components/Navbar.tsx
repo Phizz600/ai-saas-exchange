@@ -24,8 +24,6 @@ export const Navbar = () => {
   
   const isProfilePage = location.pathname === '/profile';
   const isHomePage = location.pathname === '/';
-  const isPolicyPage = location.pathname === '/policies' || location.pathname === '/terms' || 
-                      location.pathname === '/nda-policy' || location.pathname === '/fees-pricing';
   
   useEffect(() => {
     const checkAuth = async () => {
@@ -129,26 +127,25 @@ export const Navbar = () => {
           </Link>
 
           <div className="flex items-center space-x-6">
-            {isPolicyPage && (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="secondary" className="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white">
-                    <FileText className="h-4 w-4 mr-2" />
-                    Policy Pages
-                    <ChevronDown className="h-4 w-4 ml-2" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="bg-white/90 backdrop-blur-md border border-white/20">
-                  {policyPages.map((page) => (
-                    <DropdownMenuItem key={page.href} className="hover:bg-white/30">
-                      <Link to={page.href} className="w-full">
-                        {page.title}
-                      </Link>
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
+            {/* Always show the Policy Pages dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="secondary" className="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white">
+                  <FileText className="h-4 w-4 mr-2" />
+                  Policy Pages
+                  <ChevronDown className="h-4 w-4 ml-2" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="bg-white/90 backdrop-blur-md border border-white/20">
+                {policyPages.map((page) => (
+                  <DropdownMenuItem key={page.href} className="hover:bg-white/30">
+                    <Link to={page.href} className="w-full">
+                      {page.title}
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
             
             {isAuthenticated && <Link to="/messages" className="relative">
                 
