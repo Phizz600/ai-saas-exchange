@@ -125,11 +125,7 @@ export const Navbar = () => {
           <div className="flex items-center space-x-6">
             {isPolicyPage && <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="secondary" className="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white">
-                    <FileText className="h-4 w-4 mr-2" />
-                    Policy Pages
-                    <ChevronDown className="h-4 w-4 ml-2" />
-                  </Button>
+                  
                 </DropdownMenuTrigger>
                 
               </DropdownMenu>}
