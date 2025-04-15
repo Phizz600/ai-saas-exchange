@@ -47,7 +47,7 @@ export const handleProductSubmission = async (
         ? calculateAuctionEndTime(data.auctionDuration)
         : null,
       starting_price: data.isAuction ? data.startingPrice : null,
-      reserve_price: data.isAuction ? data.reservePrice : null,
+      reserve_price: data.isAuction ? data.reservePrice : null, // Use reserve_price instead of min_price
       price_decrement: data.isAuction ? data.priceDecrement : null,
       price_decrement_interval: data.isAuction ? data.priceDecrementInterval : null,
       no_reserve: data.isAuction ? data.noReserve : null,
@@ -217,7 +217,7 @@ export const handleProductUpdate = async (
       .from('products')
       .update(productData)
       .eq('id', productId)
-      .eq('user_id', user.id); // Ensure the user owns this product
+      .eq('seller_id', user.id); // Ensure the user owns this product using the correct seller_id field
 
     if (updateError) {
       console.error("Error updating product:", updateError);
