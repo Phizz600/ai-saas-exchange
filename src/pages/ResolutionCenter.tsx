@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 export const ResolutionCenter = () => {
   return <AnimatedGradientBackground>
       <Navbar />
-      <div className="container mx-auto px-4 py-8 mt-16">
+      <div className="container mx-auto px-4 py-8 mt-8">  {/* Reduced top margin from mt-16 to mt-8 */}
         <motion.div initial={{
         opacity: 0,
         y: 20
@@ -16,7 +16,8 @@ export const ResolutionCenter = () => {
         y: 0
       }} transition={{
         duration: 0.5
-      }} className="max-w-5xl mx-auto glass rounded-xl p-8 shadow-xl backdrop-blur-lg bg-white/10 border border-white/20 my-[70px] py-[14px]">
+      }} className="max-w-5xl mx-auto glass rounded-xl p-8 shadow-xl backdrop-blur-lg bg-white/10 border border-white/20 my-[40px] py-[14px]">
+          
           <h1 className="exo-2-heading text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-blue-200 mb-8 text-center">
             Resolution Center
           </h1>
