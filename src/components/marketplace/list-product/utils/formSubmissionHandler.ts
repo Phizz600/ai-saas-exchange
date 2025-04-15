@@ -4,6 +4,29 @@ import { supabase } from "@/integrations/supabase/client";
 import { logError } from "@/integrations/supabase/products";
 import { sendListingNotification } from "@/integrations/supabase/functions";
 
+// Helper function to convert traffic range string to numeric value (using the middle of the range)
+const convertRangeToNumber = (rangeStr: string): number | null => {
+  if (!rangeStr) return null;
+  
+  // Handle cases with a plus sign (e.g., "100,001+")
+  if (rangeStr.includes('+')) {
+    const baseValue = parseFloat(rangeStr.replace(/,/g, '').replace('+', ''));
+    return baseValue;
+  }
+  
+  // Handle range values (e.g., "5,001-10,000")
+  if (rangeStr.includes('-')) {
+    const [minStr, maxStr] = rangeStr.split('-');
+    const min = parseFloat(minStr.replace(/,/g, ''));
+    const max = parseFloat(maxStr.replace(/,/g, ''));
+    // Use the middle value of the range
+    return (min + max) / 2;
+  }
+  
+  // Handle simple numbers
+  return parseFloat(rangeStr.replace(/,/g, ''));
+};
+
 // Helper function to handle product submission
 export const handleProductSubmission = async (
   data: ListProductFormData,
@@ -21,6 +44,11 @@ export const handleProductSubmission = async (
       return { success: false, error: "User not authenticated" };
     }
 
+    // Convert traffic and users from range strings to numeric values if needed
+    const monthlyTrafficValue = typeof data.monthlyTraffic === 'string'
+      ? convertRangeToNumber(data.monthlyTraffic)
+      : data.monthlyTraffic;
+
     // Prepare the product data
     const productData = {
       title: data.title,
@@ -30,8 +58,8 @@ export const handleProductSubmission = async (
       stage: data.stage,
       industry: data.industry,
       monthly_revenue: data.monthlyRevenue,
-      monthly_traffic: data.monthlyTraffic,
-      active_users: data.activeUsers,
+      monthly_traffic: monthlyTrafficValue, // Use the converted numeric value
+      active_users: data.activeUsers, // Keep as string for this field
       gross_profit_margin: data.grossProfitMargin, // Using the correct column name 'gross_profit_margin'
       tech_stack: data.techStack,
       tech_stack_other: data.techStackOther,
@@ -189,6 +217,11 @@ export const handleProductUpdate = async (
       return false;
     }
 
+    // Convert traffic from range string to numeric value if needed
+    const monthlyTrafficValue = data.monthlyTraffic && typeof data.monthlyTraffic === 'string'
+      ? convertRangeToNumber(data.monthlyTraffic)
+      : data.monthlyTraffic;
+
     // Prepare the product data for update
     const productData: Record<string, any> = {};
     
@@ -200,7 +233,7 @@ export const handleProductUpdate = async (
     if (data.stage) productData.stage = data.stage;
     if (data.industry) productData.industry = data.industry;
     if (data.monthlyRevenue !== undefined) productData.monthly_revenue = data.monthlyRevenue;
-    if (data.monthlyTraffic) productData.monthly_traffic = data.monthlyTraffic;
+    if (monthlyTrafficValue !== undefined) productData.monthly_traffic = monthlyTrafficValue;
     if (data.activeUsers) productData.active_users = data.activeUsers;
     if (data.grossProfitMargin !== undefined) productData.gross_profit_margin = data.grossProfitMargin;
     if (data.techStack) productData.tech_stack = data.techStack;
