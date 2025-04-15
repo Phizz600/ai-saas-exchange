@@ -47,13 +47,13 @@ export const handleProductSubmission = async (
         ? calculateAuctionEndTime(data.auctionDuration)
         : null,
       starting_price: data.isAuction ? data.startingPrice : null,
-      reserve_price: data.isAuction ? data.reservePrice : null, // Use reserve_price instead of min_price
+      reserve_price: data.isAuction ? data.reservePrice : null, // Explicitly use reserve_price for auctions
       price_decrement: data.isAuction ? data.priceDecrement : null,
       price_decrement_interval: data.isAuction ? data.priceDecrementInterval : null,
       no_reserve: data.isAuction ? data.noReserve : null,
       // Status and user fields
       status: "pending",
-      seller_id: user.id, // Changed from user_id to seller_id to match the column name
+      seller_id: user.id, // Using the correct seller_id field
       payment_status: "pending",
       product_link: data.productLink,
     };
@@ -212,12 +212,21 @@ export const handleProductUpdate = async (
     if (data.specialNotes) productData.special_notes = data.specialNotes;
     if (data.productLink) productData.product_link = data.productLink;
     
+    // Handle auction parameters using reserve_price instead of min_price
+    if (data.isAuction) {
+      if (data.reservePrice !== undefined) productData.reserve_price = data.reservePrice;
+      if (data.startingPrice !== undefined) productData.starting_price = data.startingPrice;
+      if (data.priceDecrement !== undefined) productData.price_decrement = data.priceDecrement;
+      if (data.priceDecrementInterval) productData.price_decrement_interval = data.priceDecrementInterval;
+      if (data.noReserve !== undefined) productData.no_reserve = data.noReserve;
+    }
+    
     // Update the product
     const { error: updateError } = await supabase
       .from('products')
       .update(productData)
       .eq('id', productId)
-      .eq('seller_id', user.id); // Ensure the user owns this product using the correct seller_id field
+      .eq('seller_id', user.id); // Using the correct seller_id field
 
     if (updateError) {
       console.error("Error updating product:", updateError);

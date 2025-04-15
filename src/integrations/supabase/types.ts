@@ -869,6 +869,7 @@ export type Database = {
           product_age: string | null
           product_link: string | null
           requires_nda: boolean | null
+          reserve_price: number | null
           reviewed_at: string | null
           reviewed_by: string | null
           seller_id: string
@@ -935,6 +936,7 @@ export type Database = {
           product_age?: string | null
           product_link?: string | null
           requires_nda?: boolean | null
+          reserve_price?: number | null
           reviewed_at?: string | null
           reviewed_by?: string | null
           seller_id: string
@@ -1001,6 +1003,7 @@ export type Database = {
           product_age?: string | null
           product_link?: string | null
           requires_nda?: boolean | null
+          reserve_price?: number | null
           reviewed_at?: string | null
           reviewed_by?: string | null
           seller_id?: string
