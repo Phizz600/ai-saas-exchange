@@ -33,7 +33,7 @@ export function OfferForm({
     <div className="space-y-4">
       <p className="text-sm text-muted-foreground mb-3">
         {isUpdatingOffer 
-          ? "Update your offer below. If you increase the amount significantly, an additional deposit may be required."
+          ? "Update your offer below."
           : "Make an offer to the seller. Unlike bids, offers can be below the current price but require seller approval."}
       </p>
 

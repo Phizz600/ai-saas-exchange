@@ -14,11 +14,9 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [depositDialogOpen, setDepositDialogOpen] = useState(false);
   const [formattedAmount, setFormattedAmount] = useState("");
   const [existingOffer, setExistingOffer] = useState<any | null>(null);
   const [isUpdatingOffer, setIsUpdatingOffer] = useState(false);
-  const [additionalDepositAmount, setAdditionalDepositAmount] = useState(0);
   const { toast } = useToast();
 
   // Check if user has an existing offer on this product
@@ -50,8 +48,8 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
             setMessage(data[0].message);
           }
           
-          // If the offer is pending or deposit_pending, enable update mode
-          if (['pending', 'deposit_pending'].includes(data[0].status)) {
+          // If the offer is pending, enable update mode
+          if (['pending'].includes(data[0].status)) {
             setIsUpdatingOffer(true);
           }
         }
@@ -85,20 +83,6 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
       const numericValue = parseFloat(value);
       if (!isNaN(numericValue)) {
         setFormattedAmount(`$${numericValue.toLocaleString()}`);
-        
-        // Calculate additional deposit needed for updates
-        if (isUpdatingOffer && existingOffer) {
-          const originalAmount = existingOffer.amount;
-          const originalDeposit = existingOffer.deposit_amount;
-          
-          if (numericValue > originalAmount * 1.2) {
-            const newDepositTotal = Math.round(numericValue * 0.1 * 100) / 100;
-            const additionalDepositNeeded = Math.round((newDepositTotal - originalDeposit) * 100) / 100;
-            setAdditionalDepositAmount(additionalDepositNeeded > 0 ? additionalDepositNeeded : 0);
-          } else {
-            setAdditionalDepositAmount(0);
-          }
-        }
       } else {
         setFormattedAmount("");
       }
@@ -132,17 +116,10 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
     
     // If updating an offer
     if (isUpdatingOffer && existingOffer) {
-      // Only require deposit if increasing by more than 20%
-      if (numericAmount > existingOffer.amount * 1.2 && additionalDepositAmount > 0) {
-        // Open deposit dialog with additional deposit amount
-        setDepositDialogOpen(true);
-      } else {
-        // Just update the offer without additional deposit
-        await handleUpdateOffer();
-      }
+      await handleUpdateOffer();
     } else {
-      // Open deposit dialog for new offer
-      setDepositDialogOpen(true);
+      // Submit new offer directly
+      await handleSubmitNewOffer();
     }
   };
   
@@ -205,7 +182,7 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
     }
   };
   
-  const handleOfferSubmit = async (paymentIntentId: string) => {
+  const handleSubmitNewOffer = async () => {
     try {
       setIsSubmitting(true);
       
@@ -222,65 +199,27 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
       
       const numericAmount = parseFloat(amount);
       
-      // If updating an existing offer with additional deposit
-      if (isUpdatingOffer && existingOffer) {
-        // Calculate new deposit total (original + additional)
-        const newDepositTotal = existingOffer.deposit_amount + additionalDepositAmount;
-        
-        // Update the existing offer
-        const { data: updatedOffer, error: updateError } = await supabase
-          .from('offers')
-          .update({
-            amount: numericAmount,
-            message: message,
-            deposit_amount: newDepositTotal,
-            payment_intent_id: paymentIntentId,
-            payment_status: 'authorized',
-            payment_amount: additionalDepositAmount,
-            updated_at: new Date().toISOString()
-          })
-          .eq('id', existingOffer.id)
-          .select()
-          .single();
-        
-        if (updateError) {
-          throw updateError;
-        }
-        
-        toast({
-          title: "Offer updated!",
-          description: "Your offer has been updated with the additional deposit.",
-        });
-      } else {
-        // Create a new offer for first-time offers
-        const depositAmount = Math.round(numericAmount * 0.1 * 100) / 100; // 10% deposit
-        
-        const { data: offer, error: offerError } = await supabase
-          .from('offers')
-          .insert({
-            product_id: productId,
-            bidder_id: user.id,
-            amount: numericAmount,
-            message: message,
-            status: 'pending',
-            deposit_status: 'deposit_pending',
-            deposit_amount: depositAmount,
-            payment_intent_id: paymentIntentId,
-            payment_status: 'authorized',
-            payment_amount: depositAmount
-          })
-          .select()
-          .single();
-        
-        if (offerError) {
-          throw offerError;
-        }
-        
-        toast({
-          title: "Offer submitted!",
-          description: "Your offer has been submitted with the deposit authorization.",
-        });
+      // Create a new offer
+      const { data: offer, error: offerError } = await supabase
+        .from('offers')
+        .insert({
+          product_id: productId,
+          bidder_id: user.id,
+          amount: numericAmount,
+          message: message,
+          status: 'pending'
+        })
+        .select()
+        .single();
+      
+      if (offerError) {
+        throw offerError;
       }
+      
+      toast({
+        title: "Offer submitted!",
+        description: "Your offer has been submitted successfully.",
+      });
       
       // Set success state
       setSuccess(true);
@@ -291,7 +230,7 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
       setFormattedAmount("");
       
     } catch (error: any) {
-      console.error("Error creating/updating offer:", error);
+      console.error("Error creating offer:", error);
       
       toast({
         title: "Failed to process offer",
@@ -315,18 +254,13 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
     message,
     isSubmitting,
     success,
-    depositDialogOpen,
     formattedAmount,
     existingOffer,
     isUpdatingOffer,
-    additionalDepositAmount,
     setAmount,
     setMessage,
-    setDepositDialogOpen,
     handleAmountChange,
     handleInitiateOffer,
-    handleOfferSubmit,
-    handleUpdateOffer,
     resetForm
   };
 }

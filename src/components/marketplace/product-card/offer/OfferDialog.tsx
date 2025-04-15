@@ -1,6 +1,5 @@
 
 import { useState } from "react";
-import { DepositConfirmDialog } from "./DepositConfirmDialog";
 import { OfferSuccess } from "./components/OfferSuccess";
 import { OfferForm } from "./components/OfferForm";
 import { useOfferForm } from "./hooks/useOfferForm";
@@ -25,17 +24,12 @@ export function OfferDialog({
     message,
     isSubmitting,
     success,
-    depositDialogOpen,
     formattedAmount,
     existingOffer,
     isUpdatingOffer,
-    additionalDepositAmount,
     setMessage,
-    setDepositDialogOpen,
     handleAmountChange,
-    handleInitiateOffer,
-    handleOfferSubmit,
-    handleUpdateOffer
+    handleInitiateOffer
   } = useOfferForm({ productId, isAuction, currentPrice });
 
   const handleMessageChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -71,17 +65,6 @@ export function OfferDialog({
           />
         )}
       </div>
-      
-      <DepositConfirmDialog 
-        open={depositDialogOpen}
-        onOpenChange={setDepositDialogOpen}
-        offerAmount={parseFloat(amount) || 0}
-        productTitle={productTitle}
-        productId={productId}
-        onDepositComplete={handleOfferSubmit}
-        isUpdatingOffer={isUpdatingOffer}
-        additionalDepositAmount={additionalDepositAmount}
-      />
     </>
   );
 }
