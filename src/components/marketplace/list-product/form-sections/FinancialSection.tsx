@@ -284,7 +284,7 @@ export function FinancialSection({
         
         {/* Quick Add Buttons */}
         <div className="mb-4">
-          <p className="text-sm text-gray-600 mb-2">Common expenses:</p>
+          <p className="text-sm mb-2 text-slate-50">Common expenses:</p>
           <div className="flex flex-wrap gap-2">
             {COMMON_EXPENSES.map(expense => <Button key={expense.name} type="button" variant="outline" size="sm" onClick={() => addCommonExpense(expense.name, expense.category)} className="text-xs">
                 + {expense.name}
