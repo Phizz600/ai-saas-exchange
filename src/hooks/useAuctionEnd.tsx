@@ -111,8 +111,8 @@ export function useAuctionEnd({
         console.error("Error creating escrow proposal:", error);
         toast({
           title: "Escrow Proposal Failed",
-          description: "There was an issue creating the escrow proposal. Please try manually.",
-          variant: "destructive",
+          description: "There was a problem creating the escrow proposal for the auction.",
+          variant: "destructive"
         });
       } finally {
         setIsProcessing(false);
@@ -120,11 +120,11 @@ export function useAuctionEnd({
     };
     
     initiateEscrowProposal();
-  }, [isEnded, isProcessing, isEscrowCreated, conversationId, currentPrice, productTitle, toast, timeline]);
-  
+  }, [isEnded, isProcessing, isEscrowCreated, conversationId, currentPrice, productTitle, timeline, toast]);
+
   return {
     isAuctionEnded: isEnded,
-    isEscrowProposalCreated: isEscrowCreated,
-    isProcessingEscrow: isProcessing
+    isEscrowCreated,
+    isProcessing
   };
 }
