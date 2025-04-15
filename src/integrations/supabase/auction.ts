@@ -1,4 +1,3 @@
-
 import { supabase } from './client';
 
 /**
@@ -8,6 +7,7 @@ import { supabase } from './client';
  * @param priceDecrement How much the price decreases per interval
  * @param priceDecrementInterval The interval for price decreases (minute, hour, day, etc.)
  * @param auctionStartTime When the auction started
+ * @param approvalTime When the product was approved (optional)
  * @param currentTime Current time (defaults to now)
  * @returns The calculated current price
  */
@@ -17,10 +17,18 @@ export const calculateCurrentAuctionPrice = (
   priceDecrement: number,
   priceDecrementInterval: string,
   auctionStartTime: string,
+  approvalTime?: string,
   currentTime: Date = new Date()
 ): number => {
-  const start = new Date(auctionStartTime);
-  const timeDiffMs = currentTime.getTime() - start.getTime();
+  // If we have an approval date, use that as the effective start time
+  // Otherwise, fall back to the creation date
+  const effectiveStartTime = approvalTime ? new Date(approvalTime) : new Date(auctionStartTime);
+  const timeDiffMs = currentTime.getTime() - effectiveStartTime.getTime();
+  
+  // If time difference is negative (future approval date), return starting price
+  if (timeDiffMs < 0) {
+    return startingPrice;
+  }
   
   let decrementCount = 0;
   

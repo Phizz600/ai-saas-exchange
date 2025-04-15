@@ -25,10 +25,11 @@ Deno.serve(async (req) => {
   try {
     console.log('Starting Dutch auction price update...');
 
-    // Get all active Dutch auctions
+    // Get all active Dutch auctions - ONLY get approved products (status='active')
     const { data: auctions, error: fetchError } = await supabase
       .from('products')
-      .select('id, price_decrement, price_decrement_interval, current_price, reserve_price, starting_price, auction_end_time, highest_bid, created_at, updated_at')
+      .select('id, price_decrement, price_decrement_interval, current_price, reserve_price, starting_price, auction_end_time, highest_bid, created_at, updated_at, status')
+      .eq('status', 'active') // Only process active/approved products
       .gte('auction_end_time', new Date().toISOString())
       .is('price_decrement', 'not.null');
 
@@ -51,11 +52,11 @@ Deno.serve(async (req) => {
       // Calculate appropriate decrement based on interval
       const currentTime = new Date();
       const lastUpdate = new Date(auction.updated_at || auction.created_at);
-      const startTime = new Date(auction.created_at);
-      let shouldUpdate = false;
       
-      // Calculate how many intervals have passed since the auction started
-      const timeSinceStart = currentTime.getTime() - startTime.getTime();
+      // Calculate how many intervals have passed since the auction started or was approved
+      // For approved products, we'll use approval time which is reflected in the update time
+      const effectiveStartTime = new Date(auction.updated_at || auction.created_at);
+      const timeSinceStart = currentTime.getTime() - effectiveStartTime.getTime();
       let decrementCount = 0;
       
       switch (auction.price_decrement_interval) {
@@ -95,7 +96,6 @@ Deno.serve(async (req) => {
           current_price: expectedPrice,
           updated_at: new Date().toISOString()
         });
-        shouldUpdate = true;
       } else {
         console.log(`Auction ${auction.id} price is already correct (${auction.current_price})`);
       }

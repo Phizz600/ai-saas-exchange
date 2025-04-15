@@ -13,6 +13,8 @@ export function useAuctionPricing(product: {
   price_decrement?: number;
   price_decrement_interval?: string;
   created_at: string;
+  updated_at?: string;
+  status?: string;
   no_reserve?: boolean;
   listing_type?: string;
 }) {
@@ -60,12 +62,16 @@ export function useAuctionPricing(product: {
         // Determine reserve price - treat it as 0 for no-reserve auctions
         const reservePrice = product.no_reserve || product.reserve_price === 0 ? 0 : (product.reserve_price || 0);
         
+        // Use updated_at as the approval time if status is 'active'
+        const approvalTime = product.status === 'active' ? product.updated_at : undefined;
+        
         const calculatedPrice = calculateCurrentAuctionPrice(
           product.starting_price,
           reservePrice,
           product.price_decrement,
           product.price_decrement_interval,
-          product.created_at
+          product.created_at,
+          approvalTime
         );
         
         setCurrentPrice(calculatedPrice);
@@ -90,6 +96,8 @@ export function useAuctionPricing(product: {
     product.price_decrement,
     product.price_decrement_interval,
     product.created_at,
+    product.updated_at,
+    product.status,
     product.no_reserve,
     product.listing_type,
     isAuctionEnded
