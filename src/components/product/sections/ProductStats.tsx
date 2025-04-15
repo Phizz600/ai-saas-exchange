@@ -1,4 +1,4 @@
-
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { TrendingUp, Users, Star, Shield, Zap, Building2, Info, Eye, Mouse, Bookmark, Flame, History } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
@@ -7,9 +7,14 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { getProductAnalytics } from "@/integrations/supabase/functions";
-import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
+import { 
+  Tooltip, 
+  TooltipContent, 
+  TooltipProvider, 
+  TooltipTrigger 
+} from "@/components/ui/tooltip";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
 interface Bid {
@@ -223,7 +228,16 @@ export function ProductStats({ product }: ProductStatsProps) {
                 <Eye className="h-4 w-4 text-blue-600" />
               </div>
               <div>
-                <p className="text-lg font-semibold">{analytics?.views || 0}</p>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <p className="text-lg font-semibold">{analytics?.views || 0}</p>
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-white shadow-lg">
+                      <p>Views are tracked when this product appears on the marketplace grid</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
                 <p className="text-sm text-gray-600">Views</p>
               </div>
             </div>
@@ -232,7 +246,16 @@ export function ProductStats({ product }: ProductStatsProps) {
                 <Mouse className="h-4 w-4 text-purple-600" />
               </div>
               <div>
-                <p className="text-lg font-semibold">{analytics?.clicks || 0}</p>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <p className="text-lg font-semibold">{analytics?.clicks || 0}</p>
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-white shadow-lg">
+                      <p>Clicks are tracked when a user navigates to the product details page</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
                 <p className="text-sm text-gray-600">Clicks</p>
               </div>
             </div>
@@ -241,11 +264,21 @@ export function ProductStats({ product }: ProductStatsProps) {
                 <Bookmark className="h-4 w-4 text-pink-600" />
               </div>
               <div>
-                <p className="text-lg font-semibold">{analytics?.saves || 0}</p>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <p className="text-lg font-semibold">{analytics?.saves || 0}</p>
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-white shadow-lg">
+                      <p>Saves are tracked when a user adds this product to their saved list</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
                 <p className="text-sm text-gray-600">Saves</p>
               </div>
             </div>
           </div>
+          
           {lastBid && <div className="mt-4 pt-4 border-t border-gray-200">
               <div className="flex items-center justify-between">
                 <div>
