@@ -3,7 +3,7 @@ import { supabase } from './client';
 import { isValidUUID } from './utils/validation';
 
 /**
- * Increments the view count for a product
+ * Increments the view count for a product (impressions when seen on marketplace)
  * @param productId The product ID to increment views for
  * @returns The updated view count data
  */
@@ -45,7 +45,7 @@ export const incrementProductViews = async (productId: string) => {
 };
 
 /**
- * Increments the click count for a product
+ * Increments the click count for a product (when card is clicked to navigate to product page)
  * @param productId The product ID to increment clicks for
  * @returns The updated click count data
  */

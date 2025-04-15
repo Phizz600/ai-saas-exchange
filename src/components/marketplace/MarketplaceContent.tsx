@@ -1,12 +1,12 @@
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { ProductGrid } from "@/components/marketplace/ProductGrid";
 import { MarketplacePagination } from "@/components/marketplace/MarketplacePagination";
 import { EmptyState } from "@/components/marketplace/EmptyState";
 import { MarketplaceHeader } from "@/components/marketplace/MarketplaceHeader";
 import { useMarketplaceProducts } from "@/hooks/useMarketplaceProducts";
 import { useNotifications } from "./notifications/useNotifications";
-import { incrementProductViews } from "@/integrations/supabase/functions";
+import { incrementProductViews } from "@/integrations/supabase/product-analytics";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -25,6 +25,7 @@ export const MarketplaceContent = () => {
   const [showAuctionsOnly, setShowAuctionsOnly] = useState(false);
   const [showBuyNowOnly, setShowBuyNowOnly] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [viewTracked, setViewTracked] = useState<Set<string>>(new Set());
   
   const {
     currentItems: products,
@@ -50,15 +51,33 @@ export const MarketplaceContent = () => {
     markAsRead
   } = useNotifications();
 
-  // Track product views
-  const trackProductView = async (productId: string) => {
-    try {
-      await incrementProductViews(productId);
-      console.log('Product view tracked:', productId);
-    } catch (error) {
-      console.error('Error tracking product view:', error);
-    }
-  };
+  // Track product views (impressions) when products appear in the grid
+  useEffect(() => {
+    if (!products || isLoading) return;
+
+    // Track views for products that haven't been tracked yet in this session
+    const trackProductViews = async () => {
+      const newProductsToTrack = products.filter(product => !viewTracked.has(product.id));
+      
+      if (newProductsToTrack.length === 0) return;
+      
+      const newTrackedSet = new Set(viewTracked);
+      
+      for (const product of newProductsToTrack) {
+        try {
+          await incrementProductViews(product.id);
+          newTrackedSet.add(product.id);
+          console.log('Product view/impression tracked:', product.id);
+        } catch (error) {
+          console.error('Error tracking product impression:', error);
+        }
+      }
+      
+      setViewTracked(newTrackedSet);
+    };
+
+    trackProductViews();
+  }, [products, isLoading, viewTracked]);
   
   // Handle refresh
   const handleRefresh = useCallback(async () => {
@@ -131,8 +150,7 @@ export const MarketplaceContent = () => {
           <>
             <ProductGrid 
               products={products} 
-              isLoading={false} 
-              onProductView={trackProductView} 
+              isLoading={false}
             />
             <MarketplacePagination 
               currentPage={currentPage} 

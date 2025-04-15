@@ -50,7 +50,7 @@ export const ExpandableTabs = ({ tabs }: ExpandableTabsProps) => {
         <button
           className="flex items-center rounded-md p-2.5 text-sm font-medium hover:bg-gray-100 focus:outline-none"
         >
-          <Menu className="h-5 w-5 mr-1" />
+          <Menu className="h-5 w-5 mr-2" />
           <ChevronDown className="h-4 w-4" />
         </button>
       </DropdownMenuTrigger>
