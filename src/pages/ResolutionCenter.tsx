@@ -1,22 +1,22 @@
-
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import AnimatedGradientBackground from "@/components/ui/AnimatedGradientBackground";
 import { motion } from "framer-motion";
 import { HelpCircle, MessageCircle, FileText, Shield, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
 export const ResolutionCenter = () => {
-  return (
-    <AnimatedGradientBackground>
+  return <AnimatedGradientBackground>
       <Navbar />
       <div className="container mx-auto px-4 py-8 mt-16">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }} 
-          animate={{ opacity: 1, y: 0 }} 
-          transition={{ duration: 0.5 }} 
-          className="max-w-5xl mx-auto glass rounded-xl p-8 shadow-xl backdrop-blur-lg bg-white/10 border border-white/20"
-        >
+        <motion.div initial={{
+        opacity: 0,
+        y: 20
+      }} animate={{
+        opacity: 1,
+        y: 0
+      }} transition={{
+        duration: 0.5
+      }} className="max-w-5xl mx-auto glass rounded-xl p-8 shadow-xl backdrop-blur-lg bg-white/10 border border-white/20 my-[70px] py-[14px]">
           <h1 className="exo-2-heading text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-blue-200 mb-8 text-center">
             Resolution Center
           </h1>
@@ -27,12 +27,16 @@ export const ResolutionCenter = () => {
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-white/80">
-            <motion.section 
-              className="space-y-4 p-6 glass rounded-lg" 
-              initial={{ opacity: 0, x: -20 }} 
-              animate={{ opacity: 1, x: 0 }} 
-              transition={{ duration: 0.5, delay: 0.1 }}
-            >
+            <motion.section className="space-y-4 p-6 glass rounded-lg" initial={{
+            opacity: 0,
+            x: -20
+          }} animate={{
+            opacity: 1,
+            x: 0
+          }} transition={{
+            duration: 0.5,
+            delay: 0.1
+          }}>
               <div className="flex items-center gap-3 mb-4">
                 <HelpCircle className="h-6 w-6 text-[#D946EE]" />
                 <h2 className="text-2xl font-semibold text-white exo-2-heading">Dispute Resolution</h2>
@@ -47,12 +51,16 @@ export const ResolutionCenter = () => {
               </Button>
             </motion.section>
 
-            <motion.section 
-              className="space-y-4 p-6 glass rounded-lg" 
-              initial={{ opacity: 0, x: 20 }} 
-              animate={{ opacity: 1, x: 0 }} 
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
+            <motion.section className="space-y-4 p-6 glass rounded-lg" initial={{
+            opacity: 0,
+            x: 20
+          }} animate={{
+            opacity: 1,
+            x: 0
+          }} transition={{
+            duration: 0.5,
+            delay: 0.2
+          }}>
               <div className="flex items-center gap-3 mb-4">
                 <MessageCircle className="h-6 w-6 text-[#8B5CF6]" />
                 <h2 className="text-2xl font-semibold text-white exo-2-heading">Mediation Services</h2>
@@ -67,12 +75,16 @@ export const ResolutionCenter = () => {
               </Button>
             </motion.section>
 
-            <motion.section 
-              className="space-y-4 p-6 glass rounded-lg" 
-              initial={{ opacity: 0, x: -20 }} 
-              animate={{ opacity: 1, x: 0 }} 
-              transition={{ duration: 0.5, delay: 0.3 }}
-            >
+            <motion.section className="space-y-4 p-6 glass rounded-lg" initial={{
+            opacity: 0,
+            x: -20
+          }} animate={{
+            opacity: 1,
+            x: 0
+          }} transition={{
+            duration: 0.5,
+            delay: 0.3
+          }}>
               <div className="flex items-center gap-3 mb-4">
                 <FileText className="h-6 w-6 text-[#0EA4E9]" />
                 <h2 className="text-2xl font-semibold text-white exo-2-heading">File a Complaint</h2>
@@ -87,12 +99,16 @@ export const ResolutionCenter = () => {
               </Button>
             </motion.section>
 
-            <motion.section 
-              className="space-y-4 p-6 glass rounded-lg" 
-              initial={{ opacity: 0, x: 20 }} 
-              animate={{ opacity: 1, x: 0 }} 
-              transition={{ duration: 0.5, delay: 0.4 }}
-            >
+            <motion.section className="space-y-4 p-6 glass rounded-lg" initial={{
+            opacity: 0,
+            x: 20
+          }} animate={{
+            opacity: 1,
+            x: 0
+          }} transition={{
+            duration: 0.5,
+            delay: 0.4
+          }}>
               <div className="flex items-center gap-3 mb-4">
                 <Shield className="h-6 w-6 text-[#D946EE]" />
                 <h2 className="text-2xl font-semibold text-white exo-2-heading">Safety Center</h2>
@@ -108,12 +124,16 @@ export const ResolutionCenter = () => {
             </motion.section>
           </div>
           
-          <motion.div 
-            className="mt-12 p-6 glass rounded-lg" 
-            initial={{ opacity: 0, y: 20 }} 
-            animate={{ opacity: 1, y: 0 }} 
-            transition={{ duration: 0.5, delay: 0.5 }}
-          >
+          <motion.div className="mt-12 p-6 glass rounded-lg" initial={{
+          opacity: 0,
+          y: 20
+        }} animate={{
+          opacity: 1,
+          y: 0
+        }} transition={{
+          duration: 0.5,
+          delay: 0.5
+        }}>
             <h2 className="text-xl font-semibold mb-4 text-white exo-2-heading text-center">Frequently Asked Questions</h2>
             <div className="space-y-6 text-white/80">
               <div className="p-4 bg-white/5 rounded-lg">
@@ -131,12 +151,16 @@ export const ResolutionCenter = () => {
             </div>
           </motion.div>
 
-          <motion.div 
-            className="mt-12 text-center" 
-            initial={{ opacity: 0, y: 20 }} 
-            animate={{ opacity: 1, y: 0 }} 
-            transition={{ duration: 0.5, delay: 0.6 }}
-          >
+          <motion.div className="mt-12 text-center" initial={{
+          opacity: 0,
+          y: 20
+        }} animate={{
+          opacity: 1,
+          y: 0
+        }} transition={{
+          duration: 0.5,
+          delay: 0.6
+        }}>
             <h2 className="text-xl font-semibold mb-4 text-white exo-2-heading">Need immediate assistance?</h2>
             <p className="text-white/70 mb-6">Our support team is available to help you resolve any urgent issues</p>
             <div className="flex justify-center gap-4">
@@ -151,8 +175,6 @@ export const ResolutionCenter = () => {
         </motion.div>
       </div>
       <Footer />
-    </AnimatedGradientBackground>
-  );
+    </AnimatedGradientBackground>;
 };
-
 export default ResolutionCenter;
