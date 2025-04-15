@@ -49,7 +49,7 @@ export function OfferDialog({
         </div>
         
         {success ? (
-          <OfferSuccess onClose={onClose} />
+          <OfferSuccess onClose={onClose} isUpdatingOffer={isUpdatingOffer} />
         ) : (
           <OfferForm
             amount={amount}
