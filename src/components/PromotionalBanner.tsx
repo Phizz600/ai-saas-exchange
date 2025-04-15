@@ -32,7 +32,7 @@ export const PromotionalBanner = () => {
           {[...Array(10)].map((_, i) => (
             <span key={i} className="inline-flex items-center text-white font-semibold px-4">
               <Zap className="h-4 w-4 mr-2 inline" />
-              Beta Mode Live: Auction marketplace officially launches May 1st, 2025
+              Auction marketplace officially launches soon!
             </span>
           ))}
         </div>
