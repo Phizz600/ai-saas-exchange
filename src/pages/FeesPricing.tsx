@@ -1,4 +1,3 @@
-
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
@@ -7,25 +6,26 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { DollarSign, PercentIcon, CheckCircle, ShieldCheck, Crown, BadgeCheck, User } from "lucide-react";
 import PricingFees from "@/components/hero/PricingFees";
-
 export const FeesPricing = () => {
   // Animation variants
   const fadeIn = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
+    hidden: {
+      opacity: 0,
+      y: 20
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6
+      }
+    }
   };
-
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-accent to-accent2">
+  return <div className="min-h-screen bg-gradient-to-b from-accent to-accent2">
       <Navbar />
       
       <div className="pt-24 pb-16">
-        <motion.div 
-          className="container mx-auto px-4 text-center mb-12"
-          initial="hidden"
-          animate="visible"
-          variants={fadeIn}
-        >
+        <motion.div initial="hidden" animate="visible" variants={fadeIn} className="container mx-auto px-4 text-center mb-12 my-[50px]">
           <h1 className="exo-2-heading text-5xl font-bold text-white mb-4 bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] inline-block text-transparent bg-clip-text">
             Simple, Transparent Pricing
           </h1>
@@ -38,12 +38,16 @@ export const FeesPricing = () => {
         {/* Main content */}
         <PricingFees />
         
-        <motion.div 
-          className="container mx-auto px-4 mt-20"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.6 }}
-        >
+        <motion.div className="container mx-auto px-4 mt-20" initial={{
+        opacity: 0,
+        y: 30
+      }} animate={{
+        opacity: 1,
+        y: 0
+      }} transition={{
+        delay: 0.3,
+        duration: 0.6
+      }}>
           <Card className="bg-white/10 backdrop-blur-sm border-white/5 p-8 rounded-xl">
             {/* Pro Membership Details Section */}
             <div className="mb-12">
@@ -130,10 +134,7 @@ export const FeesPricing = () => {
                       Join our Pro Membership today for just $299/year and start enjoying exclusive benefits and significant savings.
                     </p>
                   </div>
-                  <Button 
-                    className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] min-w-[200px] py-6"
-                    size="lg"
-                  >
+                  <Button className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] min-w-[200px] py-6" size="lg">
                     Upgrade to Pro
                   </Button>
                 </div>
@@ -311,28 +312,24 @@ export const FeesPricing = () => {
           </Card>
         </motion.div>
         
-        <motion.div 
-          className="container mx-auto px-4 text-center mt-20 max-w-3xl"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.6, duration: 0.8 }}
-        >
+        <motion.div className="container mx-auto px-4 text-center mt-20 max-w-3xl" initial={{
+        opacity: 0
+      }} animate={{
+        opacity: 1
+      }} transition={{
+        delay: 0.6,
+        duration: 0.8
+      }}>
           <div className="p-8 rounded-xl bg-[#0EA4E9]/10 backdrop-blur-sm border border-[#0EA4E9]/20">
             <h2 className="text-2xl font-semibold text-white mb-4 exo-2-heading">Ready to List Your AI SaaS Product?</h2>
             <p className="text-white/80 mb-6">
               Join our marketplace today and connect with qualified buyers looking for innovative AI solutions like yours.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a 
-                href="/list-product" 
-                className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white font-medium rounded-lg hover:opacity-90 transition-opacity"
-              >
+              <a href="/list-product" className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white font-medium rounded-lg hover:opacity-90 transition-opacity">
                 List Your Product
               </a>
-              <a 
-                href="#" 
-                className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-[#8B5CF6] to-[#0EA4E9] text-white font-medium rounded-lg hover:opacity-90 transition-opacity"
-              >
+              <a href="#" className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-[#8B5CF6] to-[#0EA4E9] text-white font-medium rounded-lg hover:opacity-90 transition-opacity">
                 <Crown className="mr-2 h-5 w-5" />
                 Upgrade to Pro
               </a>
@@ -342,6 +339,5 @@ export const FeesPricing = () => {
       </div>
       
       <Footer />
-    </div>
-  );
+    </div>;
 };

@@ -4,7 +4,7 @@ import { DollarSign, PercentIcon, CheckCircle, Clock, ShieldCheck, Crown, BadgeC
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 const PricingFees = () => {
-  return <section className="py-20">
+  return <section className="py-0">
       <div className="container mx-auto px-4">
         {/* Pro Membership Banner */}
         <motion.div initial={{
