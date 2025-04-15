@@ -28,7 +28,7 @@ Deno.serve(async (req) => {
     // Get all active Dutch auctions - ONLY get approved products (status='active')
     const { data: auctions, error: fetchError } = await supabase
       .from('products')
-      .select('id, price_decrement, price_decrement_interval, current_price, reserve_price, starting_price, auction_end_time, highest_bid, created_at, updated_at, status')
+      .select('id, price_decrement, price_decrement_interval, current_price, reserve_price, starting_price, auction_end_time, highest_bid, created_at, updated_at, status, no_reserve')
       .eq('status', 'active') // Only process active/approved products
       .gte('auction_end_time', new Date().toISOString())
       .is('price_decrement', 'not.null');
@@ -51,7 +51,6 @@ Deno.serve(async (req) => {
       
       // Calculate appropriate decrement based on interval
       const currentTime = new Date();
-      const lastUpdate = new Date(auction.updated_at || auction.created_at);
       
       // Calculate how many intervals have passed since the auction started or was approved
       // For approved products, we'll use approval time which is reflected in the update time
