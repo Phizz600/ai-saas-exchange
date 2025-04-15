@@ -51,8 +51,7 @@ export const ExpandableTabs = ({ tabs }: ExpandableTabsProps) => {
           className="flex items-center rounded-md p-2.5 text-sm font-medium hover:bg-gray-100 focus:outline-none"
         >
           <Menu className="h-5 w-5 mr-1" />
-          {/* Ensure the ChevronDown arrow is always present */}
-          <ChevronDown className="h-4 w-4 ml-1" />
+          <ChevronDown className="h-4 w-4" />
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56 bg-white shadow-lg border border-gray-200">
