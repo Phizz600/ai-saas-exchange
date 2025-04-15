@@ -8,4 +8,15 @@
   font-style: normal;
 }
 
+/* Add stripe.js progress animation */
+@keyframes progress {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(0); }
+}
+
+.animate-progress {
+  animation: progress 2.5s ease-in-out infinite;
+  width: 100%;
+}
+
 /* Add other global styles here */
