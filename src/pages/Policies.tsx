@@ -3,22 +3,27 @@ import { Footer } from "@/components/Footer";
 import AnimatedGradientBackground from "@/components/ui/AnimatedGradientBackground";
 import { motion } from "framer-motion";
 import { Shield, ShieldCheck, FileText, HelpCircle } from "lucide-react";
+
 export const Policies = () => {
   return <AnimatedGradientBackground>
       <Navbar />
-      <div className="container mx-auto px-4 py-8 mt-16">
-        <motion.div initial={{
-        opacity: 0,
-        y: 20
-      }} animate={{
-        opacity: 1,
-        y: 0
-      }} transition={{
-        duration: 0.5
-      }} className="max-w-5xl mx-auto glass rounded-xl p-8 shadow-xl backdrop-blur-lg bg-white/10 border border-white/20 py-[70px]">
-          <h1 className="exo-2-heading text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-blue-200 mb-8 text-center">
-            Platform Policies
-          </h1>
+      <div className="container mx-auto px-4 py-8 mt-24">  {/* Increased top margin to prevent overlap */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }} 
+          animate={{ opacity: 1, y: 0 }} 
+          transition={{ duration: 0.5 }} 
+          className="max-w-5xl mx-auto glass rounded-xl p-8 shadow-xl backdrop-blur-lg bg-white/10 border border-white/20 py-[70px]"
+        >
+          <div className="text-center mb-12">  {/* Added dedicated header container */}
+            <h1 className="exo-2-heading text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-blue-200 mb-4">
+              Platform Policies
+            </h1>
+            <p className="text-white/70 max-w-2xl mx-auto">
+              Understanding our commitment to transparency and user protection
+            </p>
+          </div>
+          
+          
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-white/80">
             <motion.section className="space-y-4 p-6 glass rounded-lg" initial={{
@@ -89,30 +94,6 @@ export const Policies = () => {
               <p>We are committed to protecting your privacy and handling your data with the utmost care. All personal information is encrypted and securely stored.</p>
             </motion.section>
           </div>
-          
-          <motion.div className="mt-12 p-6 glass rounded-lg" initial={{
-          opacity: 0,
-          y: 20
-        }} animate={{
-          opacity: 1,
-          y: 0
-        }} transition={{
-          duration: 0.5,
-          delay: 0.5
-        }}>
-            <p className="text-white/70 text-center">
-              For additional questions about our policies, please contact our support team.
-            </p>
-            <div className="flex justify-center mt-6">
-              <motion.button whileHover={{
-              scale: 1.05
-            }} whileTap={{
-              scale: 0.95
-            }} className="px-6 py-2 bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white font-medium rounded-md hover:opacity-90 transition-opacity">
-                Contact Support
-              </motion.button>
-            </div>
-          </motion.div>
         </motion.div>
       </div>
       <Footer />
