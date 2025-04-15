@@ -27,9 +27,14 @@ export function OfferDialog({
     formattedAmount,
     existingOffer,
     isUpdatingOffer,
+    paymentClientSecret,
+    paymentProcessingOpen,
+    paymentError,
     setMessage,
     handleAmountChange,
-    handleInitiateOffer
+    handleInitiateOffer,
+    handlePaymentSuccess,
+    handlePaymentCancel
   } = useOfferForm({ productId, isAuction, currentPrice });
 
   const handleMessageChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -60,8 +65,14 @@ export function OfferDialog({
             onAmountChange={handleAmountChange}
             onMessageChange={handleMessageChange}
             onInitiateOffer={handleInitiateOffer}
+            onPaymentSuccess={handlePaymentSuccess}
+            onPaymentCancel={handlePaymentCancel}
             existingOffer={existingOffer}
             isUpdatingOffer={isUpdatingOffer}
+            paymentClientSecret={paymentClientSecret}
+            paymentProcessingOpen={paymentProcessingOpen}
+            paymentError={paymentError}
+            productTitle={productTitle}
           />
         )}
       </div>

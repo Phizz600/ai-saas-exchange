@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { createPaymentAuthorization } from "@/services/stripe-service";
 
 interface UseOfferFormProps {
   productId: string;
@@ -17,6 +18,10 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
   const [formattedAmount, setFormattedAmount] = useState("");
   const [existingOffer, setExistingOffer] = useState<any | null>(null);
   const [isUpdatingOffer, setIsUpdatingOffer] = useState(false);
+  const [paymentClientSecret, setPaymentClientSecret] = useState<string | null>(null);
+  const [paymentIntentId, setPaymentIntentId] = useState<string | null>(null);
+  const [paymentProcessingOpen, setPaymentProcessingOpen] = useState(false);
+  const [paymentError, setPaymentError] = useState<string | null>(null);
   const { toast } = useToast();
 
   // Check if user has an existing offer on this product
@@ -118,9 +123,128 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
     if (isUpdatingOffer && existingOffer) {
       await handleUpdateOffer();
     } else {
-      // Submit new offer directly
-      await handleSubmitNewOffer();
+      // Create payment authorization for the offer
+      await handleCreatePaymentAuthorization();
     }
+  };
+  
+  const handleCreatePaymentAuthorization = async () => {
+    try {
+      setIsSubmitting(true);
+      setPaymentError(null);
+      
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast({
+          title: "Authentication required",
+          description: "Please log in to make an offer",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      const numericAmount = parseFloat(amount);
+      
+      // Create a payment authorization
+      const { clientSecret, paymentIntentId, error } = await createPaymentAuthorization(
+        numericAmount,
+        "offer-" + Date.now(), // Unique ID for this offer attempt
+        productId
+      );
+      
+      if (error || !clientSecret) {
+        throw new Error(error || "Failed to create payment authorization");
+      }
+      
+      // Store the payment information for later use
+      setPaymentClientSecret(clientSecret);
+      setPaymentIntentId(paymentIntentId);
+      
+      // Open the payment processing dialog
+      setPaymentProcessingOpen(true);
+      
+    } catch (error: any) {
+      console.error("Error initiating payment:", error);
+      setPaymentError(error.message || "Failed to create payment");
+      
+      toast({
+        title: "Payment initiation failed",
+        description: error.message || "There was a problem setting up the payment.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+  
+  const handlePaymentSuccess = async (paymentMethodId: string) => {
+    try {
+      setIsSubmitting(true);
+      
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast({
+          title: "Authentication required",
+          description: "Please log in to complete your offer",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      const numericAmount = parseFloat(amount);
+      
+      // Create a new offer with the payment information
+      const { data: offer, error: offerError } = await supabase
+        .from('offers')
+        .insert({
+          product_id: productId,
+          bidder_id: user.id,
+          amount: numericAmount,
+          message: message,
+          status: 'pending',
+          payment_intent_id: paymentIntentId,
+          payment_status: 'authorized'
+        })
+        .select()
+        .single();
+      
+      if (offerError) {
+        throw offerError;
+      }
+      
+      toast({
+        title: "Offer submitted!",
+        description: "Your offer has been submitted successfully.",
+      });
+      
+      // Set success state
+      setSuccess(true);
+      setPaymentProcessingOpen(false);
+      
+      // Reset form
+      setAmount("");
+      setMessage("");
+      setFormattedAmount("");
+      
+    } catch (error: any) {
+      console.error("Error creating offer:", error);
+      
+      toast({
+        title: "Failed to process offer",
+        description: error.message || "An error occurred while processing your offer.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+  
+  const handlePaymentCancel = () => {
+    setPaymentProcessingOpen(false);
+    setPaymentClientSecret(null);
+    setPaymentIntentId(null);
   };
   
   const handleUpdateOffer = async () => {
@@ -181,66 +305,6 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
       setIsSubmitting(false);
     }
   };
-  
-  const handleSubmitNewOffer = async () => {
-    try {
-      setIsSubmitting(true);
-      
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        toast({
-          title: "Authentication required",
-          description: "Please log in to make an offer",
-          variant: "destructive",
-        });
-        return;
-      }
-      
-      const numericAmount = parseFloat(amount);
-      
-      // Create a new offer
-      const { data: offer, error: offerError } = await supabase
-        .from('offers')
-        .insert({
-          product_id: productId,
-          bidder_id: user.id,
-          amount: numericAmount,
-          message: message,
-          status: 'pending'
-        })
-        .select()
-        .single();
-      
-      if (offerError) {
-        throw offerError;
-      }
-      
-      toast({
-        title: "Offer submitted!",
-        description: "Your offer has been submitted successfully.",
-      });
-      
-      // Set success state
-      setSuccess(true);
-      
-      // Reset form
-      setAmount("");
-      setMessage("");
-      setFormattedAmount("");
-      
-    } catch (error: any) {
-      console.error("Error creating offer:", error);
-      
-      toast({
-        title: "Failed to process offer",
-        description: error.message || "An error occurred while processing your offer.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   const resetForm = () => {
     setAmount("");
@@ -257,10 +321,15 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
     formattedAmount,
     existingOffer,
     isUpdatingOffer,
+    paymentClientSecret,
+    paymentProcessingOpen,
+    paymentError,
     setAmount,
     setMessage,
     handleAmountChange,
     handleInitiateOffer,
+    handlePaymentSuccess,
+    handlePaymentCancel,
     resetForm
   };
 }
