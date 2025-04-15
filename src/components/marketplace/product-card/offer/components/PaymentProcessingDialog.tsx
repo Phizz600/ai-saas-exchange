@@ -18,35 +18,8 @@ interface PaymentProcessingDialogProps {
   clientSecret: string | null;
 }
 
-// Initialize Stripe with the public key from Supabase edge function secrets
-let stripePublishableKey: string | null = null;
-
-// Fetch the publishable key from Supabase
-async function initializeStripe() {
-  try {
-    const { data, error } = await supabase.functions.invoke('get-stripe-publishable-key');
-    
-    if (error) {
-      console.error("Error fetching Stripe publishable key:", error);
-      return null;
-    }
-    
-    if (data?.publishableKey) {
-      console.log("Successfully retrieved Stripe publishable key");
-      stripePublishableKey = data.publishableKey;
-      return loadStripe(data.publishableKey);
-    } else {
-      console.error("No Stripe publishable key returned from function");
-      return null;
-    }
-  } catch (err) {
-    console.error("Exception fetching Stripe key:", err);
-    return null;
-  }
-}
-
-// Create a promise for the Stripe instance
-const stripePromise = initializeStripe();
+// Initialize Stripe with the public key
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 function PaymentForm({ 
   onConfirm, 
@@ -237,7 +210,7 @@ export function PaymentProcessingDialog({
     // Check if Stripe is properly initialized
     if (open) {
       if (!stripePromise) {
-        console.error("Stripe could not be initialized. Check your publishable key:", stripePublishableKey);
+        console.error("Stripe could not be initialized. Check your publishable key:", import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
         setStripeError("Payment system configuration error. Please contact support.");
         toast({
           title: "Payment System Error",
@@ -267,7 +240,7 @@ export function PaymentProcessingDialog({
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Authorize Payment for Offer</DialogTitle>
+          <DialogTitle className="exo-2-header">Authorize Payment for Offer</DialogTitle>
         </DialogHeader>
         
         <div className="py-4">

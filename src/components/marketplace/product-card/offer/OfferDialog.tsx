@@ -45,7 +45,7 @@ export function OfferDialog({
     <>
       <div className="space-y-4">
         <div className="text-center mb-2">
-          <h2 className="text-xl font-semibold exo-2-title">
+          <h2 className="text-xl font-semibold exo-2-header">
             {isUpdatingOffer ? "Update Your Offer" : "Make an Offer"}
           </h2>
           <p className="text-sm text-gray-500">

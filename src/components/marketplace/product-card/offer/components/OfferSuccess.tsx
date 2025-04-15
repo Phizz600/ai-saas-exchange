@@ -1,5 +1,4 @@
 
-import React from "react";
 import { Button } from "@/components/ui/button";
 import { CheckCircle } from "lucide-react";
 
@@ -10,21 +9,28 @@ interface OfferSuccessProps {
 
 export function OfferSuccess({ onClose, isUpdatingOffer = false }: OfferSuccessProps) {
   return (
-    <div className="py-8">
-      <div className="flex flex-col items-center justify-center text-center">
-        <div className="rounded-full bg-green-100 p-3 mb-4">
-          <CheckCircle className="h-8 w-8 text-green-600" />
-        </div>
-        <h3 className="text-lg font-medium mb-2">
-          {isUpdatingOffer ? "Offer Updated!" : "Offer Submitted!"}
-        </h3>
-        <p className="text-gray-600 mb-6 max-w-md">
-          {isUpdatingOffer 
-            ? "Your offer has been updated successfully and sent to the seller."
-            : "Your offer has been submitted to the seller for review. You'll be notified when they respond."}
-        </p>
-        <Button onClick={onClose}>Close</Button>
+    <div className="flex flex-col items-center justify-center py-6 text-center">
+      <div className="bg-green-100 p-3 rounded-full mb-4">
+        <CheckCircle className="h-8 w-8 text-green-600" />
       </div>
+      
+      <h3 className="text-xl font-semibold mb-2 exo-2-header">
+        {isUpdatingOffer ? "Offer Updated!" : "Offer Submitted!"}
+      </h3>
+      
+      <p className="text-gray-600 mb-6">
+        {isUpdatingOffer 
+          ? "Your offer has been successfully updated." 
+          : "Your offer has been submitted and your payment method has been authorized. The seller will be notified."
+        }
+      </p>
+      
+      <Button 
+        onClick={onClose} 
+        className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90"
+      >
+        Close
+      </Button>
     </div>
   );
 }
