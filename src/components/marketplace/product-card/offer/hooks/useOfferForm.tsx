@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -205,7 +204,7 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
     }
   };
   
-  const handleOfferSubmit = async (escrowTransactionId: string) => {
+  const handleOfferSubmit = async (paymentIntentId: string) => {
     try {
       setIsSubmitting(true);
       
@@ -234,6 +233,9 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
             amount: numericAmount,
             message: message,
             deposit_amount: newDepositTotal,
+            payment_intent_id: paymentIntentId,
+            payment_status: 'authorized',
+            payment_amount: additionalDepositAmount,
             updated_at: new Date().toISOString()
           })
           .eq('id', existingOffer.id)
@@ -242,16 +244,6 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
         
         if (updateError) {
           throw updateError;
-        }
-        
-        // Create a new deposit transaction record for the additional deposit
-        if (escrowTransactionId !== "manual" && additionalDepositAmount > 0) {
-          await supabase.from('deposit_transactions').insert({
-            offer_id: existingOffer.id,
-            amount: additionalDepositAmount,
-            escrow_transaction_id: escrowTransactionId,
-            status: 'pending'
-          });
         }
         
         toast({
@@ -270,9 +262,11 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
             amount: numericAmount,
             message: message,
             status: 'pending',
-            deposit_status: escrowTransactionId === "manual" ? 'manual_deposit' : 'deposit_pending',
+            deposit_status: 'deposit_pending',
             deposit_amount: depositAmount,
-            deposit_transaction_id: escrowTransactionId === "manual" ? null : escrowTransactionId
+            payment_intent_id: paymentIntentId,
+            payment_status: 'authorized',
+            payment_amount: depositAmount
           })
           .select()
           .single();
@@ -281,22 +275,9 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
           throw offerError;
         }
         
-        // Don't create a deposit transaction link if it's manual
-        if (escrowTransactionId !== "manual") {
-          // Create a link between the deposit transaction and the offer
-          await supabase.from('deposit_transactions').insert({
-            offer_id: offer.id,
-            amount: depositAmount,
-            escrow_transaction_id: escrowTransactionId,
-            status: 'pending'
-          });
-        }
-        
         toast({
           title: "Offer submitted!",
-          description: escrowTransactionId === "manual" 
-            ? "Your offer has been submitted. Please contact support to complete the deposit manually."
-            : "Once your deposit is confirmed, your offer will be processed.",
+          description: "Your offer has been submitted with the deposit authorization.",
         });
       }
       

@@ -1,12 +1,17 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, CreditCard } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { DepositDetails } from "./components/DepositDetails";
-import { initiateDeposit } from "./services/deposit-service";
+import { createPaymentAuthorization } from "@/services/stripe-service";
+import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+
+// Initialize Stripe 
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 interface DepositConfirmDialogProps {
   open: boolean;
@@ -14,7 +19,7 @@ interface DepositConfirmDialogProps {
   offerAmount: number;
   productTitle: string;
   productId: string;
-  onDepositComplete: (escrowId: string) => void;
+  onDepositComplete: (paymentIntentId: string) => void;
   isUpdatingOffer?: boolean;
   additionalDepositAmount?: number;
 }
@@ -31,6 +36,8 @@ export function DepositConfirmDialog({
 }: DepositConfirmDialogProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [paymentIntentId, setPaymentIntentId] = useState<string | null>(null);
   const { toast } = useToast();
   
   // Calculate deposit amount
@@ -41,52 +48,51 @@ export function DepositConfirmDialog({
   const platformFee = Math.round(depositAmount * 0.05 * 100) / 100;
   const totalAmount = depositAmount + platformFee;
 
-  const handleInitiateDeposit = async () => {
-    setIsSubmitting(true);
-    setError(null);
+  // Initialize payment when dialog opens
+  useEffect(() => {
+    const initializePayment = async () => {
+      if (open && !clientSecret) {
+        try {
+          setIsSubmitting(true);
+          
+          const { clientSecret, paymentIntentId, error } = await createPaymentAuthorization(
+            totalAmount,
+            `offer-deposit-${Date.now()}`,
+            productId
+          );
+          
+          if (error || !clientSecret) {
+            setError(error || "Could not initialize payment. Please try again.");
+            toast({
+              title: "Payment initialization failed",
+              description: error || "Could not initialize payment. Please try again.",
+              variant: "destructive"
+            });
+            return;
+          }
+          
+          setClientSecret(clientSecret);
+          setPaymentIntentId(paymentIntentId);
+        } catch (err: any) {
+          console.error("Error initializing payment:", err);
+          setError(err.message || "An unexpected error occurred");
+        } finally {
+          setIsSubmitting(false);
+        }
+      }
+    };
     
-    try {
-      const escrowId = await initiateDeposit({
-        productId,
-        offerAmount,
-        depositAmount,
-        platformFee,
-        productTitle,
-        isAdditionalDeposit: isUpdatingOffer && additionalDepositAmount > 0
-      });
-      
-      // Success - notify the user
-      toast({
-        title: isUpdatingOffer ? "Additional deposit initiated" : "Deposit initiated",
-        description: isUpdatingOffer 
-          ? "Your offer update process has been started. You will be notified when the seller responds."
-          : "Your offer process has been started. You will be notified when the seller responds.",
-      });
-      
-      onDepositComplete(escrowId);
-      onOpenChange(false);
+    initializePayment();
+  }, [open, clientSecret, toast, totalAmount, productId]);
 
-    } catch (error: any) {
-      console.error('Error initiating deposit:', error);
-      setError(error.message || "An error occurred while setting up the deposit");
-      
-      toast({
-        title: "Error",
-        description: "There was an issue with your deposit. Your offer will still be sent but you may need to complete payment manually.",
-        variant: "destructive",
-      });
-      
-      // Even with an error, we'll proceed with the offer but mark it as manual deposit required
-      onDepositComplete("manual");
-      
-      // We'll close the dialog after a short delay to let the user see the error
-      setTimeout(() => {
-        onOpenChange(false);
-      }, 3000);
-    } finally {
-      setIsSubmitting(false);
+  // Reset state when dialog closes
+  useEffect(() => {
+    if (!open) {
+      setClientSecret(null);
+      setPaymentIntentId(null);
+      setError(null);
     }
-  };
+  }, [open]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -111,26 +117,137 @@ export function DepositConfirmDialog({
           isAdditionalDeposit={isUpdatingOffer && additionalDepositAmount > 0}
         />
 
-        {error && (
-          <Alert variant="destructive">
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
+        {/* Payment Form */}
+        {clientSecret ? (
+          <Elements stripe={stripePromise} options={{ clientSecret }}>
+            <PaymentForm 
+              onSuccess={(paymentIntentId) => {
+                // Pass the payment intent ID back to the parent
+                onDepositComplete(paymentIntentId);
+                // Close the dialog
+                onOpenChange(false);
+              }}
+              error={error}
+              setError={setError}
+              paymentIntentId={paymentIntentId}
+            />
+          </Elements>
+        ) : (
+          <div className="flex justify-center py-4">
+            {isSubmitting ? (
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-700"></div>
+            ) : error ? (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            ) : (
+              <p className="text-sm text-gray-500">Preparing payment form...</p>
+            )}
+          </div>
         )}
 
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isSubmitting}>
             Cancel
           </Button>
-          <Button 
-            onClick={handleInitiateDeposit} 
-            disabled={isSubmitting}
-            className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9]"
-          >
-            {isSubmitting ? "Processing..." : isUpdatingOffer ? "Pay Additional Deposit" : "Pay Deposit"}
-          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
+  );
+}
+
+// Payment Form Component
+function PaymentForm({ 
+  onSuccess, 
+  error,
+  setError,
+  paymentIntentId
+}: { 
+  onSuccess: (paymentIntentId: string) => void;
+  error: string | null;
+  setError: (error: string | null) => void;
+  paymentIntentId: string | null;
+}) {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [isProcessing, setIsProcessing] = useState(false);
+  const { toast } = useToast();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!stripe || !elements || !paymentIntentId) {
+      return;
+    }
+
+    try {
+      setIsProcessing(true);
+      setError(null);
+
+      const { error } = await stripe.confirmPayment({
+        elements,
+        confirmParams: {
+          return_url: window.location.href, // We'll handle the redirect ourselves
+        },
+        redirect: "if_required",
+      });
+
+      if (error) {
+        setError(error.message || "An unexpected error occurred.");
+        toast({
+          title: "Payment failed",
+          description: error.message || "There was a problem processing your payment.",
+          variant: "destructive",
+        });
+      } else {
+        // The payment has been processed!
+        toast({
+          title: "Payment authorized",
+          description: "Your payment has been successfully authorized."
+        });
+        onSuccess(paymentIntentId);
+      }
+    } catch (err: any) {
+      setError(err.message || "An unexpected error occurred.");
+      toast({
+        title: "Error",
+        description: err.message || "An unexpected error occurred",
+        variant: "destructive",
+      });
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4 py-4">
+      <PaymentElement />
+      
+      {error && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+      
+      <Button 
+        type="submit" 
+        disabled={!stripe || isProcessing}
+        className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9]"
+      >
+        {isProcessing ? (
+          <div className="flex items-center">
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+            <span>Processing...</span>
+          </div>
+        ) : (
+          <div className="flex items-center">
+            <CreditCard className="h-4 w-4 mr-2" />
+            <span>Pay Deposit</span>
+          </div>
+        )}
+      </Button>
+    </form>
   );
 }
