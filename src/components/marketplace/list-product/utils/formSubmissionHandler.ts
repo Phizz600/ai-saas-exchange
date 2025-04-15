@@ -32,7 +32,7 @@ export const handleProductSubmission = async (
       monthly_revenue: data.monthlyRevenue,
       monthly_traffic: data.monthlyTraffic,
       active_users: data.activeUsers,
-      profit_margin: data.grossProfitMargin,
+      gross_profit_margin: data.grossProfitMargin, // Using the correct column name 'gross_profit_margin'
       tech_stack: data.techStack,
       tech_stack_other: data.techStackOther,
       team_size: data.teamSize,
@@ -53,7 +53,7 @@ export const handleProductSubmission = async (
       no_reserve: data.isAuction ? data.noReserve : null,
       // Status and user fields
       status: "pending",
-      user_id: user.id,
+      seller_id: user.id, // Changed from user_id to seller_id to match the column name
       payment_status: "pending",
       product_link: data.productLink,
     };
