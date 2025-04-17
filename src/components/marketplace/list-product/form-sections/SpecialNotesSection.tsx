@@ -1,11 +1,10 @@
-
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { UseFormReturn } from "react-hook-form";
 import { ListProductFormData } from "../types";
 import { Card } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const COMMON_DELIVERABLES = [
   { label: "Source Code", value: "source_code" },
@@ -38,43 +37,48 @@ export function SpecialNotesSection({
           name="deliverables"
           render={({ field }) => (
             <FormItem>
-              <p className="text-lg mb-4">Common deliverables:</p>
-              <div className="flex flex-wrap gap-3">
-                {COMMON_DELIVERABLES.map((deliverable) => (
-                  <FormField
-                    key={deliverable.value}
-                    control={form.control}
-                    name="deliverables"
-                    render={({ field }) => (
-                      <FormItem
-                        key={deliverable.value}
-                        className="flex items-center"
-                      >
-                        <FormControl>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const currentValues = field.value || [];
-                              const isSelected = currentValues.includes(deliverable.value);
-                              const updatedValues = isSelected
-                                ? currentValues.filter((value) => value !== deliverable.value)
-                                : [...currentValues, deliverable.value];
-                              field.onChange(updatedValues);
-                            }}
-                            className={`flex items-center gap-2 px-4 py-2 rounded-full border transition-colors ${
-                              field.value?.includes(deliverable.value)
-                                ? 'bg-primary text-white border-primary'
-                                : 'bg-white text-gray-700 border-gray-200 hover:border-gray-300'
-                            }`}
-                          >
-                            <Plus className="h-4 w-4" />
-                            {deliverable.label}
-                          </button>
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                ))}
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-base font-semibold">Common deliverables</h3>
+              </div>
+              
+              {/* Quick Add Buttons */}
+              <div className="mb-4">
+                <div className="flex flex-wrap gap-2">
+                  {COMMON_DELIVERABLES.map((deliverable) => (
+                    <FormField
+                      key={deliverable.value}
+                      control={form.control}
+                      name="deliverables"
+                      render={({ field }) => (
+                        <FormItem key={deliverable.value}>
+                          <FormControl>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                const currentValues = field.value || [];
+                                const isSelected = currentValues.includes(deliverable.value);
+                                const updatedValues = isSelected
+                                  ? currentValues.filter((value) => value !== deliverable.value)
+                                  : [...currentValues, deliverable.value];
+                                field.onChange(updatedValues);
+                              }}
+                              className={
+                                field.value?.includes(deliverable.value)
+                                  ? "bg-primary text-white"
+                                  : "text-xs"
+                              }
+                            >
+                              <Plus className="h-4 w-4" />
+                              {deliverable.label}
+                            </Button>
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  ))}
+                </div>
               </div>
               <FormMessage />
             </FormItem>
