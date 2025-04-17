@@ -1,4 +1,3 @@
-
 import { ListProductFormData } from "../types";
 import { supabase } from "@/integrations/supabase/client";
 import { logError } from "@/integrations/supabase/products";
@@ -58,7 +57,9 @@ export const handleProductSubmission = async (
     const productData = {
       title: data.title,
       description: data.description,
-      price: data.isAuction ? null : data.price, // Only set price for fixed-price listings
+      // IMPORTANT: For auctions, we need to set the price to the starting price
+      // This ensures the price column is never null
+      price: data.isAuction ? data.startingPrice : data.price,
       category: data.category,
       stage: data.stage,
       industry: data.industry,
@@ -84,12 +85,16 @@ export const handleProductSubmission = async (
       price_decrement: data.isAuction ? data.priceDecrement : null,
       price_decrement_interval: data.isAuction ? data.priceDecrementInterval : null,
       no_reserve: data.isAuction ? data.noReserve : null,
+      // For Dutch auction, current_price starts at the starting price
+      current_price: data.isAuction ? data.startingPrice : null,
       // Status and user fields
       status: "pending",
       seller_id: user.id, // Using the correct seller_id field
       payment_status: "pending",
       product_link: data.productLink,
     };
+
+    console.log("Prepared product data:", productData);
 
     // Insert the product data
     const { data: insertedProduct, error: insertError } = await supabase
@@ -238,7 +243,18 @@ export const handleProductUpdate = async (
     // Map form fields to database fields
     if (data.title) productData.title = data.title;
     if (data.description) productData.description = data.description;
-    if (data.price !== undefined) productData.price = data.price;
+    
+    // Similar fix for updating - ensure price is set for both listing types
+    if (data.isAuction) {
+      if (data.startingPrice !== undefined) {
+        productData.price = data.startingPrice;
+        productData.starting_price = data.startingPrice;
+        productData.current_price = data.startingPrice;
+      }
+    } else if (data.price !== undefined) {
+      productData.price = data.price;
+    }
+    
     if (data.category) productData.category = data.category;
     if (data.stage) productData.stage = data.stage;
     if (data.industry) productData.industry = data.industry;
@@ -258,11 +274,12 @@ export const handleProductUpdate = async (
     // Handle auction parameters using reserve_price instead of min_price
     if (data.isAuction) {
       if (data.reservePrice !== undefined) productData.reserve_price = data.reservePrice;
-      if (data.startingPrice !== undefined) productData.starting_price = data.startingPrice;
       if (data.priceDecrement !== undefined) productData.price_decrement = data.priceDecrement;
       if (data.priceDecrementInterval) productData.price_decrement_interval = data.priceDecrementInterval;
       if (data.noReserve !== undefined) productData.no_reserve = data.noReserve;
     }
+    
+    console.log("Update product data:", productData);
     
     // Update the product
     const { error: updateError } = await supabase
