@@ -15,6 +15,7 @@ import { calculateValuation, formatCurrency } from "../utils/valuationCalculator
 import { Card } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { Slider } from "@/components/ui/slider";
+
 interface AuctionSectionProps {
   form: UseFormReturn<ListProductFormData>;
 }
@@ -199,7 +200,8 @@ export function AuctionSection({
         return "Select duration";
     }
   };
-  return <div className="space-y-6">
+  return (
+    <Card className="p-6 bg-white shadow-sm">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <span className={`text-sm ${!isAuction ? "text-primary" : "text-gray-500"}`}>Fixed Price</span>
@@ -425,7 +427,7 @@ export function AuctionSection({
               </FormItem>} />
         </div>}
 
-      <Card className="p-6 bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] text-white">
+      <Card className="p-6 bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] text-white mt-6">
         <h3 className="text-xl font-semibold mb-4 flex items-center justify-center gap-2">
           <Sparkle className="h-5 w-5" />
           AI-Powered Valuation Range
@@ -445,5 +447,6 @@ export function AuctionSection({
           Click on either value to use it as your {isAuction ? "auction prices" : "fixed price"}.
         </p>
       </Card>
-    </div>;
+    </Card>
+  );
 }

@@ -1,3 +1,4 @@
+
 import { UseFormReturn } from "react-hook-form";
 import { ListProductFormData } from "../types";
 import { TechStackField } from "./technical/TechStackField";
@@ -5,14 +6,18 @@ import { StageField } from "./technical/StageField";
 import { DemoUrlField } from "./technical/DemoUrlField";
 import { IntegrationsField } from "./technical/IntegrationsField";
 import { LLMField } from "./technical/LLMField";
+import { Card } from "@/components/ui/card";
+
 interface TechnicalSectionProps {
   form: UseFormReturn<ListProductFormData>;
 }
+
 export function TechnicalSection({
   form
 }: TechnicalSectionProps) {
-  return <div className="space-y-6">
-      <h2 className="text-2xl font-semibold text-slate-50">Technical Details</h2>
+  return (
+    <Card className="p-6 bg-white shadow-sm">
+      <h2 className="text-2xl font-semibold text-slate-50 mb-6">Technical Details</h2>
       
       <div className="space-y-4">
         <TechStackField form={form} />
@@ -21,5 +26,6 @@ export function TechnicalSection({
         <DemoUrlField form={form} />
         <IntegrationsField form={form} />
       </div>
-    </div>;
+    </Card>
+  );
 }
