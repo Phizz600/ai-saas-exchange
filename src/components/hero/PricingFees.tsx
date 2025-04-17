@@ -237,7 +237,7 @@ const PricingFees = () => {
         duration: 0.5,
         delay: 0.5
       }} className="text-center mt-12">
-          <p className="text-gray-300 max-w-2xl mx-auto">
+          <p className="text-gray-300 max-w-2xl mx-auto my-[34px]">
             All transactions are processed securely through Escrow.com to ensure safe and transparent dealings for both parties.
           </p>
         </motion.div>
