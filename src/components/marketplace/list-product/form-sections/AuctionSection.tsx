@@ -1,3 +1,4 @@
+
 import { FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescription } from "@/components/ui/form";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
@@ -9,6 +10,7 @@ import { Info, AlertTriangle } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface AuctionSectionProps {
   form: UseFormReturn<ListProductFormData>;
@@ -212,11 +214,9 @@ export function AuctionSection({ form }: AuctionSectionProps) {
                       </FormDescription>
                     </div>
                     <FormControl>
-                      <input
+                      <Checkbox
                         checked={field.value}
                         onCheckedChange={field.onChange}
-                        className="h-4 w-4 border border-primary ring-offset-background focus:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
-                        type="checkbox"
                       />
                     </FormControl>
                   </FormItem>
