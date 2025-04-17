@@ -1,3 +1,4 @@
+
 import { supabase } from './client';
 
 /**
@@ -191,9 +192,13 @@ export const validateProductSubmission = (formData: any) => {
     errors.image = 'Product image is required';
   }
   
-  // Price validation based on listing type
+  // Price validation for fixed price listings
+  if (!formData.isAuction && (!formData.price || Number(formData.price) <= 0)) {
+    errors.price = 'Price must be greater than zero';
+  }
+  
+  // Auction validation
   if (formData.isAuction) {
-    // Dutch auction validation
     if (!formData.startingPrice || Number(formData.startingPrice) <= 0) {
       errors.startingPrice = 'Starting price must be greater than zero';
     }
@@ -203,8 +208,7 @@ export const validateProductSubmission = (formData: any) => {
         errors.reservePrice = 'Reserve price cannot be negative';
       }
       
-      if (Number(formData.reservePrice) > 0 && 
-          Number(formData.reservePrice) >= Number(formData.startingPrice)) {
+      if (Number(formData.reservePrice) > 0 && Number(formData.reservePrice) >= Number(formData.startingPrice)) {
         errors.reservePrice = 'Reserve price must be less than starting price';
       }
     }
@@ -215,11 +219,6 @@ export const validateProductSubmission = (formData: any) => {
     
     if (!formData.auctionDuration) {
       errors.auctionDuration = 'Please select an auction duration';
-    }
-  } else {
-    // Fixed price validation
-    if (!formData.price || Number(formData.price) <= 0) {
-      errors.price = 'Price must be greater than zero';
     }
   }
   
