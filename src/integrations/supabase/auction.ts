@@ -1,3 +1,4 @@
+
 import { supabase } from './client';
 
 /**
@@ -97,6 +98,11 @@ export const placeBid = async (productId: string, amount: number) => {
 
     if (new Date(product.auction_end_time) < new Date()) {
       throw new Error('This auction has ended');
+    }
+    
+    // For Dutch auctions, check if there's already a winner
+    if (product.listing_type === 'dutch_auction' && product.highest_bid) {
+      throw new Error('This Dutch auction already has a winner. The first bidder wins in a Dutch auction.');
     }
 
     // Place the bid

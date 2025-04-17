@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Timer, TrendingDown, ChevronDown, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -309,7 +308,7 @@ export function ProductPricing({
               </p>
               {isAuction && <>
                   {hasActiveBids && <p className="text-sm text-emerald-600 font-medium">
-                      Current price set by highest authorized bid
+                      Winning bid - Dutch auction complete
                     </p>}
                   {!product.no_reserve && product.reserve_price && <p className="text-sm text-gray-600 mt-1">
                       Reserve Price: ${product.reserve_price.toLocaleString()}
@@ -320,27 +319,39 @@ export function ProductPricing({
                 </>}
             </div>
             {product.auction_end_time && <div className="text-right">
-                <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <Timer className="h-4 w-4" />
-                  <span>{timeLeft}</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <TrendingDown className="h-4 w-4" />
-                  <span>
-                    Drops ${product.price_decrement?.toLocaleString() || 0}/{product.price_decrement_interval || 'day'}
-                  </span>
-                </div>
-                {!isAuctionEnded && <p className="text-sm text-amber-600 mt-1">Next drop in: {nextDrop}</p>}
+                {!isAuctionEnded && !hasActiveBids && (
+                  <>
+                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <Timer className="h-4 w-4" />
+                      <span>{timeLeft}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <TrendingDown className="h-4 w-4" />
+                      <span>
+                        Drops ${product.price_decrement?.toLocaleString() || 0}/{product.price_decrement_interval || 'day'}
+                      </span>
+                    </div>
+                    <p className="text-sm text-amber-600 mt-1">Next drop in: {nextDrop}</p>
+                  </>
+                )}
+                {(isAuctionEnded || hasActiveBids) && (
+                  <div className="text-sm text-emerald-600 font-medium">
+                    {hasActiveBids ? "Auction completed" : "Auction ended"}
+                  </div>
+                )}
               </div>}
           </div>
 
-          {isAuction && !isAuctionEnded && <div className="border rounded-md overflow-hidden">
-              {/* Auction Header with Dutch Auction badge */}
-              
-              
-              {/* Time and Price Information */}
-              
-            </div>}
+          {isAuction && !isAuctionEnded && !hasActiveBids && (
+            <div className="bg-amber-50 p-3 rounded-md text-sm">
+              <p className="font-medium text-amber-800">Dutch Auction Rules:</p>
+              <ul className="list-disc text-amber-700 pl-5 mt-1 space-y-1">
+                <li>Price keeps dropping until someone bids</li>
+                <li>First person to bid wins the auction</li>
+                <li>Act fast - once someone bids, it's over!</li>
+              </ul>
+            </div>
+          )}
 
           {isAuctionEnded && <div className="bg-amber-50 p-3 rounded-md text-sm text-amber-700 mt-3">
               <p>
@@ -361,19 +372,25 @@ export function ProductPricing({
 
           {recentBids && recentBids.length > 0 && <div className="space-y-2">
               <div className="text-sm text-gray-600">
-                <p>{recentBids.length} authorized bid{recentBids.length !== 1 ? 's' : ''} placed in the last 12h</p>
+                <p>
+                  {hasActiveBids 
+                    ? "Winning bid:" 
+                    : `${recentBids.length} authorized bid${recentBids.length !== 1 ? 's' : ''} placed in the last 12h`
+                  }
+                </p>
               </div>
               
               <div className="space-y-2">
                 <ScrollArea className="h-36 rounded-md border">
                   <div className="p-3">
-                    {recentBids.slice(0, 3).map((bid: Bid, index: number) => <div key={bid.id} className={`bg-gray-50 p-3 rounded-md mb-2 ${index === 0 ? 'border-l-4 border-green-500' : ''}`}>
+                    {recentBids.slice(0, 3).map((bid: Bid, index: number) => <div key={bid.id} className={`bg-gray-50 p-3 rounded-md mb-2 ${index === 0 && hasActiveBids ? 'border-l-4 border-green-500' : ''}`}>
                         <p className="text-sm text-gray-600">
                           <span className="font-medium">{formatBidderName(bid.bidder?.full_name)}</span>
                           <br />
                           <span className="text-gray-500">
                             ${bid.amount.toLocaleString()} • {formatTimeAgo(bid.created_at)}
                             {bid.payment_status === 'authorized' && <span className="ml-2 text-emerald-600">• Authorized</span>}
+                            {hasActiveBids && index === 0 && <span className="ml-2 text-emerald-600 font-medium">• Winner</span>}
                           </span>
                         </p>
                       </div>)}
@@ -413,7 +430,7 @@ export function ProductPricing({
               </div>
             </div>}
           
-          {product.auction_end_time && !isAuctionEnded && <div className="space-y-3 border p-4 rounded-md">
+          {product.auction_end_time && !isAuctionEnded && !hasActiveBids && <div className="space-y-3 border p-4 rounded-md">
               <h3 className="font-medium">Place Your Bid</h3>
               <BidForm productId={product.id} productTitle={product.title || "Product"} currentPrice={displayPrice} />
             </div>}

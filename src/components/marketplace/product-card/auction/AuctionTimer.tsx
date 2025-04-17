@@ -35,6 +35,13 @@ export function AuctionTimer({
         )}
       </div>
       
+      <div className="mt-2 text-xs text-amber-700">
+        <p className="font-medium">How it works:</p>
+        <p>• Price keeps dropping until someone bids</p>
+        <p>• First person to bid wins the auction</p>
+        <p>• Act fast - once someone bids, it's over!</p>
+      </div>
+      
       {noReserve && (
         <div className="mt-1 text-xs text-amber-700 flex items-center">
           <span className="bg-amber-200 text-amber-800 text-xs px-1.5 py-0.5 rounded">No Reserve</span>

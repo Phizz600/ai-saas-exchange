@@ -30,12 +30,12 @@ serve(async (req) => {
       );
     }
     
-    console.log(`Processing bid update: Product ${productId}, Amount: ${bidAmount}, Bidder: ${bidderId}`);
+    console.log(`Processing bid for Dutch auction: Product ${productId}, Amount: ${bidAmount}, Bidder: ${bidderId}`);
     
     // Get current product information
     const { data: product, error: productError } = await supabase
       .from('products')
-      .select('highest_bid, current_price, starting_price, min_price, price_decrement, price_decrement_interval, created_at, title, highest_bidder_id')
+      .select('highest_bid, current_price, starting_price, reserve_price, price_decrement, price_decrement_interval, created_at, title, highest_bidder_id, auction_end_time, listing_type')
       .eq('id', productId)
       .single();
     
@@ -47,7 +47,18 @@ serve(async (req) => {
       );
     }
     
-    // Fetch the bid to make sure it exists, is properly authorized and active
+    // Check if this is a Dutch auction
+    const isDutchAuction = product.listing_type === 'dutch_auction';
+    
+    if (!isDutchAuction) {
+      console.log("Not a Dutch auction, skipping special handling");
+      return new Response(
+        JSON.stringify({ success: false, message: "Not a Dutch auction" }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    
+    // Fetch the bid to make sure it exists, is authorized and active
     const { data: bid, error: bidError } = await supabase
       .from('bids')
       .select('id, payment_status, status')
@@ -68,7 +79,7 @@ serve(async (req) => {
     
     // Double-check that the bid is active and payment is authorized
     if (bid.status !== 'active' || bid.payment_status !== 'authorized') {
-      console.log(`Bid is not valid for highest bid update: status=${bid.status}, payment_status=${bid.payment_status}`);
+      console.log(`Bid is not valid for Dutch auction win: status=${bid.status}, payment_status=${bid.payment_status}`);
       return new Response(
         JSON.stringify({ 
           success: false, 
@@ -80,105 +91,100 @@ serve(async (req) => {
       );
     }
     
-    // Check if this is still the highest bid (no higher authorized bids)
-    const { data: higherBids, error: higherBidsError } = await supabase
-      .from('bids')
-      .select('amount')
-      .eq('product_id', productId)
-      .eq('status', 'active')             // Only consider active bids
-      .eq('payment_status', 'authorized') // Only consider authorized bids
-      .gt('amount', bidAmount)
-      .order('amount', { ascending: false })
-      .limit(1);
-      
-    if (higherBidsError) {
-      console.error(`Error checking for higher bids: ${higherBidsError.message}`);
-    }
-    
-    if (higherBids && higherBids.length > 0) {
-      console.log(`Found a higher authorized bid: ${higherBids[0].amount}`);
+    // For Dutch auctions, check if the bid meets the current price
+    if (bidAmount < product.current_price) {
+      console.log(`Bid amount ${bidAmount} is less than current auction price ${product.current_price}. Rejecting.`);
       return new Response(
         JSON.stringify({ 
           success: false, 
-          message: "A higher authorized bid already exists",
-          currentHighestBid: higherBids[0].amount,
-          submittedBid: bidAmount
+          message: "Bid amount must be at least the current auction price",
+          bidAmount: bidAmount,
+          currentPrice: product.current_price
         }),
         { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
     
-    // Check if this bid is actually higher than the current highest bid
-    // Only update if this is truly the highest bid
-    if (!product.highest_bid || bidAmount > product.highest_bid) {
-      console.log(`Updating product with new highest bid: Current highest: ${product.highest_bid || 'None'}, New bid: ${bidAmount}`);
-      
-      // If there's a previous highest bidder, notify them that they've been outbid
-      if (product.highest_bidder_id && product.highest_bidder_id !== bidderId) {
-        console.log(`Creating outbid notification for previous bidder: ${product.highest_bidder_id}`);
+    // In Dutch auction, first authorized bid wins and ends the auction
+    console.log(`Valid bid received for Dutch auction. Ending auction with winner: ${bidderId}`);
+    
+    // Calculate auction end time (now or slightly in the future to allow time for db triggers)
+    const auctionEndTime = new Date();
+    auctionEndTime.setMinutes(auctionEndTime.getMinutes() + 2); // Add 2 minutes to allow for transaction processing
+    
+    // Update product with winning bid and end the auction
+    const { data: updatedProduct, error: updateError } = await supabase
+      .from('products')
+      .update({
+        highest_bid: bidAmount,
+        highest_bidder_id: bidderId,
+        current_price: bidAmount, // Set current price to the winning bid amount
+        auction_end_time: auctionEndTime.toISOString(), // End the auction immediately
+        status: 'ended' // Mark the auction as ended
+      })
+      .eq('id', productId)
+      .select();
+    
+    if (updateError) {
+      console.error(`Error updating product: ${updateError.message}`);
+      return new Response(
+        JSON.stringify({ error: `Error updating product: ${updateError.message}` }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    
+    // Create notification for the seller
+    try {
+      const { data: seller } = await supabase
+        .from('products')
+        .select('seller_id, title')
+        .eq('id', productId)
+        .single();
         
-        // Create notification for outbid user
-        const { error: notificationError } = await supabase
+      if (seller) {
+        await supabase
           .from('notifications')
           .insert({
-            user_id: product.highest_bidder_id,
-            title: 'You\'ve Been Outbid!',
-            message: `Someone has placed a higher bid on ${product.title}. Your bid of $${product.highest_bid.toLocaleString()} has been surpassed.`,
-            type: 'outbid',
+            user_id: seller.seller_id,
+            title: 'Dutch Auction Completed!',
+            message: `Your auction for "${seller.title}" has ended with a winning bid of $${bidAmount.toLocaleString()}.`,
+            type: 'auction_ended',
             related_product_id: productId
           });
-          
-        if (notificationError) {
-          console.error(`Error creating outbid notification: ${notificationError.message}`);
-          // We don't want to block the bid update if notification creation fails
-        } else {
-          console.log(`Outbid notification created successfully for user ${product.highest_bidder_id}`);
-        }
       }
-      
-      // IMPORTANT: Always set current_price equal to the new highest bid
-      const { data, error: updateError } = await supabase
-        .from('products')
-        .update({
-          highest_bid: bidAmount,
-          highest_bidder_id: bidderId,
-          current_price: bidAmount  // Current price should always match the highest bid
-        })
-        .eq('id', productId)
-        .select();
-      
-      if (updateError) {
-        console.error(`Error updating product: ${updateError.message}`);
-        return new Response(
-          JSON.stringify({ error: `Error updating product: ${updateError.message}` }),
-          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-      
-      console.log(`Successfully updated product with new bid: ${bidAmount}`);
-      
-      return new Response(
-        JSON.stringify({ 
-          success: true, 
-          message: "Highest bid updated successfully",
-          previousBid: product.highest_bid,
-          newBid: bidAmount,
-          currentPrice: bidAmount // Added to response for clarity
-        }),
-        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    } else {
-      console.log(`Bid not higher than current highest: Current: ${product.highest_bid}, Submitted: ${bidAmount}`);
-      return new Response(
-        JSON.stringify({ 
-          success: false, 
-          message: "Bid not higher than current highest bid",
-          currentHighestBid: product.highest_bid,
-          submittedBid: bidAmount
-        }),
-        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+    } catch (notificationError) {
+      console.error("Error creating seller notification:", notificationError);
+      // We don't want to fail the whole process if just the notification fails
     }
+    
+    // Create notification for the winning bidder
+    try {
+      await supabase
+        .from('notifications')
+        .insert({
+          user_id: bidderId,
+          title: 'You Won the Dutch Auction!',
+          message: `Congratulations! You've won the Dutch auction for product "${product.title}" with your bid of $${bidAmount.toLocaleString()}.`,
+          type: 'auction_won',
+          related_product_id: productId
+        });
+    } catch (notificationError) {
+      console.error("Error creating bidder notification:", notificationError);
+      // We don't want to fail the whole process if just the notification fails
+    }
+    
+    console.log(`Successfully ended Dutch auction for product ${productId} with winning bid: ${bidAmount}`);
+    
+    return new Response(
+      JSON.stringify({ 
+        success: true, 
+        message: "Dutch auction ended successfully with winning bid",
+        bidAmount: bidAmount,
+        bidderId: bidderId,
+        auctionEndTime: auctionEndTime.toISOString()
+      }),
+      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
     
   } catch (error) {
     console.error("Error processing request:", error);

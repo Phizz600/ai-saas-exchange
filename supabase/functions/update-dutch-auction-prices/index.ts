@@ -25,12 +25,13 @@ Deno.serve(async (req) => {
   try {
     console.log('Starting Dutch auction price update...');
 
-    // Get all active Dutch auctions - ONLY get approved products (status='active')
+    // Get all active Dutch auctions without a highest bid - ONLY get approved products (status='active')
     const { data: auctions, error: fetchError } = await supabase
       .from('products')
       .select('id, price_decrement, price_decrement_interval, current_price, reserve_price, starting_price, auction_end_time, highest_bid, created_at, updated_at, status, no_reserve')
       .eq('status', 'active') // Only process active/approved products
       .gte('auction_end_time', new Date().toISOString())
+      .is('highest_bid', null) // Only update auctions without a bid yet
       .is('price_decrement', 'not.null');
 
     if (fetchError) {
@@ -38,7 +39,7 @@ Deno.serve(async (req) => {
       throw fetchError;
     }
 
-    console.log(`Found ${auctions ? auctions.length : 0} active auctions`);
+    console.log(`Found ${auctions ? auctions.length : 0} active auctions without bids`);
 
     // Process each auction
     const updates = [];

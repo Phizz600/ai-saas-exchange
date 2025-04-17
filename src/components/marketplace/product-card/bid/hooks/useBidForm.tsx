@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -107,7 +106,7 @@ export function useBidForm({ productId, productTitle, currentPrice, onValidation
       // Get the latest product data to verify the current price and highest bid
       const { data: product, error: productError } = await supabase
         .from('products')
-        .select('highest_bid, current_price, reserve_price')
+        .select('highest_bid, current_price, reserve_price, listing_type')
         .eq('id', productId)
         .single();
         
@@ -116,6 +115,21 @@ export function useBidForm({ productId, productTitle, currentPrice, onValidation
         toast({
           title: "Error validating bid",
           description: "Could not verify current auction price",
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      // Check if this is a Dutch auction
+      const isDutchAuction = product.listing_type === 'dutch_auction';
+      
+      // For Dutch auctions, check if there's already a winning bid
+      if (isDutchAuction && product.highest_bid) {
+        const errorMsg = "This Dutch auction already has a winner. The first bidder wins in a Dutch auction.";
+        if (onValidationError) onValidationError(errorMsg);
+        toast({
+          title: "Auction already won",
+          description: errorMsg,
           variant: "destructive"
         });
         return;
@@ -133,18 +147,6 @@ export function useBidForm({ productId, productTitle, currentPrice, onValidation
         return;
       }
       
-      // Additional validation against the latest highest bid from the database
-      if (product.highest_bid && amount <= product.highest_bid) {
-        const errorMsg = `Your bid must be higher than the current highest bid of $${product.highest_bid.toLocaleString()}`;
-        if (onValidationError) onValidationError(errorMsg);
-        toast({
-          title: "Bid too low",
-          description: errorMsg,
-          variant: "destructive"
-        });
-        return;
-      }
-
       // Create a pending bid in the database
       const { data: bid, error: bidError } = await supabase
         .from('bids')
