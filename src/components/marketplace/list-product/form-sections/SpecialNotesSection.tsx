@@ -1,3 +1,4 @@
+
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { UseFormReturn } from "react-hook-form";
@@ -5,6 +6,7 @@ import { ListProductFormData } from "../types";
 import { Card } from "@/components/ui/card";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
 const COMMON_DELIVERABLES = [{
   label: "Source Code",
   value: "source_code"
@@ -36,9 +38,11 @@ const COMMON_DELIVERABLES = [{
   label: "User Data",
   value: "user_data"
 }];
+
 interface SpecialNotesSectionProps {
   form: UseFormReturn<ListProductFormData>;
 }
+
 export function SpecialNotesSection({
   form
 }: SpecialNotesSectionProps) {
@@ -50,10 +54,6 @@ export function SpecialNotesSection({
         <FormField control={form.control} name="deliverables" render={({
         field
       }) => <FormItem>
-              <div className="flex justify-between items-center mb-4">
-                
-              </div>
-              
               {/* Quick Add Buttons */}
               <div className="mb-4">
                 <div className="flex flex-wrap gap-2">
@@ -66,7 +66,7 @@ export function SpecialNotesSection({
                   const isSelected = currentValues.includes(deliverable.value);
                   const updatedValues = isSelected ? currentValues.filter(value => value !== deliverable.value) : [...currentValues, deliverable.value];
                   field.onChange(updatedValues);
-                }} className={field.value?.includes(deliverable.value) ? "bg-primary text-white" : "text-xs"}>
+                }} className={field.value?.includes(deliverable.value) ? "bg-[#8B5CF6] text-white" : "text-xs"}>
                               <Plus className="h-4 w-4" />
                               {deliverable.label}
                             </Button>
