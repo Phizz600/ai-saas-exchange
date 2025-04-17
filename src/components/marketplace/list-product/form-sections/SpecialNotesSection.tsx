@@ -5,6 +5,7 @@ import { UseFormReturn } from "react-hook-form";
 import { ListProductFormData } from "../types";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Plus } from "lucide-react";
 
 const COMMON_DELIVERABLES = [
   { label: "Source Code", value: "source_code" },
@@ -28,17 +29,17 @@ export function SpecialNotesSection({
 }: SpecialNotesSectionProps) {
   return (
     <Card className="p-6 bg-white shadow-sm">
-      <h2 className="exo-2-header bg-gradient-to-r from-[#8B5CF6] to-[#D946EE] bg-clip-text text-transparent mb-6 text-2xl font-semibold">Special Notes</h2>
+      <h2 className="text-2xl font-semibold mb-6">Deliverables</h2>
       
-      <div className="space-y-6">
+      <div className="space-y-8">
         {/* Deliverables Section */}
         <FormField
           control={form.control}
           name="deliverables"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>What's included in the sale?</FormLabel>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+              <p className="text-lg mb-4">Common deliverables:</p>
+              <div className="flex flex-wrap gap-3">
                 {COMMON_DELIVERABLES.map((deliverable) => (
                   <FormField
                     key={deliverable.value}
@@ -47,23 +48,29 @@ export function SpecialNotesSection({
                     render={({ field }) => (
                       <FormItem
                         key={deliverable.value}
-                        className="flex flex-row items-start space-x-3 space-y-0"
+                        className="flex items-center"
                       >
                         <FormControl>
-                          <Checkbox
-                            checked={field.value?.includes(deliverable.value)}
-                            onCheckedChange={(checked) => {
+                          <button
+                            type="button"
+                            onClick={() => {
                               const currentValues = field.value || [];
-                              const updatedValues = checked
-                                ? [...currentValues, deliverable.value]
-                                : currentValues.filter((value) => value !== deliverable.value);
+                              const isSelected = currentValues.includes(deliverable.value);
+                              const updatedValues = isSelected
+                                ? currentValues.filter((value) => value !== deliverable.value)
+                                : [...currentValues, deliverable.value];
                               field.onChange(updatedValues);
                             }}
-                          />
+                            className={`flex items-center gap-2 px-4 py-2 rounded-full border transition-colors ${
+                              field.value?.includes(deliverable.value)
+                                ? 'bg-primary text-white border-primary'
+                                : 'bg-white text-gray-700 border-gray-200 hover:border-gray-300'
+                            }`}
+                          >
+                            <Plus className="h-4 w-4" />
+                            {deliverable.label}
+                          </button>
                         </FormControl>
-                        <FormLabel className="font-normal cursor-pointer">
-                          {deliverable.label}
-                        </FormLabel>
                       </FormItem>
                     )}
                   />
