@@ -122,7 +122,13 @@ export function CategoryAndTechStack({ form }: CategoryAndTechStackProps) {
                   </Tooltip>
                 </TooltipProvider>
               </FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select 
+                onValueChange={(value) => {
+                  // Directly store as string, not array
+                  field.onChange(value);
+                }} 
+                defaultValue={field.value}
+              >
                 <FormControl>
                   <SelectTrigger className="bg-white">
                     <SelectValue placeholder="Select tech stack" />

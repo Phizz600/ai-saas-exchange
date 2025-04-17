@@ -49,6 +49,11 @@ export const handleProductSubmission = async (
       ? convertRangeToNumber(data.monthlyTraffic)
       : data.monthlyTraffic;
 
+    // Convert tech stack to array if it's a string
+    const techStackArray = typeof data.techStack === 'string' 
+      ? [data.techStack] 
+      : (Array.isArray(data.techStack) ? data.techStack : []);
+
     // Prepare the product data
     const productData = {
       title: data.title,
@@ -61,7 +66,7 @@ export const handleProductSubmission = async (
       monthly_traffic: monthlyTrafficValue, // Use the converted numeric value
       active_users: data.activeUsers, // Keep as string for this field
       gross_profit_margin: data.grossProfitMargin, // Using the correct column name 'gross_profit_margin'
-      tech_stack: data.techStack,
+      tech_stack: techStackArray,
       tech_stack_other: data.techStackOther,
       team_size: data.teamSize,
       has_patents: data.hasPatents,
@@ -222,6 +227,11 @@ export const handleProductUpdate = async (
       ? convertRangeToNumber(data.monthlyTraffic)
       : data.monthlyTraffic;
 
+    // Convert tech stack to array if it's a string
+    const techStackArray = data.techStack && typeof data.techStack === 'string'
+      ? [data.techStack]
+      : (Array.isArray(data.techStack) ? data.techStack : undefined);
+
     // Prepare the product data for update
     const productData: Record<string, any> = {};
     
@@ -236,7 +246,7 @@ export const handleProductUpdate = async (
     if (monthlyTrafficValue !== undefined) productData.monthly_traffic = monthlyTrafficValue;
     if (data.activeUsers) productData.active_users = data.activeUsers;
     if (data.grossProfitMargin !== undefined) productData.gross_profit_margin = data.grossProfitMargin;
-    if (data.techStack) productData.tech_stack = data.techStack;
+    if (techStackArray) productData.tech_stack = techStackArray;
     if (data.techStackOther) productData.tech_stack_other = data.techStackOther;
     if (data.teamSize) productData.team_size = data.teamSize;
     if (data.hasPatents !== undefined) productData.has_patents = data.hasPatents;

@@ -48,7 +48,13 @@ export function TechStackField({ form }: TechStackFieldProps) {
                 </Tooltip>
               </TooltipProvider>
             </FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
+            <Select 
+              onValueChange={(value) => {
+                // Store as a single string, not an array
+                field.onChange(value);
+              }} 
+              defaultValue={field.value}
+            >
               <FormControl>
                 <SelectTrigger className="bg-white">
                   <SelectValue placeholder="Select tech stack" />

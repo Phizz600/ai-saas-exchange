@@ -15,10 +15,10 @@ export interface ListProductFormData {
   image: File | null;
   isAuction: boolean;
   startingPrice?: number;
-  reservePrice?: number;  // Renamed from minPrice
+  reservePrice?: number;  
   priceDecrement?: number;
   priceDecrementInterval: string;
-  techStack: string;
+  techStack: string;  // Changed from array to string for simplicity
   techStackOther?: string;
   teamSize: string;
   hasPatents: boolean;
