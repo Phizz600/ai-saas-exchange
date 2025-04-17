@@ -17,7 +17,7 @@ export function TechnicalSection({
 }: TechnicalSectionProps) {
   return (
     <Card className="p-6 bg-white shadow-sm">
-      <h2 className="text-2xl font-semibold text-slate-50 mb-6">Technical Details</h2>
+      <h2 className="text-2xl font-semibold exo-2-header bg-gradient-to-r from-[#8B5CF6] to-[#D946EE] bg-clip-text text-transparent mb-6">Technical Details</h2>
       
       <div className="space-y-4">
         <TechStackField form={form} />

@@ -1,3 +1,4 @@
+
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { UseFormReturn } from "react-hook-form";
@@ -115,7 +116,7 @@ export function FinancialSection({
 
   return (
     <Card className="p-6 bg-white shadow-sm">
-      <h2 className="text-2xl font-semibold text-slate-50 mb-6">Financials</h2>
+      <h2 className="text-2xl font-semibold exo-2-header bg-gradient-to-r from-[#8B5CF6] to-[#D946EE] bg-clip-text text-transparent mb-6">Financials</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <FormField control={form.control} name="monthlyRevenue" render={({ field }) => (
           <FormItem>
@@ -252,7 +253,8 @@ export function FinancialSection({
               </FormControl>
               <FormMessage />
             </FormItem>
-          )} />}
+          )} />
+        )}
 
         <FormField control={form.control} name="grossProfitMargin" render={({ field }) => (
           <FormItem>
@@ -328,7 +330,7 @@ export function FinancialSection({
         
         {/* Quick Add Buttons */}
         <div className="mb-4">
-          <p className="text-sm mb-2 text-slate-50">Common expenses:</p>
+          <p className="text-sm mb-2">Common expenses:</p>
           <div className="flex flex-wrap gap-2">
             {COMMON_EXPENSES.map(expense => (
               <Button
