@@ -15,7 +15,6 @@ import { calculateValuation, formatCurrency } from "../utils/valuationCalculator
 import { Card } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { Slider } from "@/components/ui/slider";
-
 interface AuctionSectionProps {
   form: UseFormReturn<ListProductFormData>;
 }
@@ -34,7 +33,7 @@ export function AuctionSection({
   const isAuction = form.watch("isAuction");
   const startingPrice = form.watch("startingPrice");
   const reservePrice = form.watch("reservePrice");
-  
+
   // Auto-set starting price based on monthly revenue if not already set
   if (monthlyRevenue && !form.getValues("startingPrice")) {
     form.setValue("startingPrice", monthlyRevenue * 10);
@@ -86,7 +85,7 @@ export function AuctionSection({
       }
     }
   }, [startingPrice, reservePrice, form]);
-  
+
   // Update noReserve flag whenever reservePrice changes
   useEffect(() => {
     // If reservePrice is 0, set noReserve to true
@@ -96,7 +95,6 @@ export function AuctionSection({
       form.setValue("noReserve", false);
     }
   }, [reservePrice, form]);
-  
   const watchMonthlyRevenue = form.watch("monthlyRevenue") || 0;
   const watchMonthlyChurnRate = form.watch("monthlyChurnRate") || 0;
   const watchGrossProfitMargin = (form.watch("grossProfitMargin") || 0) / 100;
@@ -200,8 +198,7 @@ export function AuctionSection({
         return "Select duration";
     }
   };
-  return (
-    <Card className="p-6 bg-white shadow-sm">
+  return <Card className="p-6 bg-white shadow-sm">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <span className={`text-sm ${!isAuction ? "text-primary" : "text-gray-500"}`}>Fixed Price</span>
@@ -269,11 +266,9 @@ export function AuctionSection({
             }} className="font-mono" />
                   </FormControl>
                   <FormMessage />
-                  {field.value === 0 && (
-                    <div className="text-xs text-amber-500 mt-1 flex items-center">
+                  {field.value === 0 && <div className="text-xs text-amber-500 mt-1 flex items-center">
                       This will be a no-reserve auction (will sell at any price)
-                    </div>
-                  )}
+                    </div>}
                 </FormItem>} />
           </div>
 
@@ -404,7 +399,7 @@ export function AuctionSection({
           <FormField control={form.control} name="price" render={({
         field
       }) => <FormItem>
-                <FormLabel className="flex items-center gap-2">
+                <FormLabel className="flex items-center gap-2 my-[17px]">
                   Fixed Price (USD)
                   <TooltipProvider>
                     <Tooltip>
@@ -447,6 +442,5 @@ export function AuctionSection({
           Click on either value to use it as your {isAuction ? "auction prices" : "fixed price"}.
         </p>
       </Card>
-    </Card>
-  );
+    </Card>;
 }
