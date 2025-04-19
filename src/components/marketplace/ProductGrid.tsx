@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { ProductCard } from "./ProductCard";
 import { ProductCardSkeleton } from "./product-card/ProductCardSkeleton";
@@ -11,6 +10,7 @@ type ProductWithSeller = Database['public']['Tables']['products']['Row'] & {
   no_reserve?: boolean;
   reserve_price?: number;
   listing_type?: string;
+  updated_at?: string; // Add updated_at to ensure it's passed down
 };
 
 interface ProductGridProps {
@@ -23,7 +23,14 @@ export const ProductGrid = ({ products, isLoading = false, onProductView }: Prod
   const session = useSession();
 
   // Debug the products to see if they have requires_nda property
-  console.log('ProductGrid - products with requires_nda:', products.map(p => ({ id: p.id, title: p.title, requires_nda: p.requires_nda })));
+  console.log('ProductGrid - products with requires_nda:', 
+    products.map(p => ({ 
+      id: p.id, 
+      title: p.title, 
+      requires_nda: p.requires_nda,
+      updated_at: p.updated_at
+    }))
+  );
   
   if (isLoading) {
     return (
@@ -85,6 +92,7 @@ export const ProductGrid = ({ products, isLoading = false, onProductView }: Prod
               price_decrement_interval: product.price_decrement_interval,
               no_reserve: product.no_reserve,
               listing_type: product.listing_type,
+              updated_at: product.updated_at,
               seller: {
                 id: product.seller?.id || "",
                 full_name: product.seller?.full_name || "Anonymous",

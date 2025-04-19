@@ -13,6 +13,7 @@ interface AuctionTimerProps {
   decrementInterval?: string;
   noReserve?: boolean;
   isDutchAuction?: boolean;
+  updatedAt?: string;
 }
 
 export function AuctionTimer({
@@ -22,9 +23,15 @@ export function AuctionTimer({
   priceDecrement,
   decrementInterval,
   noReserve,
-  isDutchAuction = false
+  isDutchAuction = false,
+  updatedAt
 }: AuctionTimerProps) {
-  const { timeLeft } = useAuctionTimer(auctionEndTime);
+  const { timeLeft } = useAuctionTimer(
+    auctionEndTime, 
+    decrementInterval, 
+    isDutchAuction,
+    updatedAt
+  );
   const [displayPrice, setDisplayPrice] = useState<number | undefined>(currentPrice);
   const [nextPrice, setNextPrice] = useState<number | undefined>();
   const [nextUpdateTime, setNextUpdateTime] = useState<string>("");
@@ -57,8 +64,9 @@ export function AuctionTimer({
       default: timeUnit = "minute";
     }
     
-    setNextUpdateTime(`Next price drop in 1 ${timeUnit}`);
-  }, [isDutchAuction, currentPrice, priceDecrement, decrementInterval, reservePrice]);
+    // Use the time left value from the hook which is more accurate
+    setNextUpdateTime(`Next price drop in ${timeLeft}`);
+  }, [isDutchAuction, currentPrice, priceDecrement, decrementInterval, reservePrice, timeLeft]);
   
   // Update displayed price
   useEffect(() => {
@@ -82,7 +90,9 @@ export function AuctionTimer({
           </p>
         </div>
         <div className="text-right">
-          <p className="text-xs text-gray-500">Time Left</p>
+          <p className="text-xs text-gray-500">
+            {isDutchAuction ? "Next Price Drop" : "Time Left"}
+          </p>
           <div className="flex items-center space-x-1">
             <Timer className="h-3 w-3 text-amber-800" />
             <p className="text-sm font-medium text-amber-800">{timeLeft || "Loading..."}</p>
@@ -97,7 +107,7 @@ export function AuctionTimer({
           </span>
           {nextPrice && (
             <span>
-              Next: ${nextPrice.toLocaleString()} ({nextUpdateTime})
+              Next: ${nextPrice.toLocaleString()}
             </span>
           )}
         </div>

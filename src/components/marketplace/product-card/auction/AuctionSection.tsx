@@ -14,6 +14,7 @@ interface AuctionSectionProps {
     highest_bid?: number;
     highest_bidder_id?: string;
     listing_type?: string;
+    updated_at?: string;
   };
 }
 
@@ -62,6 +63,7 @@ export function AuctionSection({ product }: AuctionSectionProps) {
       decrementInterval={product.price_decrement_interval}
       noReserve={product.no_reserve}
       isDutchAuction={isDutchAuction}
+      updatedAt={product.updated_at}
     />
   );
 }

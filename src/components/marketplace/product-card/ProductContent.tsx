@@ -25,6 +25,7 @@ interface ProductContentProps {
   price_decrement_interval?: string;
   no_reserve?: boolean;
   listing_type?: string;
+  updated_at?: string;
 }
 
 export function ProductContent({
@@ -47,7 +48,8 @@ export function ProductContent({
   price_decrement,
   price_decrement_interval,
   no_reserve,
-  listing_type
+  listing_type,
+  updated_at
 }: ProductContentProps) {
   // Ensure price values are either valid numbers or 0
   const displayPrice = (current_price || price || 0);
@@ -67,6 +69,8 @@ export function ProductContent({
           priceDecrement={price_decrement}
           decrementInterval={price_decrement_interval}
           noReserve={isNoReserve}
+          isDutchAuction={listing_type === 'dutch_auction'}
+          updatedAt={updated_at}
         />
       )}
       

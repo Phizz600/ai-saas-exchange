@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardHeader, CardFooter } from "@/components/ui/card";
 import { ProductContent } from "./product-card/ProductContent";
@@ -40,6 +39,7 @@ interface ProductCardProps {
     price_decrement_interval?: string;
     no_reserve?: boolean;
     listing_type?: string;
+    updated_at?: string;
   };
 }
 
@@ -148,6 +148,7 @@ export function ProductCard({ product }: ProductCardProps) {
           price_decrement_interval={product.price_decrement_interval}
           no_reserve={product.no_reserve}
           listing_type={product.listing_type}
+          updated_at={product.updated_at}
         />
         
         <CardFooter className="p-5 pt-0 space-y-3 flex flex-col">
