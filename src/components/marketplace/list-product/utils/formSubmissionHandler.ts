@@ -113,37 +113,42 @@ export const handleProductSubmission = async (
     }
 
     // If an image was selected, upload it
-    if (data.image) {
-      const fileName = `product-${insertedProduct.id}-${Date.now()}.${data.image.name.split('.').pop()}`;
-      
-      const { error: uploadError } = await supabase
-        .storage
-        .from('product_images')
-        .upload(fileName, data.image);
+    if (data.image && data.image.name) {
+      try {
+        const fileName = `product-${insertedProduct.id}-${Date.now()}.${data.image.name.split('.').pop()}`;
+        
+        const { error: uploadError } = await supabase
+          .storage
+          .from('product_images')
+          .upload(fileName, data.image);
 
-      if (uploadError) {
-        console.error("Error uploading image:", uploadError);
-        return { 
-          success: true, 
-          productId: insertedProduct.id,
-          error: "Product created but image upload failed"
-        };
-      }
+        if (uploadError) {
+          console.error("Error uploading image:", uploadError);
+          return { 
+            success: true, 
+            productId: insertedProduct.id,
+            error: "Product created but image upload failed"
+          };
+        }
 
-      // Get the public URL for the uploaded image
-      const { data: { publicUrl } } = supabase
-        .storage
-        .from('product_images')
-        .getPublicUrl(fileName);
+        // Get the public URL for the uploaded image
+        const { data: { publicUrl } } = supabase
+          .storage
+          .from('product_images')
+          .getPublicUrl(fileName);
 
-      // Update the product with the image URL
-      const { error: updateError } = await supabase
-        .from('products')
-        .update({ image_url: publicUrl })
-        .eq('id', insertedProduct.id);
+        // Update the product with the image URL
+        const { error: updateError } = await supabase
+          .from('products')
+          .update({ image_url: publicUrl })
+          .eq('id', insertedProduct.id);
 
-      if (updateError) {
-        console.error("Error updating product with image URL:", updateError);
+        if (updateError) {
+          console.error("Error updating product with image URL:", updateError);
+        }
+      } catch (imageError) {
+        console.error("Error processing image:", imageError);
+        // Continue with the process even if image upload fails
       }
     }
 
