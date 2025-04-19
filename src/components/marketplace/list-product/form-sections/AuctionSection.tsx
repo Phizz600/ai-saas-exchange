@@ -245,8 +245,8 @@ export function AuctionSection({
             {/* Reserve Price */}
             <FormField control={form.control} name="reservePrice" render={({
           field
-        }) => <FormItem>
-                  <FormLabel className="flex items-center gap-2">
+        }) => <FormItem className="my-[22px]">
+                  <FormLabel className="flex items-center gap-2 my-0">
                     Reserve Price (USD)
                     <TooltipProvider>
                       <Tooltip>
