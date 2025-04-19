@@ -1,4 +1,3 @@
-
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { UseFormReturn } from "react-hook-form";
@@ -6,7 +5,6 @@ import { ListProductFormData } from "../types";
 import { Card } from "@/components/ui/card";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
 const COMMON_DELIVERABLES = [{
   label: "Source Code",
   value: "source_code"
@@ -38,16 +36,14 @@ const COMMON_DELIVERABLES = [{
   label: "User Data",
   value: "user_data"
 }];
-
 interface SpecialNotesSectionProps {
   form: UseFormReturn<ListProductFormData>;
 }
-
 export function SpecialNotesSection({
   form
 }: SpecialNotesSectionProps) {
   return <Card className="p-6 bg-white shadow-sm">
-      <h2 className="text-2xl font-semibold mb-6">Deliverables</h2>
+      <h2 className="text-2xl font-semibold mb-6 text-violet-500">Deliverables</h2>
       
       <div className="space-y-8">
         <FormField control={form.control} name="deliverables" render={({
@@ -60,29 +56,19 @@ export function SpecialNotesSection({
               field
             }) => <FormItem key={deliverable.value}>
                           <FormControl>
-                            <Button 
-                              type="button" 
-                              variant="outline" 
-                              size="sm" 
-                              onClick={() => {
-                                const currentValues = field.value || [];
-                                const isSelected = currentValues.includes(deliverable.value);
-                                const updatedValues = isSelected 
-                                  ? currentValues.filter(value => value !== deliverable.value) 
-                                  : [...currentValues, deliverable.value];
-                                field.onChange(updatedValues);
-                              }} 
-                              className={`
-                                ${field.value?.includes(deliverable.value) 
-                                  ? "bg-[#8B5CF6] text-white" 
-                                  : "text-xs"}
+                            <Button type="button" variant="outline" size="sm" onClick={() => {
+                  const currentValues = field.value || [];
+                  const isSelected = currentValues.includes(deliverable.value);
+                  const updatedValues = isSelected ? currentValues.filter(value => value !== deliverable.value) : [...currentValues, deliverable.value];
+                  field.onChange(updatedValues);
+                }} className={`
+                                ${field.value?.includes(deliverable.value) ? "bg-[#8B5CF6] text-white" : "text-xs"}
                                 hover:bg-[#8B5CF6]/90 
                                 focus:scale-100 
                                 active:scale-100 
                                 transition-colors 
                                 duration-200
-                              `}
-                            >
+                              `}>
                               <Plus className="h-4 w-4" />
                               {deliverable.label}
                             </Button>
