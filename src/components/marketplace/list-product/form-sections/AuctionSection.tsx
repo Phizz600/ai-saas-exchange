@@ -1,3 +1,4 @@
+
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { UseFormReturn } from "react-hook-form";
@@ -15,9 +16,11 @@ import { calculateValuation, formatCurrency } from "../utils/valuationCalculator
 import { Card } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { Slider } from "@/components/ui/slider";
+
 interface AuctionSectionProps {
   form: UseFormReturn<ListProductFormData>;
 }
+
 export function AuctionSection({
   form
 }: AuctionSectionProps) {
@@ -29,15 +32,18 @@ export function AuctionSection({
     high: 0
   });
   const [recommendedDecrement, setRecommendedDecrement] = useState<number>(0);
+  
   const monthlyRevenue = form.watch("monthlyRevenue");
   const isAuction = form.watch("isAuction");
   const startingPrice = form.watch("startingPrice");
   const reservePrice = form.watch("reservePrice");
 
   // Auto-set starting price based on monthly revenue if not already set
-  if (monthlyRevenue && !form.getValues("startingPrice")) {
-    form.setValue("startingPrice", monthlyRevenue * 10);
-  }
+  useEffect(() => {
+    if (monthlyRevenue && !form.getValues("startingPrice")) {
+      form.setValue("startingPrice", monthlyRevenue * 10);
+    }
+  }, [monthlyRevenue, form]);
 
   // Auto-calculate reserve price as 60% of starting price if not already set
   useEffect(() => {
@@ -95,12 +101,27 @@ export function AuctionSection({
       form.setValue("noReserve", false);
     }
   }, [reservePrice, form]);
+
+  // FIXED: Set price when switching between auction and fixed price
+  useEffect(() => {
+    if (isAuction) {
+      // When switching to auction, set price to null to avoid constraint error
+      form.setValue("price", undefined);
+    } else {
+      // When switching to fixed price, initialize with a value if empty
+      if (!form.getValues("price") && startingPrice) {
+        form.setValue("price", startingPrice);
+      }
+    }
+  }, [isAuction, startingPrice, form]);
+  
   const watchMonthlyRevenue = form.watch("monthlyRevenue") || 0;
   const watchMonthlyChurnRate = form.watch("monthlyChurnRate") || 0;
   const watchGrossProfitMargin = (form.watch("grossProfitMargin") || 0) / 100;
   const watchIndustry = form.watch("industry") || "";
   const watchHasPatents = form.watch("hasPatents") || false;
   const watchCustomerAcquisitionCost = form.watch("customerAcquisitionCost");
+  
   const formatCurrencyInput = (value: string) => {
     let numericValue = value.replace(/[^0-9.]/g, '');
     const parts = numericValue.split('.');
@@ -121,10 +142,12 @@ export function AuctionSection({
     }
     return '';
   };
+  
   const parseCurrencyValue = (value: string) => {
     const numericValue = parseFloat(value.replace(/[$,]/g, ''));
     return isNaN(numericValue) ? 0 : numericValue;
   };
+  
   const handleValuationClick = (e: React.MouseEvent, value: number, isHigh: boolean) => {
     e.preventDefault();
     if (isAuction) {
@@ -161,6 +184,7 @@ export function AuctionSection({
     }
     form.setValue("auctionEndTime", endDate);
   };
+  
   useEffect(() => {
     const updateValuation = async () => {
       const newValuation = await calculateValuation(watchMonthlyRevenue, watchMonthlyChurnRate / 100, watchGrossProfitMargin, watchIndustry, watchHasPatents, undefined, undefined, watchCustomerAcquisitionCost);
@@ -198,6 +222,7 @@ export function AuctionSection({
         return "Select duration";
     }
   };
+  
   return <Card className="p-6 bg-white shadow-sm">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">

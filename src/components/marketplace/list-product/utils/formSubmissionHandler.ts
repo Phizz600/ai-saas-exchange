@@ -54,11 +54,14 @@ export const handleProductSubmission = async (
       ? [data.techStack] 
       : (Array.isArray(data.techStack) ? data.techStack : []);
 
+    // FIXED: Ensure price is always set for both auction and fixed price listings
+    let productPrice = data.isAuction ? null : data.price;
+    
     // Prepare the product data
     const productData = {
       title: data.title,
       description: data.description,
-      price: data.isAuction ? null : data.price, // Only set price for fixed-price listings
+      price: productPrice, // Use the calculated value
       category: data.category,
       stage: data.stage,
       industry: data.industry,
@@ -84,6 +87,8 @@ export const handleProductSubmission = async (
       price_decrement: data.isAuction ? data.priceDecrement : null,
       price_decrement_interval: data.isAuction ? data.priceDecrementInterval : null,
       no_reserve: data.isAuction ? data.noReserve : null,
+      // FIXED: For auctions, use starting_price as current_price
+      current_price: data.isAuction ? data.startingPrice : data.price,
       // Status and user fields
       status: "pending",
       seller_id: user.id, // Using the correct seller_id field
@@ -232,13 +237,16 @@ export const handleProductUpdate = async (
       ? [data.techStack]
       : (Array.isArray(data.techStack) ? data.techStack : undefined);
 
+    // FIXED: Handle price consistently for fixed price and auction listings
+    let productPrice = data.isAuction ? null : data.price;
+    
     // Prepare the product data for update
     const productData: Record<string, any> = {};
     
     // Map form fields to database fields
     if (data.title) productData.title = data.title;
     if (data.description) productData.description = data.description;
-    if (data.price !== undefined) productData.price = data.price;
+    if (productPrice !== undefined) productData.price = productPrice;
     if (data.category) productData.category = data.category;
     if (data.stage) productData.stage = data.stage;
     if (data.industry) productData.industry = data.industry;
@@ -258,10 +266,21 @@ export const handleProductUpdate = async (
     // Handle auction parameters using reserve_price instead of min_price
     if (data.isAuction) {
       if (data.reservePrice !== undefined) productData.reserve_price = data.reservePrice;
-      if (data.startingPrice !== undefined) productData.starting_price = data.startingPrice;
+      if (data.startingPrice !== undefined) {
+        productData.starting_price = data.startingPrice;
+        // FIXED: For auctions, update current_price with starting_price
+        productData.current_price = data.startingPrice;
+      }
       if (data.priceDecrement !== undefined) productData.price_decrement = data.priceDecrement;
       if (data.priceDecrementInterval) productData.price_decrement_interval = data.priceDecrementInterval;
       if (data.noReserve !== undefined) productData.no_reserve = data.noReserve;
+      
+      // Set the listing_type for auction
+      productData.listing_type = 'dutch_auction';
+    } else if (data.price !== undefined) {
+      // FIXED: For fixed price listings, update current_price with price
+      productData.current_price = data.price;
+      productData.listing_type = 'fixed_price';
     }
     
     // Update the product
