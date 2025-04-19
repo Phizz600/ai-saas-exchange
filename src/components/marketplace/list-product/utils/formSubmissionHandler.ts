@@ -54,18 +54,28 @@ export const handleProductSubmission = async (
       ? [data.techStack] 
       : (Array.isArray(data.techStack) ? data.techStack : []);
 
+    // Fix for price null constraint: Ensure there's always a price value
+    // For auctions, use the starting price as the price value
+    const price = data.isAuction 
+      ? data.startingPrice // Use starting price for auctions
+      : data.price;
+      
+    if (!price) {
+      return { success: false, error: "Price is required. Please enter a valid price." };
+    }
+
     // Prepare the product data
     const productData = {
       title: data.title,
       description: data.description,
-      price: data.isAuction ? null : data.price, // Only set price for fixed-price listings
+      price: price, // This is now always set to a value
       category: data.category,
       stage: data.stage,
       industry: data.industry,
       monthly_revenue: data.monthlyRevenue,
-      monthly_traffic: monthlyTrafficValue, // Use the converted numeric value
-      active_users: data.activeUsers, // Keep as string for this field
-      gross_profit_margin: data.grossProfitMargin, // Using the correct column name 'gross_profit_margin'
+      monthly_traffic: monthlyTrafficValue,
+      active_users: data.activeUsers,
+      gross_profit_margin: data.grossProfitMargin,
       tech_stack: techStackArray,
       tech_stack_other: data.techStackOther,
       team_size: data.teamSize,
@@ -80,13 +90,14 @@ export const handleProductSubmission = async (
         ? calculateAuctionEndTime(data.auctionDuration)
         : null,
       starting_price: data.isAuction ? data.startingPrice : null,
-      reserve_price: data.isAuction ? data.reservePrice : null, // Explicitly use reserve_price for auctions
+      reserve_price: data.isAuction ? data.reservePrice : null,
       price_decrement: data.isAuction ? data.priceDecrement : null,
       price_decrement_interval: data.isAuction ? data.priceDecrementInterval : null,
       no_reserve: data.isAuction ? data.noReserve : null,
+      current_price: data.isAuction ? data.startingPrice : null, // Set current_price for auctions
       // Status and user fields
       status: "pending",
-      seller_id: user.id, // Using the correct seller_id field
+      seller_id: user.id,
       payment_status: "pending",
       product_link: data.productLink,
     };
@@ -232,13 +243,20 @@ export const handleProductUpdate = async (
       ? [data.techStack]
       : (Array.isArray(data.techStack) ? data.techStack : undefined);
 
+    // Fix for price null constraint: Ensure there's always a price value
+    // For auctions, use the starting price as the price if price is not set
+    let price = data.price;
+    if (data.isAuction && !price && data.startingPrice) {
+      price = data.startingPrice;
+    }
+
     // Prepare the product data for update
     const productData: Record<string, any> = {};
     
     // Map form fields to database fields
     if (data.title) productData.title = data.title;
     if (data.description) productData.description = data.description;
-    if (data.price !== undefined) productData.price = data.price;
+    if (price !== undefined) productData.price = price;
     if (data.category) productData.category = data.category;
     if (data.stage) productData.stage = data.stage;
     if (data.industry) productData.industry = data.industry;
@@ -255,13 +273,18 @@ export const handleProductUpdate = async (
     if (data.specialNotes) productData.special_notes = data.specialNotes;
     if (data.productLink) productData.product_link = data.productLink;
     
-    // Handle auction parameters using reserve_price instead of min_price
+    // Handle auction parameters
     if (data.isAuction) {
       if (data.reservePrice !== undefined) productData.reserve_price = data.reservePrice;
-      if (data.startingPrice !== undefined) productData.starting_price = data.startingPrice;
+      if (data.startingPrice !== undefined) {
+        productData.starting_price = data.startingPrice;
+        // Also update current_price if this is an auction and no bids have been placed
+        productData.current_price = data.startingPrice;
+      }
       if (data.priceDecrement !== undefined) productData.price_decrement = data.priceDecrement;
       if (data.priceDecrementInterval) productData.price_decrement_interval = data.priceDecrementInterval;
       if (data.noReserve !== undefined) productData.no_reserve = data.noReserve;
+      productData.listing_type = 'dutch_auction';
     }
     
     // Update the product
@@ -269,7 +292,7 @@ export const handleProductUpdate = async (
       .from('products')
       .update(productData)
       .eq('id', productId)
-      .eq('seller_id', user.id); // Using the correct seller_id field
+      .eq('seller_id', user.id);
 
     if (updateError) {
       console.error("Error updating product:", updateError);
