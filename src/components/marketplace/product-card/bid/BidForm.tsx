@@ -19,10 +19,11 @@ interface BidFormProps {
 
 export function BidForm({ productId, productTitle, currentPrice }: BidFormProps) {
   const [bidCancelled, setBidCancelled] = useState(false);
+  const [bidError, setBidError] = useState<string | null>(null);
   
   const { highestBid, isLoadingBids, fetchError } = useBidRealtime(productId);
   
-  const { bidError, validateBid, clearBidError } = useBidValidation({
+  const { bidError: validationError, validateBid, clearBidError } = useBidValidation({
     currentPrice,
     highestBid,
     onValidationError: (error) => setBidError(error)
@@ -67,6 +68,7 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
 
   const validateAndBid = () => {
     clearBidError();
+    setBidError(null);
     setBidCancelled(false);
     
     if (validateBid(bidAmount)) {
@@ -102,7 +104,7 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
 
   return (
     <>
-      <BidErrorAlert bidError={bidError} />
+      <BidErrorAlert bidError={bidError || validationError} />
       <PaymentErrorAlert paymentError={paymentError} />
       
       {bidCancelled && (
