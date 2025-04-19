@@ -399,7 +399,7 @@ export function AuctionSection({
           <FormField control={form.control} name="price" render={({
         field
       }) => <FormItem>
-                <FormLabel className="flex items-center gap-2 my-[17px]">
+                <FormLabel className="flex items-center gap-2 my-[16px]">
                   Fixed Price (USD)
                   <TooltipProvider>
                     <Tooltip>
