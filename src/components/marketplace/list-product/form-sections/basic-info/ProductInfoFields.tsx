@@ -5,7 +5,7 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/comp
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 interface ProductInfoFieldsProps {
   form: UseFormReturn<ListProductFormData>;
@@ -33,8 +33,6 @@ export function ProductInfoFields({
   form
 }: ProductInfoFieldsProps) {
   const categoryValue = form.watch("category");
-  const [charCount, setCharCount] = useState(0);
-  const MAX_CHARS = 75;
 
   // Set categoryOther field value to null when category is not "other"
   useEffect(() => {
@@ -70,19 +68,9 @@ export function ProductInfoFields({
               <Textarea 
                 placeholder="Describe your product in detail" 
                 className="resize-none min-h-[100px]" 
-                maxLength={MAX_CHARS}
-                onChange={(e) => {
-                  setCharCount(e.target.value.length);
-                  field.onChange(e);
-                }}
-                value={field.value}
+                {...field}
               />
             </FormControl>
-            <div className="flex justify-end mt-1">
-              <span className={`text-xs ${charCount > MAX_CHARS - 10 ? 'text-red-500' : 'text-gray-500'}`}>
-                {charCount}/{MAX_CHARS}
-              </span>
-            </div>
             <FormMessage />
           </FormItem>
         )} 
