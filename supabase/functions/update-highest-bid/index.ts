@@ -51,9 +51,60 @@ serve(async (req) => {
     const isDutchAuction = product.listing_type === 'dutch_auction';
     
     if (!isDutchAuction) {
-      console.log("Not a Dutch auction, skipping special handling");
+      console.log("Not a Dutch auction, using standard highest bid logic");
+      
+      // For standard auctions, only update if the new bid is higher
+      if (!product.highest_bid || bidAmount > product.highest_bid) {
+        const { data: updatedProduct, error: updateError } = await supabase
+          .from('products')
+          .update({
+            highest_bid: bidAmount,
+            highest_bidder_id: bidderId,
+            current_price: bidAmount
+          })
+          .eq('id', productId)
+          .select();
+          
+        if (updateError) {
+          console.error(`Error updating product: ${updateError.message}`);
+          return new Response(
+            JSON.stringify({ error: `Error updating product: ${updateError.message}` }),
+            { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
+        
+        return new Response(
+          JSON.stringify({ 
+            success: true, 
+            message: "Highest bid updated successfully",
+            bidAmount: bidAmount,
+            bidderId: bidderId
+          }),
+          { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      } else {
+        return new Response(
+          JSON.stringify({ 
+            success: false, 
+            message: "Bid not higher than current highest bid",
+            currentHighestBid: product.highest_bid,
+            newBid: bidAmount
+          }),
+          { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+    }
+    
+    // For Dutch auctions, check if there's already a winner
+    if (product.highest_bid && product.highest_bidder_id) {
+      console.log(`Dutch auction already has a winner: Bidder ${product.highest_bidder_id} with bid ${product.highest_bid}`);
       return new Response(
-        JSON.stringify({ success: false, message: "Not a Dutch auction" }),
+        JSON.stringify({ 
+          success: false, 
+          message: "This Dutch auction already has a winner. The first bidder wins in a Dutch auction.",
+          winningBid: product.highest_bid,
+          winningBidder: product.highest_bidder_id
+        }),
         { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }

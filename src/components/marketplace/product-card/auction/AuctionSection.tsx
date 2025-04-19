@@ -13,11 +13,20 @@ interface AuctionSectionProps {
     no_reserve?: boolean;
     highest_bid?: number;
     highest_bidder_id?: string;
+    listing_type?: string;
   };
 }
 
 export function AuctionSection({ product }: AuctionSectionProps) {
-  const isAuctionEnded = product.auction_end_time && new Date(product.auction_end_time) < new Date();
+  // Check if we're dealing with a Dutch auction
+  const isDutchAuction = product.listing_type === 'dutch_auction' || 
+    (!!product.price_decrement && !!product.price_decrement_interval);
+  
+  // Check if auction has ended either by time or by someone winning
+  const isAuctionEnded = 
+    (product.auction_end_time && new Date(product.auction_end_time) < new Date()) || 
+    (isDutchAuction && !!product.highest_bid && !!product.highest_bidder_id);
+  
   const hasWinner = !!product.highest_bid && !!product.highest_bidder_id;
   
   // If auction has ended, show appropriate message
@@ -33,8 +42,8 @@ export function AuctionSection({ product }: AuctionSectionProps) {
     );
   }
   
-  // If auction has a winner but hasn't technically ended yet (due to timing)
-  if (hasWinner) {
+  // If auction has a winner (in a Dutch auction, the first valid bid wins)
+  if (isDutchAuction && hasWinner) {
     return (
       <div className="w-full p-3 text-center bg-amber-50 rounded-md">
         <p className="text-sm font-medium text-amber-800">
@@ -52,6 +61,7 @@ export function AuctionSection({ product }: AuctionSectionProps) {
       priceDecrement={product.price_decrement}
       decrementInterval={product.price_decrement_interval}
       noReserve={product.no_reserve}
+      isDutchAuction={isDutchAuction}
     />
   );
 }

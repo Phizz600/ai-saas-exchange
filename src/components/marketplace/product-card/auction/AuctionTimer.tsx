@@ -1,7 +1,9 @@
 
-import { Clock, TrendingDown } from "lucide-react";
-import { formatCurrency } from "@/lib/utils";
 import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+import { ArrowRight, Timer } from "lucide-react";
+import { useAuctionTimer } from "../useAuctionTimer";
 
 interface AuctionTimerProps {
   auctionEndTime?: string;
@@ -10,6 +12,7 @@ interface AuctionTimerProps {
   priceDecrement?: number;
   decrementInterval?: string;
   noReserve?: boolean;
+  isDutchAuction?: boolean;
 }
 
 export function AuctionTimer({
@@ -18,82 +21,96 @@ export function AuctionTimer({
   reservePrice,
   priceDecrement,
   decrementInterval,
-  noReserve
+  noReserve,
+  isDutchAuction = false
 }: AuctionTimerProps) {
-  const [timeRemaining, setTimeRemaining] = useState<string>("");
+  const { timeLeft } = useAuctionTimer(auctionEndTime);
+  const [displayPrice, setDisplayPrice] = useState<number | undefined>(currentPrice);
+  const [nextPrice, setNextPrice] = useState<number | undefined>();
+  const [nextUpdateTime, setNextUpdateTime] = useState<string>("");
   
+  // Calculate the next price drop time
   useEffect(() => {
-    if (!auctionEndTime) return;
+    if (!isDutchAuction || !priceDecrement || !decrementInterval || !currentPrice) {
+      return;
+    }
     
-    // Update time remaining
-    const calculateTimeRemaining = () => {
-      const now = new Date();
-      const endTime = new Date(auctionEndTime);
-      const diffMs = endTime.getTime() - now.getTime();
-      
-      if (diffMs <= 0) {
-        setTimeRemaining("Auction ended");
-        return;
-      }
-      
-      // Calculate days, hours, minutes, seconds
-      const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((diffMs % (1000 * 60)) / 1000);
-      
-      if (days > 0) {
-        setTimeRemaining(`${days}d ${hours}h ${minutes}m`);
-      } else if (hours > 0) {
-        setTimeRemaining(`${hours}h ${minutes}m ${seconds}s`);
-      } else {
-        setTimeRemaining(`${minutes}m ${seconds}s`);
-      }
-    };
+    // No need to calculate next price if it would go below reserve
+    if (reservePrice && currentPrice - priceDecrement < reservePrice) {
+      setNextPrice(undefined);
+      setNextUpdateTime("Floor price reached");
+      return;
+    }
     
-    calculateTimeRemaining();
-    const timer = setInterval(calculateTimeRemaining, 1000);
+    // Calculate next price after decrement
+    const nextPriceValue = currentPrice - priceDecrement;
+    setNextPrice(nextPriceValue);
     
-    return () => clearInterval(timer);
-  }, [auctionEndTime]);
+    // Calculate when the next price update will happen
+    let timeUnit = "";
+    switch(decrementInterval) {
+      case 'minute': timeUnit = "minute"; break;
+      case 'hour': timeUnit = "hour"; break;
+      case 'day': timeUnit = "day"; break;
+      case 'week': timeUnit = "week"; break;
+      case 'month': timeUnit = "month"; break;
+      default: timeUnit = "minute";
+    }
+    
+    setNextUpdateTime(`Next price drop in 1 ${timeUnit}`);
+  }, [isDutchAuction, currentPrice, priceDecrement, decrementInterval, reservePrice]);
   
-  if (!auctionEndTime) return null;
+  // Update displayed price
+  useEffect(() => {
+    setDisplayPrice(currentPrice);
+  }, [currentPrice]);
+
+  // Format reserve price for display
+  const formattedReservePrice = noReserve 
+    ? "No Reserve" 
+    : reservePrice 
+      ? `$${reservePrice.toLocaleString()}`
+      : "Not set";
   
   return (
-    <div className="bg-amber-50 rounded-t-md p-3 border-b border-amber-100">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center text-amber-800">
-          <TrendingDown className="h-4 w-4 mr-1.5" />
-          <span className="text-sm font-medium">Dutch Auction</span>
+    <div className="w-full bg-amber-50 rounded-md p-3">
+      <div className="flex justify-between items-center mb-2">
+        <div>
+          <p className="text-xs text-gray-500">Current Price</p>
+          <p className="text-lg font-bold text-amber-800">
+            ${displayPrice?.toLocaleString() || "Loading..."}
+          </p>
         </div>
-        {priceDecrement && decrementInterval && <div className="text-xs text-amber-700">
-            Drops ${priceDecrement} per {decrementInterval}
-          </div>}
+        <div className="text-right">
+          <p className="text-xs text-gray-500">Time Left</p>
+          <div className="flex items-center space-x-1">
+            <Timer className="h-3 w-3 text-amber-800" />
+            <p className="text-sm font-medium text-amber-800">{timeLeft || "Loading..."}</p>
+          </div>
+        </div>
       </div>
       
-      <div className="mt-2 text-xs text-amber-700">
-        {currentPrice !== undefined && (
-          <div className="font-medium mb-1">
-            Current price: {formatCurrency(currentPrice)}
-          </div>
-        )}
-        
-        {timeRemaining && (
-          <div className="flex items-center">
-            <Clock className="h-3 w-3 mr-1" />
-            <span>Time remaining: {timeRemaining}</span>
-          </div>
-        )}
-      </div>
+      {isDutchAuction && priceDecrement && (
+        <div className="flex justify-between items-center text-xs text-gray-500 mb-2">
+          <span>
+            Reserve: {formattedReservePrice}
+          </span>
+          {nextPrice && (
+            <span>
+              Next: ${nextPrice.toLocaleString()} ({nextUpdateTime})
+            </span>
+          )}
+        </div>
+      )}
       
-      {noReserve && <div className="mt-1 text-xs text-amber-700 flex items-center">
-        <span className="bg-amber-200 text-amber-800 text-xs px-1.5 py-0.5 rounded">No Reserve</span>
-        <span className="ml-1">Sells at any price!</span>
-      </div>}
-      
-      {!noReserve && reservePrice !== undefined && reservePrice > 0 && <div className="mt-1 text-xs text-amber-700">
-        Reserve price: {formatCurrency(reservePrice)}
-      </div>}
+      <Button 
+        asChild 
+        className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 transition-opacity"
+      >
+        <Link to={`/product/${auctionEndTime ? `?bid=true` : ''}`} className="flex items-center justify-center">
+          {isDutchAuction ? "Place Bid Now" : "View Auction"} <ArrowRight className="ml-1 h-4 w-4" />
+        </Link>
+      </Button>
     </div>
   );
 }

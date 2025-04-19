@@ -28,7 +28,7 @@ Deno.serve(async (req) => {
     // Get all active Dutch auctions without a highest bid - ONLY get approved products (status='active')
     const { data: auctions, error: fetchError } = await supabase
       .from('products')
-      .select('id, price_decrement, price_decrement_interval, current_price, reserve_price, starting_price, auction_end_time, highest_bid, created_at, updated_at, status, no_reserve')
+      .select('id, price_decrement, price_decrement_interval, current_price, reserve_price, starting_price, auction_end_time, highest_bid, created_at, updated_at, status, no_reserve, listing_type')
       .eq('status', 'active') // Only process active/approved products
       .gte('auction_end_time', new Date().toISOString())
       .is('highest_bid', null) // Only update auctions without a bid yet
@@ -44,7 +44,7 @@ Deno.serve(async (req) => {
     // Process each auction
     const updates = [];
     for (const auction of auctions || []) {
-      // Skip auctions that already have a highest bid
+      // Skip auctions that already have a highest bid - first bid wins in Dutch auctions
       if (auction.highest_bid) {
         console.log(`Auction ${auction.id} has highest bid of ${auction.highest_bid}, skipping automated price decrease`);
         continue;
@@ -83,9 +83,16 @@ Deno.serve(async (req) => {
 
       // Calculate the expected price based on decrementCount
       const totalDecrement = decrementCount * (auction.price_decrement || 0);
+      
+      // If this is a no-reserve auction, allow the price to go as low as 1
+      let minPrice = auction.reserve_price || 0;
+      if (auction.no_reserve === true) {
+        minPrice = 1;
+      }
+      
       const expectedPrice = Math.max(
         auction.starting_price - totalDecrement, 
-        auction.reserve_price || 0
+        minPrice
       );
       
       // Only update if the current price is different from the expected price

@@ -17,6 +17,8 @@ export function useAuctionPricing(product: {
   status?: string;
   no_reserve?: boolean;
   listing_type?: string;
+  highest_bid?: number;
+  highest_bidder_id?: string;
 }) {
   const [timeLeft, setTimeLeft] = useState<string>("");
   const [currentPrice, setCurrentPrice] = useState<number | null>(product.current_price || null);
@@ -25,6 +27,8 @@ export function useAuctionPricing(product: {
   useEffect(() => {
     // Use listing_type as the primary way to check if this is an auction
     const isAuction = product.listing_type === 'dutch_auction' || !!product.auction_end_time;
+    const isDutchAuction = product.listing_type === 'dutch_auction' || 
+      (!!product.price_decrement && !!product.price_decrement_interval);
     
     if (!isAuction || !product.auction_end_time) return;
 
@@ -32,6 +36,14 @@ export function useAuctionPricing(product: {
       const now = new Date().getTime();
       const endTime = new Date(product.auction_end_time!).getTime();
       const difference = endTime - now;
+
+      // For Dutch auctions, if there's a highest bid, the auction has ended
+      // The first valid bid wins in Dutch auctions
+      if (isDutchAuction && product.highest_bid && product.highest_bidder_id) {
+        setTimeLeft("Auction ended - winner found");
+        setIsAuctionEnded(true);
+        return;
+      }
 
       if (difference <= 0) {
         setTimeLeft("Auction ended");
@@ -52,12 +64,20 @@ export function useAuctionPricing(product: {
     
     // Also calculate the current price if it's a Dutch auction
     const updateCurrentPrice = () => {
+      // Don't update price if auction has a winner or has ended
+      if (isAuctionEnded || (isDutchAuction && product.highest_bid)) {
+        // If there's a highest bid, use that as the final price
+        if (product.highest_bid) {
+          setCurrentPrice(product.highest_bid);
+        }
+        return;
+      }
+      
       if (
         product.starting_price !== undefined &&
         product.price_decrement !== undefined &&
         product.price_decrement_interval !== undefined &&
-        product.created_at !== undefined &&
-        !isAuctionEnded
+        product.created_at !== undefined
       ) {
         // Determine reserve price - treat it as 0 for no-reserve auctions
         const reservePrice = product.no_reserve || product.reserve_price === 0 ? 0 : (product.reserve_price || 0);
@@ -100,6 +120,8 @@ export function useAuctionPricing(product: {
     product.status,
     product.no_reserve,
     product.listing_type,
+    product.highest_bid,
+    product.highest_bidder_id,
     isAuctionEnded
   ]);
 

@@ -281,9 +281,6 @@ export function useBidForm({ productId, productTitle, currentPrice, onValidation
         // Don't throw here, as the bid is already placed
       } else {
         console.log('Result from update-highest-bid function:', updateResult);
-        if (!updateResult.success) {
-          console.warn('Bid not set as highest bid:', updateResult.message);
-        }
       }
       
       // Show success message
@@ -309,7 +306,6 @@ export function useBidForm({ productId, productTitle, currentPrice, onValidation
     }
   };
 
-  // When dialog is closed without completion or payment is cancelled
   const handleBidCancellation = async () => {
     try {
       if (!bidId) {
