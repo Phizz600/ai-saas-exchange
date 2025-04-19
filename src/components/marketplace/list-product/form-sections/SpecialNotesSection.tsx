@@ -69,7 +69,7 @@ export function SpecialNotesSection({
                                 transition-colors 
                                 duration-200
                               `}>
-                              <Plus className="h-4 w-4" />
+                              <Plus className="h-4 w-4 rounded-2xl bg-slate-50" />
                               {deliverable.label}
                             </Button>
                           </FormControl>
