@@ -88,7 +88,7 @@ export function useBidForm({
         throw new Error(`Failed to update bid: ${updateError.message}`);
       }
       
-      toast("Bid placed successfully!", {
+      toast.success("Bid placed successfully!", {
         description: `Your bid of $${parseFloat(bidAmount).toLocaleString()} has been placed.`
       });
       
@@ -100,9 +100,8 @@ export function useBidForm({
       if (onValidationError) {
         onValidationError(err.message || "Failed to complete bid submission");
       }
-      toast("Error", {
-        description: err.message || "An unexpected error occurred",
-        variant: "destructive"
+      toast.error("Error", {
+        description: err.message || "An unexpected error occurred"
       });
     }
   };

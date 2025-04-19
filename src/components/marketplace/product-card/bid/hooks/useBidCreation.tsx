@@ -19,9 +19,8 @@ export function useBidCreation({ productId, onValidationError }: UseBidCreationP
       // Get current user
       const { data: { user }, error: userError } = await supabase.auth.getUser();
       if (userError || !user) {
-        toast("Authentication required", {
-          description: "Please sign in to place a bid",
-          variant: "destructive"
+        toast.error("Authentication required", {
+          description: "Please sign in to place a bid"
         });
         return null;
       }

@@ -28,9 +28,8 @@ export function usePaymentProcessing({ productId, onSuccess }: UsePaymentProcess
       if (error || !clientSecret) {
         console.error('Payment authorization error:', error);
         setPaymentError(error || "Failed to create payment authorization");
-        toast("Payment setup failed", {
-          description: error || "There was a problem setting up the payment",
-          variant: "destructive"
+        toast.error("Payment setup failed", {
+          description: error || "There was a problem setting up the payment"
         });
         return false;
       }
