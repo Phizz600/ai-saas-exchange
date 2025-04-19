@@ -23,10 +23,10 @@ interface AuctionSectionProps {
 export function AuctionSection({
   form
 }: AuctionSectionProps) {
-  const [valuation, setValuation] = useState<{
+  const [valuation, setValuation<{
     low: number;
     high: number;
-  }>({
+  }> = useState({
     low: 0,
     high: 0
   });
@@ -40,14 +40,17 @@ export function AuctionSection({
   // Auto-set starting price based on monthly revenue if not already set
   useEffect(() => {
     if (monthlyRevenue && !form.getValues("startingPrice")) {
-      form.setValue("startingPrice", monthlyRevenue * 10);
+      // Ensure we have a positive value
+      const price = Math.max(1, monthlyRevenue * 10);
+      form.setValue("startingPrice", price);
     }
   }, [monthlyRevenue, form]);
 
   // Auto-calculate reserve price as 60% of starting price if not already set
   useEffect(() => {
     if (startingPrice && isAuction && !form.getValues("reservePrice")) {
-      const calculatedReserve = Math.round(startingPrice * 0.6);
+      // Ensure reserve price is at least 1
+      const calculatedReserve = Math.max(1, Math.round(startingPrice * 0.6));
       form.setValue("reservePrice", calculatedReserve);
     }
   }, [startingPrice, isAuction, form]);
@@ -104,12 +107,24 @@ export function AuctionSection({
   // CRITICAL FIX: Handle price field value based on auction setting
   useEffect(() => {
     if (isAuction) {
-      // When switching to auction, clear the price field to avoid constraint error
-      form.setValue("price", undefined);
+      // When switching to auction mode, ensure we have valid values for auction fields
+      if (startingPrice && startingPrice > 0) {
+        // Clear the price field when in auction mode
+        form.setValue("price", undefined);
+      } else if (form.getValues("price")) {
+        // If we have a price but no starting price, use the price as starting price
+        form.setValue("startingPrice", Math.max(1, form.getValues("price") || 1));
+        form.setValue("price", undefined);
+      } else {
+        // Make sure we have some valid starting price
+        form.setValue("startingPrice", 1);
+      }
     } else {
       // When switching to fixed price, initialize with a value if empty
-      if (!form.getValues("price") && startingPrice) {
-        form.setValue("price", startingPrice);
+      if (!form.getValues("price")) {
+        // Use starting price if available, or 1 as minimum value
+        const price = startingPrice && startingPrice > 0 ? startingPrice : 1;
+        form.setValue("price", price);
       }
     }
   }, [isAuction, startingPrice, form]);
@@ -144,19 +159,23 @@ export function AuctionSection({
   
   const parseCurrencyValue = (value: string) => {
     const numericValue = parseFloat(value.replace(/[$,]/g, ''));
-    return isNaN(numericValue) ? 0 : numericValue;
+    // Ensure parsed value is positive or at minimum 1
+    return isNaN(numericValue) || numericValue <= 0 ? 1 : numericValue;
   };
   
   const handleValuationClick = (e: React.MouseEvent, value: number, isHigh: boolean) => {
     e.preventDefault();
     if (isAuction) {
       if (isHigh) {
-        form.setValue("startingPrice", value);
+        // Ensure we have a positive value
+        form.setValue("startingPrice", Math.max(1, value));
       } else {
-        form.setValue("reservePrice", value);
+        // Ensure we have a positive value for reserve price as well
+        form.setValue("reservePrice", Math.max(1, value));
       }
     } else {
-      form.setValue("price", value);
+      // Ensure we have a positive value for fixed price
+      form.setValue("price", Math.max(1, value));
     }
   };
 
@@ -260,7 +279,7 @@ export function AuctionSection({
                   <FormControl>
                     <Input type="text" placeholder="Enter starting price" value={formatCurrencyInput(field.value?.toString() || '')} onChange={e => {
               const value = parseCurrencyValue(e.target.value);
-              field.onChange(value > 0 ? value : undefined);
+              field.onChange(value);
             }} className="font-mono" />
                   </FormControl>
                   <FormMessage />
@@ -286,7 +305,7 @@ export function AuctionSection({
                   <FormControl>
                     <Input type="text" placeholder="Enter reserve price" value={formatCurrencyInput(field.value?.toString() || '')} onChange={e => {
               const value = parseCurrencyValue(e.target.value);
-              field.onChange(value >= 0 ? value : undefined);
+              field.onChange(value >= 0 ? value : 0);
             }} className="font-mono" />
                   </FormControl>
                   <FormMessage />
@@ -355,7 +374,7 @@ export function AuctionSection({
                   <FormControl>
                     <Input type="text" placeholder="Enter price decrement" value={formatCurrencyInput(field.value?.toString() || '')} onChange={e => {
               const value = parseCurrencyValue(e.target.value);
-              field.onChange(value > 0 ? value : undefined);
+              field.onChange(value);
             }} className="font-mono" />
                   </FormControl>
                   {recommendedDecrement > 0 && <div className="text-xs text-muted-foreground mt-1 flex items-center">
@@ -439,7 +458,7 @@ export function AuctionSection({
                 <FormControl>
                   <Input type="text" placeholder="Enter price" value={formatCurrencyInput(field.value?.toString() || '')} onChange={e => {
             const value = parseCurrencyValue(e.target.value);
-            field.onChange(value > 0 ? value : undefined);
+            field.onChange(value);
           }} className="font-mono" />
                 </FormControl>
                 <FormMessage />

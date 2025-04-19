@@ -32,7 +32,9 @@ export const MonetizationSection = ({ form }: MonetizationSectionProps) => {
   };
 
   const parseCurrencyValue = (value: string) => {
-    return parseFloat(value.replace(/[$,]/g, '')) || 0;
+    const parsed = parseFloat(value.replace(/[$,]/g, ''));
+    // Ensure parsed value is positive or at minimum 1
+    return !isNaN(parsed) && parsed > 0 ? parsed : 1;
   };
 
   // Track auction state to conditionally render price field

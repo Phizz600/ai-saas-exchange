@@ -55,15 +55,17 @@ export const handleProductSubmission = async (
       : (Array.isArray(data.techStack) ? data.techStack : []);
 
     // CRITICAL FIX: Ensure price is always set for database constraints
-    // For auction listings, use 0 as price since it's not relevant
+    // For auction listings, use starting_price as price, and ensure it's greater than 0
     // For fixed price listings, use the user-provided price
-    const productPrice = data.isAuction ? 0 : data.price;
+    const productPrice = data.isAuction 
+      ? (data.startingPrice && data.startingPrice > 0 ? data.startingPrice : 1) 
+      : (data.price && data.price > 0 ? data.price : 1);
     
     // Prepare the product data
     const productData = {
       title: data.title,
       description: data.description,
-      price: productPrice, // Always set price field for database constraint
+      price: productPrice, // Always set price field with a positive value
       category: data.category,
       stage: data.stage,
       industry: data.industry,
@@ -240,8 +242,13 @@ export const handleProductUpdate = async (
       : (Array.isArray(data.techStack) ? data.techStack : undefined);
 
     // FIXED: Handle price consistently for fixed price and auction listings
-    // For auction listings, use 0 as price (or any placeholder value that meets the not-null constraint)
-    let productPrice = data.isAuction ? 0 : data.price;
+    // Ensure we always have a positive price value
+    let productPrice: number;
+    if (data.isAuction) {
+      productPrice = (data.startingPrice && data.startingPrice > 0) ? data.startingPrice : 1;
+    } else {
+      productPrice = (data.price && data.price > 0) ? data.price : 1;
+    }
     
     // Prepare the product data for update
     const productData: Record<string, any> = {};
@@ -249,7 +256,7 @@ export const handleProductUpdate = async (
     // Map form fields to database fields
     if (data.title) productData.title = data.title;
     if (data.description) productData.description = data.description;
-    if (productPrice !== undefined) productData.price = productPrice;
+    productData.price = productPrice; // Always set price field
     if (data.category) productData.category = data.category;
     if (data.stage) productData.stage = data.stage;
     if (data.industry) productData.industry = data.industry;
