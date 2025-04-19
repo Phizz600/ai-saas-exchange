@@ -20,13 +20,15 @@ interface AuctionSectionProps {
   form: UseFormReturn<ListProductFormData>;
 }
 
+interface ValuationState {
+  low: number;
+  high: number;
+}
+
 export function AuctionSection({
   form
 }: AuctionSectionProps) {
-  const [valuation, setValuation<{
-    low: number;
-    high: number;
-  }> = useState({
+  const [valuation, setValuation] = useState<ValuationState>({
     low: 0,
     high: 0
   });
@@ -310,8 +312,7 @@ export function AuctionSection({
                   </FormControl>
                   <FormMessage />
                   {field.value === 0 && <div className="text-xs text-amber-500 mt-1 flex items-center">
-                      This will be a no-reserve auction (will sell at any price)
-                    </div>}
+                      This will be a no-reserve auction (will sell at any price)\n                    </div>}
                 </FormItem>} />
           </div>
 
