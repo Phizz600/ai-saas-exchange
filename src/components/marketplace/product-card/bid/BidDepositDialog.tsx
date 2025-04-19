@@ -1,12 +1,13 @@
-
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle, CheckCircle2, CreditCard } from "lucide-react";
+import { CreditCard } from "lucide-react";
 import { Elements } from "@stripe/react-stripe-js";
 import { useStripeInitialization } from "./hooks/useStripeInitialization";
 import { PaymentForm } from "./components/PaymentForm";
+import { ErrorAlert } from "./components/ErrorAlert";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { CheckCircle2 } from "lucide-react";
 
 interface BidDepositDialogProps {
   open: boolean;
@@ -73,13 +74,7 @@ export function BidDepositDialog({
             </p>
           </div>
           
-          {stripeError ? (
-            <Alert variant="destructive">
-              <AlertCircle className="h-4 w-4" />
-              <AlertTitle>Payment System Error</AlertTitle>
-              <AlertDescription>{stripeError}</AlertDescription>
-            </Alert>
-          ) : null}
+          <ErrorAlert error={stripeError} type="payment" />
           
           {paymentSuccess && (
             <Alert className="bg-green-50 text-green-800 border-green-200">
