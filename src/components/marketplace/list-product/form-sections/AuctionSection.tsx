@@ -1,4 +1,3 @@
-
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { UseFormReturn } from "react-hook-form";
@@ -102,10 +101,10 @@ export function AuctionSection({
     }
   }, [reservePrice, form]);
 
-  // FIXED: Set price when switching between auction and fixed price
+  // CRITICAL FIX: Handle price field value based on auction setting
   useEffect(() => {
     if (isAuction) {
-      // When switching to auction, set price to null to avoid constraint error
+      // When switching to auction, clear the price field to avoid constraint error
       form.setValue("price", undefined);
     } else {
       // When switching to fixed price, initialize with a value if empty

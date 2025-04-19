@@ -54,14 +54,16 @@ export const handleProductSubmission = async (
       ? [data.techStack] 
       : (Array.isArray(data.techStack) ? data.techStack : []);
 
-    // FIXED: Ensure price is always set for both auction and fixed price listings
-    let productPrice = data.isAuction ? null : data.price;
+    // CRITICAL FIX: Ensure price is always set for database constraints
+    // For auction listings, use 0 as price since it's not relevant
+    // For fixed price listings, use the user-provided price
+    const productPrice = data.isAuction ? 0 : data.price;
     
     // Prepare the product data
     const productData = {
       title: data.title,
       description: data.description,
-      price: productPrice, // Use the calculated value
+      price: productPrice, // Always set price field for database constraint
       category: data.category,
       stage: data.stage,
       industry: data.industry,
@@ -83,7 +85,7 @@ export const handleProductSubmission = async (
         ? calculateAuctionEndTime(data.auctionDuration)
         : null,
       starting_price: data.isAuction ? data.startingPrice : null,
-      reserve_price: data.isAuction ? data.reservePrice : null, // Explicitly use reserve_price for auctions
+      reserve_price: data.isAuction ? data.reservePrice : null, 
       price_decrement: data.isAuction ? data.priceDecrement : null,
       price_decrement_interval: data.isAuction ? data.priceDecrementInterval : null,
       no_reserve: data.isAuction ? data.noReserve : null,
@@ -238,7 +240,8 @@ export const handleProductUpdate = async (
       : (Array.isArray(data.techStack) ? data.techStack : undefined);
 
     // FIXED: Handle price consistently for fixed price and auction listings
-    let productPrice = data.isAuction ? null : data.price;
+    // For auction listings, use 0 as price (or any placeholder value that meets the not-null constraint)
+    let productPrice = data.isAuction ? 0 : data.price;
     
     // Prepare the product data for update
     const productData: Record<string, any> = {};
