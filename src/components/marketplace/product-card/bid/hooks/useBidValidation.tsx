@@ -27,14 +27,10 @@ export function useBidValidation({
       return false;
     }
 
-    if (highestBid && numericAmount <= highestBid) {
-      const errorMsg = `Your bid must be higher than the current highest bid of $${highestBid.toLocaleString()}`;
-      setBidError(errorMsg);
-      if (onValidationError) onValidationError(errorMsg);
-      return false;
-    } 
-    else if (!highestBid && currentPrice && numericAmount < currentPrice) {
-      const errorMsg = `Your bid must be at least the current price of $${currentPrice.toLocaleString()}`;
+    // Must be higher than highest bid or current price
+    const minimumPrice = highestBid || currentPrice || 0;
+    if (numericAmount <= minimumPrice) {
+      const errorMsg = `Your bid must be higher than ${highestBid ? 'the current highest bid' : 'the current price'} of $${minimumPrice.toLocaleString()}`;
       setBidError(errorMsg);
       if (onValidationError) onValidationError(errorMsg);
       return false;

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -99,7 +98,7 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
   const handleInitiateOffer = async () => {
     const numericAmount = parseFloat(amount);
     
-    // Validate amount
+    // Only validate that amount is a positive number
     if (isNaN(numericAmount) || numericAmount <= 0) {
       toast({
         title: "Invalid amount",
@@ -109,7 +108,8 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
       return;
     }
 
-    // For auction listings, validate against the current price
+    // Skip minimum price validation for non-auction offers
+    // For auctions, still enforce minimum price
     if (isAuction && currentPrice && numericAmount <= currentPrice) {
       toast({
         title: "Amount too low",
