@@ -11,7 +11,6 @@ import { BidForm } from "@/components/marketplace/product-card/bid/BidForm";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { sendAuctionResultEmail } from "@/integrations/supabase/functions";
-import { useStripeInitialization } from "@/hooks/use-stripe-initialization";
 
 interface ProductPricingProps {
   product: {
@@ -57,8 +56,6 @@ export function ProductPricing({
   const [bidHistoryDialogOpen, setBidHistoryDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isSendingEmail, setIsSendingEmail] = useState(false);
-  
-  const { stripePromise, publishableKey } = useStripeInitialization();
   
   const {
     toast
@@ -448,37 +445,16 @@ export function ProductPricing({
             </div>}
 
           <div className="space-y-3 mt-4 pt-4 border-t border-gray-200">
-            {stripePromise && publishableKey ? (
-              <Dialog open={offerDialogOpen} onOpenChange={setOfferDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button variant="outline" className="w-full border-2 hover:bg-gray-50">
-                    Make an Offer
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[500px]">
-                  <OfferDialog 
-                    productId={product.id} 
-                    productTitle={product.title || "Product"} 
-                    isAuction={!!product.auction_end_time} 
-                    currentPrice={displayPrice} 
-                    onClose={() => setOfferDialogOpen(false)} 
-                  />
-                </DialogContent>
-              </Dialog>
-            ) : (
-              <Button 
-                variant="outline" 
-                className="w-full border-2 hover:bg-gray-50"
-                onClick={() => {
-                  toast({
-                    title: "Payment system initializing",
-                    description: "Please try again in a moment",
-                  })
-                }}
-              >
-                Make an Offer
-              </Button>
-            )}
+            <Dialog open={offerDialogOpen} onOpenChange={setOfferDialogOpen}>
+              <DialogTrigger asChild>
+                <Button variant="outline" className="w-full border-2 hover:bg-gray-50">
+                  Make an Offer
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[500px]">
+                <OfferDialog productId={product.id} productTitle={product.title || "Product"} isAuction={!!product.auction_end_time} currentPrice={displayPrice} onClose={() => setOfferDialogOpen(false)} />
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
 
