@@ -1,3 +1,4 @@
+
 import { Info, Link, Globe, Users, Activity, Calendar } from "lucide-react";
 import { ProductMetrics } from "./ProductMetrics";
 import { Badge } from "@/components/ui/badge";
@@ -20,6 +21,12 @@ interface ProductOverviewProps {
     monthly_traffic?: string | number;
     active_users?: string;
   };
+}
+
+interface DisplayField {
+  label: string;
+  value: string;
+  tooltip?: string; // Make tooltip optional
 }
 
 export function ProductOverview({ product }: ProductOverviewProps) {
@@ -47,7 +54,7 @@ export function ProductOverview({ product }: ProductOverviewProps) {
   };
 
   // Filter out fields that don't have values
-  const displayFields = {
+  const displayFields: Record<string, DisplayField | null> = {
     businessType: hasValue(product.business_type) ? {
       label: "Business Type",
       value: product.business_type,
