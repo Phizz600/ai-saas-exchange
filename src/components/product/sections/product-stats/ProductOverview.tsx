@@ -1,6 +1,5 @@
 
 import { Info, Link, Globe, Users, Activity, Calendar } from "lucide-react";
-import { ProductMetrics } from "./ProductMetrics";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { hasValue } from "@/utils/productHelpers";
@@ -75,6 +74,12 @@ export function ProductOverview({ product }: ProductOverviewProps) {
     } : null,
   };
 
+  // Count actual display fields we have to show
+  const hasDisplayFields = Object.values(displayFields).some(field => field !== null);
+  
+  // Check if we have any traffic/user metrics to display
+  const hasTrafficMetrics = hasValue(monthlyTrafficString) || hasValue(product.active_users);
+
   return (
     <div>
       <div className="flex items-center gap-2 text-sm text-gray-600 mb-4">
@@ -125,30 +130,32 @@ export function ProductOverview({ product }: ProductOverviewProps) {
           </div>
         )}
         
-        {/* Display filtered fields with tooltips */}
-        <TooltipProvider>
-          {Object.entries(displayFields).map(([key, field]) => 
-            field && (
-              <Tooltip key={key}>
-                <TooltipTrigger asChild>
-                  <div className="flex justify-between items-center bg-gray-50 p-3 rounded-md cursor-help">
-                    <span className="text-gray-600">{field.label}</span>
-                    <span className="font-medium">{field.value}</span>
-                  </div>
-                </TooltipTrigger>
-                {field.tooltip && (
-                  <TooltipContent>
-                    <p className="text-sm max-w-xs">{field.tooltip}</p>
-                  </TooltipContent>
-                )}
-              </Tooltip>
-            )
-          )}
-        </TooltipProvider>
+        {/* Display filtered fields with tooltips - only if we have display fields */}
+        {hasDisplayFields && (
+          <TooltipProvider>
+            {Object.entries(displayFields).map(([key, field]) => 
+              field && (
+                <Tooltip key={key}>
+                  <TooltipTrigger asChild>
+                    <div className="flex justify-between items-center bg-gray-50 p-3 rounded-md cursor-help">
+                      <span className="text-gray-600">{field.label}</span>
+                      <span className="font-medium">{field.value}</span>
+                    </div>
+                  </TooltipTrigger>
+                  {field.tooltip && (
+                    <TooltipContent>
+                      <p className="text-sm max-w-xs">{field.tooltip}</p>
+                    </TooltipContent>
+                  )}
+                </Tooltip>
+              )
+            )}
+          </TooltipProvider>
+        )}
       </div>
 
-      {/* Traffic and User Metrics Section */}
-      {(hasValue(monthlyTrafficString) || hasValue(product.active_users)) && (
+      {/* Traffic and User Metrics Section - Only show if we have metrics */}
+      {hasTrafficMetrics && (
         <div className="mt-6">
           <div className="flex items-center gap-2 text-sm text-gray-600 mb-3">
             <Activity className="h-4 w-4" />

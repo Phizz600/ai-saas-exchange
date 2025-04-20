@@ -1,6 +1,7 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Code2, Link, ShieldCheck } from "lucide-react";
+import { hasValue } from "@/utils/productHelpers";
 
 interface TechnicalDetailsProps {
   product: {
@@ -17,6 +18,24 @@ interface TechnicalDetailsProps {
 }
 
 export function TechnicalDetails({ product }: TechnicalDetailsProps) {
+  // Check which technical details we have
+  const hasStage = hasValue(product.stage);
+  const hasLlmType = hasValue(product.llm_type) || hasValue(product.llm_type_other);
+  const hasTechStack = hasValue(product.tech_stack) && product.tech_stack.length > 0;
+  const hasTechStackOther = hasValue(product.tech_stack_other);
+  const hasIntegrations = hasValue(product.integrations) && product.integrations && product.integrations.length > 0;
+  const hasIntegrationsOther = hasValue(product.integrations_other);
+  const hasDemoUrl = hasValue(product.demo_url);
+  
+  // Check if we have at least some technical details to display
+  const hasTechnicalDetails = hasStage || hasLlmType || hasTechStack || hasTechStackOther || 
+                             hasIntegrations || hasIntegrationsOther || hasDemoUrl || product.has_patents;
+  
+  // If no technical details at all, don't render this component
+  if (!hasTechnicalDetails) {
+    return null;
+  }
+
   return (
     <div>
       <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
@@ -24,19 +43,23 @@ export function TechnicalDetails({ product }: TechnicalDetailsProps) {
         <span>Technical Stack</span>
       </div>
       <div className="space-y-3">
-        <div className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
-          <span className="text-gray-600">Development Stage</span>
-          <span className="font-medium">{product.stage || "Not specified"}</span>
-        </div>
+        {hasStage && (
+          <div className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
+            <span className="text-gray-600">Development Stage</span>
+            <span className="font-medium">{product.stage}</span>
+          </div>
+        )}
         
-        <div className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
-          <span className="text-gray-600">LLM Model</span>
-          <span className="font-medium">
-            {product.llm_type_other || product.llm_type || "Not specified"}
-          </span>
-        </div>
+        {hasLlmType && (
+          <div className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
+            <span className="text-gray-600">LLM Model</span>
+            <span className="font-medium">
+              {product.llm_type_other || product.llm_type}
+            </span>
+          </div>
+        )}
 
-        {product.tech_stack && product.tech_stack.length > 0 && (
+        {hasTechStack && (
           <div>
             <span className="text-gray-600 block mb-1">Tech Stack</span>
             <div className="flex flex-wrap gap-2">
@@ -49,23 +72,25 @@ export function TechnicalDetails({ product }: TechnicalDetailsProps) {
           </div>
         )}
         
-        {product.tech_stack_other && (
+        {hasTechStackOther && (
           <div className="text-gray-600 mt-2">
             Additional tech: {product.tech_stack_other}
           </div>
         )}
 
-        {(product.integrations?.length > 0 || product.integrations_other) && (
+        {(hasIntegrations || hasIntegrationsOther) && (
           <div className="mt-4">
             <span className="text-gray-600 block mb-1">Integrations</span>
-            <div className="flex flex-wrap gap-2 mb-2">
-              {product.integrations?.map((integration, index) => (
-                <Badge key={index} variant="secondary" className="bg-purple-100 text-purple-700">
-                  {integration}
-                </Badge>
-              ))}
-            </div>
-            {product.integrations_other && (
+            {hasIntegrations && (
+              <div className="flex flex-wrap gap-2 mb-2">
+                {product.integrations?.map((integration, index) => (
+                  <Badge key={index} variant="secondary" className="bg-purple-100 text-purple-700">
+                    {integration}
+                  </Badge>
+                ))}
+              </div>
+            )}
+            {hasIntegrationsOther && (
               <div className="text-gray-600 mt-2">
                 Additional integrations: {product.integrations_other}
               </div>
@@ -73,7 +98,7 @@ export function TechnicalDetails({ product }: TechnicalDetailsProps) {
           </div>
         )}
 
-        {product.demo_url && (
+        {hasDemoUrl && (
           <div className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
             <span className="text-gray-600">Demo URL</span>
             <a 
