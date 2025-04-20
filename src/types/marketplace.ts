@@ -71,10 +71,12 @@ export interface ProductWithSeller extends MarketplaceProduct {
   // Additional fields from ProductGrid - these are now required, not optional
   active_users: string;
   admin_feedback: string;
+  auction_end_time: string; // Made non-optional
   auction_status: string;
   business_location: string;
   business_model: string;
   business_type: string;
+  category: string;
   category_other: string;
   competitors: string;
   customer_acquisition_cost: number;

@@ -1,3 +1,4 @@
+
 import { useState, useCallback, useEffect } from "react";
 import { ProductGrid } from "@/components/marketplace/ProductGrid";
 import { MarketplacePagination } from "@/components/marketplace/MarketplacePagination";
@@ -93,6 +94,7 @@ export const MarketplaceContent = () => {
       // Ensure all required fields are included with appropriate default values
       active_users: product.active_users || "",
       admin_feedback: product.admin_feedback || "",
+      auction_end_time: product.auction_end_time || "", // Ensure auction_end_time is always present
       auction_status: product.auction_status || "",
       business_location: product.business_location || "",
       business_model: product.business_model || "",
@@ -114,7 +116,7 @@ export const MarketplaceContent = () => {
       llm_type_other: product.llm_type_other || "",
       monetization: product.monetization || "",
       monetization_other: product.monetization_other || "",
-      monthly_expenses: product.monthly_expenses || [],
+      monthly_expenses: product.monthly_expenses || {},
       monthly_profit: product.monthly_profit || 0,
       number_of_employees: product.number_of_employees || "",
       payment_status: product.payment_status || "",
