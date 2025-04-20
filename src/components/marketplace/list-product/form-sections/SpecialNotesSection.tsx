@@ -1,4 +1,3 @@
-
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { UseFormReturn } from "react-hook-form";
@@ -73,8 +72,7 @@ export function SpecialNotesSection({
                         w-full justify-start
                         ${field.value?.includes(deliverable.value) 
                           ? "bg-[#8B5CF6] text-white hover:bg-[#8B5CF6]/90" 
-                          : "text-sm hover:bg-[#8B5CF6]/10"}
-                        transition-colors duration-200
+                          : "text-sm hover:bg-[#8B5CF6]/20 hover:text-[#8B5CF6] transition-colors"}
                       `}
                     >
                       <deliverable.icon className={`h-4 w-4 mr-2 ${
@@ -92,7 +90,7 @@ export function SpecialNotesSection({
                     variant="outline"
                     size="sm"
                     onClick={() => setShowCustomInput(!showCustomInput)}
-                    className="w-full justify-start text-sm hover:bg-[#8B5CF6]/10"
+                    className="w-full justify-start text-sm hover:bg-[#8B5CF6]/20 hover:text-[#8B5CF6] transition-colors"
                   >
                     <Plus className="h-4 w-4 mr-2 text-[#8B5CF6]" />
                     Add Other Deliverable
