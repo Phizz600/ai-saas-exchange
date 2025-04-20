@@ -59,6 +59,6 @@ export const convertToProductWithSeller = (products: any[]): ProductWithSeller[]
     is_revenue_verified: product.is_revenue_verified || false,
     is_traffic_verified: product.is_traffic_verified || false,
     listing_type: product.listing_type || "fixed_price",
-    min_price: product.min_price || 0, // Add default value for min_price
+    min_price: product.min_price || 0, // Ensure min_price is always set
   })) as ProductWithSeller[];
 };

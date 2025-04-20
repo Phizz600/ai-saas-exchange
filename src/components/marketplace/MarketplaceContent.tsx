@@ -49,6 +49,9 @@ export const MarketplaceContent = () => {
     }
   };
   
+  // Convert products for the ProductGrid component if they exist
+  const convertedProducts = data?.products ? convertToProductWithSeller(data.products) : [];
+  
   return (
     <>
       <MarketplaceControls
@@ -74,7 +77,7 @@ export const MarketplaceContent = () => {
         data?.products && data.products.length > 0 ? (
           <>
             <ProductGrid 
-              products={convertToProductWithSeller(data.products)}
+              products={convertedProducts}
               isLoading={false}
             />
             <MarketplacePagination 
