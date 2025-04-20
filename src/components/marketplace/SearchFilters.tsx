@@ -1,4 +1,3 @@
-
 import { Search, SlidersHorizontal, X, Loader2, Timer, Tag, ArrowDownUp, Clock, TrendingUp } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -9,6 +8,7 @@ import { useEffect, useState } from "react";
 import { FilterSection } from "./filters/FilterSection";
 import { motion } from "framer-motion";
 import { Toggle } from "@/components/ui/toggle";
+import { FilterState } from "@/types/marketplace";
 import { 
   Select, 
   SelectContent, 
@@ -103,45 +103,129 @@ const sortOptions = [{
   icon: <Clock className="h-4 w-4 mr-2" />
 }];
 
-interface SearchFiltersProps {
-  searchQuery: string;
-  setSearchQuery: (query: string) => void;
-  industryFilter: string;
-  setIndustryFilter: (industry: string) => void;
-  stageFilter: string;
-  setStageFilter: (stage: string) => void;
-  priceFilter: string;
-  setPriceFilter: (price: string) => void;
-  timeFilter: string;
-  setTimeFilter: (time: string) => void;
-  sortBy: string;
-  setSortBy: (sort: string) => void;
+export interface SearchFiltersProps {
+  filters: FilterState;
+  onUpdateFilter: <K extends keyof FilterState>(key: K, value: FilterState[K]) => void;
+  onResetFilters: () => void;
   isLoading?: boolean;
-  showAuctionsOnly: boolean;
-  setShowAuctionsOnly: (show: boolean) => void;
-  showBuyNowOnly: boolean;
-  setShowBuyNowOnly: (show: boolean) => void;
+  
+  // For backward compatibility, we'll keep these props but they will be derived from filters
+  searchQuery?: string;
+  setSearchQuery?: (query: string) => void;
+  industryFilter?: string;
+  setIndustryFilter?: (industry: string) => void;
+  stageFilter?: string;
+  setStageFilter?: (stage: string) => void;
+  priceFilter?: string;
+  setPriceFilter?: (price: string) => void;
+  timeFilter?: string;
+  setTimeFilter?: (time: string) => void;
+  sortBy?: string;
+  setSortBy?: (sort: string) => void;
+  showAuctionsOnly?: boolean;
+  setShowAuctionsOnly?: (show: boolean) => void;
+  showBuyNowOnly?: boolean;
+  setShowBuyNowOnly?: (show: boolean) => void;
 }
 
 export const SearchFilters = ({
-  searchQuery,
-  setSearchQuery,
-  industryFilter,
-  setIndustryFilter,
-  stageFilter,
-  setStageFilter,
-  priceFilter,
-  setPriceFilter,
-  timeFilter,
-  setTimeFilter,
-  sortBy,
-  setSortBy,
+  filters,
+  onUpdateFilter,
+  onResetFilters,
   isLoading = false,
-  showAuctionsOnly,
-  setShowAuctionsOnly,
-  showBuyNowOnly,
-  setShowBuyNowOnly
+  // If the old props are provided, we'll use them, otherwise we'll use the new ones
+  searchQuery: propSearchQuery,
+  setSearchQuery: propSetSearchQuery,
+  industryFilter: propIndustryFilter,
+  setIndustryFilter: propSetIndustryFilter,
+  stageFilter: propStageFilter,
+  setStageFilter: propSetStageFilter,
+  priceFilter: propPriceFilter,
+  setPriceFilter: propSetPriceFilter,
+  timeFilter: propTimeFilter,
+  setTimeFilter: propSetTimeFilter,
+  sortBy: propSortBy,
+  setSortBy: propSetSortBy,
+  showAuctionsOnly: propShowAuctionsOnly,
+  setShowAuctionsOnly: propSetShowAuctionsOnly,
+  showBuyNowOnly: propShowBuyNowOnly,
+  setShowBuyNowOnly: propSetShowBuyNowOnly
 }: SearchFiltersProps) => {
+  // Use either the props passed directly, or get them from the filters object
+  const searchQuery = propSearchQuery ?? filters.searchQuery;
+  const industryFilter = propIndustryFilter ?? filters.industryFilter;
+  const stageFilter = propStageFilter ?? filters.stageFilter;
+  const priceFilter = propPriceFilter ?? filters.priceFilter;
+  const timeFilter = propTimeFilter ?? filters.timeFilter;
+  const sortBy = propSortBy ?? filters.sortBy;
+  const showAuctionsOnly = propShowAuctionsOnly ?? filters.showAuctionsOnly;
+  const showBuyNowOnly = propShowBuyNowOnly ?? filters.showBuyNowOnly;
+
+  // Define setter functions that use either the old or new approach
+  const setSearchQuery = (value: string) => {
+    if (propSetSearchQuery) {
+      propSetSearchQuery(value);
+    } else {
+      onUpdateFilter('searchQuery', value);
+    }
+  };
+
+  const setIndustryFilter = (value: string) => {
+    if (propSetIndustryFilter) {
+      propSetIndustryFilter(value);
+    } else {
+      onUpdateFilter('industryFilter', value);
+    }
+  };
+
+  const setStageFilter = (value: string) => {
+    if (propSetStageFilter) {
+      propSetStageFilter(value);
+    } else {
+      onUpdateFilter('stageFilter', value);
+    }
+  };
+
+  const setPriceFilter = (value: string) => {
+    if (propSetPriceFilter) {
+      propSetPriceFilter(value);
+    } else {
+      onUpdateFilter('priceFilter', value);
+    }
+  };
+
+  const setTimeFilter = (value: string) => {
+    if (propSetTimeFilter) {
+      propSetTimeFilter(value);
+    } else {
+      onUpdateFilter('timeFilter', value);
+    }
+  };
+
+  const setSortBy = (value: string) => {
+    if (propSetSortBy) {
+      propSetSortBy(value);
+    } else {
+      onUpdateFilter('sortBy', value);
+    }
+  };
+
+  const setShowAuctionsOnly = (value: boolean) => {
+    if (propSetShowAuctionsOnly) {
+      propSetShowAuctionsOnly(value);
+    } else {
+      onUpdateFilter('showAuctionsOnly', value);
+    }
+  };
+
+  const setShowBuyNowOnly = (value: boolean) => {
+    if (propSetShowBuyNowOnly) {
+      propSetShowBuyNowOnly(value);
+    } else {
+      onUpdateFilter('showBuyNowOnly', value);
+    }
+  };
+
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
   const [debouncedSearchQuery] = useDebounce(localSearchQuery, 300);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -177,6 +261,11 @@ export const SearchFilters = ({
     setShowAuctionsOnly(false);
     setShowBuyNowOnly(false);
     setIsSheetOpen(false);
+    
+    // If we have the new reset function, call it too
+    if (onResetFilters) {
+      onResetFilters();
+    }
   };
 
   const renderActiveFilters = () => {

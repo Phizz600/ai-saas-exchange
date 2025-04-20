@@ -1,3 +1,4 @@
+
 import { useState, useCallback, useEffect } from "react";
 import { ProductGrid } from "@/components/marketplace/ProductGrid";
 import { MarketplacePagination } from "@/components/marketplace/MarketplacePagination";
@@ -12,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
+import { ProductWithSeller } from "@/types/marketplace";
 
 export const MarketplaceContent = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -77,6 +79,18 @@ export const MarketplaceContent = () => {
     }
   };
 
+  // Convert MarketplaceProduct[] to ProductWithSeller[] to satisfy the type constraint
+  const convertToProductWithSeller = (products: any[]): ProductWithSeller[] => {
+    return products.map(product => ({
+      ...product,
+      seller: product.seller || {
+        id: product.seller_id || "",
+        full_name: "Anonymous",
+        avatar_url: "/placeholder.svg"
+      }
+    })) as ProductWithSeller[];
+  };
+
   return (
     <>
       <div className="flex items-center justify-between mb-4">
@@ -120,7 +134,7 @@ export const MarketplaceContent = () => {
         data?.products && data.products.length > 0 ? (
           <>
             <ProductGrid 
-              products={data.products}
+              products={convertToProductWithSeller(data.products)}
               isLoading={false}
             />
             <MarketplacePagination 

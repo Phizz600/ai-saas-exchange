@@ -46,4 +46,25 @@ export interface MarketplaceProduct {
   no_reserve?: boolean;
   listing_type?: string;
   updated_at?: string;
+  
+  // Additional fields from ProductWithSeller
+  active_users?: string;
+  admin_feedback?: string;
+  auction_status?: string;
+  business_location?: string;
+  business_model?: string;
+  business_type?: string;
+  status?: string;
+}
+
+// Define an interface that extends Database types to ensure compatibility with ProductGrid
+export interface ProductWithSeller extends MarketplaceProduct {
+  // This is just a compatibility interface to satisfy the type checker
+  // It should have all fields from MarketplaceProduct plus any additional fields
+  // that might be required by the ProductGrid component
+  seller: {
+    id: string;
+    full_name?: string;
+    avatar_url?: string;
+  };
 }
