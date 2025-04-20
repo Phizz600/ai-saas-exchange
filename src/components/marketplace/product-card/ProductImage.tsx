@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Edit2, Bookmark, Heart, TrendingDown, Timer, CheckCircle, Lock, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -13,12 +12,9 @@ interface ProductImageProps {
   isAuction: boolean;
   timeLeft: string;
   isFavorited: boolean;
-  isSaved: boolean;
   isVerified: boolean;
-  showEditButton?: boolean;
   requiresNda?: boolean;
   toggleFavorite: (e: React.MouseEvent) => void;
-  toggleSave: (e: React.MouseEvent) => void;
   onEditClick: (e: React.MouseEvent) => void;
 }
 
@@ -30,12 +26,9 @@ export function ProductImage({
   isAuction,
   timeLeft,
   isFavorited,
-  isSaved,
   isVerified,
-  showEditButton = false,
   requiresNda = false,
   toggleFavorite,
-  toggleSave,
   onEditClick
 }: ProductImageProps) {
   // Debug the requiresNda prop
