@@ -1,7 +1,7 @@
-
 import { Card } from "@/components/ui/card";
 import { Code, Link, Mail, Image, Database, FileLock, FileText, Briefcase, Wrench } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { hasValue } from "@/utils/productHelpers";
 
 const DELIVERABLE_ICONS: Record<string, any> = {
   source_code: { icon: Code, label: "Source Code & Repository", description: "Complete source code and repository access" },
@@ -21,7 +21,12 @@ interface AssetsDeliverablesProps {
 }
 
 export function AssetsDeliverables({ deliverables = [] }: AssetsDeliverablesProps) {
-  if (!deliverables.length) return null;
+  // Only render if there are actual deliverables
+  if (!hasValue(deliverables)) return null;
+
+  // Filter out any empty strings or invalid deliverables
+  const validDeliverables = deliverables.filter(d => hasValue(d));
+  if (validDeliverables.length === 0) return null;
 
   return (
     <Card className="p-6 bg-white shadow-sm">
@@ -31,7 +36,7 @@ export function AssetsDeliverables({ deliverables = [] }: AssetsDeliverablesProp
       
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <TooltipProvider>
-          {deliverables.map((deliverable, index) => {
+          {validDeliverables.map((deliverable, index) => {
             const isCustom = deliverable.startsWith('custom:');
             const deliverableKey = isCustom ? 'custom' : deliverable;
             const IconComponent = isCustom ? Briefcase : DELIVERABLE_ICONS[deliverableKey]?.icon || Briefcase;
