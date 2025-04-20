@@ -1,6 +1,7 @@
 
 import { useState } from "react";
-import { createPaymentAuthorization } from "@/services/stripe-service";
+import { createPaymentAuthorization } from "@/services/stripe";
+import { usePaymentState } from "./usePaymentState";
 import { toast } from "sonner";
 
 interface UsePaymentProcessingProps {
@@ -9,17 +10,16 @@ interface UsePaymentProcessingProps {
 }
 
 export function usePaymentProcessing({ productId, onSuccess }: UsePaymentProcessingProps) {
-  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [paymentClientSecret, setPaymentClientSecret] = useState<string | null>(null);
-  const [paymentError, setPaymentError] = useState<string | null>(null);
+  const { isProcessing, error: paymentError, startProcessing, setError, reset } = usePaymentState();
 
   const initializePayment = async (amount: number, bidId: string) => {
     try {
-      setIsProcessingPayment(true);
-      setPaymentError(null);
+      startProcessing();
+      reset();
 
       console.log(`Creating payment authorization for amount: ${amount}, bidId: ${bidId}`);
-      const { clientSecret, paymentIntentId, error } = await createPaymentAuthorization(
+      const { clientSecret, error } = await createPaymentAuthorization(
         amount,
         bidId,
         productId
@@ -27,7 +27,7 @@ export function usePaymentProcessing({ productId, onSuccess }: UsePaymentProcess
 
       if (error || !clientSecret) {
         console.error('Payment authorization error:', error);
-        setPaymentError(error || "Failed to create payment authorization");
+        setError(error || "Failed to create payment authorization");
         toast.error("Payment setup failed", {
           description: error || "There was a problem setting up the payment"
         });
@@ -40,22 +40,20 @@ export function usePaymentProcessing({ productId, onSuccess }: UsePaymentProcess
 
     } catch (err: any) {
       console.error('Error initializing payment:', err);
-      setPaymentError(err.message || "An unexpected error occurred");
+      setError(err.message || "An unexpected error occurred");
       return false;
-    } finally {
-      setIsProcessingPayment(false);
     }
   };
 
   const resetPayment = () => {
     setPaymentClientSecret(null);
-    setPaymentError(null);
+    reset();
   };
 
   return {
     initializePayment,
     resetPayment,
-    isProcessingPayment,
+    isProcessingPayment: isProcessing,
     paymentClientSecret,
     paymentError
   };
