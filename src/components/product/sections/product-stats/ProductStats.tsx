@@ -1,3 +1,4 @@
+
 import { Card } from "@/components/ui/card";
 import { Flame } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
@@ -14,6 +15,8 @@ import { MarketPosition } from "./MarketPosition";
 import { DescriptionNotes } from "./DescriptionNotes";
 import { AssetsDeliverables } from "./AssetsDeliverables";
 import { useState, useEffect } from "react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface ProductStatsProps {
   product: {
@@ -88,7 +91,8 @@ export function ProductStats({ product }: ProductStatsProps) {
   });
 
   const {
-    data: productDetails
+    data: productDetails,
+    isLoading: isLoadingDetails
   } = useQuery({
     queryKey: ['product-details', product.id],
     queryFn: async () => {
@@ -105,7 +109,8 @@ export function ProductStats({ product }: ProductStatsProps) {
   });
 
   const {
-    data: bids
+    data: bids,
+    isLoading: isLoadingBids
   } = useQuery({
     queryKey: ['bids', product.id],
     queryFn: async () => {
@@ -149,22 +154,57 @@ export function ProductStats({ product }: ProductStatsProps) {
     };
   }, [product.id]);
 
-  if (!productDetails) {
+  // Add real-time subscription to product changes
+  useEffect(() => {
+    const productChannel = supabase.channel('product-changes').on('postgres_changes', {
+      event: '*',
+      schema: 'public',
+      table: 'products',
+      filter: `id=eq.${product.id}`
+    }, async () => {
+      console.log('Product details updated, refreshing data');
+      // This will trigger the useQuery to refetch
+      window.dispatchEvent(new CustomEvent('refetch-product-details'));
+    }).subscribe();
+    
+    return () => {
+      supabase.removeChannel(productChannel);
+    };
+  }, [product.id]);
+
+  if (isLoadingDetails) {
     return <Card className="p-6"><div>Loading product details...</div></Card>;
   }
 
   const isAuction = product.listing_type === 'dutch_auction';
+  const mergedProduct = { ...product, ...productDetails };
 
   return (
     <Card className="p-6">
       <div className="flex justify-between items-center mb-6">
-        <h3 className="text-xl font-semibold exo-2-heading">Product Details</h3>
-        {analytics && (analytics.views >= 100 || analytics.clicks >= 50 || analytics.saves >= 25) && (
-          <Badge variant="secondary" className="bg-amber-100 text-amber-700 flex items-center gap-1">
-            <Flame className="h-4 w-4" />
-            Trending
-          </Badge>
-        )}
+        <h3 className="text-xl font-semibold exo-2-heading bg-gradient-to-r from-[#8B5CF6] to-[#D946EE] bg-clip-text text-transparent">
+          Product Details
+        </h3>
+        
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div>
+                {analytics && (analytics.views >= 100 || analytics.clicks >= 50 || analytics.saves >= 25) && (
+                  <Badge variant="secondary" className="bg-amber-100 text-amber-700 flex items-center gap-1">
+                    <Flame className="h-4 w-4" />
+                    Trending
+                  </Badge>
+                )}
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p className="text-sm">
+                This product is trending with high engagement metrics
+              </p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
 
       <VerificationBadges 
@@ -173,19 +213,62 @@ export function ProductStats({ product }: ProductStatsProps) {
         isTrafficVerified={!!product.is_traffic_verified}
       />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-        <AuctionDetails product={product} isAuction={isAuction} />
-        <ProductOverview product={product} />
-        <FinancialMetrics product={product} />
-        <TechnicalDetails product={product} />
-        <TeamInfo product={product} />
-        <MarketPosition competitors={product.competitors} />
-        <AssetsDeliverables deliverables={product.deliverables} />
-        <DescriptionNotes 
-          special_notes={product.special_notes} 
-          description={product.description}
-        />
-      </div>
+      {isAuction && (
+        <div className="mt-6">
+          <AuctionDetails product={mergedProduct} isAuction={isAuction} />
+        </div>
+      )}
+
+      <Tabs defaultValue="overview" className="mt-6">
+        <TabsList className="w-full border-b mb-4 pb-1 overflow-x-auto flex flex-nowrap">
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="financial">Financial</TabsTrigger>
+          <TabsTrigger value="technical">Technical</TabsTrigger>
+          <TabsTrigger value="team">Team & Location</TabsTrigger>
+          <TabsTrigger value="assets">Assets & Deliverables</TabsTrigger>
+          <TabsTrigger value="description">Description & Notes</TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="overview" className="mt-0">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <ProductOverview product={mergedProduct} />
+            <MarketPosition competitors={mergedProduct.competitors} />
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="financial" className="mt-0">
+          <div className="grid grid-cols-1 gap-6">
+            <FinancialMetrics product={mergedProduct} />
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="technical" className="mt-0">
+          <div className="grid grid-cols-1 gap-6">
+            <TechnicalDetails product={mergedProduct} />
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="team" className="mt-0">
+          <div className="grid grid-cols-1 gap-6">
+            <TeamInfo product={mergedProduct} />
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="assets" className="mt-0">
+          <div className="grid grid-cols-1 gap-6">
+            <AssetsDeliverables deliverables={mergedProduct.deliverables} />
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="description" className="mt-0">
+          <div className="grid grid-cols-1 gap-6">
+            <DescriptionNotes 
+              special_notes={mergedProduct.special_notes} 
+              description={mergedProduct.description}
+            />
+          </div>
+        </TabsContent>
+      </Tabs>
     </Card>
   );
 }
