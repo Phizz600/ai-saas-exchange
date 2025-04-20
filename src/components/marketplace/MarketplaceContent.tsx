@@ -1,3 +1,4 @@
+
 import { useState, useCallback, useEffect } from "react";
 import { ProductGrid } from "@/components/marketplace/ProductGrid";
 import { MarketplacePagination } from "@/components/marketplace/MarketplacePagination";
@@ -133,6 +134,7 @@ export const MarketplaceContent = () => {
       status: product.status || "active",
       updated_at: product.updated_at || new Date().toISOString(),
       highest_bid: product.highest_bid || 0, // Provide a default of 0 if not present
+      highest_bidder_id: product.highest_bidder_id || "", // Provide a default empty string if not present
     })) as ProductWithSeller[];
   };
 
