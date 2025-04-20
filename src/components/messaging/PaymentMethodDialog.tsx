@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -9,9 +8,7 @@ import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-
 import { loadStripe } from "@stripe/stripe-js";
 import { createPaymentAuthorization } from "@/services/stripe-service";
 import { EscrowTransaction } from "@/integrations/supabase/escrow";
-
-// Initialize Stripe 
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+import { useStripeInitialization } from "@/hooks/payments/useStripeInitialization";
 
 interface PaymentMethodDialogProps {
   open: boolean;
@@ -34,9 +31,9 @@ export const PaymentMethodDialog = ({
   const [paymentIntentId, setPaymentIntentId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const { stripePromise, error: stripeError } = useStripeInitialization();
   const { toast } = useToast();
 
-  // Initialize payment when the dialog opens
   useEffect(() => {
     const initializePayment = async () => {
       if (open && !clientSecret && !paymentSuccess) {
@@ -78,10 +75,8 @@ export const PaymentMethodDialog = ({
     initializePayment();
   }, [open, clientSecret, paymentSuccess, transaction, toast, onOpenChange]);
 
-  // Reset state when dialog closes
   useEffect(() => {
     if (!open) {
-      // Don't reset on successful payment
       if (!paymentSuccess) {
         setClientSecret(null);
         setPaymentIntentId(null);
@@ -104,7 +99,6 @@ export const PaymentMethodDialog = ({
         </DialogHeader>
         
         <div className="space-y-4 py-4">
-          {/* Payment Summary */}
           <div className="bg-muted p-4 rounded-md space-y-2">
             <div className="flex justify-between">
               <span className="text-sm text-muted-foreground">Product Amount:</span>
@@ -126,7 +120,6 @@ export const PaymentMethodDialog = ({
             </div>
           </div>
           
-          {/* Error Message */}
           {error && (
             <Alert variant="destructive">
               <AlertCircle className="h-4 w-4" />
@@ -135,7 +128,6 @@ export const PaymentMethodDialog = ({
             </Alert>
           )}
           
-          {/* Success Message */}
           {paymentSuccess && (
             <Alert className="bg-green-50 text-green-800 border-green-200">
               <CheckCircle2 className="h-4 w-4 text-green-600" />
@@ -146,8 +138,7 @@ export const PaymentMethodDialog = ({
             </Alert>
           )}
           
-          {/* Stripe Payment Form */}
-          {clientSecret && !paymentSuccess && (
+          {clientSecret && !paymentSuccess && stripePromise && (
             <Elements stripe={stripePromise} options={{ clientSecret }}>
               <CheckoutForm 
                 onSuccess={() => {
@@ -159,7 +150,6 @@ export const PaymentMethodDialog = ({
             </Elements>
           )}
           
-          {/* Loading State */}
           {isLoading && (
             <div className="flex flex-col items-center justify-center py-6">
               <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#8B5CF6]"></div>
@@ -182,7 +172,6 @@ export const PaymentMethodDialog = ({
   );
 };
 
-// Stripe Checkout Form Component
 function CheckoutForm({ 
   onSuccess, 
   isVerifying 
@@ -200,7 +189,6 @@ function CheckoutForm({
     e.preventDefault();
 
     if (!stripe || !elements) {
-      // Stripe.js has not yet loaded
       return;
     }
 
@@ -211,16 +199,14 @@ function CheckoutForm({
       const { error } = await stripe.confirmPayment({
         elements,
         confirmParams: {
-          return_url: window.location.href, // We'll handle the redirect ourselves
+          return_url: window.location.href,
         },
         redirect: "if_required",
       });
 
       if (error) {
-        // Show error to customer
         setMessage(error.message || "An unexpected error occurred.");
       } else {
-        // The payment has been processed!
         toast({
           title: "Payment authorized",
           description: "Your payment has been successfully authorized."

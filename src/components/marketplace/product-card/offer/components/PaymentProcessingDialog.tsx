@@ -1,12 +1,10 @@
-
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { AlertCircle, CreditCard, LockIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
-import { supabase } from "@/integrations/supabase/client";
+import { useStripeInitialization } from "@/hooks/payments/useStripeInitialization";
 
 // Define the interface for the component props
 interface PaymentProcessingDialogProps {
@@ -18,18 +16,17 @@ interface PaymentProcessingDialogProps {
   clientSecret: string | null;
 }
 
-// Initialize Stripe with the public key
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+interface PaymentFormProps {
+  onConfirm: (paymentMethodId: string) => void;
+  onClose: () => void;
+  offerAmount: number;
+}
 
 function PaymentForm({ 
   onConfirm, 
   onClose,
   offerAmount 
-}: { 
-  onConfirm: (paymentMethodId: string) => void; 
-  onClose: () => void;
-  offerAmount: number;
-}) {
+}: PaymentFormProps) {
   const stripe = useStripe();
   const elements = useElements();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -188,7 +185,7 @@ export function PaymentProcessingDialog({
   clientSecret
 }: PaymentProcessingDialogProps) {
   const [paymentElementVisible, setPaymentElementVisible] = useState(false);
-  const [stripeError, setStripeError] = useState<string | null>(null);
+  const { stripePromise, error: stripeError } = useStripeInitialization();
   const { toast } = useToast();
 
   // Control the visibility of the payment element based on dialog state
@@ -227,9 +224,9 @@ export function PaymentProcessingDialog({
         console.log("Client secret available:", clientSecret.substring(0, 10) + "...");
       }
     }
-  }, [open, toast, clientSecret]);
+  }, [open, toast, clientSecret, stripePromise]);
 
-  if (!clientSecret) {
+  if (!clientSecret || !stripePromise) {
     return null;
   }
 

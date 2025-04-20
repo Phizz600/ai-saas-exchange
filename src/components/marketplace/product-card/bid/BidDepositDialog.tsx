@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Button } from "@/components/ui/button";
 import { CreditCard } from "lucide-react";
 import { Elements } from "@stripe/react-stripe-js";
-import { useStripeInitialization } from "./hooks/useStripeInitialization";
+import { useStripeInitialization } from "@/hooks/payments/useStripeInitialization";
 import { PaymentForm } from "./components/PaymentForm";
 import { ErrorAlert } from "./components/ErrorAlert";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
