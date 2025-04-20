@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
-import { TrendingUp, Users, Star, Shield, Zap, Building2, Info, Eye, Mouse, Bookmark, Flame, History } from "lucide-react";
+import { 
+  TrendingUp, Users, Star, Shield, Zap, Building2, Info, Eye, 
+  Mouse, Bookmark, Flame, History, Code2, Network, Target,
+  Calendar, DollarSign, BarChart3, GitBranch, BookOpen
+} from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { VerificationBadges } from "./VerificationBadges";
 import { useQuery } from "@tanstack/react-query";
@@ -42,6 +46,7 @@ interface ProductStatsProps {
     tech_stack_other?: string;
     llm_type?: string;
     llm_type_other?: string;
+    integrations?: string[];
     integrations_other?: string;
     team_size?: string;
     business_location?: string;
@@ -57,6 +62,9 @@ interface ProductStatsProps {
     is_traffic_verified?: boolean;
     business_model?: string;
     investment_timeline?: string;
+    number_of_employees?: string;
+    business_type?: string;
+    deliverables?: string[];
   };
 }
 
@@ -177,7 +185,8 @@ export function ProductStats({ product }: ProductStatsProps) {
     return product.llm_type || "LLM details coming soon";
   };
 
-  return <Card className="p-6">
+  return (
+    <Card className="p-6">
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-lg font-semibold">Critical Buyer Details</h3>
         {isHighTraffic && <Badge variant="secondary" className="bg-amber-100 text-amber-700 flex items-center gap-1">
@@ -186,7 +195,11 @@ export function ProductStats({ product }: ProductStatsProps) {
           </Badge>}
       </div>
 
-      <VerificationBadges isRevenueVerified={!!product.is_revenue_verified} isCodeAudited={!!product.is_code_audited} isTrafficVerified={!!product.is_traffic_verified} />
+      <VerificationBadges 
+        isRevenueVerified={!!product.is_revenue_verified}
+        isCodeAudited={!!product.is_code_audited}
+        isTrafficVerified={!!product.is_traffic_verified}
+      />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
         <div className="col-span-full bg-gray-50 p-4 rounded-lg">
@@ -297,123 +310,222 @@ export function ProductStats({ product }: ProductStatsProps) {
             </div>}
         </div>
 
+        {/* Financial Metrics */}
         <div>
           <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-            <TrendingUp className="h-4 w-4" />
-            <span>Monthly Revenue</span>
+            <DollarSign className="h-4 w-4" />
+            <span>Financial Overview</span>
           </div>
-          <p className="text-lg font-semibold">{formattedRevenue}</p>
-          <p className="text-sm text-gray-600">{getRevenueStatus()}</p>
+          <div className="space-y-3">
+            {product.monthly_revenue !== undefined && (
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600">Monthly Revenue</span>
+                <span className="font-medium">{formatCurrency(product.monthly_revenue)}</span>
+              </div>
+            )}
+            {product.monthly_profit !== undefined && (
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600">Monthly Profit</span>
+                <span className="font-medium">{formatCurrency(product.monthly_profit)}</span>
+              </div>
+            )}
+            {product.gross_profit_margin !== undefined && (
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600">Gross Profit Margin</span>
+                <span className="font-medium">{product.gross_profit_margin}%</span>
+              </div>
+            )}
+            {product.customer_acquisition_cost !== undefined && (
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600">Customer Acquisition Cost</span>
+                <span className="font-medium">{formatCurrency(product.customer_acquisition_cost)}</span>
+              </div>
+            )}
+          </div>
         </div>
 
-        {product.gross_profit_margin !== undefined && <div>
-            <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-              <Info className="h-4 w-4" />
-              <span>Gross Profit Margin</span>
-            </div>
-            <p className="text-lg font-semibold">{product.gross_profit_margin}%</p>
-            <p className="text-sm text-gray-600">Based on current operations</p>
-          </div>}
-
-        {product.monthly_profit !== undefined && <div>
-            <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-              <Star className="h-4 w-4" />
-              <span>Monthly Profit</span>
-            </div>
-            <p className="text-lg font-semibold">{formatCurrency(product.monthly_profit)}</p>
-            <p className="text-sm text-gray-600">Net profit after expenses</p>
-          </div>}
-
-        {product.monthly_churn_rate !== undefined && <div>
-            <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-              <Users className="h-4 w-4" />
-              <span>Monthly Churn Rate</span>
-            </div>
-            <p className="text-lg font-semibold">{product.monthly_churn_rate}%</p>
-            <p className="text-sm text-gray-600">Customer retention metric</p>
-          </div>}
-
-        {product.active_users && <div>
-            <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-              <Users className="h-4 w-4" />
-              <span>Active Users</span>
-            </div>
-            <p className="text-lg font-semibold">{product.active_users}</p>
-            <p className="text-sm text-gray-600">Current user base</p>
-          </div>}
-
-        {product.monthly_traffic !== undefined && <div>
-            <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-              <Eye className="h-4 w-4" />
-              <span>Monthly Traffic</span>
-            </div>
-            <p className="text-lg font-semibold">{product.monthly_traffic !== null ? product.monthly_traffic.toLocaleString() : '0'}</p>
-            <p className="text-sm text-gray-600">Monthly visitors</p>
-          </div>}
-
+        {/* User Metrics */}
         <div>
           <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-            <Zap className="h-4 w-4" />
-            <span>LLM Model</span>
+            <Users className="h-4 w-4" />
+            <span>User Metrics</span>
           </div>
-          <p className="text-lg font-semibold">AI Technology</p>
-          <p className="text-sm text-gray-600">{getLLMInfo()}</p>
+          <div className="space-y-3">
+            {product.monthly_traffic !== undefined && (
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600">Monthly Traffic</span>
+                <span className="font-medium">{product.monthly_traffic.toLocaleString()}</span>
+              </div>
+            )}
+            {product.active_users && (
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600">Active Users</span>
+                <span className="font-medium">{product.active_users}</span>
+              </div>
+            )}
+            {product.monthly_churn_rate !== undefined && (
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600">Monthly Churn Rate</span>
+                <span className="font-medium">{product.monthly_churn_rate}%</span>
+              </div>
+            )}
+          </div>
         </div>
 
+        {/* Technical Details */}
+        <div>
+          <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+            <Code2 className="h-4 w-4" />
+            <span>Technical Stack</span>
+          </div>
+          <div className="space-y-3">
+            {product.tech_stack && product.tech_stack.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {product.tech_stack.map((tech, index) => (
+                  <span key={index} className="px-2 py-1 bg-blue-100 text-blue-700 rounded-md text-sm">
+                    {tech}
+                  </span>
+                ))}
+              </div>
+            )}
+            {product.tech_stack_other && (
+              <div className="text-gray-600">
+                Additional tech: {product.tech_stack_other}
+              </div>
+            )}
+            {product.llm_type && (
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600">LLM Type</span>
+                <span className="font-medium">{product.llm_type}</span>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Business Details */}
         <div>
           <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
             <Building2 className="h-4 w-4" />
-            <span>Team & Location</span>
+            <span>Business Information</span>
           </div>
-          <p className="text-lg font-semibold">Company Details</p>
-          <p className="text-sm text-gray-600">{getTeamComposition()}</p>
-          {product.business_location && <p className="text-sm text-gray-600 mt-1">Based in {product.business_location}</p>}
+          <div className="space-y-3">
+            {product.business_type && (
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600">Business Type</span>
+                <span className="font-medium">{product.business_type}</span>
+              </div>
+            )}
+            {product.business_model && (
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600">Business Model</span>
+                <span className="font-medium">{product.business_model}</span>
+              </div>
+            )}
+            {product.monetization && (
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600">Monetization</span>
+                <span className="font-medium">
+                  {product.monetization_other || product.monetization}
+                </span>
+              </div>
+            )}
+            {product.product_age && (
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600">Product Age</span>
+                <span className="font-medium">{product.product_age}</span>
+              </div>
+            )}
+          </div>
         </div>
 
-        {product.competitors && <div>
-            <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-              <Shield className="h-4 w-4" />
-              <span>Competition</span>
-            </div>
-            <p className="text-lg font-semibold">Market Position</p>
-            <p className="text-sm text-gray-600">{product.competitors}</p>
-          </div>}
+        {/* Team & Location */}
+        <div>
+          <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+            <Users className="h-4 w-4" />
+            <span>Team Information</span>
+          </div>
+          <div className="space-y-3">
+            {product.team_size && (
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600">Team Size</span>
+                <span className="font-medium">{product.team_size}</span>
+              </div>
+            )}
+            {product.number_of_employees && (
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600">Number of Employees</span>
+                <span className="font-medium">{product.number_of_employees}</span>
+              </div>
+            )}
+            {product.business_location && (
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600">Business Location</span>
+                <span className="font-medium">{product.business_location}</span>
+              </div>
+            )}
+          </div>
+        </div>
 
-        {product.customer_acquisition_cost !== undefined && <div>
-            <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-              <Users className="h-4 w-4" />
-              <span>Customer Acquisition</span>
-            </div>
-            <p className="text-lg font-semibold">{formatCurrency(product.customer_acquisition_cost)}</p>
-            <p className="text-sm text-gray-600">Cost per customer</p>
-          </div>}
+        {/* Market & Competition */}
+        <div>
+          <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+            <Target className="h-4 w-4" />
+            <span>Market Position</span>
+          </div>
+          <div className="space-y-3">
+            {product.competitors && (
+              <div>
+                <span className="text-gray-600 block mb-1">Competition</span>
+                <span className="font-medium">{product.competitors}</span>
+              </div>
+            )}
+          </div>
+        </div>
 
-        {product.monetization && <div>
+        {/* Investment Timeline */}
+        {product.investment_timeline && (
+          <div>
             <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-              <Star className="h-4 w-4" />
-              <span>Monetization Strategy</span>
+              <Calendar className="h-4 w-4" />
+              <span>Investment Timeline</span>
             </div>
-            <p className="text-lg font-semibold">
-              {product.monetization_other || product.monetization.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
-            </p>
-          </div>}
+            <div className="space-y-3">
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600">Timeline</span>
+                <span className="font-medium">{product.investment_timeline}</span>
+              </div>
+            </div>
+          </div>
+        )}
 
-        {product.product_age && <div>
+        {/* Deliverables */}
+        {product.deliverables && product.deliverables.length > 0 && (
+          <div className="col-span-full">
             <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-              <History className="h-4 w-4" />
-              <span>Product Age</span>
+              <BookOpen className="h-4 w-4" />
+              <span>Included Deliverables</span>
             </div>
-            <p className="text-lg font-semibold">{product.product_age}</p>
-          </div>}
+            <div className="flex flex-wrap gap-2">
+              {product.deliverables.map((deliverable, index) => (
+                <span key={index} className="px-2 py-1 bg-green-100 text-green-700 rounded-md text-sm">
+                  {deliverable}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
 
-        {product.special_notes && <div className="md:col-span-2">
+        {/* Special Notes */}
+        {product.special_notes && (
+          <div className="col-span-full">
             <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-              
-              
+              <Info className="h-4 w-4" />
+              <span>Special Notes</span>
             </div>
-            
-            
-          </div>}
+            <p className="text-gray-600 whitespace-pre-wrap">{product.special_notes}</p>
+          </div>
+        )}
       </div>
-    </Card>;
+    </Card>
+  );
 }
