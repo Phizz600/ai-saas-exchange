@@ -1,10 +1,11 @@
 
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Elements } from "@stripe/react-stripe-js";
 import { AlertCircle } from "lucide-react";
 import { useStripeInitialization } from "@/hooks/payments/useStripeInitialization";
 import { AmountDisplay } from "./AmountDisplay";
-import { OfferPaymentForm } from "./OfferPaymentForm";
+import { PaymentForm } from "./PaymentForm";
 
 interface PaymentProcessingDialogProps {
   open: boolean;
