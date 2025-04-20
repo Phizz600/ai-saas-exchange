@@ -1,133 +1,61 @@
-import { ProductBadges } from "./ProductBadges";
-import { ProductMetrics } from "./ProductMetrics";
+
+import { Badge } from "@/components/ui/badge";
+import { CardContent } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/utils";
-import { AuctionTimer } from "./auction/AuctionTimer";
+import { Check } from "lucide-react";
+import type { Product } from "@/types/product";
 
 interface ProductContentProps {
-  title: string;
-  description?: string;
-  price?: number;
-  current_price?: number;
-  category?: string;
-  stage?: string;
-  monthlyRevenue?: number;
-  monthly_traffic?: number;
-  gross_profit_margin?: number;
-  monthly_churn_rate?: number;
-  is_revenue_verified?: boolean;
-  is_code_audited?: boolean;
-  is_traffic_verified?: boolean;
-  requires_nda?: boolean;
-  auction_end_time?: string;
-  reserve_price?: number;
-  price_decrement?: number;
-  price_decrement_interval?: string;
-  no_reserve?: boolean;
-  listing_type?: string;
-  updated_at?: string;
+  product: Product;
+  showLimitedInfo: boolean;
 }
 
-export function ProductContent({
-  title,
-  description,
-  price,
-  current_price,
-  category,
-  stage,
-  monthlyRevenue,
-  monthly_traffic,
-  gross_profit_margin,
-  monthly_churn_rate,
-  is_revenue_verified,
-  is_code_audited,
-  is_traffic_verified,
-  requires_nda,
-  auction_end_time,
-  reserve_price,
-  price_decrement,
-  price_decrement_interval,
-  no_reserve,
-  listing_type,
-  updated_at
-}: ProductContentProps) {
-  // Ensure price values are either valid numbers or 0
-  const displayPrice = (current_price || price || 0);
-  const isAuction = listing_type === 'dutch_auction' || !!auction_end_time;
-  
-  // Check if this is a no-reserve auction
-  const isNoReserve = no_reserve || !reserve_price || reserve_price === 0;
-  
+export function ProductContent({ product, showLimitedInfo }: ProductContentProps) {
   return (
-    <div className="p-0 space-y-0">
-      {/* Add the AuctionTimer component for auction products */}
-      {isAuction && (
-        <AuctionTimer 
-          auctionEndTime={auction_end_time}
-          currentPrice={current_price}
-          reservePrice={reserve_price}
-          priceDecrement={price_decrement}
-          decrementInterval={price_decrement_interval}
-          noReserve={isNoReserve}
-          isDutchAuction={listing_type === 'dutch_auction'}
-          updatedAt={updated_at}
-        />
-      )}
+    <CardContent className="p-6">
+      <h3 className="font-exo text-xl font-semibold text-gray-900 mb-2">
+        {product.title}
+      </h3>
       
-      <div className="p-5 space-y-4">
-        {/* Category & Stage Pills at the top */}
-        <ProductBadges category={category} stage={stage} requiresNda={requires_nda} />
-        
-        {/* Title - Modified to show "Confidential" for NDA-required products */}
-        <h3 className="font-semibold text-lg text-gray-900 group-hover:text-[#8B5CF6] transition-colors duration-200 exo-2-heading">
-          {requires_nda ? "Confidential" : title}
-        </h3>
-        
-        {/* Description */}
-        {description && !requires_nda && (
-          <p className="text-sm text-gray-600 line-clamp-2">
-            {description}
-          </p>
+      {!showLimitedInfo && (
+        <p className="text-gray-600 mb-4 line-clamp-2">
+          {product.description}
+        </p>
+      )}
+
+      <div className="flex flex-wrap gap-2 mb-4">
+        <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
+          {product.category}
+        </Badge>
+        <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+          {product.stage}
+        </Badge>
+        {product.is_revenue_verified && (
+          <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+            <Check className="w-3 h-3 mr-1" />
+            Verified Revenue
+          </Badge>
         )}
-        
-        {/* NDA message if required */}
-        {requires_nda && (
-          <p className="text-sm text-gray-600 italic">
-            Additional details available after signing NDA
-          </p>
-        )}
-        
-        {/* Price display */}
-        <div className="text-xl font-bold text-green-600 text-left">
-          {formatCurrency(displayPrice)}
-          {isAuction && (
-            <span className="text-sm font-normal text-amber-600 ml-1">
-              (Current bid)
+      </div>
+
+      {!showLimitedInfo && (
+        <div className="space-y-2">
+          <div className="flex justify-between items-center">
+            <span className="text-gray-600">Price</span>
+            <span className="font-semibold text-green-600">
+              {formatCurrency(product.price)}
             </span>
+          </div>
+          {product.monthly_revenue !== undefined && (
+            <div className="flex justify-between items-center">
+              <span className="text-gray-600">Monthly Revenue</span>
+              <span className="font-semibold text-green-600">
+                {formatCurrency(product.monthly_revenue)}
+              </span>
+            </div>
           )}
         </div>
-        
-        {/* Auction status - only show if it's an auction */}
-        {isAuction && (
-          <div className="text-sm text-gray-600">
-            {isNoReserve ? (
-              <span className="text-amber-600">No Reserve - Sells at any price</span>
-            ) : (
-              <span>With Reserve</span>
-            )}
-          </div>
-        )}
-        
-        {/* Show metrics for ALL products */}
-        <ProductMetrics 
-          monthlyRevenue={monthlyRevenue}
-          monthly_traffic={monthly_traffic}
-          gross_profit_margin={gross_profit_margin}
-          monthly_churn_rate={monthly_churn_rate}
-          is_revenue_verified={is_revenue_verified}
-          is_code_audited={is_code_audited}
-          is_traffic_verified={is_traffic_verified}
-        />
-      </div>
-    </div>
+      )}
+    </CardContent>
   );
 }
