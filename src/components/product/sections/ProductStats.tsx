@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
-import { Target, Info, MessageSquareMore, Flame } from "lucide-react";
+import { Target, Info, MessageSquareMore, Flame, Globe, Link } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
@@ -10,7 +10,6 @@ import { FinancialMetrics } from "./product-stats/FinancialMetrics";
 import { TechnicalDetails } from "./product-stats/TechnicalDetails";
 import { TeamInfo } from "./product-stats/TeamInfo";
 import { VerificationBadges } from "./VerificationBadges";
-import { Link } from "lucide-react";
 
 interface ProductStatsProps {
   product: {
@@ -237,7 +236,7 @@ export function ProductStats({ product }: ProductStatsProps) {
                   rel="noopener noreferrer"
                   className="flex items-center justify-center gap-2 w-full py-2 text-[#8B5CF6] border border-[#8B5CF6] rounded-md hover:bg-[#8B5CF6]/10 transition-colors"
                 >
-                  <Globe2 className="h-4 w-4" />
+                  <Globe className="h-4 w-4" />
                   View Live Demo
                 </a>
               </div>
