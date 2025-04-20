@@ -67,7 +67,7 @@ interface Product {
   };
 }
 
-export function ProductPage() {
+function ProductPage() {
   const { id } = useParams<{ id: string; }>();
   const navigate = useNavigate();
   const [isLiked, setIsLiked] = useState(false);
@@ -507,3 +507,6 @@ export function ProductPage() {
       </div>
     </>;
 }
+
+export default ProductPage;
+export { ProductPage };

@@ -6,11 +6,11 @@ import { AuthGuard } from "@/components/AuthGuard";
 const Index = lazy(() => import("@/pages/Index"));
 const Marketplace = lazy(() => import("@/pages/Marketplace"));
 const Auth = lazy(() => import("@/pages/Auth"));
-const ProductPage = lazy(() => import("@/components/product/ProductPage"));
-const ComingSoon = lazy(() => import("@/pages/ComingSoon"));
-const FeesPricing = lazy(() => import("@/pages/FeesPricing"));
-const Policies = lazy(() => import("@/pages/Policies"));
-const Terms = lazy(() => import("@/pages/Terms"));
+const ProductPage = lazy(() => import("@/components/product/ProductPage").then(module => ({ default: module.ProductPage })));
+const ComingSoon = lazy(() => import("@/pages/ComingSoon").then(module => ({ default: module.ComingSoon })));
+const FeesPricing = lazy(() => import("@/pages/FeesPricing").then(module => ({ default: module.FeesPricing })));
+const Policies = lazy(() => import("@/pages/Policies").then(module => ({ default: module.Policies })));
+const Terms = lazy(() => import("@/pages/Terms").then(module => ({ default: module.Terms })));
 const About = lazy(() => import("@/pages/About"));
 const Contact = lazy(() => import("@/pages/Contact"));
 const FAQ = lazy(() => import("@/pages/FAQ"));
@@ -19,9 +19,9 @@ const ResolutionCenter = lazy(() => import("@/pages/ResolutionCenter"));
 const Admin = lazy(() => import("@/pages/Admin"));
 
 // Protected pages (require authentication)
-const Profile = lazy(() => import("@/pages/Profile"));
-const ListProduct = lazy(() => import("@/pages/ListProduct"));
-const ListingThankYou = lazy(() => import("@/pages/ListingThankYou"));
+const Profile = lazy(() => import("@/pages/Profile").then(module => ({ default: module.Profile })));
+const ListProduct = lazy(() => import("@/pages/ListProduct").then(module => ({ default: module.ListProduct })));
+const ListingThankYou = lazy(() => import("@/pages/ListingThankYou").then(module => ({ default: module.ListingThankYou })));
 const ProductDashboard = lazy(() => import("@/pages/ProductDashboard"));
 const Messages = lazy(() => import("@/pages/Messages"));
 const MessageChat = lazy(() => import("@/pages/MessageChat"));
@@ -66,7 +66,6 @@ export const protectedRoutes: AppRoute[] = [
   { path: "/profile", element: <AuthGuard><Profile /></AuthGuard> },
   { path: "/list-product", element: <AuthGuard><ListProduct /></AuthGuard> },
   { path: "/listing-thank-you", element: <AuthGuard><ListingThankYou /></AuthGuard> },
-  { path: "listing-thank-you", element: <AuthGuard><ListingThankYou /></AuthGuard> },
   { path: "/product-dashboard", element: <AuthGuard><ProductDashboard /></AuthGuard> },
   { path: "/messages", element: <AuthGuard><Messages /></AuthGuard> },
   { path: "/messages/:conversationId", element: <AuthGuard><MessageChat /></AuthGuard> },
