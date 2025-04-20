@@ -11,6 +11,16 @@ import { useProductViewTracking } from "@/hooks/marketplace/useProductViewTracki
 import { useNotifications } from "./notifications/useNotifications";
 import { convertToProductWithSeller } from "@/utils/marketplace/productConverter";
 import { toast } from "sonner";
+import { Database } from "@/integrations/supabase/types";
+
+// Using the type from the ProductGrid component to ensure compatibility
+type ProductGridCompatibleType = Database['public']['Tables']['products']['Row'] & {
+  seller: Database['public']['Tables']['profiles']['Row'] | null;
+  no_reserve?: boolean;
+  reserve_price?: number;
+  listing_type?: string;
+  updated_at?: string;
+};
 
 export const MarketplaceContent = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -50,7 +60,10 @@ export const MarketplaceContent = () => {
   };
   
   // Convert products for the ProductGrid component if they exist
-  const convertedProducts = data?.products ? convertToProductWithSeller(data.products) : [];
+  // Using type assertion to avoid the type mismatch
+  const convertedProducts = data?.products 
+    ? convertToProductWithSeller(data.products) as unknown as ProductGridCompatibleType[]
+    : [];
   
   return (
     <>
