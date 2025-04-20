@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -192,7 +193,7 @@ export function PaymentProcessingDialog({
   useEffect(() => {
     if (open && clientSecret) {
       console.log("PaymentProcessingDialog opened with client secret, preparing to show payment element");
-      setStripeError(null);
+      // No need to reset the error as it comes from the hook
       // Small delay to ensure the dialog is fully open
       const timer = setTimeout(() => {
         setPaymentElementVisible(true);
@@ -207,8 +208,7 @@ export function PaymentProcessingDialog({
     // Check if Stripe is properly initialized
     if (open) {
       if (!stripePromise) {
-        console.error("Stripe could not be initialized. Check your publishable key:", import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
-        setStripeError("Payment system configuration error. Please contact support.");
+        console.error("Stripe could not be initialized. Check your publishable key configuration");
         toast({
           title: "Payment System Error",
           description: "We're experiencing technical difficulties with our payment processor. Please try again later.",
