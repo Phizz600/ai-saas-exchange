@@ -1,4 +1,3 @@
-
 import { ProductBadges } from "./ProductBadges";
 import { ProductMetrics } from "./ProductMetrics";
 import { formatCurrency } from "@/lib/utils";

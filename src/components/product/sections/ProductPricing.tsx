@@ -306,19 +306,27 @@ export function ProductPricing({
               <p className="text-3xl font-bold">
                 {isLoading ? <span className="inline-block w-16 h-8 bg-gray-200 animate-pulse rounded"></span> : `$${displayPrice.toLocaleString()}`}
               </p>
-              {isAuction && <>
-                  {hasActiveBids && <p className="text-sm text-emerald-600 font-medium">
+              {isAuction && (
+                <>
+                  {hasActiveBids && (
+                    <p className="text-sm text-emerald-600 font-medium">
                       Winning bid - Dutch auction complete
-                    </p>}
-                  {!product.no_reserve && product.reserve_price && <p className="text-sm text-gray-600 mt-1">
-                      Reserve Price: ${product.reserve_price.toLocaleString()}
-                    </p>}
-                  {product.no_reserve && <p className="text-sm text-amber-600 mt-1">
-                      No Reserve - Sells at any price
-                    </p>}
-                </>}
+                    </p>
+                  )}
+                  {!hasActiveBids && (
+                    <p className="text-sm text-gray-600 mt-1">
+                      {product.no_reserve ? (
+                        <span className="text-amber-600">No Reserve - Sells at any price</span>
+                      ) : (
+                        <span>With Reserve</span>
+                      )}
+                    </p>
+                  )}
+                </>
+              )}
             </div>
-            {product.auction_end_time && <div className="text-right">
+            {product.auction_end_time && (
+              <div className="text-right">
                 {!isAuctionEnded && !hasActiveBids && (
                   <>
                     <div className="flex items-center gap-2 text-sm text-gray-600">
@@ -339,7 +347,8 @@ export function ProductPricing({
                     {hasActiveBids ? "Auction completed" : "Auction ended"}
                   </div>
                 )}
-              </div>}
+              </div>
+            )}
           </div>
 
           {isAuction && !isAuctionEnded && !hasActiveBids && (

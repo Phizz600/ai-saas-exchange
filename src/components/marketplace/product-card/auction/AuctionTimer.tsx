@@ -1,4 +1,3 @@
-
 import { Timer } from "lucide-react";
 import { useAuctionTimer } from "../useAuctionTimer";
 
@@ -30,13 +29,6 @@ export function AuctionTimer({
     updatedAt
   );
 
-  // Format reserve price for display
-  const formattedReservePrice = noReserve 
-    ? "No Reserve" 
-    : reservePrice 
-      ? `$${reservePrice.toLocaleString()}` 
-      : "Not set";
-
   return (
     <div className="w-full bg-amber-50 rounded-md p-3">
       <div className="flex justify-between items-center mb-2">
@@ -61,7 +53,7 @@ export function AuctionTimer({
       
       {isDutchAuction && priceDecrement && (
         <div className="flex justify-between items-center text-xs text-gray-500 mb-2">
-          <span>Reserve: {formattedReservePrice}</span>
+          <span>{noReserve ? "No Reserve" : "With Reserve"}</span>
           {currentPrice && priceDecrement && (
             <span>
               Next: ${(currentPrice - priceDecrement).toLocaleString()}
@@ -69,8 +61,6 @@ export function AuctionTimer({
           )}
         </div>
       )}
-      
-      {/* Button removed as requested */}
     </div>
   );
 }
