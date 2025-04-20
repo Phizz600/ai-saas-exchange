@@ -38,7 +38,7 @@ export function ProductMetrics({
           <div className="flex items-center gap-2 text-gray-700">
             <Users className="h-5 w-5 text-blue-500" />
             <span className="text-gray-600">
-              {new Intl.NumberFormat('en-US').format(monthly_traffic)} monthly visitors
+              {new Intl.NumberFormat('en-US').format(Math.round(monthly_traffic))} monthly visitors
             </span>
           </div>
         )}
@@ -48,7 +48,7 @@ export function ProductMetrics({
           <div className="flex items-center gap-2 text-gray-700">
             <Star className="h-5 w-5 text-amber-500" />
             <span className="text-gray-600">
-              {gross_profit_margin}% profit margin
+              {Math.round(gross_profit_margin * 100)}% profit margin
             </span>
           </div>
         )}
@@ -58,7 +58,7 @@ export function ProductMetrics({
           <div className="flex items-center gap-2 text-gray-700">
             <Clock className="h-5 w-5 text-purple-500" />
             <span className="text-gray-600">
-              {monthly_churn_rate}% monthly churn
+              {Math.round(monthly_churn_rate * 100)}% monthly churn
             </span>
           </div>
         )}
