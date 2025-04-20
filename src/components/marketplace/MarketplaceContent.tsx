@@ -1,4 +1,3 @@
-
 import { useState, useCallback, useEffect } from "react";
 import { ProductGrid } from "@/components/marketplace/ProductGrid";
 import { MarketplacePagination } from "@/components/marketplace/MarketplacePagination";
@@ -79,7 +78,7 @@ export const MarketplaceContent = () => {
     }
   };
 
-  // Convert MarketplaceProduct[] to ProductWithSeller[] to satisfy the type constraint
+  // Enhanced conversion function to ensure all required fields are available
   const convertToProductWithSeller = (products: any[]): ProductWithSeller[] => {
     return products.map(product => ({
       ...product,
@@ -87,7 +86,19 @@ export const MarketplaceContent = () => {
         id: product.seller_id || "",
         full_name: "Anonymous",
         avatar_url: "/placeholder.svg"
-      }
+      },
+      // Ensure all possible fields from the database are included
+      active_users: product.active_users || "",
+      admin_feedback: product.admin_feedback || "",
+      auction_status: product.auction_status || "",
+      business_location: product.business_location || "",
+      business_model: product.business_model || "",
+      business_type: product.business_type || "",
+      category: product.category || "",
+      // Add other fields with default values to ensure type compatibility
+      created_at: product.created_at || new Date().toISOString(),
+      status: product.status || "active",
+      updated_at: product.updated_at || new Date().toISOString()
     })) as ProductWithSeller[];
   };
 

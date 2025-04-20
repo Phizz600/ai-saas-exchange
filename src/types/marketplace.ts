@@ -47,24 +47,57 @@ export interface MarketplaceProduct {
   listing_type?: string;
   updated_at?: string;
   
-  // Additional fields from ProductWithSeller
+  // Additional fields for compatibility
+  created_at?: string;
+  status?: string;
+  views?: number;
+  min_price?: number;
+  starting_price?: number;
+  highest_bid?: number;
+  highest_bidder_id?: string;
+}
+
+// Define a more complete ProductWithSeller interface that includes all required fields
+export interface ProductWithSeller extends MarketplaceProduct {
+  seller: {
+    id: string;
+    full_name?: string;
+    avatar_url?: string;
+  };
+  
+  // Additional fields from ProductGrid
   active_users?: string;
   admin_feedback?: string;
   auction_status?: string;
   business_location?: string;
   business_model?: string;
   business_type?: string;
-  status?: string;
-}
-
-// Define an interface that extends Database types to ensure compatibility with ProductGrid
-export interface ProductWithSeller extends MarketplaceProduct {
-  // This is just a compatibility interface to satisfy the type checker
-  // It should have all fields from MarketplaceProduct plus any additional fields
-  // that might be required by the ProductGrid component
-  seller: {
-    id: string;
-    full_name?: string;
-    avatar_url?: string;
-  };
+  category_other?: string;
+  competitors?: string;
+  customer_acquisition_cost?: number;
+  demo_url?: string;
+  deliverables?: string[];
+  has_patents?: boolean;
+  industry?: string;
+  industry_other?: string;
+  integrations?: string[];
+  integrations_other?: string;
+  investment_timeline?: string;
+  is_verified?: boolean;
+  llm_type?: string;
+  llm_type_other?: string;
+  monetization?: string;
+  monetization_other?: string;
+  monthly_expenses?: any;
+  monthly_profit?: number;
+  number_of_employees?: string;
+  payment_status?: string;
+  product_age?: string;
+  product_link?: string;
+  reviewed_at?: string;
+  reviewed_by?: string;
+  special_notes?: string;
+  team_size?: string;
+  tech_stack?: string[];
+  tech_stack_other?: string;
 }
