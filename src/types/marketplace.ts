@@ -84,6 +84,7 @@ export interface ProductWithSeller extends MarketplaceProduct {
   demo_url: string;
   deliverables: string[];
   description: string; // Make description required
+  gross_profit_margin: number; // Make gross_profit_margin required
   has_patents: boolean;
   industry: string;
   industry_other: string;

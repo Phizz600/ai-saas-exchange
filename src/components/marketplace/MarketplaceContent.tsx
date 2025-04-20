@@ -1,4 +1,3 @@
-
 import { useState, useCallback, useEffect } from "react";
 import { ProductGrid } from "@/components/marketplace/ProductGrid";
 import { MarketplacePagination } from "@/components/marketplace/MarketplacePagination";
@@ -105,6 +104,7 @@ export const MarketplaceContent = () => {
       demo_url: product.demo_url || "",
       deliverables: product.deliverables || [],
       description: product.description || "", // Ensure description is always provided
+      gross_profit_margin: product.gross_profit_margin || 0, // Ensure gross_profit_margin is always provided with default 0
       has_patents: product.has_patents || false,
       industry: product.industry || "",
       industry_other: product.industry_other || "",
