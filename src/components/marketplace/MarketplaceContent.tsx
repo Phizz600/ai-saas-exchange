@@ -1,4 +1,3 @@
-
 import { useState, useCallback, useEffect } from "react";
 import { ProductGrid } from "@/components/marketplace/ProductGrid";
 import { MarketplacePagination } from "@/components/marketplace/MarketplacePagination";
@@ -38,7 +37,6 @@ export const MarketplaceContent = () => {
     markAsRead
   } = useNotifications();
 
-  // Track product views (impressions) when products appear in the grid
   useEffect(() => {
     if (!data?.products || isLoading) return;
 
@@ -66,7 +64,6 @@ export const MarketplaceContent = () => {
     trackProductViews();
   }, [data?.products, isLoading, viewTracked]);
 
-  // Handle refresh
   const handleRefresh = async () => {
     setIsRefreshing(true);
     try {
@@ -103,6 +100,7 @@ export const MarketplaceContent = () => {
       category_other: product.category_other || "",
       competitors: product.competitors || "",
       customer_acquisition_cost: product.customer_acquisition_cost || 0,
+      current_price: product.current_price || product.price || 0, // Ensure current_price is always provided
       demo_url: product.demo_url || "",
       deliverables: product.deliverables || [],
       has_patents: product.has_patents || false,

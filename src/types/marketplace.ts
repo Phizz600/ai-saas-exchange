@@ -80,6 +80,7 @@ export interface ProductWithSeller extends MarketplaceProduct {
   category_other: string;
   competitors: string;
   customer_acquisition_cost: number;
+  current_price: number; // Make current_price required
   demo_url: string;
   deliverables: string[];
   has_patents: boolean;
