@@ -1,5 +1,3 @@
-
-import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Flame } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
@@ -14,6 +12,8 @@ import { VerificationBadges } from "../VerificationBadges";
 import { ProductOverview } from "./ProductOverview";
 import { MarketPosition } from "./MarketPosition";
 import { DescriptionNotes } from "./DescriptionNotes";
+import { AssetsDeliverables } from "./AssetsDeliverables";
+import { useState, useEffect } from "react";
 
 interface ProductStatsProps {
   product: {
@@ -180,6 +180,7 @@ export function ProductStats({ product }: ProductStatsProps) {
         <TechnicalDetails product={product} />
         <TeamInfo product={product} />
         <MarketPosition competitors={product.competitors} />
+        <AssetsDeliverables deliverables={product.deliverables} />
         <DescriptionNotes 
           special_notes={product.special_notes} 
           description={product.description}
