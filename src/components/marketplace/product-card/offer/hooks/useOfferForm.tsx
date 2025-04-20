@@ -108,17 +108,6 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
       return;
     }
 
-    // Skip minimum price validation for non-auction offers
-    // For auctions, still enforce minimum price
-    if (isAuction && currentPrice && numericAmount <= currentPrice) {
-      toast({
-        title: "Amount too low",
-        description: `Your offer must be higher than the current price of $${currentPrice.toLocaleString()}`,
-        variant: "destructive",
-      });
-      return;
-    }
-    
     // If updating an offer
     if (isUpdatingOffer && existingOffer) {
       await handleUpdateOffer();

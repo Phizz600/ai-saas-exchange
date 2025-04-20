@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -76,6 +75,9 @@ export function OfferForm({
             Your offer: {formattedAmount}
           </div>
         )}
+        <p className="text-sm text-muted-foreground">
+          Enter any amount you'd like to offer. The seller will review your offer and can accept or decline it.
+        </p>
       </div>
       
       <div className="space-y-2">
