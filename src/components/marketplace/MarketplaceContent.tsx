@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ProductGrid } from "@/components/marketplace/ProductGrid";
 import { MarketplacePagination } from "@/components/marketplace/MarketplacePagination";
 import { EmptyState } from "@/components/marketplace/EmptyState";
@@ -26,7 +26,18 @@ export const MarketplaceContent = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isRefreshing, setIsRefreshing] = useState(false);
   
+  // Debug mounting
+  useEffect(() => {
+    console.log('MarketplaceContent mounted');
+    return () => console.log('MarketplaceContent unmounted');
+  }, []);
+  
   const { filters, updateFilter, resetFilters } = useMarketplaceFilters();
+  
+  // Debug filters
+  useEffect(() => {
+    console.log('Current filters:', filters);
+  }, [filters]);
   
   const {
     data,
@@ -37,19 +48,37 @@ export const MarketplaceContent = () => {
     currentPage
   });
   
+  // Debug data loading
+  useEffect(() => {
+    console.log('Market data loaded:', {
+      productsCount: data?.products?.length || 0,
+      totalCount: data?.count || 0,
+      isLoading
+    });
+  }, [data, isLoading]);
+  
   const {
     notifications,
     unreadCount,
     markAsRead
   } = useNotifications();
+  
+  // Debug notifications
+  useEffect(() => {
+    console.log('Notifications state:', {
+      count: notifications?.length || 0,
+      unreadCount
+    });
+  }, [notifications, unreadCount]);
 
-  // Use the hook for view tracking
   useProductViewTracking(data?.products, isLoading);
 
   const handleRefresh = async () => {
+    console.log('Starting refresh...');
     setIsRefreshing(true);
     try {
       await refetch();
+      console.log('Refresh completed successfully');
       toast.success("Marketplace products refreshed");
     } catch (error) {
       console.error("Error refreshing products:", error);
@@ -65,19 +94,41 @@ export const MarketplaceContent = () => {
     ? convertToProductWithSeller(data.products) as unknown as ProductGridCompatibleType[]
     : [];
   
+  // Debug converted products
+  useEffect(() => {
+    console.log('Converted products:', {
+      count: convertedProducts.length,
+      firstProduct: convertedProducts[0] ? {
+        id: convertedProducts[0].id,
+        title: convertedProducts[0].title,
+        price: convertedProducts[0].price,
+        seller: convertedProducts[0].seller
+      } : null
+    });
+  }, [convertedProducts]);
+  
   return (
     <>
       <MarketplaceControls
         showVerifiedOnly={filters.showVerifiedOnly}
-        onVerifiedChange={(checked) => updateFilter('showVerifiedOnly', checked)}
+        onVerifiedChange={(checked) => {
+          console.log('Verified filter changed:', checked);
+          updateFilter('showVerifiedOnly', checked);
+        }}
         isRefreshing={isRefreshing}
         onRefresh={handleRefresh}
       />
 
       <MarketplaceHeader 
         filters={filters}
-        onUpdateFilter={updateFilter}
-        onResetFilters={resetFilters}
+        onUpdateFilter={(key, value) => {
+          console.log('Filter updated:', { key, value });
+          updateFilter(key, value);
+        }}
+        onResetFilters={() => {
+          console.log('Filters reset');
+          resetFilters();
+        }}
         isLoading={isLoading}
         notifications={notifications}
         unreadCount={unreadCount}
@@ -96,7 +147,10 @@ export const MarketplaceContent = () => {
             <MarketplacePagination 
               currentPage={currentPage} 
               totalPages={Math.ceil((data.count || 0) / 6)}
-              setCurrentPage={setCurrentPage}
+              setCurrentPage={(page) => {
+                console.log('Page changed to:', page);
+                setCurrentPage(page);
+              }}
             />
           </> 
         ) : (
