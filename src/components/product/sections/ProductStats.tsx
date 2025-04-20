@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { 
@@ -5,7 +6,7 @@ import {
   Mouse, Bookmark, Flame, History, Code2, Network, Target,
   Calendar, DollarSign, BarChart3, GitBranch, BookOpen,
   GanttChart, Globe2, Microscope, HeartHandshake, Building,
-  FolderGit2, MessageSquareMore, ShieldCheck, Settings
+  FolderGit2, MessageSquareMore, ShieldCheck, Settings, Link
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { VerificationBadges } from "./VerificationBadges";
@@ -73,6 +74,17 @@ interface ProductStatsProps {
     industry_other?: string;
     demo_url?: string;
     has_patents?: boolean;
+    product_link?: string;
+    title?: string;
+    description?: string;
+    listing_type?: string;
+    auction_end_time?: string;
+    starting_price?: number;
+    reserve_price?: number;
+    price_decrement?: number;
+    price_decrement_interval?: string;
+    no_reserve?: boolean;
+    current_price?: number;
   };
 }
 
@@ -193,10 +205,12 @@ export function ProductStats({ product }: ProductStatsProps) {
     return product.llm_type || "LLM details coming soon";
   };
 
+  const isAuction = product.listing_type === 'dutch_auction';
+
   return (
     <Card className="p-6">
       <div className="flex justify-between items-center mb-6">
-        <h3 className="text-lg font-semibold">Product Details</h3>
+        <h3 className="text-xl font-semibold exo-2-heading">Product Details</h3>
         {isHighTraffic && <Badge variant="secondary" className="bg-amber-100 text-amber-700 flex items-center gap-1">
             <Flame className="h-4 w-4" />
             Trending
@@ -210,13 +224,73 @@ export function ProductStats({ product }: ProductStatsProps) {
       />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-        {/* Overview Section */}
+        {/* Auction Details - Only show if listing is auction type */}
+        {isAuction && (
+          <div className="col-span-full">
+            <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+              <TrendingUp className="h-4 w-4" />
+              <span>Auction Details</span>
+            </div>
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="flex justify-between items-center bg-white p-2 rounded-md">
+                  <span className="text-gray-600">Starting Price</span>
+                  <span className="font-medium">{product.starting_price ? formatCurrency(product.starting_price) : "Not set"}</span>
+                </div>
+                {product.no_reserve ? (
+                  <div className="flex justify-between items-center bg-green-50 p-2 rounded-md">
+                    <span className="text-gray-600">Reserve Price</span>
+                    <span className="font-medium text-green-600">No Reserve</span>
+                  </div>
+                ) : (
+                  <div className="flex justify-between items-center bg-white p-2 rounded-md">
+                    <span className="text-gray-600">Reserve Price</span>
+                    <span className="font-medium">{product.reserve_price ? formatCurrency(product.reserve_price) : "Not set"}</span>
+                  </div>
+                )}
+                <div className="flex justify-between items-center bg-white p-2 rounded-md">
+                  <span className="text-gray-600">Price Decrement</span>
+                  <span className="font-medium">{product.price_decrement ? formatCurrency(product.price_decrement) : "Not set"}</span>
+                </div>
+                <div className="flex justify-between items-center bg-white p-2 rounded-md">
+                  <span className="text-gray-600">Decrement Interval</span>
+                  <span className="font-medium">{product.price_decrement_interval || "Not set"}</span>
+                </div>
+                {product.auction_end_time && (
+                  <div className="flex justify-between items-center bg-white p-2 rounded-md col-span-full">
+                    <span className="text-gray-600">Auction End Time</span>
+                    <span className="font-medium">{new Date(product.auction_end_time).toLocaleString()}</span>
+                  </div>
+                )}
+                <div className="flex justify-between items-center bg-white p-2 rounded-md col-span-full">
+                  <span className="text-gray-600">Current Price</span>
+                  <span className="font-medium text-green-600">{product.current_price ? formatCurrency(product.current_price) : "Not set"}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Product Overview Section */}
         <div>
           <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
             <Info className="h-4 w-4" />
-            <span>Overview</span>
+            <span>Product Overview</span>
           </div>
           <div className="space-y-3">
+            <div className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
+              <span className="text-gray-600">Product Name</span>
+              <span className="font-medium">{product.title || productDetails.title}</span>
+            </div>
+            {product.product_link && (
+              <div className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
+                <span className="text-gray-600">Product Link</span>
+                <a href={product.product_link} target="_blank" rel="noopener noreferrer" 
+                   className="font-medium text-blue-600 hover:text-blue-800 flex items-center gap-1">
+                  Visit <Link className="h-3 w-3" />
+                </a>
+              </div>
+            )}
             <div className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
               <span className="text-gray-600">Category</span>
               <span className="font-medium">{product.category}</span>
@@ -248,6 +322,10 @@ export function ProductStats({ product }: ProductStatsProps) {
             <div className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
               <span className="text-gray-600">Business Model</span>
               <span className="font-medium">{product.business_model || "Not specified"}</span>
+            </div>
+            <div className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
+              <span className="text-gray-600">Product Age</span>
+              <span className="font-medium">{product.product_age || "Not specified"}</span>
             </div>
             {product.demo_url && (
               <div className="mt-4">
@@ -397,10 +475,6 @@ export function ProductStats({ product }: ProductStatsProps) {
             <span>Market Position</span>
           </div>
           <div className="space-y-3">
-            <div className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
-              <span className="text-gray-600">Product Age</span>
-              <span className="font-medium">{product.product_age || "Not specified"}</span>
-            </div>
             {product.competitors && (
               <div>
                 <span className="text-gray-600 block mb-1">Competition</span>
@@ -451,6 +525,17 @@ export function ProductStats({ product }: ProductStatsProps) {
               <span>Special Notes</span>
             </div>
             <p className="text-gray-600 whitespace-pre-wrap p-3 bg-gray-50 rounded-md">{product.special_notes}</p>
+          </div>
+        )}
+        
+        {/* Description (in full) */}
+        {product.description && (
+          <div className="col-span-full">
+            <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+              <MessageSquareMore className="h-4 w-4" />
+              <span>Full Description</span>
+            </div>
+            <p className="text-gray-600 whitespace-pre-wrap p-3 bg-gray-50 rounded-md">{product.description}</p>
           </div>
         )}
       </div>
