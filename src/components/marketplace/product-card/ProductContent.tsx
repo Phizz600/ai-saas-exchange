@@ -54,7 +54,7 @@ export function ProductContent({
   const displayPrice = (current_price || price || 0);
   const isAuction = listing_type === 'dutch_auction' || !!auction_end_time;
   
-  // Check if this is a no-reserve auction (reserve_price is undefined or 0 or no_reserve is true)
+  // Check if this is a no-reserve auction
   const isNoReserve = no_reserve || !reserve_price || reserve_price === 0;
   
   return (
@@ -82,21 +82,21 @@ export function ProductContent({
           {requires_nda ? "Confidential" : title}
         </h3>
         
-        {/* Description - Added here */}
+        {/* Description */}
         {description && !requires_nda && (
           <p className="text-sm text-gray-600 line-clamp-2">
             {description}
           </p>
         )}
         
-        {/* If NDA is required, show placeholder text */}
+        {/* NDA message if required */}
         {requires_nda && (
           <p className="text-sm text-gray-600 italic">
             Additional details available after signing NDA
           </p>
         )}
         
-        {/* Price in green - making the font size smaller and left aligned */}
+        {/* Price display */}
         <div className="text-xl font-bold text-green-600 text-left">
           {formatCurrency(displayPrice)}
           {isAuction && (
@@ -106,7 +106,18 @@ export function ProductContent({
           )}
         </div>
         
-        {/* Show metrics for ALL products, whether NDA is required or not */}
+        {/* Auction status - only show if it's an auction */}
+        {isAuction && (
+          <div className="text-sm text-gray-600">
+            {isNoReserve ? (
+              <span className="text-amber-600">No Reserve - Sells at any price</span>
+            ) : (
+              <span>With Reserve</span>
+            )}
+          </div>
+        )}
+        
+        {/* Show metrics for ALL products */}
         <ProductMetrics 
           monthlyRevenue={monthlyRevenue}
           monthly_traffic={monthly_traffic}
