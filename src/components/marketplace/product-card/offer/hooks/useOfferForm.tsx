@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -64,9 +63,8 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
     const numericAmount = parseFloat(amount);
     
     if (isNaN(numericAmount) || numericAmount <= 0) {
-      toast("Invalid amount", {
-        description: "Please enter a valid amount for your offer.",
-        variant: "destructive",
+      toast.error("Invalid amount", {
+        description: "Please enter a valid amount for your offer."
       });
       return;
     }
@@ -85,9 +83,8 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
-        toast("Authentication required", {
-          description: "Please log in to complete your offer",
-          variant: "destructive",
+        toast.error("Authentication required", {
+          description: "Please log in to complete your offer"
         });
         return;
       }
@@ -102,8 +99,8 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
         paymentIntentId!
       );
       
-      toast("Offer submitted!", {
-        description: "Your offer has been submitted successfully.",
+      toast.success("Offer submitted!", {
+        description: "Your offer has been submitted successfully."
       });
       
       setSuccess(true);
@@ -113,9 +110,8 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
     } catch (error: any) {
       console.error("Error creating offer:", error);
       
-      toast("Failed to process offer", {
-        description: error.message || "An error occurred while processing your offer.",
-        variant: "destructive",
+      toast.error("Failed to process offer", {
+        description: error.message || "An error occurred while processing your offer."
       });
     } finally {
       setIsSubmitting(false);
@@ -136,8 +132,8 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
       
       setSuccess(true);
       
-      toast("Offer updated!", {
-        description: "Your offer has been updated successfully.",
+      toast.success("Offer updated!", {
+        description: "Your offer has been updated successfully."
       });
       
       resetForm();
@@ -145,9 +141,8 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
     } catch (error: any) {
       console.error("Error updating offer:", error);
       
-      toast("Failed to update offer", {
-        description: error.message || "An error occurred while updating your offer.",
-        variant: "destructive",
+      toast.error("Failed to update offer", {
+        description: error.message || "An error occurred while updating your offer."
       });
     } finally {
       setIsSubmitting(false);
