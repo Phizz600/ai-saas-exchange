@@ -3,7 +3,9 @@ import { Card } from "@/components/ui/card";
 import { 
   TrendingUp, Users, Star, Shield, Zap, Building2, Info, Eye, 
   Mouse, Bookmark, Flame, History, Code2, Network, Target,
-  Calendar, DollarSign, BarChart3, GitBranch, BookOpen
+  Calendar, DollarSign, BarChart3, GitBranch, BookOpen,
+  GanttChart, Globe2, Microscope, HeartHandshake, Building,
+  FolderGit2, MessageSquareMore, ShieldCheck, Settings
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { VerificationBadges } from "./VerificationBadges";
@@ -65,6 +67,12 @@ interface ProductStatsProps {
     number_of_employees?: string;
     business_type?: string;
     deliverables?: string[];
+    category?: string;
+    category_other?: string;
+    industry?: string;
+    industry_other?: string;
+    demo_url?: string;
+    has_patents?: boolean;
   };
 }
 
@@ -188,7 +196,7 @@ export function ProductStats({ product }: ProductStatsProps) {
   return (
     <Card className="p-6">
       <div className="flex justify-between items-center mb-6">
-        <h3 className="text-lg font-semibold">Critical Buyer Details</h3>
+        <h3 className="text-lg font-semibold">Product Details</h3>
         {isHighTraffic && <Badge variant="secondary" className="bg-amber-100 text-amber-700 flex items-center gap-1">
             <Flame className="h-4 w-4" />
             Trending
@@ -202,112 +210,59 @@ export function ProductStats({ product }: ProductStatsProps) {
       />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-        <div className="col-span-full bg-gray-50 p-4 rounded-lg">
-          <div className="flex justify-between items-center mb-3">
-            <h4 className="text-sm font-semibold text-gray-600">Last 24 Hours Activity</h4>
-            {bids && bids.length > 0 && <Sheet>
-                <SheetTrigger asChild>
-                  <Button variant="ghost" size="sm" className="text-sm text-blue-600 hover:text-blue-700">
-                    <History className="h-4 w-4 mr-1" />
-                    View All Bids
-                  </Button>
-                </SheetTrigger>
-                <SheetContent>
-                  <SheetHeader>
-                    <SheetTitle>Complete Bid History</SheetTitle>
-                    <SheetDescription>
-                      All bids placed on this product
-                    </SheetDescription>
-                  </SheetHeader>
-                  <div className="mt-6 space-y-4">
-                    {bids.map(bid => <div key={bid.id} className="border-b border-gray-200 pb-3">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <p className="font-semibold">{formatCurrency(bid.amount)}</p>
-                            <p className="text-sm text-gray-600">by {formatBidderName(bid.bidder.full_name)}</p>
-                          </div>
-                          <p className="text-sm text-gray-500">
-                            {format(new Date(bid.created_at), 'MMM d, yyyy h:mm a')}
-                          </p>
-                        </div>
-                      </div>)}
-                  </div>
-                </SheetContent>
-              </Sheet>}
+        {/* Overview Section */}
+        <div>
+          <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+            <Info className="h-4 w-4" />
+            <span>Overview</span>
           </div>
-          <div className="grid grid-cols-3 gap-4 mb-4">
-            <div className="flex items-center gap-2">
-              <div className="p-2 bg-blue-100 rounded-full">
-                <Eye className="h-4 w-4 text-blue-600" />
-              </div>
-              <div>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <p className="text-lg font-semibold">{analytics?.views || 0}</p>
-                    </TooltipTrigger>
-                    <TooltipContent className="bg-white shadow-lg">
-                      <p>Views are tracked when this product appears on the marketplace grid</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-                <p className="text-sm text-gray-600">Views</p>
-              </div>
+          <div className="space-y-3">
+            <div className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
+              <span className="text-gray-600">Category</span>
+              <span className="font-medium">{product.category}</span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="p-2 bg-purple-100 rounded-full">
-                <Mouse className="h-4 w-4 text-purple-600" />
+            {product.category_other && (
+              <div className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
+                <span className="text-gray-600">Category Details</span>
+                <span className="font-medium">{product.category_other}</span>
               </div>
-              <div>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <p className="text-lg font-semibold">{analytics?.clicks || 0}</p>
-                    </TooltipTrigger>
-                    <TooltipContent className="bg-white shadow-lg">
-                      <p>Clicks are tracked when a user navigates to the product details page</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-                <p className="text-sm text-gray-600">Clicks</p>
-              </div>
+            )}
+            <div className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
+              <span className="text-gray-600">Industry</span>
+              <span className="font-medium">{product.industry || "Not specified"}</span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="p-2 bg-pink-100 rounded-full">
-                <Bookmark className="h-4 w-4 text-pink-600" />
+            {product.industry_other && (
+              <div className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
+                <span className="text-gray-600">Industry Details</span>
+                <span className="font-medium">{product.industry_other}</span>
               </div>
-              <div>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <p className="text-lg font-semibold">{analytics?.saves || 0}</p>
-                    </TooltipTrigger>
-                    <TooltipContent className="bg-white shadow-lg">
-                      <p>Saves are tracked when a user adds this product to their saved list</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-                <p className="text-sm text-gray-600">Saves</p>
-              </div>
+            )}
+            <div className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
+              <span className="text-gray-600">Stage</span>
+              <span className="font-medium">{product.stage}</span>
             </div>
+            <div className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
+              <span className="text-gray-600">Business Type</span>
+              <span className="font-medium">{product.business_type || "Not specified"}</span>
+            </div>
+            <div className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
+              <span className="text-gray-600">Business Model</span>
+              <span className="font-medium">{product.business_model || "Not specified"}</span>
+            </div>
+            {product.demo_url && (
+              <div className="mt-4">
+                <a 
+                  href={product.demo_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 w-full py-2 text-[#8B5CF6] border border-[#8B5CF6] rounded-md hover:bg-[#8B5CF6]/10 transition-colors"
+                >
+                  <Globe2 className="h-4 w-4" />
+                  View Live Demo
+                </a>
+              </div>
+            )}
           </div>
-          
-          {lastBid && <div className="mt-4 pt-4 border-t border-gray-200">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-900">Latest Bid</p>
-                  <p className="text-sm text-gray-600">
-                    by {formatBidderName(lastBid.bidder.full_name)}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm font-medium text-gray-900">{formatCurrency(lastBid.amount)}</p>
-                  <p className="text-sm text-gray-500">
-                    {format(new Date(lastBid.created_at), 'MMM d, h:mm a')}
-                  </p>
-                </div>
-              </div>
-            </div>}
         </div>
 
         {/* Financial Metrics */}
@@ -317,30 +272,26 @@ export function ProductStats({ product }: ProductStatsProps) {
             <span>Financial Overview</span>
           </div>
           <div className="space-y-3">
-            {product.monthly_revenue !== undefined && (
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">Monthly Revenue</span>
-                <span className="font-medium">{formatCurrency(product.monthly_revenue)}</span>
-              </div>
-            )}
-            {product.monthly_profit !== undefined && (
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">Monthly Profit</span>
-                <span className="font-medium">{formatCurrency(product.monthly_profit)}</span>
-              </div>
-            )}
-            {product.gross_profit_margin !== undefined && (
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">Gross Profit Margin</span>
-                <span className="font-medium">{product.gross_profit_margin}%</span>
-              </div>
-            )}
-            {product.customer_acquisition_cost !== undefined && (
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">Customer Acquisition Cost</span>
-                <span className="font-medium">{formatCurrency(product.customer_acquisition_cost)}</span>
-              </div>
-            )}
+            <div className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
+              <span className="text-gray-600">Monthly Revenue</span>
+              <span className="font-medium">{product.monthly_revenue ? formatCurrency(product.monthly_revenue) : "Not disclosed"}</span>
+            </div>
+            <div className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
+              <span className="text-gray-600">Monthly Profit</span>
+              <span className="font-medium">{product.monthly_profit ? formatCurrency(product.monthly_profit) : "Not disclosed"}</span>
+            </div>
+            <div className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
+              <span className="text-gray-600">Gross Profit Margin</span>
+              <span className="font-medium">{product.gross_profit_margin ? `${product.gross_profit_margin}%` : "Not disclosed"}</span>
+            </div>
+            <div className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
+              <span className="text-gray-600">Customer Acquisition Cost</span>
+              <span className="font-medium">{product.customer_acquisition_cost ? formatCurrency(product.customer_acquisition_cost) : "Not disclosed"}</span>
+            </div>
+            <div className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
+              <span className="text-gray-600">Monetization</span>
+              <span className="font-medium">{product.monetization || product.monetization_other || "Not specified"}</span>
+            </div>
           </div>
         </div>
 
@@ -351,24 +302,18 @@ export function ProductStats({ product }: ProductStatsProps) {
             <span>User Metrics</span>
           </div>
           <div className="space-y-3">
-            {product.monthly_traffic !== undefined && (
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">Monthly Traffic</span>
-                <span className="font-medium">{product.monthly_traffic.toLocaleString()}</span>
-              </div>
-            )}
-            {product.active_users && (
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">Active Users</span>
-                <span className="font-medium">{product.active_users}</span>
-              </div>
-            )}
-            {product.monthly_churn_rate !== undefined && (
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">Monthly Churn Rate</span>
-                <span className="font-medium">{product.monthly_churn_rate}%</span>
-              </div>
-            )}
+            <div className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
+              <span className="text-gray-600">Monthly Traffic</span>
+              <span className="font-medium">{product.monthly_traffic?.toLocaleString() || "Not disclosed"}</span>
+            </div>
+            <div className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
+              <span className="text-gray-600">Active Users</span>
+              <span className="font-medium">{product.active_users || "Not disclosed"}</span>
+            </div>
+            <div className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
+              <span className="text-gray-600">Monthly Churn Rate</span>
+              <span className="font-medium">{product.monthly_churn_rate ? `${product.monthly_churn_rate}%` : "Not disclosed"}</span>
+            </div>
           </div>
         </div>
 
@@ -382,57 +327,42 @@ export function ProductStats({ product }: ProductStatsProps) {
             {product.tech_stack && product.tech_stack.length > 0 && (
               <div className="flex flex-wrap gap-2">
                 {product.tech_stack.map((tech, index) => (
-                  <span key={index} className="px-2 py-1 bg-blue-100 text-blue-700 rounded-md text-sm">
+                  <Badge key={index} variant="secondary" className="bg-blue-100 text-blue-700">
                     {tech}
-                  </span>
+                  </Badge>
                 ))}
               </div>
             )}
             {product.tech_stack_other && (
-              <div className="text-gray-600">
+              <div className="text-gray-600 mt-2">
                 Additional tech: {product.tech_stack_other}
               </div>
             )}
-            {product.llm_type && (
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">LLM Type</span>
-                <span className="font-medium">{product.llm_type}</span>
+            <div className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
+              <span className="text-gray-600">LLM Type</span>
+              <span className="font-medium">{product.llm_type || product.llm_type_other || "Not specified"}</span>
+            </div>
+            {product.integrations && product.integrations.length > 0 && (
+              <div className="mt-2">
+                <p className="text-sm text-gray-600 mb-1">Integrations:</p>
+                <div className="flex flex-wrap gap-2">
+                  {product.integrations.map((integration, index) => (
+                    <Badge key={index} variant="secondary" className="bg-purple-100 text-purple-700">
+                      {integration}
+                    </Badge>
+                  ))}
+                </div>
               </div>
             )}
-          </div>
-        </div>
-
-        {/* Business Details */}
-        <div>
-          <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-            <Building2 className="h-4 w-4" />
-            <span>Business Information</span>
-          </div>
-          <div className="space-y-3">
-            {product.business_type && (
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">Business Type</span>
-                <span className="font-medium">{product.business_type}</span>
+            {product.integrations_other && (
+              <div className="text-gray-600 mt-2">
+                Additional integrations: {product.integrations_other}
               </div>
             )}
-            {product.business_model && (
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">Business Model</span>
-                <span className="font-medium">{product.business_model}</span>
-              </div>
-            )}
-            {product.monetization && (
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">Monetization</span>
-                <span className="font-medium">
-                  {product.monetization_other || product.monetization}
-                </span>
-              </div>
-            )}
-            {product.product_age && (
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">Product Age</span>
-                <span className="font-medium">{product.product_age}</span>
+            {product.has_patents && (
+              <div className="flex items-center gap-2 text-emerald-600 mt-2">
+                <ShieldCheck className="h-4 w-4" />
+                <span>Patents Protected</span>
               </div>
             )}
           </div>
@@ -445,24 +375,18 @@ export function ProductStats({ product }: ProductStatsProps) {
             <span>Team Information</span>
           </div>
           <div className="space-y-3">
-            {product.team_size && (
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">Team Size</span>
-                <span className="font-medium">{product.team_size}</span>
-              </div>
-            )}
-            {product.number_of_employees && (
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">Number of Employees</span>
-                <span className="font-medium">{product.number_of_employees}</span>
-              </div>
-            )}
-            {product.business_location && (
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">Business Location</span>
-                <span className="font-medium">{product.business_location}</span>
-              </div>
-            )}
+            <div className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
+              <span className="text-gray-600">Team Size</span>
+              <span className="font-medium">{product.team_size || "Not specified"}</span>
+            </div>
+            <div className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
+              <span className="text-gray-600">Number of Employees</span>
+              <span className="font-medium">{product.number_of_employees || "Not specified"}</span>
+            </div>
+            <div className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
+              <span className="text-gray-600">Business Location</span>
+              <span className="font-medium">{product.business_location || "Not specified"}</span>
+            </div>
           </div>
         </div>
 
@@ -473,10 +397,14 @@ export function ProductStats({ product }: ProductStatsProps) {
             <span>Market Position</span>
           </div>
           <div className="space-y-3">
+            <div className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
+              <span className="text-gray-600">Product Age</span>
+              <span className="font-medium">{product.product_age || "Not specified"}</span>
+            </div>
             {product.competitors && (
               <div>
                 <span className="text-gray-600 block mb-1">Competition</span>
-                <span className="font-medium">{product.competitors}</span>
+                <p className="text-sm bg-gray-50 p-2 rounded-md">{product.competitors}</p>
               </div>
             )}
           </div>
@@ -490,7 +418,7 @@ export function ProductStats({ product }: ProductStatsProps) {
               <span>Investment Timeline</span>
             </div>
             <div className="space-y-3">
-              <div className="flex justify-between items-center">
+              <div className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
                 <span className="text-gray-600">Timeline</span>
                 <span className="font-medium">{product.investment_timeline}</span>
               </div>
@@ -507,9 +435,9 @@ export function ProductStats({ product }: ProductStatsProps) {
             </div>
             <div className="flex flex-wrap gap-2">
               {product.deliverables.map((deliverable, index) => (
-                <span key={index} className="px-2 py-1 bg-green-100 text-green-700 rounded-md text-sm">
+                <Badge key={index} variant="secondary" className="bg-green-100 text-green-700">
                   {deliverable}
-                </span>
+                </Badge>
               ))}
             </div>
           </div>
@@ -522,7 +450,7 @@ export function ProductStats({ product }: ProductStatsProps) {
               <Info className="h-4 w-4" />
               <span>Special Notes</span>
             </div>
-            <p className="text-gray-600 whitespace-pre-wrap">{product.special_notes}</p>
+            <p className="text-gray-600 whitespace-pre-wrap p-3 bg-gray-50 rounded-md">{product.special_notes}</p>
           </div>
         )}
       </div>
