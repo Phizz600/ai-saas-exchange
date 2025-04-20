@@ -1,4 +1,3 @@
-
 import { DashboardLayout } from "@/components/product-dashboard/DashboardLayout";
 import { MarketplaceStats } from "@/components/product-dashboard/MarketplaceStats";
 import { ProductDashboardContent } from "@/components/product-dashboard/ProductDashboardContent";
@@ -16,7 +15,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { EditListingForm } from "@/components/product-dashboard/EditListingForm";
 
-export const ProductDashboard = () => {
+function ProductDashboard() {
   const [showVerifiedOnly, setShowVerifiedOnly] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<string | undefined>(undefined);
 
@@ -140,4 +139,7 @@ export const ProductDashboard = () => {
         </TabsContent>
       </Tabs>
     </DashboardLayout>;
-};
+}
+
+export default ProductDashboard;
+export { ProductDashboard };

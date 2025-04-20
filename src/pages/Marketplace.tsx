@@ -2,7 +2,7 @@
 import { MarketplaceLayout } from "@/components/marketplace/MarketplaceLayout";
 import { Footer } from "@/components/Footer";
 
-export const Marketplace = () => {
+function Marketplace() {
   console.log('Marketplace page component rendered');
   return (
     <div className="bg-gray-50 min-h-screen flex flex-col">
@@ -10,4 +10,7 @@ export const Marketplace = () => {
       <Footer />
     </div>
   );
-};
+}
+
+export default Marketplace;
+export { Marketplace };
