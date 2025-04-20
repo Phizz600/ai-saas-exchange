@@ -121,4 +121,11 @@ export interface ProductWithSeller extends MarketplaceProduct {
 
   // Make image_url required
   image_url: string;
+
+  // Make is_code_audited required and provide a default value
+  is_code_audited: boolean;
+  
+  // Make other verification-related fields required
+  is_revenue_verified: boolean;
+  is_traffic_verified: boolean;
 }

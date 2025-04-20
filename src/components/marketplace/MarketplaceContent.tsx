@@ -136,6 +136,9 @@ export const MarketplaceContent = () => {
       updated_at: product.updated_at || new Date().toISOString(),
       highest_bid: product.highest_bid || 0, // Provide a default of 0 if not present
       highest_bidder_id: product.highest_bidder_id || "", // Provide a default empty string if not present
+      is_code_audited: product.is_code_audited || false,
+      is_revenue_verified: product.is_revenue_verified || false,
+      is_traffic_verified: product.is_traffic_verified || false,
     })) as ProductWithSeller[];
   };
 
