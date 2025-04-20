@@ -1,6 +1,7 @@
 
 import { Users } from "lucide-react";
 import { hasValue } from "@/utils/productHelpers";
+import { getCountryFlag } from "@/utils/countryFlags";
 
 interface TeamInfoProps {
   product: {
@@ -45,7 +46,9 @@ export function TeamInfo({ product }: TeamInfoProps) {
         {hasLocation && (
           <div className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
             <span className="text-gray-600">Business Location</span>
-            <span className="font-medium">{product.business_location}</span>
+            <span className="font-medium flex items-center gap-2">
+              {getCountryFlag(product.business_location)} {product.business_location}
+            </span>
           </div>
         )}
       </div>
