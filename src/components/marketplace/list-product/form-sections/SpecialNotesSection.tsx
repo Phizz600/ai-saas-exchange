@@ -1,3 +1,4 @@
+
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { UseFormReturn } from "react-hook-form";
@@ -142,7 +143,9 @@ export function SpecialNotesSection({
           name="specialNotes" 
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Additional Notes (Optional)</FormLabel>
+              <FormLabel className="exo-2-header bg-gradient-to-r from-[#8B5CF6] to-[#D946EE] bg-clip-text text-transparent text-base font-semibold">
+                Additional Notes (Optional)
+              </FormLabel>
               <FormControl>
                 <Textarea 
                   placeholder="Add any special notes about included assets, transfer process, or additional information that may be important for potential buyers..." 
