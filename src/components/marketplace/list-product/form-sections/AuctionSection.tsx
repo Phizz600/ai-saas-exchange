@@ -7,6 +7,8 @@ import { PriceInputs } from "./auction/PriceInputs";
 import { AuctionSettings } from "./auction/AuctionSettings";
 import { Info } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { FormField, FormItem, FormLabel, FormControl, FormDescription } from "@/components/ui/form";
+import { Switch } from "@/components/ui/switch";
 
 interface AuctionSectionProps {
   form: UseFormReturn<ListProductFormData>;
@@ -37,7 +39,7 @@ export function AuctionSection({ form }: AuctionSectionProps) {
       case "90days": endDate.setDate(endDate.getDate() + 90); break;
       default: endDate.setDate(endDate.getDate() + 30);
     }
-    form.setValue("auctionEndDate", endDate);
+    form.setValue("auctionEndTime", endDate);
   };
 
   return (
