@@ -139,9 +139,11 @@ export const MarketplaceContent = () => {
       is_code_audited: product.is_code_audited || false,
       is_revenue_verified: product.is_revenue_verified || false,
       is_traffic_verified: product.is_traffic_verified || false,
+      listing_type: product.listing_type || "fixed_price", // Provide a default value for listing_type
     })) as ProductWithSeller[];
   };
 
+  
   return (
     <>
       <div className="flex items-center justify-between mb-4">

@@ -1,3 +1,4 @@
+
 export interface FilterState {
   searchQuery: string;
   industryFilter: string;
@@ -128,4 +129,7 @@ export interface ProductWithSeller extends MarketplaceProduct {
   // Make other verification-related fields required
   is_revenue_verified: boolean;
   is_traffic_verified: boolean;
+  
+  // Make listing_type required
+  listing_type: string;
 }
