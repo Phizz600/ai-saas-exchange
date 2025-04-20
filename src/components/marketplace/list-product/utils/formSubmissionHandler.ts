@@ -1,4 +1,3 @@
-
 import { ListProductFormData } from "../types";
 import { supabase } from "@/integrations/supabase/client";
 import { logError } from "@/integrations/supabase/products";
@@ -73,6 +72,7 @@ export const handleProductSubmission = async (
       monthly_traffic: monthlyTrafficValue, // Use the converted numeric value
       active_users: data.activeUsers, // Keep as string for this field
       gross_profit_margin: data.grossProfitMargin, // Using the correct column name 'gross_profit_margin'
+      monthly_churn_rate: data.monthlyChurnRate,
       tech_stack: techStackArray,
       tech_stack_other: data.techStackOther,
       team_size: data.teamSize,
