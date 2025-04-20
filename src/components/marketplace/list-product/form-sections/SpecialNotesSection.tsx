@@ -1,4 +1,3 @@
-
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { UseFormReturn } from "react-hook-form";
@@ -144,7 +143,7 @@ export function SpecialNotesSection({
           render={({ field }) => (
             <FormItem>
               <FormLabel className="exo-2-header bg-gradient-to-r from-[#8B5CF6] to-[#D946EE] bg-clip-text text-transparent text-base font-semibold">
-                Additional Notes (Optional)
+                Special Notes (Optional)
               </FormLabel>
               <FormControl>
                 <Textarea 
