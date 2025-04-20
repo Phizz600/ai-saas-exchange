@@ -36,19 +36,6 @@ export function AuctionDetails({ product, isAuction }: AuctionDetailsProps) {
             <span className="font-medium">{product.starting_price ? formatCurrency(product.starting_price) : "Not set"}</span>
           </div>
           
-          {/* Show different reserve price display based on no_reserve flag */}
-          {isNoReserve ? (
-            <div className="flex justify-between items-center bg-green-50 p-2 rounded-md">
-              <span className="text-gray-600">Reserve Price</span>
-              <span className="font-medium text-green-600">No Reserve</span>
-            </div>
-          ) : (
-            <div className="flex justify-between items-center bg-white p-2 rounded-md">
-              <span className="text-gray-600">Reserve Price</span>
-              <span className="font-medium">{product.reserve_price ? formatCurrency(product.reserve_price) : "Not set"}</span>
-            </div>
-          )}
-          
           <div className="flex justify-between items-center bg-white p-2 rounded-md">
             <span className="text-gray-600">Price Decrement</span>
             <span className="font-medium">{product.price_decrement ? formatCurrency(product.price_decrement) : "Not set"}</span>
