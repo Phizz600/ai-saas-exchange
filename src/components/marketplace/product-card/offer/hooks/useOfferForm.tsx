@@ -64,8 +64,7 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
     const numericAmount = parseFloat(amount);
     
     if (isNaN(numericAmount) || numericAmount <= 0) {
-      toast({
-        title: "Invalid amount",
+      toast("Invalid amount", {
         description: "Please enter a valid amount for your offer.",
         variant: "destructive",
       });
@@ -86,8 +85,7 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
-        toast({
-          title: "Authentication required",
+        toast("Authentication required", {
           description: "Please log in to complete your offer",
           variant: "destructive",
         });
@@ -104,8 +102,7 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
         paymentIntentId!
       );
       
-      toast({
-        title: "Offer submitted!",
+      toast("Offer submitted!", {
         description: "Your offer has been submitted successfully.",
       });
       
@@ -116,8 +113,7 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
     } catch (error: any) {
       console.error("Error creating offer:", error);
       
-      toast({
-        title: "Failed to process offer",
+      toast("Failed to process offer", {
         description: error.message || "An error occurred while processing your offer.",
         variant: "destructive",
       });
@@ -140,8 +136,7 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
       
       setSuccess(true);
       
-      toast({
-        title: "Offer updated!",
+      toast("Offer updated!", {
         description: "Your offer has been updated successfully.",
       });
       
@@ -150,8 +145,7 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
     } catch (error: any) {
       console.error("Error updating offer:", error);
       
-      toast({
-        title: "Failed to update offer",
+      toast("Failed to update offer", {
         description: error.message || "An error occurred while updating your offer.",
         variant: "destructive",
       });
