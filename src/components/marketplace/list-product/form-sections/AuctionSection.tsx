@@ -57,35 +57,53 @@ export function AuctionSection({
     }
   }, [startingPrice, isAuction, form]);
 
-  // Calculate recommended price decrement
+  // Helper function to calculate decrement divisor based on duration and interval
+  const calculateDecrementDivisor = (duration: string, interval: string) => {
+    let baseDivisor: number;
+    
+    // Set base divisor based on duration
+    switch (duration) {
+      case "14days":
+        baseDivisor = 14;
+        break;
+      case "30days":
+        baseDivisor = 30;
+        break;
+      case "60days":
+        baseDivisor = 60;
+        break;
+      case "90days":
+        baseDivisor = 90;
+        break;
+      default:
+        baseDivisor = 30;
+    }
+    
+    // Adjust divisor based on interval
+    switch (interval) {
+      case "day":
+        return baseDivisor; // One decrement per day
+      case "week":
+        return Math.ceil(baseDivisor / 7); // Convert to weeks
+      case "month":
+        return Math.ceil(baseDivisor / 30); // Convert to months
+      default:
+        return baseDivisor;
+    }
+  };
+
+  // Calculate recommended decrement
   useEffect(() => {
-    if (startingPrice && form.getValues("auctionDuration")) {
-      const duration = form.getValues("auctionDuration") || "30days";
+    if (startingPrice && form.getValues("auctionDuration") && form.getValues("priceDecrementInterval")) {
+      const duration = form.getValues("auctionDuration");
+      const interval = form.getValues("priceDecrementInterval");
       const reservePriceValue = form.getValues("reservePrice") || 0;
       const priceDiff = startingPrice - reservePriceValue;
-      let decrementDivisor = 720; // Default for 30 days with hourly decrements
-
-      switch (duration) {
-        case "14days":
-          decrementDivisor = 336; // 336 hourly decrements in 14 days
-          break;
-        case "30days":
-          decrementDivisor = 720; // 720 hourly decrements in 30 days
-          break;
-        case "60days":
-          decrementDivisor = 1440; // 1440 hourly decrements in 60 days
-          break;
-        case "90days":
-          decrementDivisor = 2160; // 2160 hourly decrements in 90 days
-          break;
-      }
-
-      // Set decrement interval to hourly by default for better UX
-      if (!form.getValues("priceDecrementInterval")) {
-        form.setValue("priceDecrementInterval", "day");
-      }
-
-      // Calculate recommended decrement as priceDiff / decrementDivisor, rounded to nearest dollar
+      
+      // Get decrement divisor based on duration and interval
+      const decrementDivisor = calculateDecrementDivisor(duration, interval);
+      
+      // Calculate recommended decrement, ensuring minimum of $1
       const recommended = Math.max(1, Math.round(priceDiff / decrementDivisor));
       setRecommendedDecrement(recommended);
 
@@ -94,7 +112,7 @@ export function AuctionSection({
         form.setValue("priceDecrement", recommended);
       }
     }
-  }, [startingPrice, reservePrice, form]);
+  }, [startingPrice, reservePrice, form, form.watch("auctionDuration"), form.watch("priceDecrementInterval")]);
 
   // Update noReserve flag whenever reservePrice changes
   useEffect(() => {
@@ -388,37 +406,40 @@ export function AuctionSection({
 
             {/* 6. Decrement Interval - MODIFIED: Removed minute and hour options */}
             <FormField control={form.control} name="priceDecrementInterval" render={({
-          field
-        }) => <FormItem>
-                  <FormLabel className="flex items-center gap-2">
-                    Decrement Interval
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Info className="h-4 w-4 text-gray-500 cursor-help" />
-                        </TooltipTrigger>
-                        <TooltipContent className="bg-white">
-                          <p>How often the price should decrease</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value || "day"}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select interval">
-                          {field.value ? getDecrementIntervalLabel(field.value) : "Select interval"}
-                        </SelectValue>
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="day">Per Day</SelectItem>
-                      <SelectItem value="week">Per Week</SelectItem>
-                      <SelectItem value="month">Per Month</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>} />
+              field
+            }) => <FormItem>
+              <FormLabel className="flex items-center gap-2">
+                Decrement Interval
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="h-4 w-4 text-gray-500 cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-white">
+                      <p>How often the price should decrease. Changes here will affect the recommended price decrement.</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </FormLabel>
+              <Select onValueChange={value => {
+                field.onChange(value);
+                // Recalculation will happen automatically via useEffect
+              }} defaultValue={field.value || "day"}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select interval">
+                      {field.value ? getDecrementIntervalLabel(field.value) : "Select interval"}
+                    </SelectValue>
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="day">Per Day</SelectItem>
+                  <SelectItem value="week">Per Week</SelectItem>
+                  <SelectItem value="month">Per Month</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>} />
           </div>
 
           {/* Fix for the auctionEndTime field - return a proper React element instead of void */}
