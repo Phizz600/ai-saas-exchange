@@ -1,3 +1,4 @@
+
 import { Info, Link, Globe } from "lucide-react";
 import { ProductMetrics } from "./ProductMetrics";
 
@@ -14,12 +15,17 @@ interface ProductOverviewProps {
     business_model?: string;
     product_age?: string;
     demo_url?: string;
-    monthly_traffic?: string;
+    monthly_traffic?: string | number; // Updated to accept either string or number
     active_users?: string;
   };
 }
 
 export function ProductOverview({ product }: ProductOverviewProps) {
+  // Convert monthly_traffic to string if it's a number
+  const monthlyTrafficString = typeof product.monthly_traffic === 'number' 
+    ? product.monthly_traffic.toString()
+    : product.monthly_traffic || '';
+
   return (
     <div>
       <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
@@ -78,7 +84,7 @@ export function ProductOverview({ product }: ProductOverviewProps) {
         </div>
         
         <ProductMetrics 
-          monthlyTraffic={product.monthly_traffic || ''} 
+          monthlyTraffic={monthlyTrafficString} 
           activeUsers={product.active_users || ''}
         />
         

@@ -35,7 +35,7 @@ interface ProductStatsProps {
     monthly_profit?: number;
     gross_profit_margin?: number;
     monthly_churn_rate?: number;
-    monthly_traffic?: string;
+    monthly_traffic?: string | number; // Updated to accept both string and number
     active_users?: string;
     tech_stack?: string[];
     tech_stack_other?: string;
