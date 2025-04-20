@@ -72,7 +72,10 @@ export function ProductPage() {
   const navigate = useNavigate();
   const [isLiked, setIsLiked] = useState(false);
   const { toast } = useToast();
-  const { hasSigned, isCheckingStatus, setHasSigned } = useNdaStatus(id || '');
+  
+  // Ensure id is defined before passing to useNdaStatus
+  const productId = id || '';
+  const { hasSigned, isCheckingStatus, setHasSigned } = useNdaStatus(productId);
   
   // Fetch product data
   const {
