@@ -65,6 +65,9 @@ export interface ProductWithSeller extends MarketplaceProduct {
     avatar_url?: string;
   };
   
+  // Add seller_id which is required by ProductGrid
+  seller_id?: string;
+  
   // Additional fields from ProductGrid
   active_users?: string;
   admin_feedback?: string;

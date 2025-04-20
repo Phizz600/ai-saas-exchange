@@ -1,3 +1,4 @@
+
 import { useState, useCallback, useEffect } from "react";
 import { ProductGrid } from "@/components/marketplace/ProductGrid";
 import { MarketplacePagination } from "@/components/marketplace/MarketplacePagination";
@@ -87,6 +88,8 @@ export const MarketplaceContent = () => {
         full_name: "Anonymous",
         avatar_url: "/placeholder.svg"
       },
+      // Make sure seller_id is included (required by ProductGrid)
+      seller_id: product.seller_id || product.seller?.id || "",
       // Ensure all possible fields from the database are included
       active_users: product.active_users || "",
       admin_feedback: product.admin_feedback || "",
@@ -95,6 +98,34 @@ export const MarketplaceContent = () => {
       business_model: product.business_model || "",
       business_type: product.business_type || "",
       category: product.category || "",
+      category_other: product.category_other || "",
+      competitors: product.competitors || "",
+      customer_acquisition_cost: product.customer_acquisition_cost || 0,
+      demo_url: product.demo_url || "",
+      deliverables: product.deliverables || [],
+      has_patents: product.has_patents || false,
+      industry: product.industry || "",
+      industry_other: product.industry_other || "",
+      integrations: product.integrations || [],
+      integrations_other: product.integrations_other || "",
+      investment_timeline: product.investment_timeline || "",
+      is_verified: product.is_verified || false,
+      llm_type: product.llm_type || "",
+      llm_type_other: product.llm_type_other || "",
+      monetization: product.monetization || "",
+      monetization_other: product.monetization_other || "",
+      monthly_expenses: product.monthly_expenses || [],
+      monthly_profit: product.monthly_profit || 0,
+      number_of_employees: product.number_of_employees || "",
+      payment_status: product.payment_status || "",
+      product_age: product.product_age || "",
+      product_link: product.product_link || "",
+      reviewed_at: product.reviewed_at || "",
+      reviewed_by: product.reviewed_by || "",
+      special_notes: product.special_notes || "",
+      team_size: product.team_size || "",
+      tech_stack: product.tech_stack || [],
+      tech_stack_other: product.tech_stack_other || "",
       // Add other fields with default values to ensure type compatibility
       created_at: product.created_at || new Date().toISOString(),
       status: product.status || "active",
