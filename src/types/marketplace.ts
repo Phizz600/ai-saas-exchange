@@ -1,4 +1,3 @@
-
 export interface FilterState {
   searchQuery: string;
   industryFilter: string;
@@ -119,4 +118,7 @@ export interface ProductWithSeller extends MarketplaceProduct {
   
   // Make highest_bidder_id required
   highest_bidder_id: string;
+
+  // Make image_url required
+  image_url: string;
 }

@@ -1,4 +1,3 @@
-
 import { useState, useCallback, useEffect } from "react";
 import { ProductGrid } from "@/components/marketplace/ProductGrid";
 import { MarketplacePagination } from "@/components/marketplace/MarketplacePagination";
@@ -82,6 +81,8 @@ export const MarketplaceContent = () => {
   const convertToProductWithSeller = (products: any[]): ProductWithSeller[] => {
     return products.map(product => ({
       ...product,
+      // Ensure image_url always has a value
+      image_url: product.image_url || product.image || "/placeholder.svg",
       seller: product.seller || {
         id: product.seller_id || "",
         full_name: "Anonymous",
