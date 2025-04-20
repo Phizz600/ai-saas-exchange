@@ -1,4 +1,3 @@
-
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { UseFormReturn } from "react-hook-form";
@@ -48,7 +47,9 @@ export function SpecialNotesSection({
 
   return (
     <Card className="p-6 bg-white shadow-sm">
-      <h2 className="text-2xl font-semibold mb-6 text-violet-500">Assets & Deliverables</h2>
+      <h2 className="exo-2-header bg-gradient-to-r from-[#8B5CF6] to-[#D946EE] bg-clip-text text-transparent mb-6 text-2xl font-semibold">
+        Assets & Deliverables
+      </h2>
       
       <div className="space-y-8">
         <FormField 
