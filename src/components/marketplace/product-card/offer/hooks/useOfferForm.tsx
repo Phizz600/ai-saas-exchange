@@ -1,7 +1,10 @@
-import { useState, useEffect } from "react";
+
+import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { createPaymentAuthorization } from "@/services/stripe-service";
+import { useOfferPayment } from "./useOfferPayment";
+import { useExistingOffer } from "./useExistingOffer";
+import { submitNewOffer, updateExistingOffer } from "../services/offerSubmission";
 
 interface UseOfferFormProps {
   productId: string;
@@ -15,74 +18,36 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [formattedAmount, setFormattedAmount] = useState("");
-  const [existingOffer, setExistingOffer] = useState<any | null>(null);
-  const [isUpdatingOffer, setIsUpdatingOffer] = useState(false);
-  const [paymentClientSecret, setPaymentClientSecret] = useState<string | null>(null);
-  const [paymentIntentId, setPaymentIntentId] = useState<string | null>(null);
-  const [paymentProcessingOpen, setPaymentProcessingOpen] = useState(false);
-  const [paymentError, setPaymentError] = useState<string | null>(null);
   const { toast } = useToast();
 
-  // Check if user has an existing offer on this product
-  useEffect(() => {
-    const checkExistingOffer = async () => {
-      try {
-        const { data: { user } } = await supabase.auth.getUser();
-        
-        if (!user) return;
-        
-        const { data, error } = await supabase
-          .from('offers')
-          .select('*')
-          .eq('product_id', productId)
-          .eq('bidder_id', user.id)
-          .order('created_at', { ascending: false })
-          .limit(1);
-          
-        if (error) throw error;
-        
-        if (data && data.length > 0) {
-          setExistingOffer(data[0]);
-          
-          // Pre-fill the form with existing offer data
-          setAmount(data[0].amount.toString());
-          setFormattedAmount(`$${data[0].amount.toLocaleString()}`);
-          
-          if (data[0].message) {
-            setMessage(data[0].message);
-          }
-          
-          // If the offer is pending, enable update mode
-          if (['pending'].includes(data[0].status)) {
-            setIsUpdatingOffer(true);
-          }
-        }
-      } catch (error) {
-        console.error("Error checking existing offers:", error);
-      }
-    };
-    
-    checkExistingOffer();
-  }, [productId]);
+  const {
+    existingOffer,
+    isUpdatingOffer
+  } = useExistingOffer(productId);
+
+  const {
+    paymentClientSecret,
+    paymentIntentId,
+    paymentProcessingOpen,
+    paymentError,
+    handleCreatePaymentAuthorization,
+    handlePaymentCancel
+  } = useOfferPayment({ productId });
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Remove non-numeric characters except period
     let value = e.target.value.replace(/[^0-9.]/g, '');
     
-    // Ensure only one decimal point
     const parts = value.split('.');
     if (parts.length > 2) {
       value = parts[0] + '.' + parts.slice(1).join('');
     }
     
-    // Limit decimal places to 2
     if (parts.length === 2 && parts[1].length > 2) {
       value = parts[0] + '.' + parts[1].slice(0, 2);
     }
     
     setAmount(value);
     
-    // Format for display
     if (value) {
       const numericValue = parseFloat(value);
       if (!isNaN(numericValue)) {
@@ -98,7 +63,6 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
   const handleInitiateOffer = async () => {
     const numericAmount = parseFloat(amount);
     
-    // Only validate that amount is a positive number
     if (isNaN(numericAmount) || numericAmount <= 0) {
       toast({
         title: "Invalid amount",
@@ -108,65 +72,13 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
       return;
     }
 
-    // If updating an offer
     if (isUpdatingOffer && existingOffer) {
       await handleUpdateOffer();
     } else {
-      // Create payment authorization for the offer
-      await handleCreatePaymentAuthorization();
+      await handleCreatePaymentAuthorization(numericAmount);
     }
   };
-  
-  const handleCreatePaymentAuthorization = async () => {
-    try {
-      setIsSubmitting(true);
-      setPaymentError(null);
-      
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        toast({
-          title: "Authentication required",
-          description: "Please log in to make an offer",
-          variant: "destructive",
-        });
-        return;
-      }
-      
-      const numericAmount = parseFloat(amount);
-      
-      // Create a payment authorization
-      const { clientSecret, paymentIntentId, error } = await createPaymentAuthorization(
-        numericAmount,
-        "offer-" + Date.now(), // Unique ID for this offer attempt
-        productId
-      );
-      
-      if (error || !clientSecret) {
-        throw new Error(error || "Failed to create payment authorization");
-      }
-      
-      // Store the payment information for later use
-      setPaymentClientSecret(clientSecret);
-      setPaymentIntentId(paymentIntentId);
-      
-      // Open the payment processing dialog
-      setPaymentProcessingOpen(true);
-      
-    } catch (error: any) {
-      console.error("Error initiating payment:", error);
-      setPaymentError(error.message || "Failed to create payment");
-      
-      toast({
-        title: "Payment initiation failed",
-        description: error.message || "There was a problem setting up the payment.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-  
+
   const handlePaymentSuccess = async (paymentMethodId: string) => {
     try {
       setIsSubmitting(true);
@@ -184,38 +96,22 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
       
       const numericAmount = parseFloat(amount);
       
-      // Create a new offer with the payment information
-      const { data: offer, error: offerError } = await supabase
-        .from('offers')
-        .insert({
-          product_id: productId,
-          bidder_id: user.id,
-          amount: numericAmount,
-          message: message,
-          status: 'pending',
-          payment_intent_id: paymentIntentId,
-          payment_status: 'authorized'
-        })
-        .select()
-        .single();
-      
-      if (offerError) {
-        throw offerError;
-      }
+      await submitNewOffer(
+        productId,
+        user.id,
+        numericAmount,
+        message,
+        paymentIntentId!
+      );
       
       toast({
         title: "Offer submitted!",
         description: "Your offer has been submitted successfully.",
       });
       
-      // Set success state
       setSuccess(true);
       setPaymentProcessingOpen(false);
-      
-      // Reset form
-      setAmount("");
-      setMessage("");
-      setFormattedAmount("");
+      resetForm();
       
     } catch (error: any) {
       console.error("Error creating offer:", error);
@@ -230,46 +126,18 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
     }
   };
   
-  const handlePaymentCancel = () => {
-    setPaymentProcessingOpen(false);
-    setPaymentClientSecret(null);
-    setPaymentIntentId(null);
-  };
-  
   const handleUpdateOffer = async () => {
     try {
       setIsSubmitting(true);
       
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        toast({
-          title: "Authentication required",
-          description: "Please log in to update your offer",
-          variant: "destructive",
-        });
-        return;
-      }
-      
       const numericAmount = parseFloat(amount);
       
-      // Update the offer
-      const { data: updatedOffer, error: updateError } = await supabase
-        .from('offers')
-        .update({
-          amount: numericAmount,
-          message: message,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', existingOffer.id)
-        .select()
-        .single();
+      await updateExistingOffer(
+        existingOffer.id,
+        numericAmount,
+        message
+      );
       
-      if (updateError) {
-        throw updateError;
-      }
-      
-      // Success
       setSuccess(true);
       
       toast({
@@ -277,10 +145,7 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
         description: "Your offer has been updated successfully.",
       });
       
-      // Reset form
-      setAmount("");
-      setMessage("");
-      setFormattedAmount("");
+      resetForm();
       
     } catch (error: any) {
       console.error("Error updating offer:", error);
