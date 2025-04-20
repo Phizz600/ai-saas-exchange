@@ -131,7 +131,8 @@ export const MarketplaceContent = () => {
       // Required fields that were previously optional
       created_at: product.created_at || new Date().toISOString(),
       status: product.status || "active",
-      updated_at: product.updated_at || new Date().toISOString()
+      updated_at: product.updated_at || new Date().toISOString(),
+      highest_bid: product.highest_bid || 0, // Provide a default of 0 if not present
     })) as ProductWithSeller[];
   };
 
