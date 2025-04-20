@@ -1,5 +1,5 @@
-
 import { Info, Link, Globe } from "lucide-react";
+import { ProductMetrics } from "./ProductMetrics";
 
 interface ProductOverviewProps {
   product: {
@@ -14,6 +14,8 @@ interface ProductOverviewProps {
     business_model?: string;
     product_age?: string;
     demo_url?: string;
+    monthly_traffic?: string;
+    active_users?: string;
   };
 }
 
@@ -74,18 +76,22 @@ export function ProductOverview({ product }: ProductOverviewProps) {
           <span className="text-gray-600">Product Age</span>
           <span className="font-medium">{product.product_age || "Not specified"}</span>
         </div>
+        
+        <ProductMetrics 
+          monthlyTraffic={product.monthly_traffic || ''} 
+          activeUsers={product.active_users || ''}
+        />
+        
         {product.demo_url && (
-          <div className="mt-4">
-            <a 
-              href={product.demo_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 w-full py-2 text-[#8B5CF6] border border-[#8B5CF6] rounded-md hover:bg-[#8B5CF6]/10 transition-colors"
-            >
-              <Globe className="h-4 w-4" />
-              View Live Demo
-            </a>
-          </div>
+          <a 
+            href={product.demo_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-2 w-full py-2 mt-2 text-[#8B5CF6] border border-[#8B5CF6] rounded-md hover:bg-[#8B5CF6]/10 transition-colors"
+          >
+            <Globe className="h-4 w-4" />
+            View Live Demo
+          </a>
         )}
       </div>
     </div>
