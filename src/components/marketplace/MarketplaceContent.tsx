@@ -1,4 +1,3 @@
-
 import { useState, useCallback, useEffect } from "react";
 import { ProductGrid } from "@/components/marketplace/ProductGrid";
 import { MarketplacePagination } from "@/components/marketplace/MarketplacePagination";
@@ -16,6 +15,7 @@ import { toast } from "sonner";
 import { ProductWithSeller } from "@/types/marketplace";
 
 export const MarketplaceContent = () => {
+  
   const [currentPage, setCurrentPage] = useState(1);
   const [viewTracked, setViewTracked] = useState<Set<string>>(new Set());
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -90,7 +90,7 @@ export const MarketplaceContent = () => {
       },
       // Make sure seller_id is included (required by ProductGrid)
       seller_id: product.seller_id || product.seller?.id || "",
-      // Ensure all possible fields from the database are included
+      // Ensure all required fields are included with appropriate default values
       active_users: product.active_users || "",
       admin_feedback: product.admin_feedback || "",
       auction_status: product.auction_status || "",
@@ -126,7 +126,7 @@ export const MarketplaceContent = () => {
       team_size: product.team_size || "",
       tech_stack: product.tech_stack || [],
       tech_stack_other: product.tech_stack_other || "",
-      // Add other fields with default values to ensure type compatibility
+      // Required fields that were previously optional
       created_at: product.created_at || new Date().toISOString(),
       status: product.status || "active",
       updated_at: product.updated_at || new Date().toISOString()

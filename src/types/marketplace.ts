@@ -66,41 +66,46 @@ export interface ProductWithSeller extends MarketplaceProduct {
   };
   
   // Add seller_id which is required by ProductGrid
-  seller_id?: string;
+  seller_id: string;
   
-  // Additional fields from ProductGrid
-  active_users?: string;
-  admin_feedback?: string;
-  auction_status?: string;
-  business_location?: string;
-  business_model?: string;
-  business_type?: string;
-  category_other?: string;
-  competitors?: string;
-  customer_acquisition_cost?: number;
-  demo_url?: string;
-  deliverables?: string[];
-  has_patents?: boolean;
-  industry?: string;
-  industry_other?: string;
-  integrations?: string[];
-  integrations_other?: string;
-  investment_timeline?: string;
-  is_verified?: boolean;
-  llm_type?: string;
-  llm_type_other?: string;
-  monetization?: string;
-  monetization_other?: string;
-  monthly_expenses?: any;
-  monthly_profit?: number;
-  number_of_employees?: string;
-  payment_status?: string;
-  product_age?: string;
-  product_link?: string;
-  reviewed_at?: string;
-  reviewed_by?: string;
-  special_notes?: string;
-  team_size?: string;
-  tech_stack?: string[];
-  tech_stack_other?: string;
+  // Additional fields from ProductGrid - these are now required, not optional
+  active_users: string;
+  admin_feedback: string;
+  auction_status: string;
+  business_location: string;
+  business_model: string;
+  business_type: string;
+  category_other: string;
+  competitors: string;
+  customer_acquisition_cost: number;
+  demo_url: string;
+  deliverables: string[];
+  has_patents: boolean;
+  industry: string;
+  industry_other: string;
+  integrations: string[];
+  integrations_other: string;
+  investment_timeline: string;
+  is_verified: boolean;
+  llm_type: string;
+  llm_type_other: string;
+  monetization: string;
+  monetization_other: string;
+  monthly_expenses: any;
+  monthly_profit: number;
+  number_of_employees: string;
+  payment_status: string;
+  product_age: string;
+  product_link: string;
+  reviewed_at: string;
+  reviewed_by: string;
+  special_notes: string;
+  team_size: string;
+  tech_stack: string[];
+  tech_stack_other: string;
+  
+  // Required fields that were previously optional
+  created_at: string;
+  status: string;
+  updated_at: string;
 }
