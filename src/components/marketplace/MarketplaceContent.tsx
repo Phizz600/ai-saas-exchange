@@ -33,7 +33,7 @@ export const MarketplaceContent = () => {
     markAsRead
   } = useNotifications();
 
-  // Use the new hook for view tracking
+  // Use the hook for view tracking
   useProductViewTracking(data?.products, isLoading);
 
   const handleRefresh = async () => {

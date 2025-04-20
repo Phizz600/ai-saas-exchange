@@ -1,9 +1,12 @@
 
 import { useState, useEffect } from "react";
 import { incrementProductViews } from "@/integrations/supabase/product-analytics";
-import { ProductWithSeller } from "@/types/marketplace";
+import { ProductWithSeller, MarketplaceProduct } from "@/types/marketplace";
 
-export const useProductViewTracking = (products: ProductWithSeller[] | undefined, isLoading: boolean) => {
+export const useProductViewTracking = (
+  products: ProductWithSeller[] | MarketplaceProduct[] | undefined, 
+  isLoading: boolean
+) => {
   const [viewTracked, setViewTracked] = useState<Set<string>>(new Set());
 
   useEffect(() => {
