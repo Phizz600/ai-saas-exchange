@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useOfferPayment } from "./useOfferPayment";
 import { useExistingOffer } from "./useExistingOffer";
@@ -18,7 +18,6 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [formattedAmount, setFormattedAmount] = useState("");
-  const { toast } = useToast();
 
   const {
     existingOffer,
@@ -31,7 +30,8 @@ export function useOfferForm({ productId, isAuction, currentPrice = 0 }: UseOffe
     paymentProcessingOpen,
     paymentError,
     handleCreatePaymentAuthorization,
-    handlePaymentCancel
+    handlePaymentCancel,
+    setPaymentProcessingOpen
   } = useOfferPayment({ productId });
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {

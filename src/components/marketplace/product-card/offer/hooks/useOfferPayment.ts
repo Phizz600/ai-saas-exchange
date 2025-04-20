@@ -59,6 +59,7 @@ export function useOfferPayment({ productId }: UseOfferPaymentProps) {
     paymentProcessingOpen,
     paymentError,
     handleCreatePaymentAuthorization,
-    handlePaymentCancel
+    handlePaymentCancel,
+    setPaymentProcessingOpen
   };
 }
