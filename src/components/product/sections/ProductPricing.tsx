@@ -289,11 +289,17 @@ export function ProductPricing({
   const displayPrice = highestBid || currentPrice || 0;
   const hasActiveBids = !!highestBid;
 
+  // Determine if this is a Dutch auction
+  const isDutchAuction = !!product.price_decrement && !!product.price_decrement_interval;
+  
   // Check if auction has ended
   const now = new Date();
   const auctionEndTime = product.auction_end_time ? new Date(product.auction_end_time) : null;
   const isAuctionEnded = auctionEndTime && auctionEndTime < now;
   
+  // Determine auction status for display
+  const isNoReserve = product.no_reserve === true;
+
   return (
     <Card className="p-6">
       <div className="space-y-6">
@@ -301,21 +307,21 @@ export function ProductPricing({
           <div className="flex justify-between items-center">
             <div>
               <p className="text-sm text-gray-600">
-                {isAuction ? "Current Price" : "Price"}
+                {product.auction_end_time ? "Current Price" : "Price"}
               </p>
               <p className="text-3xl font-bold">
                 {isLoading ? <span className="inline-block w-16 h-8 bg-gray-200 animate-pulse rounded"></span> : `$${displayPrice.toLocaleString()}`}
               </p>
-              {isAuction && (
+              {product.auction_end_time && (
                 <>
                   {hasActiveBids && (
                     <p className="text-sm text-emerald-600 font-medium">
                       Winning bid - Dutch auction complete
                     </p>
                   )}
-                  {!hasActiveBids && (
+                  {!hasActiveBids && isDutchAuction && (
                     <p className="text-sm text-gray-600 mt-1">
-                      {product.no_reserve ? (
+                      {isNoReserve ? (
                         <span className="text-amber-600">No Reserve - Sells at any price</span>
                       ) : (
                         <span>With Reserve</span>
@@ -325,6 +331,8 @@ export function ProductPricing({
                 </>
               )}
             </div>
+            
+            {/* Timer section */}
             {product.auction_end_time && (
               <div className="text-right">
                 {!isAuctionEnded && !hasActiveBids && (
@@ -333,13 +341,17 @@ export function ProductPricing({
                       <Timer className="h-4 w-4" />
                       <span>{timeLeft}</span>
                     </div>
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <TrendingDown className="h-4 w-4" />
-                      <span>
-                        Drops ${product.price_decrement?.toLocaleString() || 0}/{product.price_decrement_interval || 'day'}
-                      </span>
-                    </div>
-                    <p className="text-sm text-amber-600 mt-1">Next drop in: {nextDrop}</p>
+                    {isDutchAuction && (
+                      <>
+                        <div className="flex items-center gap-2 text-sm text-gray-600">
+                          <TrendingDown className="h-4 w-4" />
+                          <span>
+                            Drops ${product.price_decrement?.toLocaleString() || 0}/{product.price_decrement_interval || 'day'}
+                          </span>
+                        </div>
+                        <p className="text-sm text-amber-600 mt-1">Next drop in: {nextDrop}</p>
+                      </>
+                    )}
                   </>
                 )}
                 {(isAuctionEnded || hasActiveBids) && (
@@ -351,7 +363,8 @@ export function ProductPricing({
             )}
           </div>
 
-          {isAuction && !isAuctionEnded && !hasActiveBids && (
+          {/* Dutch Auction Rules */}
+          {isDutchAuction && !isAuctionEnded && !hasActiveBids && (
             <div className="bg-amber-50 p-3 rounded-md text-sm">
               <p className="font-medium text-amber-800">Dutch Auction Rules:</p>
               <ul className="list-disc text-amber-700 pl-5 mt-1 space-y-1">
