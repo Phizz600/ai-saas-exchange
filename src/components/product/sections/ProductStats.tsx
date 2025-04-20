@@ -6,7 +6,8 @@ import {
   Mouse, Bookmark, Flame, History, Code2, Network, Target,
   Calendar, DollarSign, BarChart3, GitBranch, BookOpen,
   GanttChart, Globe2, Microscope, HeartHandshake, Building,
-  FolderGit2, MessageSquareMore, ShieldCheck, Settings, Link
+  FolderGit2, MessageSquareMore, ShieldCheck, Settings, Link,
+  Receipt, CreditCard, PiggyBank, Wallet
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { VerificationBadges } from "./VerificationBadges";
@@ -31,6 +32,13 @@ interface Bid {
   bidder: {
     full_name: string | null;
   };
+}
+
+interface ExpenseItem {
+  id: string;
+  name: string;
+  amount: number;
+  category: string;
 }
 
 interface ProductStatsProps {
@@ -85,6 +93,7 @@ interface ProductStatsProps {
     price_decrement_interval?: string;
     no_reserve?: boolean;
     current_price?: number;
+    monthly_expenses?: ExpenseItem[];
   };
 }
 
@@ -206,6 +215,9 @@ export function ProductStats({ product }: ProductStatsProps) {
   };
 
   const isAuction = product.listing_type === 'dutch_auction';
+
+  // Calculate total monthly expenses
+  const totalMonthlyExpenses = product.monthly_expenses?.reduce((total, expense) => total + expense.amount, 0) || 0;
 
   return (
     <Card className="p-6">
@@ -370,7 +382,45 @@ export function ProductStats({ product }: ProductStatsProps) {
               <span className="text-gray-600">Monetization</span>
               <span className="font-medium">{product.monetization || product.monetization_other || "Not specified"}</span>
             </div>
+            <div className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
+              <span className="text-gray-600">Monthly Churn Rate</span>
+              <span className="font-medium">{product.monthly_churn_rate ? `${product.monthly_churn_rate}%` : "Not disclosed"}</span>
+            </div>
           </div>
+
+          {/* Monthly Expenses Section - New Addition */}
+          {product.monthly_expenses && product.monthly_expenses.length > 0 && (
+            <div className="mt-4">
+              <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+                <Receipt className="h-4 w-4" />
+                <span>Monthly Expenses</span>
+              </div>
+              <div className="border border-gray-200 rounded-md overflow-hidden">
+                <table className="w-full text-sm">
+                  <thead className="bg-gray-100">
+                    <tr>
+                      <th className="py-2 px-3 text-left">Expense</th>
+                      <th className="py-2 px-3 text-left">Category</th>
+                      <th className="py-2 px-3 text-right">Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {product.monthly_expenses.map((expense, index) => (
+                      <tr key={expense.id || index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                        <td className="py-2 px-3">{expense.name}</td>
+                        <td className="py-2 px-3">{expense.category}</td>
+                        <td className="py-2 px-3 text-right">{formatCurrency(expense.amount)}</td>
+                      </tr>
+                    ))}
+                    <tr className="bg-gray-100 font-medium">
+                      <td colSpan={2} className="py-2 px-3 text-right">Total Monthly Expenses:</td>
+                      <td className="py-2 px-3 text-right">{formatCurrency(totalMonthlyExpenses)}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* User Metrics */}
