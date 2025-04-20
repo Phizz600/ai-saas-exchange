@@ -1,10 +1,10 @@
-
 import { useState, useCallback, useEffect } from "react";
 import { ProductGrid } from "@/components/marketplace/ProductGrid";
 import { MarketplacePagination } from "@/components/marketplace/MarketplacePagination";
 import { EmptyState } from "@/components/marketplace/EmptyState";
 import { MarketplaceHeader } from "@/components/marketplace/MarketplaceHeader";
-import { useMarketplaceProducts } from "@/hooks/useMarketplaceProducts";
+import { useMarketplaceFilters } from "@/hooks/marketplace/useMarketplaceFilters";
+import { useMarketplaceQuery } from "@/hooks/marketplace/useMarketplaceQuery";
 import { useNotifications } from "./notifications/useNotifications";
 import { incrementProductViews } from "@/integrations/supabase/product-analytics";
 import { Switch } from "@/components/ui/switch";
@@ -14,35 +14,19 @@ import { CheckCircle, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 
 export const MarketplaceContent = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [industryFilter, setIndustryFilter] = useState("all");
-  const [stageFilter, setStageFilter] = useState("all");
-  const [priceFilter, setPriceFilter] = useState("all");
-  const [timeFilter, setTimeFilter] = useState("all");
-  const [sortBy, setSortBy] = useState("relevant");
   const [currentPage, setCurrentPage] = useState(1);
-  const [showVerifiedOnly, setShowVerifiedOnly] = useState(false);
-  const [showAuctionsOnly, setShowAuctionsOnly] = useState(false);
-  const [showBuyNowOnly, setShowBuyNowOnly] = useState(false);
-  const [isRefreshing, setIsRefreshing] = useState(false);
   const [viewTracked, setViewTracked] = useState<Set<string>>(new Set());
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  
+  const { filters, updateFilter, resetFilters } = useMarketplaceFilters();
   
   const {
-    currentItems: products,
-    totalPages,
+    data,
     isLoading,
     refetch
-  } = useMarketplaceProducts({
-    searchQuery,
-    industryFilter,
-    stageFilter,
-    priceFilter,
-    timeFilter,
-    sortBy,
-    currentPage,
-    showVerifiedOnly,
-    showAuctionsOnly,
-    showBuyNowOnly
+  } = useMarketplaceQuery({
+    filters,
+    currentPage
   });
   
   const {
@@ -53,11 +37,11 @@ export const MarketplaceContent = () => {
 
   // Track product views (impressions) when products appear in the grid
   useEffect(() => {
-    if (!products || isLoading) return;
+    if (!data?.products || isLoading) return;
 
     // Track views for products that haven't been tracked yet in this session
     const trackProductViews = async () => {
-      const newProductsToTrack = products.filter(product => !viewTracked.has(product.id));
+      const newProductsToTrack = data.products.filter(product => !viewTracked.has(product.id));
       
       if (newProductsToTrack.length === 0) return;
       
@@ -77,10 +61,10 @@ export const MarketplaceContent = () => {
     };
 
     trackProductViews();
-  }, [products, isLoading, viewTracked]);
-  
+  }, [data?.products, isLoading, viewTracked]);
+
   // Handle refresh
-  const handleRefresh = useCallback(async () => {
+  const handleRefresh = async () => {
     setIsRefreshing(true);
     try {
       await refetch();
@@ -91,7 +75,7 @@ export const MarketplaceContent = () => {
     } finally {
       setIsRefreshing(false);
     }
-  }, [refetch]);
+  };
 
   return (
     <>
@@ -99,8 +83,8 @@ export const MarketplaceContent = () => {
         <div className="flex items-center gap-2">
           <Switch 
             id="verified-only"
-            checked={showVerifiedOnly}
-            onCheckedChange={setShowVerifiedOnly}
+            checked={filters.showVerifiedOnly}
+            onCheckedChange={(checked) => updateFilter('showVerifiedOnly', checked)}
           />
           <Label htmlFor="verified-only" className="cursor-pointer flex items-center gap-1">
             <CheckCircle className="h-4 w-4 text-green-500" />
@@ -121,46 +105,34 @@ export const MarketplaceContent = () => {
       </div>
 
       <MarketplaceHeader 
-        searchQuery={searchQuery} 
-        setSearchQuery={setSearchQuery} 
-        industryFilter={industryFilter} 
-        setIndustryFilter={setIndustryFilter} 
-        stageFilter={stageFilter} 
-        setStageFilter={setStageFilter} 
-        priceFilter={priceFilter} 
-        setPriceFilter={setPriceFilter} 
-        timeFilter={timeFilter} 
-        setTimeFilter={setTimeFilter} 
-        sortBy={sortBy} 
-        setSortBy={setSortBy} 
-        isLoading={isLoading} 
-        notifications={notifications} 
-        unreadCount={unreadCount} 
-        onMarkAsRead={markAsRead} 
-        showAuctionsOnly={showAuctionsOnly}
-        setShowAuctionsOnly={setShowAuctionsOnly}
-        showBuyNowOnly={showBuyNowOnly}
-        setShowBuyNowOnly={setShowBuyNowOnly}
+        filters={filters}
+        onUpdateFilter={updateFilter}
+        onResetFilters={resetFilters}
+        isLoading={isLoading}
+        notifications={notifications}
+        unreadCount={unreadCount}
+        onMarkAsRead={markAsRead}
       />
 
-      {isLoading ? 
-        <ProductGrid products={[]} isLoading={true} /> 
-        : 
-        products && products.length > 0 ? 
+      {isLoading ? (
+        <ProductGrid products={[]} isLoading={true} />
+      ) : (
+        data?.products && data.products.length > 0 ? (
           <>
             <ProductGrid 
-              products={products} 
+              products={data.products}
               isLoading={false}
             />
             <MarketplacePagination 
               currentPage={currentPage} 
-              totalPages={totalPages} 
-              setCurrentPage={setCurrentPage} 
+              totalPages={Math.ceil((data.count || 0) / 6)}
+              setCurrentPage={setCurrentPage}
             />
           </> 
-          : 
+        ) : (
           <EmptyState />
-      }
+        )
+      )}
     </>
   );
 };
