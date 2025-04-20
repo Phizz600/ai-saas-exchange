@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Timer, TrendingDown, ChevronDown, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -11,6 +11,7 @@ import { BidForm } from "@/components/marketplace/product-card/bid/BidForm";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { sendAuctionResultEmail } from "@/integrations/supabase/functions";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 interface ProductPricingProps {
   product: {
@@ -363,16 +364,24 @@ export function ProductPricing({
             )}
           </div>
 
-          {/* Dutch Auction Rules */}
+          {/* Dutch Auction Rules - Now in Accordion */}
           {isDutchAuction && !isAuctionEnded && !hasActiveBids && (
-            <div className="bg-amber-50 p-3 rounded-md text-sm">
-              <p className="font-medium text-amber-800">Dutch Auction Rules:</p>
-              <ul className="list-disc text-amber-700 pl-5 mt-1 space-y-1">
-                <li>Price keeps dropping until someone bids</li>
-                <li>First person to bid wins the auction</li>
-                <li>Act fast - once someone bids, it's over!</li>
-              </ul>
-            </div>
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="auction-rules" className="border-none">
+                <AccordionTrigger className="py-2 hover:no-underline">
+                  <span className="text-amber-800 font-medium">Dutch Auction Rules</span>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="bg-amber-50 p-3 rounded-md text-sm">
+                    <ul className="list-disc text-amber-700 pl-5 mt-1 space-y-1">
+                      <li>Price keeps dropping until someone bids</li>
+                      <li>First person to bid wins the auction</li>
+                      <li>Act fast - once someone bids, it's over!</li>
+                    </ul>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
           )}
 
           {isAuctionEnded && <div className="bg-amber-50 p-3 rounded-md text-sm text-amber-700 mt-3">
