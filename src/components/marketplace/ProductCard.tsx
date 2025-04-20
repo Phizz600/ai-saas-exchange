@@ -70,6 +70,7 @@ export function ProductCard({ product }: ProductCardProps) {
             requiresNda={showLimitedInfo}
             toggleFavorite={toggleFavorite}
             onEditClick={handleEditClick}
+            productId={product.id}
           />
         </CardHeader>
         

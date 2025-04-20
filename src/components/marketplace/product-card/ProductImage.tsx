@@ -3,6 +3,7 @@ import { Edit2, Bookmark, Heart, TrendingDown, Timer, CheckCircle, Lock, Eye } f
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ConfidentialWatermark } from "./ConfidentialWatermark";
+import { useSaveProduct } from "@/hooks/useSaveProduct";
 
 interface ProductImageProps {
   image?: string;
@@ -16,6 +17,8 @@ interface ProductImageProps {
   requiresNda?: boolean;
   toggleFavorite: (e: React.MouseEvent) => void;
   onEditClick: (e: React.MouseEvent) => void;
+  showEditButton?: boolean;
+  productId: string;
 }
 
 export function ProductImage({
@@ -29,10 +32,15 @@ export function ProductImage({
   isVerified,
   requiresNda = false,
   toggleFavorite,
-  onEditClick
+  onEditClick,
+  showEditButton = false,
+  productId
 }: ProductImageProps) {
   // Debug the requiresNda prop
   console.log(`ProductImage - ${title} - requiresNda:`, requiresNda);
+  
+  // Use the save product hook
+  const { isSaved, toggleSave } = useSaveProduct(productId);
   
   return (
     <div className="relative h-48 overflow-hidden bg-gradient-to-r from-[#13293D] to-[#18435A]">
@@ -125,7 +133,6 @@ export function ProductImage({
         </div>
       )}
       
-      {/* Verification Badge - only show if product is verified */}
       {isVerified && (
         <div className="absolute top-2 left-2 z-30">
           <Badge variant="secondary" className="bg-green-500/90 text-white border-0 flex items-center">
