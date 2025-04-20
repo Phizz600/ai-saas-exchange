@@ -5,8 +5,9 @@ import { ListProductFormData } from "../types";
 import { Card } from "@/components/ui/card";
 import { Plus, Code, Link, Mail, Image, Database, FileLock, FileText, Briefcase, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Input } from "react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 const COMMON_DELIVERABLES = [
   { label: "Source Code & Repository", value: "source_code", icon: Code },
@@ -34,8 +35,13 @@ export function SpecialNotesSection({
   const handleAddCustomDeliverable = () => {
     if (customDeliverable.trim()) {
       const currentValues = form.getValues("deliverables") || [];
-      form.setValue("deliverables", [...currentValues, `custom_${customDeliverable.trim()}`]);
+      // Prefix custom deliverables to distinguish them from predefined ones
+      form.setValue("deliverables", [...currentValues, `custom:${customDeliverable.trim()}`]);
       setCustomDeliverable("");
+      setShowCustomInput(false); // Hide input after adding
+      
+      // Show success toast
+      toast.success("Custom deliverable added");
     }
   };
 
@@ -47,6 +53,12 @@ export function SpecialNotesSection({
         <FormField 
           control={form.control} 
           name="deliverables" 
+          rules={{ 
+            required: "Please select at least one deliverable",
+            validate: (value) => {
+              return value && value.length > 0 || "Please select at least one deliverable";
+            }
+          }}
           render={({ field }) => (
             <FormItem>
               <FormLabel className="text-base font-semibold mb-2">
