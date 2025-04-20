@@ -1,7 +1,5 @@
 
-import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
-import { ArrowRight, Timer } from "lucide-react";
+import { Timer } from "lucide-react";
 import { useAuctionTimer } from "../useAuctionTimer";
 
 interface AuctionTimerProps {
@@ -72,15 +70,7 @@ export function AuctionTimer({
         </div>
       )}
       
-      <Button 
-        asChild 
-        className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 transition-opacity"
-      >
-        <Link to={`/bid`}>
-          Place Bid
-          <ArrowRight className="ml-2 h-4 w-4" />
-        </Link>
-      </Button>
+      {/* Button removed as requested */}
     </div>
   );
 }
