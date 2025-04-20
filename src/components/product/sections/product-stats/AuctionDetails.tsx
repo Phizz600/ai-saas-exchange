@@ -20,6 +20,9 @@ interface AuctionDetailsProps {
 export function AuctionDetails({ product, isAuction }: AuctionDetailsProps) {
   if (!isAuction) return null;
 
+  // Check if this is a no reserve auction
+  const isNoReserve = product.no_reserve === true;
+
   return (
     <div className="col-span-full">
       <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
@@ -32,7 +35,9 @@ export function AuctionDetails({ product, isAuction }: AuctionDetailsProps) {
             <span className="text-gray-600">Starting Price</span>
             <span className="font-medium">{product.starting_price ? formatCurrency(product.starting_price) : "Not set"}</span>
           </div>
-          {product.no_reserve ? (
+          
+          {/* Show different reserve price display based on no_reserve flag */}
+          {isNoReserve ? (
             <div className="flex justify-between items-center bg-green-50 p-2 rounded-md">
               <span className="text-gray-600">Reserve Price</span>
               <span className="font-medium text-green-600">No Reserve</span>
@@ -43,6 +48,7 @@ export function AuctionDetails({ product, isAuction }: AuctionDetailsProps) {
               <span className="font-medium">{product.reserve_price ? formatCurrency(product.reserve_price) : "Not set"}</span>
             </div>
           )}
+          
           <div className="flex justify-between items-center bg-white p-2 rounded-md">
             <span className="text-gray-600">Price Decrement</span>
             <span className="font-medium">{product.price_decrement ? formatCurrency(product.price_decrement) : "Not set"}</span>
