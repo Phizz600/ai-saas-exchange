@@ -32,9 +32,7 @@ export function usePaymentInitialization({
           );
           
           if (error || !clientSecret) {
-            toast.error({
-              description: error || "Could not initialize payment. Please try again."
-            });
+            toast.error("Could not initialize payment. Please try again.");
             onOpenChange(false);
             return;
           }
@@ -43,9 +41,7 @@ export function usePaymentInitialization({
           setPaymentIntentId(paymentIntentId);
         } catch (err: any) {
           console.error("Error initializing payment:", err);
-          toast.error({
-            description: err.message || "Something went wrong. Please try again."
-          });
+          toast.error("Something went wrong. Please try again.");
           onOpenChange(false);
         } finally {
           setIsLoading(false);
