@@ -48,33 +48,55 @@ export function EscrowFeedbackPrompt({ open, onClose, transactionId, currentUser
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent>
-        <h3 className="text-lg font-semibold mb-3">Leave a Review</h3>
-        <div className="mb-4">
-          <p className="text-sm text-muted-foreground mb-2">Rate your experience:</p>
-          <div className="flex space-x-1">
+      <DialogContent className="max-w-md">
+        <div className="text-center">
+          <h3 className="text-xl font-semibold mb-3 exo-2-heading bg-gradient-to-r from-[#D946EE] to-[#0EA4E9] bg-clip-text text-transparent">
+            How was your experience?
+          </h3>
+          <p className="text-sm text-muted-foreground mb-4">
+            Your feedback helps improve our escrow service and builds trust in our community.
+          </p>
+        </div>
+        
+        <div className="mb-6">
+          <div className="flex justify-center space-x-2 mb-4">
             {[1, 2, 3, 4, 5].map((star) => (
               <button
                 key={star}
                 type="button"
                 onClick={() => setRating(star)}
-                className={`p-1 rounded-full transition-all ${
-                  rating >= star ? 'text-amber-400 hover:text-amber-500' : 'text-gray-300 hover:text-gray-400'
+                className={`p-1.5 rounded-full transition-all transform ${
+                  rating >= star 
+                    ? 'text-amber-400 hover:text-amber-500 scale-110' 
+                    : 'text-gray-300 hover:text-gray-400'
                 }`}
               >
-                <Star className="h-6 w-6 fill-current" />
+                <Star className={`h-8 w-8 fill-current ${rating >= star ? 'drop-shadow-md' : ''}`} />
               </button>
             ))}
           </div>
+          <p className="text-center text-sm font-medium">
+            {rating === 1 && "Needs improvement"}
+            {rating === 2 && "Below expectations"}
+            {rating === 3 && "Acceptable"}
+            {rating === 4 && "Good experience"}
+            {rating === 5 && "Excellent!"}
+          </p>
         </div>
+        
         <Textarea 
           value={feedback}
           onChange={e => setFeedback(e.target.value)}
-          placeholder="How was your transaction experience?"
-          className="min-h-[100px]"
+          placeholder="Share details about your transaction experience..."
+          className="min-h-[120px] resize-none"
         />
-        <Button onClick={submitFeedback} disabled={isSubmitting} className="mt-3 w-full">
-          {isSubmitting ? "Submitting..." : "Submit Review"}
+        
+        <Button 
+          onClick={submitFeedback} 
+          disabled={isSubmitting} 
+          className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white hover:opacity-90"
+        >
+          {isSubmitting ? "Submitting..." : "Submit Feedback"}
         </Button>
       </DialogContent>
     </Dialog>
