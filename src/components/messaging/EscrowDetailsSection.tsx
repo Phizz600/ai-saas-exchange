@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,6 +9,7 @@ import { EscrowPaymentDialog } from "./EscrowPaymentDialog";
 import { EscrowDeliveryDialog } from "./EscrowDeliveryDialog";
 import { EscrowTransaction } from "@/integrations/supabase/escrow";
 import { EscrowCompleteButton } from "./EscrowCompleteButton";
+import { TransactionSummary } from "./TransactionSummary";
 
 interface EscrowDetailsSectionProps {
   escrowTransaction: EscrowTransaction;
@@ -23,6 +25,7 @@ export function EscrowDetailsSection({ escrowTransaction, currentUserId, onStatu
 
   const isBuyer = currentUserId === escrowTransaction.buyer_id;
   const isSeller = currentUserId === escrowTransaction.seller_id;
+  const userRole = isBuyer ? "buyer" : "seller";
 
   // Format the escrow status for display
   const formatStatus = (status: string) => {
@@ -84,6 +87,17 @@ export function EscrowDetailsSection({ escrowTransaction, currentUserId, onStatu
   // Determine eligibility to complete: only buyer, and status allows
   const canComplete = escrowTransaction?.buyer_id === currentUserId 
     && escrowTransaction?.status === "inspection_period";
+
+  // For completed transactions, show the TransactionSummary instead
+  if (escrowTransaction.status === "completed") {
+    return (
+      <TransactionSummary 
+        transaction={escrowTransaction}
+        userRole={userRole}
+        conversationId={escrowTransaction.conversation_id}
+      />
+    );
+  }
 
   return (
     <Card className="mb-6">
@@ -157,20 +171,6 @@ export function EscrowDetailsSection({ escrowTransaction, currentUserId, onStatu
                 <p className="font-medium text-red-800">This transaction is under dispute</p>
                 <p className="text-sm text-red-700 mt-1">
                   Please check your messages for details on how to resolve this issue.
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {escrowTransaction.status === 'completed' && (
-          <div className="bg-green-50 p-3 rounded-md border border-green-200">
-            <div className="flex items-start gap-2">
-              <CheckCircle className="h-5 w-5 text-green-500 mt-0.5" />
-              <div>
-                <p className="font-medium text-green-800">Transaction Completed</p>
-                <p className="text-sm text-green-700 mt-1">
-                  This transaction has been successfully completed and funds have been released.
                 </p>
               </div>
             </div>

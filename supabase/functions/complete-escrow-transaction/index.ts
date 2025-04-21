@@ -115,7 +115,10 @@ serve(async (req: Request): Promise<Response> => {
 
     // Success!
     return new Response(
-      JSON.stringify({ success: true }),
+      JSON.stringify({ 
+        success: true,
+        shouldShowFeedback: true 
+      }),
       { status: 200, headers: corsHeaders }
     );
   } catch (error) {

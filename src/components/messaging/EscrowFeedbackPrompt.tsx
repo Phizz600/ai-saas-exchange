@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { Star } from "lucide-react";
 
 export function EscrowFeedbackPrompt({ open, onClose, transactionId, currentUserId, conversationId, userRole }: {
   open: boolean;
@@ -15,6 +16,7 @@ export function EscrowFeedbackPrompt({ open, onClose, transactionId, currentUser
   userRole: "buyer" | "seller";
 }) {
   const [feedback, setFeedback] = useState("");
+  const [rating, setRating] = useState(5);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const submitFeedback = async () => {
@@ -26,7 +28,7 @@ export function EscrowFeedbackPrompt({ open, onClose, transactionId, currentUser
         user_role: userRole,
         conversation_id: conversationId,
         feedback,
-        rating: 5, // Or use UI for rating
+        rating,
       });
       toast({
         title: "Thank you for your feedback!",
@@ -48,13 +50,31 @@ export function EscrowFeedbackPrompt({ open, onClose, transactionId, currentUser
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent>
         <h3 className="text-lg font-semibold mb-3">Leave a Review</h3>
+        <div className="mb-4">
+          <p className="text-sm text-muted-foreground mb-2">Rate your experience:</p>
+          <div className="flex space-x-1">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <button
+                key={star}
+                type="button"
+                onClick={() => setRating(star)}
+                className={`p-1 rounded-full transition-all ${
+                  rating >= star ? 'text-amber-400 hover:text-amber-500' : 'text-gray-300 hover:text-gray-400'
+                }`}
+              >
+                <Star className="h-6 w-6 fill-current" />
+              </button>
+            ))}
+          </div>
+        </div>
         <Textarea 
           value={feedback}
           onChange={e => setFeedback(e.target.value)}
           placeholder="How was your transaction experience?"
+          className="min-h-[100px]"
         />
-        <Button onClick={submitFeedback} disabled={isSubmitting || !feedback.trim()} className="mt-3">
-          {isSubmitting ? "Submitting..." : "Submit"}
+        <Button onClick={submitFeedback} disabled={isSubmitting} className="mt-3 w-full">
+          {isSubmitting ? "Submitting..." : "Submit Review"}
         </Button>
       </DialogContent>
     </Dialog>

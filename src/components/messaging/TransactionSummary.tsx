@@ -2,14 +2,11 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Textarea } from "@/components/ui/textarea";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
 import { Star } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
 import { EscrowTransaction } from "@/integrations/supabase/escrow";
 import { supabase } from "@/integrations/supabase/client";
+import { EscrowFeedbackPrompt } from "./EscrowFeedbackPrompt";
+import { toast } from "@/hooks/use-toast";
 
 interface TransactionSummaryProps {
   transaction: EscrowTransaction;
@@ -25,13 +22,8 @@ export const TransactionSummary = ({
   const [showFeedbackDialog, setShowFeedbackDialog] = useState(false);
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
   const [checkingFeedback, setCheckingFeedback] = useState(true);
-  const [rating, setRating] = useState<number>(5);
-  const [feedback, setFeedback] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [transactionTimeline, setTransactionTimeline] = useState<Array<{ status: string; timestamp: string }>>([]);
   
-  const { toast } = useToast();
-
   // Check if the user has already submitted feedback
   useEffect(() => {
     const checkExistingFeedback = async () => {
@@ -43,7 +35,7 @@ export const TransactionSummary = ({
           return;
         }
         
-        const { data, error } = await supabase
+        const { data } = await supabase
           .from("transaction_feedback")
           .select("*")
           .eq("transaction_id", transaction.id)
@@ -64,7 +56,7 @@ export const TransactionSummary = ({
     // Get transaction timeline
     const getTransactionTimeline = async () => {
       try {
-        const { data: messages, error } = await supabase
+        const { data: messages } = await supabase
           .from("messages")
           .select("content, created_at")
           .eq("conversation_id", conversationId)
@@ -72,10 +64,7 @@ export const TransactionSummary = ({
           .ilike("content", "%Escrow Status Update%")
           .order("created_at", { ascending: true });
           
-        if (error) {
-          console.error("Error fetching status messages:", error);
-          return;
-        }
+        if (!messages) return;
         
         // Extract status information from messages
         const timeline = messages.map(msg => {
@@ -138,71 +127,6 @@ export const TransactionSummary = ({
       return () => clearTimeout(timer);
     }
   }, [transaction.id, transaction.status, transaction.updated_at, conversationId]);
-
-  const handleSubmitFeedback = async () => {
-    try {
-      setIsSubmitting(true);
-      
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        toast({
-          title: "Authentication required",
-          description: "You must be logged in to provide feedback",
-          variant: "destructive"
-        });
-        return;
-      }
-      
-      // Create the feedback record
-      const { error } = await supabase
-        .from("transaction_feedback")
-        .insert({
-          transaction_id: transaction.id,
-          conversation_id: conversationId,
-          user_id: user.id,
-          user_role: userRole,
-          rating,
-          feedback
-        });
-        
-      if (error) {
-        console.error("Error submitting feedback:", error);
-        toast({
-          title: "Error submitting feedback",
-          description: "An error occurred while submitting your feedback. Please try again.",
-          variant: "destructive"
-        });
-        return;
-      }
-      
-      // Send a message to the conversation about the feedback
-      await supabase
-        .from("messages")
-        .insert({
-          conversation_id: conversationId,
-          sender_id: user.id,
-          content: `⭐ **Transaction Rating: ${rating}/5**\n\n${feedback ? `"${feedback}"` : "No additional comments provided."}`
-        });
-      
-      setFeedbackSubmitted(true);
-      setShowFeedbackDialog(false);
-      
-      toast({
-        title: "Feedback submitted",
-        description: "Thank you for your feedback!"
-      });
-    } catch (error) {
-      console.error("Error in handleSubmitFeedback:", error);
-      toast({
-        title: "Error submitting feedback",
-        description: "An error occurred while submitting your feedback. Please try again.",
-        variant: "destructive"
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   // Format transaction amount with commas
   const formatAmount = (amount: number) => {
@@ -282,67 +206,14 @@ export const TransactionSummary = ({
       </Card>
       
       {/* Feedback Dialog */}
-      <Dialog open={showFeedbackDialog} onOpenChange={setShowFeedbackDialog}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Rate Your Experience</DialogTitle>
-            <DialogDescription>
-              Please rate your experience with this transaction. Your feedback helps improve our platform.
-            </DialogDescription>
-          </DialogHeader>
-          
-          <div className="py-4 space-y-4">
-            <div className="flex justify-center">
-              <div className="flex space-x-1">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <button
-                    key={star}
-                    type="button"
-                    onClick={() => setRating(star)}
-                    className={`p-1 rounded-full transition-all ${
-                      rating >= star ? 'text-amber-400 hover:text-amber-500' : 'text-gray-300 hover:text-gray-400'
-                    }`}
-                  >
-                    <Star className="h-8 w-8 fill-current" />
-                  </button>
-                ))}
-              </div>
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="feedback">Additional Comments (Optional)</Label>
-              <Textarea
-                id="feedback"
-                placeholder="Share your thoughts about this transaction..."
-                value={feedback}
-                onChange={(e) => setFeedback(e.target.value)}
-                className="min-h-[100px]"
-              />
-            </div>
-          </div>
-          
-          <DialogFooter>
-            <Button 
-              variant="outline" 
-              onClick={() => setShowFeedbackDialog(false)}
-              disabled={isSubmitting}
-            >
-              Cancel
-            </Button>
-            <Button 
-              onClick={handleSubmitFeedback}
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? (
-                <span className="flex items-center">
-                  <span className="animate-spin mr-2 h-4 w-4 border-2 border-white border-opacity-50 border-t-transparent rounded-full"></span>
-                  Submitting...
-                </span>
-              ) : 'Submit Feedback'}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <EscrowFeedbackPrompt
+        open={showFeedbackDialog}
+        onClose={() => setShowFeedbackDialog(false)}
+        transactionId={transaction.id}
+        currentUserId={userRole === "buyer" ? transaction.buyer_id : transaction.seller_id}
+        conversationId={conversationId}
+        userRole={userRole}
+      />
     </>
   );
 };
