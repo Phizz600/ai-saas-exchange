@@ -71,7 +71,8 @@ const HeroSection = ({
             Join an exclusive network of investors gaining early access to cutting-edge AI SaaS businesses, products, tools, and solutions through our innovative Dutch auction marketplace.
           </motion.p>
 
-          <div className="flex flex-col gap-6 items-center">
+          {/* Button Row */}
+          <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
             <Button 
               variant="green" 
               onClick={handleListProductClick} 
@@ -80,17 +81,31 @@ const HeroSection = ({
               <MousePointerClick className="mr-2" />
               Sell your AI SaaS Business
             </Button>
-            
-            <Suspense fallback={<Skeleton className="w-full max-w-md h-32" />}>
-              <NewsletterSubscription 
-                newsletterEmail={newsletterEmail} 
-                setNewsletterEmail={setNewsletterEmail} 
-                subscriberCount={subscriberCount} 
-                setSubscriberCount={setSubscriberCount} 
-              />
-            </Suspense>
+            <a 
+              href="https://calendly.com/your-founder-link" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto"
+            >
+              <Button 
+                variant="purple"
+                className="py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+                type="button"
+              >
+                Book a Call / Meet the Founder
+              </Button>
+            </a>
           </div>
-
+          
+          <Suspense fallback={<Skeleton className="w-full max-w-md h-32" />}>
+            <NewsletterSubscription 
+              newsletterEmail={newsletterEmail} 
+              setNewsletterEmail={setNewsletterEmail} 
+              subscriberCount={subscriberCount} 
+              setSubscriberCount={setSubscriberCount} 
+            />
+          </Suspense>
+          
           <Suspense fallback={<Skeleton className="h-16" />}>
             <SecurityFeatures />
           </Suspense>
