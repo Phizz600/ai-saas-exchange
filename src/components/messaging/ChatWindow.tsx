@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { 
@@ -21,6 +20,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { EscrowDialog } from "./EscrowDialog";
 import { EscrowStatus } from "./EscrowStatus";
 import { getEscrowTransactionByConversation } from "@/integrations/supabase/escrow";
+import { EscrowPaymentDialog } from "./EscrowPaymentDialog";
 
 export const ChatWindow = () => {
   const { conversationId } = useParams<{ conversationId: string }>();
@@ -35,6 +35,7 @@ export const ChatWindow = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [showEscrowPaymentDialog, setShowEscrowPaymentDialog] = useState(false);
 
   const loadEscrowTransaction = async () => {
     if (!conversationId) return;
@@ -196,6 +197,12 @@ export const ChatWindow = () => {
   const otherParty = getOtherPartyDetails();
   const userRole = getUserRole();
 
+  // Show escrow payment button to buyer when agreement_reached but not payment_secured
+  const showBuyerEscrowPaymentButton =
+    userRole === "buyer" &&
+    escrowTransaction &&
+    escrowTransaction.status === "agreement_reached";
+
   return (
     <Card className="h-[calc(100vh-10rem)] flex flex-col">
       {/* Chat header */}
@@ -242,6 +249,18 @@ export const ChatWindow = () => {
             conversationId={conversationId || ""}
             onStatusChange={handleEscrowStatusChange}
           />
+        )}
+
+        {showBuyerEscrowPaymentButton && (
+          <div className="flex justify-center mb-6">
+            <Button
+              className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white font-semibold px-8 py-3 shadow-lg rounded-lg"
+              size="lg"
+              onClick={() => setShowEscrowPaymentDialog(true)}
+            >
+              Initiate Escrow Payment
+            </Button>
+          </div>
         )}
         
         {messages.length === 0 ? (
@@ -326,6 +345,16 @@ export const ChatWindow = () => {
         productTitle={conversation.product?.title || "Product"}
         lastMessages={getLastMessages()}
       />
+
+      {/* Escrow Payment dialog */}
+      {escrowTransaction && (
+        <EscrowPaymentDialog
+          open={showEscrowPaymentDialog}
+          onOpenChange={setShowEscrowPaymentDialog}
+          transaction={escrowTransaction}
+          onStatusChange={handleEscrowStatusChange}
+        />
+      )}
     </Card>
   );
 };
