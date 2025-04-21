@@ -6,8 +6,13 @@ import { Marketplace } from "@/pages/Marketplace";
 import { Messages } from "@/pages/Messages";
 import Settings from "@/pages/Settings";
 import { AuthGuard } from "@/components/AuthGuard";
+import { Index } from "@/pages/Index";
 
 const routes = [
+  {
+    path: "/",
+    element: <Index />,
+  },
   {
     path: "/auth",
     element: <Auth />,
@@ -35,3 +40,4 @@ const routes = [
 ];
 
 export default routes;
+
