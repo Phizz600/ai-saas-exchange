@@ -15,7 +15,6 @@ const HowItWorksSteps = lazy(() => import("@/components/hero/HowItWorksSteps"));
 const SecurityFeatures = lazy(() => import("@/components/hero/SecurityFeatures"));
 const RoleInfo = lazy(() => import("@/components/hero/RoleInfo"));
 const YouTubeEmbed = lazy(() => import("@/components/hero/YouTubeEmbed"));
-
 interface HeroSectionProps {
   isAuthenticated: boolean;
   currentWordIndex: number;
@@ -31,7 +30,6 @@ interface HeroSectionProps {
   handleListProductClick: () => void;
   handleAuthRedirect: () => void;
 }
-
 const HeroSection = ({
   isAuthenticated,
   currentWordIndex,
@@ -47,63 +45,46 @@ const HeroSection = ({
   handleListProductClick,
   handleAuthRedirect
 }: HeroSectionProps) => {
-  return (
-    <div className="min-h-screen relative overflow-hidden">
+  return <div className="min-h-screen relative overflow-hidden">
       {/* Removed the Suspense and AnimatedBackground component here */}
       
       <div className="relative container mx-auto px-4 py-24">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }} 
-          animate={{ opacity: 1, y: 0 }} 
-          transition={{ duration: 0.5 }} 
-          className="space-y-8"
-        >
+        <motion.div initial={{
+        opacity: 0,
+        y: 20
+      }} animate={{
+        opacity: 1,
+        y: 0
+      }} transition={{
+        duration: 0.5
+      }} className="space-y-8">
           <Suspense fallback={<Skeleton className="h-48" />}>
             <HeroTitle currentWordIndex={currentWordIndex} words={words} />
           </Suspense>
 
-          <motion.p 
-            initial={{ opacity: 0 }} 
-            animate={{ opacity: 1 }} 
-            transition={{ duration: 0.3 }} 
-            className="text-xl text-gray-200 mb-12 max-w-2xl mx-auto text-center"
-          >
+          <motion.p initial={{
+          opacity: 0
+        }} animate={{
+          opacity: 1
+        }} transition={{
+          duration: 0.3
+        }} className="text-xl text-gray-200 mb-12 max-w-2xl mx-auto text-center">
             Join an exclusive network of investors gaining early access to cutting-edge AI SaaS businesses, products, tools, and solutions through our innovative Dutch auction marketplace.
           </motion.p>
 
           {/* Button Row */}
           <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
-            <Button 
-              variant="green" 
-              onClick={handleListProductClick} 
-              className="py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
-            >
+            <Button variant="green" onClick={handleListProductClick} className="py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
               <MousePointerClick className="mr-2" />
               Sell your AI SaaS Business
             </Button>
-            <a 
-              href="https://calendly.com/your-founder-link" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="w-full sm:w-auto"
-            >
-              <Button 
-                variant="purple"
-                className="py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
-                type="button"
-              >
-                Book a Call / Meet the Founder
-              </Button>
+            <a href="https://calendly.com/your-founder-link" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
+              <Button variant="purple" className="py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1" type="button">Schedule a Demo </Button>
             </a>
           </div>
           
           <Suspense fallback={<Skeleton className="w-full max-w-md h-32" />}>
-            <NewsletterSubscription 
-              newsletterEmail={newsletterEmail} 
-              setNewsletterEmail={setNewsletterEmail} 
-              subscriberCount={subscriberCount} 
-              setSubscriberCount={setSubscriberCount} 
-            />
+            <NewsletterSubscription newsletterEmail={newsletterEmail} setNewsletterEmail={setNewsletterEmail} subscriberCount={subscriberCount} setSubscriberCount={setSubscriberCount} />
           </Suspense>
           
           <Suspense fallback={<Skeleton className="h-16" />}>
@@ -138,12 +119,7 @@ const HeroSection = ({
           </Suspense>
 
           <Suspense fallback={<Skeleton className="h-64" />}>
-            <RoleInfo 
-              isSellerOpen={isSellerOpen} 
-              setIsSellerOpen={setIsSellerOpen} 
-              isBuyerOpen={isBuyerOpen} 
-              setIsBuyerOpen={setIsBuyerOpen} 
-            />
+            <RoleInfo isSellerOpen={isSellerOpen} setIsSellerOpen={setIsSellerOpen} isBuyerOpen={isBuyerOpen} setIsBuyerOpen={setIsBuyerOpen} />
           </Suspense>
 
           <div className="mt-8 text-sm text-gray-200">
@@ -151,8 +127,6 @@ const HeroSection = ({
           </div>
         </motion.div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default HeroSection;
