@@ -16,6 +16,7 @@ export const Navbar = () => {
   const {
     toast
   } = useToast();
+  const isProfilePage = location.pathname === '/profile';
   const isHomePage = location.pathname === '/';
   const isPolicyPage = location.pathname === '/policies' || location.pathname === '/terms' || location.pathname === '/nda-policy' || location.pathname === '/fees-pricing';
   useEffect(() => {
@@ -100,11 +101,13 @@ export const Navbar = () => {
     title: "Contact",
     href: "/contact",
     requiresAuth: false
-  }, {
-    title: "Settings",
-    href: isAuthenticated ? "/settings" : "/auth",
-    requiresAuth: true
-  }];
+  },
+    {
+      title: "Settings",
+      href: isAuthenticated ? "/settings" : "/auth",
+      requiresAuth: true
+    },
+];
   const policyPages = [{
     title: "Platform Policies",
     href: "/policies"
@@ -128,17 +131,9 @@ export const Navbar = () => {
           <div className="flex items-center space-x-6">
             {isPolicyPage && <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="flex items-center gap-2">
-                    Policies <ChevronDown className="h-4 w-4" />
-                  </Button>
+                  
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="bg-white w-56">
-                  {policyPages.map(page => <DropdownMenuItem key={page.title} asChild>
-                      <Link to={page.href} className="cursor-pointer w-full px-3 py-2">
-                        {page.title}
-                      </Link>
-                    </DropdownMenuItem>)}
-                </DropdownMenuContent>
+                
               </DropdownMenu>}
             
             {isAuthenticated && <Link to="/messages" className="relative">
