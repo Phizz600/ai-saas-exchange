@@ -11,6 +11,7 @@ import { ParticlesBackground } from "@/components/hero/ParticlesBackground";
 import { PromotionalBanner } from "@/components/PromotionalBanner";
 import EnhancedNdaPolicy from "@/components/hero/EnhancedNdaPolicy";
 import { Link } from "react-router-dom";
+import { RouteDebugger } from "@/components/RouteDebugger";
 
 export const Index = () => {
   return (
@@ -29,13 +30,14 @@ export const Index = () => {
         
         {/* Admin link - only visible in development */}
         {import.meta.env.DEV && (
-          <div className="fixed bottom-4 right-4 z-50">
+          <div className="fixed bottom-4 right-4 z-50 space-y-2">
             <Link 
               to="/admin" 
-              className="bg-gray-800 text-white px-4 py-2 rounded-md text-sm hover:bg-gray-700 transition-colors"
+              className="bg-gray-800 text-white px-4 py-2 rounded-md text-sm hover:bg-gray-700 transition-colors block"
             >
               Admin Panel
             </Link>
+            <RouteDebugger />
           </div>
         )}
       </div>
