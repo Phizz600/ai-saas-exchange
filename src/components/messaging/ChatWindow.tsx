@@ -21,6 +21,7 @@ import { EscrowDialog } from "./EscrowDialog";
 import { EscrowStatus } from "./EscrowStatus";
 import { getEscrowTransactionByConversation } from "@/integrations/supabase/escrow";
 import { EscrowPaymentDialog } from "./EscrowPaymentDialog";
+import EscrowPaymentButton from "./EscrowPaymentButton";
 
 export const ChatWindow = () => {
   const { conversationId } = useParams<{ conversationId: string }>();
@@ -252,15 +253,9 @@ export const ChatWindow = () => {
         )}
 
         {showBuyerEscrowPaymentButton && (
-          <div className="flex justify-center mb-6">
-            <Button
-              className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white font-semibold px-8 py-3 shadow-lg rounded-lg"
-              size="lg"
-              onClick={() => setShowEscrowPaymentDialog(true)}
-            >
-              Initiate Escrow Payment
-            </Button>
-          </div>
+          <EscrowPaymentButton
+            onClick={() => setShowEscrowPaymentDialog(true)}
+          />
         )}
         
         {messages.length === 0 ? (
