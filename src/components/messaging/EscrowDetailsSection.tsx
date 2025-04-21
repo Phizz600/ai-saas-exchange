@@ -177,6 +177,7 @@ export function EscrowDetailsSection({ escrowTransaction, currentUserId, onStatu
           </div>
         )}
       </CardContent>
+      
       <CardFooter className="flex flex-col sm:flex-row gap-3 pt-0">
         {getActionButton()}
         
@@ -202,7 +203,7 @@ export function EscrowDetailsSection({ escrowTransaction, currentUserId, onStatu
 
       <EscrowPaymentDialog 
         open={isPaymentDialogOpen}
-        onClose={() => setIsPaymentDialogOpen(false)}
+        onOpenChange={setIsPaymentDialogOpen}
         transaction={escrowTransaction}
         onStatusChange={onStatusChange}
       />
