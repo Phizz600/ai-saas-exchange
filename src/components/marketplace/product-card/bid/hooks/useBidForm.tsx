@@ -20,7 +20,7 @@ export function useBidForm({
   onValidationError 
 }: UseBidFormProps) {
   const [success, setSuccess] = useState(false);
-  const [depositDialogOpen, setDepositDialogOpen] = useState(false);
+  const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
 
   const {
     bidAmount,
@@ -58,27 +58,42 @@ export function useBidForm({
       return;
     }
 
-    const newBidId = await createBid(amount);
-    if (newBidId) {
-      const paymentInitialized = await initializePayment(amount, newBidId);
-      if (paymentInitialized) {
-        setDepositDialogOpen(true);
+    try {
+      setIsPaymentProcessing(true);
+      
+      // Create the bid
+      const newBidId = await createBid(amount);
+      if (!newBidId) {
+        throw new Error("Failed to create bid");
       }
+      
+      // Initialize payment directly - no deposit dialog needed
+      const paymentInitialized = await initializePayment(amount, newBidId);
+      
+      if (!paymentInitialized) {
+        throw new Error("Failed to initialize payment");
+      }
+      
+      // On successful payment authorization, update the bid
+      await handleBidSuccess(newBidId, amount);
+      
+    } catch (err: any) {
+      console.error('Error in bid process:', err);
+      if (onValidationError) {
+        onValidationError(err.message || "An error occurred during the bidding process");
+      }
+    } finally {
+      setIsPaymentProcessing(false);
     }
   };
 
-  const handleBidSubmit = async (paymentIntentId: string) => {
+  const handleBidSuccess = async (bidId: string, amount: number) => {
     try {
-      if (!bidId) {
-        throw new Error("Missing bid information");
-      }
-      
-      console.log(`Updating bid ${bidId} with payment intent ${paymentIntentId}`);
+      console.log(`Updating bid ${bidId} as successful`);
       
       const { error: updateError } = await supabase
         .from('bids')
         .update({
-          payment_intent_id: paymentIntentId,
           payment_status: 'authorized',
           status: 'active'
         })
@@ -89,10 +104,9 @@ export function useBidForm({
       }
       
       toast.success("Bid placed successfully!", {
-        description: `Your bid of $${parseFloat(bidAmount).toLocaleString()} has been placed.`
+        description: `Your bid of $${amount.toLocaleString()} has been placed.`
       });
       
-      setDepositDialogOpen(false);
       setSuccess(true);
       
     } catch (err: any) {
@@ -100,17 +114,22 @@ export function useBidForm({
       if (onValidationError) {
         onValidationError(err.message || "Failed to complete bid submission");
       }
+      
+      // Cancel the bid if updating fails
+      handleBidCancellation(bidId);
+      
       toast.error("Error", {
         description: err.message || "An unexpected error occurred"
       });
     }
   };
 
-  const handleBidCancellation = async () => {
-    if (!bidId) return;
+  const handleBidCancellation = async (bidToCancel?: string) => {
+    const idToCancel = bidToCancel || bidId;
+    if (!idToCancel) return;
     
     try {
-      console.log(`Cancelling bid ${bidId} due to payment cancellation`);
+      console.log(`Cancelling bid ${idToCancel}`);
       
       const { error: updateError } = await supabase
         .from('bids')
@@ -118,7 +137,7 @@ export function useBidForm({
           status: 'cancelled',
           payment_status: 'cancelled'
         })
-        .eq('id', bidId);
+        .eq('id', idToCancel);
         
       if (updateError) {
         console.error(`Failed to update bid as cancelled: ${updateError.message}`);
@@ -134,21 +153,18 @@ export function useBidForm({
     setSuccess(false);
   };
 
-  const isSubmitting = isCreatingBid || isProcessingPayment;
+  const isSubmitting = isCreatingBid || isProcessingPayment || isPaymentProcessing;
 
   return {
     bidAmount,
     formattedBidAmount,
     isSubmitting,
     success,
-    depositDialogOpen,
     paymentClientSecret,
     paymentError,
     bidId,
-    setDepositDialogOpen,
     handleAmountChange,
     handleInitiateBid,
-    handleBidSubmit,
     handleBidCancellation,
     resetForm
   };

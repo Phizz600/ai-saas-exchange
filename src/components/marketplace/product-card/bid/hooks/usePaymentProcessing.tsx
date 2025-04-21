@@ -36,6 +36,13 @@ export function usePaymentProcessing({ productId, onSuccess }: UsePaymentProcess
 
       console.log('Payment authorization created successfully with client secret');
       setPaymentClientSecret(clientSecret);
+      
+      // For Dutch auctions, we consider the payment authorized immediately
+      // since we're just checking if the card is valid
+      if (onSuccess) {
+        onSuccess();
+      }
+      
       return true;
 
     } catch (err: any) {

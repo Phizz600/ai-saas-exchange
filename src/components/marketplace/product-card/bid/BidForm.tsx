@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { useBidForm } from "./hooks/useBidForm";
 import { useBidRealtime } from "./hooks/useBidRealtime";
 import { useBidValidation } from "./hooks/useBidValidation";
-import { BidDepositDialog } from "./BidDepositDialog";
 import { BidErrorAlert } from "./components/BidErrorAlert";
 import { PaymentErrorAlert } from "./components/PaymentErrorAlert";
 import { BidSuccessMessage } from "./components/BidSuccessMessage";
@@ -34,15 +33,9 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
     formattedBidAmount,
     isSubmitting,
     success,
-    depositDialogOpen,
-    paymentClientSecret,
     paymentError,
-    bidId,
-    setDepositDialogOpen,
     handleAmountChange,
     handleInitiateBid,
-    handleBidSubmit,
-    handleBidCancellation,
     resetForm
   } = useBidForm({
     productId,
@@ -50,21 +43,6 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
     currentPrice: highestBid || currentPrice,
     onValidationError: (error) => setBidError(error)
   });
-
-  // Handle dialog closing without completing the process
-  useEffect(() => {
-    if (!depositDialogOpen && paymentClientSecret && !success && !isSubmitting && bidId) {
-      console.log("Bid process interrupted, cancelling bid:", bidId);
-      handleBidCancellation();
-      setBidCancelled(true);
-      
-      const timer = setTimeout(() => {
-        setBidCancelled(false);
-      }, 5000);
-      
-      return () => clearTimeout(timer);
-    }
-  }, [depositDialogOpen, paymentClientSecret, success, isSubmitting, bidId, handleBidCancellation]);
 
   const validateAndBid = () => {
     clearBidError();
@@ -123,16 +101,6 @@ export function BidForm({ productId, productTitle, currentPrice }: BidFormProps)
         isSubmitting={isSubmitting}
         validateAndBid={validateAndBid}
         clearBidError={clearBidError}
-      />
-
-      <BidDepositDialog
-        open={depositDialogOpen}
-        onClose={() => setDepositDialogOpen(false)}
-        onConfirm={handleBidSubmit}
-        productId={productId}
-        bidAmount={parseFloat(bidAmount) || 0}
-        productTitle={productTitle}
-        clientSecret={paymentClientSecret}
       />
     </>
   );
