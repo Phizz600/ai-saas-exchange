@@ -293,6 +293,39 @@ export type Database = {
         }
         Relationships: []
       }
+      email_preferences: {
+        Row: {
+          created_at: string
+          id: string
+          marketing_emails: boolean
+          newsletter: boolean
+          product_updates: boolean
+          transaction_notifications: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          marketing_emails?: boolean
+          newsletter?: boolean
+          product_updates?: boolean
+          transaction_notifications?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          marketing_emails?: boolean
+          newsletter?: boolean
+          product_updates?: boolean
+          transaction_notifications?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       escrow_transactions: {
         Row: {
           agreed_terms: Json | null
@@ -1196,6 +1229,42 @@ export type Database = {
         }
         Relationships: []
       }
+      user_verifications: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          id: string
+          status: Database["public"]["Enums"]["verification_status"]
+          updated_at: string
+          user_id: string
+          verification_data: Json | null
+          verification_type: Database["public"]["Enums"]["verification_type"]
+          verified_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          status?: Database["public"]["Enums"]["verification_status"]
+          updated_at?: string
+          user_id: string
+          verification_data?: Json | null
+          verification_type: Database["public"]["Enums"]["verification_type"]
+          verified_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          status?: Database["public"]["Enums"]["verification_status"]
+          updated_at?: string
+          user_id?: string
+          verification_data?: Json | null
+          verification_type?: Database["public"]["Enums"]["verification_type"]
+          verified_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       matched_products: {
@@ -1326,6 +1395,13 @@ export type Database = {
         Args: { user_type: string }
         Returns: boolean
       }
+      is_verified: {
+        Args: {
+          _user_id: string
+          _verification_type: Database["public"]["Enums"]["verification_type"]
+        }
+        Returns: boolean
+      }
       truncate_to_date: {
         Args: { ts: string }
         Returns: string
@@ -1390,6 +1466,8 @@ export type Database = {
         | "new_bid"
         | "product_status_change"
       user_type: "ai_builder" | "ai_investor"
+      verification_status: "pending" | "verified" | "rejected" | "expired"
+      verification_type: "email" | "phone" | "identity"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1563,6 +1641,8 @@ export const Constants = {
         "product_status_change",
       ],
       user_type: ["ai_builder", "ai_investor"],
+      verification_status: ["pending", "verified", "rejected", "expired"],
+      verification_type: ["email", "phone", "identity"],
     },
   },
 } as const
