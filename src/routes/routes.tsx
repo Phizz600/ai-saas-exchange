@@ -1,7 +1,8 @@
+
 import { lazy } from "react";
 import { AuthGuard } from "@/components/AuthGuard";
 
-// Main pages
+// Main pages - ensure proper importing for Marketplace
 const Index = lazy(() => import("@/pages/Index"));
 const Marketplace = lazy(() => import("@/pages/Marketplace"));
 const Auth = lazy(() => import("@/pages/Auth"));

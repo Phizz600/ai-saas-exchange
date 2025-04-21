@@ -2,8 +2,7 @@
 import { MarketplaceLayout } from "@/components/marketplace/MarketplaceLayout";
 import { Footer } from "@/components/Footer";
 
-function Marketplace() {
-  console.log('Marketplace page component rendered');
+export function Marketplace() {
   return (
     <div className="bg-gray-50 min-h-screen flex flex-col">
       <MarketplaceLayout />
@@ -12,5 +11,5 @@ function Marketplace() {
   );
 }
 
+// Default export for lazy loading
 export default Marketplace;
-export { Marketplace };
