@@ -45,7 +45,6 @@ export function RouteProvider() {
             key={route.path} 
             path={route.path} 
             element={route.element}
-            errorElement={route.errorElement || <ErrorFallback />}
           />
         ))}
       </Routes>
