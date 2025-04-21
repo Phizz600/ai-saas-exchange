@@ -11,7 +11,7 @@ export const toast = Object.assign(
   (props: {
     title?: React.ReactNode
     description?: React.ReactNode
-    variant?: "default" | "destructive"
+    variant?: "default" | "destructive" | "warning"
     duration?: number
     action?: {
       label: string
@@ -77,7 +77,7 @@ export const toast = Object.assign(
     info: (props: { title?: React.ReactNode, description?: React.ReactNode, duration?: number }) => {
       return toast({ ...props })
     },
-    message: (props: { title?: React.ReactNode, description?: React.ReactNode, variant?: "default" | "destructive", duration?: number }) => {
+    message: (props: { title?: React.ReactNode, description?: React.ReactNode, variant?: "default" | "destructive" | "warning", duration?: number }) => {
       return toast(props)
     },
     promise: sonnerToast.promise,
@@ -97,7 +97,7 @@ export type Toast = {
     onClick: () => void
     altText: string
   }
-  variant?: "default" | "destructive"
+  variant?: "default" | "destructive" | "warning"
 }
 
 // This is the provider we need to wrap the app with

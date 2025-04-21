@@ -5,8 +5,8 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { Database } from "@/integrations/supabase/types";
 import { Button } from "@/components/ui/button";
 
-// Define a custom type that extends the database notification type to include 'escrow_update'
-type NotificationType = Database['public']['Tables']['notifications']['Row']['type'] | 'escrow_update';
+// Define a custom type that extends the database notification type to include 'escrow_update' and 'outbid'
+type NotificationType = Database['public']['Tables']['notifications']['Row']['type'] | 'escrow_update' | 'outbid';
 type Notification = Omit<Database['public']['Tables']['notifications']['Row'], 'type'> & { type: NotificationType };
 
 interface NotificationSheetProps {
