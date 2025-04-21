@@ -1,14 +1,12 @@
-import { Auth } from "@/pages/Auth";
+
+import Auth from "@/pages/Auth";
 import { Profile } from "@/pages/Profile";
 import { ProductDashboard } from "@/pages/ProductDashboard";
 import { Marketplace } from "@/pages/Marketplace";
-import { ProductDetail } from "@/pages/ProductDetail";
 import { Messages } from "@/pages/Messages";
-import { Help } from "@/pages/Help";
-import { Checkout } from "@/pages/Checkout";
 import Settings from "@/pages/Settings";
 
-// Add the settings page route
+// Routes configuration
 const routes = [
   {
     path: "/auth",
@@ -27,20 +25,8 @@ const routes = [
     element: <Marketplace />,
   },
   {
-    path: "/product/:productId",
-    element: <ProductDetail />,
-  },
-  {
     path: "/messages",
     element: <Messages />,
-  },
-  {
-    path: "/help",
-    element: <Help />,
-  },
-  {
-    path: "/checkout",
-    element: <Checkout />,
   },
   {
     path: "/settings",
