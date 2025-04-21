@@ -49,7 +49,7 @@ export function AuctionTimer({
           <div className="flex items-center space-x-1">
             <Timer className="h-3 w-3 text-amber-800" />
             <p className="text-sm font-medium text-amber-800">
-              {timeLeft || "Loading..."}
+              {timeLeft === "Updating price..." ? "Refreshing..." : timeLeft || "Loading..."}
             </p>
           </div>
         </div>

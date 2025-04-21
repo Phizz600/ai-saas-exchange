@@ -49,7 +49,10 @@ export function useAuctionTimer(
         const difference = nextDrop.getTime() - now.getTime();
         
         if (difference <= 0) {
-          setTimeLeft("Updating price...");
+          // Add a more descriptive message and include the countdown to refresh 
+          // Assuming price updates happen within 30 seconds
+          const secondsUntilRefresh = 30 - (now.getSeconds() % 30);
+          setTimeLeft(`Refreshing in ${secondsUntilRefresh}s`);
           return;
         }
 
