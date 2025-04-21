@@ -5,8 +5,8 @@ import { ProductDashboard } from "@/pages/ProductDashboard";
 import { Marketplace } from "@/pages/Marketplace";
 import { Messages } from "@/pages/Messages";
 import Settings from "@/pages/Settings";
+import { AuthGuard } from "@/components/AuthGuard";
 
-// Routes configuration
 const routes = [
   {
     path: "/auth",
@@ -14,11 +14,11 @@ const routes = [
   },
   {
     path: "/profile",
-    element: <Profile />,
+    element: <AuthGuard><Profile /></AuthGuard>,
   },
   {
     path: "/product-dashboard",
-    element: <ProductDashboard />,
+    element: <AuthGuard><ProductDashboard /></AuthGuard>,
   },
   {
     path: "/marketplace",
@@ -26,11 +26,11 @@ const routes = [
   },
   {
     path: "/messages",
-    element: <Messages />,
+    element: <AuthGuard><Messages /></AuthGuard>,
   },
   {
     path: "/settings",
-    element: <Settings />,
+    element: <AuthGuard><Settings /></AuthGuard>,
   },
 ];
 
