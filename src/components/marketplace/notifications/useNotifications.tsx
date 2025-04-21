@@ -4,7 +4,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { Database } from "@/integrations/supabase/types";
 import { useToast } from "@/hooks/use-toast";
 
-type Notification = Database['public']['Tables']['notifications']['Row'];
+// Define a custom type that extends the database notification type to include 'escrow_update'
+type NotificationType = Database['public']['Tables']['notifications']['Row']['type'] | 'escrow_update';
+type Notification = Omit<Database['public']['Tables']['notifications']['Row'], 'type'> & { type: NotificationType };
 
 export const useNotifications = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -77,7 +79,7 @@ export const useNotifications = () => {
                   description: newNotification.message,
                   variant: newNotification.title?.includes('Dispute') ? 'destructive'
                     : newNotification.title?.includes('Delivery') ? 'warning'
-                    : newNotification.title?.includes('Completed') ? 'success'
+                    : newNotification.title?.includes('Completed') ? 'default'
                     : 'default'
                 });
               } else {

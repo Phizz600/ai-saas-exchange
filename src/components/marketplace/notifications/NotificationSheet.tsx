@@ -1,9 +1,14 @@
+
 import { Bell } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Database } from "@/integrations/supabase/types";
 import { Button } from "@/components/ui/button";
-type Notification = Database['public']['Tables']['notifications']['Row'];
+
+// Define a custom type that extends the database notification type to include 'escrow_update'
+type NotificationType = Database['public']['Tables']['notifications']['Row']['type'] | 'escrow_update';
+type Notification = Omit<Database['public']['Tables']['notifications']['Row'], 'type'> & { type: NotificationType };
+
 interface NotificationSheetProps {
   notifications: Notification[];
   unreadCount: number;
@@ -11,6 +16,7 @@ interface NotificationSheetProps {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
 }
+
 export const NotificationSheet = ({
   notifications = [],
   unreadCount = 0,
@@ -19,7 +25,7 @@ export const NotificationSheet = ({
   onOpenChange
 }: NotificationSheetProps) => {
   // Helper function to get appropriate background color based on notification type
-  const getNotificationBgColor = (type: string, read: boolean | null, title: string) => {
+  const getNotificationBgColor = (type: NotificationType, read: boolean | null, title: string) => {
     if (read) return 'bg-background';
     if (type === 'escrow_update') {
       // For key seller actions, use stronger highlight
