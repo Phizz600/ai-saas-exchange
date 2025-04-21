@@ -75,13 +75,13 @@ export function VerificationSection() {
   const getStatusBadge = (type: keyof VerificationStatus) => {
     const variants = {
       pending: "default",
-      verified: "success",
+      verified: "secondary", // Changed from "success"
       rejected: "destructive",
-      expired: "secondary"
+      expired: "outline"
     };
 
     return (
-      <Badge variant={variants[status[type]] as "default" | "success" | "destructive" | "secondary"}>
+      <Badge variant={variants[status[type]] as "default" | "destructive" | "outline" | "secondary"}>
         {status[type].charAt(0).toUpperCase() + status[type].slice(1)}
       </Badge>
     );
