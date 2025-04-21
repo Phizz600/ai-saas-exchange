@@ -1,4 +1,3 @@
-
 import { lazy } from "react";
 import { AuthGuard } from "@/components/AuthGuard";
 
@@ -6,7 +5,7 @@ import { AuthGuard } from "@/components/AuthGuard";
 const Index = lazy(() => import("@/pages/Index"));
 const Marketplace = lazy(() => import("@/pages/Marketplace"));
 const Auth = lazy(() => import("@/pages/Auth"));
-const ProductPage = lazy(() => import("@/components/product/ProductPage").then(module => ({ default: module.ProductPage })));
+const ProductPage = lazy(() => import("@/components/product/ProductPage"));
 const ComingSoon = lazy(() => import("@/pages/ComingSoon").then(module => ({ default: module.ComingSoon })));
 const FeesPricing = lazy(() => import("@/pages/FeesPricing").then(module => ({ default: module.FeesPricing })));
 const Policies = lazy(() => import("@/pages/Policies").then(module => ({ default: module.Policies })));
