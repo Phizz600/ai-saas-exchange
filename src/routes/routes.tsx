@@ -6,8 +6,13 @@ import { Marketplace } from "@/pages/Marketplace";
 import { Messages } from "@/pages/Messages";
 import Settings from "@/pages/Settings";
 import { AuthGuard } from "@/components/AuthGuard";
+import { Index } from "@/pages/Index";  // Import the Index component
 
 const routes = [
+  {
+    path: "/",  // Add the root path
+    element: <Index />,
+  },
   {
     path: "/auth",
     element: <Auth />,
