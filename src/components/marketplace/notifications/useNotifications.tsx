@@ -69,11 +69,23 @@ export const useNotifications = () => {
               
               setNotifications(prev => [newNotification, ...prev]);
               setUnreadCount(prev => prev + 1);
-              
-              toast({
-                title: newNotification.title,
-                description: newNotification.message,
-              });
+
+              // Show toast for escrow notifications with rich context
+              if (newNotification.type === 'escrow_update') {
+                toast({
+                  title: newNotification.title,
+                  description: newNotification.message,
+                  variant: newNotification.title?.includes('Dispute') ? 'destructive'
+                    : newNotification.title?.includes('Delivery') ? 'warning'
+                    : newNotification.title?.includes('Completed') ? 'success'
+                    : 'default'
+                });
+              } else {
+                toast({
+                  title: newNotification.title,
+                  description: newNotification.message,
+                });
+              }
             }
           )
           .subscribe();
