@@ -1,4 +1,3 @@
-
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
@@ -9,19 +8,23 @@ import { useToast } from "@/hooks/use-toast";
 import { getUnreadMessagesCount } from "@/integrations/supabase/messages";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-
 export const Navbar = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const location = useLocation();
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
   const isHomePage = location.pathname === '/';
   const isPolicyPage = location.pathname === '/policies' || location.pathname === '/terms' || location.pathname === '/nda-policy' || location.pathname === '/fees-pricing';
-
   useEffect(() => {
     const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: {
+          session
+        }
+      } = await supabase.auth.getSession();
       setIsAuthenticated(!!session);
       if (session) {
         const count = await getUnreadMessagesCount();
@@ -29,7 +32,11 @@ export const Navbar = () => {
       }
     };
     checkAuth();
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const {
+      data: {
+        subscription
+      }
+    } = supabase.auth.onAuthStateChange((event, session) => {
       setIsAuthenticated(!!session);
     });
     return () => subscription.unsubscribe();
@@ -50,7 +57,6 @@ export const Navbar = () => {
       supabase.removeChannel(channel);
     };
   }, [isAuthenticated]);
-
   const handleNavigationClick = (e: React.MouseEvent, path: string) => {
     e.preventDefault();
     if (!isAuthenticated) {
@@ -61,7 +67,6 @@ export const Navbar = () => {
       navigate(path);
     }
   };
-
   const handleSignOut = async () => {
     try {
       await supabase.auth.signOut();
@@ -79,56 +84,41 @@ export const Navbar = () => {
       });
     }
   };
-
-  const navigationItems = [
-    {
-      title: "Buy an AI Business",
-      href: isAuthenticated ? "/coming-soon" : "/auth",
-      requiresAuth: false
-    }, 
-    {
-      title: "AI Business Valuation",
-      href: isAuthenticated ? "/list-product" : "/auth",
-      requiresAuth: true
-    }, 
-    {
-      title: "About",
-      href: "/about",
-      requiresAuth: false
-    }, 
-    {
-      title: "Contact",
-      href: "/contact",
-      requiresAuth: false
-    },
-    {
-      title: "Settings",
-      href: isAuthenticated ? "/settings" : "/auth",
-      requiresAuth: true
-    },
-  ];
-
-  const policyPages = [
-    {
-      title: "Platform Policies",
-      href: "/policies"
-    }, 
-    {
-      title: "Terms & Conditions",
-      href: "/terms"
-    }, 
-    {
-      title: "NDA Policy",
-      href: "/nda-policy"
-    }, 
-    {
-      title: "Fees & Pricing",
-      href: "/fees-pricing"
-    }
-  ];
-
-  return (
-    <nav className="w-full absolute z-10">
+  const navigationItems = [{
+    title: "Buy an AI Business",
+    href: isAuthenticated ? "/coming-soon" : "/auth",
+    requiresAuth: false
+  }, {
+    title: "AI Business Valuation",
+    href: isAuthenticated ? "/list-product" : "/auth",
+    requiresAuth: true
+  }, {
+    title: "About",
+    href: "/about",
+    requiresAuth: false
+  }, {
+    title: "Contact",
+    href: "/contact",
+    requiresAuth: false
+  }, {
+    title: "Settings",
+    href: isAuthenticated ? "/settings" : "/auth",
+    requiresAuth: true
+  }];
+  const policyPages = [{
+    title: "Platform Policies",
+    href: "/policies"
+  }, {
+    title: "Terms & Conditions",
+    href: "/terms"
+  }, {
+    title: "NDA Policy",
+    href: "/nda-policy"
+  }, {
+    title: "Fees & Pricing",
+    href: "/fees-pricing"
+  }];
+  return <nav className="w-full absolute z-10">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-24 mx-0 my-[8px] py-px px-[2px]">
           <Link to="/" className="flex items-center">
@@ -136,49 +126,35 @@ export const Navbar = () => {
           </Link>
 
           <div className="flex items-center space-x-6">
-            {isPolicyPage && (
-              <DropdownMenu>
+            {isPolicyPage && <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" className="flex items-center gap-2">
                     Policies <ChevronDown className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="bg-white w-56">
-                  {policyPages.map((page) => (
-                    <DropdownMenuItem key={page.title} asChild>
+                  {policyPages.map(page => <DropdownMenuItem key={page.title} asChild>
                       <Link to={page.href} className="cursor-pointer w-full px-3 py-2">
                         {page.title}
                       </Link>
-                    </DropdownMenuItem>
-                  ))}
+                    </DropdownMenuItem>)}
                 </DropdownMenuContent>
-              </DropdownMenu>
-            )}
+              </DropdownMenu>}
             
-            {isAuthenticated && (
-              <Link to="/messages" className="relative">
-                <Button variant="secondary" className="bg-white/20 hover:bg-white/30 backdrop-blur-sm" size="icon">
-                  <FileText className="h-5 w-5" />
-                </Button>
-                {unreadCount > 0 && (
-                  <Badge variant="destructive" className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0">
+            {isAuthenticated && <Link to="/messages" className="relative">
+                
+                {unreadCount > 0 && <Badge variant="destructive" className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0">
                     {unreadCount > 9 ? '9+' : unreadCount}
-                  </Badge>
-                )}
-              </Link>
-            )}
+                  </Badge>}
+              </Link>}
             
-            {!isAuthenticated ? (
-              <Link to="/auth">
+            {!isAuthenticated ? <Link to="/auth">
                 <Button variant="secondary" className="bg-white/20 hover:bg-white/30 backdrop-blur-sm" size="icon">
                   <UserPlus className="h-5 w-5" />
                 </Button>
-              </Link>
-            ) : (
-              <Button variant="secondary" className="bg-white/20 hover:bg-white/30 backdrop-blur-sm" onClick={handleSignOut} size="icon">
+              </Link> : <Button variant="secondary" className="bg-white/20 hover:bg-white/30 backdrop-blur-sm" onClick={handleSignOut} size="icon">
                 <LogOut className="h-5 w-5" />
-              </Button>
-            )}
+              </Button>}
 
             <Sheet>
               <SheetTrigger asChild>
@@ -193,23 +169,12 @@ export const Navbar = () => {
                   </div>
                 </SheetHeader>
                 <div className="flex flex-col gap-4 mt-8 flex-grow">
-                  {navigationItems.map(item => (
-                    <Link 
-                      key={item.title} 
-                      to={item.href} 
-                      onClick={e => item.requiresAuth && !isAuthenticated ? handleNavigationClick(e, item.href) : null} 
-                      className="text-black hover:text-black/80 font-exo text-lg px-4 rounded-lg hover:bg-white/10 transition-colors py-0 flex justify-between items-center"
-                    >
+                  {navigationItems.map(item => <Link key={item.title} to={item.href} onClick={e => item.requiresAuth && !isAuthenticated ? handleNavigationClick(e, item.href) : null} className="text-black hover:text-black/80 font-exo text-lg px-4 rounded-lg hover:bg-white/10 transition-colors py-0 flex justify-between items-center">
                       <span>{item.title}</span>
-                    </Link>
-                  ))}
+                    </Link>)}
                 </div>
                 <div className="mt-auto mb-6">
-                  <Button 
-                    onClick={e => handleNavigationClick(e, "/list-product")} 
-                    className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white hover:opacity-90" 
-                    variant="secondary"
-                  >
+                  <Button onClick={e => handleNavigationClick(e, "/list-product")} className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white hover:opacity-90" variant="secondary">
                     Free AI SaaS Valuation
                   </Button>
                 </div>
@@ -218,6 +183,5 @@ export const Navbar = () => {
           </div>
         </div>
       </div>
-    </nav>
-  );
+    </nav>;
 };
