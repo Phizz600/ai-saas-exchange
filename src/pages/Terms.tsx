@@ -1,119 +1,88 @@
 
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
-import AnimatedGradientBackground from "@/components/ui/AnimatedGradientBackground";
-import { motion } from "framer-motion";
-import { FileText, CheckCircle, AlertTriangle, Shield } from "lucide-react";
+import { Header } from "@/components/Header";
 
-export const Terms = () => {
-  return <AnimatedGradientBackground>
-      <Navbar />
-      <div className="container mx-auto px-4 py-8 mt-16">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }} 
-          animate={{ opacity: 1, y: 0 }} 
-          transition={{ duration: 0.5 }} 
-          className="max-w-5xl mx-auto glass rounded-xl p-8 shadow-xl backdrop-blur-lg bg-white/10 border border-white/20"
-        >
-          <h1 className="exo-2-heading text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-blue-200 mb-8 text-center">
-            Terms & Conditions
-          </h1>
+export function Terms() {
+  return (
+    <>
+      <Header />
+      <div className="container mx-auto px-4 py-12 mt-16">
+        <h1 className="text-3xl font-bold mb-6 exo-2-heading">Terms of Service</h1>
+        
+        <div className="prose max-w-none">
+          <p className="text-sm text-gray-500 mb-6">Last updated: April 22, 2025</p>
           
-          <div className="space-y-8 text-white/80">
-            <motion.section className="space-y-4 p-6 glass rounded-lg" initial={{
-            opacity: 0,
-            x: -20
-          }} animate={{
-            opacity: 1,
-            x: 0
-          }} transition={{
-            duration: 0.5,
-            delay: 0.1
-          }}>
-              <div className="flex items-center gap-3 mb-4">
-                <FileText className="h-6 w-6 text-[#D946EE]" />
-                <h2 className="text-2xl font-semibold text-white exo-2-heading">Agreement to Terms</h2>
-              </div>
-              <p>By accessing or using AI Exchange Club, you agree to be bound by these Terms and Conditions. If you disagree with any part of these terms, you may not access the service.</p>
-            </motion.section>
-
-            <motion.section className="space-y-4 p-6 glass rounded-lg" initial={{
-            opacity: 0,
-            x: 20
-          }} animate={{
-            opacity: 1,
-            x: 0
-          }} transition={{
-            duration: 0.5,
-            delay: 0.2
-          }}>
-              <div className="flex items-center gap-3 mb-4">
-                <CheckCircle className="h-6 w-6 text-[#8B5CF6]" />
-                <h2 className="text-2xl font-semibold text-white exo-2-heading">Account Responsibilities</h2>
-              </div>
-              <p>You are responsible for maintaining the confidentiality of your account and password. You agree to accept responsibility for all activities that occur under your account.</p>
-            </motion.section>
-
-            <motion.section className="space-y-4 p-6 glass rounded-lg" initial={{
-            opacity: 0,
-            x: -20
-          }} animate={{
-            opacity: 1,
-            x: 0
-          }} transition={{
-            duration: 0.5,
-            delay: 0.3
-          }}>
-              <div className="flex items-center gap-3 mb-4">
-                <AlertTriangle className="h-6 w-6 text-[#0EA4E9]" />
-                <h2 className="text-2xl font-semibold text-white exo-2-heading">Limitation of Liability</h2>
-              </div>
-              <p>AI Exchange Club shall not be liable for any indirect, incidental, special, consequential or punitive damages resulting from your access to or use of, or inability to access or use, the service.</p>
-            </motion.section>
-
-            <motion.section className="space-y-4 p-6 glass rounded-lg" initial={{
-            opacity: 0,
-            x: 20
-          }} animate={{
-            opacity: 1,
-            x: 0
-          }} transition={{
-            duration: 0.5,
-            delay: 0.4
-          }}>
-              <div className="flex items-center gap-3 mb-4">
-                <Shield className="h-6 w-6 text-[#D946EE]" />
-                <h2 className="text-2xl font-semibold text-white exo-2-heading">Governing Law</h2>
-              </div>
-              <p>These Terms shall be governed and construed in accordance with the laws, without regard to its conflict of law provisions.</p>
-            </motion.section>
-          </div>
+          <h2 className="text-2xl font-semibold mt-8 mb-4">1. Acceptance of Terms</h2>
+          <p>
+            By accessing or using AI Exchange, you agree to be bound by these Terms of Service.
+            If you do not agree to all of these terms, you may not use our services.
+          </p>
           
-          <motion.div className="mt-12 p-6 glass rounded-lg" initial={{
-          opacity: 0,
-          y: 20
-        }} animate={{
-          opacity: 1,
-          y: 0
-        }} transition={{
-          duration: 0.5,
-          delay: 0.5
-        }}>
-            <p className="text-white/70 text-center">
-              By using our services, you acknowledge that you have read and understood these Terms & Conditions and agree to be bound by them.
-            </p>
-            <div className="flex justify-center mt-6">
-              <motion.button whileHover={{
-              scale: 1.05
-            }} whileTap={{
-              scale: 0.95
-            }} className="px-6 py-2 bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white font-medium rounded-md hover:opacity-90 transition-opacity">
-                Contact Support
-              </motion.button>
-            </div>
-          </motion.div>
-        </motion.div>
+          <h2 className="text-2xl font-semibold mt-8 mb-4">2. User Accounts</h2>
+          <p>
+            You must create an account to access certain features of our platform. You are responsible
+            for maintaining the confidentiality of your account information and for all activities
+            that occur under your account.
+          </p>
+          
+          <h2 className="text-2xl font-semibold mt-8 mb-4">3. Listing and Purchasing Products</h2>
+          <p>
+            3.1 Sellers are responsible for the accuracy of their listings and must have the legal
+            right to sell the products they list.
+          </p>
+          <p>
+            3.2 Buyers agree to complete transactions for products they agree to purchase, subject
+            to the terms of the specific listing and any applicable escrow agreements.
+          </p>
+          
+          <h2 className="text-2xl font-semibold mt-8 mb-4">4. Fees and Payments</h2>
+          <p>
+            4.1 AI Exchange charges fees for certain services as outlined in our Fee Schedule.
+          </p>
+          <p>
+            4.2 All fees are non-refundable unless otherwise specified.
+          </p>
+          
+          <h2 className="text-2xl font-semibold mt-8 mb-4">5. Intellectual Property</h2>
+          <p>
+            5.1 Users retain ownership of their intellectual property rights in the content they submit.
+          </p>
+          <p>
+            5.2 By posting content, you grant AI Exchange a non-exclusive, worldwide, royalty-free
+            license to use, display, and distribute your content solely for the purpose of operating
+            the platform.
+          </p>
+          
+          <h2 className="text-2xl font-semibold mt-8 mb-4">6. Prohibited Activities</h2>
+          <p>
+            Users may not engage in any activity that violates applicable laws, infringes on
+            others' rights, or interferes with the operation of our platform.
+          </p>
+          
+          <h2 className="text-2xl font-semibold mt-8 mb-4">7. Termination</h2>
+          <p>
+            AI Exchange reserves the right to terminate or suspend accounts at our discretion,
+            without notice, for violations of these Terms or for any other reason.
+          </p>
+          
+          <h2 className="text-2xl font-semibold mt-8 mb-4">8. Limitation of Liability</h2>
+          <p>
+            TO THE MAXIMUM EXTENT PERMITTED BY LAW, AI EXCHANGE SHALL NOT BE LIABLE FOR ANY
+            INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES.
+          </p>
+          
+          <h2 className="text-2xl font-semibold mt-8 mb-4">9. Governing Law</h2>
+          <p>
+            These Terms shall be governed by the laws of the State of Minnesota, without regard
+            to its conflict of law provisions.
+          </p>
+          
+          <h2 className="text-2xl font-semibold mt-8 mb-4">10. Changes to Terms</h2>
+          <p>
+            We may modify these Terms at any time. Your continued use of the platform after any
+            changes indicates your acceptance of the modified Terms.
+          </p>
+        </div>
       </div>
-      <Footer />
-    </AnimatedGradientBackground>;
-};
+    </>
+  );
+}

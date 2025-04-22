@@ -2,30 +2,19 @@
 import React from "react";
 
 interface ConfidentialWatermarkProps {
-  text?: string;
   opacity?: number;
-  rotation?: number;
-  className?: string;
 }
 
-export function ConfidentialWatermark({
-  text = "CONFIDENTIAL",
-  opacity = 0.08,
-  rotation = 45,
-  className = ""
-}: ConfidentialWatermarkProps) {
+export function ConfidentialWatermark({ opacity = 0.1 }: ConfidentialWatermarkProps) {
   return (
     <div 
-      className={`absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden ${className}`}
+      className="absolute inset-0 pointer-events-none overflow-hidden flex items-center justify-center"
       style={{ opacity }}
     >
-      <div 
-        className="transform text-gray-500 text-3xl md:text-4xl font-bold flex whitespace-nowrap"
-        style={{ transform: `rotate(${rotation}deg)` }}
-      >
-        <span className="mx-4">{text}</span>
-        <span className="mx-4">{text}</span>
-        <span className="mx-4">{text}</span>
+      <div className="transform rotate-45 text-[#8B5CF6] text-4xl font-exo-2 whitespace-nowrap flex">
+        <span className="mx-4">CONFIDENTIAL</span>
+        <span className="mx-4">CONFIDENTIAL</span>
+        <span className="mx-4">CONFIDENTIAL</span>
       </div>
     </div>
   );

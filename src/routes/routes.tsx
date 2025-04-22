@@ -8,7 +8,13 @@ import { Messages } from "@/pages/Messages";
 import Settings from "@/pages/Settings";
 import Index from "@/pages/Index";
 import { Admin } from "@/pages/Admin";
-import { ListProduct } from "@/pages/ListProduct"; // Add this import
+import { ListProduct } from "@/pages/ListProduct";
+import { NdaPolicy } from "@/pages/NdaPolicy";
+import { FAQ } from "@/pages/FAQ";
+import { About } from "@/pages/About";
+import { Terms } from "@/pages/Terms";
+import { Policies } from "@/pages/Policies";
+import { MessageChat } from "@/pages/MessageChat";
 
 const routes = [
   {
@@ -40,6 +46,10 @@ const routes = [
     element: <Messages />,
   },
   {
+    path: "/messages/:conversationId",
+    element: <MessageChat />,
+  },
+  {
     path: "/settings",
     element: <Settings />,
   },
@@ -48,8 +58,28 @@ const routes = [
     element: <Admin />,
   },
   {
-    path: "/list-product", // Add the new route
+    path: "/list-product",
     element: <ListProduct />,
+  },
+  {
+    path: "/nda-policy",
+    element: <NdaPolicy />,
+  },
+  {
+    path: "/faq",
+    element: <FAQ />,
+  },
+  {
+    path: "/about",
+    element: <About />,
+  },
+  {
+    path: "/terms",
+    element: <Terms />,
+  },
+  {
+    path: "/policies",
+    element: <Policies />,
   },
 ];
 

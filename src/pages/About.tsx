@@ -1,102 +1,49 @@
 
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
-import { ParticlesBackground } from "@/components/hero/ParticlesBackground";
-import { motion } from "framer-motion";
+import { Header } from "@/components/Header";
 
-export const About = () => {
+export function About() {
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      <ParticlesBackground />
-      <div className="relative z-10">
-        <Navbar />
-        <main className="container mx-auto px-4 py-16 pt-32">
-          <div className="max-w-6xl mx-auto backdrop-blur-lg bg-white/10 rounded-xl border border-white/20 shadow-xl p-8 md:p-12">
-            <h1 className="exo-2-heading text-4xl font-bold text-center mb-8 bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">
-              About AI Exchange Club
-            </h1>
-            
-            <div className="grid md:grid-cols-2 gap-8 md:gap-12">
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="space-y-4 text-white"
-              >
-                <p className="text-lg">
-                  AI Exchange Club is the premier marketplace for buying and selling AI-powered SaaS businesses. 
-                  We connect innovative AI entrepreneurs with forward-thinking investors, creating opportunities 
-                  for both sellers to realize the value of their creation and buyers to acquire cutting-edge 
-                  AI technology businesses.
-                </p>
-                
-                <p className="text-lg">
-                  Our platform provides a secure, transparent, and efficient marketplace where:
-                </p>
-                
-                <ul className="list-disc pl-6 space-y-2">
-                  <li>Sellers can showcase their AI businesses to qualified buyers</li>
-                  <li>Buyers can discover vetted AI businesses with proven potential</li>
-                  <li>Both parties benefit from our streamlined valuation and transaction process</li>
-                  <li>Expert support ensures smooth and secure transactions</li>
-                </ul>
-              </motion.div>
-              
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="space-y-4 text-white"
-              >
-                <div className="backdrop-blur-md bg-white/5 rounded-lg border border-white/10 p-6 shadow-lg h-full">
-                  <h2 className="exo-2-heading text-2xl font-semibold mb-4 bg-gradient-to-r from-[#D946EE] to-[#0EA4E9] bg-clip-text text-transparent">
-                    Our Mission
-                  </h2>
-                  
-                  <p className="mb-4">
-                    Our mission is to create the most trusted marketplace for AI business transactions, 
-                    where innovation is valued fairly and transferred securely.
-                  </p>
-                  
-                  <h2 className="exo-2-heading text-2xl font-semibold mb-4 bg-gradient-to-r from-[#D946EE] to-[#0EA4E9] bg-clip-text text-transparent">
-                    Why Choose Us
-                  </h2>
-                  
-                  <ul className="list-disc pl-6 space-y-2">
-                    <li>Specialized focus on AI businesses</li>
-                    <li>Thorough vetting and verification processes</li>
-                    <li>Secure escrow and transaction services</li>
-                    <li>Expert valuation assistance</li>
-                    <li>Post-transaction support and resources</li>
-                  </ul>
-                  
-                  <p className="mt-4">
-                    Whether you're looking to sell your AI business or invest in the future of technology, 
-                    AI Exchange Club provides the platform, tools, and expertise you need to succeed.
-                  </p>
-                </div>
-              </motion.div>
-            </div>
-            
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              className="mt-12 text-center"
-            >
-              <a 
-                href="/contact" 
-                className="inline-block px-8 py-3 bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] rounded-lg text-white font-medium shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
-              >
-                Connect With Our Team
-              </a>
-            </motion.div>
-          </div>
-        </main>
-        <Footer />
+    <>
+      <Header />
+      <div className="container mx-auto px-4 py-12 mt-16">
+        <h1 className="text-3xl font-bold mb-6 exo-2-heading">About AI Exchange</h1>
+        
+        <div className="prose max-w-none">
+          <p className="text-lg leading-relaxed">
+            AI Exchange is the premier marketplace for buying and selling AI-powered businesses and products.
+            We provide a secure, transparent platform connecting AI builders with investors and acquirers
+            looking for opportunities in the rapidly evolving AI ecosystem.
+          </p>
+          
+          <h2 className="text-2xl font-semibold mt-8 mb-4">Our Mission</h2>
+          <p>
+            Our mission is to accelerate innovation in the AI space by creating a trusted marketplace
+            where builders can monetize their creations and buyers can discover vetted, high-quality
+            AI assets with confidence.
+          </p>
+          
+          <h2 className="text-2xl font-semibold mt-8 mb-4">Our Vision</h2>
+          <p>
+            We envision a world where AI builders can efficiently capture the value of their work,
+            and where acquiring AI capabilities is as straightforward as any other business transaction.
+            By reducing friction in the AI marketplace, we aim to fuel the next wave of AI innovation.
+          </p>
+          
+          <h2 className="text-2xl font-semibold mt-8 mb-4">Our Values</h2>
+          <ul className="list-disc pl-6 my-4">
+            <li><strong>Trust and Security:</strong> We prioritize the protection of intellectual property and ensure secure transactions.</li>
+            <li><strong>Transparency:</strong> We provide clear, verified information to help make informed decisions.</li>
+            <li><strong>Innovation:</strong> We continuously improve our platform to better serve the evolving AI ecosystem.</li>
+            <li><strong>Accessibility:</strong> We make buying and selling AI assets accessible to businesses of all sizes.</li>
+          </ul>
+          
+          <h2 className="text-2xl font-semibold mt-8 mb-4">Contact Us</h2>
+          <p>
+            Have questions or feedback? We'd love to hear from you. Reach out to our team at 
+            contact@aiexchange.com.
+          </p>
+        </div>
       </div>
-    </div>
+    </>
   );
-};
-
-export default About;
+}
