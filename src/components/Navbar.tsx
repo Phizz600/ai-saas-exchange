@@ -2,7 +2,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { ChevronDown, FileText, LogOut, Menu, UserPlus, Settings } from "lucide-react";
+import { ChevronDown, FileText, LogOut, Menu, UserPlus } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTrigger } from "@/components/ui/sheet";
 import { useToast } from "@/hooks/use-toast";
 import { getUnreadMessagesCount } from "@/integrations/supabase/messages";
@@ -98,20 +98,10 @@ export const Navbar = () => {
     href: "/about",
     requiresAuth: false
   }, {
-    title: "FAQ",
-    href: "/faq",
-    requiresAuth: false
-  }, {
     title: "Contact",
     href: "/contact",
     requiresAuth: false
-  },
-    {
-      title: "Settings",
-      href: isAuthenticated ? "/settings" : "/auth",
-      requiresAuth: true
-    },
-  ];
+  }];
   const policyPages = [{
     title: "Platform Policies",
     href: "/policies"

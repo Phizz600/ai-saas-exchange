@@ -1,55 +1,45 @@
-
-import { ReactNode, useEffect, useState } from "react";
-
-interface Particle {
-  id: number;
-  x: number;
-  y: number;
-  size: number;
-  duration: number;
-}
-
+import { motion } from "framer-motion";
+import { memo, useCallback } from "react";
 interface AnimatedGradientBackgroundProps {
-  children: ReactNode;
+  children: React.ReactNode;
 }
-
 const AnimatedGradientBackground = ({
   children
 }: AnimatedGradientBackgroundProps) => {
-  const [particles, setParticles] = useState<Particle[]>([]);
-  
-  useEffect(() => {
-    // Generate particles on component mount
-    const generatedParticles = Array.from({ length: 30 }).map((_, i) => ({
+  // Create particles with memoized callback to prevent unnecessary re-renders
+  const renderParticles = useCallback(() => {
+    return Array.from({
+      length: 30
+    }).map((_, i) => ({
       id: i,
       x: Math.random() * 100,
       y: Math.random() * 100,
       size: Math.random() * 15 + 5,
-      duration: 15 + Math.random() * 10
+      duration: 15 + Math.random() * 10 // Increased duration for smoother movement
     }));
-    
-    setParticles(generatedParticles);
   }, []);
-
-  return (
-    <div className="min-h-screen relative overflow-hidden">
+  const particles = renderParticles();
+  return <div className="min-h-screen relative overflow-hidden">
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#13293D] via-[#16324F] to-[#0EA4E9] z-0">
         {/* Floating particles */}
         <div className="absolute inset-0 overflow-hidden">
-          {particles.map(particle => (
-            <div 
-              key={particle.id} 
-              className="absolute rounded-full bg-white/10 backdrop-blur-sm animate-particle"
-              style={{
-                left: `${particle.x}%`,
-                top: `${particle.y}%`,
-                width: particle.size,
-                height: particle.size,
-                animationDuration: `${particle.duration}s`,
-              }}
-            />
-          ))}
+          {particles.map(particle => <motion.div key={particle.id} className="absolute rounded-full bg-white/10 backdrop-blur-sm" style={{
+          left: `${particle.x}%`,
+          top: `${particle.y}%`,
+          width: particle.size,
+          height: particle.size
+        }} animate={{
+          y: [0, -50, 0],
+          x: [0, Math.random() * 30 - 15, 0],
+          opacity: [0.2, 0.5, 0.2],
+          scale: [1, 1.2, 1]
+        }} transition={{
+          duration: particle.duration,
+          repeat: Infinity,
+          ease: "easeInOut",
+          times: [0, 0.5, 1] // Ensure smooth transitions between states
+        }} />)}
         </div>
         
         {/* Grid pattern overlay */}
@@ -60,30 +50,8 @@ const AnimatedGradientBackground = ({
       <div className="relative z-10">
         {children}
       </div>
-
-      <style>
-        {`
-          @keyframes float-particle {
-            0%, 100% { 
-              transform: translateY(0) translateX(0); 
-              opacity: 0.2; 
-              scale: 1;
-            }
-            50% { 
-              transform: translateY(-50px) translateX(${Math.random() * 30 - 15}px); 
-              opacity: 0.5; 
-              scale: 1.2;
-            }
-          }
-          .animate-particle {
-            animation-name: float-particle;
-            animation-timing-function: ease-in-out;
-            animation-iteration-count: infinite;
-          }
-        `}
-      </style>
-    </div>
-  );
+    </div>;
 };
 
-export default AnimatedGradientBackground;
+// Memoize to prevent re-renders
+export default memo(AnimatedGradientBackground);

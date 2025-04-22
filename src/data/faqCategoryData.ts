@@ -1,139 +1,167 @@
 
-import { BookOpen, Server, ShieldCheck, CreditCard, HelpCircle, Settings, Users } from "lucide-react";
+import { 
+  HelpCircle, 
+  DollarSign, 
+  Search, 
+  ShieldCheck, 
+  Upload, 
+  UserCheck, 
+  User, 
+  MessageSquare 
+} from "lucide-react";
 
-export interface FAQItem {
+export type FAQItem = {
   id: string;
   question: string;
   answer: string | string[];
-}
+};
 
-export interface FAQCategory {
+export type FAQCategory = {
   id: string;
   title: string;
+  icon: React.ElementType;
   description: string;
-  icon: React.ComponentType<any>;
   items: FAQItem[];
-}
+};
 
 export const faqCategories: FAQCategory[] = [
   {
     id: "general",
     title: "General Questions",
-    description: "Basic information about AI Exchange Club",
     icon: HelpCircle,
+    description: "Basic information about AI Exchange Club and how it works",
     items: [
       {
         id: "what-is",
         question: "What is AI Exchange Club?",
-        answer: "AI Exchange Club is a marketplace designed specifically for buying and selling AI SaaS products and models. We provide a secure platform for entrepreneurs, investors, and businesses to connect and transact."
+        answer: "AI Exchange Club is a specialized marketplace designed specifically for buying and selling AI tools, SaaS platforms, and applications. We use innovative Dutch auctions and smart matching technology to connect buyers with the perfect AI solutions for their needs. Think of us as the bridge between AI creators and those looking to leverage AI power in their business or personal projects."
       },
       {
-        id: "how-works",
-        question: "How does AI Exchange Club work?",
-        answer: "Our platform connects AI SaaS sellers with potential buyers. Sellers list their products with detailed information, and buyers can browse, evaluate, and purchase these products through our secure platform. We facilitate the entire process from discovery to transaction completion."
+        id: "dutch-auction",
+        question: "How does the Dutch auction model work?",
+        answer: "Our Dutch auction model is pretty straightforward! Unlike traditional auctions where prices go up, our listings start at a higher price and gradually decrease over time until someone makes a purchase. It's a bit like a game of chicken - wait too long for a lower price and someone else might grab it before you! This ensures both sellers get fair market value and buyers don't overpay. You can set alerts to notify you when a listing reaches your desired price point."
       },
       {
-        id: "membership",
-        question: "Is membership required?",
-        answer: "Yes, membership is required to access the full features of our platform. We charge a monthly fee of $20 to ensure serious buyers and sellers, which helps maintain a high-quality marketplace."
-      }
-    ]
-  },
-  {
-    id: "sellers",
-    title: "For Sellers",
-    description: "Information for those selling AI products",
-    icon: Server,
-    items: [
-      {
-        id: "how-list",
-        question: "How do I list my AI SaaS product?",
-        answer: "After creating an account and subscribing to our service, you can list your product by providing details like product description, metrics, technology stack, screenshots, and pricing information. You'll also need to pay a listing fee of $100."
+        id: "fees",
+        question: "What fees do you charge?",
+        answer: "We keep our fee structure simple and transparent with tiered commissions based on the final selling price:\n\n• 10% for sales up to $10,000\n• 8% for sales between $10,001-$50,000\n• 6% for sales between $50,001-$100,000\n• 5% for sales over $100,001\n\nThere's also a $100 listing fee when you post your AI SaaS product. These fees help us maintain the platform, verify listings, and provide our secure escrow service."
       },
       {
-        id: "commission",
-        question: "What are the commission rates?",
-        answer: [
-          "We use a tiered commission structure based on the final selling price:",
-          "10% for sales up to $10,000",
-          "8% for sales between $10,001 and $50,000",
-          "6% for sales between $50,001 and $100,000",
-          "5% for sales over $100,001"
-        ]
+        id: "data-security",
+        question: "Is my data secure?",
+        answer: "Absolutely! Security is our top priority. All transactions are processed through Escrow.com, a trusted third-party service. We use bank-level encryption for all sensitive data, implement strict access controls, and follow industry best practices for data protection. We never share your information with third parties without your consent. Our team regularly conducts security audits to ensure we maintain the highest standards of data security."
       },
       {
-        id: "valuation",
-        question: "Do you help with valuation?",
-        answer: "Yes, we provide a free AI SaaS valuation tool that helps sellers determine a fair market value for their products based on metrics, user base, revenue, and other important factors."
+        id: "contact-support",
+        question: "How do I contact support?",
+        answer: "We're always here to help! You can reach our support team through multiple channels:\n\n• Email us at support@aiexchangeclub.com\n• Use the in-app chat feature for immediate assistance\n• Schedule a call with our support team through your dashboard\n\nOur support team is available 24/7, and we typically respond to inquiries within 2 hours during business days."
       }
     ]
   },
   {
     id: "buyers",
     title: "For Buyers",
-    description: "Information for those purchasing AI products",
-    icon: CreditCard,
+    icon: Search,
+    description: "Information for those looking to purchase AI tools",
     items: [
       {
-        id: "how-buy",
-        question: "How do I purchase an AI SaaS product?",
-        answer: "You can browse our marketplace, evaluate products based on their metrics and documentation, and then place bids in auctions or make direct offers. Once accepted, we facilitate the payment and transfer process through our secure escrow system."
+        id: "find-tools",
+        question: "How do I find AI tools that match my criteria?",
+        answer: "Finding the perfect AI tool is easy with our platform! You have several options:\n\n• Use our AI Matchmaker tool - tell us what you need, and we'll find the best matches\n• Set up custom alerts based on features, price range, or categories\n• Browse our curated collections organized by industry, function, or use case\n• Use our advanced search filters to narrow down options\n\nWe also provide detailed comparison tools so you can evaluate multiple options side-by-side."
       },
       {
-        id: "verification",
-        question: "How do you verify products?",
-        answer: "We have a thorough verification process for all listings. Sellers must provide detailed information about their product, including metrics that are verified where possible. We also have buyer protections and an escrow system to ensure safe transactions."
+        id: "negotiate",
+        question: "Can I negotiate prices outside auctions?",
+        answer: "To keep our marketplace fair and secure for everyone, all transactions must go through our platform. This policy exists to protect both buyers and sellers from fraud and ensure all parties are protected by our escrow system. However, our Dutch auction model naturally finds the fair market price, and you can always set price alerts to be notified when a listing hits your target price point. This approach has proven to be more effective than traditional negotiation!"
       },
       {
-        id: "refund",
-        question: "Is there a refund policy?",
-        answer: "While we don't offer refunds for membership fees, transactions are protected through our escrow service, which ensures buyers receive what they paid for before funds are released to sellers."
+        id: "payment-methods",
+        question: "What payment methods do you accept?",
+        answer: "We offer a variety of secure payment options to make purchasing as convenient as possible:\n\n• All major credit and debit cards (Visa, Mastercard, Amex, Discover)\n• Bank transfers (ACH, wire transfers, SEPA)\n• Escrow.com's secure payment system\n\nAll payments are processed through secure, encrypted channels. We don't store your payment information on our servers - your financial data never touches our system directly."
+      },
+      {
+        id: "tool-expectations",
+        question: "What if the tool doesn't meet expectations?",
+        answer: "Your satisfaction is guaranteed! All funds are held in escrow until you confirm you're happy with your purchase. After purchase, you'll have an inspection period (typically 3-7 days, depending on the tool complexity) to verify everything works as described. If there are issues, our dispute resolution team will step in to help. In cases where the tool genuinely doesn't match the listing description, you'll receive a full refund. This process provides peace of mind for every purchase."
+      },
+      {
+        id: "verify-performance",
+        question: "How do I verify a tool's performance?",
+        answer: "We provide multiple ways to evaluate tools before purchase:\n\n• Access our AI evaluation reports with performance metrics and benchmarks\n• Chat directly with sellers to ask specific questions\n• Request demos or trial access when available\n• Review detailed documentation, screenshots, and video walkthroughs\n• Read verified reviews from other buyers\n\nMany listings also include live demo environments where you can test core functionality before making a decision."
+      }
+    ]
+  },
+  {
+    id: "sellers",
+    title: "For Sellers",
+    icon: Upload,
+    description: "Information for those looking to sell AI tools",
+    items: [
+      {
+        id: "list-tool",
+        question: "How do I list my AI tool?",
+        answer: "Getting your AI tool listed is a straightforward process:\n\n1. Submit your tool details through your seller dashboard\n2. Our team reviews the listing for completeness and accuracy (usually within 24 hours)\n3. Once approved, your listing goes live on the marketplace\n4. You can track views, inquiries, and offers through your dashboard\n\nWe also offer premium listing services where our team can help optimize your listing for maximum visibility and appeal."
+      },
+      {
+        id: "required-info",
+        question: "What information do I need to provide?",
+        answer: "To create a compelling listing that attracts serious buyers, you'll need to provide:\n\n• Revenue data and growth metrics\n• Technical stack and architecture details\n• Customer metrics (user count, churn rate, etc.)\n• A demo video showcasing key features\n• Documentation and API references (if applicable)\n• Pricing model and historical data\n• Information about ongoing costs and maintenance\n\nThe more comprehensive your listing, the faster it typically sells and at better prices."
+      },
+      {
+        id: "reserve-price",
+        question: "Can I set a reserve price?",
+        answer: "Yes! We understand you have a minimum price in mind. For Dutch auctions, you can set a reserve price - this is the lowest amount the auction will reach before ending. This gives you complete control over your minimum acceptable price while still leveraging the benefits of the Dutch auction model. Your reserve price isn't visible to buyers, creating a natural market dynamic while protecting your interests."
+      },
+      {
+        id: "sell-time",
+        question: "How long does it take to sell?",
+        answer: "Selling timelines vary based on several factors, but most tools sell within 2-4 weeks of listing. Premium, well-documented tools with strong metrics often sell faster, sometimes within days. Pricing strategy plays a major role - tools priced appropriately for their features and metrics tend to sell more quickly. Our data shows that listings with complete information, demo videos, and responsive sellers complete transactions 60% faster than those without."
+      },
+      {
+        id: "boost-visibility",
+        question: "How do I boost my listing's visibility?",
+        answer: "There are several effective ways to make your listing stand out:\n\n• Upgrade to a Featured Listing for premium placement on search results and the homepage\n• Add high-quality screenshots and demo videos\n• Participate in our weekly showcase emails\n• Boost your seller reputation by responding quickly to inquiries\n• Share detailed metrics and transparent information\n\nWe also offer promotional packages that include social media features and newsletter inclusions to reach our entire buyer community."
       }
     ]
   },
   {
     id: "security",
-    title: "Security & Privacy",
-    description: "Information about our security practices",
+    title: "Trust & Security",
     icon: ShieldCheck,
+    description: "Information about our security measures",
     items: [
       {
-        id: "data-privacy",
-        question: "How do you handle my data?",
-        answer: "We take data privacy seriously. All personal and business information is encrypted and stored securely. We don't share your information with third parties without your consent."
+        id: "escrow-protection",
+        question: "How does Escrow.com protect my transaction?",
+        answer: "Escrow.com acts as a trusted neutral third party for all transactions. Here's how the process works:\n\n1. The buyer deposits funds with Escrow.com (not directly to the seller)\n2. The seller transfers the tool or provides access\n3. The buyer verifies everything works as described\n4. Once the buyer approves, Escrow.com releases the funds to the seller\n\nThis process eliminates the risks of fraudulent payments or sellers disappearing after receiving payment, creating a safe environment for high-value digital asset transactions."
       },
       {
-        id: "nda",
-        question: "Are NDAs available for sensitive discussions?",
-        answer: "Yes, we provide built-in NDA functionality to protect sellers' sensitive information. Potential buyers can sign NDAs directly through our platform before accessing confidential details."
+        id: "disputes",
+        question: "What happens if there's a dispute?",
+        answer: "We have a structured dispute resolution process designed to be fair to both parties:\n\n1. Our team reviews all communication history and listing details\n2. Escrow.com mediates the dispute with input from both parties\n3. We provide chat logs, transaction records, and listing details as evidence\n4. If necessary, technical experts evaluate the tool against the listing claims\n\nMost disputes are resolved within 5-7 business days. Our historical data shows that over 95% of disputes end with a mutually agreeable resolution rather than a complete cancellation."
       },
       {
-        id: "escrow",
-        question: "How does your escrow service work?",
-        answer: "Our escrow service holds buyer funds securely until all conditions of the sale are met. This protects both parties by ensuring the buyer receives the promised product and the seller receives payment."
+        id: "verification",
+        question: "Do you verify buyers/sellers?",
+        answer: "Yes, trust is fundamental to our marketplace. Every user undergoes a Know Your Customer (KYC) verification process that includes:\n\n• Identity verification through government-issued ID\n• Business verification for companies\n• Email and phone verification\n• For sellers of high-value tools, we conduct additional background checks\n\nThis multi-layered approach ensures that you're always dealing with legitimate, verified parties, significantly reducing the risk of fraud or misrepresentation."
       }
     ]
   },
   {
-    id: "support",
-    title: "Support & Resources",
-    description: "Help and educational resources",
-    icon: BookOpen,
+    id: "account",
+    title: "Account Management",
+    icon: User,
+    description: "Managing your AI Exchange Club account",
     items: [
       {
-        id: "contact-support",
-        question: "How can I contact support?",
-        answer: "You can contact our support team through the contact form on our website, via email at support@aiexchange.club, or through the live chat feature available on our platform."
+        id: "delete-account",
+        question: "Can I delete my account?",
+        answer: "Yes, you can delete your account at any time through the Account Settings page. However, there are a few important points to note:\n\n• Any active transactions must be completed or cancelled first\n• Your listing history will be archived but not immediately removed\n• Completed transaction records are retained for legal and tax purposes\n• You can request complete data deletion under applicable privacy laws\n\nIf you're considering account deletion due to a specific issue, please contact our support team first - we might be able to resolve your concerns without losing your account history."
       },
       {
-        id: "resources",
-        question: "Do you provide educational resources?",
-        answer: "Yes, we offer a variety of resources including blog posts, guides, and case studies to help both buyers and sellers navigate the AI SaaS marketplace effectively."
-      },
-      {
-        id: "community",
-        question: "Is there a community forum?",
-        answer: "We're developing a community section where users can share experiences, ask questions, and network with other AI entrepreneurs and investors."
+        id: "update-payment",
+        question: "How do I update my payment details?",
+        answer: "Updating your payment information is simple and secure:\n\n1. Log into your account and navigate to the Billing section in your dashboard\n2. Click on 'Payment Methods'\n3. Select 'Add new payment method' or edit an existing one\n4. Follow the prompts to securely enter your information\n\nAll payment information is encrypted and processed through our secure payment partners. We never store complete payment details on our servers. Changes to payment methods take effect immediately for future transactions."
       }
     ]
   }

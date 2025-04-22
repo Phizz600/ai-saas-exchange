@@ -1,7 +1,8 @@
+
 import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { ExpandableTabs } from "./header/ExpandableTabs";
-import { Store, LayoutDashboard, Bell, HelpCircle, User, LogOut, MessageSquare, Settings } from "lucide-react";
+import { Store, LayoutDashboard, Bell, HelpCircle, User, LogOut, MessageSquare } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { NotificationSheet } from "./marketplace/notifications/NotificationSheet";
@@ -111,12 +112,6 @@ export const Header = () => {
       description: "View notifications",
       onClick: () => setNotificationsOpen(true),
       indicator: unreadCount > 0
-    },
-    {
-      title: "Settings",
-      icon: Settings,
-      description: "Manage your account",
-      path: "/settings"
     },
     {
       title: "Help",
