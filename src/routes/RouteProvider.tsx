@@ -1,4 +1,3 @@
-
 import { Suspense, lazy } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import routes from "./routes";
@@ -45,7 +44,7 @@ export function RouteProvider() {
             key={route.path} 
             path={route.path} 
             element={route.element}
-            errorElement={route.errorElement || <ErrorFallback />}
+            // errorElement={route.errorElement || <ErrorFallback />} // Remove, not supported in route objects as used here
           />
         ))}
       </Routes>
