@@ -1,7 +1,7 @@
 
 import { Suspense, lazy } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import { routes } from "./routes";
+import routes from "./routes";
 import { Button } from "@/components/ui/button";
 import { RefreshCw, Home } from "lucide-react";
 

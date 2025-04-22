@@ -1,8 +1,9 @@
+
 import { Auth } from "@/pages/Auth";
 import { Profile } from "@/pages/Profile";
 import { ProductDashboard } from "@/pages/ProductDashboard";
 import { Marketplace } from "@/pages/Marketplace";
-import { ProductDetail } from "@/pages/ProductDetail";
+import ProductPage from "@/components/product/ProductPage";
 import { Messages } from "@/pages/Messages";
 import { Help } from "@/pages/Help";
 import { Checkout } from "@/pages/Checkout";
@@ -28,7 +29,7 @@ const routes = [
   },
   {
     path: "/product/:productId",
-    element: <ProductDetail />,
+    element: <ProductPage />,
   },
   {
     path: "/messages",
