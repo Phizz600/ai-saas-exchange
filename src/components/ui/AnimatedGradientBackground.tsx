@@ -61,26 +61,27 @@ const AnimatedGradientBackground = ({
         {children}
       </div>
 
-      <style jsx>{`
-        @keyframes float-particle {
-          0%, 100% { 
-            transform: translateY(0) translateX(0); 
-            opacity: 0.2; 
-            scale: 1;
+      <style>
+        {`
+          @keyframes float-particle {
+            0%, 100% { 
+              transform: translateY(0) translateX(0); 
+              opacity: 0.2; 
+              scale: 1;
+            }
+            50% { 
+              transform: translateY(-50px) translateX(${Math.random() * 30 - 15}px); 
+              opacity: 0.5; 
+              scale: 1.2;
+            }
           }
-          50% { 
-            transform: translateY(-50px) translateX(var(--x-offset, 0px)); 
-            opacity: 0.5; 
-            scale: 1.2;
+          .animate-particle {
+            animation-name: float-particle;
+            animation-timing-function: ease-in-out;
+            animation-iteration-count: infinite;
           }
-        }
-        .animate-particle {
-          animation-name: float-particle;
-          animation-timing-function: ease-in-out;
-          animation-iteration-count: infinite;
-          --x-offset: ${Math.random() * 30 - 15}px;
-        }
-      `}</style>
+        `}
+      </style>
     </div>
   );
 };

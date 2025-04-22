@@ -42,18 +42,20 @@ export const ParticlesBackground = () => {
         />
       ))}
       
-      <style jsx>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0) translateX(0); opacity: 0.2; }
-          50% { transform: translateY(-30px) translateX(${Math.random() * 20 - 10}px); opacity: 0.5; }
-        }
-        .animate-float {
-          animation-name: float;
-          animation-duration: var(--duration, 4s);
-          animation-timing-function: ease-in-out;
-          animation-iteration-count: infinite;
-        }
-      `}</style>
+      <style>
+        {`
+          @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0.2; }
+            50% { transform: translateY(-30px) translateX(${Math.random() * 20 - 10}px); opacity: 0.5; }
+          }
+          .animate-float {
+            animation-name: float;
+            animation-duration: var(--duration, 4s);
+            animation-timing-function: ease-in-out;
+            animation-iteration-count: infinite;
+          }
+        `}
+      </style>
     </div>
   );
 };

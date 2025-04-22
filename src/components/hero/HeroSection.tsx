@@ -1,3 +1,4 @@
+
 import { lazy, Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
@@ -133,19 +134,21 @@ const HeroSection = ({
         </div>
       </div>
 
-      <style jsx>{`
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in {
-          animation: fadeIn 0.5s ease-out forwards;
-        }
-        .animate-fade-in-delayed {
-          animation: fadeIn 0.5s ease-out 0.3s forwards;
-          opacity: 0;
-        }
-      `}</style>
+      <style>
+        {`
+          @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+          .animate-fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+          }
+          .animate-fade-in-delayed {
+            animation: fadeIn 0.5s ease-out 0.3s forwards;
+            opacity: 0;
+          }
+        `}
+      </style>
     </div>
   );
 };
