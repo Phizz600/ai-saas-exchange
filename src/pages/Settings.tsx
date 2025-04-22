@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
@@ -6,8 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { EmailPreferencesSection } from "@/components/settings/EmailPreferencesSection";
-import { VerificationSection } from "@/components/settings/VerificationSection";
 
 export default function Settings() {
   const [profile, setProfile] = useState<any>(null);
@@ -147,11 +146,31 @@ export default function Settings() {
           </CardContent>
         </Card>
 
-        {/* Email Preferences */}
-        <EmailPreferencesSection />
-
-        {/* Verification Status */}
-        <VerificationSection />
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg font-exo">Email Preferences</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center justify-between mb-3">
+              <label className="font-medium">Newsletters</label>
+              <input 
+                type="checkbox" 
+                checked={emailPrefs.newsletter}
+                onChange={e => setEmailPrefs(p => ({ ...p, newsletter: e.target.checked }))}
+              />
+            </div>
+            <div className="flex items-center justify-between mb-3">
+              <label className="font-medium">Product Updates</label>
+              <input 
+                type="checkbox" 
+                checked={emailPrefs.updates}
+                onChange={e => setEmailPrefs(p => ({ ...p, updates: e.target.checked }))}
+              />
+            </div>
+            <Button variant="outline" onClick={handleEmailPrefs}>Save Preferences</Button>
+            <div className="text-xs text-gray-400 mt-2">* Email preferences updating is a placeholder for now</div>
+          </CardContent>
+        </Card>
 
         <Card>
           <CardHeader>

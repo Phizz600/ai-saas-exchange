@@ -1,7 +1,7 @@
 
-import { Suspense } from "react";
+import { Suspense, lazy } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import routes from "./routes";
+import { routes } from "./routes";
 import { Button } from "@/components/ui/button";
 import { RefreshCw, Home } from "lucide-react";
 
@@ -45,6 +45,7 @@ export function RouteProvider() {
             key={route.path} 
             path={route.path} 
             element={route.element}
+            errorElement={route.errorElement || <ErrorFallback />}
           />
         ))}
       </Routes>
