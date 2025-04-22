@@ -1,15 +1,12 @@
 
-import Auth from "@/pages/Auth";
-import Profile from "@/pages/Profile";
-import ProductDashboard from "@/pages/ProductDashboard";
-import Marketplace from "@/pages/Marketplace";
+import { Auth } from "@/pages/Auth";
+import { Profile } from "@/pages/Profile";
+import { ProductDashboard } from "@/pages/ProductDashboard";
+import { Marketplace } from "@/pages/Marketplace";
 import ProductPage from "@/components/product/ProductPage";
-import Messages from "@/pages/Messages";
-// import Help from "@/pages/Help"; // Commented out because file not found
-// import Checkout from "@/pages/Checkout"; // Commented out because file not found
-import Settings from "@/pages/Settings";
+import { Messages } from "@/pages/Messages";
+import { Settings } from "@/pages/Settings";
 
-// Fix: Remove broken imports and only set up routes for existing, working pages
 const routes = [
   {
     path: "/auth",
@@ -35,14 +32,6 @@ const routes = [
     path: "/messages",
     element: <Messages />,
   },
-  // {
-  //   path: "/help",
-  //   element: <Help />,
-  // },
-  // {
-  //   path: "/checkout",
-  //   element: <Checkout />,
-  // },
   {
     path: "/settings",
     element: <Settings />,
