@@ -6,8 +6,13 @@ import { Marketplace } from "@/pages/Marketplace";
 import ProductPage from "@/components/product/ProductPage";
 import { Messages } from "@/pages/Messages";
 import Settings from "@/pages/Settings";
+import Index from "@/pages/Index";
 
 const routes = [
+  {
+    path: "/",
+    element: <Index />,
+  },
   {
     path: "/auth",
     element: <Auth />,
