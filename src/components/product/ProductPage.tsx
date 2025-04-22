@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -6,7 +7,7 @@ import { Header } from "@/components/Header";
 import { ProductHeader } from "./sections/ProductHeader";
 import { ProductPricing } from "./sections/ProductPricing";
 import { ProductGallery } from "./sections/ProductGallery";
-import { ProductStats } from "./sections/ProductStats";
+import { ProductStats } from "./sections/product-stats/ProductStats";
 import { PriceHistoryChart } from "./sections/PriceHistoryChart";
 import { ProductReviews } from "./sections/ProductReviews";
 import { RelatedProducts } from "../marketplace/product-card/RelatedProducts";
@@ -15,12 +16,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
-import { ArrowLeft, CheckCircle, ExternalLink, BadgeCheck, Timer, LockIcon, InfoIcon } from "lucide-react";
+import { ArrowLeft, CheckCircle, ExternalLink, InfoIcon, LockIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import { useNdaStatus } from "../marketplace/product-card/useNdaStatus";
 import { NdaButton } from "../marketplace/product-card/NdaButton";
 import { NdaStatusBadge } from "../marketplace/product-card/NdaStatusBadge";
 import { ConfidentialWatermark } from "../marketplace/product-card/ConfidentialWatermark";
+import { incrementProductViews } from "@/integrations/supabase/product-analytics";
 
 interface Product {
   id: string;
@@ -41,6 +43,7 @@ interface Product {
   is_verified?: boolean;
   is_revenue_verified?: boolean;
   is_traffic_verified?: boolean;
+  is_code_audited?: boolean;
   tech_stack?: string[];
   tech_stack_other?: string;
   llm_type?: string;
@@ -60,7 +63,14 @@ interface Product {
   investment_timeline?: string;
   requires_nda?: boolean;
   nda_content?: string;
-  seller: {
+  auction_end_time?: string;
+  listing_type?: string;
+  current_price?: number;
+  reserve_price?: number;
+  price_decrement?: number;
+  price_decrement_interval?: string;
+  no_reserve?: boolean;
+  seller?: {
     id: string;
     full_name: string | null;
     avatar_url: string | null;
@@ -68,15 +78,30 @@ interface Product {
 }
 
 // Export as default instead of named export
-export default function ProductPage() {
-  const { id } = useParams<{ id: string; }>();
+export default function ProductPageContent() {
+  const { productId } = useParams<{ productId: string }>();
   const navigate = useNavigate();
   const [isLiked, setIsLiked] = useState(false);
   const { toast } = useToast();
   
-  // Ensure id is defined before passing to useNdaStatus
-  const productId = id || '';
-  const { hasSigned, isCheckingStatus, setHasSigned } = useNdaStatus(productId);
+  // Track product view when page loads
+  useEffect(() => {
+    const trackView = async () => {
+      if (productId) {
+        try {
+          await incrementProductViews(productId);
+          console.log("Product view tracked:", productId);
+        } catch (error) {
+          console.error("Error tracking product view:", error);
+        }
+      }
+    };
+    trackView();
+  }, [productId]);
+  
+  // Ensure productId is defined before passing to useNdaStatus
+  const safeProductId = productId || '';
+  const { hasSigned, isCheckingStatus, setHasSigned } = useNdaStatus(safeProductId);
   
   // Fetch product data
   const {
@@ -84,30 +109,36 @@ export default function ProductPage() {
     isLoading,
     error
   } = useQuery({
-    queryKey: ['product', id],
+    queryKey: ['product', productId],
     queryFn: async () => {
-      if (!id) {
+      if (!productId) {
         throw new Error('No product ID provided');
       }
-      const {
-        data,
-        error
-      } = await supabase.from('products').select(`
-          *,
-          seller:seller_id(
-            id,
-            full_name,
-            avatar_url
-          )
-        `).eq('id', id).single();
-      if (error) {
-        console.error('Error fetching product:', error);
-        throw error;
+      
+      try {
+        const { data, error } = await supabase
+          .from('products')
+          .select(`
+            *,
+            seller:profiles(id, full_name, avatar_url)
+          `)
+          .eq('id', productId)
+          .maybeSingle();
+          
+        if (error) {
+          console.error('Error fetching product:', error);
+          throw error;
+        }
+        
+        if (!data) {
+          throw new Error('Product not found');
+        }
+        
+        return data as Product;
+      } catch (err) {
+        console.error('Query execution error:', err);
+        throw err;
       }
-      if (!data) {
-        throw new Error('Product not found');
-      }
-      return data as Product;
     },
     retry: 1,
     gcTime: 0
@@ -153,13 +184,14 @@ export default function ProductPage() {
         description: "Failed to load product details",
         variant: "destructive"
       });
-      navigate('/marketplace');
+      // Don't immediately redirect on error
+      // Instead, stay on page and show error state
     }
-  }, [error, toast, navigate]);
+  }, [error, toast]);
 
   useEffect(() => {
     const checkIfLiked = async () => {
-      if (!id) return;
+      if (!productId) return;
       const {
         data: {
           user
@@ -170,12 +202,12 @@ export default function ProductPage() {
         data: likedStatus
       } = await supabase.rpc('check_product_liked', {
         check_user_id: user.id,
-        check_product_id: id
+        check_product_id: productId
       });
       setIsLiked(!!likedStatus);
     };
     checkIfLiked();
-  }, [id]);
+  }, [productId]);
 
   // Handle NDA success
   const handleNdaSuccess = () => {
@@ -187,140 +219,137 @@ export default function ProductPage() {
   };
 
   if (isLoading) {
-    return <>
-        <Header />
-        <div className="container mx-auto px-4 py-8 mt-16">
-          <div className="flex items-center mb-6">
-            <Button variant="ghost" size="sm" className="mr-2" onClick={() => navigate(-1)}>
-              <ArrowLeft className="h-4 w-4 mr-1" />
-              Back
-            </Button>
-            <Skeleton className="h-6 w-60" />
-          </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div className="space-y-6">
-              <Skeleton className="h-[400px] w-full rounded-lg" />
-              <Card className="p-6">
-                <Skeleton className="h-6 w-48 mb-4" />
-                <div className="space-y-4">
-                  <Skeleton className="h-4 w-full" />
-                  <Skeleton className="h-4 w-3/4" />
-                  <Skeleton className="h-4 w-5/6" />
-                </div>
-              </Card>
-            </div>
-            <div className="space-y-6">
-              <Card className="p-6">
-                <Skeleton className="h-8 w-3/4 mb-4" />
-                <Skeleton className="h-6 w-full" />
-                <Skeleton className="h-6 w-5/6 mt-2" />
-              </Card>
-              <Card className="p-6">
-                <Skeleton className="h-6 w-48 mb-4" />
-                <div className="space-y-4">
-                  <Skeleton className="h-4 w-full" />
-                  <Skeleton className="h-4 w-3/4" />
-                </div>
-              </Card>
-            </div>
-          </div>
+    return (
+      <div className="container mx-auto px-4 py-8 mt-16">
+        <div className="flex items-center mb-6">
+          <Button variant="ghost" size="sm" className="mr-2" onClick={() => navigate(-1)}>
+            <ArrowLeft className="h-4 w-4 mr-1" />
+            Back
+          </Button>
+          <Skeleton className="h-6 w-60" />
         </div>
-      </>;
-  }
-
-  if (!product) {
-    return <>
-        <Header />
-        <div className="container mx-auto px-4 py-8 mt-16">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold mb-2">Product Not Found</h1>
-            <p className="text-gray-600">The product you're looking for doesn't exist or has been removed.</p>
-          </div>
-        </div>
-      </>;
-  }
-
-  // Determine acquisition timeline text based on investment_timeline
-  const getAcquisitionTimelineText = (timeline?: string) => {
-    switch (timeline) {
-      case 'immediate':
-        return 'Ready for immediate acquisition';
-      case 'within_30_days':
-        return 'Available for acquisition within 30 days';
-      case 'within_90_days':
-        return 'Available for acquisition within 90 days';
-      case 'more_than_90_days':
-        return 'Planned for acquisition in the future';
-      default:
-        return 'Ready for acquisition';
-    }
-  };
-
-  return <>
-      <Header />
-      
-      <div className="container mx-auto px-4 py-8 mt-16 mb-16">
-        {/* Breadcrumbs and back button */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center">
-            <Button variant="ghost" size="sm" className="mr-4" onClick={() => navigate(-1)}>
-              <ArrowLeft className="h-4 w-4 mr-1" />
-              Back to Marketplace
-            </Button>
-            <div className="text-sm text-gray-500">
-              Marketplace / {product.category} / {product.title}
-            </div>
-          </div>
-          
-          {/* Show NDA Status Badge if signed */}
-          {product.requires_nda && hasSigned && (
-            <NdaStatusBadge productId={product.id} showTimestamp={true} />
-          )}
-        </div>
-        
-        {/* NDA Banner - show only if NDA is required and not signed */}
-        {showLimitedInfo && (
-          <motion.div 
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6 flex items-start gap-4"
-          >
-            <div className="bg-amber-100 rounded-full p-2">
-              <LockIcon className="h-6 w-6 text-amber-600" />
-            </div>
-            <div className="flex-1">
-              <h3 className="font-semibold text-amber-900 exo-2-heading">
-                This product requires a Non-Disclosure Agreement
-              </h3>
-              <p className="text-amber-700 mb-4">
-                Some information about this product is confidential. To view all details, you need to sign an NDA.
-              </p>
-              <NdaButton 
-                productId={product.id} 
-                productTitle={product.title}
-                ndaContent={product.nda_content}
-                onSignSuccess={handleNdaSuccess}
-              />
-            </div>
-          </motion.div>
-        )}
-        
-        {/* Show signed NDA reminder alert for signed users */}
-        {product.requires_nda && hasSigned && (
-          <Alert className="mb-6 bg-blue-50 border-blue-200">
-            <InfoIcon className="h-4 w-4 text-blue-600" />
-            <AlertTitle className="text-blue-800">Confidentiality Notice</AlertTitle>
-            <AlertDescription className="text-blue-700">
-              The information on this page is protected under a signed NDA. Unauthorized sharing or distribution is prohibited.
-            </AlertDescription>
-          </Alert>
-        )}
-        
-        
-        
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div className="space-y-6">
-            <motion.div initial={{
+            <Skeleton className="h-[400px] w-full rounded-lg" />
+            <Card className="p-6">
+              <Skeleton className="h-6 w-48 mb-4" />
+              <div className="space-y-4">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-4 w-5/6" />
+              </div>
+            </Card>
+          </div>
+          <div className="space-y-6">
+            <Card className="p-6">
+              <Skeleton className="h-8 w-3/4 mb-4" />
+              <Skeleton className="h-6 w-full" />
+              <Skeleton className="h-6 w-5/6 mt-2" />
+            </Card>
+            <Card className="p-6">
+              <Skeleton className="h-6 w-48 mb-4" />
+              <div className="space-y-4">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-3/4" />
+              </div>
+            </Card>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state if product failed to load
+  if (error || !product) {
+    return (
+      <div className="container mx-auto px-4 py-8 mt-16">
+        <div className="flex items-center mb-6">
+          <Button variant="ghost" size="sm" className="mr-2" onClick={() => navigate(-1)}>
+            <ArrowLeft className="h-4 w-4 mr-1" />
+            Back to Marketplace
+          </Button>
+        </div>
+        
+        <Alert variant="destructive" className="mb-6">
+          <AlertTitle>Error loading product</AlertTitle>
+          <AlertDescription>
+            {error instanceof Error ? error.message : "Failed to load product details. The product may not exist or has been removed."}
+          </AlertDescription>
+        </Alert>
+        
+        <div className="text-center py-12">
+          <h1 className="text-2xl font-bold mb-2">Product Not Found</h1>
+          <p className="text-gray-600 mb-8">Sorry, we couldn't find the product you're looking for.</p>
+          <Button onClick={() => navigate('/marketplace')}>
+            Return to Marketplace
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  // Main content rendering with the fetched product
+  return (
+    <div className="container mx-auto px-4 py-8 mt-16 mb-16">
+      {/* Breadcrumbs and back button */}
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center">
+          <Button variant="ghost" size="sm" className="mr-4" onClick={() => navigate(-1)}>
+            <ArrowLeft className="h-4 w-4 mr-1" />
+            Back to Marketplace
+          </Button>
+          <div className="text-sm text-gray-500">
+            Marketplace / {product.category} / {product.title}
+          </div>
+        </div>
+        
+        {/* Show NDA Status Badge if signed */}
+        {product.requires_nda && hasSigned && (
+          <NdaStatusBadge productId={product.id} showTimestamp={true} />
+        )}
+      </div>
+      
+      {/* NDA Banner - show only if NDA is required and not signed */}
+      {showLimitedInfo && (
+        <motion.div 
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6 flex items-start gap-4"
+        >
+          <div className="bg-amber-100 rounded-full p-2">
+            <LockIcon className="h-6 w-6 text-amber-600" />
+          </div>
+          <div className="flex-1">
+            <h3 className="font-semibold text-amber-900 exo-2-heading">
+              This product requires a Non-Disclosure Agreement
+            </h3>
+            <p className="text-amber-700 mb-4">
+              Some information about this product is confidential. To view all details, you need to sign an NDA.
+            </p>
+            <NdaButton 
+              productId={product.id} 
+              productTitle={product.title}
+              ndaContent={product.nda_content}
+              onSignSuccess={handleNdaSuccess}
+            />
+          </div>
+        </motion.div>
+      )}
+      
+      {/* Show signed NDA reminder alert for signed users */}
+      {product.requires_nda && hasSigned && (
+        <Alert className="mb-6 bg-blue-50 border-blue-200">
+          <InfoIcon className="h-4 w-4 text-blue-600" />
+          <AlertTitle className="text-blue-800">Confidentiality Notice</AlertTitle>
+          <AlertDescription className="text-blue-700">
+            The information on this page is protected under a signed NDA. Unauthorized sharing or distribution is prohibited.
+          </AlertDescription>
+        </Alert>
+      )}
+      
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="space-y-6">
+          <motion.div initial={{
             opacity: 0,
             y: 20
           }} animate={{
@@ -329,15 +358,15 @@ export default function ProductPage() {
           }} transition={{
             duration: 0.5
           }} className="relative">
-              <ProductGallery images={[product.image_url]} />
-              
-              {/* Add watermark for NDA content that has been signed */}
-              {product.requires_nda && hasSigned && (
-                <ConfidentialWatermark />
-              )}
-            </motion.div>
+            <ProductGallery images={[product.image_url]} />
             
-            <motion.div initial={{
+            {/* Add watermark for NDA content that has been signed */}
+            {product.requires_nda && hasSigned && (
+              <ConfidentialWatermark />
+            )}
+          </motion.div>
+          
+          <motion.div initial={{
             opacity: 0,
             y: 20
           }} animate={{
@@ -347,122 +376,51 @@ export default function ProductPage() {
             duration: 0.5,
             delay: 0.1
           }}>
-              <Card className="p-6 border-t-4 border-t-[#D946EE]">
-                <h3 className="text-lg font-semibold mb-4 exo-2-heading">Product Details</h3>
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
-                    <span className="text-gray-600">Category</span>
-                    <span className="font-medium px-2 py-1 bg-[#8B5CF6]/10 rounded-md text-[#8B5CF6]">{product.category}</span>
-                  </div>
-                  <div className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
-                    <span className="text-gray-600">Stage</span>
-                    <span className="font-medium px-2 py-1 bg-[#0EA4E9]/10 rounded-md text-[#0EA4E9]">{product.stage}</span>
-                  </div>
-                  <div className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
-                    <span className="text-gray-600">Monthly Revenue</span>
-                    <span className="font-medium text-green-600">
-                      {showLimitedInfo ? (
-                        <span className="text-gray-400">Sign NDA to view</span>
-                      ) : (
-                        <>
-                          ${product.monthly_revenue ? product.monthly_revenue.toLocaleString() : '0'}
-                          {product.is_revenue_verified && <CheckCircle className="inline-block h-4 w-4 ml-1 text-green-500" />}
-                        </>
-                      )}
-                    </span>
-                  </div>
-                  {!showLimitedInfo && product.demo_url && (
-                    <a href={product.demo_url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 w-full py-2 mt-2 text-[#8B5CF6] border border-[#8B5CF6] rounded-md hover:bg-[#8B5CF6]/10 transition-colors">
-                      <ExternalLink className="h-4 w-4" />
-                      View Live Demo
-                    </a>
+            <Card className="p-6 border-t-4 border-t-[#D946EE]">
+              <h3 className="text-lg font-semibold mb-4 exo-2-heading">Product Details</h3>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
+                  <span className="text-gray-600">Category</span>
+                  <span className="font-medium px-2 py-1 bg-[#8B5CF6]/10 rounded-md text-[#8B5CF6]">{product.category}</span>
+                </div>
+                <div className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
+                  <span className="text-gray-600">Stage</span>
+                  <span className="font-medium px-2 py-1 bg-[#0EA4E9]/10 rounded-md text-[#0EA4E9]">{product.stage}</span>
+                </div>
+                <div className="flex justify-between items-center bg-gray-50 p-2 rounded-md">
+                  <span className="text-gray-600">Monthly Revenue</span>
+                  <span className="font-medium text-green-600">
+                    {showLimitedInfo ? (
+                      <span className="text-gray-400">Sign NDA to view</span>
+                    ) : (
+                      <>
+                        ${product.monthly_revenue ? product.monthly_revenue.toLocaleString() : '0'}
+                        {product.is_revenue_verified && <CheckCircle className="inline-block h-4 w-4 ml-1 text-green-500" />}
+                      </>
+                    )}
+                  </span>
+                </div>
+                {!showLimitedInfo && product.demo_url && (
+                  <a href={product.demo_url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 w-full py-2 mt-2 text-[#8B5CF6] border border-[#8B5CF6] rounded-md hover:bg-[#8B5CF6]/10 transition-colors">
+                    <ExternalLink className="h-4 w-4" />
+                    View Live Demo
+                  </a>
+                )}
+              </div>
+              {!showLimitedInfo && product.special_notes && (
+                <div className="mt-4 border-t pt-4 relative">
+                  <h4 className="text-base font-semibold mb-2">Special Notes</h4>
+                  <p className="text-gray-600 whitespace-pre-wrap">{product.special_notes}</p>
+                  
+                  {/* Add subtle watermark for signed NDA content */}
+                  {product.requires_nda && hasSigned && (
+                    <ConfidentialWatermark opacity={0.05} />
                   )}
                 </div>
-                {!showLimitedInfo && product.special_notes && (
-                  <div className="mt-4 border-t pt-4 relative">
-                    <h4 className="text-base font-semibold mb-2">Special Notes</h4>
-                    <p className="text-gray-600 whitespace-pre-wrap">{product.special_notes}</p>
-                    
-                    {/* Add subtle watermark for signed NDA content */}
-                    {product.requires_nda && hasSigned && (
-                      <ConfidentialWatermark opacity={0.05} />
-                    )}
-                  </div>
-                )}
-              </Card>
-            </motion.div>
-            
-            {!showLimitedInfo && (
-              <motion.div initial={{
-                opacity: 0,
-                y: 20
-              }} animate={{
-                opacity: 1,
-                y: 0
-              }} transition={{
-                duration: 0.5,
-                delay: 0.2
-              }}>
-                <PriceHistoryChart productId={product.id} />
-              </motion.div>
-            )}
-          </div>
-
-          <div className="space-y-6">
-            <motion.div initial={{
-            opacity: 0,
-            y: 20
-          }} animate={{
-            opacity: 1,
-            y: 0
-          }} transition={{
-            duration: 0.5
-          }}>
-              <ProductHeader product={{
-              id: product.id,
-              title: product.title,
-              description: showLimitedInfo ? 
-                "Sign an NDA to view the full product description and details." : 
-                product.description || ''
-            }} isLiked={isLiked} setIsLiked={setIsLiked} />
-            </motion.div>
-            
-            <motion.div initial={{
-            opacity: 0,
-            y: 20
-          }} animate={{
-            opacity: 1,
-            y: 0
-          }} transition={{
-            duration: 0.5,
-            delay: 0.1
-          }}>
-              <ProductPricing product={product} />
-            </motion.div>
-            
-            {!showLimitedInfo && (
-              <motion.div initial={{
-                opacity: 0,
-                y: 20
-              }} animate={{
-                opacity: 1,
-                y: 0
-              }} transition={{
-                duration: 0.5,
-                delay: 0.2
-              }} className="relative">
-                <ProductStats product={product} />
-                
-                {/* Add watermark for NDA content */}
-                {product.requires_nda && hasSigned && (
-                  <ConfidentialWatermark opacity={0.05} />
-                )}
-              </motion.div>
-            )}
-          </div>
-        </div>
-
-        <div className="mt-12 space-y-8">
+              )}
+            </Card>
+          </motion.div>
+          
           {!showLimitedInfo && (
             <motion.div initial={{
               opacity: 0,
@@ -472,18 +430,89 @@ export default function ProductPage() {
               y: 0
             }} transition={{
               duration: 0.5,
-              delay: 0.3
+              delay: 0.2
+            }}>
+              <PriceHistoryChart productId={product.id} />
+            </motion.div>
+          )}
+        </div>
+
+        <div className="space-y-6">
+          <motion.div initial={{
+            opacity: 0,
+            y: 20
+          }} animate={{
+            opacity: 1,
+            y: 0
+          }} transition={{
+            duration: 0.5
+          }}>
+            <ProductHeader product={{
+              id: product.id,
+              title: product.title,
+              description: showLimitedInfo ? 
+                "Sign an NDA to view the full product description and details." : 
+                product.description || ''
+            }} isLiked={isLiked} setIsLiked={setIsLiked} />
+          </motion.div>
+          
+          <motion.div initial={{
+            opacity: 0,
+            y: 20
+          }} animate={{
+            opacity: 1,
+            y: 0
+          }} transition={{
+            duration: 0.5,
+            delay: 0.1
+          }}>
+            <ProductPricing product={product} />
+          </motion.div>
+          
+          {!showLimitedInfo && (
+            <motion.div initial={{
+              opacity: 0,
+              y: 20
+            }} animate={{
+              opacity: 1,
+              y: 0
+            }} transition={{
+              duration: 0.5,
+              delay: 0.2
             }} className="relative">
-              <ProductReviews productId={product.id} />
+              <ProductStats product={product} />
               
               {/* Add watermark for NDA content */}
               {product.requires_nda && hasSigned && (
-                <ConfidentialWatermark opacity={0.03} />
+                <ConfidentialWatermark opacity={0.05} />
               )}
             </motion.div>
           )}
-          
+        </div>
+      </div>
+
+      <div className="mt-12 space-y-8">
+        {!showLimitedInfo && (
           <motion.div initial={{
+            opacity: 0,
+            y: 20
+          }} animate={{
+            opacity: 1,
+            y: 0
+          }} transition={{
+            duration: 0.5,
+            delay: 0.3
+          }} className="relative">
+            <ProductReviews productId={product.id} />
+            
+            {/* Add watermark for NDA content */}
+            {product.requires_nda && hasSigned && (
+              <ConfidentialWatermark opacity={0.03} />
+            )}
+          </motion.div>
+        )}
+        
+        <motion.div initial={{
           opacity: 0,
           y: 20
         }} animate={{
@@ -493,18 +522,18 @@ export default function ProductPage() {
           duration: 0.5,
           delay: 0.4
         }}>
-            <RelatedProducts currentProductCategory={product.category} currentProductId={product.id} />
-          </motion.div>
-        </div>
-        
-        {/* Footer NDA reminder - add subtle NDA status at the bottom */}
-        {product.requires_nda && hasSigned && (
-          <div className="mt-10 pt-4 border-t border-gray-200 text-center">
-            <p className="text-xs text-gray-500 italic">
-              Remember: All information on this page is covered by the NDA you signed. Last accessed: {new Date().toLocaleString()}
-            </p>
-          </div>
-        )}
+          <RelatedProducts currentProductCategory={product.category} currentProductId={product.id} />
+        </motion.div>
       </div>
-    </>;
+      
+      {/* Footer NDA reminder - add subtle NDA status at the bottom */}
+      {product.requires_nda && hasSigned && (
+        <div className="mt-10 pt-4 border-t border-gray-200 text-center">
+          <p className="text-xs text-gray-500 italic">
+            Remember: All information on this page is covered by the NDA you signed. Last accessed: {new Date().toLocaleString()}
+          </p>
+        </div>
+      )}
+    </div>
+  );
 }
