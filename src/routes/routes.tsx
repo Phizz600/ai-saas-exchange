@@ -7,7 +7,8 @@ import ProductPage from "@/components/product/ProductPage";
 import { Messages } from "@/pages/Messages";
 import Settings from "@/pages/Settings";
 import Index from "@/pages/Index";
-import { Admin } from "@/pages/Admin"; // Add this import
+import { Admin } from "@/pages/Admin";
+import { ListProduct } from "@/pages/ListProduct"; // Add this import
 
 const routes = [
   {
@@ -43,10 +44,13 @@ const routes = [
     element: <Settings />,
   },
   {
-    path: "/admin", // Add this new route
+    path: "/admin",
     element: <Admin />,
+  },
+  {
+    path: "/list-product", // Add the new route
+    element: <ListProduct />,
   },
 ];
 
 export default routes;
-
