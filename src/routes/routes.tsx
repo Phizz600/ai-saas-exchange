@@ -1,11 +1,11 @@
 
-import { Auth } from "@/pages/Auth";
+import Auth from "@/pages/Auth";
 import { Profile } from "@/pages/Profile";
 import { ProductDashboard } from "@/pages/ProductDashboard";
 import { Marketplace } from "@/pages/Marketplace";
 import ProductPage from "@/components/product/ProductPage";
 import { Messages } from "@/pages/Messages";
-import { Settings } from "@/pages/Settings";
+import Settings from "@/pages/Settings";
 
 const routes = [
   {
