@@ -15,6 +15,7 @@ export interface Product {
   monthly_revenue?: number;
   image_url?: string;
   seller?: Seller;
+  seller_id?: string;
   monthly_traffic?: number;
   gross_profit_margin?: number;
   monthly_churn_rate?: number;
@@ -31,4 +32,6 @@ export interface Product {
   no_reserve?: boolean;
   listing_type?: string;
   updated_at?: string;
+  special_notes?: string;
+  demo_url?: string;
 }

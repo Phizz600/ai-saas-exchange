@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Header } from "@/components/Header";
 import { ProductHeader } from "./sections/ProductHeader";
 import { ProductPricing } from "./sections/ProductPricing";
 import { ProductGallery } from "./sections/ProductGallery";
@@ -23,59 +22,7 @@ import { NdaButton } from "../marketplace/product-card/NdaButton";
 import { NdaStatusBadge } from "../marketplace/product-card/NdaStatusBadge";
 import { ConfidentialWatermark } from "../marketplace/product-card/ConfidentialWatermark";
 import { incrementProductViews } from "@/integrations/supabase/product-analytics";
-
-interface Product {
-  id: string;
-  seller_id: string;
-  title: string;
-  description: string | null;
-  price: number;
-  category: string;
-  stage: string;
-  monthly_revenue?: number;
-  monthly_profit?: number;
-  gross_profit_margin?: number;
-  monthly_churn_rate?: number;
-  monthly_traffic?: number;
-  special_notes?: string;
-  image_url?: string;
-  active_users?: string;
-  is_verified?: boolean;
-  is_revenue_verified?: boolean;
-  is_traffic_verified?: boolean;
-  is_code_audited?: boolean;
-  tech_stack?: string[];
-  tech_stack_other?: string;
-  llm_type?: string;
-  llm_type_other?: string;
-  integrations_other?: string;
-  team_size?: string;
-  has_patents?: boolean;
-  competitors?: string;
-  demo_url?: string;
-  product_age?: string;
-  business_location?: string;
-  number_of_employees?: string;
-  customer_acquisition_cost?: number;
-  monetization?: string;
-  monetization_other?: string;
-  business_model?: string;
-  investment_timeline?: string;
-  requires_nda?: boolean;
-  nda_content?: string;
-  auction_end_time?: string;
-  listing_type?: string;
-  current_price?: number;
-  reserve_price?: number;
-  price_decrement?: number;
-  price_decrement_interval?: string;
-  no_reserve?: boolean;
-  seller?: {
-    id: string;
-    full_name: string | null;
-    avatar_url: string | null;
-  };
-}
+import { Product } from "@/types/product";
 
 // Export as default instead of named export
 export default function ProductPageContent() {
@@ -132,6 +79,15 @@ export default function ProductPageContent() {
         
         if (!data) {
           throw new Error('Product not found');
+        }
+        
+        // Ensure seller property is always present with required fields
+        if (!data.seller) {
+          data.seller = { 
+            id: data.seller_id || '',
+            full_name: 'Unknown Seller',
+            avatar_url: null
+          };
         }
         
         return data as Product;
@@ -480,7 +436,17 @@ export default function ProductPageContent() {
               duration: 0.5,
               delay: 0.2
             }} className="relative">
-              <ProductStats product={product} />
+              {/* 
+                Make sure seller is always defined before passing to ProductStats 
+                This fixes the type error where seller is optional in Product but required in ProductStats props
+              */}
+              <ProductStats product={{
+                ...product,
+                seller: product.seller || { 
+                  id: product.seller_id || '', 
+                  full_name: 'Unknown Seller' 
+                }
+              }} />
               
               {/* Add watermark for NDA content */}
               {product.requires_nda && hasSigned && (
