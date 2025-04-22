@@ -7,6 +7,7 @@ import ProductPage from "@/components/product/ProductPage";
 import { Messages } from "@/pages/Messages";
 import Settings from "@/pages/Settings";
 import Index from "@/pages/Index";
+import { Admin } from "@/pages/Admin"; // Add this import
 
 const routes = [
   {
@@ -41,6 +42,11 @@ const routes = [
     path: "/settings",
     element: <Settings />,
   },
+  {
+    path: "/admin", // Add this new route
+    element: <Admin />,
+  },
 ];
 
 export default routes;
+
