@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -436,15 +435,12 @@ export default function ProductPageContent() {
               duration: 0.5,
               delay: 0.2
             }} className="relative">
-              {/* 
-                Make sure seller is always defined before passing to ProductStats 
-                This fixes the type error where seller is optional in Product but required in ProductStats props
-              */}
+              {/* Fix the TypeScript error by ensuring the seller's full_name property is handled properly */}
               <ProductStats product={{
                 ...product,
-                seller: product.seller || { 
-                  id: product.seller_id || '', 
-                  full_name: 'Unknown Seller' 
+                seller: {
+                  ...product.seller,
+                  full_name: product.seller?.full_name || 'Unknown Seller'
                 }
               }} />
               
