@@ -72,15 +72,21 @@ const HeroSection = ({
             Join an exclusive network of investors gaining early access to cutting-edge AI SaaS businesses, products, tools, and solutions through our innovative Dutch auction marketplace.
           </motion.p>
 
-          {/* Button Row */}
-          <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
-            <Button variant="green" onClick={handleListProductClick} className="py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+          {/* Button Row - Updated to center and reorder buttons */}
+          <div className="flex flex-col items-center gap-4 justify-center">
+            <a href="https://calendly.com/your-founder-link" target="_blank" rel="noopener noreferrer" className="w-full max-w-xs">
+              <Button variant="purple" className="w-full py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1" type="button">
+                Schedule a Demo
+              </Button>
+            </a>
+            <Button 
+              variant="green" 
+              onClick={handleListProductClick} 
+              className="w-full max-w-xs py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+            >
               <MousePointerClick className="mr-2" />
               Sell your AI SaaS Business
             </Button>
-            <a href="https://calendly.com/your-founder-link" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
-              <Button variant="purple" className="py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1" type="button">Schedule a Demo </Button>
-            </a>
           </div>
           
           <Suspense fallback={<Skeleton className="w-full max-w-md h-32" />}>
