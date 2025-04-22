@@ -1,35 +1,64 @@
-
+import React from "react";
 import { ConfidentialWatermark } from "@/components/marketplace/product-card/ConfidentialWatermark";
+import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
+import { FileText, Shield } from "lucide-react";
+import { Link } from "react-router-dom";
 
-export const NdaHero = () => {
+export function NdaHero() {
   return (
-    <>
-      <div className="relative">
-        <h1 className="exo-2-heading text-4xl md:text-5xl font-bold text-white mb-4 my-[60px]">Enhanced NDA Policy</h1>
-        <div className="h-1 w-20 bg-gradient-to-r from-[#D946EE] to-[#8B5CF6]"></div>
+    <div className="relative overflow-hidden bg-gradient-to-br from-purple-50 to-indigo-50 py-16 px-4 sm:px-6 lg:px-8">
+      <div className="absolute inset-0 z-0">
+        <ConfidentialWatermark text="CONFIDENTIAL" opacity={0.15} rotation={30} />
       </div>
       
-      <p className="text-white/90 mt-8 text-lg">
-        At AI Exchange Club, we understand that confidentiality is paramount when selling your AI business or product. 
-        Our enhanced Non-Disclosure Agreement (NDA) system provides multiple layers of protection to ensure your 
-        sensitive business information remains secure throughout the entire selling process.
-      </p>
-
-      {/* Hero section with image */}
-      <div className="mt-12 relative rounded-xl overflow-hidden shadow-xl">
-        <img src="https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&q=80&w=1200&h=600" alt="Secure digital technology" className="w-full h-64 object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#8B5CF6]/80 to-transparent flex items-center">
-          <div className="p-8 md:p-16 max-w-lg">
-            <h2 className="text-white text-3xl font-bold mb-4 exo-2-heading">Trusted by Industry Leaders</h2>
-            <p className="text-white/90">
-              Our NDA system is designed to meet industry standards and has been vetted by legal professionals 
-              specializing in technology transactions.
-            </p>
-          </div>
+      <div className="relative z-10 max-w-7xl mx-auto">
+        <div className="text-center">
+          <motion.h1 
+            className="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-6xl exo-2-heading"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <span className="block">Non-Disclosure</span>
+            <span className="block text-indigo-600">Agreement Policy</span>
+          </motion.h1>
+          
+          <motion.p 
+            className="mt-3 max-w-md mx-auto text-base text-gray-500 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            Our NDA policy protects sensitive information when buying or selling AI products. 
+            Learn how we safeguard your intellectual property and business details.
+          </motion.p>
+          
+          <motion.div 
+            className="mt-10 max-w-sm mx-auto sm:flex sm:justify-center md:mt-12"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+          >
+            <div className="rounded-md shadow">
+              <Button className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 md:py-4 md:text-lg md:px-10" asChild>
+                <Link to="/marketplace">
+                  <Shield className="mr-2 h-5 w-5" />
+                  Browse Protected Listings
+                </Link>
+              </Button>
+            </div>
+            <div className="mt-3 rounded-md shadow sm:mt-0 sm:ml-3">
+              <Button variant="outline" className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md md:py-4 md:text-lg md:px-10" asChild>
+                <Link to="/terms">
+                  <FileText className="mr-2 h-5 w-5" />
+                  View Terms
+                </Link>
+              </Button>
+            </div>
+          </motion.div>
         </div>
-        {/* Subtle watermark for visual effect */}
-        <ConfidentialWatermark text="SECURE" opacity={0.05} rotation={-45} />
       </div>
-    </>
+    </div>
   );
-};
+}
