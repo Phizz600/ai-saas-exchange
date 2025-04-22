@@ -15,6 +15,7 @@ import { Policies } from "@/pages/Policies";
 import { Terms } from "@/pages/Terms";
 import { NdaPolicy } from "@/pages/NdaPolicy";
 import { FeesPricing } from "@/pages/FeesPricing";
+import { FAQ } from "@/pages/FAQ";
 
 const routes = [
   {
@@ -76,6 +77,10 @@ const routes = [
   {
     path: "/fees-pricing",
     element: <FeesPricing />,
+  },
+  {
+    path: "/faq",
+    element: <FAQ />,
   },
   // Catch-all 404 route
   {

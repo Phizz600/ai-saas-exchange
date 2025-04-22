@@ -98,6 +98,10 @@ export const Navbar = () => {
     href: "/about",
     requiresAuth: false
   }, {
+    title: "FAQ",
+    href: "/faq",
+    requiresAuth: false
+  }, {
     title: "Contact",
     href: "/contact",
     requiresAuth: false
@@ -107,7 +111,7 @@ export const Navbar = () => {
       href: isAuthenticated ? "/settings" : "/auth",
       requiresAuth: true
     },
-];
+  ];
   const policyPages = [{
     title: "Platform Policies",
     href: "/policies"
