@@ -54,8 +54,12 @@ export const ComingSoon = () => {
           </Link>
 
           <div className="text-center space-y-4 sm:space-y-6">
-            
-            
+            <h1 className="font-bold exo-2-heading bg-gradient-to-r from-[#8B5CF6] to-[#0EA5E9] bg-clip-text text-transparent leading-tight sm:text-5xl text-4xl">
+              AI Exchange Club
+            </h1>
+            <p className="text-sm sm:text-base text-gray-700">
+              The exclusive marketplace for buying and selling AI SaaS businesses, products, tools, and solutions.
+            </p>
           </div>
 
           {/* Investor Questionnaire Section */}
