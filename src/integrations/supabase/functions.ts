@@ -1,274 +1,88 @@
-
-import { supabase } from "./client";
-
-/**
- * Send an escrow action reminder
- */
-export const sendEscrowReminder = async (
-  conversationId: string,
-  transactionId: string,
-  userRole: "buyer" | "seller",
-  status: string,
-  hoursRemaining: number
-) => {
-  try {
-    const { data, error } = await supabase.functions.invoke("send-escrow-reminder", {
-      body: {
-        conversationId,
-        transactionId,
-        userRole,
-        status,
-        hoursRemaining
-      }
-    });
-
-    if (error) {
-      console.error("Error sending escrow reminder:", error);
-      return false;
-    }
-
-    return data.success;
-  } catch (error) {
-    console.error("Error in sendEscrowReminder:", error);
-    return false;
-  }
-};
+import { supabase } from './client';
 
 /**
- * Send auction result email notification
- */
-export const sendAuctionResultEmail = async (productId: string) => {
-  try {
-    const { data, error } = await supabase.functions.invoke("send-auction-result", {
-      body: {
-        productId
-      }
-    });
-
-    if (error) {
-      console.error("Error sending auction result email:", error);
-      throw new Error("Failed to send auction result email");
-    }
-
-    return data;
-  } catch (error) {
-    console.error("Error in sendAuctionResultEmail:", error);
-    throw error;
-  }
-};
-
-/**
- * Check and update escrow transaction status
- */
-export const updateEscrowLifecycle = async (
-  transactionId: string,
-  newStatus: string,
-  message?: string
-) => {
-  try {
-    const { data, error } = await supabase.functions.invoke("escrow-api", {
-      body: {
-        action: "lifecycle_update",
-        data: {
-          transaction_id: transactionId,
-          new_status: newStatus,
-          message
-        }
-      }
-    });
-
-    if (error) {
-      console.error("Error updating transaction lifecycle:", error);
-      throw new Error("Failed to update transaction status");
-    }
-
-    return data;
-  } catch (error) {
-    console.error("Error in updateEscrowLifecycle:", error);
-    throw error;
-  }
-};
-
-/**
- * Send a test email
- */
-export const sendTestEmail = async () => {
-  try {
-    const { data, error } = await supabase.functions.invoke("send-test-email", {
-      body: {}
-    });
-
-    if (error) {
-      console.error("Error sending test email:", error);
-      throw error;
-    }
-
-    return data;
-  } catch (error) {
-    console.error("Error in sendTestEmail:", error);
-    throw error;
-  }
-};
-
-/**
- * Send listing notification email
- */
-export const sendListingNotification = async (
-  type: 'submitted' | 'approved' | 'rejected',
-  userEmail: string,
-  productTitle: string,
-  firstName: string,
-  feedback?: string,
-  productId?: string
-) => {
-  try {
-    const { data, error } = await supabase.functions.invoke("send-listing-notification", {
-      body: {
-        type,
-        userEmail,
-        productTitle,
-        firstName,
-        feedback,
-        productId
-      }
-    });
-
-    if (error) {
-      console.error("Error sending listing notification:", error);
-      throw error;
-    }
-
-    return data;
-  } catch (error) {
-    console.error("Error in sendListingNotification:", error);
-    throw error;
-  }
-};
-
-/**
- * Check and process ended auctions
- */
-export const checkEndedAuctions = async () => {
-  try {
-    const { data, error } = await supabase.functions.invoke("check-ended-auctions", {
-      body: {}
-    });
-
-    if (error) {
-      console.error("Error checking ended auctions:", error);
-      throw error;
-    }
-
-    return data;
-  } catch (error) {
-    console.error("Error in checkEndedAuctions:", error);
-    throw error;
-  }
-};
-
-/**
- * Increment product views in analytics
- */
-export const incrementProductViews = async (productId: string) => {
-  try {
-    const { data, error } = await supabase.rpc('increment_product_views', {
-      input_product_id: productId
-    });
-
-    if (error) {
-      console.error("Error incrementing product views:", error);
-      return null;
-    }
-
-    return { success: true };
-  } catch (error) {
-    console.error("Error in incrementProductViews:", error);
-    return null;
-  }
-};
-
-/**
- * Get product analytics data
- */
-export const getProductAnalytics = async (productId: string) => {
-  try {
-    const { data, error } = await supabase
-      .from('product_analytics')
-      .select('views, clicks, saves')
-      .eq('product_id', productId)
-      .eq('date', new Date().toISOString().split('T')[0])
-      .single();
-
-    if (error && error.code !== 'PGRST116') { // PGRST116 is "no rows returned"
-      console.error("Error fetching product analytics:", error);
-      return { views: 0, clicks: 0, saves: 0 };
-    }
-
-    return data || { views: 0, clicks: 0, saves: 0 };
-  } catch (error) {
-    console.error("Error in getProductAnalytics:", error);
-    return { views: 0, clicks: 0, saves: 0 };
-  }
-};
-
-/**
- * Get matched products for investor
+ * Gets matched products for the current user
+ * @returns Array of matched products
  */
 export const getMatchedProducts = async () => {
   try {
+    console.log("Fetching matched products for current user");
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
+      console.error('User not authenticated');
       return [];
     }
 
     const { data, error } = await supabase
-      .from('matched_products')
-      .select('*')
+      .from('matched_products_view')
+      .select(`
+        product_id,
+        investor_id,
+        match_score,
+        title,
+        description,
+        price,
+        category,
+        stage,
+        image_url
+      `)
       .eq('investor_id', user.id)
       .order('match_score', { ascending: false });
 
     if (error) {
-      console.error("Error fetching matched products:", error);
-      return [];
+      console.error('Error fetching matched products:', error);
+      throw error;
     }
 
+    console.log(`Retrieved ${data?.length || 0} matched products with match scores:`, 
+      data?.map(p => ({ title: p.title, score: p.match_score })));
     return data || [];
   } catch (error) {
-    console.error("Error in getMatchedProducts:", error);
+    console.error('Error in getMatchedProducts:', error);
     return [];
   }
 };
 
 /**
- * Get product offers for seller
+ * Gets offers for the current user's products
+ * @returns Array of offers
  */
 export const getProductOffers = async () => {
   try {
+    console.log("Fetching product offers for current user");
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
+      console.error('User not authenticated');
       return [];
     }
 
-    const { data: products } = await supabase
+    const { data: userProducts, error: productError } = await supabase
       .from('products')
       .select('id')
       .eq('seller_id', user.id);
 
-    if (!products || products.length === 0) {
+    if (productError) {
+      console.error('Error fetching user products:', productError);
       return [];
     }
 
-    const productIds = products.map(p => p.id);
+    if (!userProducts?.length) {
+      console.log('User has no products, returning empty offers array');
+      return [];
+    }
+
+    const productIds = userProducts.map(product => product.id);
+    console.log(`Found ${productIds.length} products for user`);
 
     const { data, error } = await supabase
       .from('offers')
       .select(`
         *,
-        products:product_id(
+        products:product_id (
           title,
           image_url
         ),
-        bidder:bidder_id(
+        bidder:bidder_id (
           full_name,
           avatar_url
         )
@@ -277,36 +91,158 @@ export const getProductOffers = async () => {
       .order('created_at', { ascending: false });
 
     if (error) {
-      console.error("Error fetching product offers:", error);
-      return [];
+      console.error('Error fetching offers:', error);
+      throw error;
     }
 
+    console.log(`Retrieved ${data?.length || 0} offers for user's products`);
     return data || [];
   } catch (error) {
-    console.error("Error in getProductOffers:", error);
+    console.error('Error in getProductOffers:', error);
     return [];
   }
 };
 
 /**
- * Update offer status
+ * Updates the status of an offer
+ * @param offerId The offer ID to update
+ * @param status The new status (accepted or declined)
+ * @returns The updated offer data
  */
 export const updateOfferStatus = async (offerId: string, status: 'accepted' | 'declined') => {
   try {
+    console.log(`Updating offer ${offerId} status to ${status}`);
     const { data, error } = await supabase
       .from('offers')
       .update({ status })
       .eq('id', offerId)
-      .select();
+      .select()
+      .single();
 
     if (error) {
-      console.error("Error updating offer status:", error);
-      throw new Error("Failed to update offer status");
+      console.error('Error updating offer status:', error);
+      throw error;
     }
 
+    console.log('Offer status updated successfully');
     return data;
   } catch (error) {
-    console.error("Error in updateOfferStatus:", error);
-    throw error;
+    console.error('Error in updateOfferStatus:', error);
+    return null;
   }
+};
+
+/**
+ * Logs an error to both console and Supabase (for monitoring)
+ * @param source The source/component where the error occurred
+ * @param error The error object or message
+ * @param context Additional context data
+ */
+export const logError = async (source: string, error: any, context: Record<string, any> = {}) => {
+  const errorMessage = error instanceof Error ? error.message : String(error);
+  const stack = error instanceof Error ? error.stack : undefined;
+  
+  // Log to console
+  console.error(`[${source}] Error:`, errorMessage);
+  if (stack) console.error(stack);
+  if (Object.keys(context).length) console.error('Context:', context);
+  
+  try {
+    // Get current user for attribution if available
+    const { data: { user } } = await supabase.auth.getUser();
+    const userId = user?.id;
+    
+    // Log to error_logs table
+    await supabase
+      .from('error_logs')
+      .insert([{
+        source,
+        error_message: errorMessage,
+        error_stack: stack,
+        context_data: { ...context, userId },
+        user_id: userId
+      }]);
+      
+  } catch (logError) {
+    // Fallback to console if logging to Supabase fails
+    console.error('Failed to log error to database:', logError);
+  }
+  
+  // Return the original error for chaining
+  return error;
+};
+
+/**
+ * Validates a product submission form against common errors
+ * @param formData The form data to validate
+ * @returns Object with isValid flag and any error messages
+ */
+export const validateProductSubmission = (formData: any) => {
+  const errors: Record<string, string> = {};
+  
+  // Required fields validation
+  if (!formData.title || formData.title.trim() === '') {
+    errors.title = 'Product name is required';
+  }
+  
+  if (!formData.description || formData.description.trim() === '') {
+    errors.description = 'Description is required';
+  }
+  
+  if (!formData.category) {
+    errors.category = 'Category is required';
+  }
+  
+  if (formData.category === 'Other' && (!formData.categoryOther || formData.categoryOther.trim() === '')) {
+    errors.categoryOther = 'Please specify the category';
+  }
+  
+  // Image validation
+  if (!formData.image) {
+    errors.image = 'Product image is required';
+  }
+  
+  // Price validation for fixed price listings
+  if (!formData.isAuction && (!formData.price || Number(formData.price) <= 0)) {
+    errors.price = 'Price must be greater than zero';
+  }
+  
+  // Auction validation
+  if (formData.isAuction) {
+    if (!formData.startingPrice || Number(formData.startingPrice) <= 0) {
+      errors.startingPrice = 'Starting price must be greater than zero';
+    }
+    
+    if (formData.reservePrice !== undefined && formData.reservePrice !== null) {
+      if (Number(formData.reservePrice) < 0) {
+        errors.reservePrice = 'Reserve price cannot be negative';
+      }
+      
+      if (Number(formData.reservePrice) > 0 && Number(formData.reservePrice) >= Number(formData.startingPrice)) {
+        errors.reservePrice = 'Reserve price must be less than starting price';
+      }
+    }
+    
+    if (!formData.priceDecrement || Number(formData.priceDecrement) <= 0) {
+      errors.priceDecrement = 'Price decrement must be greater than zero';
+    }
+    
+    if (!formData.auctionDuration) {
+      errors.auctionDuration = 'Please select an auction duration';
+    }
+  }
+  
+  // Agreements validation
+  if (!formData.accuracyAgreement) {
+    errors.accuracyAgreement = 'You must confirm that the information provided is accurate';
+  }
+  
+  if (!formData.termsAgreement) {
+    errors.termsAgreement = 'You must agree to the terms and conditions';
+  }
+  
+  return {
+    isValid: Object.keys(errors).length === 0,
+    errors
+  };
 };

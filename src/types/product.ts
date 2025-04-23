@@ -34,4 +34,5 @@ export interface Product {
   updated_at?: string;
   special_notes?: string;
   demo_url?: string;
+  match_score?: number;
 }
