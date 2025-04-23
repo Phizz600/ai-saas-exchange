@@ -1,4 +1,3 @@
-
 import { useQuery } from "@tanstack/react-query";
 import { ProductCard } from "@/components/ProductCard";
 import { getMatchedProducts } from "@/integrations/supabase/functions";
@@ -225,7 +224,8 @@ export const MatchedProducts = () => {
               category: product.category,
               stage: product.stage,
               image_url: product.image_url || "/placeholder.svg",
-              seller_id: product.investor_id
+              seller_id: product.investor_id,
+              match_score: product.match_score
             } as Product}
           />
         ))}
