@@ -1,3 +1,4 @@
+
 import { Card } from "@/components/ui/card";
 import { ArrowDown, ArrowUp } from "lucide-react";
 
@@ -13,28 +14,26 @@ interface StatsCardProps {
 
 export const StatsCard = ({ title, value, change, subtitle }: StatsCardProps) => {
   return (
-    <Card className="p-6 bg-white">
-      <div className="space-y-2">
-        <p className="text-sm font-medium text-gray-500 uppercase">{title}</p>
-        <div className="flex items-baseline justify-between">
-          <h3 className="text-2xl font-bold text-gray-900">{value}</h3>
-          {change && (
-            <div className={`flex items-center ${
-              change.type === 'increase' 
-                ? 'text-green-600' 
-                : 'text-red-600'
+    <Card className="p-4 md:p-6">
+      <div className="flex flex-col">
+        <h3 className="text-sm font-medium text-gray-500">{title}</h3>
+        <p className="text-xl md:text-2xl font-bold mt-1">{value}</p>
+        {change && (
+          <div className="flex items-center mt-2 space-x-1">
+            {change.type === 'increase' ? (
+              <ArrowUp className="w-3 h-3 text-green-500" />
+            ) : (
+              <ArrowDown className="w-3 h-3 text-red-500" />
+            )}
+            <span className={`text-xs font-medium ${
+              change.type === 'increase' ? 'text-green-600' : 'text-red-600'
             }`}>
-              {change.type === 'increase' ? (
-                <ArrowUp className="h-4 w-4 mr-1" />
-              ) : (
-                <ArrowDown className="h-4 w-4 mr-1" />
-              )}
-              <span className="text-sm font-medium">{Math.abs(change.value)}%</span>
-            </div>
-          )}
-        </div>
-        {subtitle && (
-          <p className="text-sm text-gray-500">{subtitle}</p>
+              {change.value}%
+            </span>
+            {subtitle && (
+              <span className="text-xs text-gray-500 ml-1">{subtitle}</span>
+            )}
+          </div>
         )}
       </div>
     </Card>
