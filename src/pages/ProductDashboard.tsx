@@ -1,4 +1,3 @@
-
 import { DashboardLayout } from "@/components/product-dashboard/DashboardLayout";
 import { MarketplaceStats } from "@/components/product-dashboard/MarketplaceStats";
 import { ProductDashboardContent } from "@/components/product-dashboard/ProductDashboardContent";
@@ -56,9 +55,7 @@ function ProductDashboard() {
         </TabsList>
         
         <TabsContent value="seller" className="space-y-8">
-          <div className="flex justify-between items-center">
-            <MarketplaceStats />
-          </div>
+          <MarketplaceStats />
           
           {auctionProducts && auctionProducts.length > 0 && (
             <div>
