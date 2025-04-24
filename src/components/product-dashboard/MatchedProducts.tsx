@@ -220,16 +220,16 @@ export const MatchedProducts = () => {
             product={{
               id: product.product_id,
               title: product.title,
-              description: product.description || "",
+              description: product.description || "", // Ensure description is never null
               price: Number(product.price),
               category: product.category,
               stage: product.stage,
+              image: product.image_url || "/placeholder.svg", // Use image_url as the image property
               image_url: product.image_url || "/placeholder.svg",
               seller_id: product.investor_id,
               match_score: product.match_score,
-              // Add the required properties that were missing
+              // Add the required properties
               monthlyRevenue: 0, // Default value since we don't have this data
-              image: product.image_url || "/placeholder.svg" // Use image_url as the image property
             } as Product}
           />
         ))}
