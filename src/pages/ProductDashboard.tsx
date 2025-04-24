@@ -1,6 +1,6 @@
-
 import { DashboardLayout } from "@/components/product-dashboard/DashboardLayout";
 import { MarketplaceStats } from "@/components/product-dashboard/MarketplaceStats";
+import { ProductDashboardContent } from "@/components/product-dashboard/ProductDashboardContent";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Store, ShoppingBag, ToggleLeft, ToggleRight, Edit } from "lucide-react";
 import { StatsCard } from "@/components/product-dashboard/StatsCard";
@@ -15,6 +15,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { EditListingForm } from "@/components/product-dashboard/EditListingForm";
 
 function ProductDashboard() {
+  const [showVerifiedOnly, setShowVerifiedOnly] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<string | undefined>(undefined);
 
   // Fetch user's auction products
@@ -92,37 +93,42 @@ function ProductDashboard() {
             <h2 className="text-xl font-semibold mb-4 exo-2-header">Edit Your Listings</h2>
             <EditListingForm />
           </div>
+          
+          <div>
+            <h2 className="text-xl font-semibold mb-4 exo-2-header">Your Products</h2>
+            <ProductDashboardContent showVerifiedOnly={showVerifiedOnly} />
+          </div>
+        </TabsContent>
 
-          <TabsContent value="buyer" className="space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <StatsCard title="Active Bids" value="0" change={{
-                value: 0,
-                type: 'increase'
-              }} subtitle="vs last month" />
-              <StatsCard title="Won Auctions" value="0" change={{
-                value: 0,
-                type: 'increase'
-              }} subtitle="vs last month" />
-              <StatsCard title="Total Spent" value="$0" change={{
-                value: 0,
-                type: 'increase'
-              }} subtitle="vs last month" />
-              <StatsCard title="Watched Products" value="0" change={{
-                value: 0,
-                type: 'increase'
-              }} subtitle="vs last month" />
+        <TabsContent value="buyer" className="space-y-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <StatsCard title="Active Bids" value="0" change={{
+            value: 0,
+            type: 'increase'
+          }} subtitle="vs last month" />
+            <StatsCard title="Won Auctions" value="0" change={{
+            value: 0,
+            type: 'increase'
+          }} subtitle="vs last month" />
+            <StatsCard title="Total Spent" value="$0" change={{
+            value: 0,
+            type: 'increase'
+          }} subtitle="vs last month" />
+            <StatsCard title="Watched Products" value="0" change={{
+            value: 0,
+            type: 'increase'
+          }} subtitle="vs last month" />
+          </div>
+          <div className="space-y-8">
+            <div>
+              <h2 className="text-xl font-semibold mb-4 exo-2-header">Your Active Bids</h2>
+              <ActiveBidsProducts />
             </div>
-            <div className="space-y-8">
-              <div>
-                <h2 className="text-xl font-semibold mb-4 exo-2-header">Your Active Bids</h2>
-                <ActiveBidsProducts />
-              </div>
-              <div>
-                <h2 className="text-xl font-semibold mb-4 exo-2-header">Products You've Saved</h2>
-                <WatchedProducts />
-              </div>
+            <div>
+              <h2 className="text-xl font-semibold mb-4 exo-2-header">Products You've Saved</h2>
+              <WatchedProducts />
             </div>
-          </TabsContent>
+          </div>
         </TabsContent>
       </Tabs>
     </DashboardLayout>;
