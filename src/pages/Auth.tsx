@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { AuthLayout } from "@/components/auth/AuthLayout";
 import { AuthForm } from "@/components/auth/AuthForm";
 import { useToast } from "@/hooks/use-toast";
+import { setupGlobalErrorHandlers } from "@/utils/diagnostics";
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -12,6 +13,9 @@ const Auth = () => {
 
   useEffect(() => {
     console.log("Auth: Component mounted");
+    
+    // Set up global error handlers
+    setupGlobalErrorHandlers();
     
     // Handle OAuth redirect if present in URL
     const handleOAuthRedirect = async () => {

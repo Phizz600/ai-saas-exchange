@@ -15,6 +15,7 @@ import { About } from "@/pages/About";
 import { Terms } from "@/pages/Terms";
 import { Policies } from "@/pages/Policies";
 import { MessageChat } from "@/pages/MessageChat";
+import Diagnostics from "@/pages/Diagnostics";
 
 const routes = [
   {
@@ -80,6 +81,10 @@ const routes = [
   {
     path: "/policies",
     element: <Policies />,
+  },
+  {
+    path: "/diagnostics",
+    element: <Diagnostics />,
   },
 ];
 
