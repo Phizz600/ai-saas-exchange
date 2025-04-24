@@ -118,13 +118,6 @@ export type Database = {
             foreignKeyName: "bids_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: false
-            referencedRelation: "matched_products"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "bids_product_id_fkey"
-            columns: ["product_id"]
-            isOneToOne: false
             referencedRelation: "products"
             referencedColumns: ["id"]
           },
@@ -171,13 +164,6 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
-          {
-            foreignKeyName: "conversations_product_id_fkey"
-            columns: ["product_id"]
-            isOneToOne: false
-            referencedRelation: "matched_products"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "conversations_product_id_fkey"
             columns: ["product_id"]
@@ -387,13 +373,6 @@ export type Database = {
             foreignKeyName: "escrow_transactions_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: false
-            referencedRelation: "matched_products"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "escrow_transactions_product_id_fkey"
-            columns: ["product_id"]
-            isOneToOne: false
             referencedRelation: "products"
             referencedColumns: ["id"]
           },
@@ -566,13 +545,6 @@ export type Database = {
             foreignKeyName: "moderation_actions_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: false
-            referencedRelation: "matched_products"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "moderation_actions_product_id_fkey"
-            columns: ["product_id"]
-            isOneToOne: false
             referencedRelation: "products"
             referencedColumns: ["id"]
           },
@@ -618,13 +590,6 @@ export type Database = {
             columns: ["related_bid_id"]
             isOneToOne: false
             referencedRelation: "bids"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "notifications_related_product_id_fkey"
-            columns: ["related_product_id"]
-            isOneToOne: false
-            referencedRelation: "matched_products"
             referencedColumns: ["id"]
           },
           {
@@ -695,13 +660,6 @@ export type Database = {
             foreignKeyName: "offers_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: false
-            referencedRelation: "matched_products"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "offers_product_id_fkey"
-            columns: ["product_id"]
-            isOneToOne: false
             referencedRelation: "products"
             referencedColumns: ["id"]
           },
@@ -730,13 +688,6 @@ export type Database = {
           type?: string
         }
         Relationships: [
-          {
-            foreignKeyName: "price_history_product_id_fkey"
-            columns: ["product_id"]
-            isOneToOne: false
-            referencedRelation: "matched_products"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "price_history_product_id_fkey"
             columns: ["product_id"]
@@ -788,13 +739,6 @@ export type Database = {
             foreignKeyName: "product_analytics_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: false
-            referencedRelation: "matched_products"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "product_analytics_product_id_fkey"
-            columns: ["product_id"]
-            isOneToOne: false
             referencedRelation: "products"
             referencedColumns: ["id"]
           },
@@ -832,13 +776,6 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
-          {
-            foreignKeyName: "product_ndas_product_id_fkey"
-            columns: ["product_id"]
-            isOneToOne: false
-            referencedRelation: "matched_products"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "product_ndas_product_id_fkey"
             columns: ["product_id"]
@@ -1141,13 +1078,6 @@ export type Database = {
             foreignKeyName: "promotions_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: false
-            referencedRelation: "matched_products"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "promotions_product_id_fkey"
-            columns: ["product_id"]
-            isOneToOne: false
             referencedRelation: "products"
             referencedColumns: ["id"]
           },
@@ -1267,89 +1197,11 @@ export type Database = {
       }
     }
     Views: {
-      matched_products: {
-        Row: {
-          active_users: string | null
-          admin_feedback: string | null
-          auction_end_time: string | null
-          auction_status: string | null
-          business_location: string | null
-          business_model: string | null
-          category: string | null
-          competitors: string | null
-          created_at: string | null
-          current_price: number | null
-          customer_acquisition_cost: number | null
-          demo_url: string | null
-          description: string | null
-          gross_profit_margin: number | null
-          has_patents: boolean | null
-          highest_bid: number | null
-          highest_bidder_id: string | null
-          id: string | null
-          image_url: string | null
-          industry: string | null
-          integrations: string[] | null
-          integrations_other: string | null
-          investment_timeline: string | null
-          investor_id: string | null
-          is_code_audited: boolean | null
-          is_revenue_verified: boolean | null
-          is_traffic_verified: boolean | null
-          is_verified: boolean | null
-          llm_type: string | null
-          llm_type_other: string | null
-          match_score: number | null
-          min_price: number | null
-          monetization: string | null
-          monetization_other: string | null
-          monthly_churn_rate: number | null
-          monthly_profit: number | null
-          monthly_revenue: number | null
-          monthly_traffic: number | null
-          number_of_employees: string | null
-          price: number | null
-          price_decrement: number | null
-          price_decrement_interval: string | null
-          product_age: string | null
-          reviewed_at: string | null
-          reviewed_by: string | null
-          seller_id: string | null
-          special_notes: string | null
-          stage: string | null
-          starting_price: number | null
-          status: string | null
-          team_size: string | null
-          tech_stack: string[] | null
-          tech_stack_other: string | null
-          title: string | null
-          updated_at: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "investor_preferences_user_id_fkey"
-            columns: ["investor_id"]
-            isOneToOne: true
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "products_seller_id_fkey"
-            columns: ["seller_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
+      [_ in never]: never
     }
     Functions: {
       calculate_bid_deposit_amount: {
         Args: { bid_amount: number }
-        Returns: number
-      }
-      calculate_match_score: {
-        Args: { product_id: string; investor_id: string }
         Returns: number
       }
       calculate_offer_deposit_amount: {
