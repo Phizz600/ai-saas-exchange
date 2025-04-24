@@ -13,6 +13,7 @@ import { VerificationBadges } from "./VerificationBadges";
 import { ProductOverview } from "./product-stats/ProductOverview";
 import { MarketPosition } from "./product-stats/MarketPosition";
 import { DescriptionNotes } from "./product-stats/DescriptionNotes";
+import { SimpleAnalytics, convertToSimpleAnalytics } from "@/utils/analytics";
 
 interface ProductStatsProps {
   product: {
@@ -76,11 +77,7 @@ interface ProductStatsProps {
 }
 
 export function ProductStats({ product }: ProductStatsProps) {
-  const [analytics, setAnalytics] = useState<{
-    views: number;
-    clicks: number;
-    saves: number;
-  }>({
+  const [analytics, setAnalytics] = useState<SimpleAnalytics>({
     views: 0,
     clicks: 0,
     saves: 0
@@ -127,7 +124,7 @@ export function ProductStats({ product }: ProductStatsProps) {
   useEffect(() => {
     const fetchAnalytics = async () => {
       const data = await getProductAnalytics(product.id);
-      setAnalytics(data);
+      setAnalytics(convertToSimpleAnalytics(data));
     };
     fetchAnalytics();
   }, [product.id]);
@@ -141,7 +138,7 @@ export function ProductStats({ product }: ProductStatsProps) {
     }, async payload => {
       console.log('Received real-time update:', payload);
       const data = await getProductAnalytics(product.id);
-      setAnalytics(data);
+      setAnalytics(convertToSimpleAnalytics(data));
     }).subscribe();
     return () => {
       supabase.removeChannel(channel);

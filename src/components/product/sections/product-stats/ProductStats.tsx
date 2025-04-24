@@ -1,4 +1,3 @@
-
 import { Card } from "@/components/ui/card";
 import { Flame } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
@@ -17,6 +16,7 @@ import { AssetsDeliverables } from "./AssetsDeliverables";
 import { useState, useEffect } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { SimpleAnalytics, convertToSimpleAnalytics } from "@/utils/analytics";
 
 interface ProductStatsProps {
   product: {
@@ -80,11 +80,7 @@ interface ProductStatsProps {
 }
 
 export function ProductStats({ product }: ProductStatsProps) {
-  const [analytics, setAnalytics] = useState<{
-    views: number;
-    clicks: number;
-    saves: number;
-  }>({
+  const [analytics, setAnalytics] = useState<SimpleAnalytics>({
     views: 0,
     clicks: 0,
     saves: 0
@@ -133,7 +129,8 @@ export function ProductStats({ product }: ProductStatsProps) {
   useEffect(() => {
     const fetchAnalytics = async () => {
       const data = await getProductAnalytics(product.id);
-      setAnalytics(data);
+      // Use our conversion utility to handle any analytics format
+      setAnalytics(convertToSimpleAnalytics(data));
     };
     fetchAnalytics();
   }, [product.id]);
@@ -147,7 +144,8 @@ export function ProductStats({ product }: ProductStatsProps) {
     }, async payload => {
       console.log('Received real-time update:', payload);
       const data = await getProductAnalytics(product.id);
-      setAnalytics(data);
+      // Use our conversion utility to handle any analytics format
+      setAnalytics(convertToSimpleAnalytics(data));
     }).subscribe();
     return () => {
       supabase.removeChannel(channel);

@@ -1,3 +1,4 @@
+
 import { useQuery } from "@tanstack/react-query";
 import { ProductCard } from "@/components/ProductCard";
 import { getMatchedProducts } from "@/integrations/supabase/functions";
@@ -225,7 +226,10 @@ export const MatchedProducts = () => {
               stage: product.stage,
               image_url: product.image_url || "/placeholder.svg",
               seller_id: product.investor_id,
-              match_score: product.match_score
+              match_score: product.match_score,
+              // Add the required properties that were missing
+              monthlyRevenue: 0, // Default value since we don't have this data
+              image: product.image_url || "/placeholder.svg" // Use image_url as the image property
             } as Product}
           />
         ))}

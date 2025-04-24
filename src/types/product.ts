@@ -35,4 +35,8 @@ export interface Product {
   special_notes?: string;
   demo_url?: string;
   match_score?: number;
+  
+  // Add properties to fix the MatchedProducts.tsx error
+  monthlyRevenue?: number; // Alias for monthly_revenue
+  image?: string; // Alias for image_url
 }

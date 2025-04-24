@@ -1,3 +1,4 @@
+
 import { ListProductFormData } from "../types";
 import { supabase } from "@/integrations/supabase/client";
 import { logError } from "@/integrations/supabase/products";
@@ -165,8 +166,9 @@ export const handleProductSubmission = async (
           
         const firstName = profileData?.first_name || 'there';
         
+        // Changed "submitted" to "pending" to match the allowed notification status types
         await sendListingNotification(
-          'submitted',
+          'pending',
           userData.user.email!,
           data.title,
           firstName,
