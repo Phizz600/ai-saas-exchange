@@ -2,49 +2,6 @@
 import { supabase } from './client';
 
 /**
- * Gets matched products for the current user
- * @returns Array of matched products
- */
-export const getMatchedProducts = async () => {
-  try {
-    console.log("Fetching matched products for current user");
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      console.error('User not authenticated');
-      return [];
-    }
-
-    const { data, error } = await supabase
-      .from('matched_products_view')
-      .select(`
-        product_id,
-        investor_id,
-        match_score,
-        title,
-        description,
-        price,
-        category,
-        stage,
-        image_url
-      `)
-      .eq('investor_id', user.id)
-      .order('match_score', { ascending: false });
-
-    if (error) {
-      console.error('Error fetching matched products:', error);
-      throw error;
-    }
-
-    console.log(`Retrieved ${data?.length || 0} matched products with match scores:`, 
-      data?.map(p => ({ title: p.title, score: p.match_score })));
-    return data || [];
-  } catch (error) {
-    console.error('Error in getMatchedProducts:', error);
-    return [];
-  }
-};
-
-/**
  * Gets offers for the current user's products
  * @returns Array of offers
  */

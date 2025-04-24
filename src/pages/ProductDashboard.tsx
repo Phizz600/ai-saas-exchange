@@ -1,3 +1,4 @@
+
 import { DashboardLayout } from "@/components/product-dashboard/DashboardLayout";
 import { MarketplaceStats } from "@/components/product-dashboard/MarketplaceStats";
 import { ProductDashboardContent } from "@/components/product-dashboard/ProductDashboardContent";
@@ -6,7 +7,6 @@ import { Store, ShoppingBag, ToggleLeft, ToggleRight, Edit } from "lucide-react"
 import { StatsCard } from "@/components/product-dashboard/StatsCard";
 import { ActiveBidsProducts } from "@/components/product-dashboard/ActiveBidsProducts";
 import { WatchedProducts } from "@/components/product-dashboard/WatchedProducts";
-import { MatchedProducts } from "@/components/product-dashboard/MatchedProducts";
 import { ProductOffers } from "@/components/product-dashboard/ProductOffers";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -123,10 +123,6 @@ function ProductDashboard() {
           }} subtitle="vs last month" />
           </div>
           <div className="space-y-8">
-            <div>
-              <h2 className="text-xl font-semibold mb-4 exo-2-header">Your Matches</h2>
-              <MatchedProducts />
-            </div>
             <div>
               <h2 className="text-xl font-semibold mb-4 exo-2-header">Your Active Bids</h2>
               <ActiveBidsProducts />

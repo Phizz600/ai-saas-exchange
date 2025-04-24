@@ -34,9 +34,8 @@ export interface Product {
   updated_at?: string;
   special_notes?: string;
   demo_url?: string;
-  match_score?: number;
   
-  // Add properties to fix the MatchedProducts.tsx error
+  // Add properties to fix compatibility issues
   monthlyRevenue?: number; // Alias for monthly_revenue
   image?: string; // Alias for image_url
 }
