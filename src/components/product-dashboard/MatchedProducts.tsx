@@ -220,17 +220,23 @@ export const MatchedProducts = () => {
             product={{
               id: product.product_id,
               title: product.title,
-              description: product.description || "", // Ensure description is never null
+              description: product.description || "", 
               price: Number(product.price),
               category: product.category,
               stage: product.stage,
-              image: product.image_url || "/placeholder.svg", // Use image_url as the image property
+              image: product.image_url || "/placeholder.svg",
               image_url: product.image_url || "/placeholder.svg",
               seller_id: product.investor_id,
               match_score: product.match_score,
-              // Add the required properties
-              monthlyRevenue: 0, // Default value since we don't have this data
-            } as Product}
+              monthlyRevenue: 0,
+              // Create a minimal seller object to satisfy the type requirement
+              seller: {
+                id: product.investor_id || "",
+                name: "Seller",
+                avatar: "/placeholder.svg",
+                achievements: []
+              }
+            }}
           />
         ))}
       </div>
