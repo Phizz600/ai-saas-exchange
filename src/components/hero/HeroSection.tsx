@@ -106,7 +106,7 @@ const HeroSection = ({
               AI SaaS Businesses for Sale
             </h2>
             <p className="text-gray-200 max-w-3xl mx-auto text-center text-xl mb-12">
-              We manually verify, audit &amp; filter AI SaaS businesses before listing them. Interested in buying one? Our Dutch Auction marketplace guides you through a smooth, secured purchasing process!
+              We manually verify, audit & filter AI SaaS businesses before listing them. Interested in buying one? Our AI powered marketplace guides you through a smooth, secured purchasing process!
             </p>
 
             <ProductsShowcase isAuthenticated={isAuthenticated} handleAuthRedirect={handleAuthRedirect} />
