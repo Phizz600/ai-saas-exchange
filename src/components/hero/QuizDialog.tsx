@@ -49,45 +49,43 @@ export const QuizDialog = ({ open, onOpenChange }: QuizDialogProps) => {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-xl w-[95%] overflow-hidden mx-auto pb-6">
-        <div className="bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] p-4 sm:p-6 -m-6 mb-6 rounded-t-lg">
-          <h2 className="text-white text-lg sm:text-xl font-bold text-center">
+      <DialogContent className="max-w-xl">
+        <div className="bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] p-6 -m-6 mb-6 rounded-t-lg">
+          <h2 className="text-white text-xl font-bold text-center">
             What's your AI SaaS Businesses' Really Worth?
           </h2>
-          <p className="text-white/90 text-xs sm:text-sm text-center mt-2">
+          <p className="text-white/90 text-sm text-center mt-2">
             Get a free estimate of your AI SaaS worth in just 60 seconds
           </p>
         </div>
 
-        <div className="h-2 bg-gray-100 rounded-full mb-4 sm:mb-6">
+        <div className="h-2 bg-gray-100 rounded-full mb-6">
           <div
             className="h-full bg-[#6366f1] rounded-full transition-all duration-300"
             style={{ width: `${progress}%` }}
           />
         </div>
 
-        <div className="overflow-y-auto overflow-x-hidden max-h-[60vh] px-2">
-          {!showResults && !showConfirmation && (
-            <QuizQuestions
-              currentQuestion={currentQuestion}
-              questions={quizQuestions}
-              answers={answers}
-              onAnswerSelect={handleOptionSelect}
-              onNext={handleNext}
-              onPrevious={handlePrevious}
-            />
-          )}
+        {!showResults && !showConfirmation && (
+          <QuizQuestions
+            currentQuestion={currentQuestion}
+            questions={quizQuestions}
+            answers={answers}
+            onAnswerSelect={handleOptionSelect}
+            onNext={handleNext}
+            onPrevious={handlePrevious}
+          />
+        )}
 
-          {showResults && !showConfirmation && (
-            <ResultsForm
-              formData={formData}
-              onFormChange={setFormData}
-              onSubmit={handleSubmit}
-            />
-          )}
+        {showResults && !showConfirmation && (
+          <ResultsForm
+            formData={formData}
+            onFormChange={setFormData}
+            onSubmit={handleSubmit}
+          />
+        )}
 
-          {showConfirmation && <ConfirmationScreen email={formData.email} />}
-        </div>
+        {showConfirmation && <ConfirmationScreen email={formData.email} />}
       </DialogContent>
     </Dialog>
   );
