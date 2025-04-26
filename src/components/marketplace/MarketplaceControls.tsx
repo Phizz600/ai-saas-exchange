@@ -18,14 +18,17 @@ export const MarketplaceControls = ({
   onRefresh,
 }: MarketplaceControlsProps) => {
   return (
-    <div className="flex items-center justify-between mb-4">
+    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
       <div className="flex items-center gap-2">
         <Switch 
           id="verified-only"
           checked={showVerifiedOnly}
           onCheckedChange={onVerifiedChange}
         />
-        <Label htmlFor="verified-only" className="cursor-pointer flex items-center gap-1">
+        <Label 
+          htmlFor="verified-only" 
+          className="cursor-pointer flex items-center gap-1 text-sm sm:text-base"
+        >
           <CheckCircle className="h-4 w-4 text-green-500" />
           Verified Products Only
         </Label>
@@ -36,7 +39,7 @@ export const MarketplaceControls = ({
         size="sm" 
         onClick={onRefresh}
         disabled={isRefreshing}
-        className="flex items-center gap-1"
+        className="w-full sm:w-auto flex items-center gap-1 py-2"
       >
         <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
         Refresh

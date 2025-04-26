@@ -1,3 +1,4 @@
+
 import {
   Pagination,
   PaginationContent,
@@ -6,6 +7,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface MarketplacePaginationProps {
   currentPage: number;
@@ -18,33 +20,59 @@ export const MarketplacePagination = ({
   totalPages,
   setCurrentPage,
 }: MarketplacePaginationProps) => {
+  const isMobile = useIsMobile();
+
+  // For mobile, show fewer page numbers
+  const getPageNumbers = () => {
+    if (isMobile) {
+      if (totalPages <= 3) return Array.from({ length: totalPages }, (_, i) => i + 1);
+      if (currentPage <= 2) return [1, 2, 3];
+      if (currentPage >= totalPages - 1) return [totalPages - 2, totalPages - 1, totalPages];
+      return [currentPage - 1, currentPage, currentPage + 1];
+    }
+    return Array.from({ length: totalPages }, (_, i) => i + 1);
+  };
+
   return (
-    <div className="flex justify-center mb-12">
+    <div className="flex justify-center my-8 px-4">
       <Pagination>
-        <PaginationContent>
+        <PaginationContent className="gap-1 sm:gap-2">
           <PaginationItem>
             <PaginationPrevious
               onClick={() => setCurrentPage(Math.max(currentPage - 1, 1))}
-              className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+              className={`${currentPage === 1 ? "pointer-events-none opacity-50" : ""} min-w-[100px] hidden sm:flex`}
             />
+            <PaginationLink
+              onClick={() => setCurrentPage(Math.max(currentPage - 1, 1))}
+              className={`${currentPage === 1 ? "pointer-events-none opacity-50" : ""} sm:hidden`}
+            >
+              Prev
+            </PaginationLink>
           </PaginationItem>
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+          
+          {getPageNumbers().map((page) => (
             <PaginationItem key={page}>
               <PaginationLink
                 onClick={() => setCurrentPage(page)}
                 isActive={currentPage === page}
+                className="min-w-[40px] h-10 sm:h-9"
               >
                 {page}
               </PaginationLink>
             </PaginationItem>
           ))}
+          
           <PaginationItem>
             <PaginationNext
               onClick={() => setCurrentPage(Math.min(currentPage + 1, totalPages))}
-              className={
-                currentPage === totalPages ? "pointer-events-none opacity-50" : ""
-              }
+              className={`${currentPage === totalPages ? "pointer-events-none opacity-50" : ""} min-w-[100px] hidden sm:flex`}
             />
+            <PaginationLink
+              onClick={() => setCurrentPage(Math.min(currentPage + 1, totalPages))}
+              className={`${currentPage === totalPages ? "pointer-events-none opacity-50" : ""} sm:hidden`}
+            >
+              Next
+            </PaginationLink>
           </PaginationItem>
         </PaginationContent>
       </Pagination>

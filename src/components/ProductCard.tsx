@@ -105,7 +105,7 @@ export function ProductCard({ product, onView }: ProductCardProps) {
         className="h-full"
       >
         <Card className="overflow-hidden h-full hover:shadow-lg transition-shadow duration-300">
-          <div className="relative h-48">
+          <div className="relative h-40 sm:h-48">
             <img
               src={product.image}
               alt={product.title}
@@ -120,9 +120,9 @@ export function ProductCard({ product, onView }: ProductCardProps) {
             )}
           </div>
           
-          <div className="p-6 space-y-4">
+          <div className="p-4 sm:p-6 space-y-3 sm:space-y-4">
             <div>
-              <h3 className="font-exo text-xl font-semibold text-gray-900 mb-2">
+              <h3 className="font-exo text-lg sm:text-xl font-semibold text-gray-900 mb-2 line-clamp-2">
                 {product.title}
               </h3>
               
@@ -139,7 +139,7 @@ export function ProductCard({ product, onView }: ProductCardProps) {
               monthlyRevenue={product.monthlyRevenue} 
             />
 
-            <div className="pt-4">
+            <div className="pt-3 sm:pt-4">
               <ProductCardButton 
                 isLoading={isLoading} 
                 onView={onView} 
