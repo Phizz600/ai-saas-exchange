@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -146,7 +145,7 @@ export const QuizDialog = ({ open, onOpenChange }: QuizDialogProps) => {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-xl">
         <div className="bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] p-6 -m-6 mb-6 rounded-t-lg">
-          <h2 className="text-white text-xl font-bold text-center">AI SaaS Business Valuation Quiz</h2>
+          <h2 className="text-white text-xl font-bold text-center">What's your AI SaaS Businesses' Really Worth?</h2>
           <p className="text-white/90 text-sm text-center mt-2">
             Get a free estimate of your AI SaaS company's worth in just 60 seconds
           </p>
