@@ -12,19 +12,18 @@ interface ResultsFormProps {
 
 export const ResultsForm = ({ formData, onFormChange, onSubmit }: ResultsFormProps) => {
   return (
-    <form onSubmit={onSubmit} className="space-y-6">
+    <form onSubmit={onSubmit} className="space-y-4 sm:space-y-6">
       <div className="text-center">
-        <h3 className="text-xl font-bold mb-4">Your Valuation is Ready!</h3>
-        <p className="text-lg font-semibold text-[#6366f1] mb-4">
+        <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-4">Your Valuation is Ready!</h3>
+        <p className="text-base sm:text-lg font-semibold text-[#6366f1] mb-2 sm:mb-4">
           Where should we send your personalized AI SaaS valuation?
         </p>
-        <p className="text-gray-600">
-          We'll email you a detailed valuation range based on current market conditions and your inputs, 
-          along with next steps to list your business on the AI Exchange Club marketplace.
+        <p className="text-sm sm:text-base text-gray-600">
+          We'll email you a detailed valuation range based on current market conditions and your inputs.
         </p>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-3 sm:space-y-4">
         <div>
           <label className="block text-sm font-medium mb-1">Full Name</label>
           <Input
@@ -32,6 +31,7 @@ export const ResultsForm = ({ formData, onFormChange, onSubmit }: ResultsFormPro
             placeholder="Your Name"
             value={formData.name}
             onChange={e => onFormChange({ ...formData, name: e.target.value })}
+            className="w-full"
           />
         </div>
         <div>
@@ -41,6 +41,7 @@ export const ResultsForm = ({ formData, onFormChange, onSubmit }: ResultsFormPro
             placeholder="your@email.com"
             value={formData.email}
             onChange={e => onFormChange({ ...formData, email: e.target.value })}
+            className="w-full"
           />
         </div>
         <div>
@@ -50,17 +51,18 @@ export const ResultsForm = ({ formData, onFormChange, onSubmit }: ResultsFormPro
             placeholder="Your AI SaaS Company"
             value={formData.company}
             onChange={e => onFormChange({ ...formData, company: e.target.value })}
+            className="w-full"
           />
         </div>
 
-        <label className="flex items-start space-x-2">
+        <label className="flex items-start space-x-2 cursor-pointer">
           <input
             type="checkbox"
             checked={formData.sellingInterest}
             onChange={e => onFormChange({ ...formData, sellingInterest: e.target.checked })}
             className="mt-1"
           />
-          <span className="text-sm text-gray-600">
+          <span className="text-xs sm:text-sm text-gray-600">
             I'm interested in exploring options to sell my AI SaaS business in the next 12 months
           </span>
         </label>
