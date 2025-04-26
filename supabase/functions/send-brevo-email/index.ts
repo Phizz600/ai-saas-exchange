@@ -56,10 +56,9 @@ serve(async (req) => {
       }
 
       console.log(`Tracking event via API: ${eventName}`, JSON.stringify(identifiers));
-      console.log(`Contact properties:`, JSON.stringify(contactProperties || {}));
-      console.log(`Event properties:`, JSON.stringify(eventProperties || {}));
       
-      const response = await fetch('https://api.brevo.com/v3/events', {
+      // Track the event
+      const eventResponse = await fetch('https://api.brevo.com/v3/events', {
         method: 'POST',
         headers: {
           'api-key': brevoApiKey,
@@ -74,17 +73,48 @@ serve(async (req) => {
         }),
       });
 
-      const data = await response.json();
-      console.log('Brevo Events API response:', data);
+      const eventData = await eventResponse.json();
+      console.log('Brevo Events API response:', eventData);
 
-      if (!response.ok) {
-        throw new Error(`Brevo Events API error: ${JSON.stringify(data)}`);
+      if (!eventResponse.ok) {
+        throw new Error(`Brevo Events API error: ${JSON.stringify(eventData)}`);
+      }
+
+      // Send transactional email with valuation results
+      const emailResponse = await fetch('https://api.brevo.com/v3/smtp/email', {
+        method: 'POST',
+        headers: {
+          'api-key': brevoApiKey,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          to: [{
+            email: identifiers.email,
+            name: contactProperties.NAME || 'there'
+          }],
+          templateId: 1, // Replace with your actual template ID from Brevo
+          params: {
+            name: contactProperties.NAME || 'there',
+            valuation_low: contactProperties.ESTIMATED_VALUE_LOW,
+            valuation_high: contactProperties.ESTIMATED_VALUE_HIGH,
+            insights: contactProperties.INSIGHTS,
+            recommendations: contactProperties.RECOMMENDATIONS
+          }
+        })
+      });
+
+      const emailData = await emailResponse.json();
+      console.log('Brevo Email API response:', emailData);
+
+      if (!emailResponse.ok) {
+        throw new Error(`Brevo Email API error: ${JSON.stringify(emailData)}`);
       }
 
       return new Response(JSON.stringify({ 
         success: true, 
-        message: `Contact created/updated and event tracked successfully: ${eventName}`,
-        data 
+        message: `Contact created, event tracked, and valuation email sent successfully`,
+        data: { event: eventData, email: emailData }
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
