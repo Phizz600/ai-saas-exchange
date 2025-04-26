@@ -180,9 +180,7 @@ export const QuizDialog = ({
       <DialogContent className="max-w-xl">
         <div className="bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] p-6 -m-6 mb-6 rounded-t-lg">
           <h2 className="text-white text-xl font-bold text-center">What's your AI SaaS Businesses' Really Worth?</h2>
-          <p className="text-white/90 text-sm text-center mt-2">
-            Get a free estimate of your AI SaaS company's worth in just 60 seconds
-          </p>
+          <p className="text-white/90 text-sm text-center mt-2">Get a free estimate of your AI SaaS  worth in just 60 seconds</p>
         </div>
 
         <div className="h-2 bg-gray-100 rounded-full mb-6">
