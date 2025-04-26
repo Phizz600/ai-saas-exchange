@@ -16,6 +16,7 @@ import { Terms } from "@/pages/Terms";
 import { Policies } from "@/pages/Policies";
 import { MessageChat } from "@/pages/MessageChat";
 import Diagnostics from "@/pages/Diagnostics";
+import { ListingThankYou } from "@/pages/ListingThankYou";
 
 const routes = [
   {
@@ -61,6 +62,10 @@ const routes = [
   {
     path: "/list-product",
     element: <ListProduct />,
+  },
+  {
+    path: "/listing-thank-you",
+    element: <ListingThankYou />,
   },
   {
     path: "/nda-policy",
