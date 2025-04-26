@@ -73,19 +73,8 @@ const HeroSection = ({
 
           {/* Button Row - Updated to open newsletter subscription */}
           <div className="flex flex-col items-center gap-4 justify-center">
-            <a 
-              href="https://aiexchangeclub.beehiiv.com/subscribe" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="w-full max-w-xs"
-            >
-              <Button 
-                variant="purple" 
-                className="w-full py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1" 
-                type="button"
-              >
-                Join The Waitlist
-              </Button>
+            <a href="https://aiexchangeclub.beehiiv.com/subscribe" target="_blank" rel="noopener noreferrer" className="w-full max-w-xs">
+              <Button variant="purple" className="w-full py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1" type="button">Get your Free AI SaaS Valuation</Button>
             </a>
             <Button variant="green" onClick={handleListProductClick} className="w-full max-w-xs py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
               <MousePointerClick className="mr-2" />
@@ -139,5 +128,4 @@ const HeroSection = ({
       </div>
     </div>;
 };
-
 export default HeroSection;
