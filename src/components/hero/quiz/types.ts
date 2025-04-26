@@ -1,4 +1,3 @@
-
 export interface QuizQuestion {
   id: number;
   question: string;
@@ -14,4 +13,9 @@ export interface FormData {
   email: string;
   company: string;
   sellingInterest: boolean;
+}
+
+export interface QuizAnswer {
+  questionId: number;
+  value: string;
 }

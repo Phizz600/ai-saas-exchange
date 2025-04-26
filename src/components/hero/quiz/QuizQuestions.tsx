@@ -1,7 +1,5 @@
-
+import React from 'react';
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { QuizQuestion } from "./types";
 
 interface QuizQuestionsProps {
@@ -13,7 +11,7 @@ interface QuizQuestionsProps {
   onPrevious: () => void;
 }
 
-export const QuizQuestions = ({
+export const QuizQuestions = ({ 
   currentQuestion,
   questions,
   answers,
@@ -21,52 +19,37 @@ export const QuizQuestions = ({
   onNext,
   onPrevious
 }: QuizQuestionsProps) => {
-  const { toast } = useToast();
-  const question = questions[currentQuestion - 1];
+  // Store answers in localStorage when they change
+  React.useEffect(() => {
+    localStorage.setItem('quizAnswers', JSON.stringify(answers));
+  }, [answers]);
 
-  const handleNext = () => {
-    if (!answers[currentQuestion]) {
-      toast({
-        title: "Please select an option",
-        description: "Choose an option to continue to the next question",
-        variant: "destructive"
-      });
-      return;
-    }
-    onNext();
-  };
+  const question = questions[currentQuestion - 1];
 
   return (
     <div className="space-y-6">
-      <div className="font-semibold text-lg">
-        {question.question}
-      </div>
-      <div className="space-y-3">
-        {question.options.map(option => (
-          <button
+      <h3 className="text-xl font-semibold">
+        {question?.question}
+      </h3>
+      <div className="grid gap-4">
+        {question?.options.map((option) => (
+          <Button
             key={option.value}
-            onClick={() => onAnswerSelect(currentQuestion, option.value)}
-            className={`w-full text-left p-4 rounded-lg border transition-all ${
-              answers[currentQuestion] === option.value
-                ? "border-[#6366f1] bg-[#f0f4ff]"
-                : "border-gray-200 hover:border-[#6366f1] hover:bg-[#f5f7ff]"
-            }`}
+            variant={answers[question.id] === option.value ? "secondary" : "outline"}
+            className="justify-start"
+            onClick={() => onAnswerSelect(question.id, option.value)}
           >
-            {option.icon && <span className="mr-3">{option.icon}</span>}
+            {option.icon && <span className="mr-2">{option.icon}</span>}
             {option.label}
-          </button>
+          </Button>
         ))}
       </div>
-      <div className="flex justify-between pt-4">
-        <Button variant="outline" onClick={onPrevious} disabled={currentQuestion === 1}>
-          <ChevronLeft className="mr-2 h-4 w-4" /> Previous
+      <div className="flex justify-between">
+        <Button variant="ghost" onClick={onPrevious} disabled={currentQuestion === 1}>
+          Previous
         </Button>
-        <Button onClick={handleNext} className="bg-[6366F1] bg-indigo-500 hover:bg-indigo-400">
-          {currentQuestion === questions.length ? (
-            <>Calculate My Valuation</>
-          ) : (
-            <>Next <ChevronRight className="ml-2 h-4 w-4" /></>
-          )}
+        <Button onClick={onNext}>
+          {currentQuestion === questions.length ? "See Results" : "Next"}
         </Button>
       </div>
     </div>

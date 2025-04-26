@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { FormData } from '../types';
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { calculateQuizValuation } from '../utils/valuationCalculator';
 
 export const useQuizSubmission = () => {
   const [showResults, setShowResults] = useState(false);
@@ -27,7 +28,11 @@ export const useQuizSubmission = () => {
     }
 
     try {
-      // Track event via Brevo's Events API
+      // Calculate valuation based on quiz answers
+      const answers = JSON.parse(localStorage.getItem('quizAnswers') || '{}');
+      const valuationResult = await calculateQuizValuation(answers);
+
+      // Track event and send valuation email via Brevo's Events API
       const eventTrackingResponse = await supabase.functions.invoke('send-brevo-email', {
         body: JSON.stringify({
           mode: 'track_event_api',
@@ -36,11 +41,17 @@ export const useQuizSubmission = () => {
           contactProperties: {
             NAME: formData.name,
             COMPANY: formData.company,
-            SELLING_INTEREST: formData.sellingInterest
+            SELLING_INTEREST: formData.sellingInterest,
+            ESTIMATED_VALUE_LOW: valuationResult.estimatedValue.low,
+            ESTIMATED_VALUE_HIGH: valuationResult.estimatedValue.high,
+            INSIGHTS: valuationResult.insights.join('\n'),
+            RECOMMENDATIONS: valuationResult.recommendations.join('\n'),
+            QUIZ_ANSWERS: JSON.stringify(answers)
           },
           eventProperties: {
             source: 'ai_saas_valuation_quiz',
-            company: formData.company || 'Not Provided'
+            company: formData.company || 'Not Provided',
+            valuation_range: `$${valuationResult.estimatedValue.low} - $${valuationResult.estimatedValue.high}`
           }
         })
       });
