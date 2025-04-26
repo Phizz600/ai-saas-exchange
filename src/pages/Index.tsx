@@ -2,7 +2,6 @@
 import { Navbar } from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import { Footer } from "@/components/Footer";
-import { ExitIntentDialog } from "@/components/ExitIntentDialog";
 import { motion } from "framer-motion";
 import ReviewSection from "@/components/hero/ReviewSection";
 import PricingFees from "@/components/hero/PricingFees";
@@ -11,7 +10,6 @@ import { ParticlesBackground } from "@/components/hero/ParticlesBackground";
 import { PromotionalBanner } from "@/components/PromotionalBanner";
 import EnhancedNdaPolicy from "@/components/hero/EnhancedNdaPolicy";
 import { Link } from "react-router-dom";
-// Removed any DraftTable import if it existed
 
 export const Index = () => {
   return (
@@ -26,7 +24,6 @@ export const Index = () => {
         <EnhancedNdaPolicy />
         <ReviewSection />
         <Footer />
-        <ExitIntentDialog />
         
         {/* Admin link - only visible in development */}
         {import.meta.env.DEV && (
