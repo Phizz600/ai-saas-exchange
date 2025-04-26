@@ -1,5 +1,7 @@
+
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, Save } from "lucide-react";
+
 interface FormNavigationButtonsProps {
   currentSection: number;
   totalSections: number;
@@ -8,6 +10,7 @@ interface FormNavigationButtonsProps {
   onSaveForLater: () => void;
   isSubmitting: boolean;
 }
+
 export function FormNavigationButtons({
   currentSection,
   totalSections,
@@ -16,29 +19,55 @@ export function FormNavigationButtons({
   onSaveForLater,
   isSubmitting
 }: FormNavigationButtonsProps) {
-  return <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-2 sm:gap-0 pt-6 border-t">
+  return (
+    <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-2 sm:gap-0 pt-6 border-t">
       <div className="flex items-center">
-        {currentSection > 0 && <Button type="button" variant="outline" onClick={onPrevious} className="flex items-center gap-2 w-full sm:w-auto">
+        {currentSection > 0 && (
+          <Button 
+            type="button" 
+            variant="outline" 
+            onClick={onPrevious} 
+            className="flex items-center gap-2 w-full sm:w-auto"
+          >
             <ArrowLeft className="h-4 w-4" />
             Back
-          </Button>}
+          </Button>
+        )}
       </div>
 
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-        <Button type="button" variant="outline" onClick={onSaveForLater} className="flex items-center justify-center gap-2 w-full sm:w-auto">
+        <Button 
+          type="button" 
+          variant="outline" 
+          onClick={onSaveForLater} 
+          className="flex items-center justify-center gap-2 w-full sm:w-auto"
+        >
           <Save className="h-4 w-4" />
           Save for later
         </Button>
         
-        {currentSection < totalSections - 1 ? <Button type="button" onClick={e => {
-        e.preventDefault();
-        onNext();
-      }} className="flex items-center justify-center gap-2 w-full sm:w-auto text-zinc-950 bg-[8B5CF6] bg-violet-500 hover:bg-violet-400">
+        {currentSection < totalSections - 1 ? (
+          <Button 
+            type="button" 
+            onClick={(e) => {
+              e.preventDefault();
+              onNext();
+            }} 
+            className="flex items-center justify-center gap-2 w-full sm:w-auto text-zinc-950 bg-[#8B5CF6] bg-violet-500 hover:bg-violet-400"
+          >
             Next
             <ArrowRight className="h-4 w-4" />
-          </Button> : <Button type="submit" className="w-full sm:w-auto bg-gradient-to-r from-[#8B5CF6] via-[#D946EE] to-[#0EA4E9] text-white font-semibold py-3 px-6 rounded-lg hover:opacity-90" disabled={isSubmitting}>
+          </Button>
+        ) : (
+          <Button 
+            type="submit" 
+            className="w-full sm:w-auto bg-gradient-to-r from-[#8B5CF6] via-[#D946EE] to-[#0EA4E9] text-white font-semibold py-3 px-6 rounded-lg hover:opacity-90" 
+            disabled={isSubmitting}
+          >
             {isSubmitting ? "Submitting Product..." : "Submit Product"}
-          </Button>}
+          </Button>
+        )}
       </div>
-    </div>;
+    </div>
+  );
 }
