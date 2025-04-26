@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -206,8 +207,8 @@ export const QuizDialog = ({ open, onOpenChange }: QuizDialogProps) => {
                 Where should we send your personalized AI SaaS valuation?
               </p>
               <p className="text-gray-600">
-                We'll email you a detailed valuation range based on current market conditions and your inputs,
-                along with next steps to list your business on AI Exchange.
+                We'll email you a detailed valuation range based on current market conditions and your inputs, 
+                along with next steps to list your business on the AI Exchange Club marketplace.
               </p>
             </div>
 
