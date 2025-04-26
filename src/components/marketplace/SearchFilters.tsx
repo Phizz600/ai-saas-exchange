@@ -1,4 +1,3 @@
-
 import { Search, SlidersHorizontal, X, Loader2, Timer, Tag, ArrowDownUp, Clock, TrendingUp } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -17,6 +16,7 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const industries = [{
   value: "all",
@@ -230,6 +230,7 @@ export const SearchFilters = ({
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
   const [debouncedSearchQuery] = useDebounce(localSearchQuery, 300);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const isMobile = useIsMobile();
   
   // Sync local state with parent state when props change
   useEffect(() => {
@@ -364,8 +365,8 @@ export const SearchFilters = ({
   const currentSortOption = sortOptions.find(option => option.value === sortBy);
 
   return (
-    <div className="space-y-4 max-w-full">
-      <div className="flex flex-col gap-4 w-full">
+    <div className="space-y-3 md:space-y-4 max-w-full">
+      <div className="flex flex-col gap-3 md:gap-4 w-full">
         <div className="relative w-full">
           <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
             <Search className="h-4 w-4 text-gray-400" />
@@ -375,7 +376,7 @@ export const SearchFilters = ({
             placeholder="Search AI products..."
             value={localSearchQuery}
             onChange={(e) => setLocalSearchQuery(e.target.value)}
-            className="pl-10 border-gray-200 focus:border-[#8B5CF6] transition-colors bg-white h-10 md:h-11 shadow-sm hover:shadow-md w-full"
+            className="pl-10 border-gray-200 focus:border-[#8B5CF6] transition-colors bg-white h-10 md:h-11 shadow-sm hover:shadow-md w-full min-h-[40px]"
           />
           {localSearchQuery && (
             <button
@@ -392,7 +393,7 @@ export const SearchFilters = ({
 
         <div className="flex flex-col sm:flex-row gap-2 w-full">
           <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="w-full sm:w-[180px] bg-white border-gray-200 shadow-sm hover:shadow-md flex gap-1">
+            <SelectTrigger className="w-full sm:w-[180px] bg-white border-gray-200 shadow-sm hover:shadow-md flex gap-1 min-h-[40px]">
               {currentSortOption?.icon}
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
@@ -408,12 +409,12 @@ export const SearchFilters = ({
             </SelectContent>
           </Select>
           
-          <div className="flex gap-2 w-full sm:w-auto overflow-x-auto sm:overflow-x-visible pb-2 sm:pb-0 -mx-4 sm:mx-0 px-4 sm:px-0">
+          <div className="flex gap-2 w-full sm:w-auto overflow-x-auto sm:overflow-x-visible pb-2 sm:pb-0 -mx-3 sm:mx-0 px-3 sm:px-0">
             <Toggle 
               pressed={showBuyNowOnly}
               onPressedChange={handleBuyNowToggle}
               variant="outline"
-              className="bg-white border-gray-200 hover:bg-blue-50 shadow-sm hover:shadow-md data-[state=on]:bg-blue-100 data-[state=on]:text-blue-800 flex-shrink-0"
+              className="bg-white border-gray-200 hover:bg-blue-50 shadow-sm hover:shadow-md data-[state=on]:bg-blue-100 data-[state=on]:text-blue-800 flex-shrink-0 min-h-[40px]"
             >
               <Tag className="h-4 w-4 mr-2" />
               Buy It Now
@@ -423,7 +424,7 @@ export const SearchFilters = ({
               pressed={showAuctionsOnly}
               onPressedChange={handleAuctionsToggle}
               variant="outline"
-              className="bg-white border-gray-200 hover:bg-amber-50 shadow-sm hover:shadow-md data-[state=on]:bg-amber-100 data-[state=on]:text-amber-800 flex-shrink-0"
+              className="bg-white border-gray-200 hover:bg-amber-50 shadow-sm hover:shadow-md data-[state=on]:bg-amber-100 data-[state=on]:text-amber-800 flex-shrink-0 min-h-[40px]"
             >
               <Timer className="h-4 w-4 mr-2" />
               Auctions
@@ -431,7 +432,7 @@ export const SearchFilters = ({
             
             <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
               <SheetTrigger asChild>
-                <Button variant="outline" className="bg-white border-gray-200 shadow-sm hover:shadow-md flex-shrink-0">
+                <Button variant="outline" className="bg-white border-gray-200 shadow-sm hover:shadow-md flex-shrink-0 min-h-[40px]">
                   <SlidersHorizontal className="h-4 w-4 mr-2" />
                   Filter
                   {hasActiveFilters && (
@@ -480,7 +481,7 @@ export const SearchFilters = ({
                         pressed={showBuyNowOnly}
                         onPressedChange={handleBuyNowToggle}
                         variant="outline"
-                        className="flex-1 justify-start bg-white border-gray-200 hover:bg-blue-50 data-[state=on]:bg-blue-100 data-[state=on]:text-blue-800"
+                        className="flex-1 justify-start bg-white border-gray-200 hover:bg-blue-50 data-[state=on]:bg-blue-100 data-[state=on]:text-blue-800 min-h-[44px]"
                       >
                         <Tag className="h-4 w-4 mr-2" />
                         Buy It Now Only
@@ -491,7 +492,7 @@ export const SearchFilters = ({
                         pressed={showAuctionsOnly}
                         onPressedChange={handleAuctionsToggle}
                         variant="outline"
-                        className="flex-1 justify-start bg-white border-gray-200 hover:bg-amber-50 data-[state=on]:bg-amber-100 data-[state=on]:text-amber-800"
+                        className="flex-1 justify-start bg-white border-gray-200 hover:bg-amber-50 data-[state=on]:bg-amber-100 data-[state=on]:text-amber-800 min-h-[44px]"
                       >
                         <Timer className="h-4 w-4 mr-2" />
                         Auctions Only
@@ -501,7 +502,7 @@ export const SearchFilters = ({
                   {hasActiveFilters && (
                     <Button 
                       variant="destructive" 
-                      className="w-full mt-4"
+                      className="w-full mt-4 min-h-[44px]"
                       onClick={() => {
                         clearAllFilters();
                         setIsSheetOpen(false);
@@ -520,7 +521,7 @@ export const SearchFilters = ({
       {/* Active Filters */}
       {hasActiveFilters && activeFilters.length > 0 && (
         <motion.div 
-          className="flex flex-wrap gap-2 pt-1 -mx-4 sm:mx-0 px-4 sm:px-0 overflow-x-auto pb-2 sm:pb-0"
+          className="flex flex-wrap gap-2 pt-1 -mx-3 sm:mx-0 px-3 sm:px-0 overflow-x-auto pb-2 sm:pb-0"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}

@@ -1,11 +1,14 @@
+
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Pause, TrendingUp, Percent } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export const QuickActions = () => {
   const { toast } = useToast();
+  const isMobile = useIsMobile();
 
   const handlePauseListing = async () => {
     try {
@@ -38,40 +41,40 @@ export const QuickActions = () => {
   };
 
   return (
-    <Card className="p-6 mb-8">
-      <h2 className="text-xl font-semibold mb-4 font-exo">Quick Actions</h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <Card className="p-4 md:p-6 mb-4 md:mb-8">
+      <h2 className="text-xl font-semibold mb-3 md:mb-4 font-exo">Quick Actions</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
         <Button 
           variant="outline" 
-          className="flex items-center gap-2 h-auto py-4 bg-gradient-to-r hover:from-[#D946EE]/10 hover:via-[#8B5CF6]/10 hover:to-[#0EA4E9]/10"
+          className="flex items-center gap-2 h-auto py-3 md:py-4 min-h-[44px] bg-gradient-to-r hover:from-[#D946EE]/10 hover:via-[#8B5CF6]/10 hover:to-[#0EA4E9]/10"
           onClick={handlePauseListing}
         >
           <Pause className="h-4 w-4" />
           <div className="text-left">
             <div className="font-semibold">Pause Listings</div>
-            <div className="text-sm text-gray-500">Temporarily hide all active listings</div>
+            <div className="text-xs md:text-sm text-gray-500">Temporarily hide all active listings</div>
           </div>
         </Button>
 
         <Button 
           variant="outline" 
-          className="flex items-center gap-2 h-auto py-4 bg-gradient-to-r hover:from-[#D946EE]/10 hover:via-[#8B5CF6]/10 hover:to-[#0EA4E9]/10"
+          className="flex items-center gap-2 h-auto py-3 md:py-4 min-h-[44px] bg-gradient-to-r hover:from-[#D946EE]/10 hover:via-[#8B5CF6]/10 hover:to-[#0EA4E9]/10"
         >
           <TrendingUp className="h-4 w-4" />
           <div className="text-left">
             <div className="font-semibold">Promote Products</div>
-            <div className="text-sm text-gray-500">Boost visibility of your listings</div>
+            <div className="text-xs md:text-sm text-gray-500">Boost visibility of your listings</div>
           </div>
         </Button>
 
         <Button 
           variant="outline" 
-          className="flex items-center gap-2 h-auto py-4 bg-gradient-to-r hover:from-[#D946EE]/10 hover:via-[#8B5CF6]/10 hover:to-[#0EA4E9]/10"
+          className="flex items-center gap-2 h-auto py-3 md:py-4 min-h-[44px] bg-gradient-to-r hover:from-[#D946EE]/10 hover:via-[#8B5CF6]/10 hover:to-[#0EA4E9]/10"
         >
           <Percent className="h-4 w-4" />
           <div className="text-left">
             <div className="font-semibold">Offer Discounts</div>
-            <div className="text-sm text-gray-500">Create special offers</div>
+            <div className="text-xs md:text-sm text-gray-500">Create special offers</div>
           </div>
         </Button>
       </div>

@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Header } from "@/components/Header";
 import { Search } from "lucide-react";
@@ -52,14 +53,14 @@ export const DashboardLayout = ({ children }: { children: React.ReactNode }) => 
         <DashboardSidebar />
         <SidebarInset>
           <Header />
-          <main className="container mx-auto px-4 py-4 md:py-8 mt-16">
+          <main className="container mx-auto px-3 sm:px-4 py-3 sm:py-6 md:py-8 mt-16">
             <div className="flex flex-col space-y-4 md:space-y-8">
               <div className="flex flex-col space-y-4 md:flex-row md:justify-between md:items-center">
                 <div>
                   <h1 className="text-2xl md:text-3xl font-bold text-gray-900 font-exo">Hey {firstName} 👋</h1>
                   <p className="text-sm md:text-base text-gray-500 mt-1 md:mt-2">Track, manage and analyze your AI products performance.</p>
                 </div>
-                <div className="w-full md:w-auto">
+                <div className="w-full md:w-auto mt-2 md:mt-0">
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                     <Input 
