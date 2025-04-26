@@ -32,7 +32,7 @@ export const useQuizSubmission = () => {
       const answers = JSON.parse(localStorage.getItem('quizAnswers') || '{}');
       const valuationResult = await calculateQuizValuation(answers);
 
-      // Track event and send valuation email via Brevo's Events API
+      // Create contact in Brevo, add to list, and track event
       const eventTrackingResponse = await supabase.functions.invoke('send-brevo-email', {
         body: JSON.stringify({
           mode: 'track_event_api',
@@ -56,7 +56,11 @@ export const useQuizSubmission = () => {
         })
       });
 
-      console.log("Quiz submission event tracking response:", eventTrackingResponse);
+      console.log("Quiz submission and list addition response:", eventTrackingResponse);
+      
+      if (!eventTrackingResponse.data?.success) {
+        throw new Error(eventTrackingResponse.data?.error || 'Failed to process submission');
+      }
       
       setShowConfirmation(true);
       toast({
