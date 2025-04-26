@@ -59,19 +59,18 @@ export const QuizQuestions = ({
           </button>
         ))}
       </div>
-      <div className="flex flex-col sm:flex-row justify-between gap-2 sm:gap-4 pt-4">
-        {/* Fixed button to ensure it's never cut off and has proper padding */}
+      <div className="flex justify-between gap-3 pt-4">
         <Button 
           variant="outline" 
           onClick={onPrevious} 
           disabled={currentQuestion === 1}
-          className="w-full sm:w-auto order-2 sm:order-1 py-2 px-4"
+          className="flex-1 py-2 px-4"
         >
           <ChevronLeft className="mr-2 h-4 w-4" /> Previous
         </Button>
         <Button 
           onClick={handleNext} 
-          className="w-full sm:w-auto order-1 sm:order-2 bg-indigo-500 hover:bg-indigo-400 py-2 px-4"
+          className="flex-1 bg-indigo-500 hover:bg-indigo-400 py-2 px-4"
         >
           {currentQuestion === questions.length ? (
             <>Calculate My Valuation</>
@@ -83,3 +82,4 @@ export const QuizQuestions = ({
     </div>
   );
 };
+
