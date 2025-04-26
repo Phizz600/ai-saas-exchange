@@ -1,20 +1,21 @@
+
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { BasicInfoSection } from "./form-sections/BasicInfoSection";
-import { FinancialSection } from "./form-sections/FinancialSection";
-import { TechnicalSection } from "./form-sections/TechnicalSection";
-import { TrafficSection } from "./form-sections/TrafficSection";
-import { AuctionSection } from "./form-sections/AuctionSection";
-import { SpecialNotesSection } from "./form-sections/SpecialNotesSection";
-import { SubmissionAgreements } from "./form-sections/SubmissionAgreements";
-import { FormProgressBar } from "./form-sections/FormProgressBar";
-import { FormNavigationButtons } from "./components/FormNavigationButtons";
-import { useFormNavigation } from "./hooks/useFormNavigation";
-import { handleProductSubmission } from "./utils/formSubmissionHandler";
+import { BasicInfoSection } from "@/components/marketplace/list-product/form-sections/BasicInfoSection";
+import { FinancialSection } from "@/components/marketplace/list-product/form-sections/FinancialSection";
+import { TechnicalSection } from "@/components/marketplace/list-product/form-sections/TechnicalSection";
+import { TrafficSection } from "@/components/marketplace/list-product/form-sections/TrafficSection";
+import { AuctionSection } from "@/components/marketplace/list-product/form-sections/AuctionSection";
+import { SpecialNotesSection } from "@/components/marketplace/list-product/form-sections/SpecialNotesSection";
+import { SubmissionAgreements } from "@/components/marketplace/list-product/form-sections/SubmissionAgreements";
+import { FormProgressBar } from "@/components/marketplace/list-product/form-sections/FormProgressBar";
+import { FormNavigationButtons } from "@/components/marketplace/list-product/components/FormNavigationButtons";
+import { useFormNavigation } from "@/components/marketplace/list-product/hooks/useFormNavigation";
+import { handleProductSubmission } from "@/components/marketplace/list-product/utils/formSubmissionHandler";
 import { Form } from "@/components/ui/form";
-import { ListProductFormData } from "./types";
-import { useAutosave } from "./hooks/useAutosave";
+import { ListProductFormData } from "@/components/marketplace/list-product/types";
+import { useAutosave } from "@/components/marketplace/list-product/hooks/useAutosave";
 import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -224,7 +225,7 @@ export function ListProductForm() {
           sessionStorage.setItem('pendingProductId', productId);
           console.log("Session storage updated with product ID:", productId);
           
-          // Trigger the payment redirect
+          // Redirect directly to thank you page (free listings)
           handleRedirectToSuccess(productId);
         } else {
           // Handle submission failure
