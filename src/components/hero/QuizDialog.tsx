@@ -49,7 +49,7 @@ export const QuizDialog = ({ open, onOpenChange }: QuizDialogProps) => {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-xl w-[95%] overflow-hidden mx-auto">
+      <DialogContent className="max-w-xl w-[95%] overflow-hidden mx-auto pb-6">
         <div className="bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] p-4 sm:p-6 -m-6 mb-6 rounded-t-lg">
           <h2 className="text-white text-lg sm:text-xl font-bold text-center">
             What's your AI SaaS Businesses' Really Worth?
@@ -66,7 +66,7 @@ export const QuizDialog = ({ open, onOpenChange }: QuizDialogProps) => {
           />
         </div>
 
-        <div className="overflow-y-auto max-h-[60vh] px-2">
+        <div className="overflow-y-auto overflow-x-hidden max-h-[60vh] px-2">
           {!showResults && !showConfirmation && (
             <QuizQuestions
               currentQuestion={currentQuestion}
