@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { FormData } from '../types';
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 export const useQuizSubmission = () => {
   const [showResults, setShowResults] = useState(false);
@@ -26,16 +27,33 @@ export const useQuizSubmission = () => {
     }
 
     try {
-      // Here you would typically send the data to your backend
-      console.log("Form submitted with data:", {
-        ...formData
+      // Track event via Brevo's Events API
+      const eventTrackingResponse = await supabase.functions.invoke('send-brevo-email', {
+        body: JSON.stringify({
+          mode: 'track_event_api',
+          eventName: 'quiz_completed',
+          identifiers: { email: formData.email },
+          contactProperties: {
+            NAME: formData.name,
+            COMPANY: formData.company,
+            SELLING_INTEREST: formData.sellingInterest
+          },
+          eventProperties: {
+            source: 'ai_saas_valuation_quiz',
+            company: formData.company || 'Not Provided'
+          }
+        })
       });
+
+      console.log("Quiz submission event tracking response:", eventTrackingResponse);
+      
       setShowConfirmation(true);
       toast({
         title: "Success!",
         description: "Your valuation has been sent to your email."
       });
     } catch (error) {
+      console.error("Error tracking quiz submission:", error);
       toast({
         title: "Error",
         description: "There was a problem sending your valuation. Please try again.",
