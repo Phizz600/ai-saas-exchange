@@ -51,7 +51,7 @@ export const QuizDialog = ({ open, onOpenChange }: QuizDialogProps) => {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-xl">
         <div className="bg-gradient-to-r from-[#8B5CF6] via-[#D946EF] to-[#9B87F5] p-6 -m-6 mb-6 rounded-t-lg">
-          <h2 className="text-white text-xl font-bold text-center">
+          <h2 className="exo-2-heading text-white text-xl text-center">
             What's your AI SaaS Businesses' Really Worth?
           </h2>
           <p className="text-white/90 text-sm text-center mt-2">
