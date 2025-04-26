@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -225,7 +224,7 @@ export function ListProductForm() {
           sessionStorage.setItem('pendingProductId', productId);
           console.log("Session storage updated with product ID:", productId);
           
-          // Redirect directly to thank you page (free listings)
+          // Redirect to thank you page
           handleRedirectToSuccess(productId);
         } else {
           // Handle submission failure
@@ -305,14 +304,14 @@ export function ListProductForm() {
     );
   }
 
-  // Display success message if submission was successful but we're waiting for redirect
+  // Update success message to remove payment references
   if (submissionSuccess) {
     return (
       <Alert className="mb-6 bg-green-50 border-green-200">
         <CheckCircle2 className="h-4 w-4 text-green-500" />
         <AlertTitle>Success!</AlertTitle>
         <AlertDescription className="space-y-4">
-          <p>Your product has been submitted successfully. Redirecting to thank you page...</p>
+          <p>Your product has been submitted successfully. Redirecting to confirmation page...</p>
           <div className="h-1.5 w-full bg-gray-200 rounded-full overflow-hidden">
             <div className="h-full bg-green-500 animate-progress rounded-full"></div>
           </div>
