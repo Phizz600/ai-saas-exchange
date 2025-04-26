@@ -1,3 +1,4 @@
+
 import { Search, SlidersHorizontal, X, Loader2, Timer, Tag, ArrowDownUp, Clock, TrendingUp } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -441,77 +442,78 @@ export const SearchFilters = ({
                 </Button>
               </SheetTrigger>
               <SheetContent className="w-full sm:max-w-md overflow-y-auto">
-              <SheetHeader>
-                <SheetTitle>Filters</SheetTitle>
-                <SheetDescription>
-                  Refine your search with the following filters.
-                </SheetDescription>
-              </SheetHeader>
-              <div className="py-6 space-y-6">
-                <FilterSection
-                  label="Industry"
-                  options={industries}
-                  value={industryFilter}
-                  onValueChange={setIndustryFilter}
-                />
-                <FilterSection
-                  label="Stage"
-                  options={stages}
-                  value={stageFilter}
-                  onValueChange={setStageFilter}
-                />
-                <FilterSection
-                  label="Price Range"
-                  options={priceRanges}
-                  value={priceFilter}
-                  onValueChange={setPriceFilter}
-                />
-                <FilterSection
-                  label="Sort By"
-                  options={sortOptions}
-                  value={sortBy}
-                  onValueChange={setSortBy}
-                />
-                <div className="flex flex-col space-y-2">
-                  <div className="text-sm font-medium mb-1">Listing Type</div>
-                  <div className="flex items-center space-x-2">
-                    <Toggle 
-                      pressed={showBuyNowOnly}
-                      onPressedChange={handleBuyNowToggle}
-                      variant="outline"
-                      className="flex-1 justify-start bg-white border-gray-200 hover:bg-blue-50 data-[state=on]:bg-blue-100 data-[state=on]:text-blue-800"
-                    >
-                      <Tag className="h-4 w-4 mr-2" />
-                      Buy It Now Only
-                    </Toggle>
+                <SheetHeader>
+                  <SheetTitle>Filters</SheetTitle>
+                  <SheetDescription>
+                    Refine your search with the following filters.
+                  </SheetDescription>
+                </SheetHeader>
+                <div className="py-6 space-y-6">
+                  <FilterSection
+                    label="Industry"
+                    options={industries}
+                    value={industryFilter}
+                    onValueChange={setIndustryFilter}
+                  />
+                  <FilterSection
+                    label="Stage"
+                    options={stages}
+                    value={stageFilter}
+                    onValueChange={setStageFilter}
+                  />
+                  <FilterSection
+                    label="Price Range"
+                    options={priceRanges}
+                    value={priceFilter}
+                    onValueChange={setPriceFilter}
+                  />
+                  <FilterSection
+                    label="Sort By"
+                    options={sortOptions}
+                    value={sortBy}
+                    onValueChange={setSortBy}
+                  />
+                  <div className="flex flex-col space-y-2">
+                    <div className="text-sm font-medium mb-1">Listing Type</div>
+                    <div className="flex items-center space-x-2">
+                      <Toggle 
+                        pressed={showBuyNowOnly}
+                        onPressedChange={handleBuyNowToggle}
+                        variant="outline"
+                        className="flex-1 justify-start bg-white border-gray-200 hover:bg-blue-50 data-[state=on]:bg-blue-100 data-[state=on]:text-blue-800"
+                      >
+                        <Tag className="h-4 w-4 mr-2" />
+                        Buy It Now Only
+                      </Toggle>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Toggle 
+                        pressed={showAuctionsOnly}
+                        onPressedChange={handleAuctionsToggle}
+                        variant="outline"
+                        className="flex-1 justify-start bg-white border-gray-200 hover:bg-amber-50 data-[state=on]:bg-amber-100 data-[state=on]:text-amber-800"
+                      >
+                        <Timer className="h-4 w-4 mr-2" />
+                        Auctions Only
+                      </Toggle>
+                    </div>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <Toggle 
-                      pressed={showAuctionsOnly}
-                      onPressedChange={handleAuctionsToggle}
-                      variant="outline"
-                      className="flex-1 justify-start bg-white border-gray-200 hover:bg-amber-50 data-[state=on]:bg-amber-100 data-[state=on]:text-amber-800"
+                  {hasActiveFilters && (
+                    <Button 
+                      variant="destructive" 
+                      className="w-full mt-4"
+                      onClick={() => {
+                        clearAllFilters();
+                        setIsSheetOpen(false);
+                      }}
                     >
-                      <Timer className="h-4 w-4 mr-2" />
-                      Auctions Only
-                    </Toggle>
-                  </div>
+                      Clear All Filters
+                    </Button>
+                  )}
                 </div>
-                {hasActiveFilters && (
-                  <Button 
-                    variant="destructive" 
-                    className="w-full mt-4"
-                    onClick={() => {
-                      clearAllFilters();
-                      setIsSheetOpen(false);
-                    }}
-                  >
-                    Clear All Filters
-                  </Button>
-                )}
-              </div>
-            </SheetContent>
-          </Sheet>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
       </div>
 
