@@ -1,4 +1,3 @@
-
 import { ListProductFormData } from "../types";
 import { supabase } from "@/integrations/supabase/client";
 import { logError } from "@/integrations/supabase/products";

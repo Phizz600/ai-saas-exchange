@@ -18,7 +18,7 @@ export const useProductSubmission = () => {
       setRedirecting(true);
       setSubmissionSuccess(true);
       
-      toast.success("Product submitted successfully!");
+      toast.success("Product submitted successfully! You will be notified when your listing is approved.");
       
       // Redirect to thank you page after a short delay to allow the toast to show
       setTimeout(() => {

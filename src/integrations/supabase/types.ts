@@ -833,6 +833,7 @@ export type Database = {
           no_reserve: boolean | null
           number_of_employees: string | null
           payment_status: string | null
+          payment_verified_at: string | null
           price: number
           price_decrement: number | null
           price_decrement_interval: string | null
@@ -847,6 +848,7 @@ export type Database = {
           stage: string
           starting_price: number | null
           status: string | null
+          submission_completed_at: string | null
           team_size: string | null
           tech_stack: string[]
           tech_stack_other: string | null
@@ -900,6 +902,7 @@ export type Database = {
           no_reserve?: boolean | null
           number_of_employees?: string | null
           payment_status?: string | null
+          payment_verified_at?: string | null
           price: number
           price_decrement?: number | null
           price_decrement_interval?: string | null
@@ -914,6 +917,7 @@ export type Database = {
           stage: string
           starting_price?: number | null
           status?: string | null
+          submission_completed_at?: string | null
           team_size?: string | null
           tech_stack?: string[]
           tech_stack_other?: string | null
@@ -967,6 +971,7 @@ export type Database = {
           no_reserve?: boolean | null
           number_of_employees?: string | null
           payment_status?: string | null
+          payment_verified_at?: string | null
           price?: number
           price_decrement?: number | null
           price_decrement_interval?: string | null
@@ -981,6 +986,7 @@ export type Database = {
           stage?: string
           starting_price?: number | null
           status?: string | null
+          submission_completed_at?: string | null
           team_size?: string | null
           tech_stack?: string[]
           tech_stack_other?: string | null
