@@ -11,6 +11,7 @@ import { ParticlesBackground } from "@/components/hero/ParticlesBackground";
 import { PromotionalBanner } from "@/components/PromotionalBanner";
 import EnhancedNdaPolicy from "@/components/hero/EnhancedNdaPolicy";
 import { Link } from "react-router-dom";
+// Removed any DraftTable import if it existed
 
 export const Index = () => {
   return (
