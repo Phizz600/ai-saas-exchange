@@ -1,9 +1,10 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { MousePointerClick } from "lucide-react";
 import { ProductsShowcase } from "@/components/hero/ProductsShowcase";
+import { QuizDialog } from "@/components/hero/QuizDialog";
 
 // Keep lazy loading for these components
 const NewsletterSubscription = lazy(() => import("@/components/hero/NewsletterSubscription"));
@@ -45,6 +46,8 @@ const HeroSection = ({
   handleListProductClick,
   handleAuthRedirect
 }: HeroSectionProps) => {
+  const [quizOpen, setQuizOpen] = useState(false);
+
   return <div className="min-h-screen relative overflow-hidden">
       
       <div className="relative container mx-auto px-4 py-24">
@@ -73,10 +76,18 @@ const HeroSection = ({
 
           {/* Button Row - Updated to open newsletter subscription */}
           <div className="flex flex-col items-center gap-4 justify-center">
-            <a href="https://aiexchangeclub.beehiiv.com/subscribe" target="_blank" rel="noopener noreferrer" className="w-full max-w-xs">
-              <Button variant="purple" className="w-full py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1" type="button">Get your Free AI SaaS Valuation</Button>
-            </a>
-            <Button variant="green" onClick={handleListProductClick} className="w-full max-w-xs py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+            <Button 
+              variant="purple" 
+              className="w-full max-w-xs py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1" 
+              onClick={() => setQuizOpen(true)}
+            >
+              Get your Free AI SaaS Valuation
+            </Button>
+            <Button 
+              variant="green" 
+              onClick={handleListProductClick} 
+              className="w-full max-w-xs py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+            >
               <MousePointerClick className="mr-2" />
               Sell your AI SaaS Business
             </Button>
@@ -124,8 +135,11 @@ const HeroSection = ({
           <div className="mt-8 text-sm text-gray-200">
             ✓ Free AI Valuations &nbsp; • &nbsp; ✓ Secure Platform &nbsp; • &nbsp; ✓ Premium Network
           </div>
+
+          <QuizDialog open={quizOpen} onOpenChange={setQuizOpen} />
         </motion.div>
       </div>
     </div>;
 };
+
 export default HeroSection;
