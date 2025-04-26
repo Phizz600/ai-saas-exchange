@@ -1,3 +1,4 @@
+
 import { motion, AnimatePresence } from "framer-motion";
 import { Star } from "lucide-react";
 interface HeroTitleProps {
@@ -25,7 +26,7 @@ const HeroTitle = ({
       <h1 className="exo-2-heading font-bold leading-tight text-white text-center mx-0 my-0 py-0 px-0 md:text-6xl text-3xl">
         The #1 Marketplace
         <br />
-        for AI{" "}
+        for Cash-Flowing AI{" "}
         <AnimatePresence mode="wait">
           <motion.span key={currentWordIndex} initial={{
           opacity: 0,
