@@ -16,7 +16,7 @@ const NewsletterSubscription = ({
     <form className="w-full max-w-md mx-auto">
       <motion.div whileHover={{ scale: 1.02 }} className="flex flex-col gap-4 items-center">
         <p className="text-sm text-gray-300 px-2 text-center">
-          Be the first 1,000 to join the AI Exchange Club waitlist. Receive a{' '}
+          Be the first 1,000 to join the AI Exchange Club. Receive a{' '}
           <span className="text-[#D946EF] font-semibold">free valuation</span>,{' '}
           <span className="text-[#0EA5E9] font-semibold">lifetime membership</span>, and{' '}
           <span className="text-purple-400 font-semibold">90% off listing fees for life</span>. Buyers: Enjoy{' '}
@@ -39,3 +39,4 @@ const NewsletterSubscription = ({
   );
 };
 export default NewsletterSubscription;
+
