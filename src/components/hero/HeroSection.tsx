@@ -47,7 +47,6 @@ const HeroSection = ({
   handleAuthRedirect
 }: HeroSectionProps) => {
   const [quizOpen, setQuizOpen] = useState(false);
-
   return <div className="min-h-screen relative overflow-hidden">
       
       <div className="relative container mx-auto px-4 py-24">
@@ -70,24 +69,14 @@ const HeroSection = ({
           opacity: 1
         }} transition={{
           duration: 0.3
-        }} className="text-xl text-gray-200 mb-12 max-w-2xl mx-auto text-center">
-            Join an exclusive network of investors gaining early access to cutting-edge AI SaaS businesses, products, tools, and solutions through our innovative Dutch auction marketplace.
-          </motion.p>
+        }} className="text-xl text-gray-200 mb-12 max-w-2xl mx-auto text-center">Join an exclusive network of investors gaining early access to AI SaaS businesses, products, tools, and solutions through our secure Dutch auction marketplace.</motion.p>
 
           {/* Button Row - Updated to open newsletter subscription */}
           <div className="flex flex-col items-center gap-4 justify-center">
-            <Button 
-              variant="purple" 
-              className="w-full max-w-xs py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1" 
-              onClick={() => setQuizOpen(true)}
-            >
+            <Button variant="purple" className="w-full max-w-xs py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1" onClick={() => setQuizOpen(true)}>
               Get your Free AI SaaS Valuation
             </Button>
-            <Button 
-              variant="green" 
-              onClick={handleListProductClick} 
-              className="w-full max-w-xs py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
-            >
+            <Button variant="green" onClick={handleListProductClick} className="w-full max-w-xs py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
               <MousePointerClick className="mr-2" />
               Sell your AI SaaS Business
             </Button>
@@ -141,5 +130,4 @@ const HeroSection = ({
       </div>
     </div>;
 };
-
 export default HeroSection;
