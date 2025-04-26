@@ -363,9 +363,9 @@ export const SearchFilters = ({
   const currentSortOption = sortOptions.find(option => option.value === sortBy);
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col md:flex-row gap-4 items-stretch md:items-center">
-        <div className="relative flex-grow max-w-2xl">
+    <div className="space-y-4 max-w-full">
+      <div className="flex flex-col gap-4 w-full">
+        <div className="relative w-full">
           <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
             <Search className="h-4 w-4 text-gray-400" />
           </div>
@@ -374,7 +374,7 @@ export const SearchFilters = ({
             placeholder="Search AI products..."
             value={localSearchQuery}
             onChange={(e) => setLocalSearchQuery(e.target.value)}
-            className="pl-10 border-gray-200 focus:border-[#8B5CF6] transition-colors bg-white h-10 md:h-11 shadow-sm hover:shadow-md"
+            className="pl-10 border-gray-200 focus:border-[#8B5CF6] transition-colors bg-white h-10 md:h-11 shadow-sm hover:shadow-md w-full"
           />
           {localSearchQuery && (
             <button
@@ -389,10 +389,9 @@ export const SearchFilters = ({
           )}
         </div>
 
-        <div className="flex gap-2 items-center">
-          {/* Sort Dropdown */}
+        <div className="flex flex-col sm:flex-row gap-2 w-full">
           <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="w-[180px] bg-white border-gray-200 shadow-sm hover:shadow-md flex gap-1">
+            <SelectTrigger className="w-full sm:w-[180px] bg-white border-gray-200 shadow-sm hover:shadow-md flex gap-1">
               {currentSortOption?.icon}
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
@@ -408,39 +407,40 @@ export const SearchFilters = ({
             </SelectContent>
           </Select>
           
-          <Toggle 
-            pressed={showBuyNowOnly}
-            onPressedChange={handleBuyNowToggle}
-            variant="outline"
-            className="bg-white border-gray-200 hover:bg-blue-50 shadow-sm hover:shadow-md data-[state=on]:bg-blue-100 data-[state=on]:text-blue-800"
-          >
-            <Tag className="h-4 w-4 mr-2" />
-            Buy It Now
-          </Toggle>
-          
-          <Toggle 
-            pressed={showAuctionsOnly}
-            onPressedChange={handleAuctionsToggle}
-            variant="outline"
-            className="bg-white border-gray-200 hover:bg-amber-50 shadow-sm hover:shadow-md data-[state=on]:bg-amber-100 data-[state=on]:text-amber-800"
-          >
-            <Timer className="h-4 w-4 mr-2" />
-            Auctions
-          </Toggle>
-          
-          <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-            <SheetTrigger asChild>
-              <Button variant="outline" className="bg-white border-gray-200 shadow-sm hover:shadow-md">
-                <SlidersHorizontal className="h-4 w-4 mr-2" />
-                Filter
-                {hasActiveFilters && (
-                  <Badge variant="secondary" className="ml-2 bg-[#8B5CF6] text-white">
-                    {activeFilters.length}
-                  </Badge>
-                )}
-              </Button>
-            </SheetTrigger>
-            <SheetContent className="w-full sm:max-w-md overflow-y-auto">
+          <div className="flex gap-2 w-full sm:w-auto overflow-x-auto sm:overflow-x-visible pb-2 sm:pb-0 -mx-4 sm:mx-0 px-4 sm:px-0">
+            <Toggle 
+              pressed={showBuyNowOnly}
+              onPressedChange={handleBuyNowToggle}
+              variant="outline"
+              className="bg-white border-gray-200 hover:bg-blue-50 shadow-sm hover:shadow-md data-[state=on]:bg-blue-100 data-[state=on]:text-blue-800 flex-shrink-0"
+            >
+              <Tag className="h-4 w-4 mr-2" />
+              Buy It Now
+            </Toggle>
+            
+            <Toggle 
+              pressed={showAuctionsOnly}
+              onPressedChange={handleAuctionsToggle}
+              variant="outline"
+              className="bg-white border-gray-200 hover:bg-amber-50 shadow-sm hover:shadow-md data-[state=on]:bg-amber-100 data-[state=on]:text-amber-800 flex-shrink-0"
+            >
+              <Timer className="h-4 w-4 mr-2" />
+              Auctions
+            </Toggle>
+            
+            <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+              <SheetTrigger asChild>
+                <Button variant="outline" className="bg-white border-gray-200 shadow-sm hover:shadow-md flex-shrink-0">
+                  <SlidersHorizontal className="h-4 w-4 mr-2" />
+                  Filter
+                  {hasActiveFilters && (
+                    <Badge variant="secondary" className="ml-2 bg-[#8B5CF6] text-white">
+                      {activeFilters.length}
+                    </Badge>
+                  )}
+                </Button>
+              </SheetTrigger>
+              <SheetContent className="w-full sm:max-w-md overflow-y-auto">
               <SheetHeader>
                 <SheetTitle>Filters</SheetTitle>
                 <SheetDescription>
@@ -518,7 +518,7 @@ export const SearchFilters = ({
       {/* Active Filters */}
       {hasActiveFilters && activeFilters.length > 0 && (
         <motion.div 
-          className="flex flex-wrap gap-2 pt-1"
+          className="flex flex-wrap gap-2 pt-1 -mx-4 sm:mx-0 px-4 sm:px-0 overflow-x-auto pb-2 sm:pb-0"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
@@ -527,7 +527,7 @@ export const SearchFilters = ({
           {activeFilters.length > 1 && (
             <Badge 
               variant="outline" 
-              className="cursor-pointer bg-red-50 text-red-600 hover:bg-red-100 transition-colors"
+              className="cursor-pointer bg-red-50 text-red-600 hover:bg-red-100 transition-colors flex-shrink-0"
               onClick={clearAllFilters}
             >
               Clear All <X className="h-3 w-3 ml-1" />
