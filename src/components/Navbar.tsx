@@ -138,10 +138,7 @@ export const Navbar = () => {
                 </DropdownMenuContent>
               </DropdownMenu>}
             {!isAuthenticated && <Link to="/auth">
-                <Button variant="secondary" className="bg-white/20 hover:bg-white/30 backdrop-blur-sm">
-                  <UserPlus className="h-4 w-4 mr-2" />
-                  Sign Up
-                </Button>
+                
               </Link>}
             {isAuthenticated && <Link to="/messages" className="relative">
                 <Button variant="secondary" className="bg-white/20 hover:bg-white/30 backdrop-blur-sm" size="icon">
@@ -152,18 +149,14 @@ export const Navbar = () => {
                   </Badge>}
               </Link>}
             {!isAuthenticated ? <Link to="/auth">
-                <Button variant="secondary" className="bg-white/20 hover:bg-white/30 backdrop-blur-sm" size="icon">
-                  <LogOut className="h-5 w-5" />
-                </Button>
+                
               </Link> : <Button variant="secondary" className="bg-white/20 hover:bg-white/30 backdrop-blur-sm" onClick={handleSignOut} size="icon">
                 <LogOut className="h-5 w-5" />
               </Button>}
 
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="secondary" className="bg-white/20 hover:bg-white/30 backdrop-blur-sm" size="icon">
-                  <Menu className="h-5 w-5" />
-                </Button>
+                
               </SheetTrigger>
               <SheetContent side="left" className="w-[300px] bg-[#EBEFF1] flex flex-col">
                 <SheetHeader className="flex justify-center items-center h-16">
