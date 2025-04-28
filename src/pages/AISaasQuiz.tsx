@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
 import { Star, Trophy, Lightbulb } from "lucide-react";
 import { QuizQuestions } from "@/components/hero/quiz/QuizQuestions";
@@ -102,11 +101,10 @@ export const AISaasQuiz = () => {
         </div>
 
         {/* Social Proof */}
-        <div className="text-center mt-6 md:mt-12">
+        <div className="text-center mt-6 md:mt-12 mb-12">
           <p className="text-white/80 text-sm md:text-base mb-4">Trusted by 1,000+ AI founders</p>
         </div>
       </main>
-      <Footer />
     </AnimatedGradientBackground>
   );
 };
