@@ -36,7 +36,9 @@ export const QuizQuestions = ({
           <Button
             key={option.value}
             variant={answers[question.id] === option.value ? "secondary" : "outline"}
-            className="w-full justify-start min-h-[44px] text-sm md:text-base px-3 py-2 whitespace-normal text-left"
+            className={`w-full justify-start min-h-[44px] text-sm md:text-base px-3 py-2 whitespace-normal text-left hover:bg-[#818CF8] hover:text-white ${
+              answers[question.id] === option.value ? "bg-[#818CF8] text-white" : ""
+            }`}
             onClick={() => onAnswerSelect(question.id, option.value)}
           >
             {option.icon && <span className="mr-2 flex-shrink-0">{option.icon}</span>}
@@ -49,13 +51,13 @@ export const QuizQuestions = ({
           variant="ghost" 
           onClick={onPrevious} 
           disabled={currentQuestion === 1}
-          className="text-sm md:text-base"
+          className="text-sm md:text-base hover:bg-[#818CF8] hover:text-white"
         >
           Previous
         </Button>
         <Button 
           onClick={onNext}
-          className="text-sm md:text-base"
+          className="text-sm md:text-base bg-[#818CF8] hover:opacity-90"
         >
           {currentQuestion === questions.length ? "See Results" : "Next"}
         </Button>
@@ -63,3 +65,4 @@ export const QuizQuestions = ({
     </div>
   );
 };
+
