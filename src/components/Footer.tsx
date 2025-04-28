@@ -54,7 +54,13 @@ export const Footer = () => {
                 <form onSubmit={handleSubscribe} className="space-y-4">
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                    
+                    <Input 
+                      type="email" 
+                      placeholder="Enter your email" 
+                      className="pl-10 bg-white/10 border-none text-white placeholder-gray-400 focus:ring-0 focus:ring-offset-0"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
                   </div>
                   <Button 
                     type="submit" 
@@ -81,6 +87,11 @@ export const Footer = () => {
           <div className="col-span-4 md:col-span-1">
             <h4 className="font-bold text-white text-center md:text-left">Resources</h4>
             <ul className="mt-4 space-y-2">
+              <li className="text-center md:text-left">
+                <Link to="/" className="text-white/80 hover:text-white inline-flex items-center gap-2">
+                  Free AI SaaS Valuation
+                </Link>
+              </li>
               <li className="text-center md:text-left">
                 <a href="https://aiexchangeclub.beehiiv.com/" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white">Blog</a>
               </li>
