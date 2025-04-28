@@ -93,7 +93,7 @@ serve(async (req) => {
             email: identifiers.email,
             name: contactProperties.NAME || 'there'
           }],
-          templateId: 1,
+          templateId: 2,
           params: {
             name: contactProperties.NAME || 'there',
             company: contactProperties.COMPANY || 'your AI business',
