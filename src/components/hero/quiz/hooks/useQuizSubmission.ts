@@ -7,6 +7,7 @@ import { calculateQuizValuation } from '../utils/valuationCalculator';
 
 export const useQuizSubmission = () => {
   const [showResults, setShowResults] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     name: "",
@@ -81,6 +82,8 @@ export const useQuizSubmission = () => {
     showResults,
     setShowResults,
     showConfirmation,
+    isLoading,
+    setIsLoading,
     formData,
     setFormData,
     handleSubmit

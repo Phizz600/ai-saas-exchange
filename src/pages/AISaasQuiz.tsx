@@ -1,9 +1,11 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/Navbar";
 import { Star, Trophy, Lightbulb } from "lucide-react";
 import { QuizQuestions } from "@/components/hero/quiz/QuizQuestions";
 import { ResultsForm } from "@/components/hero/quiz/ResultsForm";
+import { LoadingScreen } from "@/components/hero/quiz/LoadingScreen";
 import { ConfirmationScreen } from "@/components/hero/quiz/ConfirmationScreen";
 import { quizQuestions } from "@/components/hero/quiz/quizQuestions";
 import { useQuizSubmission } from "@/components/hero/quiz/hooks/useQuizSubmission";
@@ -16,28 +18,39 @@ export const AISaasQuiz = () => {
     showResults,
     setShowResults,
     showConfirmation,
+    isLoading,
+    setIsLoading,
     formData,
     setFormData,
     handleSubmit
   } = useQuizSubmission();
+
   const handleOptionSelect = (questionId: number, value: string) => {
     setAnswers(prev => ({
       ...prev,
       [questionId]: value
     }));
   };
+
   const handleNext = () => {
     if (currentQuestion === quizQuestions.length) {
-      setShowResults(true);
+      setIsLoading(true);
+      // Simulate AI calculation time
+      setTimeout(() => {
+        setIsLoading(false);
+        setShowResults(true);
+      }, 2500);
     } else {
       setCurrentQuestion(prev => prev + 1);
     }
   };
+
   const handlePrevious = () => {
     if (currentQuestion > 1) {
       setCurrentQuestion(prev => prev - 1);
     }
   };
+
   const progress = currentQuestion / quizQuestions.length * 100;
 
   return (
@@ -68,9 +81,26 @@ export const AISaasQuiz = () => {
             </div>
           </div>
 
-          {!showResults && !showConfirmation && <QuizQuestions currentQuestion={currentQuestion} questions={quizQuestions} answers={answers} onAnswerSelect={handleOptionSelect} onNext={handleNext} onPrevious={handlePrevious} />}
+          {!showResults && !showConfirmation && !isLoading && (
+            <QuizQuestions 
+              currentQuestion={currentQuestion}
+              questions={quizQuestions}
+              answers={answers}
+              onAnswerSelect={handleOptionSelect}
+              onNext={handleNext}
+              onPrevious={handlePrevious}
+            />
+          )}
 
-          {showResults && !showConfirmation && <ResultsForm formData={formData} onFormChange={setFormData} onSubmit={handleSubmit} />}
+          {isLoading && <LoadingScreen />}
+
+          {showResults && !showConfirmation && !isLoading && (
+            <ResultsForm 
+              formData={formData}
+              onFormChange={setFormData}
+              onSubmit={handleSubmit}
+            />
+          )}
 
           {showConfirmation && <ConfirmationScreen email={formData.email} />}
         </div>
