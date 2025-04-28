@@ -88,7 +88,7 @@ export const Footer = () => {
             <h4 className="font-bold text-white text-center md:text-left">Resources</h4>
             <ul className="mt-4 space-y-2">
               <li className="text-center md:text-left">
-                <Link to="/" className="text-white/80 hover:text-white inline-flex items-center gap-2">
+                <Link to="/ai-saas-quiz" className="text-white/80 hover:text-white inline-flex items-center gap-2">
                   Free AI SaaS Valuation
                 </Link>
               </li>

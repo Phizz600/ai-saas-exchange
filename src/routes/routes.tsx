@@ -17,11 +17,16 @@ import { MessageChat } from "@/pages/MessageChat";
 import Diagnostics from "@/pages/Diagnostics";
 import { ListingThankYou } from "@/pages/ListingThankYou";
 import { Contact } from "@/pages/Contact";
+import { AISaasQuiz } from "@/pages/AISaasQuiz";
 
 const routes = [
   {
     path: "/",
     element: <Index />,
+  },
+  {
+    path: "/ai-saas-quiz",
+    element: <AISaasQuiz />,
   },
   {
     path: "/auth",
