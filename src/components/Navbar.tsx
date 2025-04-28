@@ -139,9 +139,7 @@ export const Navbar = () => {
               </DropdownMenu>}
             
             {!isAuthenticated && <Link to="/auth">
-                <Button variant="secondary" className="bg-white/20 hover:bg-white/30 backdrop-blur-sm" size="icon">
-                  <UserPlus className="h-5 w-5" />
-                </Button>
+                
               </Link>}
 
             {isAuthenticated && <Link to="/messages" className="relative">
