@@ -4,12 +4,11 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { MousePointerClick } from "lucide-react";
 import { ProductsShowcase } from "@/components/hero/ProductsShowcase";
-import { QuizDialog } from "@/components/hero/QuizDialog";
+import { useNavigate } from "react-router-dom";
 
 // Keep lazy loading for these components
 const NewsletterSubscription = lazy(() => import("@/components/hero/NewsletterSubscription"));
 const FeatureHighlights = lazy(() => import("@/components/hero/FeatureHighlights"));
-// Remove the lazy import for AnimatedBackground
 const HeroTitle = lazy(() => import("@/components/hero/HeroTitle"));
 const HowItWorksTitle = lazy(() => import("@/components/hero/HowItWorksTitle"));
 const HowItWorksSteps = lazy(() => import("@/components/hero/HowItWorksSteps"));
@@ -31,6 +30,7 @@ interface HeroSectionProps {
   handleListProductClick: () => void;
   handleAuthRedirect: () => void;
 }
+
 const HeroSection = ({
   isAuthenticated,
   currentWordIndex,
@@ -46,7 +46,13 @@ const HeroSection = ({
   handleListProductClick,
   handleAuthRedirect
 }: HeroSectionProps) => {
-  const [quizOpen, setQuizOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleQuizClick = () => {
+    window.scrollTo(0, 0); // Scroll to top before navigation
+    navigate('/ai-saas-quiz');
+  };
+
   return <div className="min-h-screen relative overflow-hidden">
       
       <div className="relative container mx-auto px-4 py-24">
@@ -71,12 +77,20 @@ const HeroSection = ({
           duration: 0.3
         }} className="text-xl text-gray-200 mb-12 max-w-2xl mx-auto text-center">Join an exclusive network of investors gaining early access to AI SaaS businesses, products, tools, and solutions through our secure Dutch auction marketplace.</motion.p>
 
-          {/* Button Row - Updated to open newsletter subscription */}
+          {/* Button Row - Updated with quiz navigation */}
           <div className="flex flex-col items-center gap-4 justify-center">
-            <Button variant="purple" className="w-full max-w-xs py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1" onClick={() => setQuizOpen(true)}>
+            <Button 
+              variant="purple" 
+              className="w-full max-w-xs py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1" 
+              onClick={handleQuizClick}
+            >
               Get your Free AI SaaS Valuation
             </Button>
-            <Button variant="green" onClick={handleListProductClick} className="w-full max-w-xs py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+            <Button 
+              variant="green" 
+              onClick={handleListProductClick} 
+              className="w-full max-w-xs py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+            >
               <MousePointerClick className="mr-2" />
               Sell your AI SaaS Business
             </Button>
@@ -124,10 +138,9 @@ const HeroSection = ({
           <div className="mt-8 text-sm text-gray-200">
             ✓ Free AI Valuations &nbsp; • &nbsp; ✓ Secure Platform &nbsp; • &nbsp; ✓ Premium Network
           </div>
-
-          <QuizDialog open={quizOpen} onOpenChange={setQuizOpen} />
         </motion.div>
       </div>
     </div>;
 };
+
 export default HeroSection;
