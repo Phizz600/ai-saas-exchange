@@ -8,7 +8,6 @@ import { ResultsForm } from "@/components/hero/quiz/ResultsForm";
 import { ConfirmationScreen } from "@/components/hero/quiz/ConfirmationScreen";
 import { quizQuestions } from "@/components/hero/quiz/quizQuestions";
 import { useQuizSubmission } from "@/components/hero/quiz/hooks/useQuizSubmission";
-
 export const AISaasQuiz = () => {
   const [currentQuestion, setCurrentQuestion] = useState(1);
   const [answers, setAnswers] = useState<Record<number, string>>({});
@@ -44,7 +43,7 @@ export const AISaasQuiz = () => {
       <main className="container mx-auto px-4 py-6 md:py-8">
         {/* Hero Section */}
         <div className="text-center mb-4 md:mb-8 max-w-4xl mx-auto">
-          <div className="space-y-3 md:space-y-4 py-[30px]">
+          <div className="space-y-3 md:space-y-4 py-0 my-[60px]">
             <h1 className="exo-2-heading sm:text-3xl md:text-5xl lg:text-3xl text-white leading-tight text-3xl">
               What's Your AI SaaS Business Really Worth?
             </h1>
@@ -105,5 +104,4 @@ export const AISaasQuiz = () => {
       <Footer />
     </div>;
 };
-
 export default AISaasQuiz;
