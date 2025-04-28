@@ -47,7 +47,8 @@ export const useQuizSubmission = () => {
             ESTIMATED_VALUE_HIGH: valuationResult.estimatedValue.high,
             INSIGHTS: valuationResult.insights.join('\n'),
             RECOMMENDATIONS: valuationResult.recommendations.join('\n'),
-            QUIZ_ANSWERS: JSON.stringify(answers)
+            QUIZ_ANSWERS: JSON.stringify(answers),
+            SOURCE: 'quiz_valuation'
           },
           eventProperties: {
             source: 'ai_saas_valuation_quiz',

@@ -93,7 +93,7 @@ serve(async (req) => {
             email: identifiers.email,
             name: contactProperties.NAME || 'there'
           }],
-          templateId: 1, // Replace with your actual template ID from Brevo
+          templateId: 1, // Using same template as homepage
           params: {
             name: contactProperties.NAME || 'there',
             valuation_low: contactProperties.ESTIMATED_VALUE_LOW,
