@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/Navbar";
@@ -10,7 +9,6 @@ import { ConfirmationScreen } from "@/components/hero/quiz/ConfirmationScreen";
 import { quizQuestions } from "@/components/hero/quiz/quizQuestions";
 import { useQuizSubmission } from "@/components/hero/quiz/hooks/useQuizSubmission";
 import AnimatedGradientBackground from "@/components/ui/AnimatedGradientBackground";
-
 export const AISaasQuiz = () => {
   const [currentQuestion, setCurrentQuestion] = useState(1);
   const [answers, setAnswers] = useState<Record<number, string>>({});
@@ -24,14 +22,12 @@ export const AISaasQuiz = () => {
     setFormData,
     handleSubmit
   } = useQuizSubmission();
-
   const handleOptionSelect = (questionId: number, value: string) => {
     setAnswers(prev => ({
       ...prev,
       [questionId]: value
     }));
   };
-
   const handleNext = () => {
     if (currentQuestion === quizQuestions.length) {
       setIsLoading(true);
@@ -44,17 +40,13 @@ export const AISaasQuiz = () => {
       setCurrentQuestion(prev => prev + 1);
     }
   };
-
   const handlePrevious = () => {
     if (currentQuestion > 1) {
       setCurrentQuestion(prev => prev - 1);
     }
   };
-
   const progress = currentQuestion / quizQuestions.length * 100;
-
-  return (
-    <AnimatedGradientBackground>
+  return <AnimatedGradientBackground>
       <Navbar />
       <main className="container mx-auto px-4 py-6 md:py-8">
         {/* Hero Section */}
@@ -63,10 +55,7 @@ export const AISaasQuiz = () => {
             <h1 className="exo-2-heading sm:text-3xl md:text-5xl lg:text-3xl text-white leading-tight text-3xl">
               What's Your AI SaaS Business Really Worth?
             </h1>
-            <p className="text-base sm:text-lg md:text-xl text-white/80 max-w-2xl mx-auto px-2">
-              Get an instant, data-driven valuation based on current market conditions
-              and actual AI SaaS sales data.
-            </p>
+            <p className="text-base sm:text-lg md:text-xl text-white/80 max-w-2xl mx-auto px-2">Take our AI-Powered 60 second quiz to find out instantly what your business is really worth.</p>
           </div>
         </div>
 
@@ -74,33 +63,17 @@ export const AISaasQuiz = () => {
         <div className="w-full max-w-2xl bg-white rounded-lg shadow-xl p-4 md:p-8 mb-6 md:mb-12 mx-auto">
           <div className="mb-4">
             <div className="h-2 bg-gray-100 rounded-full">
-              <div 
-                className="h-full bg-[#6366f1] rounded-full transition-all duration-300" 
-                style={{width: `${progress}%`}} 
-              />
+              <div className="h-full bg-[#6366f1] rounded-full transition-all duration-300" style={{
+              width: `${progress}%`
+            }} />
             </div>
           </div>
 
-          {!showResults && !showConfirmation && !isLoading && (
-            <QuizQuestions 
-              currentQuestion={currentQuestion}
-              questions={quizQuestions}
-              answers={answers}
-              onAnswerSelect={handleOptionSelect}
-              onNext={handleNext}
-              onPrevious={handlePrevious}
-            />
-          )}
+          {!showResults && !showConfirmation && !isLoading && <QuizQuestions currentQuestion={currentQuestion} questions={quizQuestions} answers={answers} onAnswerSelect={handleOptionSelect} onNext={handleNext} onPrevious={handlePrevious} />}
 
           {isLoading && <LoadingScreen />}
 
-          {showResults && !showConfirmation && !isLoading && (
-            <ResultsForm 
-              formData={formData}
-              onFormChange={setFormData}
-              onSubmit={handleSubmit}
-            />
-          )}
+          {showResults && !showConfirmation && !isLoading && <ResultsForm formData={formData} onFormChange={setFormData} onSubmit={handleSubmit} />}
 
           {showConfirmation && <ConfirmationScreen email={formData.email} />}
         </div>
@@ -135,8 +108,6 @@ export const AISaasQuiz = () => {
           <p className="text-white/80 text-sm md:text-base mb-4">Trusted by 1,000+ AI founders</p>
         </div>
       </main>
-    </AnimatedGradientBackground>
-  );
+    </AnimatedGradientBackground>;
 };
-
 export default AISaasQuiz;
