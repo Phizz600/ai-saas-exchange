@@ -8,6 +8,7 @@ import { ResultsForm } from "@/components/hero/quiz/ResultsForm";
 import { ConfirmationScreen } from "@/components/hero/quiz/ConfirmationScreen";
 import { quizQuestions } from "@/components/hero/quiz/quizQuestions";
 import { useQuizSubmission } from "@/components/hero/quiz/hooks/useQuizSubmission";
+
 export const AISaasQuiz = () => {
   const [currentQuestion, setCurrentQuestion] = useState(1);
   const [answers, setAnswers] = useState<Record<number, string>>({});
@@ -40,10 +41,10 @@ export const AISaasQuiz = () => {
   const progress = currentQuestion / quizQuestions.length * 100;
   return <div className="min-h-screen bg-gradient-to-b from-[#13293D] to-[#18435A]">
       <Navbar />
-      <main className="container mx-auto px-4 py-6 md:py-12">
+      <main className="container mx-auto px-4 py-6 md:py-8">
         {/* Hero Section */}
-        <div className="text-center mb-6 md:mb-12 max-w-4xl mx-auto">
-          <div className="space-y-4 md:space-y-6 py-[60px]">
+        <div className="text-center mb-4 md:mb-8 max-w-4xl mx-auto">
+          <div className="space-y-3 md:space-y-4 py-[30px]">
             <h1 className="exo-2-heading sm:text-3xl md:text-5xl lg:text-3xl text-white leading-tight text-3xl">
               What's Your AI SaaS Business Really Worth?
             </h1>
@@ -104,4 +105,5 @@ export const AISaasQuiz = () => {
       <Footer />
     </div>;
 };
+
 export default AISaasQuiz;
