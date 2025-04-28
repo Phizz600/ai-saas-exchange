@@ -1,6 +1,8 @@
+
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { QuizQuestion } from "./types";
+
 interface QuizQuestionsProps {
   currentQuestion: number;
   questions: QuizQuestion[];
@@ -9,6 +11,7 @@ interface QuizQuestionsProps {
   onNext: () => void;
   onPrevious: () => void;
 }
+
 export const QuizQuestions = ({
   currentQuestion,
   questions,
@@ -20,6 +23,7 @@ export const QuizQuestions = ({
   React.useEffect(() => {
     localStorage.setItem('quizAnswers', JSON.stringify(answers));
   }, [answers]);
+  
   const question = questions[currentQuestion - 1];
   
   return <div className="space-y-4 md:space-y-6">
@@ -30,7 +34,7 @@ export const QuizQuestions = ({
         {question?.options.map(option => <Button 
             key={option.value} 
             variant={answers[question.id] === option.value ? "secondary" : "outline"} 
-            className="w-full justify-start min-h-[44px] text-sm md:text-base px-3 py-2 whitespace-normal text-left hover:bg-[#818CF8] hover:text-white transition-colors"
+            className={`w-full justify-start min-h-[44px] text-sm md:text-base px-3 py-2 whitespace-normal text-left transition-colors hover:bg-[#818CF8] hover:text-white ${answers[question.id] === option.value ? 'bg-[#818CF8] text-white' : ''}`}
             onClick={() => onAnswerSelect(question.id, option.value)}
           >
             {option.icon && <span className="mr-2 flex-shrink-0">{option.icon}</span>}
