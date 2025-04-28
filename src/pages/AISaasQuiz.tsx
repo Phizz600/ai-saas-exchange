@@ -8,6 +8,8 @@ import { ResultsForm } from "@/components/hero/quiz/ResultsForm";
 import { ConfirmationScreen } from "@/components/hero/quiz/ConfirmationScreen";
 import { quizQuestions } from "@/components/hero/quiz/quizQuestions";
 import { useQuizSubmission } from "@/components/hero/quiz/hooks/useQuizSubmission";
+import AnimatedGradientBackground from "@/components/ui/AnimatedGradientBackground";
+
 export const AISaasQuiz = () => {
   const [currentQuestion, setCurrentQuestion] = useState(1);
   const [answers, setAnswers] = useState<Record<number, string>>({});
@@ -38,12 +40,14 @@ export const AISaasQuiz = () => {
     }
   };
   const progress = currentQuestion / quizQuestions.length * 100;
-  return <div className="min-h-screen bg-gradient-to-b from-[#13293D] to-[#18435A]">
+
+  return (
+    <AnimatedGradientBackground>
       <Navbar />
       <main className="container mx-auto px-4 py-6 md:py-8">
         {/* Hero Section */}
         <div className="text-center mb-4 md:mb-8 max-w-4xl mx-auto">
-          <div className="space-y-3 md:space-y-4 py-0 my-[60px]">
+          <div className="space-y-3 md:space-y-4">
             <h1 className="exo-2-heading sm:text-3xl md:text-5xl lg:text-3xl text-white leading-tight text-3xl">
               What's Your AI SaaS Business Really Worth?
             </h1>
@@ -58,9 +62,10 @@ export const AISaasQuiz = () => {
         <div className="w-full max-w-2xl bg-white rounded-lg shadow-xl p-4 md:p-8 mb-6 md:mb-12 mx-auto">
           <div className="mb-4">
             <div className="h-2 bg-gray-100 rounded-full">
-              <div className="h-full bg-[#6366f1] rounded-full transition-all duration-300" style={{
-              width: `${progress}%`
-            }} />
+              <div 
+                className="h-full bg-[#6366f1] rounded-full transition-all duration-300" 
+                style={{width: `${progress}%`}} 
+              />
             </div>
           </div>
 
@@ -102,6 +107,8 @@ export const AISaasQuiz = () => {
         </div>
       </main>
       <Footer />
-    </div>;
+    </AnimatedGradientBackground>
+  );
 };
+
 export default AISaasQuiz;
