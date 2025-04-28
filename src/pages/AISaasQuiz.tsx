@@ -55,7 +55,7 @@ export const AISaasQuiz = () => {
         </div>
 
         {/* Quiz Section */}
-        <div className="w-full max-w-2xl mx-auto bg-white rounded-lg shadow-xl p-4 md:p-8 mb-6 md:mb-12">
+        <div className="w-full max-w-2xl bg-white rounded-lg shadow-xl p-4 md:p-8 mb-6 md:mb-12 px-[17px] my-0 mx-0">
           <div className="mb-4">
             <div className="h-2 bg-gray-100 rounded-full">
               <div className="h-full bg-[#6366f1] rounded-full transition-all duration-300" style={{
