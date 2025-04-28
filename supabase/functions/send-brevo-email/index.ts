@@ -93,19 +93,35 @@ serve(async (req) => {
             email: identifiers.email,
             name: contactProperties.NAME || 'there'
           }],
-          templateId: 1, // Using same template as homepage
+          templateId: 1,
           params: {
             name: contactProperties.NAME || 'there',
+            company: contactProperties.COMPANY || 'your AI business',
             valuation_low: contactProperties.ESTIMATED_VALUE_LOW,
             valuation_high: contactProperties.ESTIMATED_VALUE_HIGH,
             insights: contactProperties.INSIGHTS,
             recommendations: contactProperties.RECOMMENDATIONS,
             confidence_score: contactProperties.CONFIDENCE_SCORE || 70,
-            ai_category: contactProperties.AI_CATEGORY || 'unknown',
-            user_count: contactProperties.USER_COUNT || 'unknown',
-            growth_rate: contactProperties.GROWTH_RATE || 'unknown',
-            market_trend: contactProperties.MARKET_TREND || 'unknown',
-            company: contactProperties.COMPANY || 'your AI business'
+            ai_category: contactProperties.AI_CATEGORY || 'AI Technology',
+            user_count: contactProperties.USER_COUNT || 'N/A',
+            growth_rate: contactProperties.GROWTH_RATE || 'N/A',
+            market_trend: contactProperties.MARKET_TREND || 'N/A',
+            base_metrics: {
+              mrr: contactProperties.MRR || 'N/A',
+              user_base: contactProperties.USER_COUNT || 'N/A',
+              growth: contactProperties.GROWTH_RATE || 'N/A'
+            },
+            market_analysis: {
+              category: contactProperties.AI_CATEGORY || 'AI Technology',
+              trend: contactProperties.MARKET_TREND || 'N/A',
+              position: getMarketPosition(contactProperties)
+            },
+            growth_potential: {
+              user_analysis: getUserBaseAnalysis(contactProperties.USER_COUNT),
+              revenue_trajectory: getRevenueTrajectory(contactProperties.GROWTH_RATE),
+              market_opportunity: getMarketOpportunity(contactProperties.MARKET_TREND)
+            },
+            specific_recommendations: getSpecificRecommendations(contactProperties)
           }
         })
       });
@@ -137,4 +153,89 @@ serve(async (req) => {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
-})
+});
+
+// Helper functions for email content
+function getMarketPosition(props: any) {
+  const category = props.AI_CATEGORY?.toLowerCase();
+  const userCount = parseInt(props.USER_COUNT) || 0;
+  const growth = parseInt(props.GROWTH_RATE) || 0;
+
+  if (category === 'nlp' && growth > 50 && userCount > 10000) {
+    return 'Market Leader';
+  } else if ((category === 'nlp' || category === 'cv') && growth > 30) {
+    return 'Strong Competitor';
+  } else if (growth > 20) {
+    return 'Growing Player';
+  }
+  return 'Emerging Participant';
+}
+
+function getUserBaseAnalysis(userCount: string) {
+  const count = parseInt(userCount) || 0;
+  if (count > 50000) return "Enterprise-Level User Base";
+  if (count > 5000) return "Strong Growth Stage";
+  if (count > 500) return "Early Traction";
+  return "Early Stage";
+}
+
+function getRevenueTrajectory(growthRate: string) {
+  const growth = parseInt(growthRate) || 0;
+  if (growth > 100) return "Hypergrowth";
+  if (growth > 50) return "Rapid Growth";
+  if (growth > 20) return "Steady Growth";
+  return "Early Stage Growth";
+}
+
+function getMarketOpportunity(marketTrend: string) {
+  switch (marketTrend?.toLowerCase()) {
+    case 'emerging':
+      return "High Growth Potential";
+    case 'growing':
+      return "Strong Market Opportunity";
+    case 'stable':
+      return "Established Market";
+    default:
+      return "Challenging Market";
+  }
+}
+
+function getSpecificRecommendations(props: any) {
+  const recommendations = [];
+  const category = props.AI_CATEGORY?.toLowerCase();
+  const userCount = parseInt(props.USER_COUNT) || 0;
+  const growth = parseInt(props.GROWTH_RATE) || 0;
+  const marketTrend = props.MARKET_TREND?.toLowerCase();
+
+  // Category-specific recommendations
+  if (category === 'nlp') {
+    recommendations.push("Focus on specialized NLP models for enterprise clients");
+  } else if (category === 'cv') {
+    recommendations.push("Target high-value computer vision applications in healthcare and security");
+  } else if (category === 'automation') {
+    recommendations.push("Develop industry-specific automation solutions");
+  }
+
+  // Growth-based recommendations
+  if (growth < 20) {
+    recommendations.push("Increase marketing efforts and customer acquisition");
+  } else if (growth > 100) {
+    recommendations.push("Focus on scalability and infrastructure");
+  }
+
+  // User base recommendations
+  if (userCount < 1000) {
+    recommendations.push("Prioritize user acquisition and product-market fit");
+  } else if (userCount > 10000) {
+    recommendations.push("Optimize for enterprise customers and expand features");
+  }
+
+  // Market trend recommendations
+  if (marketTrend === 'emerging') {
+    recommendations.push("Establish market leadership through innovation");
+  } else if (marketTrend === 'declining') {
+    recommendations.push("Explore adjacent market opportunities");
+  }
+
+  return recommendations;
+}
