@@ -1,7 +1,8 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { QuizQuestion } from "./types";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface QuizQuestionsProps {
   currentQuestion: number;
@@ -20,11 +21,27 @@ export const QuizQuestions = ({
   onNext,
   onPrevious
 }: QuizQuestionsProps) => {
+  const [showError, setShowError] = useState(false);
+
   React.useEffect(() => {
     localStorage.setItem('quizAnswers', JSON.stringify(answers));
   }, [answers]);
 
   const question = questions[currentQuestion - 1];
+
+  const handleNext = () => {
+    if (!answers[question.id]) {
+      setShowError(true);
+      return;
+    }
+    setShowError(false);
+    onNext();
+  };
+
+  const handleOptionSelect = (questionId: number, value: string) => {
+    setShowError(false);
+    onAnswerSelect(questionId, value);
+  };
 
   return (
     <div className="space-y-4 md:space-y-6">
@@ -42,13 +59,22 @@ export const QuizQuestions = ({
             className={`w-full justify-start min-h-[44px] text-sm md:text-base px-3 py-2 whitespace-normal text-left hover:bg-[#818CF8] hover:text-white ${
               answers[question.id] === option.value ? "bg-[#818CF8] text-white" : ""
             }`}
-            onClick={() => onAnswerSelect(question.id, option.value)}
+            onClick={() => handleOptionSelect(question.id, option.value)}
           >
             {option.icon && <span className="mr-2 flex-shrink-0">{option.icon}</span>}
             <span>{option.label}</span>
           </Button>
         ))}
       </div>
+
+      {showError && (
+        <Alert variant="destructive" className="mt-2">
+          <AlertDescription>
+            Please select an answer before proceeding
+          </AlertDescription>
+        </Alert>
+      )}
+
       <div className="flex justify-between pt-2">
         {currentQuestion > 1 && (
           <Button 
@@ -60,7 +86,7 @@ export const QuizQuestions = ({
           </Button>
         )}
         <Button 
-          onClick={onNext}
+          onClick={handleNext}
           className={`text-sm md:text-base bg-[#818CF8] hover:opacity-90 ${currentQuestion === 1 ? 'ml-auto' : ''}`}
         >
           {currentQuestion === questions.length ? "See Results" : "Next"}
@@ -69,4 +95,3 @@ export const QuizQuestions = ({
     </div>
   );
 };
-
