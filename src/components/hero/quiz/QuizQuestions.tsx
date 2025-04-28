@@ -47,17 +47,18 @@ export const QuizQuestions = ({
         ))}
       </div>
       <div className="flex justify-between pt-2">
-        <Button 
-          variant="ghost" 
-          onClick={onPrevious} 
-          disabled={currentQuestion === 1}
-          className="text-sm md:text-base hover:bg-[#818CF8] hover:text-white"
-        >
-          Previous
-        </Button>
+        {currentQuestion > 1 && (
+          <Button 
+            variant="ghost" 
+            onClick={onPrevious}
+            className="text-sm md:text-base hover:bg-[#818CF8] hover:text-white"
+          >
+            Previous
+          </Button>
+        )}
         <Button 
           onClick={onNext}
-          className="text-sm md:text-base bg-[#818CF8] hover:opacity-90"
+          className={`text-sm md:text-base bg-[#818CF8] hover:opacity-90 ${currentQuestion === 1 ? 'ml-auto' : ''}`}
         >
           {currentQuestion === questions.length ? "See Results" : "Next"}
         </Button>
