@@ -48,21 +48,21 @@ export const AISaasQuiz = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#13293D] to-[#18435A]">
       <Navbar />
-      <main className="container mx-auto px-4 py-12">
+      <main className="container mx-auto px-4 py-8 md:py-12">
         {/* Hero Section */}
-        <div className="text-center mb-16">
-          <h1 className="exo-2-heading text-4xl md:text-6xl text-white mb-6 leading-tight">
+        <div className="text-center mb-8 md:mb-16">
+          <h1 className="exo-2-heading text-3xl md:text-6xl text-white mb-4 md:mb-6 leading-tight">
             What's Your AI SaaS Business Really Worth?
           </h1>
-          <p className="text-xl text-white/80 mb-8 max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-white/80 mb-6 md:mb-8 max-w-2xl mx-auto">
             Get an instant, data-driven valuation based on current market conditions
             and actual AI SaaS sales data.
           </p>
         </div>
 
         {/* Quiz Section */}
-        <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-xl p-8 mb-16">
-          <div className="mb-6">
+        <div className="w-full max-w-2xl mx-auto bg-white rounded-lg shadow-xl p-4 md:p-8 mb-8 md:mb-16">
+          <div className="mb-4 md:mb-6">
             <div className="h-2 bg-gray-100 rounded-full">
               <div
                 className="h-full bg-[#6366f1] rounded-full transition-all duration-300"
@@ -94,43 +94,43 @@ export const AISaasQuiz = () => {
         </div>
 
         {/* Trust Indicators */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-          <div className="glass p-6 text-center">
-            <Star className="h-8 w-8 text-[#D946EE] mx-auto mb-4" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 mb-8 md:mb-16">
+          <div className="glass p-4 md:p-6 text-center">
+            <Star className="h-6 w-6 md:h-8 md:w-8 text-[#D946EE] mx-auto mb-3 md:mb-4" />
             <h3 className="text-white font-semibold mb-2">60-Second Quiz</h3>
-            <p className="text-white/80">
+            <p className="text-sm md:text-base text-white/80">
               Quick, focused questions to accurately assess your AI SaaS value
             </p>
           </div>
-          <div className="glass p-6 text-center">
-            <Trophy className="h-8 w-8 text-[#8B5CF6] mx-auto mb-4" />
+          <div className="glass p-4 md:p-6 text-center">
+            <Trophy className="h-6 w-6 md:h-8 md:w-8 text-[#8B5CF6] mx-auto mb-3 md:mb-4" />
             <h3 className="text-white font-semibold mb-2">Market Data-Driven</h3>
-            <p className="text-white/80">
+            <p className="text-sm md:text-base text-white/80">
               Valuations based on real AI SaaS marketplace transactions
             </p>
           </div>
-          <div className="glass p-6 text-center">
-            <Lightbulb className="h-8 w-8 text-[#0EA4E9] mx-auto mb-4" />
+          <div className="glass p-4 md:p-6 text-center">
+            <Lightbulb className="h-6 w-6 md:h-8 md:w-8 text-[#0EA4E9] mx-auto mb-3 md:mb-4" />
             <h3 className="text-white font-semibold mb-2">Expert Insights</h3>
-            <p className="text-white/80">
+            <p className="text-sm md:text-base text-white/80">
               Get actionable recommendations to increase your business value
             </p>
           </div>
         </div>
 
         {/* Social Proof */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-8 md:mb-16">
           <p className="text-white/80 mb-4">Trusted by 1,000+ AI founders</p>
-          <div className="flex justify-center gap-4">
+          <div className="flex flex-col md:flex-row justify-center gap-4">
             <img
               src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d"
               alt="Person using laptop"
-              className="w-64 h-48 object-cover rounded-lg opacity-80"
+              className="w-full md:w-64 h-48 object-cover rounded-lg opacity-80"
             />
             <img
               src="https://images.unsplash.com/photo-1518770660439-4636190af475"
               alt="Tech visualization"
-              className="w-64 h-48 object-cover rounded-lg opacity-80"
+              className="w-full md:w-64 h-48 object-cover rounded-lg opacity-80"
             />
           </div>
         </div>
