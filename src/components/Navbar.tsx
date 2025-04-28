@@ -115,7 +115,7 @@ export const Navbar = () => {
     title: "Fees & Pricing",
     href: "/fees-pricing"
   }];
-  return <nav className="w-full absolute z-10">
+  return <nav className="w-full absolute z-10 py-0">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-24 mx-0 my-[8px] py-px px-[2px]">
           <Link to="/" className="flex items-center">
@@ -138,18 +138,14 @@ export const Navbar = () => {
               </Link>}
             
             {!isAuthenticated ? <Link to="/auth">
-                <Button variant="secondary" className="bg-white/20 hover:bg-white/30 backdrop-blur-sm" size="icon">
-                  <UserPlus className="h-5 w-5" />
-                </Button>
+                
               </Link> : <Button variant="secondary" className="bg-white/20 hover:bg-white/30 backdrop-blur-sm" onClick={handleSignOut} size="icon">
                 <LogOut className="h-5 w-5" />
               </Button>}
 
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="text-white font-extrabold">
-                  <Menu className="h-14 w-14 stroke-[3]" />
-                </Button>
+                
               </SheetTrigger>
               <SheetContent side="left" className="w-[300px] bg-[#EBEFF1] flex flex-col">
                 <SheetHeader className="flex justify-center items-center h-16">

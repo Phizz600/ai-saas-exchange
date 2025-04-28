@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/Footer";
@@ -9,7 +8,6 @@ import { ResultsForm } from "@/components/hero/quiz/ResultsForm";
 import { ConfirmationScreen } from "@/components/hero/quiz/ConfirmationScreen";
 import { quizQuestions } from "@/components/hero/quiz/quizQuestions";
 import { useQuizSubmission } from "@/components/hero/quiz/hooks/useQuizSubmission";
-
 export const AISaasQuiz = () => {
   const [currentQuestion, setCurrentQuestion] = useState(1);
   const [answers, setAnswers] = useState<Record<number, string>>({});
@@ -21,14 +19,12 @@ export const AISaasQuiz = () => {
     setFormData,
     handleSubmit
   } = useQuizSubmission();
-
   const handleOptionSelect = (questionId: number, value: string) => {
     setAnswers(prev => ({
       ...prev,
       [questionId]: value
     }));
   };
-
   const handleNext = () => {
     if (currentQuestion === quizQuestions.length) {
       setShowResults(true);
@@ -36,17 +32,13 @@ export const AISaasQuiz = () => {
       setCurrentQuestion(prev => prev + 1);
     }
   };
-
   const handlePrevious = () => {
     if (currentQuestion > 1) {
       setCurrentQuestion(prev => prev - 1);
     }
   };
-
   const progress = currentQuestion / quizQuestions.length * 100;
-
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-[#13293D] to-[#18435A]">
+  return <div className="min-h-screen bg-gradient-to-b from-[#13293D] to-[#18435A]">
       <Navbar />
       <main className="container mx-auto px-4 py-8 md:py-12">
         {/* Hero Section */}
@@ -64,31 +56,15 @@ export const AISaasQuiz = () => {
         <div className="w-full max-w-2xl mx-auto bg-white rounded-lg shadow-xl p-4 md:p-8 mb-8 md:mb-16">
           <div className="mb-4 md:mb-6">
             <div className="h-2 bg-gray-100 rounded-full">
-              <div
-                className="h-full bg-[#6366f1] rounded-full transition-all duration-300"
-                style={{ width: `${progress}%` }}
-              />
+              <div className="h-full bg-[#6366f1] rounded-full transition-all duration-300" style={{
+              width: `${progress}%`
+            }} />
             </div>
           </div>
 
-          {!showResults && !showConfirmation && (
-            <QuizQuestions
-              currentQuestion={currentQuestion}
-              questions={quizQuestions}
-              answers={answers}
-              onAnswerSelect={handleOptionSelect}
-              onNext={handleNext}
-              onPrevious={handlePrevious}
-            />
-          )}
+          {!showResults && !showConfirmation && <QuizQuestions currentQuestion={currentQuestion} questions={quizQuestions} answers={answers} onAnswerSelect={handleOptionSelect} onNext={handleNext} onPrevious={handlePrevious} />}
 
-          {showResults && !showConfirmation && (
-            <ResultsForm
-              formData={formData}
-              onFormChange={setFormData}
-              onSubmit={handleSubmit}
-            />
-          )}
+          {showResults && !showConfirmation && <ResultsForm formData={formData} onFormChange={setFormData} onSubmit={handleSubmit} />}
 
           {showConfirmation && <ConfirmationScreen email={formData.email} />}
         </div>
@@ -122,22 +98,12 @@ export const AISaasQuiz = () => {
         <div className="text-center mb-8 md:mb-16">
           <p className="text-white/80 mb-4">Trusted by 1,000+ AI founders</p>
           <div className="flex flex-col md:flex-row justify-center gap-4">
-            <img
-              src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d"
-              alt="Person using laptop"
-              className="w-full md:w-64 h-48 object-cover rounded-lg opacity-80"
-            />
-            <img
-              src="https://images.unsplash.com/photo-1518770660439-4636190af475"
-              alt="Tech visualization"
-              className="w-full md:w-64 h-48 object-cover rounded-lg opacity-80"
-            />
+            
+            
           </div>
         </div>
       </main>
       <Footer />
-    </div>
-  );
+    </div>;
 };
-
 export default AISaasQuiz;
