@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { QuizQuestions } from "./quiz/QuizQuestions";
 import { ResultsForm } from "./quiz/ResultsForm";
+import { LoadingScreen } from "./quiz/LoadingScreen";
 import { ConfirmationScreen } from "./quiz/ConfirmationScreen";
 import { quizQuestions } from "./quiz/quizQuestions";
 import { useQuizSubmission } from "./quiz/hooks/useQuizSubmission";
@@ -15,6 +16,7 @@ interface QuizDialogProps {
 export const QuizDialog = ({ open, onOpenChange }: QuizDialogProps) => {
   const [currentQuestion, setCurrentQuestion] = useState(1);
   const [answers, setAnswers] = useState<Record<number, string>>({});
+  const [isCalculating, setIsCalculating] = useState(false);
   const {
     showResults,
     setShowResults,
@@ -29,11 +31,22 @@ export const QuizDialog = ({ open, onOpenChange }: QuizDialogProps) => {
       ...prev,
       [questionId]: value
     }));
+    
+    // Store answers in localStorage for persistence
+    localStorage.setItem('quizAnswers', JSON.stringify({
+      ...answers,
+      [questionId]: value
+    }));
   };
 
   const handleNext = () => {
     if (currentQuestion === quizQuestions.length) {
-      setShowResults(true);
+      setIsCalculating(true);
+      // Simulate AI calculation time
+      setTimeout(() => {
+        setIsCalculating(false);
+        setShowResults(true);
+      }, 1500);
     } else {
       setCurrentQuestion(prev => prev + 1);
     }
@@ -66,7 +79,7 @@ export const QuizDialog = ({ open, onOpenChange }: QuizDialogProps) => {
           />
         </div>
 
-        {!showResults && !showConfirmation && (
+        {!showResults && !showConfirmation && !isCalculating && (
           <QuizQuestions
             currentQuestion={currentQuestion}
             questions={quizQuestions}
@@ -76,6 +89,8 @@ export const QuizDialog = ({ open, onOpenChange }: QuizDialogProps) => {
             onPrevious={handlePrevious}
           />
         )}
+        
+        {isCalculating && <LoadingScreen />}
 
         {showResults && !showConfirmation && (
           <ResultsForm

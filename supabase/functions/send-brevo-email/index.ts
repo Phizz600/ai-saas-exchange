@@ -99,7 +99,13 @@ serve(async (req) => {
             valuation_low: contactProperties.ESTIMATED_VALUE_LOW,
             valuation_high: contactProperties.ESTIMATED_VALUE_HIGH,
             insights: contactProperties.INSIGHTS,
-            recommendations: contactProperties.RECOMMENDATIONS
+            recommendations: contactProperties.RECOMMENDATIONS,
+            confidence_score: contactProperties.CONFIDENCE_SCORE || 70,
+            ai_category: contactProperties.AI_CATEGORY || 'unknown',
+            user_count: contactProperties.USER_COUNT || 'unknown',
+            growth_rate: contactProperties.GROWTH_RATE || 'unknown',
+            market_trend: contactProperties.MARKET_TREND || 'unknown',
+            company: contactProperties.COMPANY || 'your AI business'
           }
         })
       });

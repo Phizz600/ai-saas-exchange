@@ -48,12 +48,18 @@ export const useQuizSubmission = () => {
             INSIGHTS: valuationResult.insights.join('\n'),
             RECOMMENDATIONS: valuationResult.recommendations.join('\n'),
             QUIZ_ANSWERS: JSON.stringify(answers),
-            SOURCE: 'quiz_valuation'
+            SOURCE: 'quiz_valuation',
+            CONFIDENCE_SCORE: valuationResult.confidenceScore,
+            AI_CATEGORY: answers[1] || 'unknown',
+            USER_COUNT: answers[3] || 'unknown',
+            GROWTH_RATE: answers[4] || 'unknown',
+            MARKET_TREND: answers[5] || 'unknown'
           },
           eventProperties: {
             source: 'ai_saas_valuation_quiz',
             company: formData.company || 'Not Provided',
-            valuation_range: `$${valuationResult.estimatedValue.low} - $${valuationResult.estimatedValue.high}`
+            valuation_range: `$${valuationResult.estimatedValue.low} - $${valuationResult.estimatedValue.high}`,
+            confidence_score: valuationResult.confidenceScore
           }
         })
       });
