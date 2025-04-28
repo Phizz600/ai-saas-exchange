@@ -1,10 +1,9 @@
-
 import { QuizDialog } from "@/components/hero/QuizDialog";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
-import { Star, Trophy, LightBulb } from "lucide-react";
+import { Star, Trophy, Lightbulb } from "lucide-react";
 
 export const AISaasQuiz = () => {
   const [isQuizOpen, setIsQuizOpen] = useState(false);
@@ -48,7 +47,7 @@ export const AISaasQuiz = () => {
             </p>
           </div>
           <div className="glass p-6 text-center">
-            <LightBulb className="h-8 w-8 text-[#0EA4E9] mx-auto mb-4" />
+            <Lightbulb className="h-8 w-8 text-[#0EA4E9] mx-auto mb-4" />
             <h3 className="text-white font-semibold mb-2">Expert Insights</h3>
             <p className="text-white/80">
               Get actionable recommendations to increase your business value
