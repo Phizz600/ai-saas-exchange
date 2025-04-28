@@ -43,7 +43,7 @@ export const AISaasQuiz = () => {
       <main className="container mx-auto px-4 py-6 md:py-12">
         {/* Hero Section */}
         <div className="text-center mb-6 md:mb-12 max-w-4xl mx-auto">
-          <div className="space-y-4 md:space-y-6">
+          <div className="space-y-4 md:space-y-6 py-[60px]">
             <h1 className="exo-2-heading sm:text-3xl md:text-5xl lg:text-6xl text-white leading-tight text-3xl">
               What's Your AI SaaS Business Really Worth?
             </h1>
