@@ -28,6 +28,9 @@ export const QuizQuestions = ({
 
   return (
     <div className="space-y-4 md:space-y-6">
+      <div className="text-sm text-gray-500 font-medium mb-2">
+        Question {currentQuestion} of {questions.length}
+      </div>
       <h3 className="text-lg md:text-xl font-semibold">
         {question?.question}
       </h3>
