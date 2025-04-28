@@ -1,12 +1,49 @@
-import { QuizDialog } from "@/components/hero/QuizDialog";
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
 import { Star, Trophy, Lightbulb } from "lucide-react";
+import { QuizQuestions } from "@/components/hero/quiz/QuizQuestions";
+import { ResultsForm } from "@/components/hero/quiz/ResultsForm";
+import { ConfirmationScreen } from "@/components/hero/quiz/ConfirmationScreen";
+import { quizQuestions } from "@/components/hero/quiz/quizQuestions";
+import { useQuizSubmission } from "@/components/hero/quiz/hooks/useQuizSubmission";
 
 export const AISaasQuiz = () => {
-  const [isQuizOpen, setIsQuizOpen] = useState(false);
+  const [currentQuestion, setCurrentQuestion] = useState(1);
+  const [answers, setAnswers] = useState<Record<number, string>>({});
+  const {
+    showResults,
+    setShowResults,
+    showConfirmation,
+    formData,
+    setFormData,
+    handleSubmit
+  } = useQuizSubmission();
+
+  const handleOptionSelect = (questionId: number, value: string) => {
+    setAnswers(prev => ({
+      ...prev,
+      [questionId]: value
+    }));
+  };
+
+  const handleNext = () => {
+    if (currentQuestion === quizQuestions.length) {
+      setShowResults(true);
+    } else {
+      setCurrentQuestion(prev => prev + 1);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentQuestion > 1) {
+      setCurrentQuestion(prev => prev - 1);
+    }
+  };
+
+  const progress = currentQuestion / quizQuestions.length * 100;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#13293D] to-[#18435A]">
@@ -21,13 +58,39 @@ export const AISaasQuiz = () => {
             Get an instant, data-driven valuation based on current market conditions
             and actual AI SaaS sales data.
           </p>
-          <Button
-            onClick={() => setIsQuizOpen(true)}
-            size="xl"
-            className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 text-white font-semibold"
-          >
-            Start Free Valuation
-          </Button>
+        </div>
+
+        {/* Quiz Section */}
+        <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-xl p-8 mb-16">
+          <div className="mb-6">
+            <div className="h-2 bg-gray-100 rounded-full">
+              <div
+                className="h-full bg-[#6366f1] rounded-full transition-all duration-300"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+          </div>
+
+          {!showResults && !showConfirmation && (
+            <QuizQuestions
+              currentQuestion={currentQuestion}
+              questions={quizQuestions}
+              answers={answers}
+              onAnswerSelect={handleOptionSelect}
+              onNext={handleNext}
+              onPrevious={handlePrevious}
+            />
+          )}
+
+          {showResults && !showConfirmation && (
+            <ResultsForm
+              formData={formData}
+              onFormChange={setFormData}
+              onSubmit={handleSubmit}
+            />
+          )}
+
+          {showConfirmation && <ConfirmationScreen email={formData.email} />}
         </div>
 
         {/* Trust Indicators */}
@@ -71,23 +134,7 @@ export const AISaasQuiz = () => {
             />
           </div>
         </div>
-
-        {/* CTA Section */}
-        <div className="text-center">
-          <h2 className="exo-2-heading text-3xl text-white mb-6">
-            Ready to Know Your AI SaaS Value?
-          </h2>
-          <Button
-            onClick={() => setIsQuizOpen(true)}
-            size="xl"
-            className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 text-white font-semibold"
-          >
-            Take the Free Quiz Now
-          </Button>
-        </div>
       </main>
-
-      <QuizDialog open={isQuizOpen} onOpenChange={setIsQuizOpen} />
       <Footer />
     </div>
   );
