@@ -119,33 +119,51 @@ export const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-24 mx-0 px-[70px] py-0 my-0">
           <Link to="/" className="flex items-center justify-center w-full my-0 py-0">
-            <img src="/lovable-uploads/0283f7d5-13a6-40c9-b40a-69868474cec9.png" alt="AI Exchange Club" className="h-40 w-auto rounded-none pt-4 mx-auto" />
+            <img src="/lovable-uploads/0283f7d5-13a6-40c9-b40a-69868474cec9.png" alt="AI Exchange Club" className="h-32 w-auto rounded-none mx-auto" />
           </Link>
 
           <div className="flex items-center space-x-6">
             {isPolicyPage && <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  
+                  <Button variant="ghost" className="data-[state=open]:bg-muted h-9 px-2">
+                    <FileText className="h-4 w-4 mr-2" />
+                    <span>Policies</span>
+                    <ChevronDown className="h-4 w-4 ml-auto" />
+                  </Button>
                 </DropdownMenuTrigger>
-                
+                <DropdownMenuContent className="w-56">
+                  {policyPages.map(page => <DropdownMenuItem key={page.title} onClick={() => navigate(page.href)} className="cursor-pointer">
+                      {page.title}
+                    </DropdownMenuItem>)}
+                </DropdownMenuContent>
               </DropdownMenu>}
-            
+            {!isAuthenticated && <Link to="/auth">
+                <Button variant="secondary" className="bg-white/20 hover:bg-white/30 backdrop-blur-sm">
+                  <UserPlus className="h-4 w-4 mr-2" />
+                  Sign Up
+                </Button>
+              </Link>}
             {isAuthenticated && <Link to="/messages" className="relative">
-                
+                <Button variant="secondary" className="bg-white/20 hover:bg-white/30 backdrop-blur-sm" size="icon">
+                  <FileText className="h-5 w-5" />
+                </Button>
                 {unreadCount > 0 && <Badge variant="destructive" className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0">
                     {unreadCount > 9 ? '9+' : unreadCount}
                   </Badge>}
               </Link>}
-            
             {!isAuthenticated ? <Link to="/auth">
-                
+                <Button variant="secondary" className="bg-white/20 hover:bg-white/30 backdrop-blur-sm" size="icon">
+                  <LogOut className="h-5 w-5" />
+                </Button>
               </Link> : <Button variant="secondary" className="bg-white/20 hover:bg-white/30 backdrop-blur-sm" onClick={handleSignOut} size="icon">
                 <LogOut className="h-5 w-5" />
               </Button>}
 
             <Sheet>
               <SheetTrigger asChild>
-                
+                <Button variant="secondary" className="bg-white/20 hover:bg-white/30 backdrop-blur-sm" size="icon">
+                  <Menu className="h-5 w-5" />
+                </Button>
               </SheetTrigger>
               <SheetContent side="left" className="w-[300px] bg-[#EBEFF1] flex flex-col">
                 <SheetHeader className="flex justify-center items-center h-16">

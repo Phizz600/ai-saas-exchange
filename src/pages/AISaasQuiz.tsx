@@ -46,7 +46,7 @@ export const AISaasQuiz = () => {
       <Navbar />
       <main className="container mx-auto px-4 py-6 md:py-8">
         {/* Hero Section */}
-        <div className="text-center mb-4 md:mb-8 max-w-4xl mx-auto">
+        <div className="text-center mb-4 md:mb-8 max-w-4xl mx-auto mt-20">
           <div className="space-y-3 md:space-y-4">
             <h1 className="exo-2-heading sm:text-3xl md:text-5xl lg:text-3xl text-white leading-tight text-3xl">
               What's Your AI SaaS Business Really Worth?
