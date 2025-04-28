@@ -117,7 +117,7 @@ export const Navbar = () => {
   }];
   return <nav className="w-full absolute z-10 py-0">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-24 mx-0 my-[8px] py-px px-[2px]">
+        <div className="flex items-center justify-between h-24 mx-0 px-[70px] py-0 my-0">
           <Link to="/" className="flex items-center">
             <img src="/lovable-uploads/0283f7d5-13a6-40c9-b40a-69868474cec9.png" alt="AI Exchange Club" className="h-40 w-auto rounded-none pt-4" />
           </Link>

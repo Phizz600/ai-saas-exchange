@@ -8,7 +8,6 @@ import { ResultsForm } from "@/components/hero/quiz/ResultsForm";
 import { ConfirmationScreen } from "@/components/hero/quiz/ConfirmationScreen";
 import { quizQuestions } from "@/components/hero/quiz/quizQuestions";
 import { useQuizSubmission } from "@/components/hero/quiz/hooks/useQuizSubmission";
-
 export const AISaasQuiz = () => {
   const [currentQuestion, setCurrentQuestion] = useState(1);
   const [answers, setAnswers] = useState<Record<number, string>>({});
@@ -39,15 +38,13 @@ export const AISaasQuiz = () => {
     }
   };
   const progress = currentQuestion / quizQuestions.length * 100;
-
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-[#13293D] to-[#18435A]">
+  return <div className="min-h-screen bg-gradient-to-b from-[#13293D] to-[#18435A]">
       <Navbar />
       <main className="container mx-auto px-4 py-6 md:py-12">
         {/* Hero Section */}
         <div className="text-center mb-6 md:mb-12 max-w-4xl mx-auto">
           <div className="space-y-4 md:space-y-6">
-            <h1 className="exo-2-heading text-2xl sm:text-3xl md:text-5xl lg:text-6xl text-white leading-tight">
+            <h1 className="exo-2-heading sm:text-3xl md:text-5xl lg:text-6xl text-white leading-tight text-3xl">
               What's Your AI SaaS Business Really Worth?
             </h1>
             <p className="text-base sm:text-lg md:text-xl text-white/80 max-w-2xl mx-auto px-2">
@@ -61,35 +58,17 @@ export const AISaasQuiz = () => {
         <div className="w-full max-w-2xl mx-auto bg-white rounded-lg shadow-xl p-4 md:p-8 mb-6 md:mb-12">
           <div className="mb-4">
             <div className="h-2 bg-gray-100 rounded-full">
-              <div 
-                className="h-full bg-[#6366f1] rounded-full transition-all duration-300" 
-                style={{ width: `${progress}%` }} 
-              />
+              <div className="h-full bg-[#6366f1] rounded-full transition-all duration-300" style={{
+              width: `${progress}%`
+            }} />
             </div>
           </div>
 
-          {!showResults && !showConfirmation && (
-            <QuizQuestions
-              currentQuestion={currentQuestion}
-              questions={quizQuestions}
-              answers={answers}
-              onAnswerSelect={handleOptionSelect}
-              onNext={handleNext}
-              onPrevious={handlePrevious}
-            />
-          )}
+          {!showResults && !showConfirmation && <QuizQuestions currentQuestion={currentQuestion} questions={quizQuestions} answers={answers} onAnswerSelect={handleOptionSelect} onNext={handleNext} onPrevious={handlePrevious} />}
 
-          {showResults && !showConfirmation && (
-            <ResultsForm 
-              formData={formData}
-              onFormChange={setFormData}
-              onSubmit={handleSubmit}
-            />
-          )}
+          {showResults && !showConfirmation && <ResultsForm formData={formData} onFormChange={setFormData} onSubmit={handleSubmit} />}
 
-          {showConfirmation && (
-            <ConfirmationScreen email={formData.email} />
-          )}
+          {showConfirmation && <ConfirmationScreen email={formData.email} />}
         </div>
 
         {/* Trust Indicators */}
@@ -123,8 +102,6 @@ export const AISaasQuiz = () => {
         </div>
       </main>
       <Footer />
-    </div>
-  );
+    </div>;
 };
-
 export default AISaasQuiz;
