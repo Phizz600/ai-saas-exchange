@@ -1,6 +1,13 @@
+
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "@/hooks/use-toast";
-import { getRedirectUrl } from "./url-helpers";
+import { ToastActionElement } from "@/components/ui/toast";
+
+type ToastProps = {
+  variant?: "default" | "destructive";
+  title: string;
+  description: string;
+  action?: ToastActionElement;
+};
 
 /**
  * Process user signup or sign in
@@ -13,6 +20,7 @@ import { getRedirectUrl } from "./url-helpers";
  * @param setErrorMessage Function to set error message
  * @param setIsLoading Function to set loading state
  * @param setIsSignUp Function to toggle between signup/signin modes
+ * @param toast Toast function for notifications (optional)
  */
 export const handleAuthSubmit = async (
   isSignUp: boolean,
@@ -23,7 +31,8 @@ export const handleAuthSubmit = async (
   userType: 'ai_builder' | 'ai_investor',
   setErrorMessage: (message: string) => void,
   setIsLoading: (isLoading: boolean) => void,
-  setIsSignUp: (isSignUp: boolean) => void
+  setIsSignUp: (isSignUp: boolean) => void,
+  toast?: (props: ToastProps) => void
 ) => {
   setErrorMessage("");
   setIsLoading(true);
@@ -106,27 +115,33 @@ export const handleAuthSubmit = async (
         
         // WELCOME EMAIL SENDING DISABLED
         console.log("AuthForm: Welcome email sending is currently disabled");
-        toast({
-          variant: "default",
-          title: "Account Created",
-          description: "Your account has been created successfully.",
-        });
+        if (toast) {
+          toast({
+            variant: "default",
+            title: "Account Created",
+            description: "Your account has been created successfully.",
+          });
+        }
       }
       
       // Handle the case where email verification is enabled
       if (data.session === null) {
-        toast({
-          title: "Verification Required",
-          description: "Please check your email to verify your account before signing in.",
-        });
+        if (toast) {
+          toast({
+            title: "Verification Required",
+            description: "Please check your email to verify your account before signing in.",
+          });
+        }
         setIsLoading(false);
         return;
       }
       
-      toast({
-        title: "Welcome!",
-        description: "Your account has been created. Setting up your profile...",
-      });
+      if (toast) {
+        toast({
+          title: "Welcome!",
+          description: "Your account has been created. Setting up your profile...",
+        });
+      }
       
     } else {
       console.log("AuthForm: Starting signin process");
@@ -143,14 +158,91 @@ export const handleAuthSubmit = async (
       }
 
       console.log("AuthForm: Signin successful");
-      toast({
-        title: "Welcome back!",
-        description: "You've been successfully logged in.",
-      });
+      if (toast) {
+        toast({
+          title: "Welcome back!",
+          description: "You've been successfully logged in.",
+        });
+      }
     }
   } catch (error: any) {
     console.error("AuthForm: Unexpected error:", error);
     setErrorMessage(error.message || "An unexpected error occurred.");
+    setIsLoading(false);
+  }
+};
+
+/**
+ * Handle Google Sign In
+ * @param setErrorMessage Function to set error message
+ * @param setIsGoogleLoading Function to set Google loading state
+ */
+export const handleGoogleSignIn = async (
+  setErrorMessage: (message: string) => void,
+  setIsGoogleLoading: (isLoading: boolean) => void
+) => {
+  setIsGoogleLoading(true);
+  try {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: window.location.origin + '/auth',
+      }
+    });
+    
+    if (error) {
+      console.error("Error during Google sign in:", error);
+      setErrorMessage("Error during Google sign in: " + error.message);
+    }
+  } catch (error: any) {
+    console.error("Unexpected error during Google sign in:", error);
+    setErrorMessage("An unexpected error occurred during Google sign in.");
+  } finally {
+    setIsGoogleLoading(false);
+  }
+};
+
+/**
+ * Process password reset
+ * @param email User's email address
+ * @param setErrorMessage Function to set error message
+ * @param setIsLoading Function to set loading state
+ * @param setShowResetForm Function to toggle reset form visibility
+ * @param toast Toast function for notifications
+ */
+export const handlePasswordReset = async (
+  email: string,
+  setErrorMessage: (message: string) => void,
+  setIsLoading: (isLoading: boolean) => void,
+  setShowResetForm: (show: boolean) => void,
+  toast: (props: ToastProps) => void
+) => {
+  if (!email) {
+    setErrorMessage("Please enter your email address.");
+    return;
+  }
+  
+  setIsLoading(true);
+  
+  try {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + '/auth?type=recovery',
+    });
+    
+    if (error) {
+      console.error("Password reset error:", error);
+      setErrorMessage(error.message);
+    } else {
+      toast({
+        title: "Password Reset Email Sent",
+        description: "Check your email for a link to reset your password.",
+      });
+      setShowResetForm(false);
+    }
+  } catch (error: any) {
+    console.error("Unexpected error during password reset:", error);
+    setErrorMessage(error.message || "An unexpected error occurred.");
+  } finally {
     setIsLoading(false);
   }
 };

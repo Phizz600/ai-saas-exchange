@@ -84,7 +84,8 @@ export const AuthForm = () => {
       userType,
       setErrorMessage,
       setIsLoading,
-      setIsSignUp
+      setIsSignUp,
+      toast
     );
   };
 
