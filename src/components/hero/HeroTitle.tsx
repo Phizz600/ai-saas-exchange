@@ -22,7 +22,7 @@ const HeroTitle = ({
         </div>
       </div>
 
-      <h1 className="exo-2-heading font-bold leading-tight text-white text-center mx-0 my-0 py-0 px-0 md:text-6xl text-5xl">
+      <h1 className="exo-2-heading font-bold leading-tight text-white text-center mx-0 my-0 py-0 px-0 md:text-4xl text-4xl">
         The #1 Marketplace
         <br />
         for Cash-Flowing AI SaaS Businesses
