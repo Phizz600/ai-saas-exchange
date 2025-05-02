@@ -102,7 +102,7 @@ const HeroSection = ({
             </Button>
             <Button 
               onClick={handleBuyAIBusinessClick} 
-              className="w-full max-w-xs py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 bg-[#08A4E9] hover:bg-[#0794d3]"
+              className="w-full max-w-xs py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl hover:shadow-[#08A4E9]/30 transition-all duration-300 transform hover:-translate-y-1 bg-[#08A4E9] hover:bg-[#0794d3]"
             >
               <ShoppingCart className="mr-2" />
               Buy an AI SaaS Business
