@@ -83,7 +83,7 @@ const HeroSection = ({
           duration: 0.3
         }} className="text-xl text-gray-200 mb-12 max-w-2xl mx-auto text-center">Join an exclusive network of investors gaining early access to AI SaaS businesses, products, tools, and solutions through our secure Dutch auction marketplace.</motion.p>
 
-          {/* Button Row - Updated with new Buy AI SaaS Business button */}
+          {/* Button Row - Updated with rearranged buttons */}
           <div className="flex flex-col items-center gap-4 justify-center">
             <Button 
               variant="purple" 
@@ -93,19 +93,19 @@ const HeroSection = ({
               Get your Free AI SaaS Valuation
             </Button>
             <Button 
-              onClick={handleBuyAIBusinessClick} 
-              className="w-full max-w-xs py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 bg-[#08A4E9] hover:bg-[#0794d3]"
-            >
-              <ShoppingCart className="mr-2" />
-              Buy an AI SaaS Business
-            </Button>
-            <Button 
               variant="green" 
               onClick={handleListProductClick} 
               className="w-full max-w-xs py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
             >
               <MousePointerClick className="mr-2" />
               Sell your AI SaaS Business
+            </Button>
+            <Button 
+              onClick={handleBuyAIBusinessClick} 
+              className="w-full max-w-xs py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 bg-[#08A4E9] hover:bg-[#0794d3]"
+            >
+              <ShoppingCart className="mr-2" />
+              Buy an AI SaaS Business
             </Button>
           </div>
           
