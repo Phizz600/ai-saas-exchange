@@ -1,12 +1,9 @@
-
 import { motion } from "framer-motion";
 import { Star } from "lucide-react";
-
 interface HeroTitleProps {
   currentWordIndex: number;
   words: string[];
 }
-
 const HeroTitle = ({
   currentWordIndex,
   words
@@ -25,7 +22,7 @@ const HeroTitle = ({
         </div>
       </div>
 
-      <h1 className="exo-2-heading font-bold leading-tight text-white text-center mx-0 my-0 py-0 px-0 md:text-6xl text-3xl">
+      <h1 className="exo-2-heading font-bold leading-tight text-white text-center mx-0 my-0 py-0 px-0 md:text-6xl text-5xl">
         The #1 Marketplace
         <br />
         for Cash-Flowing AI SaaS Businesses
@@ -36,5 +33,4 @@ const HeroTitle = ({
       </h1>
     </motion.div>;
 };
-
 export default HeroTitle;
