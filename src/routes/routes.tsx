@@ -1,3 +1,4 @@
+
 import Auth from "@/pages/Auth";
 import { Profile } from "@/pages/Profile";
 import { ProductDashboard } from "@/pages/ProductDashboard";
@@ -18,6 +19,7 @@ import Diagnostics from "@/pages/Diagnostics";
 import { ListingThankYou } from "@/pages/ListingThankYou";
 import { Contact } from "@/pages/Contact";
 import { AISaasQuiz } from "@/pages/AISaasQuiz";
+import { FeesPricing } from "@/pages/FeesPricing";
 
 const routes = [
   {
@@ -93,8 +95,8 @@ const routes = [
     element: <Policies />,
   },
   {
-    path: "/messages/:conversationId",
-    element: <MessageChat />,
+    path: "/fees-pricing",
+    element: <FeesPricing />,
   },
   {
     path: "/diagnostics",
