@@ -1,12 +1,11 @@
-
 import { supabase } from "@/integrations/supabase/client";
-import { ToastActionElement } from "@/components/ui/toast";
+import { toast as toastFunction } from "@/hooks/use-toast";
 
 type ToastProps = {
   variant?: "default" | "destructive";
   title: string;
   description: string;
-  action?: ToastActionElement;
+  action?: React.ReactElement;
 };
 
 /**
@@ -32,7 +31,7 @@ export const handleAuthSubmit = async (
   setErrorMessage: (message: string) => void,
   setIsLoading: (isLoading: boolean) => void,
   setIsSignUp: (isSignUp: boolean) => void,
-  toast?: (props: ToastProps) => void
+  toast?: any // Use any here to avoid type conflicts
 ) => {
   setErrorMessage("");
   setIsLoading(true);

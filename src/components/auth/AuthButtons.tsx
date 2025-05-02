@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
+
 interface AuthButtonsProps {
   isSignUp: boolean;
   isFormValid: boolean;
@@ -13,6 +14,7 @@ interface AuthButtonsProps {
   handleGoogleSignIn: () => void;
   setIsLoading: (value: boolean) => void;
 }
+
 export const AuthButtons = ({
   isSignUp,
   isFormValid,
@@ -45,8 +47,6 @@ export const AuthButtons = ({
         </div>
         
       </div>
-
-      
 
       <p className="text-center text-sm text-white/80">
         {isSignUp ? "Already have an account? " : "Don't have an account? "}

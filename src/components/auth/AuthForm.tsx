@@ -9,7 +9,7 @@ import { ErrorMessage } from "./ErrorMessage";
 import { NameField, EmailField, PasswordField } from "./FormFields";
 import { TermsCheckbox } from "./TermsCheckbox";
 import { AuthButtons } from "./AuthButtons";
-import { handleGoogleSignIn, handleAuthSubmit, handlePasswordReset } from "./utils";
+import { signInWithGoogle, handleAuthSubmit, resetPassword } from "./utils";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { InfoIcon } from "lucide-react";
 
@@ -90,7 +90,7 @@ export const AuthForm = () => {
   };
 
   const handleGoogleSignInClick = async () => {
-    await handleGoogleSignIn(setErrorMessage, setIsGoogleLoading);
+    await signInWithGoogle(setErrorMessage, setIsGoogleLoading);
   };
 
   return (
