@@ -1,21 +1,38 @@
-
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
-import { DollarSign, PercentIcon, CheckCircle, Clock, ShieldCheck, BadgeCheck } from "lucide-react";
+import { DollarSign, PercentIcon, CheckCircle, Clock, ShieldCheck, Crown, BadgeCheck, Users, Award } from "lucide-react";
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
-
+import { Button } from "@/components/ui/button";
 const PricingFees = () => {
-  return (
-    <section className="py-0">
+  return <section className="py-0">
       <div className="container mx-auto px-4">
+        {/* Pro Membership Banner */}
+        <motion.div initial={{
+        opacity: 0,
+        y: 20
+      }} whileInView={{
+        opacity: 1,
+        y: 0
+      }} transition={{
+        duration: 0.5,
+        delay: 0.1
+      }} className="mb-12">
+          
+        </motion.div>
+        
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto mb-12">
           {/* Card 1 - Commission Structure */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            <Card className="h-full p-8 bg-[#0d2540]/95 backdrop-blur-sm border-white/5 hover:shadow-lg transition-shadow">
+          <motion.div initial={{
+          opacity: 0,
+          y: 20
+        }} whileInView={{
+          opacity: 1,
+          y: 0
+        }} transition={{
+          duration: 0.5,
+          delay: 0.2
+        }}>
+            <Card className="h-full p-8 bg-white/10 backdrop-blur-sm border-white/5 hover:shadow-lg transition-shadow">
               <div className="flex flex-col h-full">
                 <div className="flex justify-center mb-6">
                   <div className="bg-[#D946EE]/20 p-4 rounded-full">
@@ -56,7 +73,6 @@ const PricingFees = () => {
                 <p className="text-gray-300 text-center mb-6 flex-grow">
                   Pay less as you sell more with our transparent tiered pricing structure.
                 </p>
-                
                 <ul className="space-y-3 text-gray-300">
                   <li className="flex items-center">
                     <CheckCircle className="h-5 w-5 text-[#D946EE] mr-2" />
@@ -76,12 +92,17 @@ const PricingFees = () => {
           </motion.div>
           
           {/* Card 2 - Listing Fee */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-          >
-            <Card className="h-full p-8 bg-[#0d2540]/95 backdrop-blur-sm border-white/5 hover:shadow-lg transition-shadow">
+          <motion.div initial={{
+          opacity: 0,
+          y: 20
+        }} whileInView={{
+          opacity: 1,
+          y: 0
+        }} transition={{
+          duration: 0.5,
+          delay: 0.3
+        }}>
+            <Card className="h-full p-8 bg-white/10 backdrop-blur-sm border-white/5 hover:shadow-lg transition-shadow">
               <div className="flex flex-col h-full">
                 <div className="flex justify-center mb-6">
                   <div className="bg-[#8B5CF6]/20 p-4 rounded-full">
@@ -91,7 +112,7 @@ const PricingFees = () => {
                 <h3 className="text-center text-2xl font-bold text-white mb-4">Listing Fee</h3>
                 
                 <div className="relative mb-6">
-                  <p className="text-center text-4xl font-bold text-white">$10</p>
+                  <p className="text-center text-3xl font-bold text-white">$10</p>
                   <div className="absolute -top-3 -right-2 bg-[#0EA4E9] text-white text-xs font-bold px-2 py-1 rounded-full transform rotate-12">
                     90% OFF
                   </div>
@@ -135,12 +156,17 @@ const PricingFees = () => {
           </motion.div>
           
           {/* Card 3 - Deposit Fees */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-          >
-            <Card className="h-full p-8 bg-[#0d2540]/95 backdrop-blur-sm border-white/5 hover:shadow-lg transition-shadow">
+          <motion.div initial={{
+          opacity: 0,
+          y: 20
+        }} whileInView={{
+          opacity: 1,
+          y: 0
+        }} transition={{
+          duration: 0.5,
+          delay: 0.4
+        }}>
+            <Card className="h-full p-8 bg-white/10 backdrop-blur-sm border-white/5 hover:shadow-lg transition-shadow">
               <div className="flex flex-col h-full">
                 <div className="flex justify-center mb-6">
                   <div className="bg-[#0EA4E9]/20 p-4 rounded-full">
@@ -201,19 +227,21 @@ const PricingFees = () => {
           </motion.div>
         </div>
         
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-          className="text-center mt-12"
-        >
+        <motion.div initial={{
+        opacity: 0,
+        y: 20
+      }} whileInView={{
+        opacity: 1,
+        y: 0
+      }} transition={{
+        duration: 0.5,
+        delay: 0.5
+      }} className="text-center mt-12">
           <p className="text-gray-300 max-w-2xl mx-auto my-[34px]">
             All transactions are processed securely through Escrow.com to ensure safe and transparent dealings for both parties.
           </p>
         </motion.div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default PricingFees;
