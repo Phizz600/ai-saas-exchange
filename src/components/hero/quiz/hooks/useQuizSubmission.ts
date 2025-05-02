@@ -29,6 +29,8 @@ export const useQuizSubmission = () => {
     }
 
     try {
+      setIsLoading(true);
+      
       // Calculate valuation based on quiz answers
       const answers = JSON.parse(localStorage.getItem('quizAnswers') || '{}');
       const valuationResult = await calculateQuizValuation(answers);
@@ -38,7 +40,9 @@ export const useQuizSubmission = () => {
         body: JSON.stringify({
           mode: 'track_event_api',
           eventName: 'quiz_completed',
-          identifiers: { email: formData.email },
+          identifiers: { 
+            email_id: formData.email 
+          },
           contactProperties: {
             NAME: formData.name,
             COMPANY: formData.company,
@@ -66,6 +70,10 @@ export const useQuizSubmission = () => {
 
       console.log("Quiz submission and list addition response:", eventTrackingResponse);
       
+      if (eventTrackingResponse.error) {
+        throw new Error(eventTrackingResponse.error.message || 'Failed to process submission');
+      }
+      
       if (!eventTrackingResponse.data?.success) {
         throw new Error(eventTrackingResponse.data?.error || 'Failed to process submission');
       }
@@ -82,6 +90,8 @@ export const useQuizSubmission = () => {
         description: "There was a problem sending your valuation. Please try again.",
         variant: "destructive"
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
