@@ -11,7 +11,7 @@ const HeroStateManager = () => {
   const [subscriberCount, setSubscriberCount] = useState(342);
   const [isSellerOpen, setIsSellerOpen] = useState(false);
   const [isBuyerOpen, setIsBuyerOpen] = useState(false);
-  const words = ["SaaS", "Bots", "Apps", "Tools", "Startups", "APIs", "Products", "Solutions", "Algorithms", "Models", "Agents", "Platforms"];
+  const words = ["SaaS"];
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
@@ -39,12 +39,7 @@ const HeroStateManager = () => {
     };
   }, []);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentWordIndex(prevIndex => (prevIndex + 1) % words.length);
-    }, 2500);
-    return () => clearInterval(interval);
-  }, []);
+  // Removed the interval that was changing the current word index
 
   const handleListProductClick = async () => {
     const {
