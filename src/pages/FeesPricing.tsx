@@ -1,4 +1,3 @@
-
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
@@ -8,7 +7,6 @@ import { motion } from "framer-motion";
 import { DollarSign, PercentIcon, CheckCircle, User, Crown, BadgeCheck, Users, Tag } from "lucide-react";
 import PricingFees from "@/components/hero/PricingFees";
 import AnimatedGradientBackground from "@/components/ui/AnimatedGradientBackground";
-
 export const FeesPricing = () => {
   // Animation variants
   const fadeIn = {
@@ -24,18 +22,11 @@ export const FeesPricing = () => {
       }
     }
   };
-
-  return (
-    <AnimatedGradientBackground>
+  return <AnimatedGradientBackground>
       <Navbar />
       
       <div className="pt-24 pb-16">
-        <motion.div 
-          initial="hidden" 
-          animate="visible" 
-          variants={fadeIn} 
-          className="container mx-auto px-4 text-center mb-12 my-[50px]"
-        >
+        <motion.div initial="hidden" animate="visible" variants={fadeIn} className="container mx-auto px-4 text-center mb-12 my-[50px]">
           <h1 className="exo-2-heading text-5xl font-bold text-white mb-4 bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] inline-block text-transparent bg-clip-text">
             Simple, Transparent Pricing
           </h1>
@@ -48,12 +39,16 @@ export const FeesPricing = () => {
         {/* Main content */}
         <PricingFees />
         
-        <motion.div 
-          className="container mx-auto px-4 mt-20" 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.6 }}
-        >
+        <motion.div className="container mx-auto px-4 mt-20" initial={{
+        opacity: 0,
+        y: 30
+      }} animate={{
+        opacity: 1,
+        y: 0
+      }} transition={{
+        delay: 0.3,
+        duration: 0.6
+      }}>
           <Card className="bg-white/10 backdrop-blur-sm border-white/5 p-8 rounded-xl">
             {/* Pro Membership Details Section */}
             <div className="mb-12">
@@ -279,51 +274,19 @@ export const FeesPricing = () => {
                 </div>
               </div>
               
-              <div className="bg-white/5 p-6 rounded-lg border border-white/10">
-                <h3 className="text-lg font-semibold text-white mb-3">Enterprise Membership</h3>
-                
-                <div className="space-y-4">
-                  <p className="text-white/80">
-                    For investment firms, venture capitalists, or serial acquirers looking to purchase multiple AI businesses, 
-                    our Enterprise membership offers customized solutions.
-                  </p>
-                  
-                  <ul className="space-y-3 text-white/80">
-                    <li className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-[#D946EE] mr-2 mt-1 flex-shrink-0" />
-                      <span>Custom deal flow tailored to your acquisition criteria</span>
-                    </li>
-                    <li className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-[#D946EE] mr-2 mt-1 flex-shrink-0" />
-                      <span>Dedicated acquisition specialist</span>
-                    </li>
-                    <li className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-[#D946EE] mr-2 mt-1 flex-shrink-0" />
-                      <span>Off-market opportunities not listed publicly</span>
-                    </li>
-                    <li className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-[#D946EE] mr-2 mt-1 flex-shrink-0" />
-                      <span>Advanced due diligence services</span>
-                    </li>
-                  </ul>
-                  
-                  <div className="mt-4 flex justify-center">
-                    <Button className="bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] px-6">
-                      Contact for Enterprise Pricing
-                    </Button>
-                  </div>
-                </div>
-              </div>
+              
             </div>
           </Card>
         </motion.div>
         
-        <motion.div 
-          className="container mx-auto px-4 text-center mt-20 max-w-3xl" 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.6, duration: 0.8 }}
-        >
+        <motion.div className="container mx-auto px-4 text-center mt-20 max-w-3xl" initial={{
+        opacity: 0
+      }} animate={{
+        opacity: 1
+      }} transition={{
+        delay: 0.6,
+        duration: 0.8
+      }}>
           <div className="p-8 rounded-xl bg-[#0EA4E9]/10 backdrop-blur-sm border border-[#0EA4E9]/20">
             <h2 className="text-2xl font-semibold text-white mb-4 exo-2-heading">Ready to List Your AI SaaS Product?</h2>
             <p className="text-white/80 mb-6">
@@ -343,6 +306,5 @@ export const FeesPricing = () => {
       </div>
       
       <Footer />
-    </AnimatedGradientBackground>
-  );
+    </AnimatedGradientBackground>;
 };
