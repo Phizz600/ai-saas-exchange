@@ -5,7 +5,7 @@ import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { DollarSign, PercentIcon, CheckCircle, ShieldCheck, Crown, BadgeCheck } from "lucide-react";
+import { DollarSign, PercentIcon, CheckCircle, User, Crown, BadgeCheck, Users, Tag } from "lucide-react";
 import PricingFees from "@/components/hero/PricingFees";
 import AnimatedGradientBackground from "@/components/ui/AnimatedGradientBackground";
 
@@ -103,15 +103,15 @@ export const FeesPricing = () => {
                     <li className="flex items-start">
                       <BadgeCheck className="h-5 w-5 text-amber-400 mr-3 mt-0.5 flex-shrink-0" />
                       <div>
-                        <span className="text-white font-medium">$0 Listing Fees</span>
-                        <p className="text-gray-400 text-sm mt-1">List as many AI products as you want without paying the standard listing fee.</p>
+                        <span className="text-white font-medium">Premium Listing Placement</span>
+                        <p className="text-gray-400 text-sm mt-1">Your listings get featured placement for maximum visibility to potential buyers.</p>
                       </div>
                     </li>
                     <li className="flex items-start">
                       <BadgeCheck className="h-5 w-5 text-amber-400 mr-3 mt-0.5 flex-shrink-0" />
                       <div>
-                        <span className="text-white font-medium">$0 Deposit Fees</span>
-                        <p className="text-gray-400 text-sm mt-1">Make offers without paying the 5% platform fee on required deposits.</p>
+                        <span className="text-white font-medium">Advanced Analytics</span>
+                        <p className="text-gray-400 text-sm mt-1">Access detailed insights about viewer engagement with your listings.</p>
                       </div>
                     </li>
                     <li className="flex items-start">
@@ -150,10 +150,10 @@ export const FeesPricing = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               <div className="p-6 rounded-lg bg-white/5 backdrop-blur-sm border border-white/10 flex flex-col items-center">
                 <div className="p-3 rounded-full bg-[#D946EE]/20 mb-4">
-                  <DollarSign className="h-7 w-7 text-[#D946EE]" />
+                  <Tag className="h-7 w-7 text-[#D946EE]" />
                 </div>
-                <h3 className="text-xl font-semibold text-white mb-3">Listing Fee</h3>
-                <p className="text-white/80 text-center">A one-time $100 fee applies when listing your AI SaaS product on our marketplace.</p>
+                <h3 className="text-xl font-semibold text-white mb-3">Free Listings</h3>
+                <p className="text-white/80 text-center">Early adopters can list their AI SaaS products for free, for life! No hidden fees or future charges.</p>
               </div>
               
               <div className="p-6 rounded-lg bg-white/5 backdrop-blur-sm border border-white/10 flex flex-col items-center">
@@ -166,10 +166,10 @@ export const FeesPricing = () => {
               
               <div className="p-6 rounded-lg bg-white/5 backdrop-blur-sm border border-white/10 flex flex-col items-center">
                 <div className="p-3 rounded-full bg-[#0EA4E9]/20 mb-4">
-                  <ShieldCheck className="h-7 w-7 text-[#0EA4E9]" />
+                  <User className="h-7 w-7 text-[#0EA4E9]" />
                 </div>
-                <h3 className="text-xl font-semibold text-white mb-3">Secure Transactions</h3>
-                <p className="text-white/80 text-center">All transactions are processed securely through Escrow.com for buyer and seller protection.</p>
+                <h3 className="text-xl font-semibold text-white mb-3">Buyer Memberships</h3>
+                <p className="text-white/80 text-center">Access to our marketplace requires a membership, ensuring only qualified buyers see your listings.</p>
               </div>
             </div>
             
@@ -225,92 +225,92 @@ export const FeesPricing = () => {
               </div>
             </div>
 
-            {/* New section for bidding and deposit fees */}
+            {/* New section for buyer membership details */}
             <div className="mt-10">
-              <h2 className="text-2xl font-semibold text-white mb-6 exo-2-heading">Bidding & Deposit Fee Structure</h2>
+              <h2 className="text-2xl font-semibold text-white mb-6 exo-2-heading">Buyer Membership Details</h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
                 <div className="p-6 rounded-lg bg-white/5 backdrop-blur-sm border border-white/10">
-                  <h3 className="text-lg font-semibold text-white mb-3">Initial Offer Deposits</h3>
+                  <h3 className="text-lg font-semibold text-white mb-3">Basic Membership ($99/year)</h3>
                   <ul className="space-y-3 text-white/80">
                     <li className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-[#8B5CF6] mr-2 mt-1 flex-shrink-0" />
-                      <span>10% deposit required when making an offer</span>
+                      <span>Full marketplace access</span>
                     </li>
                     <li className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-[#8B5CF6] mr-2 mt-1 flex-shrink-0" />
-                      <span>5% platform fee applied to deposits (0.5% of offer value)</span>
+                      <span>Make unlimited offers on listings</span>
                     </li>
                     <li className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-[#8B5CF6] mr-2 mt-1 flex-shrink-0" />
-                      <span>Fully refundable if offer is declined</span>
+                      <span>Secure escrow transaction system</span>
                     </li>
                     <li className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-[#8B5CF6] mr-2 mt-1 flex-shrink-0" />
-                      <span>Applied toward final purchase if offer is accepted</span>
-                    </li>
-                    <li className="flex items-start">
-                      <BadgeCheck className="h-5 w-5 text-amber-400 mr-2 mt-1 flex-shrink-0" />
-                      <span className="text-amber-300">Pro members: No platform fee on deposits</span>
+                      <span>Email support</span>
                     </li>
                   </ul>
                 </div>
                 
                 <div className="p-6 rounded-lg bg-white/5 backdrop-blur-sm border border-white/10">
-                  <h3 className="text-lg font-semibold text-white mb-3">Updated Offer Deposits</h3>
+                  <h3 className="text-lg font-semibold text-white mb-3">Pro Membership ($299/year)</h3>
                   <ul className="space-y-3 text-white/80">
                     <li className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-[#0EA4E9] mr-2 mt-1 flex-shrink-0" />
-                      <span>No additional deposit for small increases (less than 20%)</span>
+                      <span>Everything in Basic membership</span>
                     </li>
                     <li className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-[#0EA4E9] mr-2 mt-1 flex-shrink-0" />
-                      <span>For offers increased by more than 20%, only the additional deposit amount is required</span>
+                      <span>Early access to new listings (24 hours)</span>
                     </li>
                     <li className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-[#0EA4E9] mr-2 mt-1 flex-shrink-0" />
-                      <span>5% platform fee applies only to the additional deposit amount</span>
+                      <span>Premium due diligence support</span>
                     </li>
                     <li className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-[#0EA4E9] mr-2 mt-1 flex-shrink-0" />
-                      <span>Original deposit is carried forward and applied to the new offer</span>
+                      <span>Priority customer support</span>
                     </li>
                     <li className="flex items-start">
-                      <BadgeCheck className="h-5 w-5 text-amber-400 mr-2 mt-1 flex-shrink-0" />
-                      <span className="text-amber-300">Pro members: No platform fee on additional deposits</span>
+                      <CheckCircle className="h-5 w-5 text-[#0EA4E9] mr-2 mt-1 flex-shrink-0" />
+                      <span>Dedicated account manager</span>
                     </li>
                   </ul>
                 </div>
               </div>
               
               <div className="bg-white/5 p-6 rounded-lg border border-white/10">
-                <h3 className="text-lg font-semibold text-white mb-3">Deposit Examples</h3>
+                <h3 className="text-lg font-semibold text-white mb-3">Enterprise Membership</h3>
                 
-                <div className="space-y-6">
-                  <div>
-                    <h4 className="text-white font-medium mb-2">Initial Offer:</h4>
-                    <p className="text-white/80 mb-1">• Offer amount: $50,000</p>
-                    <p className="text-white/80 mb-1">• Required deposit: $5,000 (10%)</p>
-                    <p className="text-white/80 mb-1">• Platform fee: $250 (5% of deposit)</p>
-                    <p className="text-white/80 mb-1">• Total payment: $5,250</p>
-                    <p className="text-white/80 mb-1 text-amber-300">• Pro member total: $5,000 (no platform fee)</p>
-                  </div>
+                <div className="space-y-4">
+                  <p className="text-white/80">
+                    For investment firms, venture capitalists, or serial acquirers looking to purchase multiple AI businesses, 
+                    our Enterprise membership offers customized solutions.
+                  </p>
                   
-                  <div>
-                    <h4 className="text-white font-medium mb-2">Small Increase (less than 20%):</h4>
-                    <p className="text-white/80 mb-1">• Updated offer: $55,000 (10% increase)</p>
-                    <p className="text-white/80 mb-1">• Additional deposit required: $0</p>
-                    <p className="text-white/80 mb-1">• Original deposit is applied to the new offer</p>
-                  </div>
+                  <ul className="space-y-3 text-white/80">
+                    <li className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-[#D946EE] mr-2 mt-1 flex-shrink-0" />
+                      <span>Custom deal flow tailored to your acquisition criteria</span>
+                    </li>
+                    <li className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-[#D946EE] mr-2 mt-1 flex-shrink-0" />
+                      <span>Dedicated acquisition specialist</span>
+                    </li>
+                    <li className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-[#D946EE] mr-2 mt-1 flex-shrink-0" />
+                      <span>Off-market opportunities not listed publicly</span>
+                    </li>
+                    <li className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-[#D946EE] mr-2 mt-1 flex-shrink-0" />
+                      <span>Advanced due diligence services</span>
+                    </li>
+                  </ul>
                   
-                  <div>
-                    <h4 className="text-white font-medium mb-2">Large Increase (more than 20%):</h4>
-                    <p className="text-white/80 mb-1">• Updated offer: $70,000 (40% increase)</p>
-                    <p className="text-white/80 mb-1">• New total deposit needed: $7,000 (10% of new offer)</p>
-                    <p className="text-white/80 mb-1">• Additional deposit required: $2,000 ($7,000 - $5,000)</p>
-                    <p className="text-white/80 mb-1">• Platform fee on additional deposit: $100 (5% of $2,000)</p>
-                    <p className="text-white/80 mb-1">• Total additional payment: $2,100</p>
-                    <p className="text-white/80 mb-1 text-amber-300">• Pro member total: $2,000 (no platform fee)</p>
+                  <div className="mt-4 flex justify-center">
+                    <Button className="bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] px-6">
+                      Contact for Enterprise Pricing
+                    </Button>
                   </div>
                 </div>
               </div>
