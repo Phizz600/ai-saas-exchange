@@ -90,7 +90,7 @@ const HeroSection = ({
             </Button>
             <Button 
               variant="green" 
-              onClick={handleListProductClick} 
+              onClick={() => window.open('https://airtable.com/appqbmIOXXLNFhZyj/pagutIK7nf0unyJm3/form', '_blank')}
               className="w-full max-w-xs py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
             >
               <MousePointerClick className="mr-2" />
