@@ -119,9 +119,7 @@ export const FeesPricing = () => {
                 <div className="flex flex-col md:flex-row items-center justify-between">
                   <div className="mb-6 md:mb-0">
                     <h3 className="text-xl font-semibold text-white mb-2">Ready to Upgrade?</h3>
-                    <p className="text-gray-300 max-w-xl">
-                      Join our Pro Membership today for just $299/year and start enjoying exclusive benefits and significant savings.
-                    </p>
+                    <p className="text-gray-300 max-w-xl">Join our Pro Membership today for just $7/month and start enjoying exclusive benefits and significant savings.</p>
                   </div>
                   <Button className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] min-w-[200px] py-6" size="lg">
                     Upgrade to Pro
