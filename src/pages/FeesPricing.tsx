@@ -102,20 +102,8 @@ export const FeesPricing = () => {
                         <p className="text-gray-400 text-sm mt-1">Your listings get featured placement for maximum visibility to potential buyers.</p>
                       </div>
                     </li>
-                    <li className="flex items-start">
-                      <BadgeCheck className="h-5 w-5 text-amber-400 mr-3 mt-0.5 flex-shrink-0" />
-                      <div>
-                        <span className="text-white font-medium">Advanced Analytics</span>
-                        <p className="text-gray-400 text-sm mt-1">Access detailed insights about viewer engagement with your listings.</p>
-                      </div>
-                    </li>
-                    <li className="flex items-start">
-                      <BadgeCheck className="h-5 w-5 text-amber-400 mr-3 mt-0.5 flex-shrink-0" />
-                      <div>
-                        <span className="text-white font-medium">Reduced Commission (2% Discount)</span>
-                        <p className="text-gray-400 text-sm mt-1">Pay 2% less on our standard commission rates when you sell your AI product.</p>
-                      </div>
-                    </li>
+                    
+                    
                     <li className="flex items-start">
                       <BadgeCheck className="h-5 w-5 text-amber-400 mr-3 mt-0.5 flex-shrink-0" />
                       <div>
