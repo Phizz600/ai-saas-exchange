@@ -129,28 +129,7 @@ export const Navbar = () => {
           </Link>
 
           <div className="flex items-center gap-2">
-            {isPolicyPage && (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="data-[state=open]:bg-muted h-9 px-2">
-                    <FileText className="h-4 w-4 mr-2" />
-                    <span>Policies</span>
-                    <ChevronDown className="h-4 w-4 ml-auto" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56">
-                  {policyPages.map(page => (
-                    <DropdownMenuItem 
-                      key={page.title} 
-                      onClick={() => navigate(page.href)} 
-                      className="cursor-pointer"
-                    >
-                      {page.title}
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
+            
 
             {!isAuthenticated ? (
               <Link to="/auth">
