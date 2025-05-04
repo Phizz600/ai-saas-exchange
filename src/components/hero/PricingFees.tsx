@@ -1,7 +1,7 @@
 
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
-import { DollarSign, PercentIcon, CheckCircle, User, Tag, ShieldCheck } from "lucide-react";
+import { DollarSign, PercentIcon, CheckCircle, Users, BadgeCheck, Crown, User, Tag, ShieldCheck } from "lucide-react";
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 
@@ -9,6 +9,16 @@ const PricingFees = () => {
   return (
     <section className="py-0">
       <div className="container mx-auto px-4">
+        {/* Pro Membership Banner */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="mb-12"
+        >
+          
+        </motion.div>
+        
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto mb-12">
           {/* Card 1 - Commission Structure */}
           <motion.div 
@@ -66,6 +76,10 @@ const PricingFees = () => {
                     <CheckCircle className="h-5 w-5 text-[#D946EE] mr-2" />
                     <span>No hidden fees or surprises</span>
                   </li>
+                  <li className="flex items-center">
+                    <BadgeCheck className="h-5 w-5 text-amber-400 mr-2" />
+                    <span className="text-amber-300">Pro members: 2% discount</span>
+                  </li>
                 </ul>
               </div>
             </Card>
@@ -121,12 +135,16 @@ const PricingFees = () => {
                     <CheckCircle className="h-5 w-5 text-[#8B5CF6] mr-2" />
                     <span>Lifetime free listings guarantee</span>
                   </li>
+                  <li className="flex items-center">
+                    <BadgeCheck className="h-5 w-5 text-amber-400 mr-2" />
+                    <span className="text-amber-300">Pro members: Priority placement</span>
+                  </li>
                 </ul>
               </div>
             </Card>
           </motion.div>
           
-          {/* Card 3 - Membership Fee (updated to show only the single $7/month tier) */}
+          {/* Card 3 - Buyer Membership Fees (replacing Deposit Fees) */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -139,16 +157,31 @@ const PricingFees = () => {
                     <User className="h-8 w-8 text-[#0EA4E9]" />
                   </div>
                 </div>
-                <h3 className="text-center text-2xl font-bold text-white mb-4">Membership Fee</h3>
+                <h3 className="text-center text-2xl font-bold text-white mb-4">Buyer Membership</h3>
                 
-                <div className="my-4 flex flex-col items-center">
-                  <div className="relative">
-                    <span className="absolute -top-2 -right-2 bg-[#D946EE] text-white text-xs font-bold px-2 py-1 rounded-full transform rotate-12">
-                      REQUIRED
-                    </span>
-                    <p className="text-center text-4xl font-bold text-white">$7<span className="text-lg font-normal">/mo</span></p>
-                  </div>
-                  <p className="text-center text-gray-400 mt-1">Billed annually</p>
+                <div className="my-4 bg-white/5 rounded-lg overflow-hidden">
+                  <Table>
+                    <TableHeader className="bg-white/10">
+                      <TableRow>
+                        <TableHead className="text-white text-sm font-medium text-left">Membership Type</TableHead>
+                        <TableHead className="text-white text-sm font-medium">Fee</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      <TableRow className="border-b border-white/5">
+                        <TableCell className="text-gray-300 text-sm py-2 text-left">Basic Access</TableCell>
+                        <TableCell className="text-gray-300 text-sm py-2 font-semibold">$99/year</TableCell>
+                      </TableRow>
+                      <TableRow className="border-b border-white/5">
+                        <TableCell className="text-gray-300 text-sm py-2 text-left">Pro Membership</TableCell>
+                        <TableCell className="text-gray-300 text-sm py-2 font-semibold">$299/year</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="text-gray-300 text-sm py-2 text-left">Enterprise</TableCell>
+                        <TableCell className="text-gray-300 text-sm py-2 font-semibold">Contact us</TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
                 </div>
                 
                 <p className="text-gray-300 text-center mb-6 flex-grow">
@@ -169,12 +202,8 @@ const PricingFees = () => {
                     <span>Secure escrow transactions</span>
                   </li>
                   <li className="flex items-center">
-                    <CheckCircle className="h-5 w-5 text-[#0EA4E9] mr-2" />
-                    <span>Premium due diligence support</span>
-                  </li>
-                  <li className="flex items-center">
-                    <ShieldCheck className="h-5 w-5 text-[#0EA4E9] mr-2" />
-                    <span>Verified buyer status</span>
+                    <BadgeCheck className="h-5 w-5 text-amber-400 mr-2" />
+                    <span className="text-amber-300">Pro: Premium due diligence support</span>
                   </li>
                 </ul>
               </div>
