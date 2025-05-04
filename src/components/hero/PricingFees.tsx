@@ -83,8 +83,8 @@ const PricingFees = () => {
                     <span>No hidden fees or surprises</span>
                   </li>
                   <li className="flex items-center">
-                    <BadgeCheck className="h-5 w-5 text-amber-400 mr-2" />
-                    <span className="text-amber-300">Pro members: 2% discount</span>
+                    
+                    
                   </li>
                 </ul>
               </div>
