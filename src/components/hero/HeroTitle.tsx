@@ -1,6 +1,6 @@
 
 import { motion } from "framer-motion";
-import { Star } from "lucide-react";
+import { Star, ArrowUp } from "lucide-react";
 
 interface HeroTitleProps {
   currentWordIndex: number;
@@ -11,6 +11,18 @@ const HeroTitle = ({
   currentWordIndex,
   words
 }: HeroTitleProps) => {
+  // Animation variants for the caret
+  const caretAnimation = {
+    animate: {
+      y: [0, -4, 0],
+      transition: {
+        duration: 1.2,
+        repeat: Infinity,
+        ease: "easeInOut"
+      }
+    }
+  };
+
   return (
     <motion.div 
       initial={{ opacity: 0 }}
@@ -29,7 +41,17 @@ const HeroTitle = ({
       <h1 className="exo-2-heading font-bold leading-tight text-white text-center mx-0 my-0 py-0 px-0 md:text-5xl text-3xl">
         The #1 Marketplace
         <br />
-        for Cash-Flowing AI SaaS Businesses
+        <span className="relative inline-block">
+          for 
+          <motion.span 
+            variants={caretAnimation} 
+            animate="animate"
+            className="inline-flex mx-1 transform -rotate-90"
+          >
+            <ArrowUp size={16} className="text-[#D946EF]" />
+          </motion.span>
+          AI SaaS Businesses
+        </span>
         <br />
         <span className="bg-gradient-to-r from-[#D946EF] via-[#8B5CF6] to-[#0EA5E9] text-transparent bg-clip-text">
           Bid, Buy, or Sell at the Perfect Price
