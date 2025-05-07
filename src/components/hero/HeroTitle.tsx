@@ -29,22 +29,7 @@ const HeroTitle = ({
       <h1 className="exo-2-heading font-bold leading-tight text-white text-center mx-0 my-0 py-0 px-0 md:text-5xl text-3xl">
         The #1 Marketplace
         <br />
-        for{" "}
-        <span className="relative">
-          Cash-Flowing
-          <motion.span 
-            className="absolute left-0 bottom-0 w-0 h-[3px] bg-gradient-to-r from-[#D946EF] via-[#8B5CF6] to-[#0EA5E9]"
-            initial={{ width: "0%" }}
-            animate={{ width: "100%" }}
-            transition={{
-              duration: 1.2,
-              repeat: Infinity,
-              repeatType: "reverse",
-              ease: "easeInOut"
-            }}
-          />
-        </span>{" "}
-        AI SaaS Businesses
+        for Cash-Flowing AI SaaS Businesses
         <br />
         <span className="bg-gradient-to-r from-[#D946EF] via-[#8B5CF6] to-[#0EA5E9] text-transparent bg-clip-text">
           Bid, Buy, or Sell at the Perfect Price
