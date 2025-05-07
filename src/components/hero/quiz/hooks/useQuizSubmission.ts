@@ -7,8 +7,10 @@ import { calculateQuizValuation } from '../utils/valuationCalculator';
 
 export const useQuizSubmission = () => {
   const [showResults, setShowResults] = useState(false);
+  const [showValuationResults, setShowValuationResults] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [valuationResult, setValuationResult] = useState<any>(null);
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
@@ -17,12 +19,58 @@ export const useQuizSubmission = () => {
   });
   const { toast } = useToast();
 
+  // Email validation function
+  const isValidEmail = (email: string): boolean => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  };
+
+  // Calculate valuation during the loading phase
+  const calculateValuation = async () => {
+    try {
+      setIsLoading(true);
+      // Get stored answers from localStorage
+      const answers = JSON.parse(localStorage.getItem('quizAnswers') || '{}');
+      
+      // Calculate valuation based on quiz answers
+      const result = await calculateQuizValuation(answers);
+      
+      setValuationResult(result);
+      setIsLoading(false);
+      setShowValuationResults(true);
+    } catch (error) {
+      console.error("Error calculating valuation:", error);
+      toast({
+        title: "Error",
+        description: "There was a problem calculating your valuation. Please try again.",
+        variant: "destructive"
+      });
+      setIsLoading(false);
+    }
+  };
+
+  const proceedToContactForm = () => {
+    setShowValuationResults(false);
+    setShowResults(true);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name || !formData.email) {
+    
+    // Validate email and name
+    if (!formData.name) {
       toast({
         title: "Missing Information",
-        description: "Please fill in your name and email to receive your valuation.",
+        description: "Please enter your name to receive your valuation.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!formData.email || !isValidEmail(formData.email)) {
+      toast({
+        title: "Invalid Email",
+        description: "Please enter a valid email address to receive your valuation.",
         variant: "destructive"
       });
       return;
@@ -31,9 +79,8 @@ export const useQuizSubmission = () => {
     try {
       setIsLoading(true);
       
-      // Calculate valuation based on quiz answers
+      // Get stored answers from localStorage
       const answers = JSON.parse(localStorage.getItem('quizAnswers') || '{}');
-      const valuationResult = await calculateQuizValuation(answers);
 
       // Create contact in Brevo, add to list, and track event
       const eventTrackingResponse = await supabase.functions.invoke('send-brevo-email', {
@@ -103,6 +150,12 @@ export const useQuizSubmission = () => {
     setIsLoading,
     formData,
     setFormData,
-    handleSubmit
+    handleSubmit,
+    valuationResult,
+    setValuationResult,
+    calculateValuation,
+    showValuationResults,
+    setShowValuationResults,
+    proceedToContactForm
   };
 };

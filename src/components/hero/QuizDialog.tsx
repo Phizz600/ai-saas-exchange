@@ -5,6 +5,7 @@ import { QuizQuestions } from "./quiz/QuizQuestions";
 import { ResultsForm } from "./quiz/ResultsForm";
 import { LoadingScreen } from "./quiz/LoadingScreen";
 import { ConfirmationScreen } from "./quiz/ConfirmationScreen";
+import { ValuationResults } from "./quiz/ValuationResults";
 import { quizQuestions } from "./quiz/quizQuestions";
 import { useQuizSubmission } from "./quiz/hooks/useQuizSubmission";
 
@@ -16,14 +17,17 @@ interface QuizDialogProps {
 export const QuizDialog = ({ open, onOpenChange }: QuizDialogProps) => {
   const [currentQuestion, setCurrentQuestion] = useState(1);
   const [answers, setAnswers] = useState<Record<number, string>>({});
-  const [isCalculating, setIsCalculating] = useState(false);
   const {
     showResults,
-    setShowResults,
     showConfirmation,
+    isLoading,
     formData,
     setFormData,
-    handleSubmit
+    handleSubmit,
+    calculateValuation,
+    valuationResult,
+    showValuationResults,
+    proceedToContactForm
   } = useQuizSubmission();
 
   const handleOptionSelect = (questionId: number, value: string) => {
@@ -41,12 +45,8 @@ export const QuizDialog = ({ open, onOpenChange }: QuizDialogProps) => {
 
   const handleNext = () => {
     if (currentQuestion === quizQuestions.length) {
-      setIsCalculating(true);
-      // Simulate AI calculation time
-      setTimeout(() => {
-        setIsCalculating(false);
-        setShowResults(true);
-      }, 1500);
+      // Instead of immediately showing results, calculate valuation first
+      calculateValuation();
     } else {
       setCurrentQuestion(prev => prev + 1);
     }
@@ -65,32 +65,41 @@ export const QuizDialog = ({ open, onOpenChange }: QuizDialogProps) => {
       <DialogContent className="max-w-xl">
         <div className="bg-gradient-to-r from-[#8B5CF6] via-[#D946EF] to-[#9B87F5] p-6 -m-6 mb-6 rounded-t-lg">
           <h2 className="exo-2-heading text-white text-xl text-center">
-            What's your AI SaaS Businesses' Really Worth?
+            What's your AI SaaS Business Really Worth?
           </h2>
           <p className="text-white/90 text-sm text-center mt-2">
             Get a free estimate of your AI SaaS worth in just 60 seconds
           </p>
         </div>
 
-        <div className="h-2 bg-gray-100 rounded-full mb-6">
-          <div
-            className="h-full bg-[#6366f1] rounded-full transition-all duration-300"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
+        {!isLoading && !showValuationResults && !showResults && !showConfirmation && (
+          <>
+            <div className="h-2 bg-gray-100 rounded-full mb-6">
+              <div
+                className="h-full bg-[#6366f1] rounded-full transition-all duration-300"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
 
-        {!showResults && !showConfirmation && !isCalculating && (
-          <QuizQuestions
-            currentQuestion={currentQuestion}
-            questions={quizQuestions}
-            answers={answers}
-            onAnswerSelect={handleOptionSelect}
-            onNext={handleNext}
-            onPrevious={handlePrevious}
-          />
+            <QuizQuestions
+              currentQuestion={currentQuestion}
+              questions={quizQuestions}
+              answers={answers}
+              onAnswerSelect={handleOptionSelect}
+              onNext={handleNext}
+              onPrevious={handlePrevious}
+            />
+          </>
         )}
         
-        {isCalculating && <LoadingScreen />}
+        {isLoading && <LoadingScreen />}
+
+        {showValuationResults && valuationResult && (
+          <ValuationResults 
+            valuation={valuationResult} 
+            onContinue={proceedToContactForm} 
+          />
+        )}
 
         {showResults && !showConfirmation && (
           <ResultsForm
