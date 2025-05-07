@@ -1,6 +1,7 @@
+
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
-import { DollarSign, PercentIcon, CheckCircle, Users, BadgeCheck, Crown, User, Tag, ShieldCheck } from "lucide-react";
+import { DollarSign, PercentIcon, CheckCircle, User, BadgeCheck, Crown, User2, Tag, ShieldCheck } from "lucide-react";
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 const PricingFees = () => {
@@ -121,7 +122,7 @@ const PricingFees = () => {
                 
                 <div className="bg-white/5 p-3 rounded-md mb-6">
                   <div className="flex items-center justify-center gap-2 text-amber-300 mb-2">
-                    <Users className="h-4 w-4" />
+                    <User2 className="h-4 w-4" />
                     <p className="text-sm font-medium">Early Adopter Benefit</p>
                   </div>
                   <p className="text-gray-300 text-sm text-center">
@@ -148,7 +149,7 @@ const PricingFees = () => {
                   </li>
                   <li className="flex items-center">
                     <BadgeCheck className="h-5 w-5 text-amber-400 mr-2" />
-                    <span className="text-amber-300">Pro members: Priority placement</span>
+                    <span className="text-amber-300">Priority placement for members</span>
                   </li>
                 </ul>
               </div>
@@ -173,7 +174,7 @@ const PricingFees = () => {
                     <User className="h-8 w-8 text-[#0EA4E9]" />
                   </div>
                 </div>
-                <h3 className="text-center text-2xl font-bold text-white mb-4">Buyer Membership</h3>
+                <h3 className="text-center text-2xl font-bold text-white mb-4">Member Access</h3>
                 
                 <div className="my-4 bg-white/5 rounded-lg overflow-hidden">
                   <Table>
@@ -189,7 +190,7 @@ const PricingFees = () => {
                         
                       </TableRow>
                       <TableRow className="border-b border-white/5">
-                        <TableCell className="text-gray-300 text-sm py-2 text-left">Pro Membership</TableCell>
+                        <TableCell className="text-gray-300 text-sm py-2 text-left">Member Access</TableCell>
                         <TableCell className="text-gray-300 text-sm py-2 font-semibold">$7/month</TableCell>
                       </TableRow>
                       <TableRow>
@@ -219,7 +220,7 @@ const PricingFees = () => {
                   </li>
                   <li className="flex items-center">
                     <BadgeCheck className="h-5 w-5 text-amber-400 mr-2" />
-                    <span className="text-amber-300">Pro: Premium due diligence support</span>
+                    <span className="text-amber-300">Premium due diligence support</span>
                   </li>
                 </ul>
               </div>
