@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { formatCurrency } from "./utils/valuationCalculator";
+import { formatCurrency } from "@/components/marketplace/list-product/utils/valuationCalculator";
 import { CheckCircle, ArrowRight, TrendingUp, AlertTriangle, BarChart } from "lucide-react";
 
 interface ValuationResultsProps {
