@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Send, ArrowRight } from "lucide-react";
@@ -18,6 +18,12 @@ export const ResultsForm = ({ formData, onFormChange, onSubmit, isPreValuation =
     name?: string;
     email?: string;
   }>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Clear previous errors when component mounts
+  useEffect(() => {
+    setErrors({});
+  }, []);
 
   const validateEmail = (email: string): boolean => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -35,6 +41,7 @@ export const ResultsForm = ({ formData, onFormChange, onSubmit, isPreValuation =
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Form submission attempted with data:", formData);
     
     // Validate fields
     const newErrors: {name?: string; email?: string} = {};
@@ -50,12 +57,18 @@ export const ResultsForm = ({ formData, onFormChange, onSubmit, isPreValuation =
     }
     
     if (Object.keys(newErrors).length > 0) {
+      console.log("Form validation failed with errors:", newErrors);
       setErrors(newErrors);
       return;
     }
     
     // If validation passes, submit the form
-    onSubmit(e);
+    setIsSubmitting(true);
+    try {
+      onSubmit(e);
+    } catch (error) {
+      console.error("Error during form submission:", error);
+    }
   };
 
   return (
@@ -87,6 +100,7 @@ export const ResultsForm = ({ formData, onFormChange, onSubmit, isPreValuation =
             value={formData.name}
             onChange={e => handleChange('name', e.target.value)}
             className={errors.name ? "border-red-500" : ""}
+            disabled={isSubmitting}
           />
           {errors.name && (
             <p className="text-red-500 text-xs mt-1">{errors.name}</p>
@@ -100,6 +114,7 @@ export const ResultsForm = ({ formData, onFormChange, onSubmit, isPreValuation =
             value={formData.email}
             onChange={e => handleChange('email', e.target.value)}
             className={errors.email ? "border-red-500" : ""}
+            disabled={isSubmitting}
           />
           {errors.email && (
             <p className="text-red-500 text-xs mt-1">{errors.email}</p>
@@ -112,6 +127,7 @@ export const ResultsForm = ({ formData, onFormChange, onSubmit, isPreValuation =
             placeholder="Your AI SaaS Company"
             value={formData.company}
             onChange={e => handleChange('company', e.target.value)}
+            disabled={isSubmitting}
           />
         </div>
 
@@ -121,6 +137,7 @@ export const ResultsForm = ({ formData, onFormChange, onSubmit, isPreValuation =
             checked={formData.sellingInterest}
             onChange={e => handleChange('sellingInterest', e.target.checked)}
             className="mt-1"
+            disabled={isSubmitting}
           />
           <span className="text-sm text-gray-600">
             I'm interested in exploring options to sell my AI SaaS business in the next 12 months
@@ -128,8 +145,14 @@ export const ResultsForm = ({ formData, onFormChange, onSubmit, isPreValuation =
         </label>
       </div>
 
-      <Button type="submit" className="w-full bg-[#8b5cf6] hover:bg-[#7c4def]">
-        {isPreValuation ? (
+      <Button 
+        type="submit" 
+        className="w-full bg-[#8b5cf6] hover:bg-[#7c4def]"
+        disabled={isSubmitting}
+      >
+        {isSubmitting ? (
+          "Processing..."
+        ) : isPreValuation ? (
           <>Calculate My Valuation <ArrowRight className="ml-2 h-4 w-4" /></>
         ) : (
           <><Send className="mr-2 h-4 w-4" /> Send My Detailed Report</>

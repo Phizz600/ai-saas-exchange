@@ -34,11 +34,14 @@ export const useQuizSubmission = () => {
   const calculateValuation = async () => {
     try {
       setIsLoading(true);
+      console.log("Beginning valuation calculation");
       // Get stored answers from localStorage
       const answers = JSON.parse(localStorage.getItem('quizAnswers') || '{}');
+      console.log("Retrieved quiz answers:", answers);
       
       // Calculate valuation based on quiz answers
       const result = await calculateQuizValuation(answers);
+      console.log("Calculated valuation result:", result);
       
       setValuationResult(result);
       setIsLoading(false);
@@ -78,17 +81,27 @@ export const useQuizSubmission = () => {
 
     try {
       setIsLoading(true);
+      console.log("Starting form submission process with data:", {
+        name: formData.name,
+        email: formData.email,
+        company: formData.company,
+        sellingInterest: formData.sellingInterest
+      });
       
       // If we haven't calculated valuation yet, do it now
       if (!valuationResult) {
+        console.log("No valuation result yet, calculating now...");
         // Get stored answers from localStorage
         const answers = JSON.parse(localStorage.getItem('quizAnswers') || '{}');
+        console.log("Retrieved quiz answers:", answers);
         
         // Calculate valuation based on quiz answers
         const result = await calculateQuizValuation(answers);
+        console.log("Calculated valuation result:", result);
         setValuationResult(result);
       }
       
+      console.log("Preparing to send data to Brevo via edge function");
       // After we have both contact info and valuation, proceed with submission
       // Create contact in Brevo, add to list, and track event
       const eventTrackingResponse = await supabase.functions.invoke('send-brevo-email', {
@@ -96,19 +109,19 @@ export const useQuizSubmission = () => {
           mode: 'track_event_api',
           eventName: 'quiz_completed',
           identifiers: { 
-            email_id: formData.email 
+            email: formData.email // Changed from email_id to email to match Brevo API expectations
           },
           contactProperties: {
             NAME: formData.name,
             COMPANY: formData.company,
             SELLING_INTEREST: formData.sellingInterest,
-            ESTIMATED_VALUE_LOW: valuationResult.estimatedValue.low,
-            ESTIMATED_VALUE_HIGH: valuationResult.estimatedValue.high,
-            INSIGHTS: valuationResult.insights.join('\n'),
-            RECOMMENDATIONS: valuationResult.recommendations.join('\n'),
+            ESTIMATED_VALUE_LOW: valuationResult?.estimatedValue?.low,
+            ESTIMATED_VALUE_HIGH: valuationResult?.estimatedValue?.high,
+            INSIGHTS: valuationResult?.insights?.join('\n') || '',
+            RECOMMENDATIONS: valuationResult?.recommendations?.join('\n') || '',
             QUIZ_ANSWERS: JSON.stringify(JSON.parse(localStorage.getItem('quizAnswers') || '{}')),
             SOURCE: 'quiz_valuation',
-            CONFIDENCE_SCORE: valuationResult.confidenceScore,
+            CONFIDENCE_SCORE: valuationResult?.confidenceScore || 0,
             AI_CATEGORY: JSON.parse(localStorage.getItem('quizAnswers') || '{}')[1] || 'unknown',
             USER_COUNT: JSON.parse(localStorage.getItem('quizAnswers') || '{}')[3] || 'unknown',
             GROWTH_RATE: JSON.parse(localStorage.getItem('quizAnswers') || '{}')[4] || 'unknown',
@@ -117,21 +130,25 @@ export const useQuizSubmission = () => {
           eventProperties: {
             source: 'ai_saas_valuation_quiz',
             company: formData.company || 'Not Provided',
-            valuation_range: `$${valuationResult.estimatedValue.low} - $${valuationResult.estimatedValue.high}`,
-            confidence_score: valuationResult.confidenceScore
+            valuation_range: valuationResult ? `$${valuationResult.estimatedValue.low} - $${valuationResult.estimatedValue.high}` : 'Unknown',
+            confidence_score: valuationResult?.confidenceScore || 0
           }
         })
       });
 
-      console.log("Quiz submission and list addition response:", eventTrackingResponse);
+      console.log("Edge function response:", eventTrackingResponse);
       
       if (eventTrackingResponse.error) {
+        console.error("Error from edge function:", eventTrackingResponse.error);
         throw new Error(eventTrackingResponse.error.message || 'Failed to process submission');
       }
       
       if (!eventTrackingResponse.data?.success) {
+        console.error("Edge function returned failure:", eventTrackingResponse.data);
         throw new Error(eventTrackingResponse.data?.error || 'Failed to process submission');
       }
+      
+      console.log("Form submission successful, updating UI...");
       
       // If we haven't shown results yet, show them now
       if (!showValuationResults) {
@@ -146,11 +163,11 @@ export const useQuizSubmission = () => {
         title: "Success!",
         description: "Your valuation has been sent to your email."
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error tracking quiz submission:", error);
       toast({
         title: "Error",
-        description: "There was a problem sending your valuation. Please try again.",
+        description: `There was a problem sending your valuation: ${error.message || "Unknown error"}. Please try again.`,
         variant: "destructive"
       });
     } finally {

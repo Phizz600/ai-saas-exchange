@@ -1,6 +1,5 @@
 
 import { Button } from "@/components/ui/button";
-import { formatCurrency } from "@/components/marketplace/list-product/utils/valuationCalculator";
 import { CheckCircle, ArrowRight, TrendingUp, AlertTriangle, BarChart } from "lucide-react";
 
 interface ValuationResultsProps {
@@ -15,6 +14,17 @@ interface ValuationResultsProps {
   };
   onContinue: () => void;
 }
+
+// Local formatCurrency function to avoid import issues
+const formatCurrency = (value: number): string => {
+  if (value >= 1000000) {
+    return `$${(value / 1000000).toFixed(1)}M`;
+  } else if (value >= 1000) {
+    return `$${(value / 1000).toFixed(1)}K`;
+  } else {
+    return `$${value.toFixed(0)}`;
+  }
+};
 
 export const ValuationResults = ({ valuation, onContinue }: ValuationResultsProps) => {
   const { estimatedValue, insights, recommendations, confidenceScore } = valuation;
@@ -43,12 +53,18 @@ export const ValuationResults = ({ valuation, onContinue }: ValuationResultsProp
           Key Insights
         </h4>
         <ul className="space-y-2">
-          {insights.map((insight, index) => (
-            <li key={index} className="flex items-start">
-              <CheckCircle className="h-4 w-4 text-green-500 mr-2 mt-1 flex-shrink-0" />
-              <span className="text-sm text-gray-700">{insight}</span>
+          {insights && insights.length > 0 ? (
+            insights.map((insight, index) => (
+              <li key={index} className="flex items-start">
+                <CheckCircle className="h-4 w-4 text-green-500 mr-2 mt-1 flex-shrink-0" />
+                <span className="text-sm text-gray-700">{insight}</span>
+              </li>
+            ))
+          ) : (
+            <li className="text-sm text-gray-500">
+              No insights available at this time
             </li>
-          ))}
+          )}
         </ul>
       </div>
       
@@ -58,12 +74,18 @@ export const ValuationResults = ({ valuation, onContinue }: ValuationResultsProp
           Recommendations to Increase Value
         </h4>
         <ul className="space-y-2">
-          {recommendations.map((rec, index) => (
-            <li key={index} className="flex items-start">
-              <ArrowRight className="h-4 w-4 text-amber-500 mr-2 mt-1 flex-shrink-0" />
-              <span className="text-sm text-gray-700">{rec}</span>
+          {recommendations && recommendations.length > 0 ? (
+            recommendations.map((rec, index) => (
+              <li key={index} className="flex items-start">
+                <ArrowRight className="h-4 w-4 text-amber-500 mr-2 mt-1 flex-shrink-0" />
+                <span className="text-sm text-gray-700">{rec}</span>
+              </li>
+            ))
+          ) : (
+            <li className="text-sm text-gray-500">
+              No recommendations available at this time
             </li>
-          ))}
+          )}
         </ul>
       </div>
       

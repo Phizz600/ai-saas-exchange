@@ -4,14 +4,14 @@ import { supabase } from './client';
 /**
  * Track an event via the Brevo Events API
  * @param eventName Name of the event to track
- * @param identifiers Object with email_id or ext_id (required)
+ * @param identifiers Object with email or ext_id (required)
  * @param contactProperties Optional contact properties to update
  * @param eventProperties Optional event properties
  * @returns Response from the Brevo API
  */
 export const trackBrevoEventAPI = async (
   eventName: string,
-  identifiers: { email_id: string; ext_id?: string },
+  identifiers: { email: string; ext_id?: string }, // Changed from email_id to email
   contactProperties?: Record<string, any>,
   eventProperties?: Record<string, any>
 ) => {
@@ -62,7 +62,7 @@ export const BrevoTrack = {
         
         return await trackBrevoEventAPI(
           eventName,
-          { email_id: email },
+          { email }, // Changed from email_id to email
           contactProperties,
           eventProperties
         );
