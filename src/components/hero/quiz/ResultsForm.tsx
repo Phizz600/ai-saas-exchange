@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Send } from "lucide-react";
+import { Send, ArrowRight } from "lucide-react";
 import { FormData } from "./types";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
@@ -10,9 +10,10 @@ interface ResultsFormProps {
   formData: FormData;
   onFormChange: (formData: FormData) => void;
   onSubmit: (e: React.FormEvent) => void;
+  isPreValuation?: boolean;
 }
 
-export const ResultsForm = ({ formData, onFormChange, onSubmit }: ResultsFormProps) => {
+export const ResultsForm = ({ formData, onFormChange, onSubmit, isPreValuation = false }: ResultsFormProps) => {
   const [errors, setErrors] = useState<{
     name?: string;
     email?: string;
@@ -60,13 +61,20 @@ export const ResultsForm = ({ formData, onFormChange, onSubmit }: ResultsFormPro
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="text-center">
-        <h3 className="text-xl font-bold mb-4">Get Your Full Valuation Report</h3>
+        <h3 className="text-xl font-bold mb-4">
+          {isPreValuation 
+            ? "Share Your Details to Get Your AI SaaS Valuation" 
+            : "Get Your Full Valuation Report"}
+        </h3>
         <p className="text-lg font-semibold text-[#6366f1] mb-4">
-          Where should we send your personalized AI SaaS valuation?
+          {isPreValuation 
+            ? "Enter your information to see your personalized valuation" 
+            : "Where should we send your personalized AI SaaS valuation?"}
         </p>
         <p className="text-gray-600">
-          We'll email you a detailed valuation range based on current market conditions and your inputs, 
-          along with next steps to list your business on the AI Exchange Club marketplace.
+          {isPreValuation 
+            ? "We'll calculate your AI SaaS business value based on your quiz answers and industry data."
+            : "We'll email you a detailed valuation range based on current market conditions and your inputs, along with next steps to list your business on the AI Exchange Club marketplace."}
         </p>
       </div>
 
@@ -121,7 +129,11 @@ export const ResultsForm = ({ formData, onFormChange, onSubmit }: ResultsFormPro
       </div>
 
       <Button type="submit" className="w-full bg-[#8b5cf6] hover:bg-[#7c4def]">
-        <Send className="mr-2 h-4 w-4" /> Send My Detailed Report
+        {isPreValuation ? (
+          <>Calculate My Valuation <ArrowRight className="ml-2 h-4 w-4" /></>
+        ) : (
+          <><Send className="mr-2 h-4 w-4" /> Send My Detailed Report</>
+        )}
       </Button>
     </form>
   );

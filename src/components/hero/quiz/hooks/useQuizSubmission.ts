@@ -24,7 +24,12 @@ export const useQuizSubmission = () => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return regex.test(email);
   };
-
+  
+  // Show the contact form first instead of calculating
+  const proceedToContactForm = () => {
+    setShowResults(true);
+  };
+  
   // Calculate valuation during the loading phase
   const calculateValuation = async () => {
     try {
@@ -47,11 +52,6 @@ export const useQuizSubmission = () => {
       });
       setIsLoading(false);
     }
-  };
-
-  const proceedToContactForm = () => {
-    setShowValuationResults(false);
-    setShowResults(true);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -79,9 +79,17 @@ export const useQuizSubmission = () => {
     try {
       setIsLoading(true);
       
-      // Get stored answers from localStorage
-      const answers = JSON.parse(localStorage.getItem('quizAnswers') || '{}');
-
+      // If we haven't calculated valuation yet, do it now
+      if (!valuationResult) {
+        // Get stored answers from localStorage
+        const answers = JSON.parse(localStorage.getItem('quizAnswers') || '{}');
+        
+        // Calculate valuation based on quiz answers
+        const result = await calculateQuizValuation(answers);
+        setValuationResult(result);
+      }
+      
+      // After we have both contact info and valuation, proceed with submission
       // Create contact in Brevo, add to list, and track event
       const eventTrackingResponse = await supabase.functions.invoke('send-brevo-email', {
         body: JSON.stringify({
@@ -98,13 +106,13 @@ export const useQuizSubmission = () => {
             ESTIMATED_VALUE_HIGH: valuationResult.estimatedValue.high,
             INSIGHTS: valuationResult.insights.join('\n'),
             RECOMMENDATIONS: valuationResult.recommendations.join('\n'),
-            QUIZ_ANSWERS: JSON.stringify(answers),
+            QUIZ_ANSWERS: JSON.stringify(JSON.parse(localStorage.getItem('quizAnswers') || '{}')),
             SOURCE: 'quiz_valuation',
             CONFIDENCE_SCORE: valuationResult.confidenceScore,
-            AI_CATEGORY: answers[1] || 'unknown',
-            USER_COUNT: answers[3] || 'unknown',
-            GROWTH_RATE: answers[4] || 'unknown',
-            MARKET_TREND: answers[5] || 'unknown'
+            AI_CATEGORY: JSON.parse(localStorage.getItem('quizAnswers') || '{}')[1] || 'unknown',
+            USER_COUNT: JSON.parse(localStorage.getItem('quizAnswers') || '{}')[3] || 'unknown',
+            GROWTH_RATE: JSON.parse(localStorage.getItem('quizAnswers') || '{}')[4] || 'unknown',
+            MARKET_TREND: JSON.parse(localStorage.getItem('quizAnswers') || '{}')[5] || 'unknown'
           },
           eventProperties: {
             source: 'ai_saas_valuation_quiz',
@@ -125,7 +133,15 @@ export const useQuizSubmission = () => {
         throw new Error(eventTrackingResponse.data?.error || 'Failed to process submission');
       }
       
-      setShowConfirmation(true);
+      // If we haven't shown results yet, show them now
+      if (!showValuationResults) {
+        setShowValuationResults(true);
+        setShowResults(false);
+      } else {
+        // If we've already shown results and they completed the form, show confirmation
+        setShowConfirmation(true);
+      }
+      
       toast({
         title: "Success!",
         description: "Your valuation has been sent to your email."

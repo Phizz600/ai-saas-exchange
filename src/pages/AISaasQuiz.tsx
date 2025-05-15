@@ -42,8 +42,8 @@ export const AISaasQuiz = () => {
 
   const handleNext = () => {
     if (currentQuestion === quizQuestions.length) {
-      // Start calculation instead of immediately showing form
-      calculateValuation();
+      // Start collecting contact information instead of calculating valuation
+      proceedToContactForm();
     } else {
       setCurrentQuestion(prev => prev + 1);
     }
@@ -99,18 +99,20 @@ export const AISaasQuiz = () => {
 
           {isLoading && <LoadingScreen />}
 
-          {showValuationResults && valuationResult && (
-            <ValuationResults 
-              valuation={valuationResult} 
-              onContinue={proceedToContactForm} 
-            />
-          )}
-
+          {/* Contact form now comes before valuation results */}
           {showResults && !showConfirmation && !isLoading && (
             <ResultsForm
               formData={formData}
               onFormChange={setFormData}
               onSubmit={handleSubmit}
+              isPreValuation={!valuationResult}
+            />
+          )}
+
+          {showValuationResults && valuationResult && (
+            <ValuationResults 
+              valuation={valuationResult} 
+              onContinue={proceedToContactForm} 
             />
           )}
 
