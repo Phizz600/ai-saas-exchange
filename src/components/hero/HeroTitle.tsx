@@ -28,9 +28,9 @@ const HeroTitle = ({
           <img 
             src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=966896&theme=neutral&t=1747524751594" 
             alt="AI Exchange Club - Bid, buy, and sell cash-flowing AI SaaS businesses | Product Hunt" 
-            style={{ width: "250px", height: "54px" }} 
-            width="250" 
-            height="54" 
+            style={{ width: "190px", height: "41px" }} 
+            width="190" 
+            height="41" 
           />
         </a>
       </div>
