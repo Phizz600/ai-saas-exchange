@@ -1,3 +1,4 @@
+
 import { supabase } from './client';
 import { sendBrevoEmail } from './brevo';
 
@@ -66,13 +67,13 @@ export const getPitchDeck = async (userId: string) => {
   }
 };
 
-// Function that was causing the TypeScript error
+// Function that was causing the TypeScript error - fixed by changing email_id to email
 export const notifyAboutPitchDeck = async (userEmail: string) => {
   try {
-    // Use sendBrevoEmail with the correct parameter type (an object with email_id)
+    // Use sendBrevoEmail with the correct parameter type (an object with email)
     await sendBrevoEmail(
       'pitch_deck_generated',
-      { email_id: userEmail },
+      { email: userEmail }, // Changed from email_id to email to match the expected type
       { source: 'Pitch Deck Generator' }
     );
     return { success: true };
