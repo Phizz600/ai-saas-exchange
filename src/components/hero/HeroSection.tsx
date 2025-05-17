@@ -1,4 +1,3 @@
-
 import { lazy, Suspense, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
@@ -31,7 +30,6 @@ interface HeroSectionProps {
   handleListProductClick: () => void;
   handleAuthRedirect: () => void;
 }
-
 const HeroSection = ({
   isAuthenticated,
   currentWordIndex,
@@ -48,12 +46,11 @@ const HeroSection = ({
   handleAuthRedirect
 }: HeroSectionProps) => {
   const navigate = useNavigate();
-
   const handleQuizClick = () => {
     window.scrollTo(0, 0); // Scroll to top before navigation
     navigate('/ai-saas-quiz');
   };
-  
+
   // Removed the handleBuyAIBusinessClick function since it's no longer needed
 
   return <div className="min-h-screen relative overflow-hidden">
@@ -82,25 +79,14 @@ const HeroSection = ({
 
           {/* Button Row - Updated with rearranged buttons */}
           <div className="flex flex-col items-center gap-4 justify-center">
-            <Button 
-              variant="purple" 
-              className="w-full max-w-xs py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1" 
-              onClick={handleQuizClick}
-            >
+            <Button variant="purple" className="w-full max-w-xs py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1" onClick={handleQuizClick}>
               Get your Free AI SaaS Valuation
             </Button>
-            <Button 
-              variant="green" 
-              onClick={() => window.open('https://airtable.com/appqbmIOXXLNFhZyj/pagutIK7nf0unyJm3/form', '_blank')}
-              className="w-full max-w-xs py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
-            >
+            <Button variant="green" onClick={() => window.open('https://airtable.com/appqbmIOXXLNFhZyj/pagutIK7nf0unyJm3/form', '_blank')} className="w-full max-w-xs py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
               <MousePointerClick className="mr-2" />
               Sell your AI SaaS Business
             </Button>
-            <Button 
-              className="w-full max-w-xs py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl hover:shadow-[#08A4E9]/30 transition-all duration-300 transform hover:-translate-y-1 bg-[#08A4E9] hover:bg-[#0794d3]"
-              onClick={() => window.open('https://aiexchangeclub.carrd.co/', '_blank')}
-            >
+            <Button className="w-full max-w-xs py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl hover:shadow-[#08A4E9]/30 transition-all duration-300 transform hover:-translate-y-1 bg-[#08A4E9] hover:bg-[#0794d3]" onClick={() => window.open('https://aiexchangeclub.carrd.co/', '_blank')}>
               <ShoppingCart className="mr-2" />
               Buy an AI SaaS Business
             </Button>
@@ -108,25 +94,16 @@ const HeroSection = ({
           
           {/* ProductHunt Badge */}
           <div className="flex justify-center mt-6 mb-6">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-            >
-              <a 
-                href="https://www.producthunt.com/posts/ai-exchange-club?embed=true&utm_source=badge-featured&utm_medium=badge&utm_source=badge-ai&#0045;exchange&#0045;club" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="hover:opacity-90 transition-opacity block"
-              >
-                <img 
-                  src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=966896&theme=neutral&t=1747524751594" 
-                  alt="AI Exchange Club - Bid, buy, and sell cash-flowing AI SaaS businesses | Product Hunt" 
-                  style={{ width: "250px", height: "54px" }} 
-                  width="250" 
-                  height="54" 
-                  className="mx-auto"
-                />
+            <motion.div initial={{
+            opacity: 0
+          }} animate={{
+            opacity: 1
+          }} transition={{
+            duration: 0.6,
+            delay: 0.5
+          }}>
+              <a href="https://www.producthunt.com/posts/ai-exchange-club?embed=true&utm_source=badge-featured&utm_medium=badge&utm_source=badge-ai&#0045;exchange&#0045;club" target="_blank" rel="noopener noreferrer" className="hover:opacity-90 transition-opacity block">
+                
               </a>
             </motion.div>
           </div>
@@ -177,5 +154,4 @@ const HeroSection = ({
       </div>
     </div>;
 };
-
 export default HeroSection;
