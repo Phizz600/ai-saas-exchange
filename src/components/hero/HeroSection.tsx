@@ -106,6 +106,31 @@ const HeroSection = ({
             </Button>
           </div>
           
+          {/* ProductHunt Badge */}
+          <div className="flex justify-center mt-6 mb-6">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+            >
+              <a 
+                href="https://www.producthunt.com/posts/ai-exchange-club?embed=true&utm_source=badge-featured&utm_medium=badge&utm_source=badge-ai&#0045;exchange&#0045;club" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="hover:opacity-90 transition-opacity block"
+              >
+                <img 
+                  src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=966896&theme=neutral&t=1747524751594" 
+                  alt="AI Exchange Club - Bid, buy, and sell cash-flowing AI SaaS businesses | Product Hunt" 
+                  style={{ width: "250px", height: "54px" }} 
+                  width="250" 
+                  height="54" 
+                  className="mx-auto"
+                />
+              </a>
+            </motion.div>
+          </div>
+          
           <Suspense fallback={<Skeleton className="w-full max-w-md h-32" />}>
             <NewsletterSubscription newsletterEmail={newsletterEmail} setNewsletterEmail={setNewsletterEmail} subscriberCount={subscriberCount} setSubscriberCount={setSubscriberCount} />
           </Suspense>
