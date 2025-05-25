@@ -1,11 +1,9 @@
-
 import { useState } from 'react';
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { QuizQuestions } from "./quiz/QuizQuestions";
+import { QuizQuestions } from "./quiz/quizQuestions";
 import { ResultsForm } from "./quiz/ResultsForm";
 import { LoadingScreen } from "./quiz/LoadingScreen";
 import { ConfirmationScreen } from "./quiz/ConfirmationScreen";
-import { ValuationResults } from "./quiz/ValuationResults";
 import { quizQuestions } from "./quiz/quizQuestions";
 import { useQuizSubmission } from "./quiz/hooks/useQuizSubmission";
 

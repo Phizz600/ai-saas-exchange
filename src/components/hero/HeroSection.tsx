@@ -86,7 +86,14 @@ const HeroSection = ({
               <MousePointerClick className="mr-2" />
               Sell your AI SaaS Business
             </Button>
+<<<<<<< HEAD
             <Button className="w-full max-w-xs py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl hover:shadow-[#08A4E9]/30 transition-all duration-300 transform hover:-translate-y-1 bg-[#08A4E9] hover:bg-[#0794d3]" onClick={() => window.open('https://aiexchangeclub.carrd.co/', '_blank')}>
+=======
+            <Button 
+              className="w-full max-w-xs py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl hover:shadow-red-500/30 transition-all duration-300 transform hover:-translate-y-1 bg-red-500 hover:bg-red-600"
+              onClick={() => window.open('https://aiexchangeclub.carrd.co/', '_blank')}
+            >
+>>>>>>> b7b8c81 (test - I changed the color of the 'Buy a SaaS'. Few other changes in regards to the quizpage)
               <ShoppingCart className="mr-2" />
               Buy an AI SaaS Business
             </Button>

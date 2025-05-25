@@ -1,4 +1,3 @@
-
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import "https://deno.land/x/xhr@0.1.0/mod.ts"
 
@@ -106,6 +105,14 @@ serve(async (req) => {
             user_count: contactProperties.USER_COUNT || 'N/A',
             growth_rate: contactProperties.GROWTH_RATE || 'N/A',
             market_trend: contactProperties.MARKET_TREND || 'N/A',
+            metrics: {
+              revenue_score: contactProperties.REVENUE_SCORE || 0,
+              growth_score: contactProperties.GROWTH_SCORE || 0,
+              market_score: contactProperties.MARKET_SCORE || 0,
+              user_score: contactProperties.USER_SCORE || 0,
+              overall_score: contactProperties.OVERALL_SCORE || 0
+            },
+            improvement_areas: JSON.parse(contactProperties.IMPROVEMENT_AREAS || '[]'),
             base_metrics: {
               mrr: contactProperties.MRR || 'N/A',
               user_base: contactProperties.USER_COUNT || 'N/A',

@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { FormData } from '../types';
 import { useToast } from "@/hooks/use-toast";
@@ -121,17 +120,38 @@ export const useQuizSubmission = () => {
             RECOMMENDATIONS: valuationResult?.recommendations?.join('\n') || '',
             QUIZ_ANSWERS: JSON.stringify(JSON.parse(localStorage.getItem('quizAnswers') || '{}')),
             SOURCE: 'quiz_valuation',
+<<<<<<< HEAD
             CONFIDENCE_SCORE: valuationResult?.confidenceScore || 0,
             AI_CATEGORY: JSON.parse(localStorage.getItem('quizAnswers') || '{}')[1] || 'unknown',
             USER_COUNT: JSON.parse(localStorage.getItem('quizAnswers') || '{}')[3] || 'unknown',
             GROWTH_RATE: JSON.parse(localStorage.getItem('quizAnswers') || '{}')[4] || 'unknown',
             MARKET_TREND: JSON.parse(localStorage.getItem('quizAnswers') || '{}')[5] || 'unknown'
+=======
+            CONFIDENCE_SCORE: valuationResult.confidenceScore,
+            AI_CATEGORY: answers[1] || 'unknown',
+            USER_COUNT: answers[3] || 'unknown',
+            GROWTH_RATE: answers[4] || 'unknown',
+            MARKET_TREND: answers[5] || 'unknown',
+            REVENUE_SCORE: valuationResult.metrics.revenueScore,
+            GROWTH_SCORE: valuationResult.metrics.growthScore,
+            MARKET_SCORE: valuationResult.metrics.marketScore,
+            USER_SCORE: valuationResult.metrics.userScore,
+            OVERALL_SCORE: valuationResult.metrics.overallScore,
+            IMPROVEMENT_AREAS: JSON.stringify(valuationResult.improvementAreas)
+>>>>>>> b7b8c81 (test - I changed the color of the 'Buy a SaaS'. Few other changes in regards to the quizpage)
           },
           eventProperties: {
             source: 'ai_saas_valuation_quiz',
             company: formData.company || 'Not Provided',
+<<<<<<< HEAD
             valuation_range: valuationResult ? `$${valuationResult.estimatedValue.low} - $${valuationResult.estimatedValue.high}` : 'Unknown',
             confidence_score: valuationResult?.confidenceScore || 0
+=======
+            valuation_range: `$${valuationResult.estimatedValue.low} - $${valuationResult.estimatedValue.high}`,
+            confidence_score: valuationResult.confidenceScore,
+            overall_score: valuationResult.metrics.overallScore,
+            improvement_areas: valuationResult.improvementAreas.map(area => area.area).join(', ')
+>>>>>>> b7b8c81 (test - I changed the color of the 'Buy a SaaS'. Few other changes in regards to the quizpage)
           }
         })
       });

@@ -1,4 +1,3 @@
-
 // Import necessary dependencies
 import { calculateValuation } from "@/components/marketplace/list-product/utils/valuationCalculator";
 import { QuizAnswer } from "../types";
@@ -10,7 +9,20 @@ export interface ValuationResult {
   };
   insights: string[];
   recommendations: string[];
-  confidenceScore: number; // Added confidence score
+  confidenceScore: number;
+  metrics: {
+    revenueScore: number;
+    growthScore: number;
+    marketScore: number;
+    userScore: number;
+    overallScore: number;
+  };
+  improvementAreas: {
+    area: string;
+    currentScore: number;
+    targetScore: number;
+    actionItems: string[];
+  }[];
 }
 
 // AI category multipliers
@@ -97,6 +109,33 @@ export const calculateQuizValuation = async (answers: Record<number, string>): P
   const totalQuestions = 5; // Total number of meaningful questions for valuation
   const confidenceScore = Math.min(100, Math.round((providedAnswers / totalQuestions) * 100));
 
+  // Calculate detailed metrics scores (0-100)
+  const revenueScore = calculateRevenueScore(monthlyRevenue);
+  const growthScore = calculateGrowthScore(parseInt(growthRate));
+  const marketScore = calculateMarketScore(marketTrend, aiCategory);
+  const userScore = calculateUserScore(parseInt(activeUsers));
+  
+  // Calculate overall score (weighted average)
+  const overallScore = Math.round(
+    (revenueScore * 0.3) + 
+    (growthScore * 0.3) + 
+    (marketScore * 0.2) + 
+    (userScore * 0.2)
+  );
+
+  // Identify improvement areas
+  const improvementAreas = identifyImprovementAreas({
+    revenueScore,
+    growthScore,
+    marketScore,
+    userScore,
+    monthlyRevenue,
+    growthRate,
+    marketTrend,
+    activeUsers,
+    aiCategory
+  });
+
   // Generate category-specific insights
   const insights = generateInsights({
     monthlyRevenue,
@@ -105,7 +144,14 @@ export const calculateQuizValuation = async (answers: Record<number, string>): P
     growthRate,
     marketTrend,
     hasPatents,
-    valuation: enhancedValuation
+    valuation: enhancedValuation,
+    metrics: {
+      revenueScore,
+      growthScore,
+      marketScore,
+      userScore,
+      overallScore
+    }
   });
 
   // Generate category-specific recommendations
@@ -114,14 +160,23 @@ export const calculateQuizValuation = async (answers: Record<number, string>): P
     aiCategory,
     activeUsers,
     growthRate,
-    marketTrend
+    marketTrend,
+    improvementAreas
   });
 
   return {
     estimatedValue: enhancedValuation,
     insights,
     recommendations,
-    confidenceScore
+    confidenceScore,
+    metrics: {
+      revenueScore,
+      growthScore,
+      marketScore,
+      userScore,
+      overallScore
+    },
+    improvementAreas
   };
 };
 
@@ -195,4 +250,169 @@ const generateRecommendations = (metrics: any): string[] => {
   }
 
   return recommendations;
+};
+
+// New helper functions for detailed scoring
+const calculateRevenueScore = (monthlyRevenue: number): number => {
+  if (monthlyRevenue >= 500000) return 100;
+  if (monthlyRevenue >= 100000) return 90;
+  if (monthlyRevenue >= 50000) return 80;
+  if (monthlyRevenue >= 10000) return 60;
+  if (monthlyRevenue >= 5000) return 40;
+  return 20;
+};
+
+const calculateGrowthScore = (growthRate: number): number => {
+  if (growthRate >= 100) return 100;
+  if (growthRate >= 50) return 90;
+  if (growthRate >= 30) return 80;
+  if (growthRate >= 20) return 60;
+  if (growthRate >= 10) return 40;
+  return 20;
+};
+
+const calculateMarketScore = (marketTrend: string, aiCategory: string): number => {
+  let score = 0;
+  
+  // Market trend score
+  switch (marketTrend) {
+    case 'emerging': score += 50; break;
+    case 'growing': score += 40; break;
+    case 'stable': score += 30; break;
+    case 'declining': score += 20; break;
+  }
+  
+  // AI category score
+  switch (aiCategory) {
+    case 'nlp': score += 50; break;
+    case 'cv': score += 40; break;
+    case 'ml': score += 35; break;
+    case 'automation': score += 30; break;
+    default: score += 25;
+  }
+  
+  return score;
+};
+
+const calculateUserScore = (activeUsers: number): number => {
+  if (activeUsers >= 100000) return 100;
+  if (activeUsers >= 10000) return 90;
+  if (activeUsers >= 1000) return 70;
+  if (activeUsers >= 100) return 50;
+  return 30;
+};
+
+const identifyImprovementAreas = (metrics: any): Array<{area: string; currentScore: number; targetScore: number; actionItems: string[]}> => {
+  const areas = [];
+  
+  // Revenue improvement area
+  if (metrics.revenueScore < 80) {
+    areas.push({
+      area: 'Revenue Growth',
+      currentScore: metrics.revenueScore,
+      targetScore: 80,
+      actionItems: generateRevenueActionItems(metrics.monthlyRevenue, metrics.aiCategory)
+    });
+  }
+  
+  // Growth improvement area
+  if (metrics.growthScore < 80) {
+    areas.push({
+      area: 'Growth Rate',
+      currentScore: metrics.growthScore,
+      targetScore: 80,
+      actionItems: generateGrowthActionItems(metrics.growthRate, metrics.aiCategory)
+    });
+  }
+  
+  // Market improvement area
+  if (metrics.marketScore < 80) {
+    areas.push({
+      area: 'Market Position',
+      currentScore: metrics.marketScore,
+      targetScore: 80,
+      actionItems: generateMarketActionItems(metrics.marketTrend, metrics.aiCategory)
+    });
+  }
+  
+  // User base improvement area
+  if (metrics.userScore < 80) {
+    areas.push({
+      area: 'User Base',
+      currentScore: metrics.userScore,
+      targetScore: 80,
+      actionItems: generateUserActionItems(metrics.activeUsers, metrics.aiCategory)
+    });
+  }
+  
+  return areas;
+};
+
+const generateRevenueActionItems = (monthlyRevenue: number, aiCategory: string): string[] => {
+  const actions = [];
+  
+  if (monthlyRevenue < 10000) {
+    actions.push("Implement a tiered pricing strategy to increase average revenue per user");
+    actions.push("Focus on upselling existing customers with premium features");
+    actions.push("Develop enterprise-specific features to target larger clients");
+  }
+  
+  if (aiCategory === 'nlp') {
+    actions.push("Offer specialized NLP models for high-value industries (healthcare, finance)");
+  } else if (aiCategory === 'automation') {
+    actions.push("Create industry-specific automation packages with premium pricing");
+  }
+  
+  return actions;
+};
+
+const generateGrowthActionItems = (growthRate: number, aiCategory: string): string[] => {
+  const actions = [];
+  
+  if (growthRate < 30) {
+    actions.push("Implement a referral program to accelerate user acquisition");
+    actions.push("Optimize your marketing funnel for better conversion rates");
+    actions.push("Explore strategic partnerships in your industry");
+  }
+  
+  if (aiCategory === 'nlp') {
+    actions.push("Leverage AI-generated content to improve SEO and organic growth");
+  } else if (aiCategory === 'cv') {
+    actions.push("Target high-growth sectors like security and healthcare");
+  }
+  
+  return actions;
+};
+
+const generateMarketActionItems = (marketTrend: string, aiCategory: string): string[] => {
+  const actions = [];
+  
+  if (marketTrend === 'declining') {
+    actions.push("Pivot to adjacent market segments with stronger growth trends");
+    actions.push("Develop new features that address emerging market needs");
+  }
+  
+  if (aiCategory === 'nlp') {
+    actions.push("Position your solution as an enterprise-grade AI platform");
+    actions.push("Develop industry-specific use cases and success stories");
+  }
+  
+  return actions;
+};
+
+const generateUserActionItems = (activeUsers: number, aiCategory: string): string[] => {
+  const actions = [];
+  
+  if (activeUsers < 1000) {
+    actions.push("Implement a freemium model to accelerate user acquisition");
+    actions.push("Focus on viral growth features and social sharing");
+    actions.push("Develop a community around your product");
+  }
+  
+  if (aiCategory === 'automation') {
+    actions.push("Create industry-specific templates and workflows");
+    actions.push("Develop integration partnerships with popular tools");
+  }
+  
+  return actions;
 };
