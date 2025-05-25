@@ -1,17 +1,11 @@
-
 import { useState } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Star, Trophy, Lightbulb } from "lucide-react";
 import { ResultsForm } from "@/components/hero/quiz/ResultsForm";
 import { LoadingScreen } from "@/components/hero/quiz/LoadingScreen";
 import { ConfirmationScreen } from "@/components/hero/quiz/ConfirmationScreen";
-<<<<<<< HEAD
-import { ValuationResults } from "@/components/hero/quiz/ValuationResults";
-import { quizQuestions } from "@/components/hero/quiz/quizQuestions";
-=======
 import { QuizQuestions } from "@/components/hero/quiz/quizQuestions";
 import { quizQuestions } from "@/components/hero/quiz/quizQuestionsData";
->>>>>>> b7b8c81 (test - I changed the color of the 'Buy a SaaS'. Few other changes in regards to the quizpage)
 import { useQuizSubmission } from "@/components/hero/quiz/hooks/useQuizSubmission";
 import AnimatedGradientBackground from "@/components/ui/AnimatedGradientBackground";
 
