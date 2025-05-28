@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 
@@ -132,10 +131,15 @@ export const AISaasQuizSection = () => {
   const progress = ((currentQuestion + 1) / totalQuestions) * 100;
 
   const handleOptionSelect = (value: number) => {
-    setAnswers(prev => ({
-      ...prev,
-      [currentQuestion]: value
-    }));
+    // Clear any existing answer for this question first, then set the new one
+    setAnswers(prev => {
+      const newAnswers = { ...prev };
+      // Remove any existing answer for the current question
+      delete newAnswers[currentQuestion];
+      // Set the new answer
+      newAnswers[currentQuestion] = value;
+      return newAnswers;
+    });
   };
 
   const nextQuestion = () => {
