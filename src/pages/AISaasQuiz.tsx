@@ -1,60 +1,9 @@
-import { useState } from "react";
+
 import { Navbar } from "@/components/Navbar";
 import { Star, Trophy, Lightbulb } from "lucide-react";
-import { ResultsForm } from "@/components/hero/quiz/ResultsForm";
-import { LoadingScreen } from "@/components/hero/quiz/LoadingScreen";
-import { ConfirmationScreen } from "@/components/hero/quiz/ConfirmationScreen";
-import { QuizQuestions } from "@/components/hero/quiz/quizQuestions";
-import { quizQuestions } from "@/components/hero/quiz/quizQuestionsData";
-import { useQuizSubmission } from "@/components/hero/quiz/hooks/useQuizSubmission";
 import AnimatedGradientBackground from "@/components/ui/AnimatedGradientBackground";
 
 export const AISaasQuiz = () => {
-  const [currentQuestion, setCurrentQuestion] = useState(1);
-  const [answers, setAnswers] = useState<Record<number, string>>({});
-  const {
-    showResults,
-    showConfirmation,
-    isLoading,
-    formData,
-    setFormData,
-    handleSubmit,
-    calculateValuation,
-    valuationResult,
-    showValuationResults,
-    proceedToContactForm
-  } = useQuizSubmission();
-
-  const handleOptionSelect = (questionId: number, value: string) => {
-    setAnswers(prev => ({
-      ...prev,
-      [questionId]: value
-    }));
-    
-    // Store answers in localStorage for persistence
-    localStorage.setItem('quizAnswers', JSON.stringify({
-      ...answers,
-      [questionId]: value
-    }));
-  };
-
-  const handleNext = () => {
-    if (currentQuestion === quizQuestions.length) {
-      // Start collecting contact information instead of calculating valuation
-      proceedToContactForm();
-    } else {
-      setCurrentQuestion(prev => prev + 1);
-    }
-  };
-
-  const handlePrevious = () => {
-    if (currentQuestion > 1) {
-      setCurrentQuestion(prev => prev - 1);
-    }
-  };
-
-  const progress = currentQuestion / quizQuestions.length * 100;
-
   return (
     <AnimatedGradientBackground>
       <Navbar />
@@ -71,51 +20,7 @@ export const AISaasQuiz = () => {
           </div>
         </div>
 
-        {/* Quiz Section */}
-        <div className="w-full max-w-2xl bg-white rounded-lg shadow-xl p-4 md:p-8 mb-6 md:mb-12 mx-auto">
-          {!isLoading && !showValuationResults && !showResults && !showConfirmation && (
-            <>
-              <div className="mb-4">
-                <div className="h-2 bg-gray-100 rounded-full">
-                  <div
-                    className="h-full bg-[#6366f1] rounded-full transition-all duration-300"
-                    style={{ width: `${progress}%` }}
-                  />
-                </div>
-              </div>
-
-              <QuizQuestions
-                currentQuestion={currentQuestion}
-                questions={quizQuestions}
-                answers={answers}
-                onAnswerSelect={handleOptionSelect}
-                onNext={handleNext}
-                onPrevious={handlePrevious}
-              />
-            </>
-          )}
-
-          {isLoading && <LoadingScreen />}
-
-          {/* Contact form now comes before valuation results */}
-          {showResults && !showConfirmation && !isLoading && (
-            <ResultsForm
-              formData={formData}
-              onFormChange={setFormData}
-              onSubmit={handleSubmit}
-              isPreValuation={!valuationResult}
-            />
-          )}
-
-          {showValuationResults && valuationResult && (
-            <ValuationResults 
-              valuation={valuationResult} 
-              onContinue={proceedToContactForm} 
-            />
-          )}
-
-          {showConfirmation && <ConfirmationScreen email={formData.email} />}
-        </div>
+        {/* Quiz Section - Removed as requested */}
 
         {/* Trust Indicators */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
