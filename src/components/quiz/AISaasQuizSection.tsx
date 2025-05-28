@@ -129,7 +129,7 @@ export const AISaasQuizSection = () => {
   });
 
   const totalQuestions = questions.length;
-  const progress = (currentQuestion / totalQuestions) * 100;
+  const progress = ((currentQuestion + 1) / totalQuestions) * 100;
 
   const handleOptionSelect = (value: number) => {
     setAnswers(prev => ({
@@ -364,7 +364,7 @@ export const AISaasQuizSection = () => {
             onClick={previousQuestion}
             disabled={currentQuestion === 0}
             variant="outline"
-            className="border-white/30 text-white hover:bg-white/10"
+            className="border-white/30 text-white bg-white/10 hover:bg-white/15"
           >
             Previous
           </Button>

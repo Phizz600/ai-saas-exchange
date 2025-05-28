@@ -102,6 +102,9 @@ export const useQuizSubmission = () => {
       }
       
       console.log("Preparing to send data to Brevo via edge function");
+      // Get stored answers from localStorage for contact properties
+      const storedAnswers = JSON.parse(localStorage.getItem('quizAnswers') || '{}');
+      
       // After we have both contact info and valuation, proceed with submission
       // Create contact in Brevo, add to list, and track event
       const eventTrackingResponse = await supabase.functions.invoke('send-brevo-email', {
@@ -119,7 +122,7 @@ export const useQuizSubmission = () => {
             ESTIMATED_VALUE_HIGH: valuationResult?.estimatedValue?.high,
             INSIGHTS: valuationResult?.insights?.join('\n') || '',
             RECOMMENDATIONS: valuationResult?.recommendations?.join('\n') || '',
-            QUIZ_ANSWERS: JSON.stringify(JSON.parse(localStorage.getItem('quizAnswers') || '{}')),
+            QUIZ_ANSWERS: JSON.stringify(storedAnswers),
             SOURCE: 'quiz_valuation',
             CONFIDENCE_SCORE: valuationResult.confidenceScore,
             AI_CATEGORY: storedAnswers[1] || 'unknown',
