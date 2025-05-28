@@ -2,6 +2,7 @@
 import { Navbar } from "@/components/Navbar";
 import { Star, Trophy, Lightbulb } from "lucide-react";
 import AnimatedGradientBackground from "@/components/ui/AnimatedGradientBackground";
+import { AISaasQuizSection } from "@/components/quiz/AISaasQuizSection";
 
 export const AISaasQuiz = () => {
   return (
@@ -9,18 +10,24 @@ export const AISaasQuiz = () => {
       <Navbar />
       <main className="container mx-auto px-4 py-6 md:py-8">
         {/* Hero Section */}
-        <div className="text-center mb-4 md:mb-8 max-w-4xl mx-auto mt-20">
-          <div className="space-y-3 md:space-y-4">
-            <h1 className="exo-2-heading sm:text-3xl md:text-5xl lg:text-3xl text-white leading-tight text-3xl">
-              What's Your AI SaaS Business Really Worth?
+        <div className="text-center mb-8 max-w-4xl mx-auto mt-20">
+          <div className="w-16 h-16 bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] rounded-xl flex items-center justify-center text-white font-bold text-xl mx-auto mb-6">
+            AI
+          </div>
+          <div className="space-y-4">
+            <h1 className="exo-2-heading text-4xl md:text-5xl text-white leading-tight">
+              AI SaaS Business Valuation
             </h1>
-            <p className="text-base sm:text-lg md:text-xl text-white/80 max-w-2xl mx-auto px-2">
-              Take our AI-Powered 60 second quiz to find out instantly what your business is really worth.
+            <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto">
+              Discover your AI SaaS business worth with our intelligent 60-second assessment
             </p>
           </div>
         </div>
 
-        {/* Quiz Section - Removed as requested */}
+        {/* Quiz Section */}
+        <div className="mb-12">
+          <AISaasQuizSection />
+        </div>
 
         {/* Trust Indicators */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
