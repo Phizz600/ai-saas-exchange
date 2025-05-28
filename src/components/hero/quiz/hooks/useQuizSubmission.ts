@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { FormData } from '../types';
 import { useToast } from "@/hooks/use-toast";
@@ -35,11 +36,11 @@ export const useQuizSubmission = () => {
       setIsLoading(true);
       console.log("Beginning valuation calculation");
       // Get stored answers from localStorage
-      const answers = JSON.parse(localStorage.getItem('quizAnswers') || '{}');
-      console.log("Retrieved quiz answers:", answers);
+      const storedAnswers = JSON.parse(localStorage.getItem('quizAnswers') || '{}');
+      console.log("Retrieved quiz answers:", storedAnswers);
       
       // Calculate valuation based on quiz answers
-      const result = await calculateQuizValuation(answers);
+      const result = await calculateQuizValuation(storedAnswers);
       console.log("Calculated valuation result:", result);
       
       setValuationResult(result);
@@ -91,11 +92,11 @@ export const useQuizSubmission = () => {
       if (!valuationResult) {
         console.log("No valuation result yet, calculating now...");
         // Get stored answers from localStorage
-        const answers = JSON.parse(localStorage.getItem('quizAnswers') || '{}');
-        console.log("Retrieved quiz answers:", answers);
+        const storedAnswers = JSON.parse(localStorage.getItem('quizAnswers') || '{}');
+        console.log("Retrieved quiz answers:", storedAnswers);
         
         // Calculate valuation based on quiz answers
-        const result = await calculateQuizValuation(answers);
+        const result = await calculateQuizValuation(storedAnswers);
         console.log("Calculated valuation result:", result);
         setValuationResult(result);
       }
@@ -121,10 +122,10 @@ export const useQuizSubmission = () => {
             QUIZ_ANSWERS: JSON.stringify(JSON.parse(localStorage.getItem('quizAnswers') || '{}')),
             SOURCE: 'quiz_valuation',
             CONFIDENCE_SCORE: valuationResult.confidenceScore,
-            AI_CATEGORY: answers[1] || 'unknown',
-            USER_COUNT: answers[3] || 'unknown',
-            GROWTH_RATE: answers[4] || 'unknown',
-            MARKET_TREND: answers[5] || 'unknown',
+            AI_CATEGORY: storedAnswers[1] || 'unknown',
+            USER_COUNT: storedAnswers[3] || 'unknown',
+            GROWTH_RATE: storedAnswers[4] || 'unknown',
+            MARKET_TREND: storedAnswers[5] || 'unknown',
             REVENUE_SCORE: valuationResult.metrics.revenueScore,
             GROWTH_SCORE: valuationResult.metrics.growthScore,
             MARKET_SCORE: valuationResult.metrics.marketScore,
