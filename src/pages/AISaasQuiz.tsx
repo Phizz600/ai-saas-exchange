@@ -1,19 +1,14 @@
-
 import { Navbar } from "@/components/Navbar";
 import { Star, Trophy, Lightbulb } from "lucide-react";
 import AnimatedGradientBackground from "@/components/ui/AnimatedGradientBackground";
 import { AISaasQuizSection } from "@/components/quiz/AISaasQuizSection";
-
 export const AISaasQuiz = () => {
-  return (
-    <AnimatedGradientBackground>
+  return <AnimatedGradientBackground>
       <Navbar />
       <main className="container mx-auto px-4 py-6 md:py-8">
         {/* Hero Section */}
         <div className="text-center mb-8 max-w-4xl mx-auto mt-20">
-          <div className="w-16 h-16 bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] rounded-xl flex items-center justify-center text-white font-bold text-xl mx-auto mb-6">
-            AI
-          </div>
+          
           <div className="space-y-4">
             <h1 className="exo-2-heading text-4xl md:text-5xl text-white leading-tight">
               AI SaaS Business Valuation
@@ -59,8 +54,6 @@ export const AISaasQuiz = () => {
           <p className="text-white/80 text-sm md:text-base mb-4">Trusted by 1,000+ AI founders</p>
         </div>
       </main>
-    </AnimatedGradientBackground>
-  );
+    </AnimatedGradientBackground>;
 };
-
 export default AISaasQuiz;
