@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface QuizAnswer {
   [key: number]: number;
@@ -119,13 +121,16 @@ const questions: Question[] = [
 export const AISaasQuizSection = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<QuizAnswer>({});
+  const [showContactForm, setShowContactForm] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const [valuation, setValuation] = useState({ low: 0, high: 0 });
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
     companyName: ''
   });
+  const { toast } = useToast();
 
   const totalQuestions = questions.length;
   const progress = ((currentQuestion + 1) / totalQuestions) * 100;
@@ -146,7 +151,10 @@ export const AISaasQuizSection = () => {
     if (currentQuestion < totalQuestions - 1) {
       setCurrentQuestion(prev => prev + 1);
     } else {
+      // Calculate valuation but don't show results yet
       calculateValuation();
+      // Show contact form instead
+      setShowContactForm(true);
     }
   };
 
@@ -217,7 +225,6 @@ export const AISaasQuizSection = () => {
     const highEnd = Math.round(calculatedValuation * 1.2);
     
     setValuation({ low: lowEnd, high: highEnd });
-    setShowResults(true);
   };
 
   const formatNumber = (num: number) => {
@@ -230,24 +237,106 @@ export const AISaasQuizSection = () => {
     }
   };
 
-  const submitForm = () => {
+  const submitForm = async () => {
     if (!formData.fullName || !formData.email || !formData.companyName) {
-      alert('Please fill in all fields to receive your detailed report.');
+      toast({
+        title: "Missing Information",
+        description: "Please fill in all fields to receive your valuation.",
+        variant: "destructive"
+      });
       return;
     }
-    
-    console.log('Form submitted:', {
-      ...formData,
-      answers,
-      valuation,
-      timestamp: new Date().toISOString()
-    });
-    
-    alert('Thank you! Your detailed valuation report will be sent to your email shortly.');
+
+    setIsSubmitting(true);
+
+    try {
+      // Store customer information in valuation_leads table
+      const { error } = await supabase
+        .from('valuation_leads')
+        .insert([
+          {
+            name: formData.fullName,
+            email: formData.email,
+            company: formData.companyName
+          }
+        ]);
+
+      if (error) {
+        throw error;
+      }
+
+      // Show success message and results
+      toast({
+        title: "Success!",
+        description: "Your information has been saved. Here's your valuation!"
+      });
+
+      // Now show the results
+      setShowContactForm(false);
+      setShowResults(true);
+
+    } catch (error) {
+      console.error('Error saving customer information:', error);
+      toast({
+        title: "Error",
+        description: "There was a problem saving your information. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const hasAnswer = answers.hasOwnProperty(currentQuestion);
 
+  // Show contact form after quiz completion
+  if (showContactForm) {
+    return (
+      <div className="w-full max-w-2xl mx-auto text-center">
+        <div className="glass p-6 rounded-xl">
+          <h3 className="text-xl font-semibold text-white mb-6">Get Your AI SaaS Valuation</h3>
+          <p className="text-white/90 text-lg mb-6">
+            You're just one step away from discovering your AI SaaS business value!
+          </p>
+          <div className="space-y-4">
+            <input
+              type="text"
+              className="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white placeholder-white/60"
+              placeholder="Full Name"
+              value={formData.fullName}
+              onChange={(e) => setFormData(prev => ({ ...prev, fullName: e.target.value }))}
+              disabled={isSubmitting}
+            />
+            <input
+              type="email"
+              className="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white placeholder-white/60"
+              placeholder="Email Address"
+              value={formData.email}
+              onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+              disabled={isSubmitting}
+            />
+            <input
+              type="text"
+              className="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white placeholder-white/60"
+              placeholder="AI SaaS Business/Company Name"
+              value={formData.companyName}
+              onChange={(e) => setFormData(prev => ({ ...prev, companyName: e.target.value }))}
+              disabled={isSubmitting}
+            />
+            <Button
+              onClick={submitForm}
+              disabled={isSubmitting}
+              className="w-full bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] hover:from-[#D946EE]/90 hover:to-[#8B5CF6]/90 text-white font-semibold py-3"
+            >
+              {isSubmitting ? 'Processing...' : 'Get My Valuation'}
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show results after successful form submission
   if (showResults) {
     const stage = answers[0] || 1;
     let description = '';
@@ -268,43 +357,19 @@ export const AISaasQuizSection = () => {
           </div>
           <p className="text-white/90 text-lg">{description}</p>
         </div>
-
+        
         <div className="glass p-6 rounded-xl">
-          <h3 className="text-xl font-semibold text-white mb-6">Get Your Detailed Valuation Report</h3>
-          <div className="space-y-4">
-            <input
-              type="text"
-              className="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white placeholder-white/60"
-              placeholder="Full Name"
-              value={formData.fullName}
-              onChange={(e) => setFormData(prev => ({ ...prev, fullName: e.target.value }))}
-            />
-            <input
-              type="email"
-              className="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white placeholder-white/60"
-              placeholder="Email Address"
-              value={formData.email}
-              onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-            />
-            <input
-              type="text"
-              className="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white placeholder-white/60"
-              placeholder="AI SaaS Business/Company Name"
-              value={formData.companyName}
-              onChange={(e) => setFormData(prev => ({ ...prev, companyName: e.target.value }))}
-            />
-            <Button
-              onClick={submitForm}
-              className="w-full bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] hover:from-[#D946EE]/90 hover:to-[#8B5CF6]/90 text-white font-semibold py-3"
-            >
-              Get Detailed Report
-            </Button>
-          </div>
+          <h3 className="text-xl font-semibold text-white mb-4">Thank You!</h3>
+          <p className="text-white/90">
+            Your valuation has been calculated based on current market data and AI SaaS business metrics.
+            We'll be in touch with additional insights and opportunities.
+          </p>
         </div>
       </div>
     );
   }
 
+  // Show quiz questions
   const currentQuestionData = questions[currentQuestion];
 
   return (
@@ -368,7 +433,7 @@ export const AISaasQuizSection = () => {
             onClick={previousQuestion}
             disabled={currentQuestion === 0}
             variant="outline"
-            className="border-white/30 text-white bg-white/10 hover:bg-white/15"
+            className="border-white/30 text-white bg-white/15 hover:bg-white/15"
           >
             Previous
           </Button>
@@ -377,7 +442,7 @@ export const AISaasQuizSection = () => {
             disabled={!hasAnswer}
             className="bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] hover:from-[#D946EE]/90 hover:to-[#8B5CF6]/90 text-white"
           >
-            {currentQuestion === totalQuestions - 1 ? 'Calculate Value' : 'Next'}
+            {currentQuestion === totalQuestions - 1 ? 'Complete Quiz' : 'Next'}
           </Button>
         </div>
       </div>
