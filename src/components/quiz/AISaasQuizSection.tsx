@@ -136,15 +136,10 @@ export const AISaasQuizSection = () => {
   const progress = ((currentQuestion + 1) / totalQuestions) * 100;
 
   const handleOptionSelect = (value: number) => {
-    // Clear any existing answer for this question first, then set the new one
-    setAnswers(prev => {
-      const newAnswers = { ...prev };
-      // Remove any existing answer for the current question
-      delete newAnswers[currentQuestion];
-      // Set the new answer
-      newAnswers[currentQuestion] = value;
-      return newAnswers;
-    });
+    setAnswers(prev => ({
+      ...prev,
+      [currentQuestion]: value
+    }));
   };
 
   const nextQuestion = () => {
@@ -250,14 +245,15 @@ export const AISaasQuizSection = () => {
     setIsSubmitting(true);
 
     try {
-      // Store customer information in valuation_leads table
+      // Store customer information and quiz answers in valuation_leads table
       const { error } = await supabase
         .from('valuation_leads')
         .insert([
           {
             name: formData.fullName,
             email: formData.email,
-            company: formData.companyName
+            company: formData.companyName,
+            quiz_answers: answers // Store all quiz answers
           }
         ]);
 
