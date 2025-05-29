@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
+import { TrendingUp, Users, DollarSign, Target, ArrowRight, Sparkles } from "lucide-react";
 
 interface QuizAnswer {
   [key: number]: number;
@@ -131,6 +133,7 @@ export const AISaasQuizSection = () => {
     companyName: ''
   });
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const totalQuestions = questions.length;
   const progress = ((currentQuestion + 1) / totalQuestions) * 100;
@@ -335,30 +338,152 @@ export const AISaasQuizSection = () => {
   // Show results after successful form submission
   if (showResults) {
     const stage = answers[0] || 1;
+    const mrr = answers[1] || 0;
+    const customers = answers[2] || 0;
+    
     let description = '';
+    let insights = [];
+    let recommendations = [];
+    
     if (stage <= 2) {
-      description = 'Your AI SaaS is in early stages. Focus on product development and initial customer validation to increase value.';
+      description = 'Your AI SaaS is in early stages with significant growth potential.';
+      insights = [
+        'Your business is in the foundational phase with room for strategic development',
+        'Early-stage AI SaaS companies often see exponential growth with proper execution',
+        'Focus on product-market fit and initial customer validation'
+      ];
+      recommendations = [
+        'Prioritize customer feedback to refine your AI capabilities',
+        'Develop a clear go-to-market strategy for your AI solution',
+        'Consider building strategic partnerships to accelerate growth',
+        'Focus on improving user onboarding and retention metrics'
+      ];
     } else if (stage <= 3) {
-      description = 'Your business shows promise with early traction. Scaling customer acquisition and improving metrics will drive higher valuations.';
+      description = 'Your business shows strong early traction with proven market demand.';
+      insights = [
+        'You have demonstrated initial product-market fit',
+        'Early revenue indicates strong value proposition',
+        'Your AI technology is solving real customer problems'
+      ];
+      recommendations = [
+        'Scale your customer acquisition channels',
+        'Invest in improving your AI model accuracy and performance',
+        'Develop enterprise sales capabilities for larger deals',
+        'Build robust analytics to track customer success metrics'
+      ];
     } else {
-      description = 'Your AI SaaS demonstrates strong fundamentals. Continue optimizing growth metrics and market expansion for premium valuations.';
+      description = 'Your AI SaaS demonstrates strong fundamentals with excellent growth metrics.';
+      insights = [
+        'Your business shows mature growth patterns',
+        'Strong market position with established customer base',
+        'Proven scalability in your AI technology stack'
+      ];
+      recommendations = [
+        'Explore international market expansion opportunities',
+        'Consider strategic acquisitions to enhance your AI capabilities',
+        'Develop premium enterprise features for higher-value customers',
+        'Build advanced AI features to maintain competitive advantage'
+      ];
     }
 
     return (
-      <div className="w-full max-w-2xl mx-auto text-center">
+      <div className="w-full max-w-4xl mx-auto text-center">
         <div className="bg-gradient-to-r from-[#D946EE]/20 via-[#8B5CF6]/20 to-[#0EA4E9]/20 backdrop-blur-lg border border-white/20 rounded-xl p-8 mb-6">
-          <h2 className="text-2xl font-bold text-white mb-4">Your AI SaaS Business Valuation</h2>
-          <div className="text-4xl font-bold text-[#D946EE] mb-4">
-            {formatNumber(valuation.low)} - {formatNumber(valuation.high)}
+          <div className="flex items-center justify-center mb-4">
+            <Sparkles className="h-8 w-8 text-[#D946EE] mr-3" />
+            <h2 className="exo-2-heading text-3xl font-bold text-white">Your AI SaaS Business Valuation</h2>
           </div>
-          <p className="text-white/90 text-lg">{description}</p>
+          
+          <div className="bg-white/10 rounded-xl p-6 mb-6">
+            <div className="text-5xl font-bold text-[#D946EE] mb-2">
+              {formatNumber(valuation.low)} - {formatNumber(valuation.high)}
+            </div>
+            <p className="text-white/90 text-lg">{description}</p>
+          </div>
+
+          {/* Key Metrics Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div className="bg-white/5 rounded-lg p-4">
+              <TrendingUp className="h-6 w-6 text-[#0EA4E9] mx-auto mb-2" />
+              <h4 className="text-white font-semibold mb-1">Growth Stage</h4>
+              <p className="text-white/80 text-sm">
+                {stage <= 2 ? 'Early Stage' : stage <= 3 ? 'Growth Stage' : 'Mature Stage'}
+              </p>
+            </div>
+            <div className="bg-white/5 rounded-lg p-4">
+              <DollarSign className="h-6 w-6 text-[#8B5CF6] mx-auto mb-2" />
+              <h4 className="text-white font-semibold mb-1">Revenue</h4>
+              <p className="text-white/80 text-sm">
+                {mrr === 0 ? 'Pre-revenue' : mrr <= 1000 ? 'Early Revenue' : mrr <= 25000 ? 'Growing Revenue' : 'Strong Revenue'}
+              </p>
+            </div>
+            <div className="bg-white/5 rounded-lg p-4">
+              <Users className="h-6 w-6 text-[#D946EE] mx-auto mb-2" />
+              <h4 className="text-white font-semibold mb-1">Customer Base</h4>
+              <p className="text-white/80 text-sm">
+                {customers === 0 ? 'Pre-customers' : customers <= 75 ? 'Growing Base' : 'Established Base'}
+              </p>
+            </div>
+          </div>
         </div>
         
-        <div className="glass p-6 rounded-xl">
-          <h3 className="text-xl font-semibold text-white mb-4">Thank You!</h3>
-          <p className="text-white/90">
+        {/* Insights Section */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div className="glass p-6 rounded-xl text-left">
+            <h3 className="text-xl font-semibold text-white mb-4 flex items-center">
+              <Target className="h-5 w-5 mr-2 text-[#0EA4E9]" />
+              Key Insights
+            </h3>
+            <ul className="space-y-3">
+              {insights.map((insight, index) => (
+                <li key={index} className="flex items-start">
+                  <div className="w-2 h-2 bg-[#0EA4E9] rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                  <span className="text-white/90 text-sm">{insight}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="glass p-6 rounded-xl text-left">
+            <h3 className="text-xl font-semibold text-white mb-4 flex items-center">
+              <ArrowRight className="h-5 w-5 mr-2 text-[#8B5CF6]" />
+              Recommendations
+            </h3>
+            <ul className="space-y-3">
+              {recommendations.map((rec, index) => (
+                <li key={index} className="flex items-start">
+                  <div className="w-2 h-2 bg-[#8B5CF6] rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                  <span className="text-white/90 text-sm">{rec}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+        
+        {/* Thank You Section with Sell Button */}
+        <div className="glass p-8 rounded-xl">
+          <h3 className="text-2xl font-semibold text-white mb-4">Thank You!</h3>
+          <p className="text-white/90 mb-6 text-lg">
             Your valuation has been calculated based on current market data and AI SaaS business metrics.
             We'll be in touch with additional insights and opportunities.
+          </p>
+          
+          <div className="bg-gradient-to-r from-[#D946EE]/10 to-[#8B5CF6]/10 rounded-lg p-6 mb-6">
+            <h4 className="text-white font-semibold mb-2">Ready to sell your AI SaaS business?</h4>
+            <p className="text-white/80 text-sm mb-4">
+              Connect with qualified buyers and maximize your business value through our secure marketplace.
+            </p>
+            <Button
+              onClick={() => navigate('/marketplace/list')}
+              className="w-full sm:w-auto bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] hover:from-[#D946EE]/90 hover:to-[#8B5CF6]/90 text-white font-semibold px-8 py-3 text-lg shadow-lg hover:shadow-xl transition-all duration-300"
+            >
+              Sell Your AI SaaS Business
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+          </div>
+          
+          <p className="text-white/70 text-sm">
+            💡 <strong>Pro tip:</strong> Businesses with verified metrics typically sell for 20-30% higher valuations
           </p>
         </div>
       </div>

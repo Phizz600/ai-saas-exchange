@@ -1208,6 +1208,7 @@ export type Database = {
           email: string
           id: string
           name: string | null
+          quiz_answers: Json | null
         }
         Insert: {
           company?: string | null
@@ -1215,6 +1216,7 @@ export type Database = {
           email: string
           id?: string
           name?: string | null
+          quiz_answers?: Json | null
         }
         Update: {
           company?: string | null
@@ -1222,6 +1224,7 @@ export type Database = {
           email?: string
           id?: string
           name?: string | null
+          quiz_answers?: Json | null
         }
         Relationships: []
       }
