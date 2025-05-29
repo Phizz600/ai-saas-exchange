@@ -53,9 +53,10 @@ const questions: Question[] = [
     options: [
       { value: 0, label: "0 customers" },
       { value: 25, label: "1-50 customers" },
-      { value: 150, label: "51-300 customers" },
-      { value: 750, label: "301-1,500 customers" },
-      { value: 3000, label: "1,501-6,000 customers" },
+      { value: 75, label: "51-100 customers" },
+      { value: 300, label: "101-500 customers" },
+      { value: 750, label: "500-1,000 customers" },
+      { value: 3000, label: "1,000-5,000 customers" },
       { value: 10000, label: "10,000+ customers" }
     ]
   },
@@ -421,7 +422,7 @@ export const AISaasQuizSection = () => {
               <Users className="h-6 w-6 text-[#D946EE] mx-auto mb-2" />
               <h4 className="text-white font-semibold mb-1">Customer Base</h4>
               <p className="text-white/80 text-sm">
-                {customers === 0 ? 'Pre-customers' : customers <= 150 ? 'Growing Base' : 'Established Base'}
+                {customers === 0 ? 'Pre-customers' : customers <= 75 ? 'Growing Base' : 'Established Base'}
               </p>
             </div>
           </div>
@@ -429,7 +430,7 @@ export const AISaasQuizSection = () => {
           {/* Green Sell Button */}
           <div className="mt-8">
             <Button
-              onClick={() => navigate('/marketplace/list')}
+              onClick={() => window.open('https://airtable.com/appqbmIOXXLNFhZyj/pagutIK7nf0unyJm3/form', '_blank')}
               className="w-full bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white font-bold text-lg py-4 px-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
             >
               ✨ Sell your AI SaaS Business
