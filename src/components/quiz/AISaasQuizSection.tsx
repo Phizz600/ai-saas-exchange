@@ -52,11 +52,11 @@ const questions: Question[] = [
     text: "How many paying customers do you currently have?",
     options: [
       { value: 0, label: "0 customers" },
-      { value: 10, label: "1-25 customers" },
-      { value: 75, label: "26-150 customers" },
-      { value: 400, label: "151-750 customers" },
-      { value: 1500, label: "751-3,000 customers" },
-      { value: 5000, label: "3,000+ customers" }
+      { value: 25, label: "1-50 customers" },
+      { value: 150, label: "51-300 customers" },
+      { value: 750, label: "301-1,500 customers" },
+      { value: 3000, label: "1,501-6,000 customers" },
+      { value: 10000, label: "10,000+ customers" }
     ]
   },
   {
@@ -421,13 +421,22 @@ export const AISaasQuizSection = () => {
               <Users className="h-6 w-6 text-[#D946EE] mx-auto mb-2" />
               <h4 className="text-white font-semibold mb-1">Customer Base</h4>
               <p className="text-white/80 text-sm">
-                {customers === 0 ? 'Pre-customers' : customers <= 75 ? 'Growing Base' : 'Established Base'}
+                {customers === 0 ? 'Pre-customers' : customers <= 150 ? 'Growing Base' : 'Established Base'}
               </p>
             </div>
           </div>
+
+          {/* Green Sell Button */}
+          <div className="mt-8">
+            <Button
+              onClick={() => navigate('/marketplace/list')}
+              className="w-full bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white font-bold text-lg py-4 px-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+            >
+              ✨ Sell your AI SaaS Business
+            </Button>
+          </div>
         </div>
         
-        {/* Insights Section */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <div className="glass p-6 rounded-xl text-left">
             <h3 className="text-xl font-semibold text-white mb-4 flex items-center">
@@ -460,27 +469,12 @@ export const AISaasQuizSection = () => {
           </div>
         </div>
         
-        {/* Thank You Section with Sell Button */}
         <div className="glass p-8 rounded-xl">
           <h3 className="text-2xl font-semibold text-white mb-4">Thank You!</h3>
           <p className="text-white/90 mb-6 text-lg">
             Your valuation has been calculated based on current market data and AI SaaS business metrics.
             We'll be in touch with additional insights and opportunities.
           </p>
-          
-          <div className="bg-gradient-to-r from-[#D946EE]/10 to-[#8B5CF6]/10 rounded-lg p-6 mb-6">
-            <h4 className="text-white font-semibold mb-2">Ready to sell your AI SaaS business?</h4>
-            <p className="text-white/80 text-sm mb-4">
-              Connect with qualified buyers and maximize your business value through our secure marketplace.
-            </p>
-            <Button
-              onClick={() => navigate('/marketplace/list')}
-              className="w-full sm:w-auto bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] hover:from-[#D946EE]/90 hover:to-[#8B5CF6]/90 text-white font-semibold px-8 py-3 text-lg shadow-lg hover:shadow-xl transition-all duration-300"
-            >
-              Sell Your AI SaaS Business
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-          </div>
           
           <p className="text-white/70 text-sm">
             💡 <strong>Pro tip:</strong> Businesses with verified metrics typically sell for 20-30% higher valuations
