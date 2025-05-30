@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -175,56 +174,85 @@ export const AISaasQuizSection = () => {
     const funding = answers[7] || 1;
 
     let calculatedValuation = 0;
-
-    if (stage === 1) {
-      if (mrr === 0 && customers === 0) {
-        calculatedValuation = (team + market + techType - 6) * 50;
-        calculatedValuation = Math.max(calculatedValuation, 0);
-        calculatedValuation = Math.min(calculatedValuation, 500);
-      } else if (mrr === 0) {
-        calculatedValuation = 100 + (customers * 0.1) + (team + market) * 200;
-        calculatedValuation = Math.min(calculatedValuation, 2000);
-      } else {
-        calculatedValuation = (mrr * 12) * (1 + growth * 0.2);
-      }
-    } else if (stage === 2) {
-      if (mrr === 0) {
-        calculatedValuation = 500 + (customers * 2) + (team + market + techType) * 300;
-        calculatedValuation = Math.min(calculatedValuation, 5000);
-      } else {
-        let multiplier = 2 + (growth * 0.4) + (market * 0.2) + (team * 0.2);
-        calculatedValuation = (mrr * 12) * multiplier;
-      }
-    } else if (stage === 3) {
-      let multiplier = 3 + (growth * 0.6) + (market * 0.3) + (team * 0.3);
-      calculatedValuation = Math.max((mrr * 12) * multiplier, 5000);
-    } else if (stage === 4) {
-      let multiplier = 5 + (growth * 1.0) + (market * 0.5) + (team * 0.5);
-      calculatedValuation = Math.max((mrr * 12) * multiplier, 50000);
-    } else {
-      let multiplier = 8 + (growth * 1.2) + (market * 0.6) + (team * 0.8);
-      calculatedValuation = Math.max((mrr * 12) * multiplier, 200000);
-    }
-
-    if (funding >= 3) {
-      calculatedValuation *= 1.1;
-    } else if (funding >= 4) {
-      calculatedValuation *= 1.3;
-    }
-
-    if (stage === 1 && mrr === 0 && customers === 0) {
-      calculatedValuation = Math.max(calculatedValuation, 0);
-      calculatedValuation = Math.min(calculatedValuation, 500);
-    }
-
-    if (calculatedValuation <= 0) {
-      calculatedValuation = 50;
-    }
-
-    const lowEnd = Math.max(Math.round(calculatedValuation * 0.8), 0);
-    const highEnd = Math.round(calculatedValuation * 1.2);
+    let isRealistic = true;
     
-    setValuation({ low: lowEnd, high: highEnd });
+    // Reality Check #1: No revenue + no customers = minimal value
+    if (mrr === 0 && customers === 0) {
+      calculatedValuation = Math.max(100, (team + techType) * 50);
+      calculatedValuation = Math.min(calculatedValuation, 1000); // Cap at $1K
+      isRealistic = false;
+    }
+    // Reality Check #2: No revenue but some customers = very low value
+    else if (mrr === 0 && customers > 0) {
+      calculatedValuation = 500 + (customers * 2) + (team + market) * 100;
+      calculatedValuation = Math.min(calculatedValuation, 3000); // Cap at $3K
+      isRealistic = false;
+    }
+    // Reality Check #3: Minimal revenue = conservative valuation
+    else if (mrr <= 1000) {
+      let baseMultiplier = 8; // 8x annual revenue (conservative)
+      if (stage === 1) baseMultiplier = 6; // Even more conservative for idea stage
+      if (stage === 2) baseMultiplier = 7; // Slightly better for MVP
+      
+      calculatedValuation = (mrr * 12) * baseMultiplier;
+      
+      // Apply growth penalty/bonus
+      if (growth <= 1) calculatedValuation *= 0.6; // Declining growth penalty
+      if (growth >= 4) calculatedValuation *= 1.3; // Strong growth bonus
+      
+      // Apply market position factor
+      calculatedValuation *= (1 + (market - 2) * 0.1);
+      
+      // Cap low revenue businesses
+      calculatedValuation = Math.min(calculatedValuation, 25000);
+    }
+    // Established businesses with real revenue
+    else {
+      let baseMultiplier = 3; // Start conservative
+      
+      // Stage-based multipliers (much more conservative)
+      if (stage === 1) baseMultiplier = 2;
+      if (stage === 2) baseMultiplier = 2.5;
+      if (stage === 3) baseMultiplier = 3.5;
+      if (stage === 4) baseMultiplier = 5;
+      if (stage === 5) baseMultiplier = 6;
+      
+      calculatedValuation = (mrr * 12) * baseMultiplier;
+      
+      // Growth rate adjustments (more realistic)
+      if (growth === 1) calculatedValuation *= 0.5; // Declining
+      if (growth === 2) calculatedValuation *= 0.8; // Slow growth
+      if (growth === 3) calculatedValuation *= 1.1; // Moderate growth
+      if (growth === 4) calculatedValuation *= 1.4; // Good growth
+      if (growth === 5) calculatedValuation *= 1.8; // Exceptional growth
+      
+      // Market position (more conservative)
+      if (market === 2) calculatedValuation *= 0.8; // Crowded market
+      if (market === 3) calculatedValuation *= 1.0; // Some competition
+      if (market === 4) calculatedValuation *= 1.2; // Limited competition
+      if (market === 5) calculatedValuation *= 1.4; // Market leader
+      
+      // Team/IP factor (reduced impact)
+      calculatedValuation *= (1 + (team - 2) * 0.1);
+      
+      // Tech type bonus (reduced)
+      if (techType === 7) calculatedValuation *= 1.1; // Generative AI
+      if (techType === 4) calculatedValuation *= 1.05; // NLP
+      if (techType === 5) calculatedValuation *= 1.05; // Computer Vision
+    }
+    
+    // Funding adjustment (minimal impact)
+    if (funding >= 4) calculatedValuation *= 1.1;
+    
+    // Ensure minimum realistic floor
+    if (calculatedValuation < 100) calculatedValuation = 100;
+    
+    // Calculate range (tighter for realism)
+    const variance = isRealistic ? 0.15 : 0.25; // Smaller variance for established businesses
+    const lowEnd = Math.round(calculatedValuation * (1 - variance));
+    const highEnd = Math.round(calculatedValuation * (1 + variance));
+    
+    setValuation({ low: Math.max(lowEnd, 100), high: highEnd });
   };
 
   const formatNumber = (num: number) => {
@@ -346,45 +374,64 @@ export const AISaasQuizSection = () => {
     let description = '';
     let insights = [];
     let recommendations = [];
+    let disclaimer = '';
     
-    if (stage <= 2) {
-      description = 'Your AI SaaS is in early stages with significant growth potential.';
+    // More realistic descriptions and disclaimers
+    if (mrr === 0 && customers === 0) {
+      description = 'Your AI SaaS is in the earliest conceptual stage.';
+      disclaimer = '⚠️ Pre-revenue businesses typically have minimal market value until they demonstrate customer traction and revenue generation.';
       insights = [
-        'Your business is in the foundational phase with room for strategic development',
-        'Early-stage AI SaaS companies often see exponential growth with proper execution',
-        'Focus on product-market fit and initial customer validation'
+        'Your business currently represents potential rather than proven value',
+        'Most buyers look for businesses with established revenue and customer base',
+        'Focus on achieving product-market fit before considering valuation'
       ];
       recommendations = [
-        'Prioritize customer feedback to refine your AI capabilities',
-        'Develop a clear go-to-market strategy for your AI solution',
-        'Consider building strategic partnerships to accelerate growth',
-        'Focus on improving user onboarding and retention metrics'
+        'Develop a minimum viable product (MVP) to test market demand',
+        'Acquire your first paying customers to validate your business model',
+        'Document user feedback and iterate based on real customer needs',
+        'Consider this valuation as aspirational rather than current market value'
       ];
-    } else if (stage <= 3) {
-      description = 'Your business shows strong early traction with proven market demand.';
+    } else if (mrr === 0) {
+      description = 'Your business shows early user interest but lacks revenue validation.';
+      disclaimer = '⚠️ While user engagement is positive, buyers typically require proven revenue streams for meaningful valuations.';
       insights = [
-        'You have demonstrated initial product-market fit',
-        'Early revenue indicates strong value proposition',
-        'Your AI technology is solving real customer problems'
+        'User base indicates market interest in your solution',
+        'Revenue generation is critical for establishing market value',
+        'Converting users to paying customers should be your top priority'
       ];
       recommendations = [
-        'Scale your customer acquisition channels',
-        'Invest in improving your AI model accuracy and performance',
-        'Develop enterprise sales capabilities for larger deals',
-        'Build robust analytics to track customer success metrics'
+        'Implement monetization strategies to convert users to paying customers',
+        'Survey users to understand willingness to pay and optimal pricing',
+        'Develop premium features that justify subscription fees',
+        'Focus on retention metrics and user engagement quality'
+      ];
+    } else if (mrr <= 1000) {
+      description = 'Your business demonstrates early revenue traction with room for growth.';
+      disclaimer = '💡 Early-stage revenues show promise, but buyers often seek businesses with $5K+ MRR for serious consideration.';
+      insights = [
+        'You have successfully validated initial product-market fit',
+        'Early revenue indicates customers find value in your solution',
+        'Growth trajectory will significantly impact future valuation'
+      ];
+      recommendations = [
+        'Focus aggressively on growing monthly recurring revenue',
+        'Optimize customer acquisition and retention strategies',
+        'Document all revenue metrics for future buyer verification',
+        'Consider this estimate preliminary - actual valuations require due diligence'
       ];
     } else {
-      description = 'Your AI SaaS demonstrates strong fundamentals with excellent growth metrics.';
+      description = 'Your AI SaaS shows strong fundamentals with meaningful revenue generation.';
+      disclaimer = '📊 This estimate is based on limited data. Actual market value depends on verified metrics, competitive position, and buyer due diligence.';
       insights = [
-        'Your business shows mature growth patterns',
-        'Strong market position with established customer base',
-        'Proven scalability in your AI technology stack'
+        'Your business demonstrates proven market demand and revenue generation',
+        'Strong MRR indicates sustainable business model potential',
+        'Growth rate and market position are key value drivers'
       ];
       recommendations = [
-        'Explore international market expansion opportunities',
-        'Consider strategic acquisitions to enhance your AI capabilities',
-        'Develop premium enterprise features for higher-value customers',
-        'Build advanced AI features to maintain competitive advantage'
+        'Maintain detailed financial records and metrics for buyer verification',
+        'Focus on sustainable growth and customer retention',
+        'Consider professional business valuation for precise market assessment',
+        'Prepare comprehensive documentation for potential buyer due diligence'
       ];
     }
 
@@ -400,7 +447,10 @@ export const AISaasQuizSection = () => {
             <div className="text-5xl font-bold text-[#D946EE] mb-2">
               {formatNumber(valuation.low)} - {formatNumber(valuation.high)}
             </div>
-            <p className="text-white/90 text-lg">{description}</p>
+            <p className="text-white/90 text-lg mb-3">{description}</p>
+            <div className="bg-white/5 rounded-lg p-3 text-sm text-white/80">
+              {disclaimer}
+            </div>
           </div>
 
           {/* Key Metrics Grid */}
@@ -472,14 +522,21 @@ export const AISaasQuizSection = () => {
         </div>
         
         <div className="glass p-8 rounded-xl">
-          <h3 className="text-2xl font-semibold text-white mb-4">Thank You!</h3>
+          <h3 className="text-2xl font-semibold text-white mb-4">Important Disclaimer</h3>
           <p className="text-white/90 mb-6 text-lg">
-            Your valuation has been calculated based on current market data and AI SaaS business metrics.
-            We'll be in touch with additional insights and opportunities.
+            This valuation is a rough estimate based on limited survey data and general market trends.
           </p>
           
+          <div className="bg-white/5 rounded-lg p-4 mb-4">
+            <p className="text-white/80 text-sm">
+              <strong>⚠️ Actual market value may differ significantly.</strong> Real business valuations require:
+              verified financial records, comprehensive due diligence, competitive analysis, and detailed
+              assessment of assets, liabilities, and growth potential.
+            </p>
+          </div>
+          
           <p className="text-white/70 text-sm">
-            💡 <strong>Pro tip:</strong> Businesses with verified metrics typically sell for 20-30% higher valuations
+            💡 <strong>For serious buyers:</strong> Businesses with verified metrics, strong growth, and proven revenue typically command premium valuations
           </p>
         </div>
       </div>
