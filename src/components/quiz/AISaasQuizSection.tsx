@@ -4,11 +4,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { TrendingUp, Users, DollarSign, Target, ArrowRight, Sparkles } from "lucide-react";
-
 interface QuizAnswer {
   [key: number]: number;
 }
-
 interface Question {
   id: number;
   title: string;
@@ -19,133 +17,219 @@ interface Question {
     description?: string;
   }[];
 }
-
-const questions: Question[] = [
-  {
-    id: 1,
-    title: "Business Development Stage",
-    text: "What stage is your AI SaaS business currently in?",
-    options: [
-      { value: 1, label: "Idea/Concept Stage", description: "Still developing the core AI technology" },
-      { value: 2, label: "MVP/Beta", description: "Working prototype with initial testing" },
-      { value: 3, label: "Early Revenue", description: "Launched with first paying customers" },
-      { value: 4, label: "Growth Stage", description: "Established product with growing customer base" },
-      { value: 5, label: "Mature/Scale", description: "Well-established with significant market presence" }
-    ]
-  },
-  {
-    id: 2,
-    title: "Monthly Recurring Revenue",
-    text: "What is your current Monthly Recurring Revenue (MRR)?",
-    options: [
-      { value: 0, label: "Pre-revenue / $0" },
-      { value: 1000, label: "$1 - $1,000" },
-      { value: 5000, label: "$1,001 - $10,000" },
-      { value: 25000, label: "$10,001 - $50,000" },
-      { value: 100000, label: "$50,001 - $200,000" },
-      { value: 500000, label: "$200,000+" }
-    ]
-  },
-  {
-    id: 3,
-    title: "Customer Base",
-    text: "How many paying customers do you currently have?",
-    options: [
-      { value: 0, label: "0 customers" },
-      { value: 25, label: "1-50 customers" },
-      { value: 75, label: "51-100 customers" },
-      { value: 300, label: "101-500 customers" },
-      { value: 750, label: "500-1,000 customers" },
-      { value: 3000, label: "1,000-5,000 customers" },
-      { value: 10000, label: "10,000+ customers" }
-    ]
-  },
-  {
-    id: 4,
-    title: "AI Technology Focus",
-    text: "What type of AI technology powers your SaaS?",
-    options: [
-      { value: 3, label: "Machine Learning/Predictive Analytics", description: "Data analysis, forecasting, recommendations" },
-      { value: 4, label: "Natural Language Processing", description: "Text analysis, chatbots, language understanding" },
-      { value: 5, label: "Computer Vision", description: "Image recognition, visual analysis" },
-      { value: 6, label: "Process Automation/RPA", description: "Workflow automation, intelligent processing" },
-      { value: 7, label: "Generative AI", description: "Content generation, creative AI applications" },
-      { value: 2, label: "Other/Multiple Technologies", description: "Combination or specialized AI tech" }
-    ]
-  },
-  {
-    id: 5,
-    title: "Growth Trajectory",
-    text: "What's your monthly growth rate over the past 6 months?",
-    options: [
-      { value: 1, label: "Declining or no growth" },
-      { value: 2, label: "0-5% monthly growth" },
-      { value: 3, label: "5-15% monthly growth" },
-      { value: 4, label: "15-30% monthly growth" },
-      { value: 5, label: "30%+ monthly growth" }
-    ]
-  },
-  {
-    id: 6,
-    title: "Market Position",
-    text: "How would you describe your competitive position?",
-    options: [
-      { value: 2, label: "Many Competitors", description: "Crowded market with similar solutions" },
-      { value: 3, label: "Some Competition", description: "Moderate competition with differentiation" },
-      { value: 4, label: "Limited Competition", description: "Few direct competitors in your niche" },
-      { value: 5, label: "Market Leader/Unique", description: "First mover or unique AI approach" }
-    ]
-  },
-  {
-    id: 7,
-    title: "Team & Intellectual Property",
-    text: "What's the strength of your technical team and IP?",
-    options: [
-      { value: 2, label: "Solo founder or small team", description: "Limited technical expertise" },
-      { value: 3, label: "Small experienced team", description: "Good AI/tech background" },
-      { value: 4, label: "Strong technical team", description: "Deep AI expertise, some IP protection" },
-      { value: 5, label: "World-class team", description: "Top AI talent, patents, proprietary algorithms" }
-    ]
-  },
-  {
-    id: 8,
-    title: "Funding Status",
-    text: "What's your current funding situation?",
-    options: [
-      { value: 1, label: "Bootstrapped / Self-funded" },
-      { value: 2, label: "Friends & Family / Angel ($0-$100K)" },
-      { value: 3, label: "Seed Round ($100K-$2M)" },
-      { value: 4, label: "Series A ($2M-$15M)" },
-      { value: 5, label: "Series B+ ($15M+)" }
-    ]
-  }
-];
-
+const questions: Question[] = [{
+  id: 1,
+  title: "Business Development Stage",
+  text: "What stage is your AI SaaS business currently in?",
+  options: [{
+    value: 1,
+    label: "Idea/Concept Stage",
+    description: "Still developing the core AI technology"
+  }, {
+    value: 2,
+    label: "MVP/Beta",
+    description: "Working prototype with initial testing"
+  }, {
+    value: 3,
+    label: "Early Revenue",
+    description: "Launched with first paying customers"
+  }, {
+    value: 4,
+    label: "Growth Stage",
+    description: "Established product with growing customer base"
+  }, {
+    value: 5,
+    label: "Mature/Scale",
+    description: "Well-established with significant market presence"
+  }]
+}, {
+  id: 2,
+  title: "Monthly Recurring Revenue",
+  text: "What is your current Monthly Recurring Revenue (MRR)?",
+  options: [{
+    value: 0,
+    label: "Pre-revenue / $0"
+  }, {
+    value: 1000,
+    label: "$1 - $1,000"
+  }, {
+    value: 5000,
+    label: "$1,001 - $10,000"
+  }, {
+    value: 25000,
+    label: "$10,001 - $50,000"
+  }, {
+    value: 100000,
+    label: "$50,001 - $200,000"
+  }, {
+    value: 500000,
+    label: "$200,000+"
+  }]
+}, {
+  id: 3,
+  title: "Customer Base",
+  text: "How many paying customers do you currently have?",
+  options: [{
+    value: 0,
+    label: "0 customers"
+  }, {
+    value: 25,
+    label: "1-50 customers"
+  }, {
+    value: 75,
+    label: "51-100 customers"
+  }, {
+    value: 300,
+    label: "101-500 customers"
+  }, {
+    value: 750,
+    label: "500-1,000 customers"
+  }, {
+    value: 3000,
+    label: "1,000-5,000 customers"
+  }, {
+    value: 10000,
+    label: "10,000+ customers"
+  }]
+}, {
+  id: 4,
+  title: "AI Technology Focus",
+  text: "What type of AI technology powers your SaaS?",
+  options: [{
+    value: 3,
+    label: "Machine Learning/Predictive Analytics",
+    description: "Data analysis, forecasting, recommendations"
+  }, {
+    value: 4,
+    label: "Natural Language Processing",
+    description: "Text analysis, chatbots, language understanding"
+  }, {
+    value: 5,
+    label: "Computer Vision",
+    description: "Image recognition, visual analysis"
+  }, {
+    value: 6,
+    label: "Process Automation/RPA",
+    description: "Workflow automation, intelligent processing"
+  }, {
+    value: 7,
+    label: "Generative AI",
+    description: "Content generation, creative AI applications"
+  }, {
+    value: 2,
+    label: "Other/Multiple Technologies",
+    description: "Combination or specialized AI tech"
+  }]
+}, {
+  id: 5,
+  title: "Growth Trajectory",
+  text: "What's your monthly growth rate over the past 6 months?",
+  options: [{
+    value: 1,
+    label: "Declining or no growth"
+  }, {
+    value: 2,
+    label: "0-5% monthly growth"
+  }, {
+    value: 3,
+    label: "5-15% monthly growth"
+  }, {
+    value: 4,
+    label: "15-30% monthly growth"
+  }, {
+    value: 5,
+    label: "30%+ monthly growth"
+  }]
+}, {
+  id: 6,
+  title: "Market Position",
+  text: "How would you describe your competitive position?",
+  options: [{
+    value: 2,
+    label: "Many Competitors",
+    description: "Crowded market with similar solutions"
+  }, {
+    value: 3,
+    label: "Some Competition",
+    description: "Moderate competition with differentiation"
+  }, {
+    value: 4,
+    label: "Limited Competition",
+    description: "Few direct competitors in your niche"
+  }, {
+    value: 5,
+    label: "Market Leader/Unique",
+    description: "First mover or unique AI approach"
+  }]
+}, {
+  id: 7,
+  title: "Team & Intellectual Property",
+  text: "What's the strength of your technical team and IP?",
+  options: [{
+    value: 2,
+    label: "Solo founder or small team",
+    description: "Limited technical expertise"
+  }, {
+    value: 3,
+    label: "Small experienced team",
+    description: "Good AI/tech background"
+  }, {
+    value: 4,
+    label: "Strong technical team",
+    description: "Deep AI expertise, some IP protection"
+  }, {
+    value: 5,
+    label: "World-class team",
+    description: "Top AI talent, patents, proprietary algorithms"
+  }]
+}, {
+  id: 8,
+  title: "Funding Status",
+  text: "What's your current funding situation?",
+  options: [{
+    value: 1,
+    label: "Bootstrapped / Self-funded"
+  }, {
+    value: 2,
+    label: "Friends & Family / Angel ($0-$100K)"
+  }, {
+    value: 3,
+    label: "Seed Round ($100K-$2M)"
+  }, {
+    value: 4,
+    label: "Series A ($2M-$15M)"
+  }, {
+    value: 5,
+    label: "Series B+ ($15M+)"
+  }]
+}];
 export const AISaasQuizSection = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<QuizAnswer>({});
   const [showContactForm, setShowContactForm] = useState(false);
   const [showResults, setShowResults] = useState(false);
-  const [valuation, setValuation] = useState({ low: 0, high: 0 });
+  const [valuation, setValuation] = useState({
+    low: 0,
+    high: 0
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
     companyName: ''
   });
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
   const navigate = useNavigate();
-
   const totalQuestions = questions.length;
-  const progress = ((currentQuestion + 1) / totalQuestions) * 100;
-
+  const progress = (currentQuestion + 1) / totalQuestions * 100;
   const handleOptionSelect = (value: number) => {
     setAnswers(prev => ({
       ...prev,
       [currentQuestion]: value
     }));
   };
-
   const nextQuestion = () => {
     if (currentQuestion < totalQuestions - 1) {
       setCurrentQuestion(prev => prev + 1);
@@ -156,13 +240,11 @@ export const AISaasQuizSection = () => {
       setShowContactForm(true);
     }
   };
-
   const previousQuestion = () => {
     if (currentQuestion > 0) {
       setCurrentQuestion(prev => prev - 1);
     }
   };
-
   const calculateValuation = () => {
     const stage = answers[0] || 1;
     const mrr = answers[1] || 0;
@@ -172,10 +254,9 @@ export const AISaasQuizSection = () => {
     const market = answers[5] || 2;
     const team = answers[6] || 2;
     const funding = answers[7] || 1;
-
     let calculatedValuation = 0;
     let isRealistic = true;
-    
+
     // Reality Check #1: No revenue + no customers = minimal value
     if (mrr === 0 && customers === 0) {
       calculatedValuation = Math.max(100, (team + techType) * 50);
@@ -184,7 +265,7 @@ export const AISaasQuizSection = () => {
     }
     // Reality Check #2: No revenue but some customers = very low value
     else if (mrr === 0 && customers > 0) {
-      calculatedValuation = 500 + (customers * 2) + (team + market) * 100;
+      calculatedValuation = 500 + customers * 2 + (team + market) * 100;
       calculatedValuation = Math.min(calculatedValuation, 3000); // Cap at $3K
       isRealistic = false;
     }
@@ -193,68 +274,68 @@ export const AISaasQuizSection = () => {
       let baseMultiplier = 8; // 8x annual revenue (conservative)
       if (stage === 1) baseMultiplier = 6; // Even more conservative for idea stage
       if (stage === 2) baseMultiplier = 7; // Slightly better for MVP
-      
-      calculatedValuation = (mrr * 12) * baseMultiplier;
-      
+
+      calculatedValuation = mrr * 12 * baseMultiplier;
+
       // Apply growth penalty/bonus
       if (growth <= 1) calculatedValuation *= 0.6; // Declining growth penalty
       if (growth >= 4) calculatedValuation *= 1.3; // Strong growth bonus
-      
+
       // Apply market position factor
-      calculatedValuation *= (1 + (market - 2) * 0.1);
-      
+      calculatedValuation *= 1 + (market - 2) * 0.1;
+
       // Cap low revenue businesses
       calculatedValuation = Math.min(calculatedValuation, 25000);
     }
     // Established businesses with real revenue
     else {
       let baseMultiplier = 3; // Start conservative
-      
+
       // Stage-based multipliers (much more conservative)
       if (stage === 1) baseMultiplier = 2;
       if (stage === 2) baseMultiplier = 2.5;
       if (stage === 3) baseMultiplier = 3.5;
       if (stage === 4) baseMultiplier = 5;
       if (stage === 5) baseMultiplier = 6;
-      
-      calculatedValuation = (mrr * 12) * baseMultiplier;
-      
+      calculatedValuation = mrr * 12 * baseMultiplier;
+
       // Growth rate adjustments (more realistic)
       if (growth === 1) calculatedValuation *= 0.5; // Declining
       if (growth === 2) calculatedValuation *= 0.8; // Slow growth
       if (growth === 3) calculatedValuation *= 1.1; // Moderate growth
       if (growth === 4) calculatedValuation *= 1.4; // Good growth
       if (growth === 5) calculatedValuation *= 1.8; // Exceptional growth
-      
+
       // Market position (more conservative)
       if (market === 2) calculatedValuation *= 0.8; // Crowded market
       if (market === 3) calculatedValuation *= 1.0; // Some competition
       if (market === 4) calculatedValuation *= 1.2; // Limited competition
       if (market === 5) calculatedValuation *= 1.4; // Market leader
-      
+
       // Team/IP factor (reduced impact)
-      calculatedValuation *= (1 + (team - 2) * 0.1);
-      
+      calculatedValuation *= 1 + (team - 2) * 0.1;
+
       // Tech type bonus (reduced)
       if (techType === 7) calculatedValuation *= 1.1; // Generative AI
       if (techType === 4) calculatedValuation *= 1.05; // NLP
       if (techType === 5) calculatedValuation *= 1.05; // Computer Vision
     }
-    
+
     // Funding adjustment (minimal impact)
     if (funding >= 4) calculatedValuation *= 1.1;
-    
+
     // Ensure minimum realistic floor
     if (calculatedValuation < 100) calculatedValuation = 100;
-    
+
     // Calculate range (tighter for realism)
     const variance = isRealistic ? 0.15 : 0.25; // Smaller variance for established businesses
     const lowEnd = Math.round(calculatedValuation * (1 - variance));
     const highEnd = Math.round(calculatedValuation * (1 + variance));
-    
-    setValuation({ low: Math.max(lowEnd, 100), high: highEnd });
+    setValuation({
+      low: Math.max(lowEnd, 100),
+      high: highEnd
+    });
   };
-
   const formatNumber = (num: number) => {
     if (num >= 1000000) {
       return '$' + (num / 1000000).toFixed(1) + 'M';
@@ -264,7 +345,6 @@ export const AISaasQuizSection = () => {
       return '$' + num.toLocaleString();
     }
   };
-
   const submitForm = async () => {
     if (!formData.fullName || !formData.email || !formData.companyName) {
       toast({
@@ -274,22 +354,17 @@ export const AISaasQuizSection = () => {
       });
       return;
     }
-
     setIsSubmitting(true);
-
     try {
       // Store customer information and quiz answers in valuation_leads table
-      const { error } = await supabase
-        .from('valuation_leads')
-        .insert([
-          {
-            name: formData.fullName,
-            email: formData.email,
-            company: formData.companyName,
-            quiz_answers: answers // Store all quiz answers
-          }
-        ]);
-
+      const {
+        error
+      } = await supabase.from('valuation_leads').insert([{
+        name: formData.fullName,
+        email: formData.email,
+        company: formData.companyName,
+        quiz_answers: answers // Store all quiz answers
+      }]);
       if (error) {
         throw error;
       }
@@ -303,7 +378,6 @@ export const AISaasQuizSection = () => {
       // Now show the results
       setShowContactForm(false);
       setShowResults(true);
-
     } catch (error) {
       console.error('Error saving customer information:', error);
       toast({
@@ -315,54 +389,33 @@ export const AISaasQuizSection = () => {
       setIsSubmitting(false);
     }
   };
-
   const hasAnswer = answers.hasOwnProperty(currentQuestion);
 
   // Show contact form after quiz completion
   if (showContactForm) {
-    return (
-      <div className="w-full max-w-2xl mx-auto text-center">
+    return <div className="w-full max-w-2xl mx-auto text-center">
         <div className="glass p-6 rounded-xl">
           <h3 className="text-xl font-semibold text-white mb-6">Get Your AI SaaS Valuation</h3>
-          <p className="text-white/90 text-lg mb-6">
-            You're just one step away from discovering your AI SaaS business value!
-          </p>
+          <p className="text-white/90 text-lg mb-6">You're just one step away from discovering your AI SaaS business value! Just let us know where to send the results.</p>
           <div className="space-y-4">
-            <input
-              type="text"
-              className="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white placeholder-white/60"
-              placeholder="Full Name"
-              value={formData.fullName}
-              onChange={(e) => setFormData(prev => ({ ...prev, fullName: e.target.value }))}
-              disabled={isSubmitting}
-            />
-            <input
-              type="email"
-              className="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white placeholder-white/60"
-              placeholder="Email Address"
-              value={formData.email}
-              onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-              disabled={isSubmitting}
-            />
-            <input
-              type="text"
-              className="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white placeholder-white/60"
-              placeholder="AI SaaS Business/Company Name"
-              value={formData.companyName}
-              onChange={(e) => setFormData(prev => ({ ...prev, companyName: e.target.value }))}
-              disabled={isSubmitting}
-            />
-            <Button
-              onClick={submitForm}
-              disabled={isSubmitting}
-              className="w-full bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] hover:from-[#D946EE]/90 hover:to-[#8B5CF6]/90 text-white font-semibold py-3"
-            >
+            <input type="text" className="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white placeholder-white/60" placeholder="Full Name" value={formData.fullName} onChange={e => setFormData(prev => ({
+            ...prev,
+            fullName: e.target.value
+          }))} disabled={isSubmitting} />
+            <input type="email" className="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white placeholder-white/60" placeholder="Email Address" value={formData.email} onChange={e => setFormData(prev => ({
+            ...prev,
+            email: e.target.value
+          }))} disabled={isSubmitting} />
+            <input type="text" className="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white placeholder-white/60" placeholder="AI SaaS Business/Company Name" value={formData.companyName} onChange={e => setFormData(prev => ({
+            ...prev,
+            companyName: e.target.value
+          }))} disabled={isSubmitting} />
+            <Button onClick={submitForm} disabled={isSubmitting} className="w-full bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] hover:from-[#D946EE]/90 hover:to-[#8B5CF6]/90 text-white font-semibold py-3">
               {isSubmitting ? 'Processing...' : 'Get My Valuation'}
             </Button>
           </div>
         </div>
-      </div>
-    );
+      </div>;
   }
 
   // Show results after successful form submission
@@ -370,73 +423,34 @@ export const AISaasQuizSection = () => {
     const stage = answers[0] || 1;
     const mrr = answers[1] || 0;
     const customers = answers[2] || 0;
-    
     let description = '';
     let insights = [];
     let recommendations = [];
     let disclaimer = '';
-    
+
     // More realistic descriptions and disclaimers
     if (mrr === 0 && customers === 0) {
       description = 'Your AI SaaS is in the earliest conceptual stage.';
       disclaimer = '⚠️ Pre-revenue businesses typically have minimal market value until they demonstrate customer traction and revenue generation.';
-      insights = [
-        'Your business currently represents potential rather than proven value',
-        'Most buyers look for businesses with established revenue and customer base',
-        'Focus on achieving product-market fit before considering valuation'
-      ];
-      recommendations = [
-        'Develop a minimum viable product (MVP) to test market demand',
-        'Acquire your first paying customers to validate your business model',
-        'Document user feedback and iterate based on real customer needs',
-        'Consider this valuation as aspirational rather than current market value'
-      ];
+      insights = ['Your business currently represents potential rather than proven value', 'Most buyers look for businesses with established revenue and customer base', 'Focus on achieving product-market fit before considering valuation'];
+      recommendations = ['Develop a minimum viable product (MVP) to test market demand', 'Acquire your first paying customers to validate your business model', 'Document user feedback and iterate based on real customer needs', 'Consider this valuation as aspirational rather than current market value'];
     } else if (mrr === 0) {
       description = 'Your business shows early user interest but lacks revenue validation.';
       disclaimer = '⚠️ While user engagement is positive, buyers typically require proven revenue streams for meaningful valuations.';
-      insights = [
-        'User base indicates market interest in your solution',
-        'Revenue generation is critical for establishing market value',
-        'Converting users to paying customers should be your top priority'
-      ];
-      recommendations = [
-        'Implement monetization strategies to convert users to paying customers',
-        'Survey users to understand willingness to pay and optimal pricing',
-        'Develop premium features that justify subscription fees',
-        'Focus on retention metrics and user engagement quality'
-      ];
+      insights = ['User base indicates market interest in your solution', 'Revenue generation is critical for establishing market value', 'Converting users to paying customers should be your top priority'];
+      recommendations = ['Implement monetization strategies to convert users to paying customers', 'Survey users to understand willingness to pay and optimal pricing', 'Develop premium features that justify subscription fees', 'Focus on retention metrics and user engagement quality'];
     } else if (mrr <= 1000) {
       description = 'Your business demonstrates early revenue traction with room for growth.';
       disclaimer = '💡 Early-stage revenues show promise, but buyers often seek businesses with $5K+ MRR for serious consideration.';
-      insights = [
-        'You have successfully validated initial product-market fit',
-        'Early revenue indicates customers find value in your solution',
-        'Growth trajectory will significantly impact future valuation'
-      ];
-      recommendations = [
-        'Focus aggressively on growing monthly recurring revenue',
-        'Optimize customer acquisition and retention strategies',
-        'Document all revenue metrics for future buyer verification',
-        'Consider this estimate preliminary - actual valuations require due diligence'
-      ];
+      insights = ['You have successfully validated initial product-market fit', 'Early revenue indicates customers find value in your solution', 'Growth trajectory will significantly impact future valuation'];
+      recommendations = ['Focus aggressively on growing monthly recurring revenue', 'Optimize customer acquisition and retention strategies', 'Document all revenue metrics for future buyer verification', 'Consider this estimate preliminary - actual valuations require due diligence'];
     } else {
       description = 'Your AI SaaS shows strong fundamentals with meaningful revenue generation.';
       disclaimer = '📊 This estimate is based on limited data. Actual market value depends on verified metrics, competitive position, and buyer due diligence.';
-      insights = [
-        'Your business demonstrates proven market demand and revenue generation',
-        'Strong MRR indicates sustainable business model potential',
-        'Growth rate and market position are key value drivers'
-      ];
-      recommendations = [
-        'Maintain detailed financial records and metrics for buyer verification',
-        'Focus on sustainable growth and customer retention',
-        'Consider professional business valuation for precise market assessment',
-        'Prepare comprehensive documentation for potential buyer due diligence'
-      ];
+      insights = ['Your business demonstrates proven market demand and revenue generation', 'Strong MRR indicates sustainable business model potential', 'Growth rate and market position are key value drivers'];
+      recommendations = ['Maintain detailed financial records and metrics for buyer verification', 'Focus on sustainable growth and customer retention', 'Consider professional business valuation for precise market assessment', 'Prepare comprehensive documentation for potential buyer due diligence'];
     }
-
-    return (
-      <div className="w-full max-w-4xl mx-auto text-center">
+    return <div className="w-full max-w-4xl mx-auto text-center">
         <div className="bg-gradient-to-r from-[#D946EE]/20 via-[#8B5CF6]/20 to-[#0EA4E9]/20 backdrop-blur-lg border border-white/20 rounded-xl p-8 mb-6">
           <div className="flex items-center justify-center mb-4">
             <Sparkles className="h-8 w-8 text-[#D946EE] mr-3" />
@@ -480,10 +494,7 @@ export const AISaasQuizSection = () => {
 
           {/* Green Sell Button */}
           <div className="mt-8">
-            <Button
-              onClick={() => window.open('https://airtable.com/appqbmIOXXLNFhZyj/pagutIK7nf0unyJm3/form', '_blank')}
-              className="w-full bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white font-bold text-lg py-4 px-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
-            >
+            <Button onClick={() => window.open('https://airtable.com/appqbmIOXXLNFhZyj/pagutIK7nf0unyJm3/form', '_blank')} className="w-full bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white font-bold text-lg py-4 px-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
               ✨ Sell your AI SaaS Business
             </Button>
           </div>
@@ -496,12 +507,10 @@ export const AISaasQuizSection = () => {
               Key Insights
             </h3>
             <ul className="space-y-3">
-              {insights.map((insight, index) => (
-                <li key={index} className="flex items-start">
+              {insights.map((insight, index) => <li key={index} className="flex items-start">
                   <div className="w-2 h-2 bg-[#0EA4E9] rounded-full mt-2 mr-3 flex-shrink-0"></div>
                   <span className="text-white/90 text-sm">{insight}</span>
-                </li>
-              ))}
+                </li>)}
             </ul>
           </div>
 
@@ -511,12 +520,10 @@ export const AISaasQuizSection = () => {
               Recommendations
             </h3>
             <ul className="space-y-3">
-              {recommendations.map((rec, index) => (
-                <li key={index} className="flex items-start">
+              {recommendations.map((rec, index) => <li key={index} className="flex items-start">
                   <div className="w-2 h-2 bg-[#8B5CF6] rounded-full mt-2 mr-3 flex-shrink-0"></div>
                   <span className="text-white/90 text-sm">{rec}</span>
-                </li>
-              ))}
+                </li>)}
             </ul>
           </div>
         </div>
@@ -539,22 +546,18 @@ export const AISaasQuizSection = () => {
             💡 <strong>For serious buyers:</strong> Businesses with verified metrics, strong growth, and proven revenue typically command premium valuations
           </p>
         </div>
-      </div>
-    );
+      </div>;
   }
 
   // Show quiz questions
   const currentQuestionData = questions[currentQuestion];
-
-  return (
-    <div className="w-full max-w-2xl mx-auto">
+  return <div className="w-full max-w-2xl mx-auto">
       <div className="glass p-6 md:p-8 rounded-xl">
         {/* Progress Bar */}
         <div className="h-2 bg-white/20 rounded-full mb-6">
-          <div
-            className="h-full bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] rounded-full transition-all duration-300"
-            style={{ width: `${progress}%` }}
-          />
+          <div className="h-full bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] rounded-full transition-all duration-300" style={{
+          width: `${progress}%`
+        }} />
         </div>
 
         {/* Question */}
@@ -570,56 +573,28 @@ export const AISaasQuizSection = () => {
 
         {/* Options */}
         <div className="space-y-3 mb-6">
-          {currentQuestionData.options.map((option, index) => (
-            <div
-              key={index}
-              className={`p-4 rounded-lg border-2 cursor-pointer transition-all duration-300 ${
-                answers[currentQuestion] === option.value
-                  ? 'bg-gradient-to-r from-[#D946EE]/30 to-[#8B5CF6]/30 border-[#D946EE] shadow-lg shadow-[#D946EE]/30'
-                  : 'bg-white/10 border-white/20 hover:bg-white/15 hover:border-white/40'
-              }`}
-              onClick={() => handleOptionSelect(option.value)}
-            >
+          {currentQuestionData.options.map((option, index) => <div key={index} className={`p-4 rounded-lg border-2 cursor-pointer transition-all duration-300 ${answers[currentQuestion] === option.value ? 'bg-gradient-to-r from-[#D946EE]/30 to-[#8B5CF6]/30 border-[#D946EE] shadow-lg shadow-[#D946EE]/30' : 'bg-white/10 border-white/20 hover:bg-white/15 hover:border-white/40'}`} onClick={() => handleOptionSelect(option.value)}>
               <div className="flex items-center">
-                <div className={`w-5 h-5 rounded-full border-2 mr-4 relative ${
-                  answers[currentQuestion] === option.value
-                    ? 'border-[#D946EE] bg-[#D946EE]'
-                    : 'border-white/50'
-                }`}>
-                  {answers[currentQuestion] === option.value && (
-                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-white rounded-full" />
-                  )}
+                <div className={`w-5 h-5 rounded-full border-2 mr-4 relative ${answers[currentQuestion] === option.value ? 'border-[#D946EE] bg-[#D946EE]' : 'border-white/50'}`}>
+                  {answers[currentQuestion] === option.value && <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-white rounded-full" />}
                 </div>
                 <div>
                   <div className="text-white font-medium">{option.label}</div>
-                  {option.description && (
-                    <div className="text-white/70 text-sm mt-1">{option.description}</div>
-                  )}
+                  {option.description && <div className="text-white/70 text-sm mt-1">{option.description}</div>}
                 </div>
               </div>
-            </div>
-          ))}
+            </div>)}
         </div>
 
         {/* Navigation */}
         <div className="flex justify-between">
-          <Button
-            onClick={previousQuestion}
-            disabled={currentQuestion === 0}
-            variant="outline"
-            className="border-white/30 text-white bg-white/15 hover:bg-white/15"
-          >
+          <Button onClick={previousQuestion} disabled={currentQuestion === 0} variant="outline" className="border-white/30 text-white bg-white/15 hover:bg-white/15">
             Previous
           </Button>
-          <Button
-            onClick={nextQuestion}
-            disabled={!hasAnswer}
-            className="bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] hover:from-[#D946EE]/90 hover:to-[#8B5CF6]/90 text-white"
-          >
+          <Button onClick={nextQuestion} disabled={!hasAnswer} className="bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] hover:from-[#D946EE]/90 hover:to-[#8B5CF6]/90 text-white">
             {currentQuestion === totalQuestions - 1 ? 'Complete Quiz' : 'Next'}
           </Button>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
