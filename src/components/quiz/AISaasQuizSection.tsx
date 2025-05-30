@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
-import { TrendingUp, Users, DollarSign, Target, ArrowRight, Sparkles } from "lucide-react";
+import { TrendingUp, Users, DollarSign, Target, ArrowRight, Sparkles, Shield, Clock, Zap } from "lucide-react";
 interface QuizAnswer {
   [key: number]: number;
 }
@@ -490,6 +490,37 @@ export const AISaasQuizSection = () => {
                 {customers === 0 ? 'Pre-customers' : customers <= 75 ? 'Growing Base' : 'Established Base'}
               </p>
             </div>
+          </div>
+
+          {/* Why Sell With Us Section */}
+          <div className="bg-white/5 rounded-xl p-6 mb-6">
+            <h3 className="text-xl font-semibold text-white mb-4">Ready to Turn Your AI Innovation Into Cash?</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+              <div className="flex items-start text-left">
+                <Shield className="h-5 w-5 text-green-400 mr-3 mt-1 flex-shrink-0" />
+                <div>
+                  <h4 className="text-white font-medium text-sm">Secure Escrow</h4>
+                  <p className="text-white/70 text-xs">Protected transactions via Escrow.com</p>
+                </div>
+              </div>
+              <div className="flex items-start text-left">
+                <Clock className="h-5 w-5 text-blue-400 mr-3 mt-1 flex-shrink-0" />
+                <div>
+                  <h4 className="text-white font-medium text-sm">Quick Process</h4>
+                  <p className="text-white/70 text-xs">Average sale completion in 30-60 days</p>
+                </div>
+              </div>
+              <div className="flex items-start text-left">
+                <Zap className="h-5 w-5 text-yellow-400 mr-3 mt-1 flex-shrink-0" />
+                <div>
+                  <h4 className="text-white font-medium text-sm">AI-Focused Buyers</h4>
+                  <p className="text-white/70 text-xs">Pre-qualified investors seeking AI assets</p>
+                </div>
+              </div>
+            </div>
+            <p className="text-white/80 text-sm">
+              Join 500+ AI founders who've successfully exited through our marketplace
+            </p>
           </div>
 
           {/* Green Sell Button */}
