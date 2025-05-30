@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -68,8 +69,8 @@ const questions: Question[] = [
       { value: 3, label: "Machine Learning/Predictive Analytics", description: "Data analysis, forecasting, recommendations" },
       { value: 4, label: "Natural Language Processing", description: "Text analysis, chatbots, language understanding" },
       { value: 5, label: "Computer Vision", description: "Image recognition, visual analysis" },
-      { value: 4, label: "Process Automation/RPA", description: "Workflow automation, intelligent processing" },
-      { value: 5, label: "Generative AI", description: "Content generation, creative AI applications" },
+      { value: 6, label: "Process Automation/RPA", description: "Workflow automation, intelligent processing" },
+      { value: 7, label: "Generative AI", description: "Content generation, creative AI applications" },
       { value: 2, label: "Other/Multiple Technologies", description: "Combination or specialized AI tech" }
     ]
   },
