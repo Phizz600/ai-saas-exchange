@@ -30,6 +30,7 @@ interface HeroSectionProps {
   handleListProductClick: () => void;
   handleAuthRedirect: () => void;
 }
+
 const HeroSection = ({
   isAuthenticated,
   currentWordIndex,
@@ -87,7 +88,7 @@ const HeroSection = ({
               Sell your AI SaaS Business
             </Button>
             <Button 
-              className="w-full max-w-xs py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl hover:shadow-red-500/30 transition-all duration-300 transform hover:-translate-y-1 bg-red-500 hover:bg-red-600"
+              className="w-full max-w-xs py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl hover:shadow-[#00a5ee]/30 transition-all duration-300 transform hover:-translate-y-1 bg-[#00a5ee] hover:bg-[#0094d1]"
               onClick={() => window.open('https://aiexchangeclub.carrd.co/', '_blank')}
             >
               <ShoppingCart className="mr-2" />
