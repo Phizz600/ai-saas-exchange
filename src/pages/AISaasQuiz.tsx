@@ -10,12 +10,8 @@ export const AISaasQuiz = () => {
         <div className="text-center mb-8 max-w-4xl mx-auto mt-20">
           
           <div className="space-y-4">
-            <h1 className="exo-2-heading text-4xl md:text-5xl text-white leading-tight">
-              AI SaaS Business Valuation
-            </h1>
-            <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto">
-              Discover your AI SaaS business worth with our intelligent 60-second assessment
-            </p>
+            <h1 className="exo-2-heading text-4xl md:text-5xl text-white leading-tight">Take The Quiz!</h1>
+            <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto">💸 Stop Guessing - This Free Valuation Calculator Will Tell You Exactly What Buyers Will Pay You for Your AI Powered SaaS Business</p>
           </div>
         </div>
 
