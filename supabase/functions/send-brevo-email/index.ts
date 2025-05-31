@@ -1,3 +1,4 @@
+
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import "https://deno.land/x/xhr@0.1.0/mod.ts"
 
@@ -23,7 +24,7 @@ serve(async (req) => {
     const contactData = {
       email: body.identifiers.email,
       attributes: body.contactProperties || {},
-      listIds: [5], // Free Valuation #5 list
+      listIds: [7], // Changed from 5 to 7 for valuation_leads list
     };
 
     console.log('Creating/updating contact in Brevo:', contactData);
