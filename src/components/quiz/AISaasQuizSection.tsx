@@ -1,12 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { TrendingUp, Users, DollarSign, Target, ArrowRight, Sparkles, Shield, Clock, Zap } from "lucide-react";
+
 interface QuizAnswer {
   [key: number]: number;
 }
+
 interface Question {
   id: number;
   title: string;
@@ -17,6 +19,7 @@ interface Question {
     description?: string;
   }[];
 }
+
 const questions: Question[] = [{
   id: 1,
   title: "Business Development Stage",
@@ -203,6 +206,7 @@ const questions: Question[] = [{
     label: "Series B+ ($15M+)"
   }]
 }];
+
 export const AISaasQuizSection = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<QuizAnswer>({});
@@ -218,18 +222,23 @@ export const AISaasQuizSection = () => {
     email: '',
     companyName: ''
   });
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
   const navigate = useNavigate();
+
   const totalQuestions = questions.length;
   const progress = (currentQuestion + 1) / totalQuestions * 100;
+
   const handleOptionSelect = (value: number) => {
-    setAnswers(prev => ({
-      ...prev,
+    const newAnswers = {
+      ...answers,
       [currentQuestion]: value
-    }));
+    };
+    setAnswers(newAnswers);
+    
+    // Store answers in localStorage for the edge function
+    localStorage.setItem('quizAnswers', JSON.stringify(newAnswers));
   };
+
   const nextQuestion = () => {
     if (currentQuestion < totalQuestions - 1) {
       setCurrentQuestion(prev => prev + 1);
@@ -240,11 +249,13 @@ export const AISaasQuizSection = () => {
       setShowContactForm(true);
     }
   };
+
   const previousQuestion = () => {
     if (currentQuestion > 0) {
       setCurrentQuestion(prev => prev - 1);
     }
   };
+
   const calculateValuation = () => {
     const stage = answers[0] || 1;
     const mrr = answers[1] || 0;
@@ -336,6 +347,7 @@ export const AISaasQuizSection = () => {
       high: highEnd
     });
   };
+
   const formatNumber = (num: number) => {
     if (num >= 1000000) {
       return '$' + (num / 1000000).toFixed(1) + 'M';
@@ -345,6 +357,7 @@ export const AISaasQuizSection = () => {
       return '$' + num.toLocaleString();
     }
   };
+
   const submitForm = async () => {
     if (!formData.fullName || !formData.email || !formData.companyName) {
       toast({
@@ -354,41 +367,106 @@ export const AISaasQuizSection = () => {
       });
       return;
     }
+
     setIsSubmitting(true);
     try {
-      // Store customer information and quiz answers in valuation_leads table
-      const {
-        error
-      } = await supabase.from('valuation_leads').insert([{
-        name: formData.fullName,
-        email: formData.email,
-        company: formData.companyName,
-        quiz_answers: answers // Store all quiz answers
-      }]);
-      if (error) {
-        throw error;
+      console.log("Starting quiz form submission with Brevo integration");
+      
+      // Store in local database first
+      const { error: dbError } = await supabase
+        .from('valuation_leads')
+        .insert([{
+          name: formData.fullName,
+          email: formData.email,
+          company: formData.companyName,
+          quiz_answers: answers
+        }]);
+
+      if (dbError) {
+        console.error("Database error:", dbError);
+        throw new Error(`Database error: ${dbError.message}`);
       }
 
-      // Show success message and results
-      toast({
-        title: "Success!",
-        description: "Your information has been saved. Here's your valuation!"
+      console.log("Successfully stored in database, now calling Brevo edge function");
+
+      // Prepare contact properties for Brevo
+      const contactProperties = {
+        NAME: formData.fullName,
+        COMPANY: formData.companyName,
+        ESTIMATED_VALUE_LOW: valuation.low,
+        ESTIMATED_VALUE_HIGH: valuation.high,
+        AI_CATEGORY: getAICategory(answers[3]),
+        USER_COUNT: getUserCount(answers[2]),
+        GROWTH_RATE: getGrowthRate(answers[4]),
+        MARKET_POSITION: getMarketPosition(answers[5]),
+        MRR: getMRR(answers[1]),
+        BUSINESS_STAGE: getBusinessStage(answers[0]),
+        TEAM_IP: getTeamIP(answers[6]),
+        FUNDING_STATUS: getFundingStatus(answers[7]),
+        SOURCE: 'ai_saas_valuation_quiz',
+        QUIZ_DATE: new Date().toISOString()
+      };
+
+      console.log("Calling Brevo edge function with contact properties:", contactProperties);
+
+      // Call Brevo edge function
+      const brevoResponse = await supabase.functions.invoke('send-brevo-email', {
+        body: JSON.stringify({
+          mode: 'track_event_api',
+          eventName: 'quiz_completed',
+          identifiers: { 
+            email: formData.email
+          },
+          contactProperties,
+          eventProperties: {
+            source: 'ai_saas_valuation_quiz',
+            company: formData.companyName,
+            valuation_range: `$${valuation.low} - $${valuation.high}`,
+            quiz_completion_date: new Date().toISOString()
+          }
+        })
       });
 
-      // Now show the results
+      console.log("Brevo edge function response:", brevoResponse);
+      
+      if (brevoResponse.error) {
+        console.error("Brevo edge function error:", brevoResponse.error);
+        toast({
+          title: "Warning",
+          description: "Your valuation was calculated but there was an issue sending the email. Please contact support.",
+          variant: "default"
+        });
+      } else if (!brevoResponse.data?.success) {
+        console.error("Brevo edge function returned failure:", brevoResponse.data);
+        toast({
+          title: "Warning",
+          description: "Your valuation was calculated but there was an issue with email delivery.",
+          variant: "default"
+        });
+      } else {
+        console.log("Successfully called Brevo edge function");
+        toast({
+          title: "Success!",
+          description: "Your information has been saved and valuation sent to your email!"
+        });
+      }
+
+      // Show results regardless of email status
       setShowContactForm(false);
       setShowResults(true);
-    } catch (error) {
+
+    } catch (error: any) {
       console.error('Error saving customer information:', error);
       toast({
         title: "Error",
-        description: "There was a problem saving your information. Please try again.",
+        description: `There was a problem saving your information: ${error.message}. Please try again.`,
         variant: "destructive"
       });
     } finally {
       setIsSubmitting(false);
     }
   };
+
   const hasAnswer = answers.hasOwnProperty(currentQuestion);
 
   // Show contact form after quiz completion
@@ -629,3 +707,94 @@ export const AISaasQuizSection = () => {
       </div>
     </div>;
 };
+
+// Helper functions to map quiz answers to readable values
+function getAICategory(answer: number): string {
+  const categories = {
+    3: 'Machine Learning',
+    4: 'Natural Language Processing', 
+    5: 'Computer Vision',
+    6: 'Process Automation',
+    7: 'Generative AI',
+    2: 'Other/Multiple'
+  };
+  return categories[answer as keyof typeof categories] || 'Unknown';
+}
+
+function getUserCount(answer: number): string {
+  const counts = {
+    0: '0',
+    25: '1-50',
+    75: '51-100', 
+    300: '101-500',
+    750: '500-1,000',
+    3000: '1,000-5,000',
+    10000: '10,000+'
+  };
+  return counts[answer as keyof typeof counts] || 'Unknown';
+}
+
+function getGrowthRate(answer: number): string {
+  const rates = {
+    1: 'Declining/No Growth',
+    2: '0-5%',
+    3: '5-15%',
+    4: '15-30%', 
+    5: '30%+'
+  };
+  return rates[answer as keyof typeof rates] || 'Unknown';
+}
+
+function getMarketPosition(answer: number): string {
+  const positions = {
+    2: 'Many Competitors',
+    3: 'Some Competition',
+    4: 'Limited Competition',
+    5: 'Market Leader'
+  };
+  return positions[answer as keyof typeof positions] || 'Unknown';
+}
+
+function getMRR(answer: number): string {
+  const mrr = {
+    0: '$0',
+    1000: '$1-$1,000',
+    5000: '$1,001-$10,000',
+    25000: '$10,001-$50,000',
+    100000: '$50,001-$200,000',
+    500000: '$200,000+'
+  };
+  return mrr[answer as keyof typeof mrr] || 'Unknown';
+}
+
+function getBusinessStage(answer: number): string {
+  const stages = {
+    1: 'Idea/Concept',
+    2: 'MVP/Beta',
+    3: 'Early Revenue',
+    4: 'Growth Stage',
+    5: 'Mature/Scale'
+  };
+  return stages[answer as keyof typeof stages] || 'Unknown';
+}
+
+function getTeamIP(answer: number): string {
+  const teams = {
+    2: 'Solo/Small Team',
+    3: 'Small Experienced Team',
+    4: 'Strong Technical Team',
+    5: 'World-class Team'
+  };
+  return teams[answer as keyof typeof teams] || 'Unknown';
+}
+
+function getFundingStatus(answer: number): string {
+  const funding = {
+    1: 'Bootstrapped',
+    2: 'Friends & Family',
+    3: 'Seed Round',
+    4: 'Series A',
+    5: 'Series B+'
+  };
+  return funding[answer as keyof typeof funding] || 'Unknown';
+}

@@ -101,84 +101,123 @@ export const useQuizSubmission = () => {
         setValuationResult(result);
       }
       
-      console.log("Preparing to send data to Brevo via edge function");
+      // Store in local database first
+      console.log("Storing data in local valuation_leads table");
+      const { error: dbError } = await supabase
+        .from('valuation_leads')
+        .insert([{
+          name: formData.name,
+          email: formData.email,
+          company: formData.company,
+          quiz_answers: JSON.parse(localStorage.getItem('quizAnswers') || '{}')
+        }]);
+
+      if (dbError) {
+        console.error("Database error:", dbError);
+        throw new Error(`Database error: ${dbError.message}`);
+      }
+
+      console.log("Successfully stored in database, now calling Brevo edge function");
+      
       // Get stored answers from localStorage for contact properties
       const storedAnswers = JSON.parse(localStorage.getItem('quizAnswers') || '{}');
       
-      // After we have both contact info and valuation, proceed with submission
-      // Create contact in Brevo, add to list, and track event
-      const eventTrackingResponse = await supabase.functions.invoke('send-brevo-email', {
+      // Map quiz answers to meaningful data
+      const answerMapping = {
+        0: 'business_stage',
+        1: 'mrr',
+        2: 'customers',
+        3: 'ai_technology',
+        4: 'growth_rate',
+        5: 'market_position',
+        6: 'team_ip',
+        7: 'funding_status'
+      };
+
+      // Create contact properties with all the valuation data
+      const contactProperties = {
+        NAME: formData.name,
+        COMPANY: formData.company || 'Not Provided',
+        SELLING_INTEREST: formData.sellingInterest ? 'Yes' : 'No',
+        ESTIMATED_VALUE_LOW: valuationResult?.estimatedValue?.low || 0,
+        ESTIMATED_VALUE_HIGH: valuationResult?.estimatedValue?.high || 0,
+        INSIGHTS: valuationResult?.insights?.join(' | ') || '',
+        RECOMMENDATIONS: valuationResult?.recommendations?.join(' | ') || '',
+        CONFIDENCE_SCORE: valuationResult?.confidenceScore || 50,
+        AI_CATEGORY: getAICategory(storedAnswers[3]),
+        USER_COUNT: getUserCount(storedAnswers[2]),
+        GROWTH_RATE: getGrowthRate(storedAnswers[4]),
+        MARKET_TREND: getMarketTrend(storedAnswers[5]),
+        MRR: getMRR(storedAnswers[1]),
+        REVENUE_SCORE: valuationResult?.metrics?.revenueScore || 0,
+        GROWTH_SCORE: valuationResult?.metrics?.growthScore || 0,
+        MARKET_SCORE: valuationResult?.metrics?.marketScore || 0,
+        USER_SCORE: valuationResult?.metrics?.userScore || 0,
+        OVERALL_SCORE: valuationResult?.metrics?.overallScore || 0,
+        IMPROVEMENT_AREAS: JSON.stringify(valuationResult?.improvementAreas || []),
+        SOURCE: 'ai_saas_valuation_quiz',
+        QUIZ_DATE: new Date().toISOString()
+      };
+
+      console.log("Calling Brevo edge function with contact properties:", contactProperties);
+
+      // Call Brevo edge function to add contact to list #7 and send valuation email
+      const brevoResponse = await supabase.functions.invoke('send-brevo-email', {
         body: JSON.stringify({
           mode: 'track_event_api',
           eventName: 'quiz_completed',
           identifiers: { 
             email: formData.email
           },
-          contactProperties: {
-            NAME: formData.name,
-            COMPANY: formData.company,
-            SELLING_INTEREST: formData.sellingInterest,
-            ESTIMATED_VALUE_LOW: valuationResult?.estimatedValue?.low,
-            ESTIMATED_VALUE_HIGH: valuationResult?.estimatedValue?.high,
-            INSIGHTS: valuationResult?.insights?.join('\n') || '',
-            RECOMMENDATIONS: valuationResult?.recommendations?.join('\n') || '',
-            QUIZ_ANSWERS: JSON.stringify(storedAnswers),
-            SOURCE: 'quiz_valuation',
-            CONFIDENCE_SCORE: valuationResult.confidenceScore,
-            AI_CATEGORY: storedAnswers[1] || 'unknown',
-            USER_COUNT: storedAnswers[3] || 'unknown',
-            GROWTH_RATE: storedAnswers[4] || 'unknown',
-            MARKET_TREND: storedAnswers[5] || 'unknown',
-            REVENUE_SCORE: valuationResult.metrics.revenueScore,
-            GROWTH_SCORE: valuationResult.metrics.growthScore,
-            MARKET_SCORE: valuationResult.metrics.marketScore,
-            USER_SCORE: valuationResult.metrics.userScore,
-            OVERALL_SCORE: valuationResult.metrics.overallScore,
-            IMPROVEMENT_AREAS: JSON.stringify(valuationResult.improvementAreas)
-          },
+          contactProperties,
           eventProperties: {
             source: 'ai_saas_valuation_quiz',
             company: formData.company || 'Not Provided',
-            valuation_range: `$${valuationResult.estimatedValue.low} - $${valuationResult.estimatedValue.high}`,
-            confidence_score: valuationResult.confidenceScore,
-            overall_score: valuationResult.metrics.overallScore,
-            improvement_areas: valuationResult.improvementAreas.map(area => area.area).join(', ')
+            valuation_range: `$${valuationResult?.estimatedValue?.low || 0} - $${valuationResult?.estimatedValue?.high || 0}`,
+            confidence_score: valuationResult?.confidenceScore || 50,
+            quiz_completion_date: new Date().toISOString()
           }
         })
       });
 
-      console.log("Edge function response:", eventTrackingResponse);
+      console.log("Brevo edge function response:", brevoResponse);
       
-      if (eventTrackingResponse.error) {
-        console.error("Error from edge function:", eventTrackingResponse.error);
-        throw new Error(eventTrackingResponse.error.message || 'Failed to process submission');
+      if (brevoResponse.error) {
+        console.error("Brevo edge function error:", brevoResponse.error);
+        // Don't throw here - we want to show results even if email fails
+        toast({
+          title: "Warning",
+          description: "Your valuation was calculated but there was an issue sending the email. Your data has been saved.",
+          variant: "default"
+        });
+      } else if (!brevoResponse.data?.success) {
+        console.error("Brevo edge function returned failure:", brevoResponse.data);
+        toast({
+          title: "Warning", 
+          description: "Your valuation was calculated but there was an issue with email delivery. Your data has been saved.",
+          variant: "default"
+        });
+      } else {
+        console.log("Successfully called Brevo edge function");
+        toast({
+          title: "Success!",
+          description: "Your valuation has been calculated and sent to your email!"
+        });
       }
       
-      if (!eventTrackingResponse.data?.success) {
-        console.error("Edge function returned failure:", eventTrackingResponse.data);
-        throw new Error(eventTrackingResponse.data?.error || 'Failed to process submission');
-      }
-      
-      console.log("Form submission successful, updating UI...");
-      
-      // If we haven't shown results yet, show them now
+      // Show results regardless of email status
       if (!showValuationResults) {
         setShowValuationResults(true);
         setShowResults(false);
       } else {
-        // If we've already shown results and they completed the form, show confirmation
         setShowConfirmation(true);
       }
       
-      toast({
-        title: "Success!",
-        description: "Your valuation has been sent to your email."
-      });
     } catch (error: any) {
-      console.error("Error tracking quiz submission:", error);
+      console.error("Error in form submission:", error);
       toast({
         title: "Error",
-        description: `There was a problem sending your valuation: ${error.message || "Unknown error"}. Please try again.`,
+        description: `There was a problem processing your submission: ${error.message || "Unknown error"}. Please try again.`,
         variant: "destructive"
       });
     } finally {
@@ -203,3 +242,62 @@ export const useQuizSubmission = () => {
     proceedToContactForm
   };
 };
+
+// Helper functions to map quiz answers to readable values
+function getAICategory(answer: number): string {
+  const categories = {
+    3: 'Machine Learning',
+    4: 'Natural Language Processing', 
+    5: 'Computer Vision',
+    6: 'Process Automation',
+    7: 'Generative AI',
+    2: 'Other/Multiple'
+  };
+  return categories[answer as keyof typeof categories] || 'Unknown';
+}
+
+function getUserCount(answer: number): string {
+  const counts = {
+    0: '0',
+    25: '1-50',
+    75: '51-100', 
+    300: '101-500',
+    750: '500-1,000',
+    3000: '1,000-5,000',
+    10000: '10,000+'
+  };
+  return counts[answer as keyof typeof counts] || 'Unknown';
+}
+
+function getGrowthRate(answer: number): string {
+  const rates = {
+    1: 'Declining/No Growth',
+    2: '0-5%',
+    3: '5-15%',
+    4: '15-30%', 
+    5: '30%+'
+  };
+  return rates[answer as keyof typeof rates] || 'Unknown';
+}
+
+function getMarketTrend(answer: number): string {
+  const trends = {
+    2: 'Crowded Market',
+    3: 'Moderate Competition',
+    4: 'Limited Competition',
+    5: 'Market Leader'
+  };
+  return trends[answer as keyof typeof trends] || 'Unknown';
+}
+
+function getMRR(answer: number): string {
+  const mrr = {
+    0: '$0',
+    1000: '$1-$1,000',
+    5000: '$1,001-$10,000',
+    25000: '$10,001-$50,000',
+    100000: '$50,001-$200,000',
+    500000: '$200,000+'
+  };
+  return mrr[answer as keyof typeof mrr] || 'Unknown';
+}
