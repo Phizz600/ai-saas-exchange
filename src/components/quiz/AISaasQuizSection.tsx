@@ -362,7 +362,7 @@ export const AISaasQuizSection = () => {
     if (!formData.fullName || !formData.email || !formData.companyName) {
       toast({
         title: "Missing Information",
-        description: "Please fill in all fields to receive your valuation.",
+        description: "Please fill in all fields.",
         variant: "destructive"
       });
       return;
@@ -370,7 +370,7 @@ export const AISaasQuizSection = () => {
 
     setIsSubmitting(true);
     try {
-      console.log("Starting quiz form submission with Brevo integration");
+      console.log("Starting quiz form submission for Brevo contact list");
       
       // Store in local database first
       const { error: dbError } = await supabase
@@ -387,7 +387,7 @@ export const AISaasQuizSection = () => {
         throw new Error(`Database error: ${dbError.message}`);
       }
 
-      console.log("Successfully stored in database, now calling Brevo edge function");
+      console.log("Successfully stored in database, now adding contact to Brevo list #7");
 
       // Prepare contact properties for Brevo
       const contactProperties = {
@@ -407,23 +407,13 @@ export const AISaasQuizSection = () => {
         QUIZ_DATE: new Date().toISOString()
       };
 
-      console.log("Calling Brevo edge function with contact properties:", contactProperties);
+      console.log("Adding contact to Brevo list #7 with properties:", contactProperties);
 
-      // Call Brevo edge function
+      // Call simplified Brevo edge function
       const brevoResponse = await supabase.functions.invoke('send-brevo-email', {
         body: JSON.stringify({
-          mode: 'track_event_api',
-          eventName: 'quiz_completed',
-          identifiers: { 
-            email: formData.email
-          },
-          contactProperties,
-          eventProperties: {
-            source: 'ai_saas_valuation_quiz',
-            company: formData.companyName,
-            valuation_range: `$${valuation.low} - $${valuation.high}`,
-            quiz_completion_date: new Date().toISOString()
-          }
+          email: formData.email,
+          contactProperties
         })
       });
 
@@ -433,25 +423,25 @@ export const AISaasQuizSection = () => {
         console.error("Brevo edge function error:", brevoResponse.error);
         toast({
           title: "Warning",
-          description: "Your valuation was calculated but there was an issue sending the email. Please contact support.",
+          description: "Your information was saved but there was an issue adding you to our contact list.",
           variant: "default"
         });
       } else if (!brevoResponse.data?.success) {
         console.error("Brevo edge function returned failure:", brevoResponse.data);
         toast({
           title: "Warning",
-          description: "Your valuation was calculated but there was an issue with email delivery.",
+          description: brevoResponse.data?.warning || "Your information was saved successfully.",
           variant: "default"
         });
       } else {
-        console.log("Successfully called Brevo edge function");
+        console.log("Successfully added contact to Brevo list");
         toast({
           title: "Success!",
-          description: "Your information has been saved and valuation sent to your email!"
+          description: "Your information has been saved successfully!"
         });
       }
 
-      // Show results regardless of email status
+      // Show results regardless of Brevo status
       setShowContactForm(false);
       setShowResults(true);
 
