@@ -422,22 +422,22 @@ export const AISaasQuizSection = () => {
       if (brevoResponse.error) {
         console.error("Brevo edge function error:", brevoResponse.error);
         toast({
-          title: "Warning",
-          description: "Your information was saved but there was an issue adding you to our contact list.",
+          title: "Success, your free valuation report is ready!",
+          description: "Note: There was an issue adding you to our contact list.",
           variant: "default"
         });
       } else if (!brevoResponse.data?.success) {
         console.error("Brevo edge function returned failure:", brevoResponse.data);
         toast({
-          title: "Warning",
-          description: brevoResponse.data?.warning || "Your information was saved successfully.",
+          title: "Success, your free valuation report is ready!",
+          description: brevoResponse.data?.warning || "",
           variant: "default"
         });
       } else {
         console.log("Successfully added contact to Brevo list");
         toast({
-          title: "Success!",
-          description: "Your information has been saved successfully!"
+          title: "Success, your free valuation report is ready!",
+          description: ""
         });
       }
 
@@ -449,7 +449,7 @@ export const AISaasQuizSection = () => {
       console.error('Error saving customer information:', error);
       toast({
         title: "Error",
-        description: `There was a problem saving your information: ${error.message}. Please try again.`,
+        description: `There was a problem processing your submission: ${error.message}. Please try again.`,
         variant: "destructive"
       });
     } finally {

@@ -156,22 +156,22 @@ export const useQuizSubmission = () => {
       if (brevoResponse.error) {
         console.error("Brevo edge function error:", brevoResponse.error);
         toast({
-          title: "Warning",
-          description: "Your information was saved but there was an issue adding you to our contact list.",
+          title: "Success, your free valuation report is ready!",
+          description: "Note: There was an issue adding you to our contact list.",
           variant: "default"
         });
       } else if (!brevoResponse.data?.success) {
         console.error("Brevo edge function returned failure:", brevoResponse.data);
         toast({
-          title: "Warning", 
-          description: brevoResponse.data?.warning || "Your information was saved but there was an issue with the contact list.",
+          title: "Success, your free valuation report is ready!",
+          description: brevoResponse.data?.warning || "Note: There was an issue with the contact list.",
           variant: "default"
         });
       } else {
         console.log("Successfully added contact to Brevo list");
         toast({
-          title: "Success!",
-          description: "Your information has been saved successfully!"
+          title: "Success, your free valuation report is ready!",
+          description: ""
         });
       }
       
