@@ -5,16 +5,17 @@ import { Button } from "@/components/ui/button";
 import { MousePointerClick, ShoppingCart } from "lucide-react";
 import { ProductsShowcase } from "@/components/hero/ProductsShowcase";
 import { useNavigate } from "react-router-dom";
+import HeroTitle from "@/components/hero/HeroTitle";
 
 // Keep lazy loading for these components
 const NewsletterSubscription = lazy(() => import("@/components/hero/NewsletterSubscription"));
 const FeatureHighlights = lazy(() => import("@/components/hero/FeatureHighlights"));
-const HeroTitle = lazy(() => import("@/components/hero/HeroTitle"));
 const HowItWorksTitle = lazy(() => import("@/components/hero/HowItWorksTitle"));
 const HowItWorksSteps = lazy(() => import("@/components/hero/HowItWorksSteps"));
 const SecurityFeatures = lazy(() => import("@/components/hero/SecurityFeatures"));
 const RoleInfo = lazy(() => import("@/components/hero/RoleInfo"));
 const YouTubeEmbed = lazy(() => import("@/components/hero/YouTubeEmbed"));
+
 interface HeroSectionProps {
   isAuthenticated: boolean;
   currentWordIndex: number;
@@ -66,9 +67,7 @@ const HeroSection = ({
       }} transition={{
         duration: 0.5
       }} className="space-y-8">
-          <Suspense fallback={<Skeleton className="h-48" />}>
-            <HeroTitle currentWordIndex={currentWordIndex} words={words} />
-          </Suspense>
+          <HeroTitle currentWordIndex={currentWordIndex} words={words} />
 
           <motion.p initial={{
           opacity: 0
