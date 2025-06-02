@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -18,6 +18,10 @@ interface Question {
     label: string;
     description?: string;
   }[];
+}
+
+interface AISaasQuizSectionProps {
+  isSubmitPage?: boolean;
 }
 
 const questions: Question[] = [{
@@ -207,7 +211,7 @@ const questions: Question[] = [{
   }]
 }];
 
-export const AISaasQuizSection = () => {
+export const AISaasQuizSection = ({ isSubmitPage = false }: AISaasQuizSectionProps) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<QuizAnswer>({});
   const [showContactForm, setShowContactForm] = useState(false);
@@ -224,6 +228,25 @@ export const AISaasQuizSection = () => {
   });
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  // Load saved data and show results if on submit page
+  useEffect(() => {
+    if (isSubmitPage) {
+      const savedAnswers = localStorage.getItem('quizAnswers');
+      const savedValuation = localStorage.getItem('quizValuation');
+      const savedFormData = localStorage.getItem('quizFormData');
+      
+      if (savedAnswers && savedValuation && savedFormData) {
+        setAnswers(JSON.parse(savedAnswers));
+        setValuation(JSON.parse(savedValuation));
+        setFormData(JSON.parse(savedFormData));
+        setShowResults(true);
+      } else {
+        // If no saved data, redirect back to quiz
+        navigate('/ai-saas-quiz');
+      }
+    }
+  }, [isSubmitPage, navigate]);
 
   const totalQuestions = questions.length;
   const progress = (currentQuestion + 1) / totalQuestions * 100;
@@ -342,10 +365,14 @@ export const AISaasQuizSection = () => {
     const variance = isRealistic ? 0.15 : 0.25; // Smaller variance for established businesses
     const lowEnd = Math.round(calculatedValuation * (1 - variance));
     const highEnd = Math.round(calculatedValuation * (1 + variance));
-    setValuation({
+    const newValuation = {
       low: Math.max(lowEnd, 100),
       high: highEnd
-    });
+    };
+    setValuation(newValuation);
+    
+    // Save valuation to localStorage
+    localStorage.setItem('quizValuation', JSON.stringify(newValuation));
   };
 
   const formatNumber = (num: number) => {
@@ -371,6 +398,9 @@ export const AISaasQuizSection = () => {
     setIsSubmitting(true);
     try {
       console.log("Starting quiz form submission for Brevo contact list");
+      
+      // Save form data to localStorage
+      localStorage.setItem('quizFormData', JSON.stringify(formData));
       
       // Store in local database first
       const { error: dbError } = await supabase
@@ -441,9 +471,8 @@ export const AISaasQuizSection = () => {
         });
       }
 
-      // Show results regardless of Brevo status
-      setShowContactForm(false);
-      setShowResults(true);
+      // Navigate to submit page to show results
+      navigate('/ai-saas-quiz/submit');
 
     } catch (error: any) {
       console.error('Error saving customer information:', error);
@@ -460,34 +489,61 @@ export const AISaasQuizSection = () => {
   const hasAnswer = answers.hasOwnProperty(currentQuestion);
 
   // Show contact form after quiz completion
-  if (showContactForm) {
-    return <div className="w-full max-w-2xl mx-auto text-center">
+  if (showContactForm && !isSubmitPage) {
+    return (
+      <div className="w-full max-w-2xl mx-auto text-center">
         <div className="glass p-6 rounded-xl">
           <h3 className="text-xl font-semibold text-white mb-6">Get Your AI SaaS Valuation</h3>
           <p className="text-white/90 text-lg mb-6">You're just one step away from discovering your AI SaaS business value! Just let us know where to send the results.</p>
           <div className="space-y-4">
-            <input type="text" className="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white placeholder-white/60" placeholder="Full Name" value={formData.fullName} onChange={e => setFormData(prev => ({
-            ...prev,
-            fullName: e.target.value
-          }))} disabled={isSubmitting} />
-            <input type="email" className="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white placeholder-white/60" placeholder="Email Address" value={formData.email} onChange={e => setFormData(prev => ({
-            ...prev,
-            email: e.target.value
-          }))} disabled={isSubmitting} />
-            <input type="text" className="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white placeholder-white/60" placeholder="AI SaaS Business/Company Name" value={formData.companyName} onChange={e => setFormData(prev => ({
-            ...prev,
-            companyName: e.target.value
-          }))} disabled={isSubmitting} />
-            <Button onClick={submitForm} disabled={isSubmitting} className="w-full bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] hover:from-[#D946EE]/90 hover:to-[#8B5CF6]/90 text-white font-semibold py-3">
+            <input
+              type="text"
+              className="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white placeholder-white/60"
+              placeholder="Full Name"
+              value={formData.fullName}
+              onChange={e => setFormData(prev => ({
+                ...prev,
+                fullName: e.target.value
+              }))}
+              disabled={isSubmitting}
+            />
+            <input
+              type="email"
+              className="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white placeholder-white/60"
+              placeholder="Email Address"
+              value={formData.email}
+              onChange={e => setFormData(prev => ({
+                ...prev,
+                email: e.target.value
+              }))}
+              disabled={isSubmitting}
+            />
+            <input
+              type="text"
+              className="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white placeholder-white/60"
+              placeholder="AI SaaS Business/Company Name"
+              value={formData.companyName}
+              onChange={e => setFormData(prev => ({
+                ...prev,
+                companyName: e.target.value
+              }))}
+              disabled={isSubmitting}
+            />
+            <Button
+              onClick={submitForm}
+              disabled={isSubmitting}
+              className="w-full bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] hover:from-[#D946EE]/90 hover:to-[#8B5CF6]/90 text-white font-semibold py-3"
+            >
               {isSubmitting ? 'Processing...' : 'Get My Valuation'}
             </Button>
           </div>
         </div>
-      </div>;
+      </div>
+    );
   }
 
-  // Show results after successful form submission
-  if (showResults) {
+  // Show results after successful form submission or on submit page
+  if (showResults || isSubmitPage) {
     const stage = answers[0] || 1;
     const mrr = answers[1] || 0;
     const customers = answers[2] || 0;
@@ -518,7 +574,9 @@ export const AISaasQuizSection = () => {
       insights = ['Your business demonstrates proven market demand and revenue generation', 'Strong MRR indicates sustainable business model potential', 'Growth rate and market position are key value drivers'];
       recommendations = ['Maintain detailed financial records and metrics for buyer verification', 'Focus on sustainable growth and customer retention', 'Consider professional business valuation for precise market assessment', 'Prepare comprehensive documentation for potential buyer due diligence'];
     }
-    return <div className="w-full max-w-4xl mx-auto text-center">
+
+    return (
+      <div className="w-full max-w-4xl mx-auto text-center">
         <div className="bg-gradient-to-r from-[#D946EE]/20 via-[#8B5CF6]/20 to-[#0EA4E9]/20 backdrop-blur-lg border border-white/20 rounded-xl p-8 mb-6">
           <div className="flex items-center justify-center mb-4">
             <Sparkles className="h-8 w-8 text-[#D946EE] mr-3" />
@@ -593,7 +651,10 @@ export const AISaasQuizSection = () => {
 
           {/* Green Sell Button */}
           <div className="mt-8">
-            <Button onClick={() => window.open('https://airtable.com/appqbmIOXXLNFhZyj/pagutIK7nf0unyJm3/form', '_blank')} className="w-full bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white font-bold text-lg py-4 px-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+            <Button
+              onClick={() => window.open('https://airtable.com/appqbmIOXXLNFhZyj/pagutIK7nf0unyJm3/form', '_blank')}
+              className="w-full bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white font-bold text-lg py-4 px-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+            >
               ✨ Sell your AI SaaS Business
             </Button>
           </div>
@@ -606,10 +667,12 @@ export const AISaasQuizSection = () => {
               Key Insights
             </h3>
             <ul className="space-y-3">
-              {insights.map((insight, index) => <li key={index} className="flex items-start">
+              {insights.map((insight, index) => (
+                <li key={index} className="flex items-start">
                   <div className="w-2 h-2 bg-[#0EA4E9] rounded-full mt-2 mr-3 flex-shrink-0"></div>
                   <span className="text-white/90 text-sm">{insight}</span>
-                </li>)}
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -619,10 +682,12 @@ export const AISaasQuizSection = () => {
               Recommendations
             </h3>
             <ul className="space-y-3">
-              {recommendations.map((rec, index) => <li key={index} className="flex items-start">
+              {recommendations.map((rec, index) => (
+                <li key={index} className="flex items-start">
                   <div className="w-2 h-2 bg-[#8B5CF6] rounded-full mt-2 mr-3 flex-shrink-0"></div>
                   <span className="text-white/90 text-sm">{rec}</span>
-                </li>)}
+                </li>
+              ))}
             </ul>
           </div>
         </div>
@@ -645,57 +710,91 @@ export const AISaasQuizSection = () => {
             💡 <strong>For serious buyers:</strong> Businesses with verified metrics, strong growth, and proven revenue typically command premium valuations
           </p>
         </div>
-      </div>;
+      </div>
+    );
   }
 
-  // Show quiz questions
-  const currentQuestionData = questions[currentQuestion];
-  return <div className="w-full max-w-2xl mx-auto">
-      <div className="glass p-6 md:p-8 rounded-xl">
-        {/* Progress Bar */}
-        <div className="h-2 bg-white/20 rounded-full mb-6">
-          <div className="h-full bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] rounded-full transition-all duration-300" style={{
-          width: `${progress}%`
-        }} />
-        </div>
-
-        {/* Question */}
-        <div className="mb-6">
-          <div className="flex items-center mb-4">
-            <div className="w-10 h-10 bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] rounded-full flex items-center justify-center text-white font-bold mr-4">
-              {currentQuestion + 1}
-            </div>
-            <h3 className="text-xl font-semibold text-white">{currentQuestionData.title}</h3>
+  // Show quiz questions (only if not on submit page)
+  if (!isSubmitPage) {
+    const currentQuestionData = questions[currentQuestion];
+    return (
+      <div className="w-full max-w-2xl mx-auto">
+        <div className="glass p-6 md:p-8 rounded-xl">
+          {/* Progress Bar */}
+          <div className="h-2 bg-white/20 rounded-full mb-6">
+            <div
+              className="h-full bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] rounded-full transition-all duration-300"
+              style={{ width: `${progress}%` }}
+            />
           </div>
-          <p className="text-lg text-white/90 mb-6">{currentQuestionData.text}</p>
-        </div>
 
-        {/* Options */}
-        <div className="space-y-3 mb-6">
-          {currentQuestionData.options.map((option, index) => <div key={index} className={`p-4 rounded-lg border-2 cursor-pointer transition-all duration-300 ${answers[currentQuestion] === option.value ? 'bg-gradient-to-r from-[#D946EE]/30 to-[#8B5CF6]/30 border-[#D946EE] shadow-lg shadow-[#D946EE]/30' : 'bg-white/10 border-white/20 hover:bg-white/15 hover:border-white/40'}`} onClick={() => handleOptionSelect(option.value)}>
-              <div className="flex items-center">
-                <div className={`w-5 h-5 rounded-full border-2 mr-4 relative ${answers[currentQuestion] === option.value ? 'border-[#D946EE] bg-[#D946EE]' : 'border-white/50'}`}>
-                  {answers[currentQuestion] === option.value && <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-white rounded-full" />}
-                </div>
-                <div>
-                  <div className="text-white font-medium">{option.label}</div>
-                  {option.description && <div className="text-white/70 text-sm mt-1">{option.description}</div>}
+          {/* Question */}
+          <div className="mb-6">
+            <div className="flex items-center mb-4">
+              <div className="w-10 h-10 bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] rounded-full flex items-center justify-center text-white font-bold mr-4">
+                {currentQuestion + 1}
+              </div>
+              <h3 className="text-xl font-semibold text-white">{currentQuestionData.title}</h3>
+            </div>
+            <p className="text-lg text-white/90 mb-6">{currentQuestionData.text}</p>
+          </div>
+
+          {/* Options */}
+          <div className="space-y-3 mb-6">
+            {currentQuestionData.options.map((option, index) => (
+              <div
+                key={index}
+                className={`p-4 rounded-lg border-2 cursor-pointer transition-all duration-300 ${
+                  answers[currentQuestion] === option.value
+                    ? 'bg-gradient-to-r from-[#D946EE]/30 to-[#8B5CF6]/30 border-[#D946EE] shadow-lg shadow-[#D946EE]/30'
+                    : 'bg-white/10 border-white/20 hover:bg-white/15 hover:border-white/40'
+                }`}
+                onClick={() => handleOptionSelect(option.value)}
+              >
+                <div className="flex items-center">
+                  <div
+                    className={`w-5 h-5 rounded-full border-2 mr-4 relative ${
+                      answers[currentQuestion] === option.value ? 'border-[#D946EE] bg-[#D946EE]' : 'border-white/50'
+                    }`}
+                  >
+                    {answers[currentQuestion] === option.value && (
+                      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-white rounded-full" />
+                    )}
+                  </div>
+                  <div>
+                    <div className="text-white font-medium">{option.label}</div>
+                    {option.description && <div className="text-white/70 text-sm mt-1">{option.description}</div>}
+                  </div>
                 </div>
               </div>
-            </div>)}
-        </div>
+            ))}
+          </div>
 
-        {/* Navigation */}
-        <div className="flex justify-between">
-          <Button onClick={previousQuestion} disabled={currentQuestion === 0} variant="outline" className="border-white/30 text-white bg-white/15 hover:bg-white/15">
-            Previous
-          </Button>
-          <Button onClick={nextQuestion} disabled={!hasAnswer} className="bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] hover:from-[#D946EE]/90 hover:to-[#8B5CF6]/90 text-white">
-            {currentQuestion === totalQuestions - 1 ? 'Complete Quiz' : 'Next'}
-          </Button>
+          {/* Navigation */}
+          <div className="flex justify-between">
+            <Button
+              onClick={previousQuestion}
+              disabled={currentQuestion === 0}
+              variant="outline"
+              className="border-white/30 text-white bg-white/15 hover:bg-white/15"
+            >
+              Previous
+            </Button>
+            <Button
+              onClick={nextQuestion}
+              disabled={!hasAnswer}
+              className="bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] hover:from-[#D946EE]/90 hover:to-[#8B5CF6]/90 text-white"
+            >
+              {currentQuestion === totalQuestions - 1 ? 'Complete Quiz' : 'Next'}
+            </Button>
+          </div>
         </div>
       </div>
-    </div>;
+    );
+  }
+
+  // Fallback - shouldn't reach here but just in case
+  return null;
 };
 
 // Helper functions to map quiz answers to readable values

@@ -1,4 +1,3 @@
-
 import Auth from "@/pages/Auth";
 import { Profile } from "@/pages/Profile";
 import { ProductDashboard } from "@/pages/ProductDashboard";
@@ -28,6 +27,10 @@ const routes = [
   },
   {
     path: "/ai-saas-quiz",
+    element: <AISaasQuiz />,
+  },
+  {
+    path: "/ai-saas-quiz/submit",
     element: <AISaasQuiz />,
   },
   {
