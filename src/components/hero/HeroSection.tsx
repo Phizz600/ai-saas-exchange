@@ -15,7 +15,6 @@ const HowItWorksSteps = lazy(() => import("@/components/hero/HowItWorksSteps"));
 const SecurityFeatures = lazy(() => import("@/components/hero/SecurityFeatures"));
 const RoleInfo = lazy(() => import("@/components/hero/RoleInfo"));
 const YouTubeEmbed = lazy(() => import("@/components/hero/YouTubeEmbed"));
-
 interface HeroSectionProps {
   isAuthenticated: boolean;
   currentWordIndex: number;
@@ -31,7 +30,6 @@ interface HeroSectionProps {
   handleListProductClick: () => void;
   handleAuthRedirect: () => void;
 }
-
 const HeroSection = ({
   isAuthenticated,
   currentWordIndex,
@@ -75,7 +73,7 @@ const HeroSection = ({
           opacity: 1
         }} transition={{
           duration: 0.3
-        }} className="text-xl text-gray-200 mb-12 max-w-2xl mx-auto text-center">Join an exclusive network of investors gaining early access to AI SaaS businesses, products, tools, and solutions through our secure Dutch auction marketplace.</motion.p>
+        }} className="text-xl text-gray-200 mb-12 max-w-2xl mx-auto text-center">Join an exclusive club of developers and investors gaining access to AI-Powered SaaS businesses through our secure Dutch auction marketplace.</motion.p>
 
           {/* Button Row - Updated with rearranged buttons */}
           <div className="flex flex-col items-center gap-4 justify-center">
@@ -86,10 +84,7 @@ const HeroSection = ({
               <MousePointerClick className="mr-2" />
               Sell your AI SaaS Business
             </Button>
-            <Button 
-              className="w-full max-w-xs py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl hover:shadow-[#00a5ee]/30 transition-all duration-300 transform hover:-translate-y-1 bg-[#00a5ee] hover:bg-[#0094d1]"
-              onClick={() => window.open('https://aiexchangeclub.carrd.co/', '_blank')}
-            >
+            <Button className="w-full max-w-xs py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl hover:shadow-[#00a5ee]/30 transition-all duration-300 transform hover:-translate-y-1 bg-[#00a5ee] hover:bg-[#0094d1]" onClick={() => window.open('https://aiexchangeclub.carrd.co/', '_blank')}>
               <ShoppingCart className="mr-2" />
               Buy an AI SaaS Business
             </Button>
