@@ -4,11 +4,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { TrendingUp, Users, DollarSign, Target, ArrowRight, Sparkles, Shield, Clock, Zap } from "lucide-react";
-
 interface QuizAnswer {
   [key: number]: number;
 }
-
 interface Question {
   id: number;
   title: string;
@@ -19,11 +17,9 @@ interface Question {
     description?: string;
   }[];
 }
-
 interface AISaasQuizSectionProps {
   isSubmitPage?: boolean;
 }
-
 const questions: Question[] = [{
   id: 1,
   title: "Business Development Stage",
@@ -210,8 +206,9 @@ const questions: Question[] = [{
     label: "Series B+ ($15M+)"
   }]
 }];
-
-export const AISaasQuizSection = ({ isSubmitPage = false }: AISaasQuizSectionProps) => {
+export const AISaasQuizSection = ({
+  isSubmitPage = false
+}: AISaasQuizSectionProps) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<QuizAnswer>({});
   const [showContactForm, setShowContactForm] = useState(false);
@@ -226,7 +223,9 @@ export const AISaasQuizSection = ({ isSubmitPage = false }: AISaasQuizSectionPro
     email: '',
     companyName: ''
   });
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
   const navigate = useNavigate();
 
   // Load saved data and show results if on submit page
@@ -235,7 +234,6 @@ export const AISaasQuizSection = ({ isSubmitPage = false }: AISaasQuizSectionPro
       const savedAnswers = localStorage.getItem('quizAnswers');
       const savedValuation = localStorage.getItem('quizValuation');
       const savedFormData = localStorage.getItem('quizFormData');
-      
       if (savedAnswers && savedValuation && savedFormData) {
         setAnswers(JSON.parse(savedAnswers));
         setValuation(JSON.parse(savedValuation));
@@ -247,21 +245,18 @@ export const AISaasQuizSection = ({ isSubmitPage = false }: AISaasQuizSectionPro
       }
     }
   }, [isSubmitPage, navigate]);
-
   const totalQuestions = questions.length;
   const progress = (currentQuestion + 1) / totalQuestions * 100;
-
   const handleOptionSelect = (value: number) => {
     const newAnswers = {
       ...answers,
       [currentQuestion]: value
     };
     setAnswers(newAnswers);
-    
+
     // Store answers in localStorage for the edge function
     localStorage.setItem('quizAnswers', JSON.stringify(newAnswers));
   };
-
   const nextQuestion = () => {
     if (currentQuestion < totalQuestions - 1) {
       setCurrentQuestion(prev => prev + 1);
@@ -272,13 +267,11 @@ export const AISaasQuizSection = ({ isSubmitPage = false }: AISaasQuizSectionPro
       setShowContactForm(true);
     }
   };
-
   const previousQuestion = () => {
     if (currentQuestion > 0) {
       setCurrentQuestion(prev => prev - 1);
     }
   };
-
   const calculateValuation = () => {
     const stage = answers[0] || 1;
     const mrr = answers[1] || 0;
@@ -370,11 +363,10 @@ export const AISaasQuizSection = ({ isSubmitPage = false }: AISaasQuizSectionPro
       high: highEnd
     };
     setValuation(newValuation);
-    
+
     // Save valuation to localStorage
     localStorage.setItem('quizValuation', JSON.stringify(newValuation));
   };
-
   const formatNumber = (num: number) => {
     if (num >= 1000000) {
       return '$' + (num / 1000000).toFixed(1) + 'M';
@@ -384,7 +376,6 @@ export const AISaasQuizSection = ({ isSubmitPage = false }: AISaasQuizSectionPro
       return '$' + num.toLocaleString();
     }
   };
-
   const submitForm = async () => {
     if (!formData.fullName || !formData.email || !formData.companyName) {
       toast({
@@ -394,29 +385,26 @@ export const AISaasQuizSection = ({ isSubmitPage = false }: AISaasQuizSectionPro
       });
       return;
     }
-
     setIsSubmitting(true);
     try {
       console.log("Starting quiz form submission for Brevo contact list");
-      
+
       // Save form data to localStorage
       localStorage.setItem('quizFormData', JSON.stringify(formData));
-      
-      // Store in local database first
-      const { error: dbError } = await supabase
-        .from('valuation_leads')
-        .insert([{
-          name: formData.fullName,
-          email: formData.email,
-          company: formData.companyName,
-          quiz_answers: answers
-        }]);
 
+      // Store in local database first
+      const {
+        error: dbError
+      } = await supabase.from('valuation_leads').insert([{
+        name: formData.fullName,
+        email: formData.email,
+        company: formData.companyName,
+        quiz_answers: answers
+      }]);
       if (dbError) {
         console.error("Database error:", dbError);
         throw new Error(`Database error: ${dbError.message}`);
       }
-
       console.log("Successfully stored in database, now adding contact to Brevo list #7");
 
       // Prepare contact properties for Brevo
@@ -436,7 +424,6 @@ export const AISaasQuizSection = ({ isSubmitPage = false }: AISaasQuizSectionPro
         SOURCE: 'ai_saas_valuation_quiz',
         QUIZ_DATE: new Date().toISOString()
       };
-
       console.log("Adding contact to Brevo list #7 with properties:", contactProperties);
 
       // Call simplified Brevo edge function
@@ -446,9 +433,7 @@ export const AISaasQuizSection = ({ isSubmitPage = false }: AISaasQuizSectionPro
           contactProperties
         })
       });
-
       console.log("Brevo edge function response:", brevoResponse);
-      
       if (brevoResponse.error) {
         console.error("Brevo edge function error:", brevoResponse.error);
         toast({
@@ -473,7 +458,6 @@ export const AISaasQuizSection = ({ isSubmitPage = false }: AISaasQuizSectionPro
 
       // Navigate to submit page to show results
       navigate('/ai-saas-quiz/submit');
-
     } catch (error: any) {
       console.error('Error saving customer information:', error);
       toast({
@@ -485,61 +469,33 @@ export const AISaasQuizSection = ({ isSubmitPage = false }: AISaasQuizSectionPro
       setIsSubmitting(false);
     }
   };
-
   const hasAnswer = answers.hasOwnProperty(currentQuestion);
 
   // Show contact form after quiz completion
   if (showContactForm && !isSubmitPage) {
-    return (
-      <div className="w-full max-w-2xl mx-auto text-center">
+    return <div className="w-full max-w-2xl mx-auto text-center">
         <div className="glass p-6 rounded-xl">
           <h3 className="text-xl font-semibold text-white mb-6">Get Your AI SaaS Valuation</h3>
           <p className="text-white/90 text-lg mb-6">You're just one step away from discovering your AI SaaS business value! Just let us know where to send the results.</p>
           <div className="space-y-4">
-            <input
-              type="text"
-              className="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white placeholder-white/60"
-              placeholder="Full Name"
-              value={formData.fullName}
-              onChange={e => setFormData(prev => ({
-                ...prev,
-                fullName: e.target.value
-              }))}
-              disabled={isSubmitting}
-            />
-            <input
-              type="email"
-              className="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white placeholder-white/60"
-              placeholder="Email Address"
-              value={formData.email}
-              onChange={e => setFormData(prev => ({
-                ...prev,
-                email: e.target.value
-              }))}
-              disabled={isSubmitting}
-            />
-            <input
-              type="text"
-              className="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white placeholder-white/60"
-              placeholder="AI SaaS Business/Company Name"
-              value={formData.companyName}
-              onChange={e => setFormData(prev => ({
-                ...prev,
-                companyName: e.target.value
-              }))}
-              disabled={isSubmitting}
-            />
-            <Button
-              onClick={submitForm}
-              disabled={isSubmitting}
-              className="w-full bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] hover:from-[#D946EE]/90 hover:to-[#8B5CF6]/90 text-white font-semibold py-3"
-            >
+            <input type="text" className="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white placeholder-white/60" placeholder="Full Name" value={formData.fullName} onChange={e => setFormData(prev => ({
+            ...prev,
+            fullName: e.target.value
+          }))} disabled={isSubmitting} />
+            <input type="email" className="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white placeholder-white/60" placeholder="Email Address" value={formData.email} onChange={e => setFormData(prev => ({
+            ...prev,
+            email: e.target.value
+          }))} disabled={isSubmitting} />
+            <input type="text" className="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white placeholder-white/60" placeholder="AI SaaS Business/Company Name" value={formData.companyName} onChange={e => setFormData(prev => ({
+            ...prev,
+            companyName: e.target.value
+          }))} disabled={isSubmitting} />
+            <Button onClick={submitForm} disabled={isSubmitting} className="w-full bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] hover:from-[#D946EE]/90 hover:to-[#8B5CF6]/90 text-white font-semibold py-3">
               {isSubmitting ? 'Processing...' : 'Get My Valuation'}
             </Button>
           </div>
         </div>
-      </div>
-    );
+      </div>;
   }
 
   // Show results after successful form submission or on submit page
@@ -574,9 +530,7 @@ export const AISaasQuizSection = ({ isSubmitPage = false }: AISaasQuizSectionPro
       insights = ['Your business demonstrates proven market demand and revenue generation', 'Strong MRR indicates sustainable business model potential', 'Growth rate and market position are key value drivers'];
       recommendations = ['Maintain detailed financial records and metrics for buyer verification', 'Focus on sustainable growth and customer retention', 'Consider professional business valuation for precise market assessment', 'Prepare comprehensive documentation for potential buyer due diligence'];
     }
-
-    return (
-      <div className="w-full max-w-4xl mx-auto text-center">
+    return <div className="w-full max-w-4xl mx-auto text-center">
         <div className="bg-gradient-to-r from-[#D946EE]/20 via-[#8B5CF6]/20 to-[#0EA4E9]/20 backdrop-blur-lg border border-white/20 rounded-xl p-8 mb-6">
           <div className="flex items-center justify-center mb-4">
             <Sparkles className="h-8 w-8 text-[#D946EE] mr-3" />
@@ -584,7 +538,7 @@ export const AISaasQuizSection = ({ isSubmitPage = false }: AISaasQuizSectionPro
           </div>
           
           <div className="bg-white/10 rounded-xl p-6 mb-6">
-            <div className="text-5xl font-bold text-[#D946EE] mb-2">
+            <div className="text-2xl font-bold text-[#D946EE] mb-2">
               {formatNumber(valuation.low)} - {formatNumber(valuation.high)}
             </div>
             <p className="text-white/90 text-lg mb-3">{description}</p>
@@ -651,10 +605,7 @@ export const AISaasQuizSection = ({ isSubmitPage = false }: AISaasQuizSectionPro
 
           {/* Green Sell Button */}
           <div className="mt-8">
-            <Button
-              onClick={() => window.open('https://airtable.com/appqbmIOXXLNFhZyj/pagutIK7nf0unyJm3/form', '_blank')}
-              className="w-full bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white font-bold text-lg py-4 px-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
-            >
+            <Button onClick={() => window.open('https://airtable.com/appqbmIOXXLNFhZyj/pagutIK7nf0unyJm3/form', '_blank')} className="w-full bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white font-bold text-lg py-4 px-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
               ✨ Sell your AI SaaS Business
             </Button>
           </div>
@@ -667,12 +618,10 @@ export const AISaasQuizSection = ({ isSubmitPage = false }: AISaasQuizSectionPro
               Key Insights
             </h3>
             <ul className="space-y-3">
-              {insights.map((insight, index) => (
-                <li key={index} className="flex items-start">
+              {insights.map((insight, index) => <li key={index} className="flex items-start">
                   <div className="w-2 h-2 bg-[#0EA4E9] rounded-full mt-2 mr-3 flex-shrink-0"></div>
                   <span className="text-white/90 text-sm">{insight}</span>
-                </li>
-              ))}
+                </li>)}
             </ul>
           </div>
 
@@ -682,12 +631,10 @@ export const AISaasQuizSection = ({ isSubmitPage = false }: AISaasQuizSectionPro
               Recommendations
             </h3>
             <ul className="space-y-3">
-              {recommendations.map((rec, index) => (
-                <li key={index} className="flex items-start">
+              {recommendations.map((rec, index) => <li key={index} className="flex items-start">
                   <div className="w-2 h-2 bg-[#8B5CF6] rounded-full mt-2 mr-3 flex-shrink-0"></div>
                   <span className="text-white/90 text-sm">{rec}</span>
-                </li>
-              ))}
+                </li>)}
             </ul>
           </div>
         </div>
@@ -710,22 +657,19 @@ export const AISaasQuizSection = ({ isSubmitPage = false }: AISaasQuizSectionPro
             💡 <strong>For serious buyers:</strong> Businesses with verified metrics, strong growth, and proven revenue typically command premium valuations
           </p>
         </div>
-      </div>
-    );
+      </div>;
   }
 
   // Show quiz questions (only if not on submit page)
   if (!isSubmitPage) {
     const currentQuestionData = questions[currentQuestion];
-    return (
-      <div className="w-full max-w-2xl mx-auto">
+    return <div className="w-full max-w-2xl mx-auto">
         <div className="glass p-6 md:p-8 rounded-xl">
           {/* Progress Bar */}
           <div className="h-2 bg-white/20 rounded-full mb-6">
-            <div
-              className="h-full bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] rounded-full transition-all duration-300"
-              style={{ width: `${progress}%` }}
-            />
+            <div className="h-full bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] rounded-full transition-all duration-300" style={{
+            width: `${progress}%`
+          }} />
           </div>
 
           {/* Question */}
@@ -741,56 +685,30 @@ export const AISaasQuizSection = ({ isSubmitPage = false }: AISaasQuizSectionPro
 
           {/* Options */}
           <div className="space-y-3 mb-6">
-            {currentQuestionData.options.map((option, index) => (
-              <div
-                key={index}
-                className={`p-4 rounded-lg border-2 cursor-pointer transition-all duration-300 ${
-                  answers[currentQuestion] === option.value
-                    ? 'bg-gradient-to-r from-[#D946EE]/30 to-[#8B5CF6]/30 border-[#D946EE] shadow-lg shadow-[#D946EE]/30'
-                    : 'bg-white/10 border-white/20 hover:bg-white/15 hover:border-white/40'
-                }`}
-                onClick={() => handleOptionSelect(option.value)}
-              >
+            {currentQuestionData.options.map((option, index) => <div key={index} className={`p-4 rounded-lg border-2 cursor-pointer transition-all duration-300 ${answers[currentQuestion] === option.value ? 'bg-gradient-to-r from-[#D946EE]/30 to-[#8B5CF6]/30 border-[#D946EE] shadow-lg shadow-[#D946EE]/30' : 'bg-white/10 border-white/20 hover:bg-white/15 hover:border-white/40'}`} onClick={() => handleOptionSelect(option.value)}>
                 <div className="flex items-center">
-                  <div
-                    className={`w-5 h-5 rounded-full border-2 mr-4 relative ${
-                      answers[currentQuestion] === option.value ? 'border-[#D946EE] bg-[#D946EE]' : 'border-white/50'
-                    }`}
-                  >
-                    {answers[currentQuestion] === option.value && (
-                      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-white rounded-full" />
-                    )}
+                  <div className={`w-5 h-5 rounded-full border-2 mr-4 relative ${answers[currentQuestion] === option.value ? 'border-[#D946EE] bg-[#D946EE]' : 'border-white/50'}`}>
+                    {answers[currentQuestion] === option.value && <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-white rounded-full" />}
                   </div>
                   <div>
                     <div className="text-white font-medium">{option.label}</div>
                     {option.description && <div className="text-white/70 text-sm mt-1">{option.description}</div>}
                   </div>
                 </div>
-              </div>
-            ))}
+              </div>)}
           </div>
 
           {/* Navigation */}
           <div className="flex justify-between">
-            <Button
-              onClick={previousQuestion}
-              disabled={currentQuestion === 0}
-              variant="outline"
-              className="border-white/30 text-white bg-white/15 hover:bg-white/15"
-            >
+            <Button onClick={previousQuestion} disabled={currentQuestion === 0} variant="outline" className="border-white/30 text-white bg-white/15 hover:bg-white/15">
               Previous
             </Button>
-            <Button
-              onClick={nextQuestion}
-              disabled={!hasAnswer}
-              className="bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] hover:from-[#D946EE]/90 hover:to-[#8B5CF6]/90 text-white"
-            >
+            <Button onClick={nextQuestion} disabled={!hasAnswer} className="bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] hover:from-[#D946EE]/90 hover:to-[#8B5CF6]/90 text-white">
               {currentQuestion === totalQuestions - 1 ? 'Complete Quiz' : 'Next'}
             </Button>
           </div>
         </div>
-      </div>
-    );
+      </div>;
   }
 
   // Fallback - shouldn't reach here but just in case
@@ -801,7 +719,7 @@ export const AISaasQuizSection = ({ isSubmitPage = false }: AISaasQuizSectionPro
 function getAICategory(answer: number): string {
   const categories = {
     3: 'Machine Learning',
-    4: 'Natural Language Processing', 
+    4: 'Natural Language Processing',
     5: 'Computer Vision',
     6: 'Process Automation',
     7: 'Generative AI',
@@ -809,12 +727,11 @@ function getAICategory(answer: number): string {
   };
   return categories[answer as keyof typeof categories] || 'Unknown';
 }
-
 function getUserCount(answer: number): string {
   const counts = {
     0: '0',
     25: '1-50',
-    75: '51-100', 
+    75: '51-100',
     300: '101-500',
     750: '500-1,000',
     3000: '1,000-5,000',
@@ -822,18 +739,16 @@ function getUserCount(answer: number): string {
   };
   return counts[answer as keyof typeof counts] || 'Unknown';
 }
-
 function getGrowthRate(answer: number): string {
   const rates = {
     1: 'Declining/No Growth',
     2: '0-5%',
     3: '5-15%',
-    4: '15-30%', 
+    4: '15-30%',
     5: '30%+'
   };
   return rates[answer as keyof typeof rates] || 'Unknown';
 }
-
 function getMarketPosition(answer: number): string {
   const positions = {
     2: 'Many Competitors',
@@ -843,7 +758,6 @@ function getMarketPosition(answer: number): string {
   };
   return positions[answer as keyof typeof positions] || 'Unknown';
 }
-
 function getMRR(answer: number): string {
   const mrr = {
     0: '$0',
@@ -855,7 +769,6 @@ function getMRR(answer: number): string {
   };
   return mrr[answer as keyof typeof mrr] || 'Unknown';
 }
-
 function getBusinessStage(answer: number): string {
   const stages = {
     1: 'Idea/Concept',
@@ -866,7 +779,6 @@ function getBusinessStage(answer: number): string {
   };
   return stages[answer as keyof typeof stages] || 'Unknown';
 }
-
 function getTeamIP(answer: number): string {
   const teams = {
     2: 'Solo/Small Team',
@@ -876,7 +788,6 @@ function getTeamIP(answer: number): string {
   };
   return teams[answer as keyof typeof teams] || 'Unknown';
 }
-
 function getFundingStatus(answer: number): string {
   const funding = {
     1: 'Bootstrapped',
