@@ -12,7 +12,7 @@ export const AISaasQuiz = () => {
   return (
     <AnimatedGradientBackground>
       <Navbar />
-      <main className="container mx-auto px-4 py-6 md:py-8">
+      <main className={`container mx-auto px-4 py-6 md:py-8 ${isSubmitPage ? 'mt-24' : ''}`}>
         {/* Hero Section - only show on main quiz page */}
         {!isSubmitPage && (
           <div className="text-center mb-8 max-w-4xl mx-auto mt-20">
