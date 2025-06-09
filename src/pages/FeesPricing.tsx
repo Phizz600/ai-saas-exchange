@@ -166,10 +166,7 @@ export const FeesPricing = () => {
               <a href="/list-product" className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white font-medium rounded-lg hover:opacity-90 transition-opacity">
                 List Your Product
               </a>
-              <a href="#" className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-[#8B5CF6] to-[#0EA4E9] text-white font-medium rounded-lg hover:opacity-90 transition-opacity">
-                <Crown className="mr-2 h-5 w-5" />
-                Upgrade to Pro
-              </a>
+              
             </div>
           </div>
         </motion.div>
