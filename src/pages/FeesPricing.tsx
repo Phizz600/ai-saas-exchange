@@ -160,7 +160,7 @@ export const FeesPricing = () => {
         duration: 0.8
       }}>
           <div className="p-8 rounded-xl bg-[#0EA4E9]/10 backdrop-blur-sm border border-[#0EA4E9]/20">
-            <h2 className="text-2xl font-semibold text-white mb-4 exo-2-heading">Ready to List Your AI SaaS Product?</h2>
+            <h2 className="text-2xl font-semibold text-white mb-4 exo-2-heading">Ready to List Your AI SaaS Business?</h2>
             <p className="text-white/80 mb-6">
               Join our marketplace today and connect with qualified buyers looking for innovative AI solutions like yours.
             </p>
