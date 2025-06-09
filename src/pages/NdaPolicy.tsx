@@ -18,9 +18,9 @@ export function NdaPolicy() {
       <div className="relative z-10">
         <Header />
         <main className="container mx-auto px-4 pt-32 pb-16">
-          <div className="max-w-5xl mx-auto bg-white/90 backdrop-blur-sm rounded-lg shadow-xl p-8">
+          <div className="max-w-5xl mx-auto bg-white/80 backdrop-blur-md rounded-lg shadow-xl p-8 border border-white/20">
             {/* Hero Section */}
-            <div className="relative overflow-hidden bg-gradient-to-br from-purple-50 to-indigo-50 py-12 px-6 rounded-lg mb-8">
+            <div className="relative overflow-hidden bg-gradient-to-br from-[#13293D]/10 to-[#0EA4E9]/10 backdrop-blur-sm py-12 px-6 rounded-lg mb-8 border border-white/20">
               <div className="absolute inset-0 z-0">
                 <ConfidentialWatermark text="CONFIDENTIAL" opacity={0.15} rotation={30} />
               </div>
@@ -51,12 +51,12 @@ export function NdaPolicy() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.4 }}
                 >
-                  <Button className="bg-gradient-to-r from-[#13293D] to-[#0EA4E9] hover:opacity-90 text-white px-8 py-3" asChild>
-                    <Link to="/marketplace">
+                  <a href="https://aiexchangeclub.carrd.co/" target="_blank" rel="noopener noreferrer">
+                    <Button className="bg-gradient-to-r from-[#13293D] to-[#0EA4E9] hover:opacity-90 text-white px-8 py-3">
                       <Shield className="mr-2 h-5 w-5" />
                       Browse Protected Listings
-                    </Link>
-                  </Button>
+                    </Button>
+                  </a>
                   <Button variant="outline" className="border-[#0EA4E9] text-[#0EA4E9] hover:bg-[#0EA4E9] hover:text-white px-8 py-3" asChild>
                     <Link to="/terms">
                       <FileText className="mr-2 h-5 w-5" />
