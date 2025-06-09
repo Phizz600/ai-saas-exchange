@@ -1,3 +1,4 @@
+
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
@@ -88,12 +89,12 @@ export const Navbar = () => {
   };
   const navigationItems = [{
     title: "Buy an AI Business",
-    href: isAuthenticated ? "/coming-soon" : "/auth",
+    href: "https://aiexchangeclub.carrd.co/",
     requiresAuth: false
   }, {
-    title: "AI Business Valuation",
-    href: isAuthenticated ? "/list-product" : "/auth",
-    requiresAuth: true
+    title: "Take The Valuation Quiz",
+    href: "https://aiexchange.club/ai-saas-quiz",
+    requiresAuth: false
   }, {
     title: "About",
     href: "/about",
@@ -189,24 +190,26 @@ export const Navbar = () => {
                 </SheetHeader>
                 <div className="flex flex-col gap-4 mt-8 flex-grow">
                   {navigationItems.map(item => (
-                    <Link 
+                    <a 
                       key={item.title} 
-                      to={item.href} 
-                      onClick={e => item.requiresAuth && !isAuthenticated ? handleNavigationClick(e, item.href) : null} 
+                      href={item.href}
+                      target={item.href.startsWith('http') ? "_blank" : undefined}
+                      rel={item.href.startsWith('http') ? "noopener noreferrer" : undefined}
                       className="text-black hover:text-black/80 font-exo text-lg px-4 rounded-lg hover:bg-white/10 transition-colors py-0 flex justify-between items-center"
                     >
                       <span>{item.title}</span>
-                    </Link>
+                    </a>
                   ))}
                 </div>
                 <div className="mt-auto mb-6">
-                  <Button 
-                    onClick={e => handleNavigationClick(e, "/list-product")} 
-                    className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white hover:opacity-90" 
-                    variant="secondary"
-                  >
-                    Free AI SaaS Valuation
-                  </Button>
+                  <a href="https://aiexchange.club/ai-saas-quiz" target="_blank" rel="noopener noreferrer">
+                    <Button 
+                      className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white hover:opacity-90" 
+                      variant="secondary"
+                    >
+                      Free AI SaaS Valuation
+                    </Button>
+                  </a>
                 </div>
               </SheetContent>
             </Sheet>
