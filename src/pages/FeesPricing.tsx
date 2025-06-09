@@ -161,9 +161,7 @@ export const FeesPricing = () => {
       }}>
           <div className="p-8 rounded-xl bg-[#0EA4E9]/10 backdrop-blur-sm border border-[#0EA4E9]/20">
             <h2 className="text-2xl font-semibold text-white mb-4 exo-2-heading">Ready to List Your AI SaaS Business?</h2>
-            <p className="text-white/80 mb-6">
-              Join our marketplace today and connect with qualified buyers looking for innovative AI solutions like yours.
-            </p>
+            <p className="text-white/80 mb-6">Join our community powered marketplace today and connect with qualified buyers looking for innovative AI businesses like yours.</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a href="/list-product" className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white font-medium rounded-lg hover:opacity-90 transition-opacity">
                 List Your Product
