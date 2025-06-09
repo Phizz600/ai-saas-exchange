@@ -4,97 +4,93 @@ import { Shield, Lock, FileCheck, Eye, UserCheck, AlertTriangle } from "lucide-r
 
 export const NdaFeatures = () => {
   return (
-    <div className="mt-16">
-      <h2 className="text-3xl font-bold mb-8 exo-2-heading text-white">Key Features of Our NDA System</h2>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <Card className="p-6 border-t-4 border-t-[#D946EE] bg-white/70 backdrop-blur-sm hover:bg-white/80 transition-all duration-300 shadow-lg">
+        <div className="flex items-start gap-4">
+          <div className="bg-[#D946EE]/10 p-3 rounded-full">
+            <Shield className="h-6 w-6 text-[#D946EE]" />
+          </div>
+          <div>
+            <h3 className="font-semibold text-xl mb-2 text-gray-800">IP Address Tracking</h3>
+            <p className="text-gray-700">
+              Every NDA signature is recorded with the signer's IP address, providing an additional layer 
+              of accountability and traceability.
+            </p>
+          </div>
+        </div>
+      </Card>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <Card className="p-6 border-t-4 border-t-[#D946EE] bg-white/10 backdrop-blur-sm hover:shadow-md transition-shadow">
-          <div className="flex items-start gap-4">
-            <div className="bg-[#D946EE]/10 p-3 rounded-full">
-              <Shield className="h-6 w-6 text-[#D946EE]" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-xl mb-2 text-white">IP Address Tracking</h3>
-              <p className="text-white/80">
-                Every NDA signature is recorded with the signer's IP address, providing an additional layer 
-                of accountability and traceability.
-              </p>
-            </div>
+      <Card className="p-6 border-t-4 border-t-[#8B5CF6] bg-white/70 backdrop-blur-sm hover:bg-white/80 transition-all duration-300 shadow-lg">
+        <div className="flex items-start gap-4">
+          <div className="bg-[#8B5CF6]/10 p-3 rounded-full">
+            <Lock className="h-6 w-6 text-[#8B5CF6]" />
           </div>
-        </Card>
-        
-        <Card className="p-6 border-t-4 border-t-[#8B5CF6] bg-white/10 backdrop-blur-sm hover:shadow-md transition-shadow">
-          <div className="flex items-start gap-4">
-            <div className="bg-[#8B5CF6]/10 p-3 rounded-full">
-              <Lock className="h-6 w-6 text-[#8B5CF6]" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-xl mb-2 text-white">Digital Signatures</h3>
-              <p className="text-white/80">
-                Our system uses secure digital signatures that are timestamped and legally binding in most jurisdictions.
-              </p>
-            </div>
+          <div>
+            <h3 className="font-semibold text-xl mb-2 text-gray-800">Digital Signatures</h3>
+            <p className="text-gray-700">
+              Our system uses secure digital signatures that are timestamped and legally binding in most jurisdictions.
+            </p>
           </div>
-        </Card>
-        
-        <Card className="p-6 border-t-4 border-t-[#0EA4E9] bg-white/10 backdrop-blur-sm hover:shadow-md transition-shadow">
-          <div className="flex items-start gap-4">
-            <div className="bg-[#0EA4E9]/10 p-3 rounded-full">
-              <FileCheck className="h-6 w-6 text-[#0EA4E9]" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-xl mb-2 text-white">Legal Enforceability</h3>
-              <p className="text-white/80">
-                Our NDAs are drafted by technology law specialists to ensure they are legally enforceable 
-                and provide meaningful protection.
-              </p>
-            </div>
+        </div>
+      </Card>
+      
+      <Card className="p-6 border-t-4 border-t-[#0EA4E9] bg-white/70 backdrop-blur-sm hover:bg-white/80 transition-all duration-300 shadow-lg">
+        <div className="flex items-start gap-4">
+          <div className="bg-[#0EA4E9]/10 p-3 rounded-full">
+            <FileCheck className="h-6 w-6 text-[#0EA4E9]" />
           </div>
-        </Card>
-        
-        <Card className="p-6 border-t-4 border-t-[#D946EE] bg-white/10 backdrop-blur-sm hover:shadow-md transition-shadow">
-          <div className="flex items-start gap-4">
-            <div className="bg-[#D946EE]/10 p-3 rounded-full">
-              <Eye className="h-6 w-6 text-[#D946EE]" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-xl mb-2 text-white">Access Controls</h3>
-              <p className="text-white/80">
-                Confidential information is only revealed after an NDA is signed, with clear visual indicators 
-                showing protected content.
-              </p>
-            </div>
+          <div>
+            <h3 className="font-semibold text-xl mb-2 text-gray-800">Legal Enforceability</h3>
+            <p className="text-gray-700">
+              Our NDAs are drafted by technology law specialists to ensure they are legally enforceable 
+              and provide meaningful protection.
+            </p>
           </div>
-        </Card>
-        
-        <Card className="p-6 border-t-4 border-t-[#8B5CF6] bg-white/10 backdrop-blur-sm hover:shadow-md transition-shadow">
-          <div className="flex items-start gap-4">
-            <div className="bg-[#8B5CF6]/10 p-3 rounded-full">
-              <UserCheck className="h-6 w-6 text-[#8B5CF6]" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-xl mb-2 text-white">Device Fingerprinting</h3>
-              <p className="text-white/80">
-                We capture device information at the time of signature for additional verification and security measures.
-              </p>
-            </div>
+        </div>
+      </Card>
+      
+      <Card className="p-6 border-t-4 border-t-[#D946EE] bg-white/70 backdrop-blur-sm hover:bg-white/80 transition-all duration-300 shadow-lg">
+        <div className="flex items-start gap-4">
+          <div className="bg-[#D946EE]/10 p-3 rounded-full">
+            <Eye className="h-6 w-6 text-[#D946EE]" />
           </div>
-        </Card>
-        
-        <Card className="p-6 border-t-4 border-t-[#0EA4E9] bg-white/10 backdrop-blur-sm hover:shadow-md transition-shadow">
-          <div className="flex items-start gap-4">
-            <div className="bg-[#0EA4E9]/10 p-3 rounded-full">
-              <AlertTriangle className="h-6 w-6 text-[#0EA4E9]" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-xl mb-2 text-white">Copy Protection</h3>
-              <p className="text-white/80">
-                Our platform includes technical measures to prevent unauthorized copying, printing, and sharing of confidential content.
-              </p>
-            </div>
+          <div>
+            <h3 className="font-semibold text-xl mb-2 text-gray-800">Access Controls</h3>
+            <p className="text-gray-700">
+              Confidential information is only revealed after an NDA is signed, with clear visual indicators 
+              showing protected content.
+            </p>
           </div>
-        </Card>
-      </div>
+        </div>
+      </Card>
+      
+      <Card className="p-6 border-t-4 border-t-[#8B5CF6] bg-white/70 backdrop-blur-sm hover:bg-white/80 transition-all duration-300 shadow-lg">
+        <div className="flex items-start gap-4">
+          <div className="bg-[#8B5CF6]/10 p-3 rounded-full">
+            <UserCheck className="h-6 w-6 text-[#8B5CF6]" />
+          </div>
+          <div>
+            <h3 className="font-semibold text-xl mb-2 text-gray-800">Device Fingerprinting</h3>
+            <p className="text-gray-700">
+              We capture device information at the time of signature for additional verification and security measures.
+            </p>
+          </div>
+        </div>
+      </Card>
+      
+      <Card className="p-6 border-t-4 border-t-[#0EA4E9] bg-white/70 backdrop-blur-sm hover:bg-white/80 transition-all duration-300 shadow-lg">
+        <div className="flex items-start gap-4">
+          <div className="bg-[#0EA4E9]/10 p-3 rounded-full">
+            <AlertTriangle className="h-6 w-6 text-[#0EA4E9]" />
+          </div>
+          <div>
+            <h3 className="font-semibold text-xl mb-2 text-gray-800">Copy Protection</h3>
+            <p className="text-gray-700">
+              Our platform includes technical measures to prevent unauthorized copying, printing, and sharing of confidential content.
+            </p>
+          </div>
+        </div>
+      </Card>
     </div>
   );
 };
