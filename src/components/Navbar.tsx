@@ -1,4 +1,3 @@
-
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
@@ -9,7 +8,6 @@ import { useToast } from "@/hooks/use-toast";
 import { getUnreadMessagesCount } from "@/integrations/supabase/messages";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-
 export const Navbar = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -117,68 +115,35 @@ export const Navbar = () => {
     title: "Fees & Pricing",
     href: "/fees-pricing"
   }];
-  return (
-    <nav className="w-full absolute z-10 py-0">
+  return <nav className="w-full absolute z-10 py-0">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-24">
           <Link to="/" className="flex items-center">
-            <img 
-              src="/lovable-uploads/0283f7d5-13a6-40c9-b40a-69868474cec9.png" 
-              alt="AI Exchange Club" 
-              className="h-32 w-auto rounded-none"
-            />
+            <img src="/lovable-uploads/0283f7d5-13a6-40c9-b40a-69868474cec9.png" alt="AI Exchange Club" className="h-32 w-auto rounded-none" />
           </Link>
 
           <div className="flex items-center gap-2">
             
 
-            {!isAuthenticated ? (
-              <Link to="/auth">
-                <Button 
-                  variant="secondary" 
-                  className="bg-white/20 hover:bg-white/30 backdrop-blur-sm" 
-                  size="icon"
-                >
-                  <UserPlus className="h-5 w-5" />
-                </Button>
-              </Link>
-            ) : (
-              <>
+            {!isAuthenticated ? <Link to="/auth">
+                
+              </Link> : <>
                 <Link to="/messages" className="relative">
-                  <Button 
-                    variant="secondary" 
-                    className="bg-white/20 hover:bg-white/30 backdrop-blur-sm" 
-                    size="icon"
-                  >
+                  <Button variant="secondary" className="bg-white/20 hover:bg-white/30 backdrop-blur-sm" size="icon">
                     <FileText className="h-5 w-5" />
                   </Button>
-                  {unreadCount > 0 && (
-                    <Badge 
-                      variant="destructive" 
-                      className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0"
-                    >
+                  {unreadCount > 0 && <Badge variant="destructive" className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0">
                       {unreadCount > 9 ? '9+' : unreadCount}
-                    </Badge>
-                  )}
+                    </Badge>}
                 </Link>
-                <Button 
-                  variant="secondary" 
-                  className="bg-white/20 hover:bg-white/30 backdrop-blur-sm" 
-                  onClick={handleSignOut} 
-                  size="icon"
-                >
+                <Button variant="secondary" className="bg-white/20 hover:bg-white/30 backdrop-blur-sm" onClick={handleSignOut} size="icon">
                   <LogOut className="h-5 w-5" />
                 </Button>
-              </>
-            )}
+              </>}
 
             <Sheet>
               <SheetTrigger asChild>
-                <Button 
-                  variant="secondary" 
-                  className="bg-white/20 hover:bg-white/30 backdrop-blur-sm" 
-                  size="icon"
-                >
+                <Button variant="secondary" className="bg-white/20 hover:bg-white/30 backdrop-blur-sm" size="icon">
                   <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>
@@ -189,24 +154,13 @@ export const Navbar = () => {
                   </div>
                 </SheetHeader>
                 <div className="flex flex-col gap-4 mt-8 flex-grow">
-                  {navigationItems.map(item => (
-                    <a 
-                      key={item.title} 
-                      href={item.href}
-                      target={item.href.startsWith('http') ? "_blank" : undefined}
-                      rel={item.href.startsWith('http') ? "noopener noreferrer" : undefined}
-                      className="text-black hover:text-black/80 font-exo text-lg px-4 rounded-lg hover:bg-white/10 transition-colors py-0 flex justify-between items-center"
-                    >
+                  {navigationItems.map(item => <a key={item.title} href={item.href} target={item.href.startsWith('http') ? "_blank" : undefined} rel={item.href.startsWith('http') ? "noopener noreferrer" : undefined} className="text-black hover:text-black/80 font-exo text-lg px-4 rounded-lg hover:bg-white/10 transition-colors py-0 flex justify-between items-center">
                       <span>{item.title}</span>
-                    </a>
-                  ))}
+                    </a>)}
                 </div>
                 <div className="mt-auto mb-6">
                   <a href="https://aiexchange.club/ai-saas-quiz" target="_blank" rel="noopener noreferrer">
-                    <Button 
-                      className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white hover:opacity-90" 
-                      variant="secondary"
-                    >
+                    <Button className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white hover:opacity-90" variant="secondary">
                       Free AI SaaS Valuation
                     </Button>
                   </a>
@@ -216,6 +170,5 @@ export const Navbar = () => {
           </div>
         </div>
       </div>
-    </nav>
-  );
+    </nav>;
 };
