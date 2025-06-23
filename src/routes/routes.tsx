@@ -1,3 +1,4 @@
+
 import Auth from "@/pages/Auth";
 import { Profile } from "@/pages/Profile";
 import { ProductDashboard } from "@/pages/ProductDashboard";
@@ -19,6 +20,7 @@ import { ListingThankYou } from "@/pages/ListingThankYou";
 import { Contact } from "@/pages/Contact";
 import { AISaasQuiz } from "@/pages/AISaasQuiz";
 import { FeesPricing } from "@/pages/FeesPricing";
+import { BuyerMatchingQuiz } from "@/pages/BuyerMatchingQuiz";
 
 const routes = [
   {
@@ -32,6 +34,10 @@ const routes = [
   {
     path: "/ai-saas-quiz/submit",
     element: <AISaasQuiz />,
+  },
+  {
+    path: "/buyer-matching-quiz",
+    element: <BuyerMatchingQuiz />,
   },
   {
     path: "/auth",
