@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Form, FormField, FormItem, FormControl } from "@/components/ui/form";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -261,12 +260,11 @@ export const BuyerMatchingQuestionnaire = ({
   };
 
   if (hasCompletedQuestionnaire) {
-    const bgClass = variant === "comingSoon" ? "bg-white/90 backdrop-blur-sm" : "";
     return (
-      <Card className={`p-6 text-center ${bgClass} ${className}`}>
+      <Card className={`glass p-6 text-center ${className}`}>
         <div className="flex flex-col items-center space-y-4">
-          <h3 className="text-2xl font-semibold mb-2 exo-2-heading">Perfect! You're all set!</h3>
-          <p className="text-gray-600 mb-6">
+          <h3 className="text-2xl font-semibold mb-2 exo-2-heading text-white">Perfect! You're all set!</h3>
+          <p className="text-white/80 mb-6">
             We'll analyze the marketplace and notify you when AI businesses match your criteria.
           </p>
           
@@ -279,7 +277,7 @@ export const BuyerMatchingQuestionnaire = ({
               </a>
             </div>
 
-            <div className="text-sm text-gray-600">
+            <div className="text-sm text-white/80">
               ✓ Get notified of matches &nbsp; • &nbsp; 
               ✓ Market insights &nbsp; • &nbsp; 
               ✓ Exclusive opportunities
@@ -291,12 +289,11 @@ export const BuyerMatchingQuestionnaire = ({
   }
 
   if (!showQuestionnaire) {
-    const bgClass = variant === "comingSoon" ? "bg-white/90 backdrop-blur-sm" : "";
     return (
-      <Card className={`p-6 text-center ${bgClass} ${className}`}>
+      <Card className={`glass p-6 text-center ${className}`}>
         <div className="flex flex-col items-center space-y-4">
-          <h3 className="text-2xl font-semibold mb-2 exo-2-heading">Find Your Perfect AI Investment</h3>
-          <p className="text-gray-600">
+          <h3 className="text-2xl font-semibold mb-2 exo-2-heading text-white">Find Your Perfect AI Investment</h3>
+          <p className="text-white/80">
             Answer 8 quick questions to get matched with AI businesses that fit your investment criteria.
           </p>
           <Button 
@@ -312,10 +309,9 @@ export const BuyerMatchingQuestionnaire = ({
 
   const currentQ = buyerMatchingQuestions[currentQuestion];
   const Icon = currentQ.icon;
-  const bgClass = variant === "comingSoon" ? "bg-white/90 backdrop-blur-sm" : "";
 
   return (
-    <Card className={`p-6 max-w-2xl mx-auto ${bgClass} ${className}`}>
+    <Card className={`glass p-6 max-w-2xl mx-auto ${className}`}>
       <div className="space-y-6">
         <div className="text-center space-y-2">
           <div className="flex justify-center mb-4">
@@ -323,8 +319,8 @@ export const BuyerMatchingQuestionnaire = ({
               <Icon className="h-6 w-6 text-white" />
             </div>
           </div>
-          <h3 className="text-2xl font-semibold mb-2 exo-2-heading">{currentQ.question}</h3>
-          <p className="text-gray-600">{currentQ.description}</p>
+          <h3 className="text-2xl font-semibold mb-2 exo-2-heading text-white">{currentQ.question}</h3>
+          <p className="text-white/80">{currentQ.description}</p>
         </div>
         
         <Form {...form}>
@@ -350,7 +346,7 @@ export const BuyerMatchingQuestionnaire = ({
                         />
                         <Label 
                           htmlFor={option.value}
-                          className="flex flex-col items-center justify-center p-4 border-2 rounded-lg cursor-pointer hover:bg-gray-50 peer-checked:border-[#8B5CF6] peer-checked:bg-purple-50 transition-all duration-300"
+                          className="flex flex-col items-center justify-center p-4 border-2 border-white/20 rounded-lg cursor-pointer hover:bg-white/10 peer-checked:border-[#8B5CF6] peer-checked:bg-white/20 transition-all duration-300 text-white"
                         >
                           <span className="font-medium">{option.label}</span>
                         </Label>
@@ -363,17 +359,17 @@ export const BuyerMatchingQuestionnaire = ({
           />
         </Form>
 
-        <div className="flex justify-between items-center pt-4 border-t">
+        <div className="flex justify-between items-center pt-4 border-t border-white/20">
           <Button 
             variant="outline" 
             onClick={handlePreviousQuestion} 
             disabled={currentQuestion === 0}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 border-white/20 text-white hover:bg-white/10"
           >
             <ChevronLeft className="h-4 w-4" />
             Previous
           </Button>
-          <div className="text-sm text-gray-500">
+          <div className="text-sm text-white/80">
             Question {currentQuestion + 1} of {buyerMatchingQuestions.length}
           </div>
           <Button 
