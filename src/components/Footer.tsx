@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
@@ -90,6 +91,11 @@ export const Footer = () => {
               <li className="text-center md:text-left">
                 <Link to="/ai-saas-quiz" className="text-white/80 hover:text-white inline-flex items-center gap-2">
                   Free AI SaaS Valuation
+                </Link>
+              </li>
+              <li className="text-center md:text-left">
+                <Link to="/buyer-matching-quiz" className="text-white/80 hover:text-white">
+                  Buyer Matching Quiz
                 </Link>
               </li>
               <li className="text-center md:text-left">
