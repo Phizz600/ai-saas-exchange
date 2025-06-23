@@ -2,6 +2,7 @@
 import { Navbar } from "@/components/Navbar";
 import { Star, Trophy, Lightbulb } from "lucide-react";
 import AnimatedGradientBackground from "@/components/ui/AnimatedGradientBackground";
+import { BuyerMatchingQuestionnaire } from "@/components/buyer/BuyerMatchingQuestionnaire";
 
 export const BuyerMatchingQuiz = () => {
   return (
@@ -16,16 +17,12 @@ export const BuyerMatchingQuiz = () => {
           </div>
         </div>
 
-        {/* Quiz Section Placeholder */}
+        {/* Quiz Section */}
         <div className="mb-12">
-          <div className="glass max-w-2xl mx-auto p-8 rounded-xl">
-            <div className="text-center space-y-4">
-              <h2 className="text-2xl font-bold text-white">Coming Soon</h2>
-              <p className="text-white/80">
-                Our buyer matching quiz is currently under development. Soon you'll be able to specify your investment preferences and get matched with perfect AI SaaS opportunities.
-              </p>
-            </div>
-          </div>
+          <BuyerMatchingQuestionnaire 
+            variant="comingSoon"
+            className="max-w-2xl mx-auto"
+          />
         </div>
 
         {/* Trust Indicators */}
