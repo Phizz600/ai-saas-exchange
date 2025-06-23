@@ -1,59 +1,67 @@
 
-import { Routes, Route } from "react-router-dom";
-import { Index } from "@/pages/Index";
-import { Marketplace } from "@/pages/Marketplace";
-import { Auth } from "@/pages/Auth";
-import { Profile } from "@/pages/Profile";
-import { ProductPage } from "@/pages/ProductPage";
-import { About } from "@/pages/About";
-import { Contact } from "@/pages/Contact";
-import { Messages } from "@/pages/Messages";
-import { MessageChat } from "@/pages/MessageChat";
-import { ListProduct } from "@/pages/ListProduct";
-import { ProductDashboard } from "@/pages/ProductDashboard";
-import { Settings } from "@/pages/Settings";
-import { Admin } from "@/pages/Admin";
-import { Terms } from "@/pages/Terms";
-import { Policies } from "@/pages/Policies";
-import { NdaPolicy } from "@/pages/NdaPolicy";
-import { FeesPricing } from "@/pages/FeesPricing";
-import { AISaasQuiz } from "@/pages/AISaasQuiz";
-import { BuyerMatchingQuiz } from "@/pages/BuyerMatchingQuiz";
-import { FAQ } from "@/pages/FAQ";
-import { ResolutionCenter } from "@/pages/ResolutionCenter";
-import { ListingThankYou } from "@/pages/ListingThankYou";
-import { ComingSoon } from "@/pages/ComingSoon";
-import { Diagnostics } from "@/pages/Diagnostics";
+import { Suspense, lazy } from "react";
+import { Routes, Route, useNavigate } from "react-router-dom";
+import routes from "./routes";
+import { Button } from "@/components/ui/button";
+import { RefreshCw, Home } from "lucide-react";
 
-export const RouteProvider = () => {
+// Error boundary fallback
+const ErrorFallback = () => {
+  const navigate = useNavigate();
+  
   return (
-    <Routes>
-      <Route path="/" element={<Index />} />
-      <Route path="/marketplace" element={<Marketplace />} />
-      <Route path="/auth" element={<Auth />} />
-      <Route path="/profile" element={<Profile />} />
-      <Route path="/product/:id" element={<ProductPage />} />
-      <Route path="/about" element={<About />} />
-      <Route path="/contact" element={<Contact />} />
-      <Route path="/messages" element={<Messages />} />
-      <Route path="/messages/:conversationId" element={<MessageChat />} />
-      <Route path="/list-product" element={<ListProduct />} />
-      <Route path="/dashboard" element={<ProductDashboard />} />
-      <Route path="/settings" element={<Settings />} />
-      <Route path="/admin" element={<Admin />} />
-      <Route path="/terms" element={<Terms />} />
-      <Route path="/policies" element={<Policies />} />
-      <Route path="/nda-policy" element={<NdaPolicy />} />
-      <Route path="/fees-pricing" element={<FeesPricing />} />
-      <Route path="/ai-saas-quiz" element={<AISaasQuiz />} />
-      <Route path="/ai-saas-quiz/submit" element={<AISaasQuiz />} />
-      <Route path="/buyer-matching-quiz" element={<BuyerMatchingQuiz />} />
-      <Route path="/buyer-matching-quiz/submit" element={<BuyerMatchingQuiz />} />
-      <Route path="/faq" element={<FAQ />} />
-      <Route path="/resolution-center" element={<ResolutionCenter />} />
-      <Route path="/listing-thank-you" element={<ListingThankYou />} />
-      <Route path="/coming-soon" element={<ComingSoon />} />
-      <Route path="/diagnostics" element={<Diagnostics />} />
-    </Routes>
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gray-50">
+      <div className="bg-white rounded-lg shadow-md p-8 max-w-md w-full text-center">
+        <h2 className="text-2xl font-bold text-gray-900 mb-4 exo-2-heading">Something went wrong</h2>
+        <p className="text-gray-600 mb-6">We're having trouble loading this page. Please try again or return to the home page.</p>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Button onClick={() => window.location.reload()} className="flex items-center gap-2 bg-gradient-to-r from-[#D946EE] to-[#8B5CF6]">
+            <RefreshCw size={16} />
+            Refresh page
+          </Button>
+          <Button variant="outline" onClick={() => navigate('/')} className="flex items-center gap-2">
+            <Home size={16} />
+            Go to home
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 };
+
+// Loading indicator with brand colors
+const LoadingIndicator = () => (
+  <div className="min-h-screen flex items-center justify-center">
+    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#8B5CF6]"></div>
+  </div>
+);
+
+export function RouteProvider() {
+  return (
+    <Suspense fallback={<LoadingIndicator />}>
+      <Routes>
+        {routes.map((route) => (
+          <Route 
+            key={route.path} 
+            path={route.path} 
+            element={route.element}
+            errorElement={<ErrorFallback />}
+          />
+        ))}
+        {/* Catch-all route for 404 pages */}
+        <Route 
+          path="*" 
+          element={
+            <div className="min-h-screen flex flex-col items-center justify-center p-4">
+              <h1 className="text-3xl font-bold mb-4 exo-2-heading">Page Not Found</h1>
+              <p className="text-gray-600 mb-6">The page you're looking for doesn't exist or has been moved.</p>
+              <Button onClick={() => window.location.href = '/'} className="bg-gradient-to-r from-[#D946EE] to-[#8B5CF6]">
+                Return to Home
+              </Button>
+            </div>
+          }
+        />
+      </Routes>
+    </Suspense>
+  );
+}
