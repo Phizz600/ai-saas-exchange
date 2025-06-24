@@ -64,7 +64,7 @@ export const BuyerMatchingQuiz = () => {
                   <div className="w-2 h-2 bg-[#8B5CF6] rounded-full mt-2"></div>
                   <div>
                     <h4 className="text-white font-semibold">Instant Slack Notifications</h4>
-                    <p className="text-white/80 text-sm">Get notified immediately when new listings match your investment profile</p>
+                    <p className="text-white/80 text-sm">Instant notifications when a deal fits your exact investment criteria</p>
                   </div>
                 </div>
               </div>
