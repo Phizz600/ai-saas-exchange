@@ -38,7 +38,7 @@ export const BuyerMatchingQuiz = () => {
           <div className="glass p-4 text-center sm:col-span-2 md:col-span-1">
             <Bell className="h-6 w-6 text-[#0EA4E9] mx-auto mb-2" />
             <h3 className="text-white font-semibold mb-1 text-sm md:text-base">Slack Notifications</h3>
-            <p className="text-xs md:text-sm text-white/80">Matches delivered instantly to your #buyer-matches Slack channel</p>
+            <p className="text-xs md:text-sm text-white/80">Real-time deal alerts delivered to your private #buyer-matches channel</p>
           </div>
         </div>
 
