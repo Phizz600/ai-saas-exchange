@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Form, FormField, FormItem, FormControl } from "@/components/ui/form";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -136,13 +137,16 @@ export const BuyerMatchingQuestionnaire = ({
 }: BuyerMatchingQuestionnaireProps) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [hasCompletedQuestionnaire, setHasCompletedQuestionnaire] = useState(false);
-  const [showQuestionnaire, setShowQuestionnaire] = useState(false);
-  const [progress] = useState(80);
+  const [currentAnswer, setCurrentAnswer] = useState<string>("");
   const form = useForm();
   const { toast } = useToast();
 
-  const handleOptionSelect = async (value: string) => {
-    const currentAnswer = value;
+  const handleOptionSelect = (value: string) => {
+    setCurrentAnswer(value);
+    form.setValue(`question_${currentQuestion}`, value);
+  };
+
+  const handleNext = async () => {
     if (!currentAnswer) return;
 
     const questionData = buyerMatchingQuestions[currentQuestion];
@@ -195,6 +199,12 @@ export const BuyerMatchingQuestionnaire = ({
           title: "Profile Complete!",
           description: "Your buyer profile has been successfully saved."
         });
+        setHasCompletedQuestionnaire(true);
+        if (onComplete) onComplete();
+      } else {
+        setCurrentQuestion(currentQuestion + 1);
+        setCurrentAnswer("");
+        form.setValue(`question_${currentQuestion + 1}`, "");
       }
     } catch (error) {
       console.error("Error saving preferences:", error);
@@ -204,16 +214,14 @@ export const BuyerMatchingQuestionnaire = ({
         description: "Failed to save your preferences. Please try again."
       });
     }
+  };
 
-    setTimeout(() => {
-      if (currentQuestion < buyerMatchingQuestions.length - 1) {
-        setCurrentQuestion(currentQuestion + 1);
-      } else {
-        setHasCompletedQuestionnaire(true);
-        setShowQuestionnaire(false);
-        if (onComplete) onComplete();
-      }
-    }, 500);
+  const handlePrevious = () => {
+    if (currentQuestion > 0) {
+      setCurrentQuestion(currentQuestion - 1);
+      setCurrentAnswer("");
+      form.setValue(`question_${currentQuestion - 1}`, "");
+    }
   };
 
   useEffect(() => {
@@ -253,12 +261,6 @@ export const BuyerMatchingQuestionnaire = ({
     loadSavedProgress();
   }, []);
 
-  const handlePreviousQuestion = () => {
-    if (currentQuestion > 0) {
-      setCurrentQuestion(currentQuestion - 1);
-    }
-  };
-
   if (hasCompletedQuestionnaire) {
     return (
       <Card className={`glass p-6 text-center ${className}`}>
@@ -288,25 +290,6 @@ export const BuyerMatchingQuestionnaire = ({
     );
   }
 
-  if (!showQuestionnaire) {
-    return (
-      <Card className={`glass p-6 text-center ${className}`}>
-        <div className="flex flex-col items-center space-y-4">
-          <h3 className="text-2xl font-semibold mb-2 exo-2-heading text-white">Find Your Perfect AI Investment</h3>
-          <p className="text-white/80">
-            Answer 8 quick questions to get matched with AI businesses that fit your investment criteria.
-          </p>
-          <Button 
-            onClick={() => setShowQuestionnaire(true)} 
-            className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 transition-opacity"
-          >
-            Start Matching Quiz
-          </Button>
-        </div>
-      </Card>
-    );
-  }
-
   const currentQ = buyerMatchingQuestions[currentQuestion];
   const Icon = currentQ.icon;
 
@@ -330,11 +313,8 @@ export const BuyerMatchingQuestionnaire = ({
               <FormItem className="space-y-3">
                 <FormControl>
                   <RadioGroup
-                    onValueChange={(value) => {
-                      field.onChange(value);
-                      handleOptionSelect(value);
-                    }}
-                    defaultValue={field.value}
+                    onValueChange={handleOptionSelect}
+                    value={currentAnswer}
                     className="grid grid-cols-1 md:grid-cols-2 gap-4"
                   >
                     {currentQ.options.map((option) => (
@@ -360,24 +340,24 @@ export const BuyerMatchingQuestionnaire = ({
         </Form>
 
         <div className="flex justify-between items-center pt-4 border-t border-white/20">
-          <Button 
-            variant="outline" 
-            onClick={handlePreviousQuestion} 
-            disabled={currentQuestion === 0}
-            className="flex items-center gap-2 border-white/20 text-white hover:bg-white/10"
-          >
-            <ChevronLeft className="h-4 w-4" />
-            Previous
-          </Button>
+          {currentQuestion > 0 ? (
+            <Button 
+              variant="outline" 
+              onClick={handlePrevious}
+              className="flex items-center gap-2 border-white/20 text-white bg-transparent hover:bg-transparent hover:border-white/20"
+            >
+              <ChevronLeft className="h-4 w-4" />
+              Previous
+            </Button>
+          ) : (
+            <div></div>
+          )}
           <div className="text-sm text-white/80">
             Question {currentQuestion + 1} of {buyerMatchingQuestions.length}
           </div>
           <Button 
-            onClick={() => {
-              const currentAnswer = form.getValues(`question_${currentQuestion}`);
-              if (currentAnswer) handleOptionSelect(currentAnswer);
-            }}
-            disabled={!form.getValues(`question_${currentQuestion}`)}
+            onClick={handleNext}
+            disabled={!currentAnswer}
             className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 transition-opacity flex items-center gap-2"
           >
             {currentQuestion === buyerMatchingQuestions.length - 1 ? "Finish" : "Next"}
