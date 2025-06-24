@@ -1,28 +1,22 @@
-
 import { Navbar } from "@/components/Navbar";
 import { Slack, Trophy, Bell } from "lucide-react";
 import AnimatedGradientBackground from "@/components/ui/AnimatedGradientBackground";
 import { BuyerMatchingQuestionnaire } from "@/components/buyer/BuyerMatchingQuestionnaire";
-
 export const BuyerMatchingQuiz = () => {
-  return (
-    <AnimatedGradientBackground>
+  return <AnimatedGradientBackground>
       <Navbar />
       <main className="container mx-auto px-4 py-6 md:py-8">
         {/* Hero Section */}
         <div className="text-center mb-8 max-w-4xl mx-auto mt-20">
           <div className="space-y-4">
-            <h1 className="exo-2-heading text-4xl md:text-5xl text-white leading-tight">Find Your Perfect AI Business!</h1>
-            <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto">🎯 Get Matched with AI SaaS Businesses That Meet Your Investment Criteria - Receive Your Matches Directly in Our Private Slack Community.</p>
+            <h1 className="exo-2-heading text-4xl md:text-5xl text-white leading-tight">Get Matched with AI SaaS Businesses</h1>
+            <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto">🎯 Match with AI SaaS Businesses That Meet Your Investment Criteria - Receive Your Matches Delivered Directly in the AI Exchange Club Private Slack Community.</p>
           </div>
         </div>
 
         {/* Quiz Section */}
         <div className="mb-12">
-          <BuyerMatchingQuestionnaire 
-            variant="comingSoon"
-            className="max-w-2xl mx-auto"
-          />
+          <BuyerMatchingQuestionnaire variant="comingSoon" className="max-w-2xl mx-auto" />
         </div>
 
         {/* Trust Indicators */}
@@ -101,8 +95,6 @@ export const BuyerMatchingQuiz = () => {
           <p className="text-white/80 text-sm md:text-base mb-4">Join 500+ active buyers in our exclusive Slack community</p>
         </div>
       </main>
-    </AnimatedGradientBackground>
-  );
+    </AnimatedGradientBackground>;
 };
-
 export default BuyerMatchingQuiz;
