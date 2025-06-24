@@ -311,9 +311,7 @@ export const BuyerMatchingQuestionnaire = ({
           <div className="max-w-xl mx-auto space-y-6">
             <div className="flex justify-center">
               <a href="https://aiexchangeclub.beehiiv.com/subscribe" target="_blank" rel="noopener noreferrer" className="w-full">
-                <Button className="w-full bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] hover:opacity-90 text-white">
-                  Get Your Slack Community Invite
-                </Button>
+                <Button className="w-full bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] hover:opacity-90 text-white">Join the Private Slack Now</Button>
               </a>
             </div>
 
