@@ -267,22 +267,22 @@ export const BuyerMatchingQuestionnaire = ({
         <div className="flex flex-col items-center space-y-4">
           <h3 className="text-2xl font-semibold mb-2 exo-2-heading text-white">Perfect! You're all set!</h3>
           <p className="text-white/80 mb-6">
-            We'll analyze the marketplace and notify you when AI businesses match your criteria.
+            We'll start matching you with AI businesses and deliver them directly to your Slack #buyer-matches channel.
           </p>
           
           <div className="max-w-xl mx-auto space-y-6">
             <div className="flex justify-center">
               <a href="https://aiexchangeclub.beehiiv.com/subscribe" target="_blank" rel="noopener noreferrer" className="w-full">
                 <Button className="w-full bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] hover:opacity-90 text-white">
-                  Join The AI Exchange Club Newsletter
+                  Get Your Slack Community Invite
                 </Button>
               </a>
             </div>
 
             <div className="text-sm text-white/80">
-              ✓ Get notified of matches &nbsp; • &nbsp; 
-              ✓ Market insights &nbsp; • &nbsp; 
-              ✓ Exclusive opportunities
+              ✓ Instant access to #buyer-matches &nbsp; • &nbsp; 
+              ✓ Real-time notifications &nbsp; • &nbsp; 
+              ✓ Exclusive buyer community
             </div>
           </div>
         </div>
