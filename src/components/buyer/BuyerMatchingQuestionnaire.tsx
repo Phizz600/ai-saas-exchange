@@ -326,7 +326,11 @@ export const BuyerMatchingQuestionnaire = ({
                         />
                         <Label 
                           htmlFor={option.value}
-                          className="flex flex-col items-center justify-center p-4 border-2 border-white/20 rounded-lg cursor-pointer hover:bg-white/10 peer-checked:border-[#8B5CF6] peer-checked:bg-white/20 transition-all duration-300 text-white"
+                          className={`flex flex-col items-center justify-center p-4 border-2 rounded-lg cursor-pointer transition-all duration-300 text-white ${
+                            currentAnswer === option.value 
+                              ? 'border-[#8B5CF6] bg-[#8B5CF6]/20' 
+                              : 'border-white/20 hover:bg-white/10'
+                          }`}
                         >
                           <span className="font-medium">{option.label}</span>
                         </Label>
@@ -344,7 +348,7 @@ export const BuyerMatchingQuestionnaire = ({
             <Button 
               variant="outline" 
               onClick={handlePrevious}
-              className="flex items-center gap-2 border-white/20 text-white bg-transparent hover:bg-transparent hover:border-white/20"
+              className="flex items-center gap-2 border-white/20 text-white bg-transparent hover:bg-white/10 hover:border-white/30"
             >
               <ChevronLeft className="h-4 w-4" />
               Previous
