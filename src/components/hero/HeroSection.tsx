@@ -73,7 +73,7 @@ const HeroSection = ({
           opacity: 1
         }} transition={{
           duration: 0.3
-        }} className="text-xl text-gray-200 mb-12 max-w-2xl mx-auto text-center">Join a curated network of investors and founders buying and selling revenue-generating AI-Powered SaaS businesses — all managed through our secure, private Slack workspace.</motion.p>
+        }} className="text-xl text-gray-200 mb-12 max-w-2xl mx-auto text-center">Join a curated network of investors and founders buying and selling revenue-generating AI-Powered SaaS businesses — managed through our secure, private Slack workspace.</motion.p>
 
           {/* Button Row - Updated with rearranged buttons */}
           <div className="flex flex-col items-center gap-4 justify-center">
