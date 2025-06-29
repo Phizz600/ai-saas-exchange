@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import AnimatedGradientBackground from "@/components/ui/AnimatedGradientBackground";
 
 export const ListingThankYou = () => {
   const [queueNumber, setQueueNumber] = useState(0);
@@ -119,7 +120,7 @@ export const ListingThankYou = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#9b87f5] via-[#D946EF] to-[#0EA5E9]">
+    <AnimatedGradientBackground>
       <div className="container mx-auto px-4 py-4 sm:py-8">
         <div className="max-w-3xl mx-auto space-y-6 sm:space-y-8 bg-white/90 rounded-xl shadow-xl p-4 sm:p-8 backdrop-blur-sm">
           <div className="flex flex-col items-center space-y-4 sm:space-y-6">
@@ -316,6 +317,6 @@ export const ListingThankYou = () => {
           </div>
         </div>
       </div>
-    </div>
+    </AnimatedGradientBackground>
   );
 }
