@@ -1,8 +1,7 @@
-
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Home, Users, Timer, Youtube, Twitter, Instagram, Rss, MousePointerClick, AlertCircle, CheckCircle } from "lucide-react";
+import { Home, Users, Timer, Youtube, Twitter, Instagram, Rss, MousePointerClick, AlertCircle, CheckCircle, Clock, Mail, FileText } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
@@ -136,9 +135,95 @@ export const ListingThankYou = () => {
             </h1>
 
             <div className="space-y-4 text-center max-w-xl px-2">
-              <p className="text-base sm:text-lg text-gray-700">
-                Your AI product has been successfully submitted and is now under review for approval. Our marketplace is launching soon, and we'll notify you as soon as we go live!
+              <p className="text-base sm:text-lg text-gray-700 font-medium">
+                Thank you for listing your AI SaaS business on AI Exchange Club! You're in good hands! Here's what happens next:
               </p>
+            </div>
+
+            {/* What Happens Next Section */}
+            <div className="w-full max-w-2xl bg-white rounded-lg shadow-md p-6 border border-purple-100">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-6 text-center">What Happens Next</h2>
+              
+              <div className="space-y-6">
+                {/* Step 1: Review Process */}
+                <div className="flex items-start space-x-4">
+                  <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] rounded-full flex items-center justify-center text-white font-bold">
+                    1
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-lg text-gray-800 mb-2 flex items-center">
+                      <Clock className="w-5 h-5 mr-2 text-[#8B5CF6]" />
+                      Review Process
+                    </h3>
+                    <p className="text-gray-600 mb-2">
+                      Our team will vet your submission within 24-48 hours.
+                    </p>
+                    <p className="text-gray-600">
+                      You'll get an approval or rejection email. Be on the lookout.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Step 2: Buyer Outreach */}
+                <div className="flex items-start space-x-4">
+                  <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] rounded-full flex items-center justify-center text-white font-bold">
+                    2
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-lg text-gray-800 mb-2 flex items-center">
+                      <Users className="w-5 h-5 mr-2 text-[#8B5CF6]" />
+                      Buyer Outreach
+                    </h3>
+                    <p className="text-gray-600 mb-2">
+                      If approved, we'll notify our Premium Buyer Network.
+                    </p>
+                    <p className="text-gray-600">
+                      Buyers will contact you via your email (keep an eye out!).
+                    </p>
+                  </div>
+                </div>
+
+                {/* Step 3: Prepare for Due Diligence */}
+                <div className="flex items-start space-x-4">
+                  <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] rounded-full flex items-center justify-center text-white font-bold">
+                    3
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-lg text-gray-800 mb-2 flex items-center">
+                      <FileText className="w-5 h-5 mr-2 text-[#8B5CF6]" />
+                      Prepare for Due Diligence
+                    </h3>
+                    <p className="text-gray-600 mb-3">
+                      Gather: Revenue proof, traffic proof, tech docs, and demo access.
+                    </p>
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                      <p className="text-blue-800 text-sm font-medium">
+                        💡 Pro tip: Record a 2-min Loom walkthrough for serious buyers.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Closing Message */}
+              <div className="mt-6 pt-6 border-t border-gray-200 text-center">
+                <p className="text-lg font-medium text-gray-800 mb-2">
+                  We're excited to help you sell! 🚀
+                </p>
+                <p className="text-gray-600 flex items-center justify-center">
+                  <Mail className="w-4 h-4 mr-2 text-[#8B5CF6]" />
+                  Questions? Reach me at{" "}
+                  <a 
+                    href="mailto:aiexchangeclub@gmail.com" 
+                    className="text-[#8B5CF6] hover:text-[#D946EF] font-medium ml-1"
+                  >
+                    aiexchangeclub@gmail.com
+                  </a>
+                </p>
+                <p className="text-gray-500 text-sm mt-2 font-medium">
+                  — The AI Exchange Club
+                </p>
+              </div>
             </div>
             
             {loadingMessage && (
