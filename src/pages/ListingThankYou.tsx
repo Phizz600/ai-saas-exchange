@@ -214,10 +214,10 @@ export const ListingThankYou = () => {
                   <Mail className="w-4 h-4 mr-2 text-[#8B5CF6]" />
                   Questions? Reach me at{" "}
                   <a 
-                    href="mailto:aiexchangeclub@gmail.com" 
+                    href="mailto:support@aiexchange.club" 
                     className="text-[#8B5CF6] hover:text-[#D946EF] font-medium ml-1"
                   >
-                    aiexchangeclub@gmail.com
+                    support@aiexchange.club
                   </a>
                 </p>
                 <p className="text-gray-500 text-sm mt-2 font-medium">
@@ -225,54 +225,6 @@ export const ListingThankYou = () => {
                 </p>
               </div>
             </div>
-            
-            {loadingMessage && (
-              <Alert className="w-full max-w-md">
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500 mr-2"></div>
-                <AlertTitle>{loadingMessage}</AlertTitle>
-                <AlertDescription>
-                  Please wait while we process your information...
-                </AlertDescription>
-              </Alert>
-            )}
-            
-            {isProcessing && (
-              <Alert className="w-full max-w-md">
-                <CheckCircle className="h-5 w-5 text-blue-500 animate-pulse" />
-                <AlertTitle>Processing Payment</AlertTitle>
-                <AlertDescription>
-                  We're confirming your payment status. This may take a moment...
-                </AlertDescription>
-              </Alert>
-            )}
-            
-            {(paymentNeeded || (!isPaid && !isProcessing && !loadingMessage)) && (
-              <Alert variant="destructive" className="w-full max-w-md">
-                <AlertCircle className="h-5 w-5" />
-                <AlertTitle>Payment Required</AlertTitle>
-                <AlertDescription className="space-y-2">
-                  <p>
-                    Please complete your payment to finalize your listing. If you were redirected from payment and see this message, please contact support.
-                  </p>
-                  <Button 
-                    onClick={retryPayment}
-                    className="mt-3 bg-gradient-to-r from-[#8B5CF6] to-[#D946EF]"
-                  >
-                    Complete Payment
-                  </Button>
-                </AlertDescription>
-              </Alert>
-            )}
-
-            {isPaid && !isProcessing && !loadingMessage && (
-              <Alert className="w-full max-w-md bg-green-50 border-green-200">
-                <CheckCircle className="h-5 w-5 text-green-500" />
-                <AlertTitle>Payment Successful</AlertTitle>
-                <AlertDescription>
-                  Thank you for your payment! Your listing is now complete and will be reviewed by our team.
-                </AlertDescription>
-              </Alert>
-            )}
             
             <div className="space-y-4 text-center max-w-xl px-2">
               <p className="text-sm sm:text-base text-gray-600 italic">
