@@ -1,5 +1,4 @@
 
-
 import { motion } from "framer-motion";
 interface HeroTitleProps {
   currentWordIndex: number;
@@ -23,7 +22,7 @@ const HeroTitle = ({
         </a>
       </div>
 
-      <h1 className="exo-2-heading font-bold leading-tight text-white text-center md:text-5xl my-0 mx-0 py-0 px-[90px] text-4xl">
+      <h1 className="exo-2-heading font-bold leading-tight text-white text-center md:text-5xl my-0 mx-0 py-0 px-4 text-4xl max-w-5xl">
         The Private Acquisition Network for AI-Powered SaaS Businesses
         <br />
         <span className="bg-gradient-to-r from-[#D946EF] via-[#8B5CF6] to-[#0EA5E9] text-transparent bg-clip-text">
@@ -33,4 +32,3 @@ const HeroTitle = ({
     </motion.div>;
 };
 export default HeroTitle;
-
