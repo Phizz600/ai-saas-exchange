@@ -1,18 +1,15 @@
-
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { ParticlesBackground } from "@/components/hero/ParticlesBackground";
 import { PromotionalBanner } from "@/components/PromotionalBanner";
-
 export function FAQ() {
-  return (
-    <div className="min-h-screen relative overflow-hidden">
+  return <div className="min-h-screen relative overflow-hidden">
       <ParticlesBackground />
       <div className="relative z-10">
         <PromotionalBanner />
         <Navbar />
         <div className="container mx-auto px-4 py-12 mt-16">
-        <h1 className="text-3xl font-bold mb-8 exo-2-heading">Frequently Asked Questions</h1>
+        <h1 className="text-3xl font-bold mb-8 exo-2-heading text-slate-50">Frequently Asked Questions</h1>
         
         <div className="space-y-6">
           <div className="bg-white rounded-lg shadow-sm p-6">
@@ -59,6 +56,5 @@ export function FAQ() {
         </div>
         <Footer />
       </div>
-    </div>
-  );
+    </div>;
 }
