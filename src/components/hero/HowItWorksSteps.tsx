@@ -26,8 +26,8 @@ const HowItWorksSteps = () => {
         delay: 0.2
       }} className="bg-white/10 backdrop-blur-sm p-6 rounded-lg transform transition-all duration-300 hover:scale-105 hover:bg-white/15">
           <div className="text-2xl font-bold text-white mb-2">2</div>
-          <h3 className="text-xl font-semibold text-white mb-3">Watch Prices Drop</h3>
-          <p className="text-gray-300">Buyers bid as the price drops daily/hourly.</p>
+          <h3 className="text-xl font-semibold text-white mb-3">Get Buyer Inquiries</h3>
+          <p className="text-gray-300">We share limited info about your business listing with our vetted buyers in the private Slack community.</p>
         </motion.div>
 
         <motion.div initial={{
