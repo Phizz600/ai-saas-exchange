@@ -1,11 +1,14 @@
-import { Header } from "@/components/Header";
+import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { ParticlesBackground } from "@/components/hero/ParticlesBackground";
+import { PromotionalBanner } from "@/components/PromotionalBanner";
+
 export function About() {
   return <div className="min-h-screen relative overflow-hidden">
       <ParticlesBackground />
       <div className="relative z-10">
-        <Header />
+        <PromotionalBanner />
+        <Navbar />
         <main className="container mx-auto px-4 pt-32 pb-16">
           <div className="max-w-5xl mx-auto bg-white/90 backdrop-blur-sm rounded-lg shadow-xl p-8">
             <h1 className="exo-2-heading text-4xl font-bold text-center mb-8 bg-gradient-to-r from-[#13293D] to-[#0EA4E9] bg-clip-text text-slate-950">About AI Exchange Club</h1>
