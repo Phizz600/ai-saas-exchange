@@ -1,10 +1,11 @@
 
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { ParticlesBackground } from "@/components/hero/ParticlesBackground";
+import { PromotionalBanner } from "@/components/PromotionalBanner";
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
 import { Card } from "@/components/ui/card";
 import { motion } from "framer-motion";
-import AnimatedGradientBackground from "@/components/ui/AnimatedGradientBackground";
 
 export function Terms() {
   // Animation variants
@@ -23,10 +24,13 @@ export function Terms() {
   };
   
   return (
-    <AnimatedGradientBackground>
-      <Navbar />
-      
-      <div className="pt-24 pb-16">
+    <div className="min-h-screen relative overflow-hidden">
+      <ParticlesBackground />
+      <div className="relative z-10">
+        <PromotionalBanner />
+        <Navbar />
+        
+        <div className="pt-24 pb-16">
         <motion.div initial="hidden" animate="visible" variants={fadeIn} className="container mx-auto px-4 text-center mb-12 my-[50px]">
           <h1 className="exo-2-heading text-5xl font-bold text-white mb-4 bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] inline-block text-transparent bg-clip-text">
             Terms and Conditions
@@ -199,9 +203,10 @@ export function Terms() {
             </div>
           </Card>
         </motion.div>
+        </div>
+        
+        <Footer />
       </div>
-      
-      <Footer />
-    </AnimatedGradientBackground>
+    </div>
   );
 }
