@@ -41,7 +41,7 @@ const HowItWorksSteps = () => {
       }} className="bg-white/10 backdrop-blur-sm p-6 rounded-lg transform transition-all duration-300 hover:scale-105 hover:bg-white/15">
           <div className="text-2xl font-bold text-white mb-2">3</div>
           <h3 className="text-xl font-semibold text-white mb-3">Secure the Deal</h3>
-          <p className="text-gray-300">The highest bidder at the end of the auction wins if the buyer agrees to sell.</p>
+          <p className="text-gray-300">Once a buyer commits, we guide both parties through a fast and secure escrow transaction—ensuring smooth asset transfer.</p>
         </motion.div>
       </div>
     </div>;
