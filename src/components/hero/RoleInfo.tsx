@@ -51,8 +51,8 @@ const RoleInfo = ({
             <div className="flex items-start gap-3">
               <CheckCircle className="w-5 h-5 text-[#8B5CF6] mt-1 flex-shrink-0" />
               <div>
-                <h5 className="font-medium text-white">Premium Network Access</h5>
-                <p className="text-gray-300">Join our exclusive community of AI founders and gain access to investor networks, technical advisors, and ongoing support.</p>
+                <h5 className="font-medium text-white">Secure &amp; Verified Transfers</h5>
+                <p className="text-gray-300">We ensure smooth, documented asset handoff with a step-by-step process designed for digital business sales. No surprises.</p>
               </div>
             </div>
           </div>
