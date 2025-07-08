@@ -57,11 +57,11 @@ const RoleInfo = ({
             </div>
           </div>
           
-          <Link to="/list-product">
+          <a href="https://airtable.com/appqbmIOXXLNFhZyj/pagutIK7nf0unyJm3/form" target="_blank" rel="noopener noreferrer">
             <Button variant="default" className="w-full mt-2 bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] hover:from-[#C836DD] hover:to-[#7A4CE5]">
               List Your AI Business
             </Button>
-          </Link>
+          </a>
         </CollapsibleContent>
       </Collapsible>
 
