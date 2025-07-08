@@ -78,15 +78,15 @@ const RoleInfo = ({
               <CheckCircle className="w-5 h-5 text-[#0EA4E9] mt-1 flex-shrink-0" />
               <div>
                 <h5 className="font-medium text-white">First-Mover Advantage</h5>
-                <p className="text-gray-300">Acquire cutting-edge AI solutions before your competitors even know they exist. Our Dutch auction model rewards decisive action.</p>
+                <p className="text-gray-300">Gain first-look access to vetted AI startups before they hit broader marketplaces. Many of our listings aren’t shared publicly—only inside our private Slack network.</p>
               </div>
             </div>
             
             <div className="flex items-start gap-3">
               <CheckCircle className="w-5 h-5 text-[#0EA4E9] mt-1 flex-shrink-0" />
               <div>
-                <h5 className="font-medium text-white">Verified Quality</h5>
-                <p className="text-gray-300">Every listed business undergoes thorough technical, financial, and market validation by our expert team before being approved.</p>
+                <h5 className="font-medium text-white">Full-Stack Due Diligence Support</h5>
+                <p className="text-gray-300">Access our internal checklist, financial docs, product walkthroughs, and team-vetted insights. Or upgrade for a full diligence report from our team.</p>
               </div>
             </div>
             
