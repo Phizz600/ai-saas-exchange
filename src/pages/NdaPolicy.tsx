@@ -1,7 +1,8 @@
 
-import { Header } from "@/components/Header";
+import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { ParticlesBackground } from "@/components/hero/ParticlesBackground";
+import { PromotionalBanner } from "@/components/PromotionalBanner";
 import { NdaFeatures } from "@/components/nda-policy/NdaFeatures";
 import { NdaFaq } from "@/components/nda-policy/NdaFaq";
 import { NdaCta } from "@/components/nda-policy/NdaCta";
@@ -16,7 +17,8 @@ export function NdaPolicy() {
     <div className="min-h-screen relative overflow-hidden">
       <ParticlesBackground />
       <div className="relative z-10">
-        <Header />
+        <PromotionalBanner />
+        <Navbar />
         <main className="container mx-auto px-4 pt-32 pb-16">
           <div className="max-w-5xl mx-auto bg-white/80 backdrop-blur-md rounded-lg shadow-xl p-8 border border-white/20">
             {/* Hero Section */}
