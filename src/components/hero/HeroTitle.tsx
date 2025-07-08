@@ -21,7 +21,7 @@ const HeroTitle = ({
         </a>
       </div>
 
-      <h1 className="exo-2-heading font-bold leading-tight text-white text-center md:text-5xl my-0 mx-0 py-0 max-w-5xl px-0 text-5xl">
+      <h1 className="exo-2-heading font-bold leading-tight text-white text-center text-2xl sm:text-3xl md:text-4xl lg:text-5xl my-0 mx-0 py-0 max-w-5xl px-2 sm:px-0">
         The Private Acquisition Network for AI-Powered SaaS Businesses
         <br />
         <span className="bg-gradient-to-r from-[#D946EF] via-[#8B5CF6] to-[#0EA5E9] text-transparent bg-clip-text">
