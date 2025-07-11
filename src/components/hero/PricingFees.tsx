@@ -143,6 +143,7 @@ const PricingFees = () => {
                         </div>
                       </div>
                     </div>
+<<<<<<< HEAD
                   </div>
 =======
                 <h3 className="text-center text-2xl font-bold text-white mb-4">Slack Community</h3>
@@ -157,6 +158,9 @@ const PricingFees = () => {
                   </div>
                   <p className="text-gray-400 text-sm mt-1">or $299/year (save 49%)</p>
 >>>>>>> 11e1ee7 (Refactor homepage for DFaaS model)
+=======
+                  </div>
+>>>>>>> 220383a (Update pricing structure)
                 </div>
                 
                 <div className="bg-white/5 p-3 rounded-md mb-6">

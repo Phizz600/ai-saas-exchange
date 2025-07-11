@@ -130,6 +130,7 @@ const HeroSection = ({
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
               Join the Club (from $29/mo)
 =======
               Access Deal Flow
@@ -158,6 +159,9 @@ const HeroSection = ({
 =======
               Join the Club ($49/mo)
 >>>>>>> 5c292f4 (Refactor: Replace "Slack" mentions with alternative copy)
+=======
+              Join the Club (from $29/mo)
+>>>>>>> 220383a (Update pricing structure)
             </Button>
           </div>
           
