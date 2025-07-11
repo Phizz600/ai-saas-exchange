@@ -40,7 +40,7 @@ const LiveMetrics = () => {
       
       <div className="mt-4 text-center">
         <p className="text-gray-400 text-xs">
-          * Based on activity from the last 30 days in our Slack community
+          * Based on activity from the last 30 days in our private buyer network
         </p>
       </div>
     </motion.div>

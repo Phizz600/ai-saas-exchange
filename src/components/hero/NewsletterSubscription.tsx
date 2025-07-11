@@ -20,7 +20,7 @@ const NewsletterSubscription = ({
           <span className="text-[#D946EF] font-semibold">free valuation</span>,{' '}
           <span className="text-[#0EA5E9] font-semibold">lifetime membership</span>, and{' '}
           <span className="text-purple-400 font-semibold">waived listing fees for life</span>. Buyers: Enjoy{' '}
-          <span className="text-emerald-400 font-semibold">early access to exclusive deals in the Private Slack Network</span> and connect with top AI innovators.
+          <span className="text-emerald-400 font-semibold">early access to exclusive deals in the private buyer network</span> and connect with top AI innovators.
         </p>
         <div className="space-y-2 w-full">
           <div className="h-2 bg-white/10 rounded-full overflow-hidden">

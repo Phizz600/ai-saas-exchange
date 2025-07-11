@@ -42,7 +42,7 @@ const PricingFees = () => {
                 </div>
                 
                 <p className="text-gray-300 text-center mb-6 flex-grow">
-                  Get your AI business in front of qualified buyers through our private Slack community.
+                  Get your AI business in front of qualified buyers through our private buyer network.
                 </p>
                 
                 <ul className="space-y-3 text-gray-300">
@@ -67,7 +67,7 @@ const PricingFees = () => {
             </Card>
           </motion.div>
           
-          {/* Card 2 - Slack Community Access */}
+          {/* Card 2 - Private Buyer Network Access */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -85,7 +85,7 @@ const PricingFees = () => {
                     <MessageSquare className="h-8 w-8 text-[#8B5CF6]" />
                   </div>
                 </div>
-                <h3 className="text-center text-2xl font-bold text-white mb-4">Slack Community</h3>
+                <h3 className="text-center text-2xl font-bold text-white mb-4">Private Buyer Network</h3>
                 
                 <div className="text-center mb-6">
                   <div className="flex items-baseline justify-center gap-2">
@@ -106,7 +106,7 @@ const PricingFees = () => {
                 </div>
                 
                 <p className="text-gray-300 text-center mb-6 flex-grow">
-                  Access to our private Slack workspace with curated AI SaaS deal flow and direct seller connections.
+                  Access our private buyer network with curated AI SaaS deal flow and direct seller connections.
                 </p>
                 
                 <ul className="space-y-3 text-gray-300">
