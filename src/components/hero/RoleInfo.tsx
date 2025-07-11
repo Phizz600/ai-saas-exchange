@@ -1,3 +1,4 @@
+
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ChevronDown, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -21,45 +22,45 @@ const RoleInfo = ({
           <ChevronDown className={`w-6 h-6 text-white transition-transform duration-300 ${isSellerOpen ? 'rotate-180' : ''}`} />
         </CollapsibleTrigger>
         <CollapsibleContent className="mt-4 space-y-6">
-          <h4 className="text-xl font-semibold text-white">Why Founders Choose AIExchange.club to Sell Their AI SaaS</h4>
+          <h4 className="text-xl font-semibold text-white">Why List Your AI SaaS with AIExchange.club</h4>
           
           <div className="space-y-4">
             <div className="flex items-start gap-3">
               <CheckCircle className="w-5 h-5 text-[#D946EE] mt-1 flex-shrink-0" />
               <div>
-                <h5 className="font-medium text-white">Flexible Exit Options</h5>
-                <p className="text-gray-300">Whether you want to set a fixed price or use our Dutch auction format, you’re in control of how your business is priced and sold.</p>
+                <h5 className="font-medium text-white">100% Free Listings</h5>
+                <p className="text-gray-300">No upfront costs, no commission until you successfully sell your business.</p>
               </div>
             </div>
             
             <div className="flex items-start gap-3">
               <CheckCircle className="w-5 h-5 text-[#D946EE] mt-1 flex-shrink-0" />
               <div>
-                <h5 className="font-medium text-white">Qualified, Serious Buyers</h5>
-                <p className="text-gray-300">Your listing gets shared directly with serious, pre-vetted buyers inside our private Slack deal rooms—no tire-kickers, just qualified interest.</p>
+                <h5 className="font-medium text-white">Direct Buyer Access</h5>
+                <p className="text-gray-300">Connect directly with pre-qualified buyers in our private Slack community.</p>
               </div>
             </div>
             
             <div className="flex items-start gap-3">
               <CheckCircle className="w-5 h-5 text-[#8B5CF6] mt-1 flex-shrink-0" />
               <div>
-                <h5 className="font-medium text-white">Done-for-You Deal Facilitation</h5>
-                <p className="text-gray-300">From vetting calls and due diligence to legal docs and Escrow.com setup—we handle the hard stuff so you can focus on the exit.</p>
+                <h5 className="font-medium text-white">Quality Curation</h5>
+                <p className="text-gray-300">We verify and curate listings to ensure they reach serious, qualified buyers only.</p>
               </div>
             </div>
             
             <div className="flex items-start gap-3">
               <CheckCircle className="w-5 h-5 text-[#8B5CF6] mt-1 flex-shrink-0" />
               <div>
-                <h5 className="font-medium text-white">Secure &amp; Verified Transfers</h5>
-                <p className="text-gray-300">We ensure smooth, documented asset handoff with a step-by-step process designed for digital business sales. No surprises.</p>
+                <h5 className="font-medium text-white">You Stay in Control</h5>
+                <p className="text-gray-300">Negotiate directly with buyers and complete deals on your own terms.</p>
               </div>
             </div>
           </div>
           
           <a href="https://airtable.com/appqbmIOXXLNFhZyj/pagutIK7nf0unyJm3/form" target="_blank" rel="noopener noreferrer">
             <Button variant="default" className="w-full mt-2 bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] hover:from-[#C836DD] hover:to-[#7A4CE5]">
-              List Your AI Business
+              List Your AI Business (FREE)
             </Button>
           </a>
         </CollapsibleContent>
@@ -71,38 +72,38 @@ const RoleInfo = ({
           <ChevronDown className={`w-6 h-6 text-white transition-transform duration-300 ${isBuyerOpen ? 'rotate-180' : ''}`} />
         </CollapsibleTrigger>
         <CollapsibleContent className="mt-4 space-y-6">
-          <h4 className="text-xl font-semibold text-white">Why Bid on AI Assets Here</h4>
+          <h4 className="text-xl font-semibold text-white">Why Join Our Buyer Community</h4>
           
           <div className="space-y-4">
             <div className="flex items-start gap-3">
               <CheckCircle className="w-5 h-5 text-[#0EA4E9] mt-1 flex-shrink-0" />
               <div>
-                <h5 className="font-medium text-white">First-Mover Advantage</h5>
-                <p className="text-gray-300">Gain first-look access to vetted AI startups before they hit broader marketplaces. Many of our listings aren’t shared publicly—only inside our private Slack network.</p>
+                <h5 className="font-medium text-white">Exclusive Deal Flow Access</h5>
+                <p className="text-gray-300">Get first access to curated AI SaaS opportunities before they hit the broader market.</p>
               </div>
             </div>
             
             <div className="flex items-start gap-3">
               <CheckCircle className="w-5 h-5 text-[#0EA4E9] mt-1 flex-shrink-0" />
               <div>
-                <h5 className="font-medium text-white">Full-Stack Due Diligence Support</h5>
-                <p className="text-gray-300">Access our internal checklist, financial docs, product walkthroughs, and team-vetted insights. Or upgrade for a full diligence report from our team.</p>
+                <h5 className="font-medium text-white">Private Slack Community</h5>
+                <p className="text-gray-300">Join our exclusive network of AI investors and get deal updates in real-time.</p>
               </div>
             </div>
             
             <div className="flex items-start gap-3">
               <CheckCircle className="w-5 h-5 text-[#8B5CF6] mt-1 flex-shrink-0" />
               <div>
-                <h5 className="font-medium text-white">Transparent Due Diligence</h5>
-                <p className="text-gray-300">Access comprehensive data, metrics, and documentation for each listing including traffic analytics, customer retention, and revenue models.</p>
+                <h5 className="font-medium text-white">Pre-Verified Listings</h5>
+                <p className="text-gray-300">Every opportunity is manually reviewed and verified before being shared.</p>
               </div>
             </div>
             
             <div className="flex items-start gap-3">
               <CheckCircle className="w-5 h-5 text-[#8B5CF6] mt-1 flex-shrink-0" />
               <div>
-                <h5 className="font-medium text-white">Secure Acquisition Process</h5>
-                <p className="text-gray-300">Our platform provides secure payment processing, escrow services, and post-purchase transition support to ensure a smooth handover.</p>
+                <h5 className="font-medium text-white">Direct Seller Contact</h5>
+                <p className="text-gray-300">Connect directly with founders and negotiate deals on your own terms.</p>
               </div>
             </div>
           </div>

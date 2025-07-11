@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 const HowItWorksSteps = () => {
   return <div className="space-y-8">
@@ -12,8 +13,8 @@ const HowItWorksSteps = () => {
         delay: 0.1
       }} className="bg-white/10 backdrop-blur-sm p-6 rounded-lg transform transition-all duration-300 hover:scale-105 hover:bg-white/15">
           <div className="text-2xl font-bold text-white mb-2">1</div>
-          <h3 className="text-xl font-semibold text-white mb-3">Submit Your AI SaaS Business</h3>
-          <p className="text-gray-300">Submit info via listing form about your AI SaaS business.</p>
+          <h3 className="text-xl font-semibold text-white mb-3">List Your AI SaaS (Free)</h3>
+          <p className="text-gray-300">Submit basic info about your AI SaaS business via our listing form.</p>
         </motion.div>
 
         <motion.div initial={{
@@ -26,8 +27,8 @@ const HowItWorksSteps = () => {
         delay: 0.2
       }} className="bg-white/10 backdrop-blur-sm p-6 rounded-lg transform transition-all duration-300 hover:scale-105 hover:bg-white/15">
           <div className="text-2xl font-bold text-white mb-2">2</div>
-          <h3 className="text-xl font-semibold text-white mb-3">Get Buyer Inquiries</h3>
-          <p className="text-gray-300">We share limited info about your business listing with our vetted buyers in the private Slack community.</p>
+          <h3 className="text-xl font-semibold text-white mb-3">We Curate & Share</h3>
+          <p className="text-gray-300">We share your listing with our vetted buyer community via our private Slack workspace.</p>
         </motion.div>
 
         <motion.div initial={{
@@ -40,8 +41,8 @@ const HowItWorksSteps = () => {
         delay: 0.3
       }} className="bg-white/10 backdrop-blur-sm p-6 rounded-lg transform transition-all duration-300 hover:scale-105 hover:bg-white/15">
           <div className="text-2xl font-bold text-white mb-2">3</div>
-          <h3 className="text-xl font-semibold text-white mb-3">Secure the Deal</h3>
-          <p className="text-gray-300">Once a buyer commits, we guide both parties through a fast and secure escrow transaction—ensuring smooth asset transfer.</p>
+          <h3 className="text-xl font-semibold text-white mb-3">Connect Directly</h3>
+          <p className="text-gray-300">Interested buyers contact you directly to negotiate and complete the deal on their own terms.</p>
         </motion.div>
       </div>
     </div>;

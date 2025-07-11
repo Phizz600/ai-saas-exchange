@@ -1,4 +1,5 @@
-import { CircuitBoard, Brain, Network } from "lucide-react";
+
+import { CircuitBoard, Users, MessageSquare } from "lucide-react";
 import { motion } from "framer-motion";
 
 const FeatureHighlights = () => {
@@ -15,14 +16,14 @@ const FeatureHighlights = () => {
         <p className="text-gray-300">Get accurate, data-driven valuations for your SaaS company</p>
       </div>
       <div className="p-6 rounded-xl bg-white/5 backdrop-blur-md border border-white/10 shadow-[0_0_30px_rgba(255,255,255,0.05)]">
-        <Brain className="h-8 w-8 mb-4 mx-auto text-[#8B5CF6]" />
-        <h3 className="text-lg font-semibold text-white mb-2">Smart Matching</h3>
-        <p className="text-gray-300">Connect with the perfect investors using our AI algorithm</p>
+        <Users className="h-8 w-8 mb-4 mx-auto text-[#8B5CF6]" />
+        <h3 className="text-lg font-semibold text-white mb-2">Curated Deal Flow</h3>
+        <p className="text-gray-300">Access high-quality, pre-verified AI SaaS opportunities</p>
       </div>
       <div className="p-6 rounded-xl bg-white/5 backdrop-blur-md border border-white/10 shadow-[0_0_30px_rgba(255,255,255,0.05)]">
-        <Network className="h-8 w-8 mb-4 mx-auto text-[#0EA5E9]" />
-        <h3 className="text-lg font-semibold text-white mb-2">Premium Network</h3>
-        <p className="text-gray-300">Access our exclusive network of verified buyers and sellers</p>
+        <MessageSquare className="h-8 w-8 mb-4 mx-auto text-[#0EA5E9]" />
+        <h3 className="text-lg font-semibold text-white mb-2">Private Buyer Community</h3>
+        <p className="text-gray-300">Join our exclusive Slack network of verified AI investors</p>
       </div>
     </motion.div>
   );
