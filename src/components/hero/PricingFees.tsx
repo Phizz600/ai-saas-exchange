@@ -87,12 +87,37 @@ const PricingFees = () => {
                 </div>
                 <h3 className="text-center text-2xl font-bold text-white mb-4">Private Buyer Network</h3>
                 
-                <div className="text-center mb-6">
-                  <div className="flex items-baseline justify-center gap-2">
-                    <span className="text-3xl font-bold text-white">$49</span>
-                    <span className="text-gray-400">/month</span>
+                <div className="mb-6">
+                  <div className="text-lg font-bold text-white mb-3 text-center">Choose Your Plan</div>
+                  <div className="space-y-2">
+                    <div className="bg-white/5 rounded-lg p-2 border border-white/10">
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-white">3 Months</span>
+                        <div className="text-right">
+                          <div className="text-white font-semibold">$147</div>
+                          <div className="text-xs text-gray-400">$49/mo</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="bg-white/5 rounded-lg p-2 border border-[#8B5CF6]/30">
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-white">6 Months</span>
+                        <div className="text-right">
+                          <div className="text-white font-semibold">$234</div>
+                          <div className="text-xs text-green-400">$39/mo</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="bg-white/5 rounded-lg p-2 border border-green-500/30">
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-white">12 Months</span>
+                        <div className="text-right">
+                          <div className="text-white font-semibold">$348</div>
+                          <div className="text-xs text-green-400">$29/mo</div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <p className="text-gray-400 text-sm mt-1">or $299/year (save 49%)</p>
                 </div>
                 
                 <div className="bg-white/5 p-3 rounded-md mb-6">

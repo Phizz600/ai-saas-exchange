@@ -97,7 +97,7 @@ const HeroSection = ({
               onClick={() => window.open('https://aiexchangeclub.carrd.co/', '_blank')}
             >
               <ShoppingCart className="mr-2" />
-              Join the Club ($49/mo)
+              Join the Club (from $29/mo)
             </Button>
           </div>
           
