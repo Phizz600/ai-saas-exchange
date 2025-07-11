@@ -36,11 +36,21 @@ const PricingFees = () => {
                     <User2 className="h-4 w-4" />
                     <p className="text-sm font-medium">Early Adopter Benefit</p>
                   </div>
+<<<<<<< HEAD
                   <p className="text-gray-300 text-sm text-center">List your AI SaaS completely free - no upfront costs, no commissions, no broker fees.</p>
                 </div>
                 
                 <p className="text-gray-300 text-center mb-6 flex-grow">
                   Get your AI business in front of qualified buyers through our private buyer network.
+=======
+                  <p className="text-gray-300 text-sm text-center">
+                    List your AI SaaS completely free - no upfront costs, no commission until you sell
+                  </p>
+                </div>
+                
+                <p className="text-gray-300 text-center mb-6 flex-grow">
+                  Get your AI business in front of qualified buyers through our private Slack community.
+>>>>>>> 11e1ee7 (Refactor homepage for DFaaS model)
                 </p>
                 
                 <ul className="space-y-3 text-gray-300">
@@ -65,19 +75,33 @@ const PricingFees = () => {
             </Card>
           </motion.div>
           
+<<<<<<< HEAD
           {/* Card 2 - Private Buyer Network Access */}
+=======
+          {/* Card 2 - Slack Community Access */}
+>>>>>>> 11e1ee7 (Refactor homepage for DFaaS model)
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             <Card className="h-full p-8 bg-white/10 backdrop-blur-sm border-white/5 hover:shadow-lg transition-shadow relative overflow-hidden">
+<<<<<<< HEAD
               <div className="flex flex-col h-full">
+=======
+              {/* Popular badge */}
+              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white text-xs font-bold px-4 py-1 rounded-full">
+                MOST POPULAR
+              </div>
+              
+              <div className="flex flex-col h-full pt-4">
+>>>>>>> 11e1ee7 (Refactor homepage for DFaaS model)
                 <div className="flex justify-center mb-6">
                   <div className="bg-[#8B5CF6]/20 p-4 rounded-full">
                     <MessageSquare className="h-8 w-8 text-[#8B5CF6]" />
                   </div>
                 </div>
+<<<<<<< HEAD
                 <h3 className="text-center text-2xl font-bold text-white mb-4">Private Buyer Network</h3>
                 
                 <div className="mb-6">
@@ -111,6 +135,16 @@ const PricingFees = () => {
                       </div>
                     </div>
                   </div>
+=======
+                <h3 className="text-center text-2xl font-bold text-white mb-4">Slack Community</h3>
+                
+                <div className="text-center mb-6">
+                  <div className="flex items-baseline justify-center gap-2">
+                    <span className="text-3xl font-bold text-white">$49</span>
+                    <span className="text-gray-400">/month</span>
+                  </div>
+                  <p className="text-gray-400 text-sm mt-1">or $299/year (save 49%)</p>
+>>>>>>> 11e1ee7 (Refactor homepage for DFaaS model)
                 </div>
                 
                 <div className="bg-white/5 p-3 rounded-md mb-6">
@@ -123,7 +157,13 @@ const PricingFees = () => {
                   </p>
                 </div>
                 
+<<<<<<< HEAD
                 <p className="text-gray-300 text-center mb-6 flex-grow">Access our private buyer network with curated DFaaS (Dealflow as a Service) and direct seller communications.</p>
+=======
+                <p className="text-gray-300 text-center mb-6 flex-grow">
+                  Access to our private Slack workspace with curated AI SaaS deal flow and direct seller connections.
+                </p>
+>>>>>>> 11e1ee7 (Refactor homepage for DFaaS model)
                 
                 <ul className="space-y-3 text-gray-300">
                   <li className="flex items-center">

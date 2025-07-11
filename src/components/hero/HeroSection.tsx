@@ -1,4 +1,3 @@
-
 import { lazy, Suspense, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
@@ -57,12 +56,17 @@ const HeroSection = ({
   };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   return (
     <div className="min-h-screen relative overflow-hidden">
 =======
   return <div className="min-h-screen relative overflow-hidden">
       
 >>>>>>> ccee472 (Refactor: Implement homepage messaging plan)
+=======
+  return (
+    <div className="min-h-screen relative overflow-hidden">
+>>>>>>> 11e1ee7 (Refactor homepage for DFaaS model)
       <div className="relative container mx-auto px-4 py-24">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -73,6 +77,9 @@ const HeroSection = ({
           <HeroTitle currentWordIndex={currentWordIndex} words={words} />
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 11e1ee7 (Refactor homepage for DFaaS model)
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -81,6 +88,7 @@ const HeroSection = ({
           >
             We connect qualified AI SaaS founders with ready-to-acquire buyers—fast. No brokering. No fluff. Just vetted deal flow delivered to serious investors.
           </motion.p>
+<<<<<<< HEAD
 
           {/* Updated Button Row with GTM strategy CTAs */}
 =======
@@ -94,6 +102,10 @@ const HeroSection = ({
 
           {/* Button Row - Updated with new DFaaS messaging */}
 >>>>>>> ccee472 (Refactor: Implement homepage messaging plan)
+=======
+
+          {/* Updated Button Row with GTM strategy CTAs */}
+>>>>>>> 11e1ee7 (Refactor homepage for DFaaS model)
           <div className="flex flex-col items-center gap-4 justify-center">
             <Button 
               variant="purple" 
@@ -115,6 +127,7 @@ const HeroSection = ({
               onClick={() => window.open('https://aiexchangeclub.carrd.co/', '_blank')}
             >
               <ShoppingCart className="mr-2" />
+<<<<<<< HEAD
 <<<<<<< HEAD
               Join the Club (from $29/mo)
 =======
@@ -139,6 +152,13 @@ const HeroSection = ({
           </Suspense>
           
           {/* Live Metrics Component - moved below Security Features */}
+=======
+              Join Slack Community ($49/mo)
+            </Button>
+          </div>
+          
+          {/* Live Metrics Component */}
+>>>>>>> 11e1ee7 (Refactor homepage for DFaaS model)
           <LiveMetrics />
           
           {/* ProductHunt Badge */}
@@ -154,6 +174,22 @@ const HeroSection = ({
             </motion.div>
           </div>
           
+<<<<<<< HEAD
+=======
+          <Suspense fallback={<Skeleton className="w-full max-w-md h-32" />}>
+            <NewsletterSubscription 
+              newsletterEmail={newsletterEmail} 
+              setNewsletterEmail={setNewsletterEmail} 
+              subscriberCount={subscriberCount} 
+              setSubscriberCount={setSubscriberCount} 
+            />
+          </Suspense>
+          
+          <Suspense fallback={<Skeleton className="h-16" />}>
+            <SecurityFeatures />
+          </Suspense>
+
+>>>>>>> 11e1ee7 (Refactor homepage for DFaaS model)
           <div className="mt-24 mb-16">
             <h2 className="font-bold text-white text-center mb-4 exo-2-heading text-2xl">
               Curated AI SaaS Deal Flow
@@ -206,7 +242,11 @@ const HeroSection = ({
   );
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> ccee472 (Refactor: Implement homepage messaging plan)
+=======
+
+>>>>>>> 11e1ee7 (Refactor homepage for DFaaS model)
 export default HeroSection;
