@@ -37,7 +37,11 @@ const RoleInfo = ({
               <CheckCircle className="w-5 h-5 text-[#D946EE] mt-1 flex-shrink-0" />
               <div>
                 <h5 className="font-medium text-white">Direct Buyer Access</h5>
+<<<<<<< HEAD
                 <p className="text-gray-300">Connect directly with pre-qualified buyers in our private network.</p>
+=======
+                <p className="text-gray-300">Connect directly with pre-qualified buyers in our private Slack community.</p>
+>>>>>>> ccee472 (Refactor: Implement homepage messaging plan)
               </div>
             </div>
             
@@ -86,7 +90,11 @@ const RoleInfo = ({
             <div className="flex items-start gap-3">
               <CheckCircle className="w-5 h-5 text-[#0EA4E9] mt-1 flex-shrink-0" />
               <div>
+<<<<<<< HEAD
                 <h5 className="font-medium text-white">Private Buyer Network</h5>
+=======
+                <h5 className="font-medium text-white">Private Slack Community</h5>
+>>>>>>> ccee472 (Refactor: Implement homepage messaging plan)
                 <p className="text-gray-300">Join our exclusive network of AI investors and get deal updates in real-time.</p>
               </div>
             </div>

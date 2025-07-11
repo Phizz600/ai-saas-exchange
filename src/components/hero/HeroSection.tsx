@@ -56,8 +56,13 @@ const HeroSection = ({
     navigate('/ai-saas-quiz');
   };
 
+<<<<<<< HEAD
   return (
     <div className="min-h-screen relative overflow-hidden">
+=======
+  return <div className="min-h-screen relative overflow-hidden">
+      
+>>>>>>> ccee472 (Refactor: Implement homepage messaging plan)
       <div className="relative container mx-auto px-4 py-24">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -67,6 +72,7 @@ const HeroSection = ({
         >
           <HeroTitle currentWordIndex={currentWordIndex} words={words} />
 
+<<<<<<< HEAD
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -77,6 +83,17 @@ const HeroSection = ({
           </motion.p>
 
           {/* Updated Button Row with GTM strategy CTAs */}
+=======
+          <motion.p initial={{
+          opacity: 0
+        }} animate={{
+          opacity: 1
+        }} transition={{
+          duration: 0.3
+        }} className="text-xl text-gray-200 mb-12 max-w-2xl mx-auto text-center">Access exclusive AI SaaS deal flow through our private Slack community. Buyers pay for curated access, sellers list for free.</motion.p>
+
+          {/* Button Row - Updated with new DFaaS messaging */}
+>>>>>>> ccee472 (Refactor: Implement homepage messaging plan)
           <div className="flex flex-col items-center gap-4 justify-center">
             <Button 
               variant="purple" 
@@ -98,7 +115,11 @@ const HeroSection = ({
               onClick={() => window.open('https://aiexchangeclub.carrd.co/', '_blank')}
             >
               <ShoppingCart className="mr-2" />
+<<<<<<< HEAD
               Join the Club (from $29/mo)
+=======
+              Access Deal Flow
+>>>>>>> ccee472 (Refactor: Implement homepage messaging plan)
             </Button>
           </div>
           
@@ -138,7 +159,11 @@ const HeroSection = ({
               Curated AI SaaS Deal Flow
             </h2>
             <p className="text-gray-200 max-w-3xl mx-auto text-center text-xl mb-12">
+<<<<<<< HEAD
               We curate and verify AI SaaS businesses before sharing them with our buyer community. Want access? Join the club for exclusive deal flow.
+=======
+              We curate and verify AI SaaS businesses before sharing them with our buyer community. Want access? Join our private Slack for exclusive deal flow.
+>>>>>>> ccee472 (Refactor: Implement homepage messaging plan)
             </p>
 
             <ProductsShowcase 
@@ -180,5 +205,8 @@ const HeroSection = ({
     </div>
   );
 };
+<<<<<<< HEAD
 
+=======
+>>>>>>> ccee472 (Refactor: Implement homepage messaging plan)
 export default HeroSection;

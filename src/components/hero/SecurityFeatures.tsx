@@ -14,7 +14,11 @@ const SecurityFeatures = () => {
       </div>
       <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
         <MessageSquare className="w-5 h-5 text-purple-400" />
+<<<<<<< HEAD
         <span className="text-sm text-gray-200">Private Buyer Network</span>
+=======
+        <span className="text-sm text-gray-200">Private Slack Community</span>
+>>>>>>> ccee472 (Refactor: Implement homepage messaging plan)
       </div>
     </div>
   );
