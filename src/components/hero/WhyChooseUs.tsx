@@ -37,10 +37,14 @@ const WhyChooseUs = () => {
             </div>
             <h3 className="text-white text-xl font-semibold mb-2">Active Buyers</h3>
 <<<<<<< HEAD
+<<<<<<< HEAD
             <p className="text-gray-300">In our private buyer network ready to evaluate deals</p>
 =======
             <p className="text-gray-300">In our private Slack community ready to evaluate deals</p>
 >>>>>>> ccee472 (Refactor: Implement homepage messaging plan)
+=======
+            <p className="text-gray-300">In our private buyer network ready to evaluate deals</p>
+>>>>>>> 5c292f4 (Refactor: Replace "Slack" mentions with alternative copy)
           </motion.div>
 
           <motion.div initial={{
@@ -143,10 +147,14 @@ const WhyChooseUs = () => {
                   <div className="bg-white/10 rounded-lg p-4">
                     <p className="text-gray-200 italic mb-3">
 <<<<<<< HEAD
+<<<<<<< HEAD
                       "Listed my AI tool for free and had 3 serious inquiries within 24 hours. The quality of buyers in their network is impressive."
 =======
                       "Listed my AI tool for free and had 3 serious inquiries within 24 hours. The quality of buyers in their Slack is impressive."
 >>>>>>> ccee472 (Refactor: Implement homepage messaging plan)
+=======
+                      "Listed my AI tool for free and had 3 serious inquiries within 24 hours. The quality of buyers in their network is impressive."
+>>>>>>> 5c292f4 (Refactor: Replace "Slack" mentions with alternative copy)
                     </p>
                     <div className="flex items-center">
                       <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] mr-2"></div>

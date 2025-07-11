@@ -129,6 +129,7 @@ const HeroSection = ({
               <ShoppingCart className="mr-2" />
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
               Join the Club (from $29/mo)
 =======
               Access Deal Flow
@@ -154,6 +155,9 @@ const HeroSection = ({
           {/* Live Metrics Component - moved below Security Features */}
 =======
               Join Slack Community ($49/mo)
+=======
+              Join the Club ($49/mo)
+>>>>>>> 5c292f4 (Refactor: Replace "Slack" mentions with alternative copy)
             </Button>
           </div>
           
@@ -196,10 +200,14 @@ const HeroSection = ({
             </h2>
             <p className="text-gray-200 max-w-3xl mx-auto text-center text-xl mb-12">
 <<<<<<< HEAD
+<<<<<<< HEAD
               We curate and verify AI SaaS businesses before sharing them with our buyer community. Want access? Join the club for exclusive deal flow.
 =======
               We curate and verify AI SaaS businesses before sharing them with our buyer community. Want access? Join our private Slack for exclusive deal flow.
 >>>>>>> ccee472 (Refactor: Implement homepage messaging plan)
+=======
+              We curate and verify AI SaaS businesses before sharing them with our buyer community. Want access? Join the club for exclusive deal flow.
+>>>>>>> 5c292f4 (Refactor: Replace "Slack" mentions with alternative copy)
             </p>
 
             <ProductsShowcase 

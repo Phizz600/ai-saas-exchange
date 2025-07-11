@@ -49,8 +49,12 @@ const PricingFees = () => {
                 </div>
                 
                 <p className="text-gray-300 text-center mb-6 flex-grow">
+<<<<<<< HEAD
                   Get your AI business in front of qualified buyers through our private Slack community.
 >>>>>>> 11e1ee7 (Refactor homepage for DFaaS model)
+=======
+                  Get your AI business in front of qualified buyers through our private buyer network.
+>>>>>>> 5c292f4 (Refactor: Replace "Slack" mentions with alternative copy)
                 </p>
                 
                 <ul className="space-y-3 text-gray-300">
@@ -76,10 +80,14 @@ const PricingFees = () => {
           </motion.div>
           
 <<<<<<< HEAD
+<<<<<<< HEAD
           {/* Card 2 - Private Buyer Network Access */}
 =======
           {/* Card 2 - Slack Community Access */}
 >>>>>>> 11e1ee7 (Refactor homepage for DFaaS model)
+=======
+          {/* Card 2 - Private Buyer Network Access */}
+>>>>>>> 5c292f4 (Refactor: Replace "Slack" mentions with alternative copy)
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -101,6 +109,7 @@ const PricingFees = () => {
                     <MessageSquare className="h-8 w-8 text-[#8B5CF6]" />
                   </div>
                 </div>
+<<<<<<< HEAD
 <<<<<<< HEAD
                 <h3 className="text-center text-2xl font-bold text-white mb-4">Private Buyer Network</h3>
                 
@@ -137,6 +146,9 @@ const PricingFees = () => {
                   </div>
 =======
                 <h3 className="text-center text-2xl font-bold text-white mb-4">Slack Community</h3>
+=======
+                <h3 className="text-center text-2xl font-bold text-white mb-4">Private Buyer Network</h3>
+>>>>>>> 5c292f4 (Refactor: Replace "Slack" mentions with alternative copy)
                 
                 <div className="text-center mb-6">
                   <div className="flex items-baseline justify-center gap-2">
@@ -161,7 +173,7 @@ const PricingFees = () => {
                 <p className="text-gray-300 text-center mb-6 flex-grow">Access our private buyer network with curated DFaaS (Dealflow as a Service) and direct seller communications.</p>
 =======
                 <p className="text-gray-300 text-center mb-6 flex-grow">
-                  Access to our private Slack workspace with curated AI SaaS deal flow and direct seller connections.
+                  Access our private buyer network with curated AI SaaS deal flow and direct seller connections.
                 </p>
 >>>>>>> 11e1ee7 (Refactor homepage for DFaaS model)
                 

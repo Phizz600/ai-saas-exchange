@@ -24,10 +24,14 @@ const FeatureHighlights = () => {
         <MessageSquare className="h-8 w-8 mb-4 mx-auto text-[#0EA5E9]" />
         <h3 className="text-lg font-semibold text-white mb-2">Private Buyer Community</h3>
 <<<<<<< HEAD
+<<<<<<< HEAD
         <p className="text-gray-300">Join our exclusive network of verified AI investors</p>
 =======
         <p className="text-gray-300">Join our exclusive Slack network of verified AI investors</p>
 >>>>>>> ccee472 (Refactor: Implement homepage messaging plan)
+=======
+        <p className="text-gray-300">Join our exclusive network of verified AI investors</p>
+>>>>>>> 5c292f4 (Refactor: Replace "Slack" mentions with alternative copy)
       </div>
     </motion.div>
   );

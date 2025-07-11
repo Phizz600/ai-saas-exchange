@@ -29,10 +29,14 @@ const HowItWorksSteps = () => {
           <div className="text-2xl font-bold text-white mb-2">2</div>
           <h3 className="text-xl font-semibold text-white mb-3">We Curate & Share</h3>
 <<<<<<< HEAD
+<<<<<<< HEAD
           <p className="text-gray-300">We share your listing with our vetted buyer community via our private network.</p>
 =======
           <p className="text-gray-300">We share your listing with our vetted buyer community via our private Slack workspace.</p>
 >>>>>>> ccee472 (Refactor: Implement homepage messaging plan)
+=======
+          <p className="text-gray-300">We share your listing with our vetted buyer community via our private network.</p>
+>>>>>>> 5c292f4 (Refactor: Replace "Slack" mentions with alternative copy)
         </motion.div>
 
         <motion.div initial={{

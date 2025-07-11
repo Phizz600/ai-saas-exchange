@@ -41,10 +41,14 @@ const LiveMetrics = () => {
       <div className="mt-4 text-center">
         <p className="text-gray-400 text-xs">
 <<<<<<< HEAD
+<<<<<<< HEAD
           * Based on activity from the last 30 days in our private buyer network
 =======
           * Based on activity from the last 30 days in our Slack community
 >>>>>>> 11e1ee7 (Refactor homepage for DFaaS model)
+=======
+          * Based on activity from the last 30 days in our private buyer network
+>>>>>>> 5c292f4 (Refactor: Replace "Slack" mentions with alternative copy)
         </p>
       </div>
     </motion.div>
