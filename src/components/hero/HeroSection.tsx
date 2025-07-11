@@ -97,7 +97,7 @@ const HeroSection = ({
               onClick={() => window.open('https://aiexchangeclub.carrd.co/', '_blank')}
             >
               <ShoppingCart className="mr-2" />
-              Join Slack Community ($49/mo)
+              Join the Club ($49/mo)
             </Button>
           </div>
           
@@ -135,7 +135,7 @@ const HeroSection = ({
               Curated AI SaaS Deal Flow
             </h2>
             <p className="text-gray-200 max-w-3xl mx-auto text-center text-xl mb-12">
-              We curate and verify AI SaaS businesses before sharing them with our buyer community. Want access? Join our private Slack for exclusive deal flow.
+              We curate and verify AI SaaS businesses before sharing them with our buyer community. Want access? Join the club for exclusive deal flow.
             </p>
 
             <ProductsShowcase 
