@@ -237,6 +237,7 @@ const PricingFees = () => {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                 <p className="text-gray-300 text-center mb-6 flex-grow">Access our private buyer network with curated DFaaS (Dealflow as a Service) and direct seller communications.</p>
 =======
                 <p className="text-gray-300 text-center mb-6 flex-grow">
@@ -251,6 +252,9 @@ const PricingFees = () => {
                   Access our private buyer network with curated AI SaaS deal flow and direct seller connections.
                 </p>
 >>>>>>> 0f98846 (Reverted to commit 4e2a1411e48bbadc0753671c7de07c663c0a364d)
+=======
+                <p className="text-gray-300 text-center mb-6 flex-grow">Access our private buyer network with curated DFaaS (Dealflow as a Service) and direct seller communications.</p>
+>>>>>>> eed6e33 (Reverted to commit caaa9a257c9e23843bdbdc64bc5347d2adafff8d)
                 
                 <ul className="space-y-3 text-gray-300">
                   <li className="flex items-center">
