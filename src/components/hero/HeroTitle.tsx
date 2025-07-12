@@ -25,6 +25,7 @@ const HeroTitle = ({
       <h1 className="exo-2-heading font-bold leading-tight text-white text-center text-2xl sm:text-3xl md:text-4xl lg:text-5xl my-0 mx-0 py-0 max-w-5xl px-0">
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         Helping AI SaaS Founders Exit Faster
         <br />
         <span className="bg-gradient-to-r from-[#D946EF] via-[#8B5CF6] to-[#0EA5E9] text-transparent bg-clip-text">
@@ -41,6 +42,12 @@ const HeroTitle = ({
         <span className="bg-gradient-to-r from-[#D946EF] via-[#8B5CF6] to-[#0EA5E9] text-transparent bg-clip-text">
           Vetted listings, Vetted Buyers. Streamlined exits.
 >>>>>>> 586c81d (Change hero header)
+=======
+        Helping AI SaaS Founders Exit Faster
+        <br />
+        <span className="bg-gradient-to-r from-[#D946EF] via-[#8B5CF6] to-[#0EA5E9] text-transparent bg-clip-text">
+          Vetted Listings, Vetted Buyers. Streamlined Acquisitions.
+>>>>>>> f0f227b (Refactor hero title)
         </span>
       </h1>
     </motion.div>;
