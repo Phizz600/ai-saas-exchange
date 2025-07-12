@@ -1,3 +1,4 @@
+
 import { lazy, Suspense, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
@@ -101,7 +102,7 @@ const HeroSection = ({
             </Button>
           </div>
           
-          {/* Newsletter Subscription - moved above Live Metrics */}
+          {/* Newsletter Subscription - above Security Features */}
           <Suspense fallback={<Skeleton className="w-full max-w-md h-32" />}>
             <NewsletterSubscription 
               newsletterEmail={newsletterEmail} 
@@ -111,7 +112,12 @@ const HeroSection = ({
             />
           </Suspense>
           
-          {/* Live Metrics Component - moved below Newsletter */}
+          {/* Security Features - moved above Live Metrics */}
+          <Suspense fallback={<Skeleton className="h-16" />}>
+            <SecurityFeatures />
+          </Suspense>
+          
+          {/* Live Metrics Component - moved below Security Features */}
           <LiveMetrics />
           
           {/* ProductHunt Badge */}
@@ -127,10 +133,6 @@ const HeroSection = ({
             </motion.div>
           </div>
           
-          <Suspense fallback={<Skeleton className="h-16" />}>
-            <SecurityFeatures />
-          </Suspense>
-
           <div className="mt-24 mb-16">
             <h2 className="font-bold text-white text-center mb-4 exo-2-heading text-2xl">
               Curated AI SaaS Deal Flow
