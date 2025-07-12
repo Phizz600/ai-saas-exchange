@@ -40,7 +40,13 @@ const PricingFees = () => {
                   </div>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                   <p className="text-gray-300 text-sm text-center">List your AI SaaS completely free - no upfront costs, no commissions, no broker fees.</p>
+=======
+                  <p className="text-gray-300 text-sm text-center">
+                    List your AI SaaS completely free - no upfront costs, no commission until you sell
+                  </p>
+>>>>>>> f43d9c3 (Reverted to commit 6df4012c0db3de43892f5a4cb3b80042d14b36c4)
                 </div>
                 
                 <p className="text-gray-300 text-center mb-6 flex-grow">
