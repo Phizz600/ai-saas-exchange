@@ -165,8 +165,22 @@ const HeroSection = ({
             </Button>
           </div>
           
+<<<<<<< HEAD
           {/* Live Metrics Component */}
 >>>>>>> 11e1ee7 (Refactor homepage for DFaaS model)
+=======
+          {/* Newsletter Subscription - moved above Live Metrics */}
+          <Suspense fallback={<Skeleton className="w-full max-w-md h-32" />}>
+            <NewsletterSubscription 
+              newsletterEmail={newsletterEmail} 
+              setNewsletterEmail={setNewsletterEmail} 
+              subscriberCount={subscriberCount} 
+              setSubscriberCount={setSubscriberCount} 
+            />
+          </Suspense>
+          
+          {/* Live Metrics Component - moved below Newsletter */}
+>>>>>>> 28518e3 (Add NewsletterSubscription above LiveMetrics)
           <LiveMetrics />
           
           {/* ProductHunt Badge */}
@@ -183,6 +197,7 @@ const HeroSection = ({
           </div>
           
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
           <Suspense fallback={<Skeleton className="w-full max-w-md h-32" />}>
             <NewsletterSubscription 
@@ -193,6 +208,8 @@ const HeroSection = ({
             />
           </Suspense>
           
+=======
+>>>>>>> 28518e3 (Add NewsletterSubscription above LiveMetrics)
           <Suspense fallback={<Skeleton className="h-16" />}>
             <SecurityFeatures />
           </Suspense>
