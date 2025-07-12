@@ -1,22 +1,20 @@
+
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { DollarSign, Users, CheckCircle, MessageSquare, BadgeCheck, Crown, User2, Tag, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
 const PricingFees = () => {
-  return <section className="py-0">
+  return (
+    <section className="py-0">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto mb-12">
           {/* Card 1 - For Sellers (Free) */}
-          <motion.div initial={{
-          opacity: 0,
-          y: 20
-        }} whileInView={{
-          opacity: 1,
-          y: 0
-        }} transition={{
-          duration: 0.5,
-          delay: 0.1
-        }}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+          >
             <Card className="h-full p-8 bg-white/10 backdrop-blur-sm border-white/5 hover:shadow-lg transition-shadow">
               <div className="flex flex-col h-full">
                 <div className="flex justify-center mb-6">
@@ -70,19 +68,16 @@ const PricingFees = () => {
           </motion.div>
           
           {/* Card 2 - Private Buyer Network Access */}
-          <motion.div initial={{
-          opacity: 0,
-          y: 20
-        }} whileInView={{
-          opacity: 1,
-          y: 0
-        }} transition={{
-          duration: 0.5,
-          delay: 0.2
-        }}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
             <Card className="h-full p-8 bg-white/10 backdrop-blur-sm border-white/5 hover:shadow-lg transition-shadow relative overflow-hidden">
               {/* Popular badge */}
-              
+              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white text-xs font-bold px-4 py-1 rounded-full">
+                MOST POPULAR
+              </div>
               
               <div className="flex flex-col h-full pt-4">
                 <div className="flex justify-center mb-6">
@@ -162,16 +157,11 @@ const PricingFees = () => {
           </motion.div>
           
           {/* Card 3 - Referral Program */}
-          <motion.div initial={{
-          opacity: 0,
-          y: 20
-        }} whileInView={{
-          opacity: 1,
-          y: 0
-        }} transition={{
-          duration: 0.5,
-          delay: 0.3
-        }}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
             <Card className="h-full p-8 bg-white/10 backdrop-blur-sm border-white/5 hover:shadow-lg transition-shadow">
               <div className="flex flex-col h-full">
                 <div className="flex justify-center mb-6">
@@ -226,21 +216,19 @@ const PricingFees = () => {
           </motion.div>
         </div>
         
-        <motion.div initial={{
-        opacity: 0,
-        y: 20
-      }} whileInView={{
-        opacity: 1,
-        y: 0
-      }} transition={{
-        duration: 0.5,
-        delay: 0.4
-      }} className="text-center mt-12">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="text-center mt-12"
+        >
           <p className="text-gray-300 max-w-2xl mx-auto my-[34px]">
             No brokering. No fluff. Just vetted deal flow delivered to serious investors who are ready to acquire AI SaaS businesses.
           </p>
         </motion.div>
       </div>
-    </section>;
+    </section>
+  );
 };
+
 export default PricingFees;
