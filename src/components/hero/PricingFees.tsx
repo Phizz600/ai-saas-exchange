@@ -133,9 +133,7 @@ const PricingFees = () => {
                   </p>
                 </div>
                 
-                <p className="text-gray-300 text-center mb-6 flex-grow">
-                  Access our private buyer network with curated AI SaaS deal flow and direct seller connections.
-                </p>
+                <p className="text-gray-300 text-center mb-6 flex-grow">Access our private buyer network with curated DFaaS (Dealflow as a Service) and direct seller communications.</p>
                 
                 <ul className="space-y-3 text-gray-300">
                   <li className="flex items-center">
