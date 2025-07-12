@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
@@ -20,7 +19,6 @@ export const Footer = () => {
     size: Math.random() * 10 + 5,
     duration: 3 + Math.random() * 4
   }));
-
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
     // Open the subscription URL in a new tab
@@ -29,32 +27,22 @@ export const Footer = () => {
       description: "You'll be able to subscribe to updates about new AI products and features."
     });
   };
-
-  return (
-    <footer className="relative overflow-hidden">
+  return <footer className="relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-accent via-accent2 to-accent3">
-        {particles.map(particle => (
-          <motion.div 
-            key={particle.id} 
-            className="absolute rounded-full bg-white/10 backdrop-blur-sm" 
-            style={{
-              left: `${particle.x}%`,
-              top: `${particle.y}%`,
-              width: particle.size,
-              height: particle.size
-            }} 
-            animate={{
-              y: [0, -30, 0],
-              x: [0, Math.random() * 20 - 10, 0],
-              opacity: [0.2, 0.5, 0.2]
-            }} 
-            transition={{
-              duration: particle.duration,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }} 
-          />
-        ))}
+        {particles.map(particle => <motion.div key={particle.id} className="absolute rounded-full bg-white/10 backdrop-blur-sm" style={{
+        left: `${particle.x}%`,
+        top: `${particle.y}%`,
+        width: particle.size,
+        height: particle.size
+      }} animate={{
+        y: [0, -30, 0],
+        x: [0, Math.random() * 20 - 10, 0],
+        opacity: [0.2, 0.5, 0.2]
+      }} transition={{
+        duration: particle.duration,
+        repeat: Infinity,
+        ease: "easeInOut"
+      }} />)}
       </div>
       <div className="container mx-auto px-4 py-12 relative z-10">
         <div className="grid grid-cols-4 gap-8">
