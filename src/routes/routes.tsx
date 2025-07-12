@@ -22,11 +22,14 @@ import { AISaasQuiz } from "@/pages/AISaasQuiz";
 import { FeesPricing } from "@/pages/FeesPricing";
 import { BuyerMatchingQuiz } from "@/pages/BuyerMatchingQuiz";
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { AuthTest } from "@/pages/AuthTest";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 =======
 import { FoundersFirst } from "@/pages/FoundersFirst";
 >>>>>>> ce875c0 (feat: Implement founder-first landing page)
+=======
+>>>>>>> 4fd552c (Reverted to commit 586c81d5909ce61b95d0c8498dfc2f29c7e356cc)
 
 // Public routes (no authentication required)
 const publicRoutes = [
@@ -86,6 +89,7 @@ const publicRoutes = [
     path: "/fees-pricing",
     element: <FeesPricing />,
   },
+<<<<<<< HEAD
   {
 <<<<<<< HEAD
     path: "/auth-test",
@@ -95,6 +99,8 @@ const publicRoutes = [
     element: <FoundersFirst />,
 >>>>>>> ce875c0 (feat: Implement founder-first landing page)
   },
+=======
+>>>>>>> 4fd552c (Reverted to commit 586c81d5909ce61b95d0c8498dfc2f29c7e356cc)
 ];
 
 // Protected routes (authentication required)
