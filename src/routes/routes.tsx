@@ -20,8 +20,11 @@ import { Contact } from "@/pages/Contact";
 import { AISaasQuiz } from "@/pages/AISaasQuiz";
 import { FeesPricing } from "@/pages/FeesPricing";
 import { BuyerMatchingQuiz } from "@/pages/BuyerMatchingQuiz";
+<<<<<<< HEAD
 import { AuthTest } from "@/pages/AuthTest";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+=======
+>>>>>>> 4fd552c (Reverted to commit 586c81d5909ce61b95d0c8498dfc2f29c7e356cc)
 
 // Public routes (no authentication required)
 const publicRoutes = [
@@ -81,10 +84,13 @@ const publicRoutes = [
     path: "/fees-pricing",
     element: <FeesPricing />,
   },
+<<<<<<< HEAD
   {
     path: "/auth-test",
     element: <AuthTest />,
   },
+=======
+>>>>>>> 4fd552c (Reverted to commit 586c81d5909ce61b95d0c8498dfc2f29c7e356cc)
 ];
 
 // Protected routes (authentication required)
