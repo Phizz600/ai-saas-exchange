@@ -21,7 +21,6 @@ import { Contact } from "@/pages/Contact";
 import { AISaasQuiz } from "@/pages/AISaasQuiz";
 import { FeesPricing } from "@/pages/FeesPricing";
 import { BuyerMatchingQuiz } from "@/pages/BuyerMatchingQuiz";
-import { FoundersFirst } from "@/pages/FoundersFirst";
 
 const routes = [
   {
@@ -115,10 +114,6 @@ const routes = [
   {
     path: "/fees-pricing",
     element: <FeesPricing />,
-  },
-  {
-    path: "/founders-first",
-    element: <FoundersFirst />,
   },
 ];
 
