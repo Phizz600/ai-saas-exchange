@@ -1,22 +1,20 @@
+
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { DollarSign, Users, CheckCircle, MessageSquare, BadgeCheck, Crown, User2, Tag, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
 const PricingFees = () => {
-  return <section className="py-0">
+  return (
+    <section className="py-0">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto mb-12">
           {/* Card 1 - For Sellers (Free) */}
-          <motion.div initial={{
-          opacity: 0,
-          y: 20
-        }} whileInView={{
-          opacity: 1,
-          y: 0
-        }} transition={{
-          duration: 0.5,
-          delay: 0.1
-        }}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+          >
             <Card className="h-full p-8 bg-white/10 backdrop-blur-sm border-white/5 hover:shadow-lg transition-shadow">
               <div className="flex flex-col h-full">
                 <div className="flex justify-center mb-6">
@@ -113,6 +111,7 @@ const PricingFees = () => {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
           {/* Card 2 - Slack Community Access */}
 >>>>>>> 11e1ee7 (Refactor homepage for DFaaS model)
@@ -123,11 +122,14 @@ const PricingFees = () => {
 >>>>>>> 427693e (Reverted to commit ad9e678499074a488251bb4abb9419e5b3dc2cee)
 =======
 >>>>>>> ab78835 (Reverted to commit ad9e678499074a488251bb4abb9419e5b3dc2cee)
+=======
+>>>>>>> 9496276 (Revert pricing section)
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -165,6 +167,10 @@ const PricingFees = () => {
               
               <div className="flex flex-col h-full pt-4">
 >>>>>>> 11e1ee7 (Refactor homepage for DFaaS model)
+=======
+            <Card className="h-full p-8 bg-white/10 backdrop-blur-sm border-white/5 hover:shadow-lg transition-shadow relative overflow-hidden">
+              <div className="flex flex-col h-full">
+>>>>>>> 9496276 (Revert pricing section)
                 <div className="flex justify-center mb-6">
                   <div className="bg-[#8B5CF6]/20 p-4 rounded-full">
                     <MessageSquare className="h-8 w-8 text-[#8B5CF6]" />
@@ -279,16 +285,11 @@ const PricingFees = () => {
           </motion.div>
           
           {/* Card 3 - Referral Program */}
-          <motion.div initial={{
-          opacity: 0,
-          y: 20
-        }} whileInView={{
-          opacity: 1,
-          y: 0
-        }} transition={{
-          duration: 0.5,
-          delay: 0.3
-        }}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
             <Card className="h-full p-8 bg-white/10 backdrop-blur-sm border-white/5 hover:shadow-lg transition-shadow">
               <div className="flex flex-col h-full">
                 <div className="flex justify-center mb-6">
@@ -343,21 +344,19 @@ const PricingFees = () => {
           </motion.div>
         </div>
         
-        <motion.div initial={{
-        opacity: 0,
-        y: 20
-      }} whileInView={{
-        opacity: 1,
-        y: 0
-      }} transition={{
-        duration: 0.5,
-        delay: 0.4
-      }} className="text-center mt-12">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="text-center mt-12"
+        >
           <p className="text-gray-300 max-w-2xl mx-auto my-[34px]">
             No brokering. No fluff. Just vetted deal flow delivered to serious investors who are ready to acquire AI SaaS businesses.
           </p>
         </motion.div>
       </div>
-    </section>;
+    </section>
+  );
 };
+
 export default PricingFees;
