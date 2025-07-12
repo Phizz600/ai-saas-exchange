@@ -38,7 +38,9 @@ const PricingFees = () => {
                     <User2 className="h-4 w-4" />
                     <p className="text-sm font-medium">Early Adopter Benefit</p>
                   </div>
-                  <p className="text-gray-300 text-sm text-center">List your AI SaaS completely free - no upfront costs, no commissions, no broker fees.</p>
+                  <p className="text-gray-300 text-sm text-center">
+                    List your AI SaaS completely free - no upfront costs, no commission until you sell
+                  </p>
                 </div>
                 
                 <p className="text-gray-300 text-center mb-6 flex-grow">
