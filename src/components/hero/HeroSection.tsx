@@ -1,3 +1,4 @@
+
 import { lazy, Suspense, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
@@ -139,6 +140,7 @@ const HeroSection = ({
           </div>
           
           {/* Newsletter Subscription - above Security Features */}
+<<<<<<< HEAD
           <Suspense fallback={<Skeleton className="w-full max-w-md h-32" />}>
             <NewsletterSubscription 
               newsletterEmail={newsletterEmail} 
@@ -170,6 +172,8 @@ const HeroSection = ({
 >>>>>>> 11e1ee7 (Refactor homepage for DFaaS model)
 =======
           {/* Newsletter Subscription - moved above Live Metrics */}
+=======
+>>>>>>> ad9e678 (Move SecurityFeatures section)
           <Suspense fallback={<Skeleton className="w-full max-w-md h-32" />}>
             <NewsletterSubscription 
               newsletterEmail={newsletterEmail} 
@@ -179,8 +183,17 @@ const HeroSection = ({
             />
           </Suspense>
           
+<<<<<<< HEAD
           {/* Live Metrics Component - moved below Newsletter */}
 >>>>>>> 28518e3 (Add NewsletterSubscription above LiveMetrics)
+=======
+          {/* Security Features - moved above Live Metrics */}
+          <Suspense fallback={<Skeleton className="h-16" />}>
+            <SecurityFeatures />
+          </Suspense>
+          
+          {/* Live Metrics Component - moved below Security Features */}
+>>>>>>> ad9e678 (Move SecurityFeatures section)
           <LiveMetrics />
           
           {/* ProductHunt Badge */}
@@ -196,6 +209,7 @@ const HeroSection = ({
             </motion.div>
           </div>
           
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -215,6 +229,8 @@ const HeroSection = ({
           </Suspense>
 
 >>>>>>> 11e1ee7 (Refactor homepage for DFaaS model)
+=======
+>>>>>>> ad9e678 (Move SecurityFeatures section)
           <div className="mt-24 mb-16">
             <h2 className="font-bold text-white text-center mb-4 exo-2-heading text-2xl">
               Curated AI SaaS Deal Flow
