@@ -1,4 +1,3 @@
-
 import Auth from "@/pages/Auth";
 import { Profile } from "@/pages/Profile";
 import { ProductDashboard } from "@/pages/ProductDashboard";
@@ -21,8 +20,11 @@ import { Contact } from "@/pages/Contact";
 import { AISaasQuiz } from "@/pages/AISaasQuiz";
 import { FeesPricing } from "@/pages/FeesPricing";
 import { BuyerMatchingQuiz } from "@/pages/BuyerMatchingQuiz";
+import { AuthTest } from "@/pages/AuthTest";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 
-const routes = [
+// Public routes (no authentication required)
+const publicRoutes = [
   {
     path: "/",
     element: <Index />,
@@ -41,47 +43,15 @@ const routes = [
   },
   {
     path: "/auth",
-    element: <Auth />,
-  },
-  {
-    path: "/profile",
-    element: <Profile />,
-  },
-  {
-    path: "/product-dashboard",
-    element: <ProductDashboard />,
-  },
-  {
-    path: "/marketplace",
-    element: <Marketplace />,
+    element: (
+      <ProtectedRoute requireAuth={false}>
+        <Auth />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/product/:productId",
     element: <ProductPage />,
-  },
-  {
-    path: "/messages",
-    element: <Messages />,
-  },
-  {
-    path: "/messages/:conversationId",
-    element: <MessageChat />,
-  },
-  {
-    path: "/settings",
-    element: <Settings />,
-  },
-  {
-    path: "/admin",
-    element: <Admin />,
-  },
-  {
-    path: "/list-product",
-    element: <ListProduct />,
-  },
-  {
-    path: "/listing-thank-you",
-    element: <ListingThankYou />,
   },
   {
     path: "/nda-policy",
@@ -104,10 +74,6 @@ const routes = [
     element: <Policies />,
   },
   {
-    path: "/diagnostics",
-    element: <Diagnostics />,
-  },
-  {
     path: "/contact",
     element: <Contact />,
   },
@@ -115,6 +81,97 @@ const routes = [
     path: "/fees-pricing",
     element: <FeesPricing />,
   },
+  {
+    path: "/auth-test",
+    element: <AuthTest />,
+  },
 ];
+
+// Protected routes (authentication required)
+const protectedRoutes = [
+  {
+    path: "/marketplace",
+    element: (
+      <ProtectedRoute>
+        <Marketplace />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/profile",
+    element: (
+      <ProtectedRoute>
+        <Profile />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/product-dashboard",
+    element: (
+      <ProtectedRoute>
+        <ProductDashboard />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/messages",
+    element: (
+      <ProtectedRoute>
+        <Messages />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/messages/:conversationId",
+    element: (
+      <ProtectedRoute>
+        <MessageChat />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/settings",
+    element: (
+      <ProtectedRoute>
+        <Settings />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/admin",
+    element: (
+      <ProtectedRoute>
+        <Admin />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/list-product",
+    element: (
+      <ProtectedRoute>
+        <ListProduct />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/listing-thank-you",
+    element: (
+      <ProtectedRoute>
+        <ListingThankYou />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/diagnostics",
+    element: (
+      <ProtectedRoute>
+        <Diagnostics />
+      </ProtectedRoute>
+    ),
+  },
+];
+
+// Combine all routes
+const routes = [...publicRoutes, ...protectedRoutes];
 
 export default routes;

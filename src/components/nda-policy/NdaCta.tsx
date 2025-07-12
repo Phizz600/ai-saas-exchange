@@ -13,7 +13,7 @@ export const NdaCta = () => {
           </p>
         </div>
         <a href="https://airtable.com/appqbmIOXXLNFhZyj/pagutIK7nf0unyJm3/form" target="_blank" rel="noopener noreferrer">
-          <Button className="bg-white text-[#8B5CF6] hover:bg-gray-100 px-8 py-6 text-lg shadow-md transition-all duration-300 hover:shadow-lg">
+          <Button className="bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white hover:opacity-90 px-8 py-6 text-lg shadow-md transition-all duration-300 hover:shadow-lg">
             List Your AI Business
           </Button>
         </a>

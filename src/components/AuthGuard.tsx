@@ -22,14 +22,14 @@ export const AuthGuard = ({ children }: AuthGuardProps) => {
         
         if (!session) {
           console.log("AuthGuard: No session found, redirecting to auth");
-          navigate("/auth");
+          navigate("/auth?redirect=" + encodeURIComponent(window.location.pathname));
         } else {
           console.log("AuthGuard: Session found", session.user.id);
           setSession(session);
         }
       } catch (error) {
         console.error("AuthGuard: Error checking auth status:", error);
-        navigate("/auth");
+        navigate("/auth?redirect=" + encodeURIComponent(window.location.pathname));
       } finally {
         setIsLoading(false);
       }
@@ -46,7 +46,7 @@ export const AuthGuard = ({ children }: AuthGuardProps) => {
       } else if (event === "SIGNED_OUT") {
         console.log("AuthGuard: User signed out, redirecting to auth");
         setSession(null);
-        navigate("/auth");
+        navigate("/auth?redirect=" + encodeURIComponent(window.location.pathname));
       } else if (event === "USER_UPDATED") {
         console.log("AuthGuard: User updated");
         setSession(session);

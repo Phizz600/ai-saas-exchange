@@ -19,7 +19,7 @@ export function DashboardSidebar() {
 
       <div className="px-4 py-6 mx-4 mb-8 bg-accent2 rounded-lg">
         <h3 className="font-semibold mb-2">Upgrade to PRO to get access all Features!</h3>
-        <button className="w-full py-2 px-4 bg-white text-accent rounded-md hover:bg-gray-100 transition-colors">
+        <button className="w-full py-2 px-4 bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white rounded-md hover:opacity-90 transition-colors">
           Get Pro Now!
         </button>
       </div>

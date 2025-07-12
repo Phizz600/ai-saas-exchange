@@ -57,7 +57,7 @@ export const MarketplaceLayout = () => {
                 <h1 className="exo-2-heading text-3xl sm:text-4xl font-bold bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] inline-block text-transparent bg-clip-text">
                   AI Products Marketplace
                 </h1>
-                <p className="text-lg text-gray-600 max-w-xl">Discover and acquire cash-flowing AI SaaS businesses built by innovative founders</p>
+                <p className="text-lg text-gray-600 max-w-xl">Welcome! You're now logged in and can browse, bid, and buy verified AI SaaS businesses</p>
               </div>
               <div className="flex gap-2">
                 <Link to="/product-dashboard" className="hidden sm:block">

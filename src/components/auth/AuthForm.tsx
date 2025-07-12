@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -9,9 +8,11 @@ import { ErrorMessage } from "./ErrorMessage";
 import { NameField, EmailField, PasswordField } from "./FormFields";
 import { TermsCheckbox } from "./TermsCheckbox";
 import { AuthButtons } from "./AuthButtons";
-import { signInWithGoogle, handleAuthSubmit, resetPassword } from "./utils";
+import { PasswordResetForm } from "./PasswordResetForm";
+import { handleAuthSubmit } from "./utils/signup-helpers";
+import { handleGoogleSignIn } from "./utils/signin-helpers";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { InfoIcon } from "lucide-react";
+import { InfoIcon, CheckCircle, Lock } from "lucide-react";
 
 export const AuthForm = () => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -26,6 +27,9 @@ export const AuthForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [showVerificationInfo, setShowVerificationInfo] = useState(false);
+  const [showAccountExistsAlert, setShowAccountExistsAlert] = useState(false);
+  const [showPasswordReset, setShowPasswordReset] = useState(false);
+  const [signupSuccess, setSignupSuccess] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -40,7 +44,12 @@ export const AuthForm = () => {
     } else {
       setIsFormValid(email !== "" && password !== "");
     }
-  }, [email, password, firstName, agreedToTerms, isSignUp, userType]);
+    
+    // Clear signup success message when user starts typing again
+    if (signupSuccess && (email !== "" || password !== "" || firstName !== "")) {
+      setSignupSuccess(false);
+    }
+  }, [email, password, firstName, agreedToTerms, isSignUp, userType, signupSuccess]);
 
   // Check for OAuth redirects when component mounts
   useEffect(() => {
@@ -75,6 +84,17 @@ export const AuthForm = () => {
       setShowVerificationInfo(true);
     }
     
+    // Custom callback to handle successful signup
+    const handleSignupSuccess = () => {
+      setSignupSuccess(true);
+      // Clear form fields after successful signup
+      setEmail("");
+      setPassword("");
+      setFirstName("");
+      setAgreedToTerms(false);
+      setShowVerificationInfo(false);
+    };
+    
     await handleAuthSubmit(
       isSignUp,
       isFormValid,
@@ -84,14 +104,46 @@ export const AuthForm = () => {
       userType,
       setErrorMessage,
       setIsLoading,
-      setIsSignUp,
-      toast
+      (newIsSignUp: boolean) => {
+        setIsSignUp(newIsSignUp);
+        // If switching from signup to signin, show the account exists alert
+        if (!newIsSignUp && isSignUp) {
+          setShowAccountExistsAlert(true);
+          // Clear the alert after 8 seconds
+          setTimeout(() => setShowAccountExistsAlert(false), 8000);
+          // Clear the form fields when switching to signin
+          setFirstName("");
+          setAgreedToTerms(false);
+          // Clear any existing error messages
+          setErrorMessage("");
+          // Hide verification info when switching to signin
+          setShowVerificationInfo(false);
+          // Hide signup success message
+          setSignupSuccess(false);
+        }
+      },
+      toast,
+      handleSignupSuccess
     );
   };
 
   const handleGoogleSignInClick = async () => {
-    await signInWithGoogle(setErrorMessage, setIsGoogleLoading);
+    await handleGoogleSignIn(setErrorMessage, setIsGoogleLoading);
   };
+
+  const handleForgotPassword = () => {
+    setShowPasswordReset(true);
+  };
+
+  const handleBackToAuth = () => {
+    setShowPasswordReset(false);
+    setErrorMessage("");
+  };
+
+  // If showing password reset form
+  if (showPasswordReset) {
+    return <PasswordResetForm onBack={handleBackToAuth} />;
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -102,6 +154,32 @@ export const AuthForm = () => {
           <InfoIcon className="h-4 w-4 text-blue-500 mr-2" />
           <AlertDescription className="font-medium text-blue-700">
             After signing up, you'll need to verify your email before you can sign in.
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {showAccountExistsAlert && (
+        <Alert className="mb-4 bg-blue-50/90 backdrop-blur-sm border border-blue-200">
+          <CheckCircle className="h-4 w-4 text-blue-600 mr-2" />
+          <AlertDescription className="font-medium text-blue-700">
+            <strong>Account found!</strong> Please sign in with your existing account below.
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {signupSuccess && (
+        <Alert className="mb-6 bg-green-50/95 backdrop-blur-sm border-2 border-green-300 shadow-lg">
+          <CheckCircle className="h-5 w-5 text-green-600 mr-2" />
+          <AlertDescription className="font-medium text-green-800">
+            <div className="space-y-2">
+              <div className="text-lg font-semibold">Account Created Successfully! 🎉</div>
+              <div className="text-sm">
+                📧 <strong>Check your email inbox</strong> for a verification link from Supabase
+              </div>
+              <div className="text-sm text-green-600">
+                ✅ Once verified, you can sign in to access your account
+              </div>
+            </div>
           </AlertDescription>
         </Alert>
       )}
@@ -147,6 +225,20 @@ export const AuthForm = () => {
         />
       )}
 
+      {!isSignUp && (
+        <div className="text-center">
+          <button
+            type="button"
+            onClick={handleForgotPassword}
+            className="text-sm text-blue-600 hover:text-blue-800 underline"
+            disabled={isLoading || isGoogleLoading}
+          >
+            <Lock className="h-4 w-4 inline mr-1" />
+            Forgot your password?
+          </button>
+        </div>
+      )}
+
       <AuthButtons 
         isSignUp={isSignUp}
         isFormValid={isFormValid}
@@ -156,6 +248,13 @@ export const AuthForm = () => {
         setErrorMessage={setErrorMessage}
         handleGoogleSignIn={handleGoogleSignInClick}
         setIsLoading={setIsLoading}
+        setFirstName={setFirstName}
+        setAgreedToTerms={setAgreedToTerms}
+        onModeToggle={() => {
+          setSignupSuccess(false);
+          setShowAccountExistsAlert(false);
+          setShowVerificationInfo(false);
+        }}
       />
     </form>
   );
