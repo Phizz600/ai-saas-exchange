@@ -42,6 +42,7 @@ const PricingFees = () => {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                   <p className="text-gray-300 text-sm text-center">List your AI SaaS completely free - no upfront costs, no commissions, no broker fees.</p>
 =======
                   <p className="text-gray-300 text-sm text-center">
@@ -51,6 +52,11 @@ const PricingFees = () => {
 =======
                   <p className="text-gray-300 text-sm text-center">List your AI SaaS completely free - no upfront costs, no commissions, no broker fees.</p>
 >>>>>>> caaa9a2 (Visual edit in Lovable)
+=======
+                  <p className="text-gray-300 text-sm text-center">
+                    List your AI SaaS completely free - no upfront costs, no commission until you sell
+                  </p>
+>>>>>>> 622425d (Reverted to commit 6df4012c0db3de43892f5a4cb3b80042d14b36c4)
                 </div>
                 
                 <p className="text-gray-300 text-center mb-6 flex-grow">
