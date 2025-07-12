@@ -101,7 +101,17 @@ const HeroSection = ({
             </Button>
           </div>
           
-          {/* Live Metrics Component */}
+          {/* Newsletter Subscription - moved above Live Metrics */}
+          <Suspense fallback={<Skeleton className="w-full max-w-md h-32" />}>
+            <NewsletterSubscription 
+              newsletterEmail={newsletterEmail} 
+              setNewsletterEmail={setNewsletterEmail} 
+              subscriberCount={subscriberCount} 
+              setSubscriberCount={setSubscriberCount} 
+            />
+          </Suspense>
+          
+          {/* Live Metrics Component - moved below Newsletter */}
           <LiveMetrics />
           
           {/* ProductHunt Badge */}
@@ -116,15 +126,6 @@ const HeroSection = ({
               </a>
             </motion.div>
           </div>
-          
-          <Suspense fallback={<Skeleton className="w-full max-w-md h-32" />}>
-            <NewsletterSubscription 
-              newsletterEmail={newsletterEmail} 
-              setNewsletterEmail={setNewsletterEmail} 
-              subscriberCount={subscriberCount} 
-              setSubscriberCount={setSubscriberCount} 
-            />
-          </Suspense>
           
           <Suspense fallback={<Skeleton className="h-16" />}>
             <SecurityFeatures />
