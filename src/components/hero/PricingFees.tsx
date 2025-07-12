@@ -1,20 +1,22 @@
-
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { DollarSign, Users, CheckCircle, MessageSquare, BadgeCheck, Crown, User2, Tag, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
 const PricingFees = () => {
-  return (
-    <section className="py-0">
+  return <section className="py-0">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto mb-12">
           {/* Card 1 - For Sellers (Free) */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-          >
+          <motion.div initial={{
+          opacity: 0,
+          y: 20
+        }} whileInView={{
+          opacity: 1,
+          y: 0
+        }} transition={{
+          duration: 0.5,
+          delay: 0.1
+        }}>
             <Card className="h-full p-8 bg-white/10 backdrop-blur-sm border-white/5 hover:shadow-lg transition-shadow">
               <div className="flex flex-col h-full">
                 <div className="flex justify-center mb-6">
@@ -39,12 +41,16 @@ const PricingFees = () => {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                   <p className="text-gray-300 text-sm text-center">List your AI SaaS completely free - no upfront costs, no commissions, no broker fees.</p>
 =======
                   <p className="text-gray-300 text-sm text-center">
                     List your AI SaaS completely free - no upfront costs, no commission until you sell
                   </p>
 >>>>>>> f43d9c3 (Reverted to commit 6df4012c0db3de43892f5a4cb3b80042d14b36c4)
+=======
+                  <p className="text-gray-300 text-sm text-center">List your AI SaaS completely free - no upfront costs, no commissions, no broker fees.</p>
+>>>>>>> caaa9a2 (Visual edit in Lovable)
                 </div>
                 
                 <p className="text-gray-300 text-center mb-6 flex-grow">
@@ -96,6 +102,7 @@ const PricingFees = () => {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
           {/* Card 2 - Slack Community Access */}
 >>>>>>> 11e1ee7 (Refactor homepage for DFaaS model)
@@ -116,6 +123,8 @@ const PricingFees = () => {
 =======
 =======
 >>>>>>> 4e2a141 (Visual edit in Lovable)
+=======
+>>>>>>> caaa9a2 (Visual edit in Lovable)
           <motion.div initial={{
           opacity: 0,
           y: 20
@@ -127,6 +136,7 @@ const PricingFees = () => {
           delay: 0.2
         }}>
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> 6df4012 (Visual edit in Lovable)
 =======
 >>>>>>> 427693e (Reverted to commit ad9e678499074a488251bb4abb9419e5b3dc2cee)
@@ -134,14 +144,14 @@ const PricingFees = () => {
 >>>>>>> 4e2a141 (Visual edit in Lovable)
 =======
 >>>>>>> ab78835 (Reverted to commit ad9e678499074a488251bb4abb9419e5b3dc2cee)
+=======
+>>>>>>> caaa9a2 (Visual edit in Lovable)
             <Card className="h-full p-8 bg-white/10 backdrop-blur-sm border-white/5 hover:shadow-lg transition-shadow relative overflow-hidden">
 <<<<<<< HEAD
               <div className="flex flex-col h-full">
 =======
               {/* Popular badge */}
-              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white text-xs font-bold px-4 py-1 rounded-full">
-                MOST POPULAR
-              </div>
+              
               
               <div className="flex flex-col h-full pt-4">
 >>>>>>> 11e1ee7 (Refactor homepage for DFaaS model)
@@ -215,12 +225,16 @@ const PricingFees = () => {
                 </div>
                 
 <<<<<<< HEAD
+<<<<<<< HEAD
                 <p className="text-gray-300 text-center mb-6 flex-grow">Access our private buyer network with curated DFaaS (Dealflow as a Service) and direct seller communications.</p>
 =======
                 <p className="text-gray-300 text-center mb-6 flex-grow">
                   Access our private buyer network with curated AI SaaS deal flow and direct seller connections.
                 </p>
 >>>>>>> 11e1ee7 (Refactor homepage for DFaaS model)
+=======
+                <p className="text-gray-300 text-center mb-6 flex-grow">Access our private buyer network with curated DFaaS (Dealflow as a Service) and direct seller communications.</p>
+>>>>>>> caaa9a2 (Visual edit in Lovable)
                 
                 <ul className="space-y-3 text-gray-300">
                   <li className="flex items-center">
@@ -245,11 +259,16 @@ const PricingFees = () => {
           </motion.div>
           
           {/* Card 3 - Referral Program */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-          >
+          <motion.div initial={{
+          opacity: 0,
+          y: 20
+        }} whileInView={{
+          opacity: 1,
+          y: 0
+        }} transition={{
+          duration: 0.5,
+          delay: 0.3
+        }}>
             <Card className="h-full p-8 bg-white/10 backdrop-blur-sm border-white/5 hover:shadow-lg transition-shadow">
               <div className="flex flex-col h-full">
                 <div className="flex justify-center mb-6">
@@ -304,19 +323,21 @@ const PricingFees = () => {
           </motion.div>
         </div>
         
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="text-center mt-12"
-        >
+        <motion.div initial={{
+        opacity: 0,
+        y: 20
+      }} whileInView={{
+        opacity: 1,
+        y: 0
+      }} transition={{
+        duration: 0.5,
+        delay: 0.4
+      }} className="text-center mt-12">
           <p className="text-gray-300 max-w-2xl mx-auto my-[34px]">
             No brokering. No fluff. Just vetted deal flow delivered to serious investors who are ready to acquire AI SaaS businesses.
           </p>
         </motion.div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default PricingFees;
