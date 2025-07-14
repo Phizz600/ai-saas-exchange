@@ -3,6 +3,7 @@ import { Shield, Lock, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 const EnhancedNdaPolicy = () => {
+<<<<<<< HEAD
   return (
     <section className="py-20 bg-background/50">
       <div className="container mx-auto px-4">
@@ -61,5 +62,8 @@ const EnhancedNdaPolicy = () => {
       </div>
     </section>
   );
+=======
+  return;
+>>>>>>> 4a425a7 (Visual edit in Lovable)
 };
 export default EnhancedNdaPolicy;
