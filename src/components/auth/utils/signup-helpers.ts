@@ -9,6 +9,48 @@ type ToastProps = {
 };
 
 /**
+ * Check if a user already exists with the given email
+ * @param email User's email address
+ * @returns Promise<boolean> - true if user exists, false otherwise
+ */
+const checkUserExists = async (email: string): Promise<boolean> => {
+  try {
+    console.log("Checking if user exists for email:", email);
+    
+    // Try to sign in with a dummy password to check if user exists
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password: 'dummy-password-for-check'
+    });
+    
+    // If we get a specific error about invalid credentials, the user exists
+    if (error) {
+      console.log("Error during user existence check:", error.message);
+      
+      // User exists if we get these specific errors
+      const userExistsErrors = [
+        'Invalid login credentials',
+        'Invalid email or password',
+        'Email not confirmed',
+        'User not found'
+      ];
+      
+      // If the error is NOT "User not found", then the user exists
+      if (!error.message.includes('User not found')) {
+        console.log("User exists - detected by error message");
+        return true;
+      }
+    }
+    
+    console.log("User does not exist");
+    return false;
+  } catch (error) {
+    console.error("Error checking if user exists:", error);
+    return false;
+  }
+};
+
+/**
  * Process user signup or sign in
  * @param isSignUp Whether this is a signup or signin operation
  * @param isFormValid Whether the form data is valid
@@ -45,6 +87,26 @@ export const handleAuthSubmit = async (
         return;
       }
 
+      // Check if user already exists before attempting signup
+      console.log("AuthForm: Checking if user already exists");
+      const userExists = await checkUserExists(email);
+      
+      if (userExists) {
+        console.log("AuthForm: User already exists, switching to signin mode");
+        setErrorMessage("An account with this email already exists. Please sign in instead.");
+        setIsSignUp(false);
+        setIsLoading(false);
+        
+        if (toast) {
+          toast({
+            variant: "default",
+            title: "Account Already Exists",
+            description: "Please sign in with your existing account.",
+          });
+        }
+        return;
+      }
+
       console.log("AuthForm: Attempting signup with user type:", userType);
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -59,11 +121,34 @@ export const handleAuthSubmit = async (
 
       if (error) {
         console.error("AuthForm: Signup error:", error);
-        if (error.message.includes("User already registered")) {
-          setErrorMessage("This email is already registered. Please sign in instead.");
+        
+        // Handle various "user already exists" error messages
+        if (
+          error.message.includes("User already registered") ||
+          error.message.includes("User already exists") ||
+          error.message.includes("already registered") ||
+          error.message.includes("already exists") ||
+          error.message.includes("Email already in use") ||
+          error.message.includes("already in use")
+        ) {
+          setErrorMessage("An account with this email already exists. Please sign in instead.");
           setIsSignUp(false);
+          
+          if (toast) {
+            toast({
+              variant: "default",
+              title: "Account Already Exists",
+              description: "Please sign in with your existing account.",
+            });
+          }
+        } else if (error.message.includes("Password should be at least")) {
+          setErrorMessage("Password must be at least 6 characters long.");
+        } else if (error.message.includes("Invalid email")) {
+          setErrorMessage("Please enter a valid email address.");
+        } else if (error.message.includes("Unable to validate email")) {
+          setErrorMessage("Please check your email address and try again.");
         } else {
-          setErrorMessage(error.message);
+          setErrorMessage(`Signup failed: ${error.message}`);
         }
         setIsLoading(false);
         return;
@@ -151,7 +236,18 @@ export const handleAuthSubmit = async (
       
       if (error) {
         console.error("AuthForm: Sign in error:", error);
-        setErrorMessage(error.message || "Invalid email or password.");
+        
+        // Provide more specific error messages for signin
+        if (error.message.includes("Invalid login credentials") || 
+            error.message.includes("Invalid email or password")) {
+          setErrorMessage("Invalid email or password. Please check your credentials and try again.");
+        } else if (error.message.includes("Email not confirmed")) {
+          setErrorMessage("Please verify your email address before signing in. Check your inbox for a verification link.");
+        } else if (error.message.includes("Too many requests")) {
+          setErrorMessage("Too many signin attempts. Please wait a moment before trying again.");
+        } else {
+          setErrorMessage(`Sign in failed: ${error.message}`);
+        }
         setIsLoading(false);
         return;
       }

@@ -1,21 +1,37 @@
 
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthLayout } from "@/components/auth/AuthLayout";
 import { AuthForm } from "@/components/auth/AuthForm";
 import { useToast } from "@/hooks/use-toast";
 import { setupGlobalErrorHandlers } from "@/utils/diagnostics";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Auth = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
+  const { user } = useAuth();
+
+  // Get redirect information from location state
+  const redirectTo = location.state?.redirectTo || '/product-dashboard';
+  const message = location.state?.message;
 
   useEffect(() => {
     console.log("Auth: Component mounted");
     
     // Set up global error handlers
     setupGlobalErrorHandlers();
+    
+    // Show message if provided (from protected route redirect)
+    if (message) {
+      toast({
+        title: "Authentication Required",
+        description: message,
+        variant: "default",
+      });
+    }
     
     // Handle OAuth redirect if present in URL
     const handleOAuthRedirect = async () => {
@@ -44,62 +60,41 @@ const Auth = () => {
     };
     
     const handleEmailConfirmation = async () => {
-      // Check URL for email confirmation parameters
-      const url = new URL(window.location.href);
-      const token_hash = url.hash.substring(1);
-      
-      if (token_hash && (url.searchParams.has('type') || token_hash.includes('type='))) {
-        try {
-          console.log("Auth: Handling email confirmation");
-
-          // Check if this is a password reset or email confirmation
-          if (url.searchParams.get('type') === 'recovery' || token_hash.includes('type=recovery')) {
-            // Handle password reset
-            console.log("Auth: Password reset flow detected");
-            toast({
-              title: "Password Reset",
-              description: "Please enter your new password.",
-            });
-            return;
-          }
-  
-          // Email confirmation
-          console.log("Auth: Email confirmation detected");
+      try {
+        // Check for email confirmation in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
+        const type = urlParams.get('type');
+        
+        if (token && type === 'email_confirmation') {
+          console.log("Auth: Processing email confirmation");
           
-          // If this is a new tab/popup from email verification
-          if (!window.opener) {
-            // If this is the main window (direct visit), show message and redirect to home
-            toast({
-              title: "Email Verified",
-              description: "Your email has been verified. You can now sign in.",
-            });
-            
-            // Redirect to home page after verification
-            console.log("Auth: Redirecting verified user to home page");
-            setTimeout(() => {
-              navigate("/");
-            }, 1500);
-          } else {
-            // If this is the popup/new tab, show a message to close it
-            toast({
-              title: "Email Verified",
-              description: "Your email has been verified. You can now close this tab and sign in.",
-            });
-            // Notify the opener window to refresh
-            try {
-              window.opener.postMessage('EMAIL_VERIFIED', window.location.origin);
-            } catch (e) {
-              console.error("Error posting message to opener:", e);
-            }
-          }
-        } catch (error) {
-          console.error("Auth: Error processing confirmation:", error);
-          toast({
-            variant: "destructive",
-            title: "Verification Failed",
-            description: "There was a problem verifying your email. Please try again.",
+          const { error } = await supabase.auth.verifyOtp({
+            token_hash: token,
+            type: 'email_confirmation'
           });
+          
+          if (error) {
+            console.error("Auth: Email confirmation error:", error);
+            toast({
+              variant: "destructive",
+              title: "Verification Failed",
+              description: "There was a problem verifying your email. Please try again.",
+            });
+          } else {
+            toast({
+              title: "Email Verified",
+              description: "Your email has been verified successfully!",
+            });
+          }
         }
+      } catch (error) {
+        console.error("Auth: Error processing confirmation:", error);
+        toast({
+          variant: "destructive",
+          title: "Verification Failed",
+          description: "There was a problem verifying your email. Please try again.",
+        });
       }
     };
     
@@ -160,20 +155,25 @@ const Auth = () => {
 
         console.log("Auth: Found profile with user_type:", profile.user_type);
 
-        // Redirect based on user type
-        switch (profile.user_type) {
-          case 'ai_investor':
-            console.log("Auth: Redirecting investor to coming-soon page");
-            navigate("/coming-soon");
-            break;
-          case 'ai_builder':
-            console.log("Auth: Redirecting builder to list-product");
-            navigate("/list-product");
-            break;
-          default:
-            console.error("Auth: Invalid user type detected:", profile.user_type);
-            navigate("/user-type-selection");
-            break;
+        // Redirect based on user type or to the original requested page
+        if (redirectTo && redirectTo !== '/product-dashboard') {
+          console.log("Auth: Redirecting to originally requested page:", redirectTo);
+          navigate(redirectTo);
+        } else {
+          switch (profile.user_type) {
+            case 'ai_investor':
+              console.log("Auth: Redirecting investor to coming-soon page");
+              navigate("/coming-soon");
+              break;
+            case 'ai_builder':
+              console.log("Auth: Redirecting builder to list-product");
+              navigate("/list-product");
+              break;
+            default:
+              console.error("Auth: Invalid user type detected:", profile.user_type);
+              navigate("/user-type-selection");
+              break;
+          }
         }
       } catch (error: any) {
         console.error("Auth: Error in profile check:", error);
@@ -238,7 +238,14 @@ const Auth = () => {
       subscription.unsubscribe();
       window.removeEventListener('message', messageHandler);
     };
-  }, [navigate, toast]);
+  }, [navigate, toast, redirectTo, message]);
+
+  // If user is already authenticated, redirect them
+  useEffect(() => {
+    if (user) {
+      navigate(redirectTo);
+    }
+  }, [user, navigate, redirectTo]);
 
   return (
     <AuthLayout>

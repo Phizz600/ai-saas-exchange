@@ -11,7 +11,7 @@ import { TermsCheckbox } from "./TermsCheckbox";
 import { AuthButtons } from "./AuthButtons";
 import { signInWithGoogle, handleAuthSubmit, resetPassword } from "./utils";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { InfoIcon } from "lucide-react";
+import { InfoIcon, CheckCircle } from "lucide-react";
 
 export const AuthForm = () => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -26,6 +26,7 @@ export const AuthForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [showVerificationInfo, setShowVerificationInfo] = useState(false);
+  const [showAccountExistsAlert, setShowAccountExistsAlert] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -84,7 +85,18 @@ export const AuthForm = () => {
       userType,
       setErrorMessage,
       setIsLoading,
-      setIsSignUp,
+      (newIsSignUp: boolean) => {
+        setIsSignUp(newIsSignUp);
+        // If switching from signup to signin, show the account exists alert
+        if (!newIsSignUp && isSignUp) {
+          setShowAccountExistsAlert(true);
+          // Clear the alert after 5 seconds
+          setTimeout(() => setShowAccountExistsAlert(false), 5000);
+          // Clear the form fields when switching to signin
+          setFirstName("");
+          setAgreedToTerms(false);
+        }
+      },
       toast
     );
   };
@@ -102,6 +114,15 @@ export const AuthForm = () => {
           <InfoIcon className="h-4 w-4 text-blue-500 mr-2" />
           <AlertDescription className="font-medium text-blue-700">
             After signing up, you'll need to verify your email before you can sign in.
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {showAccountExistsAlert && (
+        <Alert className="mb-4 bg-green-50/90 backdrop-blur-sm border border-green-200">
+          <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+          <AlertDescription className="font-medium text-green-700">
+            Account found! Please sign in with your existing account.
           </AlertDescription>
         </Alert>
       )}
@@ -156,6 +177,8 @@ export const AuthForm = () => {
         setErrorMessage={setErrorMessage}
         handleGoogleSignIn={handleGoogleSignInClick}
         setIsLoading={setIsLoading}
+        setFirstName={setFirstName}
+        setAgreedToTerms={setAgreedToTerms}
       />
     </form>
   );
