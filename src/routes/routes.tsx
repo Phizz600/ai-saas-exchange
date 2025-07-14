@@ -21,8 +21,12 @@ import { Contact } from "@/pages/Contact";
 import { AISaasQuiz } from "@/pages/AISaasQuiz";
 import { FeesPricing } from "@/pages/FeesPricing";
 import { BuyerMatchingQuiz } from "@/pages/BuyerMatchingQuiz";
+<<<<<<< HEAD
 import { AuthTest } from "@/pages/AuthTest";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+=======
+import { FoundersFirst } from "@/pages/FoundersFirst";
+>>>>>>> ce875c0 (feat: Implement founder-first landing page)
 
 // Public routes (no authentication required)
 const publicRoutes = [
@@ -83,8 +87,13 @@ const publicRoutes = [
     element: <FeesPricing />,
   },
   {
+<<<<<<< HEAD
     path: "/auth-test",
     element: <AuthTest />,
+=======
+    path: "/founders-first",
+    element: <FoundersFirst />,
+>>>>>>> ce875c0 (feat: Implement founder-first landing page)
   },
 ];
 
