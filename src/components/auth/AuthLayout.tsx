@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { Link } from "react-router-dom";
 interface AuthLayoutProps {
   children: ReactNode;
 }
@@ -22,7 +23,9 @@ export const AuthLayout = ({
       
       <div className="w-full max-w-md z-10">
         <div className="mb-6 text-center">
-          <img src="/lovable-uploads/b2726e08-98dd-472d-b44a-b780d6e1343e.png" alt="AI Exchange Club Logo" className="h-40 mx-auto mb-0" />
+          <Link to="/">
+            <img src="/lovable-uploads/b2726e08-98dd-472d-b44a-b780d6e1343e.png" alt="AI Exchange Club Logo" className="h-40 mx-auto mb-0 cursor-pointer hover:opacity-80 transition-opacity" />
+          </Link>
           <h1 className="exo-2-heading text-white mt-2 mb-1 my-0 text-lg">Welcome to The AI Exchange Club</h1>
           <p className="text-gray-300 text-sm">Please enter your details to continue</p>
         </div>
