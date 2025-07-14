@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -43,9 +42,7 @@ export const UserTypeSelector = ({
             <Switch id="userType" checked={userType === 'ai_builder'} onCheckedChange={checked => setUserType(checked ? 'ai_builder' : 'ai_investor')} className={`relative h-6 w-11 cursor-pointer rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${userType === 'ai_builder' ? 'bg-[#8B5CF6]' : 'bg-gradient-to-r from-[#10B981] to-[#34D399]'}`}>
               <span className="block h-5 w-5 rounded-full bg-white shadow-lg ring-0 transition-transform data-[state=checked]:translate-x-5 data-[state=unchecked]:translate-x-0" />
             </Switch>
-            <span className={`text-sm ${userType === 'ai_builder' ? 'text-white font-medium' : 'text-white/60'} transition-colors`}>
-              Builder
-            </span>
+            <span className={`text-sm ${userType === 'ai_builder' ? 'text-white font-medium' : 'text-white/60'} transition-colors`}>Founder</span>
           </div>
         </div>
       </div>
