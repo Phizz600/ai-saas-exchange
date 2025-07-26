@@ -20,18 +20,8 @@ import { Contact } from "@/pages/Contact";
 import { AISaasQuiz } from "@/pages/AISaasQuiz";
 import { FeesPricing } from "@/pages/FeesPricing";
 import { BuyerMatchingQuiz } from "@/pages/BuyerMatchingQuiz";
-<<<<<<< HEAD
-<<<<<<< HEAD
 import { AuthTest } from "@/pages/AuthTest";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
-=======
-<<<<<<< HEAD
-=======
-import { FoundersFirst } from "@/pages/FoundersFirst";
->>>>>>> ce875c0 (feat: Implement founder-first landing page)
-=======
->>>>>>> 9565092 (Reverted to commit 586c81d5909ce61b95d0c8498dfc2f29c7e356cc)
->>>>>>> 4fd552c (Reverted to commit 586c81d5909ce61b95d0c8498dfc2f29c7e356cc)
 
 // Public routes (no authentication required)
 const publicRoutes = [
@@ -91,18 +81,14 @@ const publicRoutes = [
     path: "/fees-pricing",
     element: <FeesPricing />,
   },
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-  {
->>>>>>> 9565092 (Reverted to commit 586c81d5909ce61b95d0c8498dfc2f29c7e356cc)
-<<<<<<< HEAD
   {
     path: "/auth-test",
     element: <AuthTest />,
   },
-=======
->>>>>>> 4fd552c (Reverted to commit 586c81d5909ce61b95d0c8498dfc2f29c7e356cc)
+  {
+    path: "/diagnostics",
+    element: <Diagnostics />,
+  },
 ];
 
 // Protected routes (authentication required)
@@ -116,18 +102,18 @@ const protectedRoutes = [
     ),
   },
   {
-    path: "/profile",
-    element: (
-      <ProtectedRoute>
-        <Profile />
-      </ProtectedRoute>
-    ),
-  },
-  {
     path: "/product-dashboard",
     element: (
       <ProtectedRoute>
         <ProductDashboard />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/profile",
+    element: (
+      <ProtectedRoute>
+        <Profile />
       </ProtectedRoute>
     ),
   },
@@ -156,18 +142,18 @@ const protectedRoutes = [
     ),
   },
   {
-    path: "/admin",
-    element: (
-      <ProtectedRoute>
-        <Admin />
-      </ProtectedRoute>
-    ),
-  },
-  {
     path: "/list-product",
     element: (
       <ProtectedRoute>
         <ListProduct />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/admin",
+    element: (
+      <ProtectedRoute>
+        <Admin />
       </ProtectedRoute>
     ),
   },
@@ -179,17 +165,9 @@ const protectedRoutes = [
       </ProtectedRoute>
     ),
   },
-  {
-    path: "/diagnostics",
-    element: (
-      <ProtectedRoute>
-        <Diagnostics />
-      </ProtectedRoute>
-    ),
-  },
 ];
 
 // Combine all routes
 const routes = [...publicRoutes, ...protectedRoutes];
 
-export default routes;
+export { routes };
