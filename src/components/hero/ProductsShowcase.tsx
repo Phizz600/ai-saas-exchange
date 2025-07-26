@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { ProductCard } from "./product-showcase/ProductCard";
 import { placeholderProducts } from "./product-showcase/placeholderProducts";
@@ -30,6 +29,7 @@ export const ProductsShowcase = ({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5, duration: 0.3 }}
+        className="flex flex-col sm:flex-row gap-4"
       >
         <Button 
           onClick={handleAuthRedirect} 
@@ -37,6 +37,14 @@ export const ProductsShowcase = ({
           className="px-8 py-6 text-lg"
         >
           Load More AI SaaS Businesses
+        </Button>
+        
+        <Button 
+          onClick={handleAuthRedirect}
+          variant="outline"
+          className="px-8 py-6 text-lg border-white/20 text-white hover:bg-white/10"
+        >
+          Browse Full Marketplace
         </Button>
       </motion.div>
     </div>

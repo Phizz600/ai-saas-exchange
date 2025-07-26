@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
@@ -13,6 +12,9 @@ interface AuthButtonsProps {
   setErrorMessage: (value: string) => void;
   handleGoogleSignIn: () => void;
   setIsLoading: (value: boolean) => void;
+  setFirstName?: (value: string) => void;
+  setAgreedToTerms?: (value: boolean) => void;
+  onModeToggle?: () => void;
 }
 
 export const AuthButtons = ({
@@ -23,8 +25,24 @@ export const AuthButtons = ({
   setIsSignUp,
   setErrorMessage,
   handleGoogleSignIn,
-  setIsLoading
+  setIsLoading,
+  setFirstName,
+  setAgreedToTerms,
+  onModeToggle
 }: AuthButtonsProps) => {
+  const handleModeToggle = () => {
+    setIsSignUp(!isSignUp);
+    setErrorMessage("");
+    setIsLoading(false);
+    
+    // Clear form fields when switching modes
+    if (setFirstName) setFirstName("");
+    if (setAgreedToTerms) setAgreedToTerms(false);
+    
+    // Call additional mode toggle callback if provided
+    if (onModeToggle) onModeToggle();
+  };
+
   return <>
       <Button 
         type="submit" 
@@ -50,11 +68,7 @@ export const AuthButtons = ({
 
       <p className="text-center text-sm text-white/80">
         {isSignUp ? "Already have an account? " : "Don't have an account? "}
-        <button type="button" onClick={() => {
-        setIsSignUp(!isSignUp);
-        setErrorMessage("");
-        setIsLoading(false);
-      }} className="text-[#D946EE] hover:text-[#8B5CF6] transition-colors font-medium hover:underline focus:outline-none" disabled={isLoading || isGoogleLoading}>
+        <button type="button" onClick={handleModeToggle} className="text-[#D946EE] hover:text-[#8B5CF6] transition-colors font-medium hover:underline focus:outline-none" disabled={isLoading || isGoogleLoading}>
           {isSignUp ? "Sign In" : "Sign Up"}
         </button>
       </p>

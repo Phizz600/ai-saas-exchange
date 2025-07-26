@@ -432,7 +432,7 @@ export const SearchFilters = ({
             
             <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
               <SheetTrigger asChild>
-                <Button variant="outline" className="bg-white border-gray-200 shadow-sm hover:shadow-md flex-shrink-0 min-h-[40px]">
+                <Button variant="outline" className="bg-gray-50 border-gray-200 shadow-sm hover:shadow-md flex-shrink-0 min-h-[40px]">
                   <SlidersHorizontal className="h-4 w-4 mr-2" />
                   Filter
                   {hasActiveFilters && (

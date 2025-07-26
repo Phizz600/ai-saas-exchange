@@ -1,4 +1,3 @@
-
 import { lazy, Suspense, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
@@ -8,6 +7,7 @@ import { ProductsShowcase } from "@/components/hero/ProductsShowcase";
 import { useNavigate } from "react-router-dom";
 import HeroTitle from "@/components/hero/HeroTitle";
 import LiveMetrics from "@/components/hero/LiveMetrics";
+import { Link } from "react-router-dom";
 
 // Keep lazy loading for these components
 const NewsletterSubscription = lazy(() => import("@/components/hero/NewsletterSubscription"));
@@ -135,16 +135,63 @@ const HeroSection = ({
           
           <div className="mt-24 mb-16">
             <h2 className="font-bold text-white text-center mb-4 exo-2-heading text-2xl">
-              Curated AI SaaS Deal Flow
+              AI SaaS Businesses for Sale
             </h2>
             <p className="text-gray-200 max-w-3xl mx-auto text-center text-xl mb-12">
-              We curate and verify AI SaaS businesses before sharing them with our buyer community. Want access? Join the club for exclusive deal flow.
+              We manually verify, audit & filter AI SaaS businesses before listing them. Interested in buying one? Our AI powered marketplace guides you through a smooth, secured purchasing process!
             </p>
 
-            <ProductsShowcase 
-              isAuthenticated={isAuthenticated} 
-              handleAuthRedirect={handleAuthRedirect} 
-            />
+            <ProductsShowcase isAuthenticated={isAuthenticated} handleAuthRedirect={handleAuthRedirect} />
+          </div>
+
+          {/* Marketplace CTA Section */}
+          <div className="mt-24 mb-16">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.5 }}
+              className="bg-gradient-to-r from-purple-600/20 to-blue-600/20 backdrop-blur-sm rounded-2xl p-8 border border-white/10"
+            >
+              <div className="text-center space-y-6">
+                <h2 className="font-bold text-white text-3xl exo-2-heading">
+                  Ready to Explore Our Marketplace?
+                </h2>
+                <p className="text-gray-200 max-w-2xl mx-auto text-lg">
+                  Discover verified AI SaaS businesses, place bids on Dutch auctions, or make direct offers. 
+                  Join thousands of investors and entrepreneurs in our secure marketplace.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Link to="/marketplace">
+                    <Button 
+                      className="px-8 py-6 text-lg bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+                    >
+                      Browse Marketplace
+                    </Button>
+                  </Link>
+                  <Button 
+                    onClick={handleListProductClick}
+                    variant="outline"
+                    className="px-8 py-6 text-lg border-white/20 text-white hover:bg-white/10"
+                  >
+                    List Your Product
+                  </Button>
+                </div>
+                <div className="flex justify-center items-center gap-8 text-sm text-gray-300">
+                  <span className="flex items-center gap-2">
+                    <span className="w-2 h-2 bg-green-400 rounded-full"></span>
+                    Escrow Protected
+                  </span>
+                  <span className="flex items-center gap-2">
+                    <span className="w-2 h-2 bg-blue-400 rounded-full"></span>
+                    Verified Listings
+                  </span>
+                  <span className="flex items-center gap-2">
+                    <span className="w-2 h-2 bg-purple-400 rounded-full"></span>
+                    Dutch Auctions
+                  </span>
+                </div>
+              </div>
+            </motion.div>
           </div>
 
           <Suspense fallback={<Skeleton className="h-16" />}>

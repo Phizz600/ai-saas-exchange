@@ -1,15 +1,27 @@
-
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthLayout } from "@/components/auth/AuthLayout";
 import { AuthForm } from "@/components/auth/AuthForm";
+import { NewPasswordForm } from "@/components/auth/NewPasswordForm";
 import { useToast } from "@/hooks/use-toast";
 import { setupGlobalErrorHandlers } from "@/utils/diagnostics";
+import { useAuth } from "@/contexts/AuthContext";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { CheckCircle, AlertCircle, Mail } from "lucide-react";
 
 const Auth = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
+  const { user } = useAuth();
+  const [verificationStatus, setVerificationStatus] = useState<'pending' | 'success' | 'error' | null>(null);
+  const [resetStatus, setResetStatus] = useState<'pending' | 'success' | 'error' | null>(null);
+  const [showNewPasswordForm, setShowNewPasswordForm] = useState(false);
+
+  // Get redirect information from location state
+  const redirectTo = location.state?.redirectTo || '/product-dashboard';
+  const message = location.state?.message;
 
   useEffect(() => {
     console.log("Auth: Component mounted");
@@ -17,14 +29,73 @@ const Auth = () => {
     // Set up global error handlers
     setupGlobalErrorHandlers();
     
-    // Handle OAuth redirect if present in URL
-    const handleOAuthRedirect = async () => {
-      try {
-        // Check if there's an access_token or error in the URL
-        const hashParams = new URLSearchParams(window.location.hash.substring(1));
-        const accessToken = hashParams.get('access_token');
-        const error = hashParams.get('error');
-        
+    // Show message if provided (from protected route redirect)
+    if (message) {
+      toast({
+        title: "Authentication Required",
+        description: message,
+        variant: "default",
+      });
+    }
+    
+    // Handle URL parameters for verification and password reset
+    const handleUrlParams = async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const verified = urlParams.get('verified');
+      const type = urlParams.get('type');
+      const token = urlParams.get('token');
+      const error = urlParams.get('error');
+      
+      // Handle email verification success
+      if (verified === 'true') {
+        setVerificationStatus('success');
+        toast({
+          title: "Email Verified!",
+          description: "Your email has been verified successfully. You can now sign in.",
+        });
+        // Clear the URL parameters
+        window.history.replaceState({}, document.title, window.location.pathname);
+        return;
+      }
+      
+      // Handle password reset
+      if (type === 'recovery' && token) {
+        setResetStatus('pending');
+        try {
+          const { error: resetError } = await supabase.auth.verifyOtp({
+            token_hash: token,
+            type: 'recovery'
+          });
+          
+          if (resetError) {
+            console.error("Password reset error:", resetError);
+            setResetStatus('error');
+            toast({
+              variant: "destructive",
+              title: "Password Reset Failed",
+              description: "The password reset link is invalid or has expired. Please try again.",
+            });
+          } else {
+            setResetStatus('success');
+            setShowNewPasswordForm(true);
+            toast({
+              title: "Password Reset Link Verified",
+              description: "You can now set a new password.",
+            });
+          }
+        } catch (error) {
+          console.error("Error processing password reset:", error);
+          setResetStatus('error');
+          toast({
+            variant: "destructive",
+            title: "Password Reset Failed",
+            description: "There was an error processing your password reset. Please try again.",
+          });
+        }
+        return;
+      }
+      
+      // Handle OAuth errors
         if (error) {
           console.error("Auth: OAuth error:", error);
           toast({
@@ -35,65 +106,33 @@ const Auth = () => {
           return;
         }
         
-        if (accessToken) {
-          console.log("Auth: Found access token in URL, handling OAuth callback");
-        }
-      } catch (err) {
-        console.error("Auth: Error handling OAuth redirect:", err);
-      }
-    };
-    
-    const handleEmailConfirmation = async () => {
-      // Check URL for email confirmation parameters
-      const url = new URL(window.location.href);
-      const token_hash = url.hash.substring(1);
-      
-      if (token_hash && (url.searchParams.has('type') || token_hash.includes('type='))) {
+      // Handle email confirmation
+      if (token && type === 'email_confirmation') {
+        setVerificationStatus('pending');
         try {
-          console.log("Auth: Handling email confirmation");
-
-          // Check if this is a password reset or email confirmation
-          if (url.searchParams.get('type') === 'recovery' || token_hash.includes('type=recovery')) {
-            // Handle password reset
-            console.log("Auth: Password reset flow detected");
-            toast({
-              title: "Password Reset",
-              description: "Please enter your new password.",
-            });
-            return;
-          }
-  
-          // Email confirmation
-          console.log("Auth: Email confirmation detected");
+          const { error: verifyError } = await supabase.auth.verifyOtp({
+            token_hash: token,
+            type: 'email_confirmation'
+          });
           
-          // If this is a new tab/popup from email verification
-          if (!window.opener) {
-            // If this is the main window (direct visit), show message and redirect to home
+          if (verifyError) {
+            console.error("Email confirmation error:", verifyError);
+            setVerificationStatus('error');
             toast({
-              title: "Email Verified",
-              description: "Your email has been verified. You can now sign in.",
+              variant: "destructive",
+              title: "Verification Failed",
+              description: "There was a problem verifying your email. Please try again.",
             });
-            
-            // Redirect to home page after verification
-            console.log("Auth: Redirecting verified user to home page");
-            setTimeout(() => {
-              navigate("/");
-            }, 1500);
           } else {
-            // If this is the popup/new tab, show a message to close it
+            setVerificationStatus('success');
             toast({
               title: "Email Verified",
-              description: "Your email has been verified. You can now close this tab and sign in.",
+              description: "Your email has been verified successfully!",
             });
-            // Notify the opener window to refresh
-            try {
-              window.opener.postMessage('EMAIL_VERIFIED', window.location.origin);
-            } catch (e) {
-              console.error("Error posting message to opener:", e);
-            }
           }
         } catch (error) {
-          console.error("Auth: Error processing confirmation:", error);
+          console.error("Error processing confirmation:", error);
+          setVerificationStatus('error');
           toast({
             variant: "destructive",
             title: "Verification Failed",
@@ -103,8 +142,7 @@ const Auth = () => {
       }
     };
     
-    handleOAuthRedirect();
-    handleEmailConfirmation();
+    handleUrlParams();
     
     const checkProfileAndRedirect = async (userId: string, retryCount = 0) => {
       console.log(`Auth: Checking profile for user: ${userId} (attempt ${retryCount + 1})`);
@@ -160,7 +198,11 @@ const Auth = () => {
 
         console.log("Auth: Found profile with user_type:", profile.user_type);
 
-        // Redirect based on user type
+        // Redirect based on user type or to the original requested page
+        if (redirectTo && redirectTo !== '/product-dashboard') {
+          console.log("Auth: Redirecting to originally requested page:", redirectTo);
+          navigate(redirectTo);
+        } else {
         switch (profile.user_type) {
           case 'ai_investor':
             console.log("Auth: Redirecting investor to coming-soon page");
@@ -174,6 +216,7 @@ const Auth = () => {
             console.error("Auth: Invalid user type detected:", profile.user_type);
             navigate("/user-type-selection");
             break;
+          }
         }
       } catch (error: any) {
         console.error("Auth: Error in profile check:", error);
@@ -213,17 +256,6 @@ const Auth = () => {
     
     checkSession();
 
-    // Listen for messages from the popup window
-    const messageHandler = (event: MessageEvent) => {
-      if (event.data === 'EMAIL_VERIFIED') {
-        console.log("Auth: Received EMAIL_VERIFIED message from verification window");
-        // Refresh the page or update the UI as needed
-        window.location.reload();
-      }
-    };
-    
-    window.addEventListener('message', messageHandler);
-
     // Subscribe to auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("Auth: Auth state changed:", event, session?.user?.id);
@@ -236,13 +268,79 @@ const Auth = () => {
     return () => {
       console.log("Auth: Cleaning up subscription");
       subscription.unsubscribe();
-      window.removeEventListener('message', messageHandler);
     };
-  }, [navigate, toast]);
+  }, [navigate, toast, redirectTo, message]);
+
+  // If user is already authenticated, redirect them
+  useEffect(() => {
+    if (user) {
+      navigate(redirectTo);
+    }
+  }, [user, navigate, redirectTo]);
+
+  // Render status messages
+  const renderStatusMessage = () => {
+    if (verificationStatus === 'success') {
+      return (
+        <Alert className="mb-4 bg-green-50/90 backdrop-blur-sm border border-green-200">
+          <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+          <AlertDescription className="font-medium text-green-700">
+            Your email has been verified successfully! You can now sign in to your account.
+          </AlertDescription>
+        </Alert>
+      );
+    }
+    
+    if (verificationStatus === 'error') {
+      return (
+        <Alert className="mb-4 bg-red-50/90 backdrop-blur-sm border border-red-200">
+          <AlertCircle className="h-4 w-4 text-red-500 mr-2" />
+          <AlertDescription className="font-medium text-red-700">
+            Email verification failed. Please try again or contact support.
+          </AlertDescription>
+        </Alert>
+      );
+    }
+    
+    if (resetStatus === 'success' && !showNewPasswordForm) {
+      return (
+        <Alert className="mb-4 bg-blue-50/90 backdrop-blur-sm border border-blue-200">
+          <CheckCircle className="h-4 w-4 text-blue-500 mr-2" />
+          <AlertDescription className="font-medium text-blue-700">
+            Password reset link verified! Please set your new password below.
+          </AlertDescription>
+        </Alert>
+      );
+    }
+    
+    if (resetStatus === 'error') {
+      return (
+        <Alert className="mb-4 bg-red-50/90 backdrop-blur-sm border border-red-200">
+          <AlertCircle className="h-4 w-4 text-red-500 mr-2" />
+          <AlertDescription className="font-medium text-red-700">
+            Password reset failed. The link may be invalid or expired. Please try again.
+          </AlertDescription>
+        </Alert>
+      );
+    }
+    
+    return null;
+  };
 
   return (
     <AuthLayout>
-      <AuthForm />
+      {renderStatusMessage()}
+      {showNewPasswordForm ? (
+        <NewPasswordForm 
+          onSuccess={() => {
+            setShowNewPasswordForm(false);
+            // Navigate to dashboard after successful password reset
+            navigate(redirectTo);
+          }}
+        />
+      ) : (
+        <AuthForm />
+      )}
     </AuthLayout>
   );
 };

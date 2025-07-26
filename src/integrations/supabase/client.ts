@@ -1,8 +1,18 @@
-
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = 'https://pxadbwlidclnfoodjtpd.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB4YWRid2xpZGNsbmZvb2RqdHBkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzczNTc3ODksImV4cCI6MjA1MjkzMzc4OX0.CmmgdPEsVLlbmz0W3dqox505pVMO8lqxFlul2yp84i0';
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl) {
+  console.error('VITE_SUPABASE_URL is missing. Check your .env file.');
+  throw new Error('supabaseUrl is required.');
+}
+if (!supabaseAnonKey) {
+  console.error('VITE_SUPABASE_ANON_KEY is missing. Check your .env file.');
+  throw new Error('supabaseAnonKey is required.');
+}
+
+console.log('[Supabase] Using URL:', supabaseUrl);
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
@@ -18,11 +28,18 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   }
 });
 
-// Export storage for file uploads
 export const storage = supabase.storage;
-
-// Define the correct bucket name as a constant to avoid mismatches
 export const PRODUCT_IMAGES_BUCKET = 'product-images';
-
-// Export the Supabase URL for use in other parts of the app
 export const SUPABASE_URL = supabaseUrl;
+
+supabase
+  .from('profiles')
+  .select('id')
+  .limit(1)
+  .then(({ error }) => {
+    if (error) {
+      console.error('[Supabase] Connection error:', error);
+    } else {
+      console.log('[Supabase] Connection successful');
+    }
+  });
