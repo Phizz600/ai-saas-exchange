@@ -115,22 +115,6 @@ export const Navbar = () => {
                   </Link>)}
             </div>
 
-            {/* Policy Pages Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="flex items-center space-x-1 text-gray-700 hover:text-[#8B5CF6]">
-                  <span>Legal</span>
-                  <ChevronDown className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48 bg-white border border-gray-200 shadow-lg">
-                {policyPages.map(page => <DropdownMenuItem key={page.href} className="text-gray-700 hover:text-[#8B5CF6] hover:bg-gray-50">
-                    <Link to={page.href} className="w-full py-2 px-3">
-                      {page.title}
-                    </Link>
-                  </DropdownMenuItem>)}
-              </DropdownMenuContent>
-            </DropdownMenu>
 
             {/* Auth Buttons */}
             <div className="flex items-center space-x-4">
