@@ -36,6 +36,7 @@ export const AuthLayout = ({
           )}
         </div>
         <div className="bg-white/10 backdrop-blur-lg rounded-xl shadow-2xl p-8 border border-white/20 transform transition-all duration-300 hover:shadow-purple-500/20">
+          <p className="text-gray-300 text-sm text-center mb-6">Please enter your details to continue</p>
           {children}
         </div>
       </div>
