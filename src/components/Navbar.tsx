@@ -68,7 +68,7 @@ export const Navbar = () => {
     href: "/marketplace",
     requiresAuth: true
   }, {
-    title: "Take The Valuation Quiz",
+    title: "Claim Free Valuation",
     href: "https://aiexchange.club/ai-saas-quiz",
     requiresAuth: false
   }, {
