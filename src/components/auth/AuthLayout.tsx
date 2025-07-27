@@ -3,10 +3,12 @@ import { Link } from "react-router-dom";
 interface AuthLayoutProps {
   children: ReactNode;
   showWelcome?: boolean;
+  showInstructions?: boolean;
 }
 export const AuthLayout = ({
   children,
-  showWelcome = false
+  showWelcome = false,
+  showInstructions = false
 }: AuthLayoutProps) => {
   return <div className="min-h-screen bg-gradient-to-b from-accent to-accent3 flex items-center justify-center p-4 relative overflow-hidden">
       {/* Animated background elements */}
@@ -36,7 +38,9 @@ export const AuthLayout = ({
           )}
         </div>
         <div className="bg-white/10 backdrop-blur-lg rounded-xl shadow-2xl p-8 border border-white/20 transform transition-all duration-300 hover:shadow-purple-500/20">
-          <p className="text-gray-300 text-sm text-center mb-6">Please enter your details to continue</p>
+          {showInstructions && (
+            <p className="text-gray-300 text-sm text-center mb-6">Please enter your details to continue</p>
+          )}
           {children}
         </div>
       </div>

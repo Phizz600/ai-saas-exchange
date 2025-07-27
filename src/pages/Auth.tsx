@@ -329,7 +329,10 @@ const Auth = () => {
   };
 
   return (
-    <AuthLayout showWelcome={isSignUpMode && !showNewPasswordForm}>
+    <AuthLayout 
+      showWelcome={isSignUpMode && !showNewPasswordForm}
+      showInstructions={!isSignUpMode && !showNewPasswordForm}
+    >
       {renderStatusMessage()}
       {showNewPasswordForm ? (
         <NewPasswordForm 
