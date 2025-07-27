@@ -11,9 +11,10 @@ export const AuthTest = () => {
   const { isAuthenticated, isUnauthenticated, requireAuth } = useAuthCheck();
 
   const handleTestRequireAuth = () => {
-    requireAuth(() => {
+    const isAuth = requireAuth();
+    if (isAuth) {
       console.log("User is authenticated, proceeding...");
-    });
+    }
   };
 
   const handleSignOut = async () => {
