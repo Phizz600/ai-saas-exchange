@@ -230,7 +230,7 @@ export const AuthForm = () => {
           <button
             type="button"
             onClick={handleForgotPassword}
-            className="text-sm text-blue-600 hover:text-blue-800 underline"
+            className="text-sm text-[#D946EE] hover:text-[#8B5CF6] underline"
             disabled={isLoading || isGoogleLoading}
           >
             <Lock className="h-4 w-4 inline mr-1" />
