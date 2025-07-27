@@ -67,10 +67,10 @@ export const PasswordResetForm = ({ onBack }: PasswordResetFormProps) => {
       <div className="space-y-6">
         <div className="text-center">
           <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          <h2 className="text-2xl font-bold text-white mb-2">
             Check Your Email
           </h2>
-          <p className="text-gray-600 mb-6">
+          <p className="text-white/80 mb-6">
             We've sent a password reset link to <strong>{email}</strong>
           </p>
           <Alert className="bg-blue-50 border-blue-200">
@@ -91,7 +91,7 @@ export const PasswordResetForm = ({ onBack }: PasswordResetFormProps) => {
         <Button
           onClick={onBack}
           variant="outline"
-          className="w-full"
+          className="w-full border-white/20 text-white hover:bg-white/10"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to Sign In
@@ -103,10 +103,10 @@ export const PasswordResetForm = ({ onBack }: PasswordResetFormProps) => {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+        <h2 className="text-2xl font-bold text-white mb-2">
           Reset Your Password
         </h2>
-        <p className="text-gray-600">
+        <p className="text-white/80">
           Enter your email address and we'll send you a link to reset your password.
         </p>
       </div>
@@ -119,7 +119,7 @@ export const PasswordResetForm = ({ onBack }: PasswordResetFormProps) => {
         )}
 
         <div className="space-y-2">
-          <Label htmlFor="email">Email Address</Label>
+          <Label htmlFor="email" className="text-white">Email Address</Label>
           <Input
             id="email"
             type="email"
@@ -133,7 +133,7 @@ export const PasswordResetForm = ({ onBack }: PasswordResetFormProps) => {
 
         <Button
           type="submit"
-          className="w-full"
+          className="w-full bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white hover:shadow-lg hover:shadow-purple-500/30"
           disabled={isLoading || !email}
         >
           {isLoading ? "Sending..." : "Send Reset Link"}
@@ -143,7 +143,7 @@ export const PasswordResetForm = ({ onBack }: PasswordResetFormProps) => {
           type="button"
           variant="outline"
           onClick={onBack}
-          className="w-full"
+          className="w-full border-white/20 text-white hover:bg-white/10"
           disabled={isLoading}
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
