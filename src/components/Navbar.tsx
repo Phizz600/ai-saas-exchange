@@ -9,13 +9,17 @@ import { getUnreadMessagesCount } from "@/integrations/supabase/messages";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/contexts/AuthContext";
-
 export const Navbar = () => {
-  const { user, signOut } = useAuth();
+  const {
+    user,
+    signOut
+  } = useAuth();
   const [unreadCount, setUnreadCount] = useState(0);
   const location = useLocation();
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
   const isProfilePage = location.pathname === '/profile';
   const isHomePage = location.pathname === '/';
   const isPolicyPage = location.pathname === '/policies' || location.pathname === '/terms' || location.pathname === '/nda-policy' || location.pathname === '/fees-pricing';
@@ -23,14 +27,11 @@ export const Navbar = () => {
   // Subscribe to new messages to update unread count
   useEffect(() => {
     if (!user) return;
-    
     const fetchUnreadCount = async () => {
       const count = await getUnreadMessagesCount();
       setUnreadCount(count);
     };
-    
     fetchUnreadCount();
-    
     const channel = supabase.channel('messages_count').on('postgres_changes', {
       event: 'INSERT',
       schema: 'public',
@@ -39,33 +40,29 @@ export const Navbar = () => {
       const count = await getUnreadMessagesCount();
       setUnreadCount(count);
     }).subscribe();
-    
     return () => {
       supabase.removeChannel(channel);
     };
   }, [user]);
-
   const handleNavigationClick = (e: React.MouseEvent, path: string) => {
     e.preventDefault();
     if (!user) {
       console.log("User not authenticated, redirecting to auth page");
-      navigate("/auth", { 
-        state: { 
+      navigate("/auth", {
+        state: {
           redirectTo: path,
           message: 'Please sign in to access this feature'
-        } 
+        }
       });
     } else {
       console.log(`User authenticated, proceeding to ${path}`);
       navigate(path);
     }
   };
-
   const handleSignOut = async () => {
     await signOut();
-      navigate('/');
+    navigate('/');
   };
-
   const navigationItems = [{
     title: "Marketplace",
     href: "/marketplace",
@@ -83,7 +80,6 @@ export const Navbar = () => {
     href: "/contact",
     requiresAuth: false
   }];
-
   const policyPages = [{
     title: "Platform Policies",
     href: "/policies"
@@ -97,18 +93,14 @@ export const Navbar = () => {
     title: "Fees & Pricing",
     href: "/fees-pricing"
   }];
-
-  return (
-    <nav className="fixed top-8 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200/50">
+  return <nav className="fixed top-8 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link to="/" className="flex items-center space-x-2">
-              <img src="/lovable-uploads/f1d82e78-2a24-4c2b-b93c-d1a196c1065b.png" alt="AI Exchange Club" className="h-8 w-auto" />
-              <span className="text-xl font-bold bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] bg-clip-text text-transparent">
-                AI Exchange
-              </span>
+              <img src="/lovable-uploads/f1d82e78-2a24-4c2b-b93c-d1a196c1065b.png" alt="AI Exchange Club" className="h-14 w-auto" />
+              
           </Link>
           </div>
 
@@ -116,25 +108,11 @@ export const Navbar = () => {
           <div className="hidden md:flex items-center space-x-8">
             {/* Main Navigation */}
             <div className="flex items-center space-x-6">
-              {navigationItems.map((item) => (
-                item.requiresAuth ? (
-                  <button
-                    key={item.href}
-                    onClick={(e) => handleNavigationClick(e, item.href)}
-                    className="text-gray-700 hover:text-[#8B5CF6] transition-colors font-medium"
-                  >
+              {navigationItems.map(item => item.requiresAuth ? <button key={item.href} onClick={e => handleNavigationClick(e, item.href)} className="text-gray-700 hover:text-[#8B5CF6] transition-colors font-medium">
                     {item.title}
-                  </button>
-                ) : (
-                  <Link
-                    key={item.href}
-                    to={item.href}
-                    className="text-gray-700 hover:text-[#8B5CF6] transition-colors font-medium"
-                  >
+                  </button> : <Link key={item.href} to={item.href} className="text-gray-700 hover:text-[#8B5CF6] transition-colors font-medium">
                     {item.title}
-                  </Link>
-                )
-              ))}
+                  </Link>)}
             </div>
 
             {/* Policy Pages Dropdown */}
@@ -146,29 +124,24 @@ export const Navbar = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48 bg-white border border-gray-200 shadow-lg">
-                {policyPages.map((page) => (
-                  <DropdownMenuItem key={page.href} className="text-gray-700 hover:text-[#8B5CF6] hover:bg-gray-50">
+                {policyPages.map(page => <DropdownMenuItem key={page.href} className="text-gray-700 hover:text-[#8B5CF6] hover:bg-gray-50">
                     <Link to={page.href} className="w-full py-2 px-3">
                       {page.title}
                     </Link>
-                  </DropdownMenuItem>
-                ))}
+                  </DropdownMenuItem>)}
               </DropdownMenuContent>
             </DropdownMenu>
 
             {/* Auth Buttons */}
             <div className="flex items-center space-x-4">
-              {user ? (
-                <>
+              {user ? <>
                   {/* Messages */}
                 <Link to="/messages" className="relative">
                     <Button variant="ghost" size="sm" className="relative">
                     <FileText className="h-5 w-5" />
-                      {unreadCount > 0 && (
-                        <Badge className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
+                      {unreadCount > 0 && <Badge className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
                           {unreadCount > 9 ? '9+' : unreadCount}
-                        </Badge>
-                      )}
+                        </Badge>}
                     </Button>
                   </Link>
 
@@ -204,25 +177,15 @@ export const Navbar = () => {
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
-                </>
-              ) : (
-                <>
-                  <Button
-                    variant="ghost"
-                    onClick={(e) => handleNavigationClick(e, "/auth")}
-                    className="text-gray-700 hover:text-[#8B5CF6]"
-                  >
+                </> : <>
+                  <Button variant="ghost" onClick={e => handleNavigationClick(e, "/auth")} className="text-gray-700 hover:text-[#8B5CF6]">
                     Sign In
                   </Button>
-                  <Button
-                    onClick={(e) => handleNavigationClick(e, "/list-product")}
-                    className="bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white hover:shadow-lg hover:shadow-purple-500/30"
-                  >
+                  <Button onClick={e => handleNavigationClick(e, "/list-product")} className="bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white hover:shadow-lg hover:shadow-purple-500/30">
                     <UserPlus className="mr-2 h-4 w-4" />
                     List Your Product
                 </Button>
-                </>
-              )}
+                </>}
             </div>
           </div>
 
@@ -246,99 +209,51 @@ export const Navbar = () => {
                 
                 <div className="mt-8 space-y-4">
                   {/* Navigation Items */}
-                  {navigationItems.map((item) => (
-                    item.requiresAuth ? (
-                      <button
-                        key={item.href}
-                        onClick={(e) => handleNavigationClick(e, item.href)}
-                        className="block text-gray-700 hover:text-[#8B5CF6] transition-colors font-medium w-full text-left"
-                      >
+                  {navigationItems.map(item => item.requiresAuth ? <button key={item.href} onClick={e => handleNavigationClick(e, item.href)} className="block text-gray-700 hover:text-[#8B5CF6] transition-colors font-medium w-full text-left">
                         {item.title}
-                      </button>
-                    ) : (
-                      <Link
-                        key={item.href}
-                        to={item.href}
-                        className="block text-gray-700 hover:text-[#8B5CF6] transition-colors font-medium"
-                      >
+                      </button> : <Link key={item.href} to={item.href} className="block text-gray-700 hover:text-[#8B5CF6] transition-colors font-medium">
                         {item.title}
-                      </Link>
-                    )
-                  ))}
+                      </Link>)}
                   
                   {/* Policy Pages */}
                   <div className="border-t pt-4">
                     <h3 className="text-sm font-semibold text-gray-500 mb-2">Legal</h3>
-                    {policyPages.map((page) => (
-                      <Link
-                        key={page.href}
-                        to={page.href}
-                        className="block text-gray-700 hover:text-[#8B5CF6] transition-colors text-sm py-1"
-                      >
+                    {policyPages.map(page => <Link key={page.href} to={page.href} className="block text-gray-700 hover:text-[#8B5CF6] transition-colors text-sm py-1">
                         {page.title}
-                      </Link>
-                    ))}
+                      </Link>)}
                   </div>
                   
                   {/* Auth Section */}
                   <div className="border-t pt-4">
-                    {user ? (
-                      <div className="space-y-2">
-                        <Link
-                          to="/messages"
-                          className="flex items-center justify-between text-gray-700 hover:text-[#8B5CF6] transition-colors"
-                        >
+                    {user ? <div className="space-y-2">
+                        <Link to="/messages" className="flex items-center justify-between text-gray-700 hover:text-[#8B5CF6] transition-colors">
                           <span>Messages</span>
-                          {unreadCount > 0 && (
-                            <Badge className="h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
+                          {unreadCount > 0 && <Badge className="h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
                               {unreadCount > 9 ? '9+' : unreadCount}
-                            </Badge>
-                          )}
+                            </Badge>}
                         </Link>
-                        <Link
-                          to="/profile"
-                          className="block text-gray-700 hover:text-[#8B5CF6] transition-colors"
-                        >
+                        <Link to="/profile" className="block text-gray-700 hover:text-[#8B5CF6] transition-colors">
                           Profile
                         </Link>
-                        <Link
-                          to="/product-dashboard"
-                          className="block text-gray-700 hover:text-[#8B5CF6] transition-colors"
-                        >
+                        <Link to="/product-dashboard" className="block text-gray-700 hover:text-[#8B5CF6] transition-colors">
                           Dashboard
                         </Link>
-                        <Link
-                          to="/settings"
-                          className="block text-gray-700 hover:text-[#8B5CF6] transition-colors"
-                        >
+                        <Link to="/settings" className="block text-gray-700 hover:text-[#8B5CF6] transition-colors">
                           Settings
                         </Link>
-                        <button
-                          onClick={handleSignOut}
-                          className="flex items-center text-gray-700 hover:text-red-600 transition-colors w-full"
-                        >
+                        <button onClick={handleSignOut} className="flex items-center text-gray-700 hover:text-red-600 transition-colors w-full">
                           <LogOut className="mr-2 h-4 w-4" />
                           Sign Out
                         </button>
-                </div>
-                    ) : (
-                      <div className="space-y-2">
-                        <Button
-                          variant="ghost"
-                          onClick={(e) => handleNavigationClick(e, "/auth")}
-                          className="w-full justify-start text-gray-700 hover:text-[#8B5CF6]"
-                        >
+                </div> : <div className="space-y-2">
+                        <Button variant="ghost" onClick={e => handleNavigationClick(e, "/auth")} className="w-full justify-start text-gray-700 hover:text-[#8B5CF6]">
                           Sign In
                         </Button>
-                        <Button
-                          onClick={(e) => handleNavigationClick(e, "/list-product")}
-                          className="w-full bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white"
-                        >
+                        <Button onClick={e => handleNavigationClick(e, "/list-product")} className="w-full bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white">
                           <UserPlus className="mr-2 h-4 w-4" />
                           List Your Product
                     </Button>
-                      </div>
-                    )}
+                      </div>}
                   </div>
                 </div>
               </SheetContent>
@@ -346,6 +261,5 @@ export const Navbar = () => {
           </div>
         </div>
       </div>
-    </nav>
-  );
+    </nav>;
 };
