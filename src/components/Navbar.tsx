@@ -162,7 +162,7 @@ export const Navbar = () => {
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </> : <>
-                  <Button variant="ghost" onClick={e => handleNavigationClick(e, "/auth")} className="text-gray-700 hover:text-[#8B5CF6]">
+                  <Button variant="ghost" onClick={() => navigate("/auth")} className="text-gray-700 hover:text-[#8B5CF6]">
                     Sign In
                   </Button>
                   <Button onClick={e => handleNavigationClick(e, "/list-product")} className="bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white hover:shadow-lg hover:shadow-purple-500/30">
@@ -230,7 +230,7 @@ export const Navbar = () => {
                           Sign Out
                         </button>
                 </div> : <div className="space-y-2">
-                        <Button variant="ghost" onClick={e => handleNavigationClick(e, "/auth")} className="w-full justify-start text-gray-700 hover:text-[#8B5CF6]">
+                        <Button variant="ghost" onClick={() => navigate("/auth")} className="w-full justify-start text-gray-700 hover:text-[#8B5CF6]">
                           Sign In
                         </Button>
                         <Button onClick={e => handleNavigationClick(e, "/list-product")} className="w-full bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white">
