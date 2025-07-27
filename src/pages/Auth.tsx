@@ -331,7 +331,7 @@ const Auth = () => {
   return (
     <AuthLayout 
       showWelcome={isSignUpMode && !showNewPasswordForm}
-      showInstructions={!isSignUpMode && !showNewPasswordForm}
+      showInstructions={false}
     >
       {renderStatusMessage()}
       {showNewPasswordForm ? (
