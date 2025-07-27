@@ -48,5 +48,8 @@ verify_jwt = false
 [functions.get-stripe-publishable-key]
 verify_jwt = true
 
+[functions.create-admin-user]
+verify_jwt = false
+
 [realtime]
 enabled = true

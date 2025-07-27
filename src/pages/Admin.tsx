@@ -8,10 +8,39 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
-import { Info } from "lucide-react";
+import { Info, Shield } from "lucide-react";
 import { AnalyticsTab } from "@/components/admin/AnalyticsTab";
+import { AdminUserManager } from "@/components/admin/AdminUserManager";
+import { useAdminCheck } from "@/hooks/useAdminCheck";
 
 export const Admin = () => {
+  const { isAdmin, loading } = useAdminCheck();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Verifying admin access...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAdmin) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto p-6">
+          <Shield className="h-16 w-16 text-destructive mx-auto mb-4" />
+          <h1 className="text-2xl font-bold text-destructive mb-2">Access Denied</h1>
+          <p className="text-muted-foreground">
+            You don't have permission to access this admin area.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -32,6 +61,7 @@ export const Admin = () => {
               <TabsTrigger value="analytics">Analytics</TabsTrigger>
               <TabsTrigger value="products">Product Listings</TabsTrigger>
               <TabsTrigger value="emails">Email Testing</TabsTrigger>
+              <TabsTrigger value="users">User Management</TabsTrigger>
               <TabsTrigger value="settings">Settings</TabsTrigger>
             </TabsList>
             
@@ -70,6 +100,10 @@ export const Admin = () => {
                   </div>
                 </CardContent>
               </Card>
+            </TabsContent>
+            
+            <TabsContent value="users">
+              <AdminUserManager />
             </TabsContent>
             
             <TabsContent value="settings">

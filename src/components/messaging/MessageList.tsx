@@ -3,6 +3,7 @@ import React, { RefObject } from "react";
 import { Message } from "@/integrations/supabase/messages";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDistance } from "date-fns";
+import DOMPurify from 'dompurify';
 
 interface MessageListProps {
   messages: Message[];
@@ -34,15 +35,24 @@ export const MessageList: React.FC<MessageListProps> = ({
         const isCurrentUser = currentUserId === message.sender_id;
         const isSystemMessage = message.sender_id === "system";
         if (isSystemMessage) {
+          // Sanitize system message content to prevent XSS
+          const sanitizedContent = DOMPurify.sanitize(
+            message.content
+              .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+              .replace(/\n/g, "<br/>"),
+            {
+              ALLOWED_TAGS: ['strong', 'br'],
+              ALLOWED_ATTR: []
+            }
+          );
+          
           return (
             <div key={message.id} className="flex justify-center">
               <div className="max-w-[90%] bg-muted rounded-lg p-3 text-center">
                 <div
                   className="text-sm"
                   dangerouslySetInnerHTML={{
-                    __html: message.content
-                      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-                      .replace(/\n/g, "<br/>"),
+                    __html: sanitizedContent,
                   }}
                 />
                 <p className="text-xs mt-1 text-muted-foreground">
