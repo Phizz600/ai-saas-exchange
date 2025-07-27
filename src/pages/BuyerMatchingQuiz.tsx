@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Navbar } from "@/components/Navbar";
 import { Slack, Trophy, Bell } from "lucide-react";
 import AnimatedGradientBackground from "@/components/ui/AnimatedGradientBackground";
@@ -9,6 +10,9 @@ export const BuyerMatchingQuiz = () => {
         {/* Hero Section */}
         <div className="text-center mb-8 max-w-4xl mx-auto mt-20">
           <div className="space-y-4">
+            <Link to="/" className="inline-block mb-6">
+              <img src="/lovable-uploads/f1d82e78-2a24-4c2b-b93c-d1a196c1065b.png" alt="AI Exchange Club" className="h-16 w-auto mx-auto" />
+            </Link>
             <h1 className="exo-2-heading text-4xl md:text-5xl text-white leading-tight">Get Matched with AI SaaS Businesses</h1>
             <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto">🎯 Match with AI SaaS Businesses That Meet Your Investment Criteria - Receive Your Matches Delivered Directly in the AI Exchange Club Private Slack Community.</p>
           </div>
