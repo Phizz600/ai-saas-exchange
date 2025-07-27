@@ -4,7 +4,7 @@ import AnimatedGradientBackground from "@/components/ui/AnimatedGradientBackgrou
 import { BuyerMatchingQuestionnaire } from "@/components/buyer/BuyerMatchingQuestionnaire";
 export const BuyerMatchingQuiz = () => {
   return <AnimatedGradientBackground>
-      <Navbar />
+      
       <main className="container mx-auto px-4 py-6 md:py-8">
         {/* Hero Section */}
         <div className="text-center mb-8 max-w-4xl mx-auto mt-20">
