@@ -105,7 +105,7 @@ export const Navbar = () => {
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link to="/" className="flex items-center space-x-2">
-              <img src="/ai-exchange-logo.png" alt="AI Exchange" className="h-8 w-auto" />
+              <img src="/lovable-uploads/f1d82e78-2a24-4c2b-b93c-d1a196c1065b.png" alt="AI Exchange Club" className="h-8 w-auto" />
               <span className="text-xl font-bold bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] bg-clip-text text-transparent">
                 AI Exchange
               </span>
@@ -237,7 +237,7 @@ export const Navbar = () => {
               <SheetContent side="right" className="w-80">
                 <SheetHeader>
                   <div className="flex items-center space-x-2">
-                    <img src="/ai-exchange-logo.png" alt="AI Exchange" className="h-8 w-auto" />
+                    <img src="/lovable-uploads/f1d82e78-2a24-4c2b-b93c-d1a196c1065b.png" alt="AI Exchange Club" className="h-8 w-auto" />
                     <span className="text-xl font-bold bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] bg-clip-text text-transparent">
                       AI Exchange
                     </span>
