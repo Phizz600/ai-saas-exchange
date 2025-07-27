@@ -14,7 +14,11 @@ import { handleGoogleSignIn } from "./utils/signin-helpers";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { InfoIcon, CheckCircle, Lock } from "lucide-react";
 
-export const AuthForm = () => {
+interface AuthFormProps {
+  onModeChange?: (isSignUp: boolean) => void;
+}
+
+export const AuthForm = ({ onModeChange }: AuthFormProps = {}) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [isSignUp, setIsSignUp] = useState(true);
   const [email, setEmail] = useState("");
@@ -50,6 +54,11 @@ export const AuthForm = () => {
       setSignupSuccess(false);
     }
   }, [email, password, firstName, agreedToTerms, isSignUp, userType, signupSuccess]);
+
+  // Notify parent component when mode changes
+  useEffect(() => {
+    onModeChange?.(isSignUp && !showPasswordReset);
+  }, [isSignUp, showPasswordReset, onModeChange]);
 
   // Check for OAuth redirects when component mounts
   useEffect(() => {

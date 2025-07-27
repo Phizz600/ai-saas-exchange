@@ -18,6 +18,7 @@ const Auth = () => {
   const [verificationStatus, setVerificationStatus] = useState<'pending' | 'success' | 'error' | null>(null);
   const [resetStatus, setResetStatus] = useState<'pending' | 'success' | 'error' | null>(null);
   const [showNewPasswordForm, setShowNewPasswordForm] = useState(false);
+  const [isSignUpMode, setIsSignUpMode] = useState(true);
 
   // Get redirect information from location state
   const redirectTo = location.state?.redirectTo || '/product-dashboard';
@@ -328,7 +329,7 @@ const Auth = () => {
   };
 
   return (
-    <AuthLayout>
+    <AuthLayout showWelcome={isSignUpMode && !showNewPasswordForm}>
       {renderStatusMessage()}
       {showNewPasswordForm ? (
         <NewPasswordForm 
@@ -339,7 +340,7 @@ const Auth = () => {
           }}
         />
       ) : (
-        <AuthForm />
+        <AuthForm onModeChange={setIsSignUpMode} />
       )}
     </AuthLayout>
   );
