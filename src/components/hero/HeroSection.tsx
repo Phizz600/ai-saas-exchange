@@ -53,7 +53,7 @@ const HeroSection = ({
     navigate('/ai-saas-quiz');
   };
   return <div className="min-h-screen relative overflow-hidden">
-      <div className="relative container mx-auto px-4 py-24">
+      <div className="relative container mx-auto px-4 py-[24px]">
         <motion.div initial={{
         opacity: 0,
         y: 20
