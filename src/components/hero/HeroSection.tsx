@@ -72,7 +72,7 @@ const HeroSection = ({
         }} transition={{
           duration: 0.3
         }} className="text-xl text-gray-200 mb-12 max-w-2xl mx-auto text-center">
-            We connect qualified AI SaaS founders with ready-to-acquire buyers—fast. No brokering. No fluff. Just vetted deal flow delivered to serious investors.
+            Built for founders who want serious buyers, not tire-kickers & spammy offers. No brokering. No fluff. Just vetted deal flow delivered to serious investors.
           </motion.p>
 
           {/* Updated Button Row with GTM strategy CTAs */}
