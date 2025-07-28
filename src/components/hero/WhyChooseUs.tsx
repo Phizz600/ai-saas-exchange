@@ -141,7 +141,7 @@ const WhyChooseUs = () => {
                       "Listed my AI tool for free and had 3 serious inquiries within 24 hours. The quality of buyers in their network is impressive."
                     </p>
                     <div className="flex items-center">
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] mr-2"></div>
+                      <img src="/lovable-uploads/98063b13-7f1d-43b0-b16b-5329ac611925.png" alt="Michael T." className="w-8 h-8 rounded-full mr-2 object-cover" />
                       <div>
                         <p className="text-white font-medium">Michael T.</p>
                         <p className="text-xs text-gray-400">AI SaaS Founder</p>
