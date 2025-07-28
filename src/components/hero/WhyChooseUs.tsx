@@ -154,7 +154,7 @@ const WhyChooseUs = () => {
                       "The curated deal flow is exactly what I needed. No more sifting through low-quality listings on other platforms."
                     </p>
                     <div className="flex items-center">
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#8B5CF6] to-[#0EA4E9] mr-2"></div>
+                      <img src="/lovable-uploads/60f131be-dd67-4c12-a3f9-6dc0f8a902db.png" alt="Sarah K." className="w-8 h-8 rounded-full mr-2 object-cover" />
                       <div>
                         <p className="text-white font-medium">Sarah K.</p>
                         <p className="text-xs text-gray-400">AI Startup Investor</p>
