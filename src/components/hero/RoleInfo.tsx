@@ -1,4 +1,3 @@
-
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ChevronDown, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -29,7 +28,7 @@ const RoleInfo = ({
               <CheckCircle className="w-5 h-5 text-[#D946EE] mt-1 flex-shrink-0" />
               <div>
                 <h5 className="font-medium text-white">100% Free Listings</h5>
-                <p className="text-gray-300">No upfront costs, no commission until you successfully sell your business.</p>
+                <p className="text-gray-300">No upfront costs, no commissions, no listing fees for our first 1,000 users to list their AI SaaS.</p>
               </div>
             </div>
             
