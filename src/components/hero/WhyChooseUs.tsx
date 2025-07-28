@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Shield, Award, Zap, UserCheck, Users } from "lucide-react";
@@ -141,7 +140,7 @@ const WhyChooseUs = () => {
                       "Listed my AI tool for free and had 3 serious inquiries within 24 hours. The quality of buyers in their network is impressive."
                     </p>
                     <div className="flex items-center">
-                      <img src="/lovable-uploads/98063b13-7f1d-43b0-b16b-5329ac611925.png" alt="Michael T." className="w-8 h-8 rounded-full mr-2 object-cover" />
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] mr-2"></div>
                       <div>
                         <p className="text-white font-medium">Michael T.</p>
                         <p className="text-xs text-gray-400">AI SaaS Founder</p>
@@ -150,11 +149,9 @@ const WhyChooseUs = () => {
                   </div>
                   
                   <div className="bg-white/10 rounded-lg p-4">
-                    <p className="text-gray-200 italic mb-3">
-                      "The curated deal flow is exactly what I needed. No more sifting through low-quality listings on other platforms."
-                    </p>
+                    <p className="text-gray-200 italic mb-3">&quot;This curated deal flow approach is exactly what I needed. No more sifting through low-quality leads flooding my inbox. 🙌</p>
                     <div className="flex items-center">
-                      <img src="/lovable-uploads/60f131be-dd67-4c12-a3f9-6dc0f8a902db.png" alt="Sarah K." className="w-8 h-8 rounded-full mr-2 object-cover" />
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#8B5CF6] to-[#0EA4E9] mr-2"></div>
                       <div>
                         <p className="text-white font-medium">Sarah K.</p>
                         <p className="text-xs text-gray-400">AI Startup Investor</p>
