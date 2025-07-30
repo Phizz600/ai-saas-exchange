@@ -33,9 +33,9 @@ export const PromotionalBanner = () => {
           {[...Array(10)].map((_, i) => (
             <span key={i} className="inline-flex items-center text-white font-semibold px-4">
               📢 Selling your AI SaaS? Get a free valuation + listing — 
-              <Link to="/marketplace/list-product" className="underline hover:no-underline ml-1">
+              <a href="https://aiexchange.club/ai-saas-quiz" target="_blank" rel="noopener noreferrer" className="underline hover:no-underline ml-1">
                 Start Here
-              </Link>
+              </a>
             </span>
           ))}
         </div>
