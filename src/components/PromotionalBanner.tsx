@@ -1,6 +1,7 @@
 
 import { useEffect, useRef } from "react";
 import { Zap } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export const PromotionalBanner = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -31,8 +32,10 @@ export const PromotionalBanner = () => {
         <div className="inline-block">
           {[...Array(10)].map((_, i) => (
             <span key={i} className="inline-flex items-center text-white font-semibold px-4">
-              <Zap className="h-4 w-4 mr-2 inline" />
-              Auction marketplace officially launches soon!
+              📢 Selling your AI SaaS? Get a free valuation + listing — 
+              <Link to="/marketplace/list-product" className="underline hover:no-underline ml-1">
+                Start Here
+              </Link>
             </span>
           ))}
         </div>
