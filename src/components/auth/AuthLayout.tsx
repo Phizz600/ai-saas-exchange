@@ -28,7 +28,7 @@ export const AuthLayout = ({
       <div className="w-full max-w-md z-10">
         <div className="mb-6 text-center">
           <Link to="/">
-            <img src="/lovable-uploads/b2726e08-98dd-472d-b44a-b780d6e1343e.png" alt="AI Exchange Club Logo" className="h-40 mx-auto mb-0 cursor-pointer hover:opacity-80 transition-opacity" />
+            <img src="/lovable-uploads/5678c900-f5a3-4336-93da-062cb1e759c4.png" alt="AI Exchange Club Logo" className="h-40 mx-auto mb-0 cursor-pointer hover:opacity-80 transition-opacity" />
           </Link>
           {showWelcome && (
             <>
