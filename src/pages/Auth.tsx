@@ -19,6 +19,7 @@ const Auth = () => {
   const [resetStatus, setResetStatus] = useState<'pending' | 'success' | 'error' | null>(null);
   const [showNewPasswordForm, setShowNewPasswordForm] = useState(false);
   const [isSignUpMode, setIsSignUpMode] = useState(true);
+  const [hasShownAuthMessage, setHasShownAuthMessage] = useState(false);
 
   // Get redirect information from location state
   const redirectTo = location.state?.redirectTo || '/product-dashboard';
@@ -30,8 +31,9 @@ const Auth = () => {
     // Set up global error handlers
     setupGlobalErrorHandlers();
     
-    // Show message if provided (from protected route redirect)
-    if (message) {
+    // Show message if provided (from protected route redirect) - only once
+    if (message && !hasShownAuthMessage) {
+      setHasShownAuthMessage(true);
       toast({
         title: "Authentication Required",
         description: message,
