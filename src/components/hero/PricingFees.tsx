@@ -1,20 +1,22 @@
-
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { DollarSign, Users, CheckCircle, MessageSquare, BadgeCheck, Crown, User2, Tag, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
 const PricingFees = () => {
-  return (
-    <section className="py-0">
+  return <section className="py-0">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto mb-12">
           {/* Card 1 - For Sellers (Free) */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-          >
+          <motion.div initial={{
+          opacity: 0,
+          y: 20
+        }} whileInView={{
+          opacity: 1,
+          y: 0
+        }} transition={{
+          duration: 0.5,
+          delay: 0.1
+        }}>
             <Card className="h-full p-8 bg-white/10 backdrop-blur-sm border-white/5 hover:shadow-lg transition-shadow">
               <div className="flex flex-col h-full">
                 <div className="flex justify-center mb-6">
@@ -66,11 +68,16 @@ const PricingFees = () => {
           </motion.div>
           
           {/* Card 2 - Private Buyer Network Access */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
+          <motion.div initial={{
+          opacity: 0,
+          y: 20
+        }} whileInView={{
+          opacity: 1,
+          y: 0
+        }} transition={{
+          duration: 0.5,
+          delay: 0.2
+        }}>
             <Card className="h-full p-8 bg-white/10 backdrop-blur-sm border-white/5 hover:shadow-lg transition-shadow relative overflow-hidden">
               <div className="flex flex-col h-full">
                 <div className="flex justify-center mb-6">
@@ -123,7 +130,7 @@ const PricingFees = () => {
                   </p>
                 </div>
                 
-                <p className="text-gray-300 text-center mb-6 flex-grow">Access our private buyer network with curated DFaaS (Dealflow as a Service) and direct seller communications.</p>
+                <p className="text-gray-300 text-center mb-6 flex-grow">Access our private buyer marketplace with curated DFaaS (Dealflow as a Service) and direct seller communications.</p>
                 
                 <ul className="space-y-3 text-gray-300">
                   <li className="flex items-center">
@@ -148,11 +155,16 @@ const PricingFees = () => {
           </motion.div>
           
           {/* Card 3 - Referral Program */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-          >
+          <motion.div initial={{
+          opacity: 0,
+          y: 20
+        }} whileInView={{
+          opacity: 1,
+          y: 0
+        }} transition={{
+          duration: 0.5,
+          delay: 0.3
+        }}>
             <Card className="h-full p-8 bg-white/10 backdrop-blur-sm border-white/5 hover:shadow-lg transition-shadow">
               <div className="flex flex-col h-full">
                 <div className="flex justify-center mb-6">
@@ -207,19 +219,21 @@ const PricingFees = () => {
           </motion.div>
         </div>
         
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="text-center mt-12"
-        >
+        <motion.div initial={{
+        opacity: 0,
+        y: 20
+      }} whileInView={{
+        opacity: 1,
+        y: 0
+      }} transition={{
+        duration: 0.5,
+        delay: 0.4
+      }} className="text-center mt-12">
           <p className="text-gray-300 max-w-2xl mx-auto my-[34px]">
             No brokering. No fluff. Just vetted deal flow delivered to serious investors who are ready to acquire AI SaaS businesses.
           </p>
         </motion.div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default PricingFees;
