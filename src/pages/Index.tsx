@@ -8,6 +8,7 @@ import WhyChooseUs from "@/components/hero/WhyChooseUs";
 import { ParticlesBackground } from "@/components/hero/ParticlesBackground";
 import { PromotionalBanner } from "@/components/PromotionalBanner";
 import EnhancedNdaPolicy from "@/components/hero/EnhancedNdaPolicy";
+import { CookieConsent } from "@/components/CookieConsent";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Store } from "lucide-react";
@@ -23,6 +24,9 @@ export const Index = () => {
         <EnhancedNdaPolicy />
         <ReviewSection />
         <Footer />
+        
+        {/* Cookie Consent Notice */}
+        <CookieConsent />
         
         {/* Floating Marketplace Button */}
         <motion.div initial={{
