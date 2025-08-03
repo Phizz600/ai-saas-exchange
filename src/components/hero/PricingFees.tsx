@@ -90,7 +90,7 @@ const PricingFees = () => {
                 <div className="mb-6">
                   <div className="text-lg font-bold text-white mb-3 text-center">Choose Your Plan</div>
                   <div className="space-y-2">
-                    <div className="bg-white/5 rounded-lg p-2 border border-white/10">
+                    <div className="bg-white/5 rounded-lg p-2 border border-white/10 hover:bg-white/10 hover:border-white/20 hover:shadow-lg hover:shadow-white/10 transition-all duration-300 cursor-pointer">
                       <div className="flex justify-between items-center text-sm">
                         <span className="text-white">3 Months</span>
                         <div className="text-right">
@@ -99,7 +99,7 @@ const PricingFees = () => {
                         </div>
                       </div>
                     </div>
-                    <div className="bg-white/5 rounded-lg p-2 border border-[#8B5CF6]/30">
+                    <div className="bg-white/5 rounded-lg p-2 border border-[#8B5CF6]/30 hover:bg-[#8B5CF6]/10 hover:border-[#8B5CF6]/50 hover:shadow-lg hover:shadow-[#8B5CF6]/20 transition-all duration-300 cursor-pointer">
                       <div className="flex justify-between items-center text-sm">
                         <span className="text-white">6 Months</span>
                         <div className="text-right">
@@ -108,7 +108,7 @@ const PricingFees = () => {
                         </div>
                       </div>
                     </div>
-                    <div className="bg-white/5 rounded-lg p-2 border border-green-500/30">
+                    <div className="bg-white/5 rounded-lg p-2 border border-green-500/30 hover:bg-green-500/10 hover:border-green-500/50 hover:shadow-lg hover:shadow-green-500/20 transition-all duration-300 cursor-pointer">
                       <div className="flex justify-between items-center text-sm">
                         <span className="text-white">12 Months</span>
                         <div className="text-right">
