@@ -28,19 +28,15 @@ export const AuthLayout = ({
       <div className="w-full max-w-md z-10">
         <div className="mb-6 text-center">
           <Link to="/">
-            <img src="/lovable-uploads/5678c900-f5a3-4336-93da-062cb1e759c4.png" alt="AI Exchange Club Logo" className="h-40 mx-auto mb-0 cursor-pointer hover:opacity-80 transition-opacity" />
+            <img src="/lovable-uploads/5678c900-f5a3-4336-93da-062cb1e759c4.png" alt="AI Exchange Club Logo" className="h-20 mx-auto mb-0 cursor-pointer hover:opacity-80 transition-opacity" />
           </Link>
-          {showWelcome && (
-            <>
-              <h1 className="exo-2-heading text-white mt-2 mb-1 my-0 text-lg">Welcome to The AI Exchange Club</h1>
-              <p className="text-gray-300 text-sm">Please enter your details to continue</p>
-            </>
-          )}
+          {showWelcome && <>
+              
+              <p className="text-gray-300 text-sm mx-0 my-[34px]">Please enter your details to continue</p>
+            </>}
         </div>
         <div className="bg-white/10 backdrop-blur-lg rounded-xl shadow-2xl p-8 border border-white/20 transform transition-all duration-300 hover:shadow-purple-500/20">
-          {showInstructions && (
-            <p className="text-gray-300 text-sm text-center mb-6">Please enter your details to continue</p>
-          )}
+          {showInstructions && <p className="text-gray-300 text-sm text-center mb-6">Please enter your details to continue</p>}
           {children}
         </div>
       </div>
