@@ -176,13 +176,7 @@ export const Navbar = () => {
           {/* Mobile Menu */}
           <div className="md:hidden">
             <div className="flex items-center gap-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="p-2"
-                aria-label={user ? "Open profile" : "Sign in"}
-                onClick={() => (user ? navigate('/profile') : navigate('/auth'))}
-              >
+              <Button variant="ghost" size="sm" aria-label={user ? "Open profile" : "Sign in"} onClick={() => user ? navigate('/profile') : navigate('/auth')} className="p-2 text-lg">
                 <User className="h-5 w-5" />
               </Button>
               <Sheet>
@@ -207,49 +201,28 @@ export const Navbar = () => {
                   
                   <div className="mt-8 space-y-4">
                     {/* Navigation Items */}
-                    {navigationItems.map(item => item.requiresAuth ? (
-                      <button
-                        key={item.href}
-                        onClick={e => handleNavigationClick(e, item.href)}
-                        className="block text-gray-700 hover:text-[#8B5CF6] transition-colors font-medium w-full text-left"
-                      >
+                    {navigationItems.map(item => item.requiresAuth ? <button key={item.href} onClick={e => handleNavigationClick(e, item.href)} className="block text-gray-700 hover:text-[#8B5CF6] transition-colors font-medium w-full text-left">
                         {item.title}
-                      </button>
-                    ) : (
-                      <Link
-                        key={item.href}
-                        to={item.href}
-                        className="block text-gray-700 hover:text-[#8B5CF6] transition-colors font-medium"
-                      >
+                      </button> : <Link key={item.href} to={item.href} className="block text-gray-700 hover:text-[#8B5CF6] transition-colors font-medium">
                         {item.title}
-                      </Link>
-                    ))}
+                      </Link>)}
                     
                     {/* Policy Pages */}
                     <div className="border-t pt-4">
                       <h3 className="text-sm font-semibold text-gray-500 mb-2">Legal</h3>
-                      {policyPages.map(page => (
-                        <Link
-                          key={page.href}
-                          to={page.href}
-                          className="block text-gray-700 hover:text-[#8B5CF6] transition-colors text-sm py-1"
-                        >
+                      {policyPages.map(page => <Link key={page.href} to={page.href} className="block text-gray-700 hover:text-[#8B5CF6] transition-colors text-sm py-1">
                           {page.title}
-                        </Link>
-                      ))}
+                        </Link>)}
                     </div>
                     
                     {/* Auth Section */}
                     <div className="border-t pt-4">
-                      {user ? (
-                        <div className="space-y-2">
+                      {user ? <div className="space-y-2">
                           <Link to="/messages" className="flex items-center justify-between text-gray-700 hover:text-[#8B5CF6] transition-colors">
                             <span>Messages</span>
-                            {unreadCount > 0 && (
-                              <Badge className="h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
+                            {unreadCount > 0 && <Badge className="h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
                                 {unreadCount > 9 ? '9+' : unreadCount}
-                              </Badge>
-                            )}
+                              </Badge>}
                           </Link>
                           <Link to="/profile" className="block text-gray-700 hover:text-[#8B5CF6] transition-colors">
                             Profile
@@ -264,9 +237,7 @@ export const Navbar = () => {
                             <LogOut className="mr-2 h-4 w-4" />
                             Sign Out
                           </button>
-                        </div>
-                      ) : (
-                        <div className="space-y-2">
+                        </div> : <div className="space-y-2">
                           <Button variant="ghost" onClick={() => navigate('/auth')} className="w-full justify-start text-gray-700 hover:text-[#8B5CF6]">
                             Sign In
                           </Button>
@@ -274,8 +245,7 @@ export const Navbar = () => {
                             <UserPlus className="mr-2 h-4 w-4" />
                             List Your Product
                           </Button>
-                        </div>
-                      )}
+                        </div>}
                     </div>
                   </div>
                 </SheetContent>
