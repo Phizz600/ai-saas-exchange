@@ -204,15 +204,6 @@ export const Navbar = () => {
                   Start building
                 </Button>
               )}
-              <Button
-                variant="ghost"
-                size="sm"
-                aria-label={user ? "Open profile" : "Sign in"}
-                onClick={() => (user ? navigate('/profile') : navigate('/auth'))}
-                className="p-2 text-lg"
-              >
-                <User className="h-5 w-5" />
-              </Button>
               <Sheet>
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="sm" className="p-2" aria-label="Open menu">
