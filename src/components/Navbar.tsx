@@ -2,7 +2,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { ChevronDown, FileText, LogOut, UserPlus } from "lucide-react";
+import { ChevronDown, FileText, LogOut, UserPlus, User } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTrigger } from "@/components/ui/sheet";
 import { useToast } from "@/hooks/use-toast";
 import { getUnreadMessagesCount } from "@/integrations/supabase/messages";
@@ -175,77 +175,112 @@ export const Navbar = () => {
 
           {/* Mobile Menu */}
           <div className="md:hidden">
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="sm" className="p-2" aria-label="Open menu">
-                  <div className="flex flex-col items-center justify-center gap-1.5">
-                    <span className="block h-0.5 w-6 rounded-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9]" />
-                    <span className="block h-0.5 w-6 rounded-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9]" />
-                    <span className="block h-0.5 w-6 rounded-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9]" />
-                  </div>
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-80">
-                <SheetHeader>
-                  <div className="flex items-center space-x-2">
-                    <img src="/lovable-uploads/f1d82e78-2a24-4c2b-b93c-d1a196c1065b.png" alt="AI Exchange Club" className="h-8 w-auto" />
-                    <span className="text-xl font-bold bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] bg-clip-text text-transparent">
-                      AI Exchange
-                    </span>
-                  </div>
-                </SheetHeader>
-                
-                <div className="mt-8 space-y-4">
-                  {/* Navigation Items */}
-                  {navigationItems.map(item => item.requiresAuth ? <button key={item.href} onClick={e => handleNavigationClick(e, item.href)} className="block text-gray-700 hover:text-[#8B5CF6] transition-colors font-medium w-full text-left">
-                        {item.title}
-                      </button> : <Link key={item.href} to={item.href} className="block text-gray-700 hover:text-[#8B5CF6] transition-colors font-medium">
-                        {item.title}
-                      </Link>)}
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="p-2"
+                aria-label={user ? "Open profile" : "Sign in"}
+                onClick={() => (user ? navigate('/profile') : navigate('/auth'))}
+              >
+                <User className="h-5 w-5" />
+              </Button>
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="ghost" size="sm" className="p-2" aria-label="Open menu">
+                    <div className="flex flex-col items-center justify-center gap-1.5">
+                      <span className="block h-0.5 w-6 rounded-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9]" />
+                      <span className="block h-0.5 w-6 rounded-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9]" />
+                      <span className="block h-0.5 w-6 rounded-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9]" />
+                    </div>
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="right" className="w-80">
+                  <SheetHeader>
+                    <div className="flex items-center space-x-2">
+                      <img src="/lovable-uploads/f1d82e78-2a24-4c2b-b93c-d1a196c1065b.png" alt="AI Exchange Club" className="h-8 w-auto" />
+                      <span className="text-xl font-bold bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] bg-clip-text text-transparent">
+                        AI Exchange
+                      </span>
+                    </div>
+                  </SheetHeader>
                   
-                  {/* Policy Pages */}
-                  <div className="border-t pt-4">
-                    <h3 className="text-sm font-semibold text-gray-500 mb-2">Legal</h3>
-                    {policyPages.map(page => <Link key={page.href} to={page.href} className="block text-gray-700 hover:text-[#8B5CF6] transition-colors text-sm py-1">
-                        {page.title}
-                      </Link>)}
+                  <div className="mt-8 space-y-4">
+                    {/* Navigation Items */}
+                    {navigationItems.map(item => item.requiresAuth ? (
+                      <button
+                        key={item.href}
+                        onClick={e => handleNavigationClick(e, item.href)}
+                        className="block text-gray-700 hover:text-[#8B5CF6] transition-colors font-medium w-full text-left"
+                      >
+                        {item.title}
+                      </button>
+                    ) : (
+                      <Link
+                        key={item.href}
+                        to={item.href}
+                        className="block text-gray-700 hover:text-[#8B5CF6] transition-colors font-medium"
+                      >
+                        {item.title}
+                      </Link>
+                    ))}
+                    
+                    {/* Policy Pages */}
+                    <div className="border-t pt-4">
+                      <h3 className="text-sm font-semibold text-gray-500 mb-2">Legal</h3>
+                      {policyPages.map(page => (
+                        <Link
+                          key={page.href}
+                          to={page.href}
+                          className="block text-gray-700 hover:text-[#8B5CF6] transition-colors text-sm py-1"
+                        >
+                          {page.title}
+                        </Link>
+                      ))}
+                    </div>
+                    
+                    {/* Auth Section */}
+                    <div className="border-t pt-4">
+                      {user ? (
+                        <div className="space-y-2">
+                          <Link to="/messages" className="flex items-center justify-between text-gray-700 hover:text-[#8B5CF6] transition-colors">
+                            <span>Messages</span>
+                            {unreadCount > 0 && (
+                              <Badge className="h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
+                                {unreadCount > 9 ? '9+' : unreadCount}
+                              </Badge>
+                            )}
+                          </Link>
+                          <Link to="/profile" className="block text-gray-700 hover:text-[#8B5CF6] transition-colors">
+                            Profile
+                          </Link>
+                          <Link to="/product-dashboard" className="block text-gray-700 hover:text-[#8B5CF6] transition-colors">
+                            Dashboard
+                          </Link>
+                          <Link to="/settings" className="block text-gray-700 hover:text-[#8B5CF6] transition-colors">
+                            Settings
+                          </Link>
+                          <button onClick={handleSignOut} className="flex items-center text-gray-700 hover:text-red-600 transition-colors w-full">
+                            <LogOut className="mr-2 h-4 w-4" />
+                            Sign Out
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="space-y-2">
+                          <Button variant="ghost" onClick={() => navigate('/auth')} className="w-full justify-start text-gray-700 hover:text-[#8B5CF6]">
+                            Sign In
+                          </Button>
+                          <Button onClick={e => handleNavigationClick(e, '/list-product')} className="w-full bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white">
+                            <UserPlus className="mr-2 h-4 w-4" />
+                            List Your Product
+                          </Button>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  
-                  {/* Auth Section */}
-                  <div className="border-t pt-4">
-                    {user ? <div className="space-y-2">
-                        <Link to="/messages" className="flex items-center justify-between text-gray-700 hover:text-[#8B5CF6] transition-colors">
-                          <span>Messages</span>
-                          {unreadCount > 0 && <Badge className="h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
-                              {unreadCount > 9 ? '9+' : unreadCount}
-                            </Badge>}
-                        </Link>
-                        <Link to="/profile" className="block text-gray-700 hover:text-[#8B5CF6] transition-colors">
-                          Profile
-                        </Link>
-                        <Link to="/product-dashboard" className="block text-gray-700 hover:text-[#8B5CF6] transition-colors">
-                          Dashboard
-                        </Link>
-                        <Link to="/settings" className="block text-gray-700 hover:text-[#8B5CF6] transition-colors">
-                          Settings
-                        </Link>
-                        <button onClick={handleSignOut} className="flex items-center text-gray-700 hover:text-red-600 transition-colors w-full">
-                          <LogOut className="mr-2 h-4 w-4" />
-                          Sign Out
-                        </button>
-                </div> : <div className="space-y-2">
-                        <Button variant="ghost" onClick={() => navigate("/auth")} className="w-full justify-start text-gray-700 hover:text-[#8B5CF6]">
-                          Sign In
-                        </Button>
-                        <Button onClick={e => handleNavigationClick(e, "/list-product")} className="w-full bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white">
-                          <UserPlus className="mr-2 h-4 w-4" />
-                          List Your Product
-                    </Button>
-                      </div>}
-                  </div>
-                </div>
-              </SheetContent>
-            </Sheet>
+                </SheetContent>
+              </Sheet>
+            </div>
           </div>
         </div>
       </div>
