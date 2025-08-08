@@ -176,7 +176,41 @@ export const Navbar = () => {
           {/* Mobile Menu */}
           <div className="md:hidden">
             <div className="flex items-center gap-2">
-              <Button variant="ghost" size="sm" aria-label={user ? "Open profile" : "Sign in"} onClick={() => user ? navigate('/profile') : navigate('/auth')} className="p-2 text-lg">
+              {!user && (
+                <>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => navigate('/auth')}
+                    className="h-8 px-2 text-sm"
+                  >
+                    Sign in
+                  </Button>
+                  <Button
+                    size="sm"
+                    onClick={(e) => handleNavigationClick(e, '/list-product')}
+                    className="h-8 px-3 text-sm bg-gradient-to-r from-[#8B5CF6] to-[#0EA4E9] text-white"
+                  >
+                    Start building
+                  </Button>
+                </>
+              )}
+              {user && (
+                <Button
+                  size="sm"
+                  onClick={(e) => handleNavigationClick(e, '/product-dashboard')}
+                  className="h-8 px-3 text-sm bg-gradient-to-r from-[#8B5CF6] to-[#0EA4E9] text-white"
+                >
+                  Start building
+                </Button>
+              )}
+              <Button
+                variant="ghost"
+                size="sm"
+                aria-label={user ? "Open profile" : "Sign in"}
+                onClick={() => (user ? navigate('/profile') : navigate('/auth'))}
+                className="p-2 text-lg"
+              >
                 <User className="h-5 w-5" />
               </Button>
               <Sheet>
