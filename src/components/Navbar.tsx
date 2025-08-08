@@ -2,7 +2,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { ChevronDown, FileText, LogOut, Menu, UserPlus } from "lucide-react";
+import { ChevronDown, FileText, LogOut, UserPlus } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTrigger } from "@/components/ui/sheet";
 import { useToast } from "@/hooks/use-toast";
 import { getUnreadMessagesCount } from "@/integrations/supabase/messages";
@@ -177,8 +177,12 @@ export const Navbar = () => {
           <div className="md:hidden">
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="sm" className="text-xl font-bold">
-                  <Menu className="h-6 w-6" />
+                <Button variant="ghost" size="sm" className="p-2" aria-label="Open menu">
+                  <div className="flex flex-col items-center justify-center gap-1.5">
+                    <span className="block h-0.5 w-6 rounded-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9]" />
+                    <span className="block h-0.5 w-6 rounded-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9]" />
+                    <span className="block h-0.5 w-6 rounded-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9]" />
+                  </div>
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-80">
