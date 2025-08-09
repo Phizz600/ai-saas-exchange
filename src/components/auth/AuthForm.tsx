@@ -205,22 +205,20 @@ export const AuthForm = ({ onModeChange }: AuthFormProps = {}) => {
       )}
 
       {isSignUp && (
-        <>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <NameField 
             firstName={firstName} 
             setFirstName={setFirstName}
             isLoading={isLoading}
             isGoogleLoading={isGoogleLoading}
           />
-          <div className="mt-4">
-            <LastNameField 
-              lastName={lastName}
-              setLastName={setLastName}
-              isLoading={isLoading}
-              isGoogleLoading={isGoogleLoading}
-            />
-          </div>
-        </>
+          <LastNameField 
+            lastName={lastName}
+            setLastName={setLastName}
+            isLoading={isLoading}
+            isGoogleLoading={isGoogleLoading}
+          />
+        </div>
       )}
 
       <EmailField 
