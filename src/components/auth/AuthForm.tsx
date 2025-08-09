@@ -265,8 +265,9 @@ export const AuthForm = ({ onModeChange }: AuthFormProps = {}) => {
               checked={subscribeNewsletter}
               onCheckedChange={(checked) => setSubscribeNewsletter(Boolean(checked))}
               disabled={isLoading || isGoogleLoading}
+              className="border-white/30 data-[state=checked]:bg-[#D946EE] data-[state=checked]:border-[#D946EE]"
             />
-            <label htmlFor="subscribeNewsletter" className="text-sm">
+            <label htmlFor="subscribeNewsletter" className="text-sm text-white/90 cursor-pointer">
               Subscribe to our weekly newsletter
             </label>
           </div>
