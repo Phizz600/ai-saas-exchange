@@ -86,7 +86,7 @@ const PricingFees = () => {
                     <MessageSquare className="h-8 w-8 text-[#8B5CF6]" />
                   </div>
                 </div>
-                <h3 className="text-center text-2xl font-bold text-white mb-4">Private Buyer Network</h3>
+                <h3 className="text-center text-2xl font-bold text-white mb-4">Marketplace Access</h3>
                 
                 <div className="mb-6">
                   <div className="text-lg font-bold text-white mb-3 text-center">Choose Your Plan</div>
