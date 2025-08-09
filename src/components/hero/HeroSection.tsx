@@ -17,7 +17,6 @@ const HowItWorksSteps = lazy(() => import("@/components/hero/HowItWorksSteps"));
 const SecurityFeatures = lazy(() => import("@/components/hero/SecurityFeatures"));
 const RoleInfo = lazy(() => import("@/components/hero/RoleInfo"));
 const YouTubeEmbed = lazy(() => import("@/components/hero/YouTubeEmbed"));
-
 interface HeroSectionProps {
   isAuthenticated: boolean;
   currentWordIndex: number;
@@ -33,7 +32,6 @@ interface HeroSectionProps {
   handleListProductClick: () => void;
   handleAuthRedirect: () => void;
 }
-
 const HeroSection = ({
   isAuthenticated,
   currentWordIndex,
@@ -73,7 +71,7 @@ const HeroSection = ({
           opacity: 1
         }} transition={{
           duration: 0.3
-        }} className="text-xl text-gray-200 mb-12 max-w-2xl mx-auto text-center">
+        }} className="text-gray-200 mb-12 max-w-2xl mx-auto text-center text-lg font-normal">
             Built for founders who want serious buyers, not tire-kickers & spammy offers. No brokering. No fluff. Just vetted deal flow delivered to serious investors.
           </motion.p>
 
@@ -162,5 +160,4 @@ const HeroSection = ({
       </div>
     </div>;
 };
-
 export default HeroSection;
