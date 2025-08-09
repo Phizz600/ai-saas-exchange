@@ -96,3 +96,66 @@ export const PasswordField = ({ password, setPassword, isLoading, isGoogleLoadin
     </div>
   );
 };
+
+interface LastNameFieldProps {
+  lastName: string;
+  setLastName: (value: string) => void;
+  isLoading: boolean;
+  isGoogleLoading: boolean;
+}
+
+export const LastNameField = ({ lastName, setLastName, isLoading, isGoogleLoading }: LastNameFieldProps) => {
+  return (
+    <div className="text-left">
+      <div className="flex items-center gap-1 mb-2">
+        <Label htmlFor="lastName" className="text-left text-white text-base">Last Name</Label>
+        <Asterisk className="h-3 w-3 text-red-500" />
+      </div>
+      <div className="relative">
+        <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4 z-10" />
+        <Input
+          id="lastName"
+          type="text"
+          value={lastName}
+          onChange={(e) => setLastName(e.target.value)}
+          required
+          className="pl-10 bg-black/30 text-white border-white/40 focus:border-[#D946EE] placeholder:text-white/60 shadow-inner"
+          placeholder="Enter your last name"
+          disabled={isLoading || isGoogleLoading}
+        />
+      </div>
+    </div>
+  );
+};
+
+interface ConfirmPasswordFieldProps {
+  confirmPassword: string;
+  setConfirmPassword: (value: string) => void;
+  isLoading: boolean;
+  isGoogleLoading: boolean;
+}
+
+export const ConfirmPasswordField = ({ confirmPassword, setConfirmPassword, isLoading, isGoogleLoading }: ConfirmPasswordFieldProps) => {
+  return (
+    <div className="text-left">
+      <div className="flex items-center gap-1 mb-2">
+        <Label htmlFor="confirmPassword" className="text-left text-white text-base">Confirm Password</Label>
+        <Asterisk className="h-3 w-3 text-red-500" />
+      </div>
+      <div className="relative">
+        <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4 z-10" />
+        <Input
+          id="confirmPassword"
+          type="password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          required
+          className="pl-10 bg-black/30 text-white border-white/40 focus:border-[#D946EE] placeholder:text-white/60 shadow-inner"
+          placeholder="Confirm your password"
+          disabled={isLoading || isGoogleLoading}
+          minLength={6}
+        />
+      </div>
+    </div>
+  );
+};

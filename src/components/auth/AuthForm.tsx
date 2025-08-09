@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { UserTypeSelector } from "./UserTypeSelector";
 import { ErrorMessage } from "./ErrorMessage";
-import { NameField, EmailField, PasswordField } from "./FormFields";
+import { NameField, LastNameField, EmailField, PasswordField, ConfirmPasswordField } from "./FormFields";
 import { TermsCheckbox } from "./TermsCheckbox";
 import { AuthButtons } from "./AuthButtons";
 import { PasswordResetForm } from "./PasswordResetForm";
@@ -24,6 +24,9 @@ export const AuthForm = ({ onModeChange }: AuthFormProps = {}) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [subscribeNewsletter, setSubscribeNewsletter] = useState(false);
   const [isBuilder, setIsBuilder] = useState(false);
   const [userType, setUserType] = useState<'ai_builder' | 'ai_investor'>('ai_investor');
   const [agreedToTerms, setAgreedToTerms] = useState(false);
@@ -42,6 +45,9 @@ export const AuthForm = ({ onModeChange }: AuthFormProps = {}) => {
         email !== "" &&
         password !== "" &&
         firstName !== "" &&
+        lastName !== "" &&
+        confirmPassword !== "" &&
+        confirmPassword === password &&
         agreedToTerms &&
         ['ai_builder', 'ai_investor'].includes(userType)
       );
@@ -50,10 +56,10 @@ export const AuthForm = ({ onModeChange }: AuthFormProps = {}) => {
     }
     
     // Clear signup success message when user starts typing again
-    if (signupSuccess && (email !== "" || password !== "" || firstName !== "")) {
+    if (signupSuccess && (email !== "" || password !== "" || firstName !== "" || lastName !== "")) {
       setSignupSuccess(false);
     }
-  }, [email, password, firstName, agreedToTerms, isSignUp, userType, signupSuccess]);
+  }, [email, password, firstName, lastName, confirmPassword, agreedToTerms, isSignUp, userType, signupSuccess]);
 
   // Notify parent component when mode changes
   useEffect(() => {
@@ -194,12 +200,22 @@ export const AuthForm = ({ onModeChange }: AuthFormProps = {}) => {
       )}
 
       {isSignUp && (
-        <NameField 
-          firstName={firstName} 
-          setFirstName={setFirstName}
-          isLoading={isLoading}
-          isGoogleLoading={isGoogleLoading}
-        />
+        <>
+          <NameField 
+            firstName={firstName} 
+            setFirstName={setFirstName}
+            isLoading={isLoading}
+            isGoogleLoading={isGoogleLoading}
+          />
+          <div className="mt-4">
+            <LastNameField 
+              lastName={lastName}
+              setLastName={setLastName}
+              isLoading={isLoading}
+              isGoogleLoading={isGoogleLoading}
+            />
+          </div>
+        </>
       )}
 
       <EmailField 

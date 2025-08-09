@@ -79,6 +79,8 @@ export const handleAuthSubmit = async (
   password: string, 
   firstName: string,
   userType: 'ai_builder' | 'ai_investor',
+  lastName: string,
+  newsletterOptIn: boolean,
   setErrorMessage: (message: string) => void,
   setIsLoading: (isLoading: boolean) => void,
   setIsSignUp: (isSignUp: boolean) => void,
@@ -107,7 +109,9 @@ export const handleAuthSubmit = async (
         options: {
           data: {
             first_name: firstName,
+            last_name: lastName,
             user_type: userType,
+            newsletter_opt_in: newsletterOptIn,
           },
           emailRedirectTo: `${window.location.origin}/auth?verified=true`,
           captchaToken: undefined, // Explicitly set to undefined if not using captcha
@@ -188,8 +192,9 @@ export const handleAuthSubmit = async (
               },
               contactProperties: {
                 FIRSTNAME: firstName,
-                LASTNAME: "",
-                USER_TYPE: userType
+                LASTNAME: lastName,
+                USER_TYPE: userType,
+                NEWSLETTER_OPT_IN: newsletterOptIn
               },
               eventProperties: {
                 signup_date: new Date().toISOString(),
