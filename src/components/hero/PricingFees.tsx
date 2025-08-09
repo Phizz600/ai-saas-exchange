@@ -30,7 +30,7 @@ const PricingFees = () => {
                 <div className="relative mb-6">
                   <p className="text-center text-4xl font-bold text-white">FREE</p>
                   <div className="absolute -top-3 -right-2 bg-[#0EA4E9] text-white text-xs font-bold px-2 py-1 rounded-full transform rotate-12">
-                    FOREVER
+                    Offer Ends Soon
                   </div>
                 </div>
                 
