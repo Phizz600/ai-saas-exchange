@@ -72,10 +72,6 @@ export const Navbar = () => {
     href: "https://aiexchange.club/ai-saas-quiz",
     requiresAuth: false
   }, {
-    title: "About",
-    href: "/about",
-    requiresAuth: false
-  }, {
     title: "Contact",
     href: "/contact",
     requiresAuth: false
