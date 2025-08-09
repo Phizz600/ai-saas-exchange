@@ -160,7 +160,18 @@ const WhyChooseUs = () => {
                   <div className="bg-white/10 rounded-lg p-4">
                     <p className="text-gray-200 italic mb-3">&quot;This curated deal flow approach is exactly what I needed. No more sifting through low-quality leads flooding my inbox. 🙌</p>
                     <div className="flex items-center">
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#8B5CF6] to-[#0EA4E9] mr-2"></div>
+                        <div className="relative w-8 h-8 mr-2">
+                          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-[#8B5CF6] to-[#0EA4E9]"></div>
+                          <img
+                            src="/lovable-uploads/63d6bdee-5c90-4062-936a-6919a88af028.png"
+                            alt="Sarah K., AI Startup Investor testimonial photo"
+                            className="w-8 h-8 rounded-full object-cover"
+                            loading="lazy"
+                            onError={(e) => {
+                              (e.currentTarget as HTMLImageElement).style.display = 'none';
+                            }}
+                          />
+                        </div>
                       <div>
                         <p className="text-white font-medium">Sarah K.</p>
                         <p className="text-xs text-gray-400">AI Startup Investor</p>
