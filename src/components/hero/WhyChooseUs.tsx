@@ -136,9 +136,7 @@ const WhyChooseUs = () => {
                 
                 <div className="space-y-6">
                   <div className="bg-white/10 rounded-lg p-4">
-                    <p className="text-gray-200 italic mb-3">
-                      "Listed my AI tool for free and had 3 serious inquiries within 24 hours. The quality of buyers in their network is impressive."
-                    </p>
+                    <p className="text-gray-200 italic mb-3">&quot;The listing process was wayyy smoother than I expected it to be. Answered some questions about my AI Chrome extension and got approved about a day and a half later. &quot;</p>
                     <div className="flex items-center">
                       <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] mr-2"></div>
                       <div>
