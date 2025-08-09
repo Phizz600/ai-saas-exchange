@@ -96,7 +96,7 @@ const PricingFees = () => {
                         <span className="text-white">3 Months</span>
                         <div className="text-right">
                           <div className="text-white font-semibold">$297</div>
-                          <div className="text-xs text-gray-400">$49/mo</div>
+                          <div className="text-xs text-gray-400">$99/mo</div>
                         </div>
                       </div>
                     </div>
