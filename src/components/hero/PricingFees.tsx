@@ -28,7 +28,7 @@ const PricingFees = () => {
                 <h3 className="text-center text-2xl font-bold text-white mb-4">$0 Listing Fee</h3>
                 
                 <div className="relative mb-6">
-                  <p className="text-center text-4xl font-bold text-white">FREE</p>
+                  <p className="text-center text-lg font-bold text-white">FREE</p>
                   <div className="absolute -top-3 -right-2 bg-[#0EA4E9] text-white text-xs font-bold px-2 py-1 rounded-full transform rotate-12">
                     Offer Ends Soon
                   </div>
