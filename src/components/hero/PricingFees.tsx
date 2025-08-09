@@ -113,8 +113,8 @@ const PricingFees = () => {
                       <div className="flex justify-between items-center text-sm">
                         <span className="text-white">12 Months</span>
                         <div className="text-right">
-                          <div className="text-white font-semibold">$348</div>
-                          <div className="text-xs text-green-400">$29/mo</div>
+                          <div className="text-white font-semibold">$828</div>
+                          <div className="text-xs text-green-400">$69/mo</div>
                         </div>
                       </div>
                     </div>
@@ -237,4 +237,5 @@ const PricingFees = () => {
       </div>
     </section>;
 };
+
 export default PricingFees;
