@@ -167,7 +167,7 @@ export const Navbar = () => {
                   </Button>
                   <Button onClick={e => handleNavigationClick(e, "/list-product")} className="bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white hover:shadow-lg hover:shadow-purple-500/30">
                     <UserPlus className="mr-2 h-4 w-4" />
-                    List Your Product
+                    Marketplace
                 </Button>
                 </>}
             </div>
