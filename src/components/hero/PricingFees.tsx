@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { DollarSign, Users, CheckCircle, MessageSquare, BadgeCheck, Crown, User2, Tag, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
 const PricingFees = () => {
   return <section className="py-0">
       <div className="container mx-auto px-4">
@@ -94,7 +95,7 @@ const PricingFees = () => {
                       <div className="flex justify-between items-center text-sm">
                         <span className="text-white">3 Months</span>
                         <div className="text-right">
-                          <div className="text-white font-semibold">$147</div>
+                          <div className="text-white font-semibold">$297</div>
                           <div className="text-xs text-gray-400">$49/mo</div>
                         </div>
                       </div>
