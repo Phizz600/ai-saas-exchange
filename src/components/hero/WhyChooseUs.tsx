@@ -138,7 +138,18 @@ const WhyChooseUs = () => {
                   <div className="bg-white/10 rounded-lg p-4">
                     <p className="text-gray-200 italic mb-3">&quot;The listing process was wayyy smoother than I expected it to be. Answered some questions about my AI Chrome extension and got approved about a day and a half later. &quot;</p>
                     <div className="flex items-center">
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] mr-2"></div>
+                      <div className="relative w-8 h-8 mr-2">
+                        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-[#D946EE] to-[#8B5CF6]"></div>
+                        <img
+                          src="/images/testimonials/michael.jpg"
+                          alt="Michael T., AI SaaS Founder testimonial photo"
+                          className="w-8 h-8 rounded-full object-cover"
+                          loading="lazy"
+                          onError={(e) => {
+                            (e.currentTarget as HTMLImageElement).style.display = 'none';
+                          }}
+                        />
+                      </div>
                       <div>
                         <p className="text-white font-medium">Michael T.</p>
                         <p className="text-xs text-gray-400">AI SaaS Founder</p>
