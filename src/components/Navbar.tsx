@@ -176,34 +176,15 @@ export const Navbar = () => {
           {/* Mobile Menu */}
           <div className="md:hidden">
             <div className="flex items-center gap-2">
-              {!user && (
-                <>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => navigate('/auth')}
-                    className="h-8 px-2 text-sm"
-                  >
+              {!user && <>
+                  <Button variant="ghost" size="sm" onClick={() => navigate('/auth')} className="h-8 px-2 text-sm">
                     Sign in
                   </Button>
-                  <Button
-                    size="sm"
-                    onClick={(e) => handleNavigationClick(e, '/list-product')}
-                    className="h-8 px-3 text-sm bg-gradient-to-r from-[#8B5CF6] to-[#0EA4E9] text-white"
-                  >
-                    Start building
-                  </Button>
-                </>
-              )}
-              {user && (
-                <Button
-                  size="sm"
-                  onClick={(e) => handleNavigationClick(e, '/product-dashboard')}
-                  className="h-8 px-3 text-sm bg-gradient-to-r from-[#8B5CF6] to-[#0EA4E9] text-white"
-                >
+                  <Button size="sm" onClick={e => handleNavigationClick(e, '/list-product')} className="h-8 px-3 text-sm bg-gradient-to-r from-[#8B5CF6] to-[#0EA4E9] text-white">Marketplace</Button>
+                </>}
+              {user && <Button size="sm" onClick={e => handleNavigationClick(e, '/product-dashboard')} className="h-8 px-3 text-sm bg-gradient-to-r from-[#8B5CF6] to-[#0EA4E9] text-white">
                   Start building
-                </Button>
-              )}
+                </Button>}
               <Sheet>
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="sm" className="p-2" aria-label="Open menu">
