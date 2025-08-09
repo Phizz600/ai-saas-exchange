@@ -25,7 +25,7 @@ const PricingFees = () => {
                     <Tag className="h-8 w-8 text-[#D946EE]" />
                   </div>
                 </div>
-                <h3 className="text-center text-2xl font-bold text-white mb-4">For Sellers</h3>
+                <h3 className="text-center text-2xl font-bold text-white mb-4">$0 Listing Fee</h3>
                 
                 <div className="relative mb-6">
                   <p className="text-center text-4xl font-bold text-white">FREE</p>
