@@ -105,7 +105,10 @@ export const AuthForm = ({ onModeChange }: AuthFormProps = {}) => {
       // Clear form fields after successful signup
       setEmail("");
       setPassword("");
+      setConfirmPassword("");
       setFirstName("");
+      setLastName("");
+      setSubscribeNewsletter(false);
       setAgreedToTerms(false);
       setShowVerificationInfo(false);
     };
@@ -117,6 +120,8 @@ export const AuthForm = ({ onModeChange }: AuthFormProps = {}) => {
       password,
       firstName,
       userType,
+      lastName,
+      subscribeNewsletter,
       setErrorMessage,
       setIsLoading,
       (newIsSignUp: boolean) => {
@@ -231,6 +236,17 @@ export const AuthForm = ({ onModeChange }: AuthFormProps = {}) => {
         isLoading={isLoading}
         isGoogleLoading={isGoogleLoading}
       />
+
+      {isSignUp && (
+        <div className="mt-4">
+          <ConfirmPasswordField 
+            confirmPassword={confirmPassword}
+            setConfirmPassword={setConfirmPassword}
+            isLoading={isLoading}
+            isGoogleLoading={isGoogleLoading}
+          />
+        </div>
+      )}
       
       {isSignUp && (
         <UserTypeSelector 
@@ -242,12 +258,25 @@ export const AuthForm = ({ onModeChange }: AuthFormProps = {}) => {
       )}
 
       {isSignUp && (
-        <TermsCheckbox 
-          agreedToTerms={agreedToTerms}
-          setAgreedToTerms={setAgreedToTerms}
-          isLoading={isLoading}
-          isGoogleLoading={isGoogleLoading}
-        />
+        <>
+          <div className="flex items-center space-x-2">
+            <Checkbox 
+              id="subscribeNewsletter" 
+              checked={subscribeNewsletter}
+              onCheckedChange={(checked) => setSubscribeNewsletter(Boolean(checked))}
+              disabled={isLoading || isGoogleLoading}
+            />
+            <label htmlFor="subscribeNewsletter" className="text-sm">
+              Subscribe to our weekly newsletter
+            </label>
+          </div>
+          <TermsCheckbox 
+            agreedToTerms={agreedToTerms}
+            setAgreedToTerms={setAgreedToTerms}
+            isLoading={isLoading}
+            isGoogleLoading={isGoogleLoading}
+          />
+        </>
       )}
 
       {!isSignUp && (
