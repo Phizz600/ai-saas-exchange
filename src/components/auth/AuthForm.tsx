@@ -12,6 +12,7 @@ import { PasswordResetForm } from "./PasswordResetForm";
 import { handleAuthSubmit } from "./utils/signup-helpers";
 import { handleGoogleSignIn } from "./utils/signin-helpers";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Separator } from "@/components/ui/separator";
 import { InfoIcon, CheckCircle, Lock } from "lucide-react";
 
 interface AuthFormProps {
@@ -27,6 +28,7 @@ export const AuthForm = ({ onModeChange }: AuthFormProps = {}) => {
   const [lastName, setLastName] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [subscribeNewsletter, setSubscribeNewsletter] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const [isBuilder, setIsBuilder] = useState(false);
   const [userType, setUserType] = useState<'ai_builder' | 'ai_investor'>('ai_investor');
   const [agreedToTerms, setAgreedToTerms] = useState(false);
@@ -236,14 +238,31 @@ export const AuthForm = ({ onModeChange }: AuthFormProps = {}) => {
       />
 
       {isSignUp && (
-        <div className="mt-4">
-          <ConfirmPasswordField 
-            confirmPassword={confirmPassword}
-            setConfirmPassword={setConfirmPassword}
-            isLoading={isLoading}
-            isGoogleLoading={isGoogleLoading}
-          />
-        </div>
+        <>
+          <div className="mt-4">
+            <ConfirmPasswordField 
+              confirmPassword={confirmPassword}
+              setConfirmPassword={setConfirmPassword}
+              isLoading={isLoading}
+              isGoogleLoading={isGoogleLoading}
+            />
+          </div>
+          <div className="mt-4">
+            <div className="flex items-center space-x-2">
+              <Checkbox 
+                id="rememberMe" 
+                checked={rememberMe}
+                onCheckedChange={(checked) => setRememberMe(Boolean(checked))}
+                disabled={isLoading || isGoogleLoading}
+                className="border-white/30 data-[state=checked]:bg-[#D946EE] data-[state=checked]:border-[#D946EE]"
+              />
+              <label htmlFor="rememberMe" className="text-sm text-white/90 cursor-pointer">
+                Remember me
+              </label>
+            </div>
+          </div>
+          <Separator className="my-6" />
+        </>
       )}
       
       {isSignUp && (
