@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, ReactNode } from 'react
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { cleanupAuthState } from '@/utils/auth-cleanup';
 
 interface AuthContextType {
   user: User | null;
@@ -45,23 +46,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const signOut = async () => {
     try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-      
-      setSession(null);
-      setUser(null);
-      
-      toast({
-        title: "Signed out successfully",
-        description: "You have been logged out of your account",
-      });
+      // Clean up auth state and attempt global sign out
+      cleanupAuthState();
+      try {
+        await supabase.auth.signOut({ scope: 'global' });
+      } catch (_) {
+        // Ignore sign out errors
+      }
     } catch (error) {
-      console.error('Error signing out:', error);
-      toast({
-        title: "Error signing out",
-        description: "Please try again",
-        variant: "destructive",
-      });
+      console.error('Error during sign out cleanup:', error);
+    } finally {
+      // Force a full redirect for a clean state
+      window.location.href = '/auth';
     }
   };
 

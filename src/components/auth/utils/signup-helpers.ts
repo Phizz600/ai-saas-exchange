@@ -1,5 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 import { toast as toastFunction } from "@/hooks/use-toast";
+import { cleanupAuthState } from "@/utils/auth-cleanup";
 
 type ToastProps = {
   variant?: "default" | "destructive";
@@ -102,6 +103,9 @@ export const handleAuthSubmit = async (
       // Skip pre-checking user existence - let Supabase handle it directly
       console.log("AuthForm: Attempting signup directly");
 
+      // Clean previous auth state to avoid limbo
+      cleanupAuthState();
+      try { await supabase.auth.signOut({ scope: 'global' }); } catch (_) {}
       console.log("AuthForm: Attempting signup with user type:", userType);
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -279,6 +283,9 @@ export const handleAuthSubmit = async (
       
     } else {
       console.log("[Auth] Attempting login for:", email);
+      // Clean previous auth state to avoid limbo
+      cleanupAuthState();
+      try { await supabase.auth.signOut({ scope: 'global' }); } catch (_) {}
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -312,6 +319,8 @@ export const handleAuthSubmit = async (
           title: "Welcome back!",
           description: "You've been successfully logged in.",
         });
+      // Force a full reload to ensure a clean state
+      setTimeout(() => { window.location.href = '/'; }, 0);
     }
   } catch (error: any) {
     console.error("[Auth] Unexpected error:", error);
