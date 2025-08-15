@@ -1235,7 +1235,33 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      secure_valuation_leads: {
+        Row: {
+          company: string | null
+          created_at: string | null
+          email: string | null
+          id: string | null
+          name: string | null
+          quiz_answers: Json | null
+        }
+        Insert: {
+          company?: string | null
+          created_at?: string | null
+          email?: string | null
+          id?: string | null
+          name?: string | null
+          quiz_answers?: Json | null
+        }
+        Update: {
+          company?: string | null
+          created_at?: string | null
+          email?: string | null
+          id?: string | null
+          name?: string | null
+          quiz_answers?: Json | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       calculate_bid_deposit_amount: {
