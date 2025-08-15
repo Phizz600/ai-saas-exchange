@@ -91,7 +91,7 @@ export const Navbar = () => {
   }];
   return <nav className="relative bg-white/80 backdrop-blur-md border-b border-gray-200/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center h-16">
+        <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link to="/" className="flex items-center space-x-2">
@@ -100,21 +100,20 @@ export const Navbar = () => {
           </Link>
           </div>
 
-          {/* Desktop Navigation - Centered with hero content alignment */}
-          <div className="hidden md:flex flex-1 justify-center">
-            <div className="container mx-auto px-4 flex justify-center">
-              <div className="flex items-center space-x-12 max-w-2xl">
-                {navigationItems.map(item => item.requiresAuth ? <button key={item.href} onClick={e => handleNavigationClick(e, item.href)} className="text-gray-700 hover:text-[#8B5CF6] transition-colors font-medium whitespace-nowrap">
-                      {item.title}
-                    </button> : <Link key={item.href} to={item.href} className="text-gray-700 hover:text-[#8B5CF6] transition-colors font-medium whitespace-nowrap">
-                      {item.title}
-                    </Link>)}
-              </div>
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-8">
+            {/* Main Navigation */}
+            <div className="flex items-center space-x-6">
+              {navigationItems.map(item => item.requiresAuth ? <button key={item.href} onClick={e => handleNavigationClick(e, item.href)} className="text-gray-700 hover:text-[#8B5CF6] transition-colors font-medium">
+                    {item.title}
+                  </button> : <Link key={item.href} to={item.href} className="text-gray-700 hover:text-[#8B5CF6] transition-colors font-medium">
+                    {item.title}
+                  </Link>)}
             </div>
-          </div>
 
-          {/* Auth Buttons */}
-          <div className="hidden md:flex items-center space-x-4">
+
+            {/* Auth Buttons */}
+            <div className="flex items-center space-x-4">
               {user ? <>
                   {/* Messages */}
                 <Link to="/messages" className="relative">
@@ -165,11 +164,12 @@ export const Navbar = () => {
                   <Button onClick={e => handleNavigationClick(e, "/list-product")} className="bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white hover:shadow-lg hover:shadow-purple-500/30">
                     <UserPlus className="mr-2 h-4 w-4" />
                     Marketplace
-                 </Button>
-                 </>}
-             </div>
+                </Button>
+                </>}
+            </div>
+          </div>
 
-           {/* Mobile Menu */}
+          {/* Mobile Menu */}
           <div className="md:hidden">
             <div className="flex items-center gap-2">
               {!user && <>
