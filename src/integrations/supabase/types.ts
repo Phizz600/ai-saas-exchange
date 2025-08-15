@@ -1016,6 +1016,7 @@ export type Database = {
           first_name: string | null
           full_name: string | null
           id: string
+          last_name: string | null
           liked_products: string[] | null
           saved_products: string[] | null
           updated_at: string
@@ -1029,6 +1030,7 @@ export type Database = {
           first_name?: string | null
           full_name?: string | null
           id: string
+          last_name?: string | null
           liked_products?: string[] | null
           saved_products?: string[] | null
           updated_at?: string
@@ -1042,6 +1044,7 @@ export type Database = {
           first_name?: string | null
           full_name?: string | null
           id?: string
+          last_name?: string | null
           liked_products?: string[] | null
           saved_products?: string[] | null
           updated_at?: string
