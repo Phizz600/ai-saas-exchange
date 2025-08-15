@@ -5,6 +5,7 @@ import { ToastProvider } from "@/hooks/use-toast";
 import { AuthProvider } from "@/contexts/NewAuthContext";
 import { RouteProvider } from "@/routes/RouteProvider";
 import "./App.css";
+import "./utils/testAuth"; // Import test auth utils
 
 function App() {
   // Create a new QueryClient instance inside the component
