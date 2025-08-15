@@ -1277,6 +1277,10 @@ export type Database = {
         Args: { input_product_id: string }
         Returns: undefined
       }
+      is_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
       is_high_traffic: {
         Args: { p_clicks: number; p_saves: number; p_views: number }
         Returns: boolean
