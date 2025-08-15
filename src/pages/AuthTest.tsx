@@ -1,5 +1,5 @@
-import { useAuth } from "@/contexts/AuthContext";
-import { useAuthCheck } from "@/hooks/useAuthCheck";
+import { useAuth } from "@/contexts/NewAuthContext";
+import { useAuthCheck } from "@/hooks/useNewAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";

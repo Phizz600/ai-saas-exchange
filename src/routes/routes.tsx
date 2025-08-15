@@ -1,4 +1,4 @@
-import Auth from "@/pages/Auth";
+// import Auth from "@/pages/Auth"; // Deleted - using new AuthPage component
 import { Profile } from "@/pages/Profile";
 import { ProductDashboard } from "@/pages/ProductDashboard";
 import { Marketplace } from "@/pages/Marketplace";
@@ -21,7 +21,8 @@ import { AISaasQuiz } from "@/pages/AISaasQuiz";
 import { FeesPricing } from "@/pages/FeesPricing";
 import { BuyerMatchingQuiz } from "@/pages/BuyerMatchingQuiz";
 import { AuthTest } from "@/pages/AuthTest";
-import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { NewProtectedRoute } from "@/components/auth-v2/NewProtectedRoute";
+import { AuthPage } from "@/components/auth-v2/AuthPage";
 
 // Public routes (no authentication required)
 const publicRoutes = [
@@ -44,9 +45,9 @@ const publicRoutes = [
   {
     path: "/auth",
     element: (
-      <ProtectedRoute requireAuth={false}>
-        <Auth />
-      </ProtectedRoute>
+      <NewProtectedRoute requireAuth={false}>
+        <AuthPage />
+      </NewProtectedRoute>
     ),
   },
   {
@@ -96,73 +97,73 @@ const protectedRoutes = [
   {
     path: "/marketplace",
     element: (
-      <ProtectedRoute>
+      <NewProtectedRoute>
         <Marketplace />
-      </ProtectedRoute>
+      </NewProtectedRoute>
     ),
   },
   {
     path: "/product-dashboard",
     element: (
-      <ProtectedRoute>
+      <NewProtectedRoute>
         <ProductDashboard />
-      </ProtectedRoute>
+      </NewProtectedRoute>
     ),
   },
   {
     path: "/profile",
     element: (
-      <ProtectedRoute>
+      <NewProtectedRoute>
         <Profile />
-      </ProtectedRoute>
+      </NewProtectedRoute>
     ),
   },
   {
     path: "/messages",
     element: (
-      <ProtectedRoute>
+      <NewProtectedRoute>
         <Messages />
-      </ProtectedRoute>
+      </NewProtectedRoute>
     ),
   },
   {
     path: "/messages/:conversationId",
     element: (
-      <ProtectedRoute>
+      <NewProtectedRoute>
         <MessageChat />
-      </ProtectedRoute>
+      </NewProtectedRoute>
     ),
   },
   {
     path: "/settings",
     element: (
-      <ProtectedRoute>
+      <NewProtectedRoute>
         <Settings />
-      </ProtectedRoute>
+      </NewProtectedRoute>
     ),
   },
   {
     path: "/list-product",
     element: (
-      <ProtectedRoute>
+      <NewProtectedRoute>
         <ListProduct />
-      </ProtectedRoute>
+      </NewProtectedRoute>
     ),
   },
   {
     path: "/admin",
     element: (
-      <ProtectedRoute>
+      <NewProtectedRoute>
         <Admin />
-      </ProtectedRoute>
+      </NewProtectedRoute>
     ),
   },
   {
     path: "/listing-thank-you",
     element: (
-      <ProtectedRoute>
+      <NewProtectedRoute>
         <ListingThankYou />
-      </ProtectedRoute>
+      </NewProtectedRoute>
     ),
   },
 ];

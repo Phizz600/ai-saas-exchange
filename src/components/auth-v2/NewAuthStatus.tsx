@@ -1,4 +1,4 @@
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts/NewAuthContext';
 import { Badge } from '@/components/ui/badge';
 import { User, UserX } from 'lucide-react';
 
@@ -7,7 +7,7 @@ interface AuthStatusProps {
   className?: string;
 }
 
-export const AuthStatus = ({ showDetails = false, className = '' }: AuthStatusProps) => {
+export const NewAuthStatus = ({ showDetails = false, className = '' }: AuthStatusProps) => {
   const { user, loading } = useAuth();
 
   if (loading) {
@@ -49,4 +49,3 @@ export const AuthStatus = ({ showDetails = false, className = '' }: AuthStatusPr
     </div>
   );
 };
- 

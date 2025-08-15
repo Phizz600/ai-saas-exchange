@@ -1,6 +1,6 @@
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts/NewAuthContext';
 import { useNavigate } from 'react-router-dom';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from '@/hooks/use-toast';
 
 interface UseAuthCheckOptions {
   redirectTo?: string;
@@ -11,7 +11,6 @@ interface UseAuthCheckOptions {
 export const useAuthCheck = (options: UseAuthCheckOptions = {}) => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
-  const { toast } = useToast();
   
   const {
     redirectTo = '/auth',
