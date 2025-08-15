@@ -1,15 +1,10 @@
 
 import { CircuitBoard, Users, MessageSquare } from "lucide-react";
-import { motion } from "framer-motion";
 
 const FeatureHighlights = () => {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.6 }}
-      className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16"
-    >
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16 animate-fade-in-up"
+         style={{ animationDelay: '0.6s' }}>
       <div className="p-6 rounded-xl bg-white/5 backdrop-blur-md border border-white/10 shadow-[0_0_30px_rgba(255,255,255,0.05)]">
         <CircuitBoard className="h-8 w-8 mb-4 mx-auto text-[#D946EF]" />
         <h3 className="text-lg font-semibold text-white mb-2">AI-Powered Valuations</h3>
@@ -25,7 +20,7 @@ const FeatureHighlights = () => {
         <h3 className="text-lg font-semibold text-white mb-2">Private Buyer Community</h3>
         <p className="text-gray-300">Join our exclusive network of verified AI investors</p>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
