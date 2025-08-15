@@ -101,7 +101,7 @@ export const Navbar = () => {
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center justify-center flex-1">
             {/* Main Navigation */}
             <div className="flex items-center space-x-6">
               {navigationItems.map(item => item.requiresAuth ? <button key={item.href} onClick={e => handleNavigationClick(e, item.href)} className="text-gray-700 hover:text-[#8B5CF6] transition-colors font-medium">
@@ -110,10 +110,10 @@ export const Navbar = () => {
                     {item.title}
                   </Link>)}
             </div>
+          </div>
 
-
-            {/* Auth Buttons */}
-            <div className="flex items-center space-x-4">
+          {/* Auth Buttons */}
+          <div className="hidden md:flex items-center space-x-4">
               {user ? <>
                   {/* Messages */}
                 <Link to="/messages" className="relative">
@@ -164,12 +164,11 @@ export const Navbar = () => {
                   <Button onClick={e => handleNavigationClick(e, "/list-product")} className="bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white hover:shadow-lg hover:shadow-purple-500/30">
                     <UserPlus className="mr-2 h-4 w-4" />
                     Marketplace
-                </Button>
-                </>}
-            </div>
-          </div>
+                 </Button>
+                 </>}
+             </div>
 
-          {/* Mobile Menu */}
+           {/* Mobile Menu */}
           <div className="md:hidden">
             <div className="flex items-center gap-2">
               {!user && <>
