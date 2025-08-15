@@ -91,7 +91,7 @@ export const Navbar = () => {
   }];
   return <nav className="relative bg-white/80 backdrop-blur-md border-b border-gray-200/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex items-center h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link to="/" className="flex items-center space-x-2">
@@ -100,15 +100,16 @@ export const Navbar = () => {
           </Link>
           </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center justify-center flex-1">
-            {/* Main Navigation */}
-            <div className="flex items-center space-x-6">
-              {navigationItems.map(item => item.requiresAuth ? <button key={item.href} onClick={e => handleNavigationClick(e, item.href)} className="text-gray-700 hover:text-[#8B5CF6] transition-colors font-medium">
-                    {item.title}
-                  </button> : <Link key={item.href} to={item.href} className="text-gray-700 hover:text-[#8B5CF6] transition-colors font-medium">
-                    {item.title}
-                  </Link>)}
+          {/* Desktop Navigation - Centered with hero content alignment */}
+          <div className="hidden md:flex flex-1 justify-center">
+            <div className="container mx-auto px-4 flex justify-center">
+              <div className="flex items-center space-x-12 max-w-2xl">
+                {navigationItems.map(item => item.requiresAuth ? <button key={item.href} onClick={e => handleNavigationClick(e, item.href)} className="text-gray-700 hover:text-[#8B5CF6] transition-colors font-medium whitespace-nowrap">
+                      {item.title}
+                    </button> : <Link key={item.href} to={item.href} className="text-gray-700 hover:text-[#8B5CF6] transition-colors font-medium whitespace-nowrap">
+                      {item.title}
+                    </Link>)}
+              </div>
             </div>
           </div>
 
