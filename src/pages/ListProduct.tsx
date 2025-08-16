@@ -5,7 +5,7 @@ import { ListProductForm } from "@/components/marketplace/list-product/ListProdu
 import { Button } from "@/components/ui/button";
 import { HelpCircle } from "lucide-react";
 import { HelpDialog } from "@/components/marketplace/list-product/HelpDialog";
-import { useAuth } from "@/contexts/NewAuthContext";
+import { useAuth } from "@/contexts/CleanAuthContext";
 import { useToast } from "@/hooks/use-toast";
 
 export const ListProduct = () => {

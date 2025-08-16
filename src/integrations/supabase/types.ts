@@ -113,13 +113,6 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "bids_bidder_id_fkey"
-            columns: ["bidder_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "bids_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: false
@@ -468,15 +461,7 @@ export type Database = {
           updated_at?: string
           user_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "investor_preferences_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: true
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       messages: {
         Row: {
@@ -540,13 +525,6 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "fk_admin"
-            columns: ["admin_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "moderation_actions_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: false
@@ -604,13 +582,6 @@ export type Database = {
             referencedRelation: "products"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "notifications_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
         ]
       }
       offers: {
@@ -654,13 +625,6 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
-          {
-            foreignKeyName: "offers_bidder_id_fkey"
-            columns: ["bidder_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "offers_product_id_fkey"
             columns: ["product_id"]
@@ -998,57 +962,49 @@ export type Database = {
           title?: string
           updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "products_seller_id_fkey"
-            columns: ["seller_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       profiles: {
         Row: {
           avatar_url: string | null
           bio: string | null
-          created_at: string
+          created_at: string | null
           first_name: string | null
           full_name: string | null
           id: string
           last_name: string | null
           liked_products: string[] | null
           saved_products: string[] | null
-          updated_at: string
-          user_type: Database["public"]["Enums"]["user_type"] | null
+          updated_at: string | null
+          user_type: string | null
           username: string | null
         }
         Insert: {
           avatar_url?: string | null
           bio?: string | null
-          created_at?: string
+          created_at?: string | null
           first_name?: string | null
           full_name?: string | null
           id: string
           last_name?: string | null
           liked_products?: string[] | null
           saved_products?: string[] | null
-          updated_at?: string
-          user_type?: Database["public"]["Enums"]["user_type"] | null
+          updated_at?: string | null
+          user_type?: string | null
           username?: string | null
         }
         Update: {
           avatar_url?: string | null
           bio?: string | null
-          created_at?: string
+          created_at?: string | null
           first_name?: string | null
           full_name?: string | null
           id?: string
           last_name?: string | null
           liked_products?: string[] | null
           saved_products?: string[] | null
-          updated_at?: string
-          user_type?: Database["public"]["Enums"]["user_type"] | null
+          updated_at?: string | null
+          user_type?: string | null
           username?: string | null
         }
         Relationships: []
@@ -1093,13 +1049,6 @@ export type Database = {
             columns: ["product_id"]
             isOneToOne: false
             referencedRelation: "products"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "promotions_seller_id_fkey"
-            columns: ["seller_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -1312,10 +1261,6 @@ export type Database = {
       }
       is_high_traffic: {
         Args: { p_clicks: number; p_saves: number; p_views: number }
-        Returns: boolean
-      }
-      is_valid_user_type: {
-        Args: { user_type: string }
         Returns: boolean
       }
       is_verified: {

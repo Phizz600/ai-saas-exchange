@@ -1,5 +1,5 @@
-import { useAuth } from "@/contexts/NewAuthContext";
-import { useAuthCheck } from "@/hooks/useNewAuth";
+import { useAuth } from "@/contexts/CleanAuthContext";
+// import { useAuthCheck } from "@/hooks/useNewAuth"; // Removed - no longer needed
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -8,13 +8,16 @@ import { CheckCircle, XCircle, User, Shield, Mail } from "lucide-react";
 
 export const AuthTest = () => {
   const { user, session, loading, signOut } = useAuth();
-  const { isAuthenticated, isUnauthenticated, requireAuth } = useAuthCheck();
+
+  // Derived authentication state
+  const isAuthenticated = !loading && !!user;
+  const isUnauthenticated = !loading && !user;
 
   const handleTestRequireAuth = () => {
-    const isAuth = requireAuth();
-    if (isAuth) {
+    // const isAuth = requireAuth(); // Removed - no longer needed
+    // if (isAuth) {
       console.log("User is authenticated, proceeding...");
-    }
+    // }
   };
 
   const handleSignOut = async () => {

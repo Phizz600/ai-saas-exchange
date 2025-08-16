@@ -1,4 +1,4 @@
-import { AuthService } from '@/services/authService';
+import { NewAuthService } from '@/services/newAuthService';
 
 export const createTestUser = async () => {
   try {
@@ -14,7 +14,7 @@ export const createTestUser = async () => {
 
     console.log('Test user data:', testUserData);
 
-    const result = await AuthService.signUp(testUserData);
+    const result = await NewAuthService.signUp(testUserData);
     
     console.log('Test user creation result:', result);
     

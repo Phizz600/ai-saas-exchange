@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
-import { AuthService } from '@/services/authService';
+import { NewAuthService } from '@/services/newAuthService';
 import { toast } from '@/hooks/use-toast';
 
 interface AuthContextType {
@@ -28,7 +28,7 @@ interface AuthProviderProps {
   children: React.ReactNode;
 }
 
-export const AuthProvider = ({ children }: AuthProviderProps) => {
+export const CleanAuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<any | null>(null);
@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
 
     try {
-      const profileData = await AuthService.getUserProfile(user.id);
+      const profileData = await NewAuthService.getUserProfile(user.id);
       setProfile(profileData);
     } catch (error) {
       console.error('Error fetching profile:', error);
@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const refreshSession = async () => {
     try {
-      const currentSession = await AuthService.getCurrentSession();
+      const currentSession = await NewAuthService.getCurrentSession();
       setSession(currentSession);
       setUser(currentSession?.user ?? null);
       
@@ -69,7 +69,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const signOut = async () => {
     try {
-      await AuthService.signOut();
+      await NewAuthService.signOut();
       setUser(null);
       setSession(null);
       setProfile(null);
@@ -128,7 +128,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     // Get initial session
     const initializeAuth = async () => {
       try {
-        const currentSession = await AuthService.getCurrentSession();
+        const currentSession = await NewAuthService.getCurrentSession();
         if (mounted) {
           setSession(currentSession);
           setUser(currentSession?.user ?? null);

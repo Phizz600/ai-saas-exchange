@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { AuthLayout } from './AuthLayout';
-import { SignupForm } from './SignupForm';
-import { SigninForm } from './SigninForm';
-import { useAuth } from '@/contexts/NewAuthContext';
+import { CleanSignupForm } from './CleanSignupForm';
+import { CleanSigninForm } from './CleanSigninForm';
+import { useAuth } from '@/contexts/CleanAuthContext';
 
-export const AuthPage = () => {
+export const CleanAuthPage = () => {
   const [isSignup, setIsSignup] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -38,12 +38,12 @@ export const AuthPage = () => {
       subtitle={isSignup ? "Join the AI Exchange Club" : "Sign in to your account"}
     >
       {isSignup ? (
-        <SignupForm
+        <CleanSignupForm
           onSignupSuccess={handleAuthSuccess}
           onSwitchToSignin={() => setIsSignup(false)}
         />
       ) : (
-        <SigninForm
+        <CleanSigninForm
           onSigninSuccess={handleAuthSuccess}
           onSwitchToSignup={() => setIsSignup(true)}
         />
