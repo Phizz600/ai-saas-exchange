@@ -1,6 +1,7 @@
-
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
+
+const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -9,12 +10,9 @@ const corsHeaders = {
 };
 
 interface WelcomeEmailRequest {
-  firstName: string;
   email: string;
+  firstName: string;
   userType: 'ai_builder' | 'ai_investor';
-  timestamp?: string;
-  source?: string;
-  siteUrl?: string;
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -24,430 +22,173 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    console.log("Received request to send welcome email");
+    const { email, firstName, userType }: WelcomeEmailRequest = await req.json();
     
-    // Check if Resend API key is available and log it for debugging (redacted)
-    const apiKey = Deno.env.get("RESEND_API_KEY");
-    if (!apiKey) {
-      console.error("RESEND_API_KEY is not configured");
-      return new Response(
-        JSON.stringify({
-          error: "Missing RESEND_API_KEY",
-          details: "The Resend API key is not configured in Supabase secrets"
-        }),
-        {
-          status: 500,
-          headers: { "Content-Type": "application/json", ...corsHeaders },
-        }
-      );
-    }
-    console.log(`Using API key: ${apiKey.substring(0, 3)}...${apiKey.substring(apiKey.length - 3)}`);
-
-    // Validate API key format
-    if (!apiKey.startsWith("re_")) {
-      console.error("Invalid Resend API key format. Expected to start with 're_'");
-      return new Response(
-        JSON.stringify({
-          error: "Invalid Resend API key format",
-          details: "The Resend API key should start with 're_'. Please check the key in your Supabase secrets."
-        }),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json", ...corsHeaders },
-        }
-      );
-    }
-
-    const requestData = await req.json();
-    console.log("Request data received:", JSON.stringify(requestData, null, 2));
-
-    // Extract and validate email data
-    const { firstName, email, userType, timestamp, source, siteUrl }: WelcomeEmailRequest = requestData;
+    console.log(`Sending welcome email to ${email} (${userType})`);
     
-    if (!email) {
-      console.error("Missing email in request");
-      return new Response(
-        JSON.stringify({
-          error: "Email is required",
-          details: "The email field is missing from the request"
-        }),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json", ...corsHeaders },
-        }
-      );
-    }
+    // Common styling
+    const headerStyle = "font-size: 28px; font-weight: 700; color: #8B5CF6; margin-bottom: 24px; font-family: 'Exo 2', Arial, sans-serif; text-align: center;";
+    const paragraphStyle = "font-size: 16px; line-height: 1.6; color: #374151; margin-bottom: 16px; font-family: Arial, sans-serif;";
+    const buttonStyle = "display: inline-block; background: linear-gradient(90deg, #D946EE 0%, #8B5CF6 50%, #0EA4E9 100%); color: white; font-weight: bold; padding: 16px 32px; text-decoration: none; border-radius: 8px; margin: 20px 0; font-family: Arial, sans-serif; font-size: 16px;";
+    const sectionStyle = "background: linear-gradient(135deg, #f6f5ff 0%, #f0f4ff 100%); padding: 24px; border-radius: 12px; margin: 24px 0; border-left: 4px solid #8B5CF6;";
+    const featureStyle = "background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 12px 0;";
     
-    if (!firstName) {
-      console.log("First name not provided, using default");
-    }
+    let subject = "";
+    let htmlContent = "";
     
-    if (!userType) {
-      console.log("User type not provided, using default");
-    }
-
-    console.log(`Sending welcome email to ${email} (${userType || "unknown type"})`);
-    console.log(`Request metadata - timestamp: ${timestamp || "none"}, source: ${source || "none"}`);
-
-    // Initialize Resend with the API key - this can help ensure the API key is properly loaded
-    const resend = new Resend(apiKey);
-    
-    // Get the base URL either from the request or default to production URL
-    const baseUrl = siteUrl || "https://aiexchange.club";
-    console.log(`Using base URL for links: ${baseUrl}`);
-    
-    // Map user types to their respective destination paths
-    // Builders go to list-product page, Investors go to coming-soon page
-    const ctaButtonUrl = userType === 'ai_builder' 
-      ? `${baseUrl}/list-product` 
-      : `${baseUrl}/coming-soon`;
-    
-    const ctaButtonText = userType === 'ai_builder'
-      ? 'List Your AI Product'
-      : 'Start Investment Matching Quiz';
-    
-    // Try sending the email with proper error handling
-    try {
-      // Send the welcome email using a verified sender address
-      const emailResponse = await resend.emails.send({
-        from: "AI Exchange Club <khalid@aiexchange.club>",
-        to: [email],
-        subject: `Welcome to AI Exchange Club, ${firstName || "New User"}!`,
-        html: `
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1">
-            <title>Welcome to AI Exchange Club</title>
-            <style>
-              @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;600;700;800&display=swap');
-              
-              * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-              }
-              
-              body {
-                font-family: 'Exo 2', Arial, sans-serif;
-                line-height: 1.6;
-                color: #333333;
-                background-color: #f9f9f9;
-                margin: 0;
-                padding: 0;
-              }
-              
-              .email-wrapper {
-                max-width: 100%;
-                margin: 0 auto;
-                background-color: #f9f9f9;
-                padding: 20px;
-              }
-              
-              .email-container {
-                max-width: 600px;
-                margin: 0 auto;
-                background-color: #ffffff;
-                border-radius: 16px;
-                overflow: hidden;
-                box-shadow: 0 8px 30px rgba(0,0,0,0.08);
-              }
-              
-              .email-header {
-                padding: 30px 20px;
-                text-align: center;
-                background: linear-gradient(135deg, #D946EE 0%, #8B5CF6 50%, #0EA4E9 100%);
-                position: relative;
-              }
-              
-              .logo {
-                max-width: 180px;
-                height: auto;
-                display: inline-block;
-                margin-bottom: 15px;
-              }
-              
-              .header-title {
-                color: white;
-                font-size: 28px;
-                font-weight: 700;
-                margin: 0;
-                text-shadow: 0 2px 4px rgba(0,0,0,0.15);
-                letter-spacing: 0.5px;
-              }
-              
-              .header-subtitle {
-                color: white;
-                font-size: 18px;
-                font-weight: 400;
-                margin-top: 5px;
-              }
-              
-              .email-body {
-                padding: 40px 30px;
-              }
-              
-              .greeting {
-                font-size: 20px;
-                margin-bottom: 25px;
-                color: #333;
-                font-weight: 500;
-              }
-              
-              .greeting strong {
-                color: #8B5CF6;
-                font-weight: 700;
-              }
-              
-              h1 {
-                color: #8B5CF6;
-                font-weight: 700;
-                margin-top: 0;
-                margin-bottom: 30px;
-                font-size: 26px;
-                letter-spacing: -0.5px;
-              }
-              
-              h2 {
-                color: #0EA4E9;
-                font-weight: 600;
-                font-size: 22px;
-                margin-top: 40px;
-                margin-bottom: 18px;
-              }
-              
-              p {
-                margin: 0 0 20px;
-                color: #333;
-                font-size: 16px;
-              }
-              
-              .feature-list {
-                background-color: #f7f5ff;
-                border-radius: 12px;
-                padding: 25px 30px;
-                margin-bottom: 30px;
-                border-left: 5px solid #8B5CF6;
-              }
-              
-              .feature-list ul {
-                margin: 15px 0 5px;
-                padding-left: 25px;
-              }
-              
-              .feature-list li {
-                margin-bottom: 12px;
-                position: relative;
-                list-style-type: none;
-                padding-left: 5px;
-              }
-              
-              .feature-list li:before {
-                content: "•";
-                color: #D946EE;
-                font-weight: bold;
-                font-size: 24px;
-                display: inline-block;
-                width: 20px;
-                position: absolute;
-                left: -20px;
-                top: -5px;
-              }
-              
-              .feature-list li strong {
-                color: #0EA4E9;
-                font-weight: 600;
-              }
-              
-              .cta-container {
-                text-align: center;
-                margin: 35px 0;
-              }
-              
-              .cta-button {
-                display: inline-block;
-                background: linear-gradient(90deg, #D946EE 0%, #8B5CF6 100%);
-                color: white;
-                text-decoration: none;
-                padding: 16px 30px;
-                border-radius: 12px;
-                font-weight: 600;
-                font-size: 18px;
-                transition: all 0.3s ease;
-                box-shadow: 0 4px 15px rgba(139, 92, 246, 0.35);
-              }
-              
-              .email-footer {
-                background-color: #f6f5ff;
-                padding: 25px 20px;
-                text-align: center;
-                color: #666;
-                font-size: 14px;
-                border-top: 1px solid #eee;
-              }
-              
-              .footer-social {
-                margin: 15px 0 20px;
-              }
-              
-              .footer-text {
-                margin-bottom: 8px;
-                color: #777;
-                font-size: 14px;
-              }
-              
-              .divider {
-                height: 1px;
-                background: linear-gradient(to right, transparent, rgba(139, 92, 246, 0.4), transparent);
-                margin: 30px 0;
-              }
-              
-              .highlight {
-                color: #D946EE;
-                font-weight: 600;
-              }
-              
-              @media only screen and (max-width: 550px) {
-                .email-body {
-                  padding: 30px 20px;
-                }
-                
-                h1 {
-                  font-size: 24px;
-                }
-                
-                h2 {
-                  font-size: 20px;
-                }
-                
-                .feature-list {
-                  padding: 20px 15px;
-                }
-              }
-            </style>
-          </head>
-          <body>
-            <div class="email-wrapper">
-              <div class="email-container">
-                <div class="email-header">
-                  <img src="${baseUrl}/lovable-uploads/0283f7d5-13a6-40c9-b40a-69868474cec9.png" alt="AI Exchange Club Logo" class="logo">
-                  <h1 class="header-title">Welcome to the Future of AI</h1>
-                  <p class="header-subtitle">Where Innovation Meets Investment</p>
-                </div>
-                
-                <div class="email-body">
-                  <p class="greeting">Hi <strong>${firstName || "there"}</strong>,</p>
-                  
-                  <p>We're thrilled to welcome you to the <span class="highlight">AI Exchange Club</span> — your gateway to the future of artificial intelligence. You've joined at an exciting time as AI continues to transform industries worldwide.</p>
-                  
-                  ${userType === 'ai_builder' ? `
-                    <h2>Your Journey as an AI Builder Starts Now</h2>
-                    <div class="feature-list">
-                      <p>Here's what you can do with your new account:</p>
-                      <ul>
-                        <li><strong>Showcase your AI solutions</strong> to a curated network of potential investors and partners</li>
-                        <li><strong>Connect with investors</strong> who are actively looking for the next big AI innovation</li>
-                        <li><strong>Track engagement metrics</strong> with your products and analyze market interest in real-time</li>
-                        <li><strong>Access exclusive resources</strong> and support to help scale your AI business</li>
-                      </ul>
-                    </div>
-                    
-                    <p>Our platform is designed to create meaningful connections and facilitate growth in the AI space. Ready to list your AI product and start attracting investors?</p>
-                  ` : `
-                    <h2>Your Journey as an AI Investor Starts Now</h2>
-                    <div class="feature-list">
-                      <p>Here's what you can do with your new account:</p>
-                      <ul>
-                        <li><strong>Discover innovative AI solutions</strong> across various domains and industries before they hit the mainstream market</li>
-                        <li><strong>Connect directly with builders</strong> creating cutting-edge AI technology to form valuable partnerships</li>
-                        <li><strong>Track potential investment opportunities</strong> based on your preferences and investment criteria</li>
-                        <li><strong>Get early access</strong> to promising AI products and services with exclusive member benefits</li>
-                      </ul>
-                    </div>
-                    
-                    <p>Our platform is designed to connect you with AI innovations that match your investment interests. To help us understand your preferences, we've created a quick questionnaire.</p>
-                  `}
-                  
-                  <div class="divider"></div>
-                  
-                  <p>${userType === 'ai_builder' ? 
-                    'To get started, head over to our product listing page:' : 
-                    'Take our quick questionnaire to help us match you with the right AI opportunities:'}</p>
-                  
-                  <div class="cta-container">
-                    <a href="${ctaButtonUrl}" class="cta-button">${ctaButtonText}</a>
-                  </div>
-                  
-                  <p>If you have any questions or need assistance, our team is ready to help you make the most of your AI Exchange Club membership. Just reply to this email or reach out to our support team.</p>
-                  
-                  <p>We're excited to see what you'll accomplish!</p>
-                  
-                  <p>Best regards,<br><span class="highlight">The AI Exchange Club Team</span></p>
-                </div>
-                
-                <div class="email-footer">
-                  <p class="footer-text">© 2023 AI Exchange Club. All rights reserved.</p>
-                  <p class="footer-text">This email was sent to ${email}</p>
-                  <p class="footer-text">You received this email because you signed up for an AI Exchange Club account.</p>
-                </div>
-              </div>
+    if (userType === 'ai_builder') {
+      subject = `Welcome to AI Exchange Club, ${firstName}! 🚀 Ready to showcase your AI innovation?`;
+      htmlContent = `
+        <div style="max-width: 600px; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif;">
+          <div style="text-align: center; margin-bottom: 32px;">
+            <img src="https://pxadbwlidclnfoodjtpd.supabase.co/storage/v1/object/public/product-images/ai-exchange-logo.png" alt="AI Exchange Club Logo" style="width: 120px; margin-bottom: 20px;">
+            <h1 style="${headerStyle}">Welcome to AI Exchange Club!</h1>
+            <p style="font-size: 18px; color: #6B7280; margin: 0;">Where Innovation Meets Investment</p>
+          </div>
+          
+          <p style="${paragraphStyle}">Hi ${firstName},</p>
+          
+          <p style="${paragraphStyle}">🎉 <strong>Congratulations!</strong> You've just joined the most exclusive community of AI builders and innovators. We're thrilled to have you on board!</p>
+          
+          <div style="${sectionStyle}">
+            <h2 style="color: #8B5CF6; font-weight: 600; font-size: 20px; margin-bottom: 16px; font-family: 'Exo 2', Arial, sans-serif;">🚀 Your AI Builder Journey Starts Now</h2>
+            <p style="${paragraphStyle}">As an AI Builder, you have access to powerful tools to showcase your innovations:</p>
+            
+            <div style="${featureStyle}">
+              <strong style="color: #8B5CF6;">📈 Showcase Your AI Solutions</strong><br>
+              <span style="color: #6B7280; font-size: 14px;">Create compelling listings that highlight your AI products' unique value propositions</span>
             </div>
-          </body>
-          </html>
-        `,
-      });
-
-      console.log("Welcome email sent successfully:", emailResponse);
-
-      return new Response(JSON.stringify(emailResponse), {
-        status: 200,
-        headers: {
-          "Content-Type": "application/json",
-          ...corsHeaders,
-        },
-      });
-    } catch (emailError: any) {
-      console.error("Error sending email with Resend:", emailError);
-      
-      let errorDetail = "Unknown error";
-      let errorSuggestion = "";
-      
-      if (emailError.name === "validation_error") {
-        errorDetail = "The Resend API key is invalid or has been revoked";
-        errorSuggestion = "Please generate a new API key in your Resend dashboard";
-      } else if (emailError.message?.includes("fetch")) {
-        errorDetail = "Network error connecting to Resend API";
-        errorSuggestion = "Check your server's internet connection";
-      } else if (emailError.message?.includes("domain")) {
-        errorDetail = "Domain verification issue";
-        errorSuggestion = "You need to verify your domain in Resend before sending emails";
-      }
-      
-      return new Response(
-        JSON.stringify({ 
-          error: emailError.message || "Failed to send email",
-          details: errorDetail,
-          suggestion: errorSuggestion,
-          stack: emailError.stack,
-          name: emailError.name
-        }),
-        {
-          status: 500,
-          headers: { "Content-Type": "application/json", ...corsHeaders },
-        }
-      );
+            
+            <div style="${featureStyle}">
+              <strong style="color: #8B5CF6;">💰 Connect with Investors</strong><br>
+              <span style="color: #6B7280; font-size: 14px;">Reach serious investors actively looking for the next big AI breakthrough</span>
+            </div>
+            
+            <div style="${featureStyle}">
+              <strong style="color: #8B5CF6;">📊 Track Performance</strong><br>
+              <span style="color: #6B7280; font-size: 14px;">Monitor engagement, analyze interest patterns, and optimize your listings</span>
+            </div>
+            
+            <div style="${featureStyle}">
+              <strong style="color: #8B5CF6;">🔧 Scale Your Business</strong><br>
+              <span style="color: #6B7280; font-size: 14px;">Access resources, networking opportunities, and expert guidance</span>
+            </div>
+          </div>
+          
+          <p style="${paragraphStyle}">Ready to list your first AI product and start attracting investors?</p>
+          
+          <div style="text-align: center; margin: 32px 0;">
+            <a href="https://aiexchange.club/list-product" style="${buttonStyle}">🚀 List Your AI Product</a>
+          </div>
+          
+          <div style="background-color: #FEF3C7; border: 1px solid #F59E0B; border-radius: 8px; padding: 16px; margin: 24px 0;">
+            <p style="margin: 0; color: #92400E; font-size: 14px;">
+              <strong>💡 Pro Tip:</strong> Products with detailed descriptions, clear use cases, and verified metrics get 3x more investor interest!
+            </p>
+          </div>
+          
+          <p style="${paragraphStyle}">If you have any questions or need assistance, our support team is here to help you succeed.</p>
+          
+          <p style="${paragraphStyle}">Welcome to the future of AI innovation! 🚀</p>
+          
+          <p style="${paragraphStyle}">Best regards,<br><strong>The AI Exchange Club Team</strong></p>
+          
+          <div style="border-top: 1px solid #E5E7EB; padding-top: 20px; margin-top: 32px; text-align: center;">
+            <p style="font-size: 12px; color: #9CA3AF; margin: 0;">
+              © 2024 AI Exchange Club. All rights reserved.<br>
+              You're receiving this email because you signed up for AI Exchange Club.
+            </p>
+          </div>
+        </div>
+      `;
+    } else {
+      // ai_investor
+      subject = `Welcome to AI Exchange Club, ${firstName}! 💎 Discover your next AI investment`;
+      htmlContent = `
+        <div style="max-width: 600px; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif;">
+          <div style="text-align: center; margin-bottom: 32px;">
+            <img src="https://pxadbwlidclnfoodjtpd.supabase.co/storage/v1/object/public/product-images/ai-exchange-logo.png" alt="AI Exchange Club Logo" style="width: 120px; margin-bottom: 20px;">
+            <h1 style="${headerStyle}">Welcome to AI Exchange Club!</h1>
+            <p style="font-size: 18px; color: #6B7280; margin: 0;">Where Innovation Meets Investment</p>
+          </div>
+          
+          <p style="${paragraphStyle}">Hi ${firstName},</p>
+          
+          <p style="${paragraphStyle}">🎉 <strong>Welcome!</strong> You've just gained exclusive access to the most curated marketplace of AI innovations. Get ready to discover your next big investment opportunity!</p>
+          
+          <div style="${sectionStyle}">
+            <h2 style="color: #8B5CF6; font-weight: 600; font-size: 20px; margin-bottom: 16px; font-family: 'Exo 2', Arial, sans-serif;">💎 Your AI Investment Journey Begins</h2>
+            <p style="${paragraphStyle}">As an AI Investor, you have privileged access to:</p>
+            
+            <div style="${featureStyle}">
+              <strong style="color: #8B5CF6;">🔍 Curated AI Innovations</strong><br>
+              <span style="color: #6B7280; font-size: 14px;">Discover pre-vetted AI solutions across various industries and applications</span>
+            </div>
+            
+            <div style="${featureStyle}">
+              <strong style="color: #8B5CF6;">📊 Detailed Analytics</strong><br>
+              <span style="color: #6B7280; font-size: 14px;">Access comprehensive metrics, performance data, and growth projections</span>
+            </div>
+            
+            <div style="${featureStyle}">
+              <strong style="color: #8B5CF6;">🤝 Direct Builder Access</strong><br>
+              <span style="color: #6B7280; font-size: 14px;">Connect directly with AI builders and founders through our secure platform</span>
+            </div>
+            
+            <div style="${featureStyle}">
+              <strong style="color: #8B5CF6;">⚡ Early Access</strong><br>
+              <span style="color: #6B7280; font-size: 14px;">Get first look at promising AI products before they hit the broader market</span>
+            </div>
+          </div>
+          
+          <p style="${paragraphStyle}">We're currently preparing an exclusive investor experience tailored just for you. Get ready to explore cutting-edge AI innovations!</p>
+          
+          <div style="text-align: center; margin: 32px 0;">
+            <a href="https://aiexchange.club/coming-soon" style="${buttonStyle}">🔮 Set Investment Preferences</a>
+          </div>
+          
+          <div style="background-color: #DBEAFE; border: 1px solid #3B82F6; border-radius: 8px; padding: 16px; margin: 24px 0;">
+            <p style="margin: 0; color: #1E40AF; font-size: 14px;">
+              <strong>📈 Investment Insight:</strong> The AI market is projected to reach $1.3 trillion by 2032. Position yourself at the forefront of this revolution!
+            </p>
+          </div>
+          
+          <p style="${paragraphStyle}">Stay tuned for exclusive market insights, investment opportunities, and direct access to the most promising AI innovations.</p>
+          
+          <p style="${paragraphStyle}">Welcome to the future of AI investing! 💎</p>
+          
+          <p style="${paragraphStyle}">Best regards,<br><strong>The AI Exchange Club Team</strong></p>
+          
+          <div style="border-top: 1px solid #E5E7EB; padding-top: 20px; margin-top: 32px; text-align: center;">
+            <p style="font-size: 12px; color: #9CA3AF; margin: 0;">
+              © 2024 AI Exchange Club. All rights reserved.<br>
+              You're receiving this email because you signed up for AI Exchange Club.
+            </p>
+          </div>
+        </div>
+      `;
     }
+    
+    const emailResponse = await resend.emails.send({
+      from: "AI Exchange Club <khalid@aiexchange.club>",
+      to: [email],
+      subject: subject,
+      html: htmlContent,
+    });
+    
+    console.log("Welcome email sent successfully:", emailResponse);
+    
+    return new Response(JSON.stringify(emailResponse), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+        ...corsHeaders,
+      },
+    });
   } catch (error: any) {
     console.error("Error in send-welcome-email function:", error);
-    console.error("Error details:", error.message, error.stack);
-    
     return new Response(
-      JSON.stringify({ 
-        error: error.message || "Unknown error",
-        stack: error.stack,
-        context: "Error occurred in send-welcome-email Edge Function"
-      }),
+      JSON.stringify({ error: error.message }),
       {
         status: 500,
         headers: { "Content-Type": "application/json", ...corsHeaders },

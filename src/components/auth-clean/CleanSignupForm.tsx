@@ -6,6 +6,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Eye, EyeOff, User, Mail, Lock, Loader2, Asterisk, Chrome } from 'lucide-react';
 import { NewAuthService, UserType } from '@/services/newAuthService';
 import { Switch } from '@/components/ui/switch';
+import { Checkbox } from '@/components/ui/checkbox';
 import { EmailVerificationReminder } from './EmailVerificationReminder';
 
 interface SignupFormProps {
@@ -27,6 +28,7 @@ export const CleanSignupForm = ({ onSignupSuccess, onSwitchToSignin }: SignupFor
     password: '',
     confirmPassword: '',
     userType: 'ai_investor' as UserType,
+    subscribeNewsletter: false,
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -48,6 +50,13 @@ export const CleanSignupForm = ({ onSignupSuccess, onSwitchToSignin }: SignupFor
     setFormData(prev => ({
       ...prev,
       userType: checked ? 'ai_builder' : 'ai_investor'
+    }));
+  };
+
+  const handleNewsletterChange = (checked: boolean) => {
+    setFormData(prev => ({
+      ...prev,
+      subscribeNewsletter: checked
     }));
   };
 
@@ -96,6 +105,7 @@ export const CleanSignupForm = ({ onSignupSuccess, onSwitchToSignin }: SignupFor
         firstName: formData.firstName,
         lastName: formData.lastName,
         userType: formData.userType,
+        subscribeNewsletter: formData.subscribeNewsletter,
       });
 
       console.log('CleanSignupForm: Signup successful', result);
@@ -288,6 +298,21 @@ export const CleanSignupForm = ({ onSignupSuccess, onSwitchToSignin }: SignupFor
             : 'I want to invest in AI products'
           }
         </p>
+      </div>
+
+      <div className="flex items-center space-x-2">
+        <Checkbox
+          id="newsletter"
+          checked={formData.subscribeNewsletter}
+          onCheckedChange={handleNewsletterChange}
+          disabled={loading || isGoogleLoading}
+        />
+        <Label 
+          htmlFor="newsletter" 
+          className="text-sm text-gray-300 cursor-pointer leading-relaxed"
+        >
+          Subscribe to our newsletter for AI industry insights and platform updates
+        </Label>
       </div>
 
       <Button

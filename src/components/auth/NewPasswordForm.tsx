@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
-import { Lock, CheckCircle, Eye, EyeOff } from "lucide-react";
+import { Lock, CheckCircle, Eye, EyeOff, Asterisk } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface NewPasswordFormProps {
@@ -105,18 +105,20 @@ export const NewPasswordForm = ({ onSuccess }: NewPasswordFormProps) => {
   if (success) {
     return (
       <div className="space-y-6 text-center">
-        <CheckCircle className="h-16 w-16 text-green-500 mx-auto" />
+        <div className="mx-auto w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mb-4">
+          <CheckCircle className="h-8 w-8 text-green-400" />
+        </div>
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          <h2 className="text-2xl font-bold text-white mb-2 font-['Exo_2']">
             Password Updated Successfully!
           </h2>
-          <p className="text-gray-600">
+          <p className="text-white/80">
             Your password has been changed and you are now signed in.
           </p>
         </div>
-        <Alert className="bg-green-50 border-green-200">
-          <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-          <AlertDescription className="text-green-700">
+        <Alert className="bg-green-500/10 border-green-500/20">
+          <CheckCircle className="h-4 w-4 text-green-400" />
+          <AlertDescription className="text-green-200">
             Redirecting you to your dashboard...
           </AlertDescription>
         </Alert>
@@ -127,25 +129,31 @@ export const NewPasswordForm = ({ onSuccess }: NewPasswordFormProps) => {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <Lock className="h-12 w-12 text-blue-500 mx-auto mb-4" />
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+        <div className="mx-auto w-16 h-16 bg-purple-500/20 rounded-full flex items-center justify-center mb-4">
+          <Lock className="h-8 w-8 text-purple-400" />
+        </div>
+        <h2 className="text-2xl font-bold text-white mb-2 font-['Exo_2']">
           Set New Password
         </h2>
-        <p className="text-gray-600">
+        <p className="text-white/80">
           Enter your new password below.
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-6">
         {error && (
-          <Alert variant="destructive">
-            <AlertDescription>{error}</AlertDescription>
+          <Alert variant="destructive" className="bg-red-500/10 border-red-500/20">
+            <AlertDescription className="text-red-200">{error}</AlertDescription>
           </Alert>
         )}
 
-        <div className="space-y-2">
-          <Label htmlFor="password">New Password</Label>
+        <div className="text-left">
+          <div className="flex items-center gap-1 mb-2">
+            <Label htmlFor="password" className="text-left text-white text-base">New Password</Label>
+            <Asterisk className="h-3 w-3 text-red-500" />
+          </div>
           <div className="relative">
+            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4 z-10" />
             <Input
               id="password"
               type={showPassword ? "text" : "password"}
@@ -155,27 +163,26 @@ export const NewPasswordForm = ({ onSuccess }: NewPasswordFormProps) => {
               disabled={isLoading}
               required
               minLength={6}
+              className="pl-10 pr-10 bg-black/30 text-white border-white/40 focus:border-[#D946EE] placeholder:text-white/60 shadow-inner"
             />
-            <Button
+            <button
               type="button"
-              variant="ghost"
-              size="sm"
-              className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
               onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
               disabled={isLoading}
             >
-              {showPassword ? (
-                <EyeOff className="h-4 w-4 text-gray-400" />
-              ) : (
-                <Eye className="h-4 w-4 text-gray-400" />
-              )}
-            </Button>
+              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
           </div>
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="confirmPassword">Confirm New Password</Label>
+        <div className="text-left">
+          <div className="flex items-center gap-1 mb-2">
+            <Label htmlFor="confirmPassword" className="text-left text-white text-base">Confirm New Password</Label>
+            <Asterisk className="h-3 w-3 text-red-500" />
+          </div>
           <div className="relative">
+            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4 z-10" />
             <Input
               id="confirmPassword"
               type={showConfirmPassword ? "text" : "password"}
@@ -185,40 +192,33 @@ export const NewPasswordForm = ({ onSuccess }: NewPasswordFormProps) => {
               disabled={isLoading}
               required
               minLength={6}
+              className="pl-10 pr-10 bg-black/30 text-white border-white/40 focus:border-[#D946EE] placeholder:text-white/60 shadow-inner"
             />
-            <Button
+            <button
               type="button"
-              variant="ghost"
-              size="sm"
-              className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
               disabled={isLoading}
             >
-              {showConfirmPassword ? (
-                <EyeOff className="h-4 w-4 text-gray-400" />
-              ) : (
-                <Eye className="h-4 w-4 text-gray-400" />
-              )}
-            </Button>
+              {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
           </div>
         </div>
 
-        <div className="space-y-2">
-          <Alert className="bg-blue-50 border-blue-200">
-            <Lock className="h-4 w-4 text-blue-500 mr-2" />
-            <AlertDescription className="text-blue-700">
-              <strong>Password Requirements:</strong>
-              <ul className="mt-1 text-sm list-disc list-inside">
-                <li>At least 6 characters long</li>
-                <li>Should be unique and secure</li>
-              </ul>
-            </AlertDescription>
-          </Alert>
-        </div>
+        <Alert className="bg-blue-500/10 border-blue-500/20">
+          <Lock className="h-4 w-4 text-blue-400" />
+          <AlertDescription className="text-blue-200">
+            <strong>Password Requirements:</strong>
+            <ul className="mt-1 text-sm list-disc list-inside">
+              <li>At least 6 characters long</li>
+              <li>Should be unique and secure</li>
+            </ul>
+          </AlertDescription>
+        </Alert>
 
         <Button
           type="submit"
-          className="w-full"
+          className="w-full bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white hover:shadow-lg hover:shadow-purple-500/30"
           disabled={isLoading || !password || !confirmPassword}
         >
           {isLoading ? "Updating Password..." : "Update Password"}

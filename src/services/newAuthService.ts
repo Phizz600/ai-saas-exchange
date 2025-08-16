@@ -9,6 +9,7 @@ export interface SignupData {
   firstName: string;
   lastName: string;
   userType: UserType;
+  subscribeNewsletter?: boolean;
 }
 
 export interface SigninData {
@@ -54,11 +55,51 @@ export class NewAuthService {
           saved_products: []
         });
 
+      // Step 3: Handle newsletter subscription
+      if (data.subscribeNewsletter) {
+        try {
+          const { error: emailPrefError } = await supabase
+            .from('email_preferences')
+            .insert({
+              user_id: authData.user.id,
+              newsletter: true,
+              marketing_emails: true,
+              transaction_notifications: true,
+              product_updates: true
+            });
+          
+          if (emailPrefError) {
+            console.error('NewAuthService: Email preferences error:', emailPrefError);
+          } else {
+            console.log('NewAuthService: Newsletter subscription created');
+          }
+        } catch (emailError) {
+          console.error('NewAuthService: Newsletter subscription failed:', emailError);
+        }
+      }
+
       if (profileError) {
         console.error('NewAuthService: Profile creation error:', profileError);
         // Continue anyway - profile can be created later
       } else {
         console.log('NewAuthService: Profile created successfully');
+      }
+
+      // Send welcome email if user is confirmed
+      if (authData.session) {
+        try {
+          const { data: functions } = await supabase.functions.invoke('send-welcome-email', {
+            body: {
+              email: data.email,
+              firstName: data.firstName,
+              userType: data.userType
+            }
+          });
+          console.log('NewAuthService: Welcome email sent:', functions);
+        } catch (emailError) {
+          console.error('NewAuthService: Welcome email failed:', emailError);
+          // Don't block signup if email fails
+        }
       }
 
       return {
