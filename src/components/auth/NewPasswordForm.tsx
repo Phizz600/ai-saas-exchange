@@ -59,18 +59,50 @@ export const NewPasswordForm = ({ onSuccess }: NewPasswordFormProps) => {
 
     try {
       console.log("[Auth] Updating password");
+      
+      // First check if we have a valid session
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      console.log("[Auth] Current session:", { hasSession: !!session, sessionError });
+      
+      if (sessionError || !session) {
+        console.error("[Auth] No valid session for password update:", sessionError);
+        setError("Your password reset link has expired. Please request a new one.");
+        toast({
+          variant: "destructive",
+          title: "Session Expired",
+          description: "Please request a new password reset link.",
+        });
+        // Redirect back to password reset
+        setTimeout(() => {
+          window.location.href = '/auth';
+        }, 2000);
+        return;
+      }
+
       const { error: updateError } = await supabase.auth.updateUser({
         password: password
       });
 
       if (updateError) {
         console.error("[Auth] Password update error:", updateError);
-        setError(updateError.message);
-        toast({
-          variant: "destructive",
-          title: "Password Update Failed",
-          description: updateError.message,
-        });
+        if (updateError.message.includes('expired') || updateError.message.includes('invalid')) {
+          setError("Your password reset link has expired. Please request a new one.");
+          toast({
+            variant: "destructive",
+            title: "Link Expired",
+            description: "Please request a new password reset link.",
+          });
+          setTimeout(() => {
+            window.location.href = '/auth';
+          }, 2000);
+        } else {
+          setError(updateError.message);
+          toast({
+            variant: "destructive",
+            title: "Password Update Failed",
+            description: updateError.message,
+          });
+        }
       } else {
         console.log("[Auth] Password updated successfully");
         setSuccess(true);
@@ -91,11 +123,11 @@ export const NewPasswordForm = ({ onSuccess }: NewPasswordFormProps) => {
       }
     } catch (error: any) {
       console.error("[Auth] Unexpected error during password update:", error);
-      setError(error.message || "An unexpected error occurred.");
+      setError("An unexpected error occurred. Please try requesting a new password reset link.");
       toast({
         variant: "destructive",
         title: "Unexpected Error",
-        description: error.message || "An unexpected error occurred.",
+        description: "Please request a new password reset link.",
       });
     } finally {
       setIsLoading(false);

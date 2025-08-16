@@ -19,8 +19,18 @@ export const CleanAuthPage = () => {
   // Check if this is a password recovery flow
   useEffect(() => {
     const type = searchParams.get('type');
-    if (type === 'recovery') {
+    const accessToken = searchParams.get('access_token');
+    const refreshToken = searchParams.get('refresh_token');
+    
+    console.log('[Auth] Recovery flow check:', { type, hasAccessToken: !!accessToken, hasRefreshToken: !!refreshToken });
+    
+    if (type === 'recovery' && accessToken && refreshToken) {
+      console.log('[Auth] Valid recovery tokens found, showing new password form');
       setShowNewPassword(true);
+    } else if (type === 'recovery') {
+      console.log('[Auth] Recovery type found but tokens missing or expired');
+      // Show error message instead of new password form
+      setShowPasswordReset(true);
     }
   }, [searchParams]);
 
