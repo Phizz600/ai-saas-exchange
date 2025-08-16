@@ -3,21 +3,23 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Eye, EyeOff, Mail, Lock, Loader2 } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, Loader2, Chrome, Asterisk } from 'lucide-react';
 import { NewAuthService } from '@/services/newAuthService';
 
 interface SigninFormProps {
   onSigninSuccess: () => void;
   onSwitchToSignup: () => void;
+  onForgotPassword: () => void;
 }
 
-export const CleanSigninForm = ({ onSigninSuccess, onSwitchToSignup }: SigninFormProps) => {
+export const CleanSigninForm = ({ onSigninSuccess, onSwitchToSignup, onForgotPassword }: SigninFormProps) => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [error, setError] = useState('');
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,7 +74,7 @@ export const CleanSigninForm = ({ onSigninSuccess, onSwitchToSignup }: SigninFor
   };
 
   const handleGoogleSignin = async () => {
-    setLoading(true);
+    setIsGoogleLoading(true);
     setError('');
 
     try {
@@ -80,7 +82,7 @@ export const CleanSigninForm = ({ onSigninSuccess, onSwitchToSignup }: SigninFor
     } catch (error: any) {
       console.error('CleanSigninForm: Google signin error:', error);
       setError(error.message || 'Google signin failed');
-      setLoading(false);
+      setIsGoogleLoading(false);
     }
   };
 
@@ -94,12 +96,13 @@ export const CleanSigninForm = ({ onSigninSuccess, onSwitchToSignup }: SigninFor
         </Alert>
       )}
 
-      <div className="space-y-2">
-        <Label htmlFor="email" className="text-white">
-          Email Address
-        </Label>
+      <div className="text-left">
+        <div className="flex items-center gap-1 mb-2">
+          <Label htmlFor="email" className="text-left text-white text-base">Email</Label>
+          <Asterisk className="h-3 w-3 text-red-500" />
+        </div>
         <div className="relative">
-          <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+          <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4 z-10" />
           <Input
             id="email"
             name="email"
@@ -107,19 +110,20 @@ export const CleanSigninForm = ({ onSigninSuccess, onSwitchToSignup }: SigninFor
             required
             value={formData.email}
             onChange={handleInputChange}
-            className="pl-10 bg-white/5 border-white/20 text-white placeholder-gray-400"
-            placeholder="john@example.com"
-            disabled={loading}
+            className="pl-10 bg-black/30 text-white border-white/40 focus:border-[#D946EE] placeholder:text-white/60 shadow-inner"
+            placeholder="Enter your email"
+            disabled={loading || isGoogleLoading}
           />
         </div>
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="password" className="text-white">
-          Password
-        </Label>
+      <div className="text-left">
+        <div className="flex items-center gap-1 mb-2">
+          <Label htmlFor="password" className="text-left text-white text-base">Password</Label>
+          <Asterisk className="h-3 w-3 text-red-500" />
+        </div>
         <div className="relative">
-          <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+          <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4 z-10" />
           <Input
             id="password"
             name="password"
@@ -127,24 +131,36 @@ export const CleanSigninForm = ({ onSigninSuccess, onSwitchToSignup }: SigninFor
             required
             value={formData.password}
             onChange={handleInputChange}
-            className="pl-10 pr-10 bg-white/5 border-white/20 text-white placeholder-gray-400"
+            className="pl-10 pr-10 bg-black/30 text-white border-white/40 focus:border-[#D946EE] placeholder:text-white/60 shadow-inner"
             placeholder="Enter your password"
-            disabled={loading}
+            disabled={loading || isGoogleLoading}
+            minLength={6}
           />
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-3 text-gray-400 hover:text-white"
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
           >
             {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </button>
         </div>
       </div>
 
+      <div className="text-right">
+        <button
+          type="button"
+          onClick={onForgotPassword}
+          className="text-sm text-gray-300 hover:text-white underline"
+          disabled={loading || isGoogleLoading}
+        >
+          Forgot password?
+        </button>
+      </div>
+
       <Button
         type="submit"
-        className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 text-white py-3"
-        disabled={loading}
+        className="w-full bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white hover:shadow-lg hover:shadow-purple-500/30"
+        disabled={loading || isGoogleLoading}
       >
         {loading ? (
           <>
@@ -156,12 +172,36 @@ export const CleanSigninForm = ({ onSigninSuccess, onSwitchToSignup }: SigninFor
         )}
       </Button>
 
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center">
+          <span className="w-full border-t border-white/20" />
+        </div>
+        <div className="relative flex justify-center text-xs uppercase">
+          <span className="bg-gradient-to-br from-gray-900 via-purple-900 to-blue-900 px-2 text-white/60">Or continue with</span>
+        </div>
+      </div>
+
+      <Button
+        type="button"
+        variant="outline"
+        onClick={handleGoogleSignin}
+        disabled={loading || isGoogleLoading}
+        className="w-full border-white/20 text-white bg-white/10 hover:bg-white/10 active:bg-white/10"
+      >
+        {isGoogleLoading ? (
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+        ) : (
+          <Chrome className="mr-2 h-4 w-4" />
+        )}
+        {isGoogleLoading ? 'Signing in...' : 'Sign in with Google'}
+      </Button>
+
       <div className="text-center">
         <button
           type="button"
           onClick={onSwitchToSignup}
           className="text-sm text-gray-300 hover:text-white underline"
-          disabled={loading}
+          disabled={loading || isGoogleLoading}
         >
           Don't have an account? Sign up
         </button>
