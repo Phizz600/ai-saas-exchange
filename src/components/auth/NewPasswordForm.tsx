@@ -60,23 +60,54 @@ export const NewPasswordForm = ({ onSuccess }: NewPasswordFormProps) => {
     try {
       console.log("[Auth] Updating password");
       
-      // First check if we have a valid session
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      console.log("[Auth] Current session:", { hasSession: !!session, sessionError });
+      // For password recovery, we need to use the tokens from URL to authenticate
+      const urlParams = new URLSearchParams(window.location.search);
+      const accessToken = urlParams.get('access_token');
+      const refreshToken = urlParams.get('refresh_token');
+      const type = urlParams.get('type');
       
-      if (sessionError || !session) {
-        console.error("[Auth] No valid session for password update:", sessionError);
-        setError("Your password reset link has expired. Please request a new one.");
-        toast({
-          variant: "destructive",
-          title: "Session Expired",
-          description: "Please request a new password reset link.",
+      if (type === 'recovery' && accessToken && refreshToken) {
+        console.log("[Auth] Using recovery tokens to establish session");
+        
+        // Set the session with recovery tokens
+        const { data: { session }, error: sessionError } = await supabase.auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken
         });
-        // Redirect back to password reset
-        setTimeout(() => {
-          window.location.href = '/auth';
-        }, 2000);
-        return;
+        
+        if (sessionError || !session) {
+          console.error("[Auth] Failed to establish recovery session:", sessionError);
+          setError("Your password reset link has expired. Please request a new one.");
+          toast({
+            variant: "destructive",
+            title: "Session Expired",
+            description: "Please request a new password reset link.",
+          });
+          setTimeout(() => {
+            window.location.href = '/auth';
+          }, 2000);
+          return;
+        }
+        
+        console.log("[Auth] Recovery session established, updating password");
+      } else {
+        // Check if we have a valid session
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        console.log("[Auth] Current session:", { hasSession: !!session, sessionError });
+        
+        if (sessionError || !session) {
+          console.error("[Auth] No valid session for password update:", sessionError);
+          setError("Your password reset link has expired. Please request a new one.");
+          toast({
+            variant: "destructive",
+            title: "Session Expired",
+            description: "Please request a new password reset link.",
+          });
+          setTimeout(() => {
+            window.location.href = '/auth';
+          }, 2000);
+          return;
+        }
       }
 
       const { error: updateError } = await supabase.auth.updateUser({

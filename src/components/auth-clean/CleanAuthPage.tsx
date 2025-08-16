@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
 import { AuthLayout } from './AuthLayout';
 import { CleanSignupForm } from './CleanSignupForm';
 import { CleanSigninForm } from './CleanSigninForm';
@@ -26,7 +27,16 @@ export const CleanAuthPage = () => {
     
     if (type === 'recovery' && accessToken && refreshToken) {
       console.log('[Auth] Valid recovery tokens found, showing new password form');
-      setShowNewPassword(true);
+      
+      // SECURITY FIX: Prevent auto-login by signing out first
+      // This ensures user must set new password before being logged in
+      supabase.auth.signOut().then(() => {
+        console.log('[Auth] Signed out to prevent auto-login during password reset');
+        setShowNewPassword(true);
+      }).catch((error) => {
+        console.error('[Auth] Error signing out during recovery:', error);
+        setShowNewPassword(true); // Still show the form
+      });
     } else if (type === 'recovery') {
       console.log('[Auth] Recovery type found but tokens missing or expired');
       // Show error message instead of new password form
