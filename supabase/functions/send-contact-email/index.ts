@@ -41,7 +41,7 @@ serve(async (req) => {
     
     // Send the email using Resend with improved HTML template inspired by Notion/Netflix
     const response = await resend.emails.send({
-      from: 'AI Exchange Club <noreply@aiexchange.club>',
+      from: 'AI Exchange Club <support@aiexchange.club>',
       to: ['support@aiexchange.club'],
       reply_to: email,
       subject: `Contact Form: ${subject}`,

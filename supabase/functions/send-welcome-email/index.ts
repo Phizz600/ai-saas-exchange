@@ -170,7 +170,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
     
     const emailResponse = await resend.emails.send({
-      from: "AI Exchange Club <welcome@aiexchange.club>",
+      from: "AI Exchange Club <team@aiexchange.club>",
       to: [email],
       subject: subject,
       html: htmlContent,
