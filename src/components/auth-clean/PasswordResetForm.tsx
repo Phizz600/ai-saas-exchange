@@ -5,34 +5,34 @@ import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Mail, ArrowLeft, CheckCircle, Asterisk } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-
 interface PasswordResetFormProps {
   onBack: () => void;
 }
-
-export const PasswordResetForm = ({ onBack }: PasswordResetFormProps) => {
+export const PasswordResetForm = ({
+  onBack
+}: PasswordResetFormProps) => {
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
   const [error, setError] = useState('');
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) {
       setError('Please enter your email address.');
       return;
     }
-
     setIsLoading(true);
     setError('');
-
     try {
       console.log('[Auth] Attempting password reset for:', email);
-      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/auth?type=recovery`,
+      const {
+        error: resetError
+      } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth?type=recovery`
       });
-      console.log('[Auth] Password reset response:', { resetError });
-
+      console.log('[Auth] Password reset response:', {
+        resetError
+      });
       if (resetError) {
         setError(resetError.message);
       } else {
@@ -45,10 +45,8 @@ export const PasswordResetForm = ({ onBack }: PasswordResetFormProps) => {
       setIsLoading(false);
     }
   };
-
   if (emailSent) {
-    return (
-      <div className="space-y-6">
+    return <div className="space-y-6">
         <div className="text-center">
           <div className="mx-auto w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mb-4">
             <CheckCircle className="h-8 w-8 text-green-400" />
@@ -74,35 +72,24 @@ export const PasswordResetForm = ({ onBack }: PasswordResetFormProps) => {
             </AlertDescription>
           </Alert>
         </div>
-        <Button
-          onClick={onBack}
-          variant="outline"
-          className="w-full border-white/20 text-white bg-white/10 hover:bg-white/20"
-        >
+        <Button onClick={onBack} variant="outline" className="w-full border-white/20 text-white bg-white/10 hover:bg-white/20">
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to Sign In
         </Button>
-      </div>
-    );
+      </div>;
   }
-
-  return (
-    <div className="space-y-6">
+  return <div className="space-y-6">
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-white mb-2 font-['Exo_2']">
-          Reset Your Password
-        </h2>
+        
         <p className="text-white/80">
           Enter your email address and we'll send you a link to reset your password.
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        {error && (
-          <Alert variant="destructive" className="bg-red-500/10 border-red-500/20">
+        {error && <Alert variant="destructive" className="bg-red-500/10 border-red-500/20">
             <AlertDescription className="text-red-200">{error}</AlertDescription>
-          </Alert>
-        )}
+          </Alert>}
 
         <div className="text-left">
           <div className="flex items-center gap-1 mb-2">
@@ -111,38 +98,18 @@ export const PasswordResetForm = ({ onBack }: PasswordResetFormProps) => {
           </div>
           <div className="relative">
             <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4 z-10" />
-            <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email address"
-              disabled={isLoading}
-              required
-              className="pl-10 bg-black/30 text-white border-white/40 focus:border-[#D946EE] placeholder:text-white/60 shadow-inner"
-            />
+            <Input id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Enter your email address" disabled={isLoading} required className="pl-10 bg-black/30 text-white border-white/40 focus:border-[#D946EE] placeholder:text-white/60 shadow-inner" />
           </div>
         </div>
 
-        <Button
-          type="submit"
-          className="w-full bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white hover:shadow-lg hover:shadow-purple-500/30"
-          disabled={isLoading || !email}
-        >
+        <Button type="submit" className="w-full bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white hover:shadow-lg hover:shadow-purple-500/30" disabled={isLoading || !email}>
           {isLoading ? "Sending..." : "Send Reset Link"}
         </Button>
 
-        <Button
-          type="button"
-          variant="outline"
-          onClick={onBack}
-          className="w-full border-white/20 text-white bg-white/10 hover:bg-white/20"
-          disabled={isLoading}
-        >
+        <Button type="button" variant="outline" onClick={onBack} className="w-full border-white/20 text-white bg-white/10 hover:bg-white/20" disabled={isLoading}>
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to Sign In
         </Button>
       </form>
-    </div>
-  );
+    </div>;
 };
