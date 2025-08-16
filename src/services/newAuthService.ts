@@ -23,12 +23,15 @@ export class NewAuthService {
     try {
       console.log('NewAuthService: Starting signup for:', data.email);
       
+      const redirectUrl = `${window.location.origin}/auth`;
+      console.log('NewAuthService: Using redirect URL:', redirectUrl);
+      
       // Step 1: Create user in Supabase Auth
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: data.email,
         password: data.password,
         options: {
-          emailRedirectTo: `${window.location.origin}/`,
+          emailRedirectTo: redirectUrl,
         }
       });
 
