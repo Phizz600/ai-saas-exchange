@@ -88,24 +88,26 @@ export class NewAuthService {
         console.log('NewAuthService: Profile created successfully');
       }
 
-      // Send welcome email if user is confirmed
-      if (authData.session) {
-        try {
-          const { data: functions } = await supabase.functions.invoke('send-auth-email', {
-            body: {
-              email: data.email,
-              firstName: data.firstName,
-              userType: data.userType,
-              type: 'welcome'
-            }
-          });
-          console.log('NewAuthService: Welcome email sent:', functions);
-        } catch (emailError) {
-          console.error('NewAuthService: Welcome email failed:', emailError);
-          // Don't block signup if email fails
-        }
-      } else {
-        // Send confirmation email for unconfirmed users
+      // Schedule welcome email for 10 minutes after signup
+      try {
+        const { data: functions } = await supabase.functions.invoke('schedule-welcome-email', {
+          body: {
+            email: data.email,
+            firstName: data.firstName,
+            userType: data.userType,
+            timestamp: new Date().toISOString(),
+            source: 'user_signup',
+            siteUrl: window.location.origin
+          }
+        });
+        console.log('NewAuthService: Welcome email scheduled:', functions);
+      } catch (emailError) {
+        console.error('NewAuthService: Welcome email scheduling failed:', emailError);
+        // Don't block signup if email fails
+      }
+
+      // Send confirmation email if user needs to confirm email
+      if (!authData.session) {
         try {
           const { data: functions } = await supabase.functions.invoke('send-auth-email', {
             body: {

@@ -8,5 +8,5 @@
 export const getRedirectUrl = () => {
   // Get the full URL without any query parameters or hash
   const url = new URL(window.location.href);
-  return `${url.origin}/auth`;
+  return `${url.origin}/auth?type=recovery`;
 };

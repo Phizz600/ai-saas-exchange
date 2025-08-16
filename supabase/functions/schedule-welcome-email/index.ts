@@ -103,16 +103,16 @@ const handler = async (req: Request): Promise<Response> => {
       } catch (error) {
         console.error(`Exception in delayed email task ${scheduleId}:`, error);
       }
-    }, 120000); // 120,000 ms = 2 minutes
+    }, 600000); // 600,000 ms = 10 minutes
     
-    console.log(`Welcome email scheduled with ID: ${scheduleId}, will be sent in 2 minutes`);
+    console.log(`Welcome email scheduled with ID: ${scheduleId}, will be sent in 10 minutes`);
 
     return new Response(
       JSON.stringify({ 
         message: "Welcome email scheduled successfully", 
         scheduleId,
         scheduledAt: new Date().toISOString(),
-        willExecuteAt: new Date(Date.now() + 120000).toISOString()
+        willExecuteAt: new Date(Date.now() + 600000).toISOString()
       }),
       {
         status: 200,
