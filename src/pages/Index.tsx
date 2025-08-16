@@ -12,8 +12,21 @@ import { CookieConsent } from "@/components/CookieConsent";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Store } from "lucide-react";
-import { TestUserCreator } from "@/components/TestUserCreator";
+import { useEffect } from "react";
+import { createTestUser } from "@/utils/testAuth";
 export const Index = () => {
+  // Test user creation in development
+  useEffect(() => {
+    if (import.meta.env.DEV) {
+      console.log('🧪 Starting test user creation...');
+      createTestUser().then(result => {
+        console.log('🧪 Test user creation result:', result);
+      }).catch(error => {
+        console.error('🧪 Test user creation failed:', error);
+      });
+    }
+  }, []);
+
   return <div className="min-h-screen relative overflow-hidden">
       <ParticlesBackground />
       <div className="relative z-10">
@@ -51,9 +64,6 @@ export const Index = () => {
               Admin Panel
             </Link>
           </div>}
-        
-        {/* Test User Creator - only in development */}
-        {import.meta.env.DEV && <TestUserCreator />}
       </div>
     </div>;
 };
