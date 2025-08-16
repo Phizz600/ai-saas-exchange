@@ -12,6 +12,7 @@ import { CookieConsent } from "@/components/CookieConsent";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Store } from "lucide-react";
+import { TestUserCreator } from "@/components/TestUserCreator";
 export const Index = () => {
   return <div className="min-h-screen relative overflow-hidden">
       <ParticlesBackground />
@@ -50,6 +51,9 @@ export const Index = () => {
               Admin Panel
             </Link>
           </div>}
+        
+        {/* Test User Creator - only in development */}
+        {import.meta.env.DEV && <TestUserCreator />}
       </div>
     </div>;
 };
