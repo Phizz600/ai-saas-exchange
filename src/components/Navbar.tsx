@@ -116,6 +116,71 @@ export const Navbar = () => {
                     
                   </Link>
 
+                  {/* Hamburger Menu */}
+                  <Sheet>
+                    <SheetTrigger asChild>
+                      <Button variant="ghost" size="sm" className="p-2" aria-label="Open menu">
+                        <div className="flex flex-col items-center justify-center gap-1.5">
+                          <span className="block h-0.5 w-6 rounded-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9]" />
+                          <span className="block h-0.5 w-6 rounded-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9]" />
+                          <span className="block h-0.5 w-6 rounded-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9]" />
+                        </div>
+                      </Button>
+                    </SheetTrigger>
+                    <SheetContent side="right" className="w-80">
+                      <SheetHeader>
+                        <div className="flex items-center space-x-2">
+                          <img src="/lovable-uploads/f1d82e78-2a24-4c2b-b93c-d1a196c1065b.png" alt="AI Exchange Club" className="h-8 w-auto" />
+                          <span className="text-xl font-bold bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] bg-clip-text text-transparent">
+                            AI Exchange
+                          </span>
+                        </div>
+                      </SheetHeader>
+                      
+                      <div className="mt-8 space-y-4">
+                        {/* Navigation Items */}
+                        {navigationItems.map(item => item.requiresAuth ? <button key={item.href} onClick={e => handleNavigationClick(e, item.href)} className="block text-gray-700 hover:text-[#8B5CF6] transition-colors font-medium w-full text-left">
+                            {item.title}
+                          </button> : <Link key={item.href} to={item.href} className="block text-gray-700 hover:text-[#8B5CF6] transition-colors font-medium">
+                            {item.title}
+                          </Link>)}
+                        
+                        {/* Policy Pages */}
+                        <div className="border-t pt-4">
+                          <h3 className="text-sm font-semibold text-gray-500 mb-2">Legal</h3>
+                          {policyPages.map(page => <Link key={page.href} to={page.href} className="block text-gray-700 hover:text-[#8B5CF6] transition-colors text-sm py-1">
+                              {page.title}
+                            </Link>)}
+                        </div>
+                        
+                        {/* Auth Section */}
+                        <div className="border-t pt-4">
+                          <div className="space-y-2">
+                            <Link to="/messages" className="flex items-center justify-between text-gray-700 hover:text-[#8B5CF6] transition-colors">
+                              <span>Messages</span>
+                              {unreadCount > 0 && <Badge className="h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
+                                  {unreadCount > 9 ? '9+' : unreadCount}
+                                </Badge>}
+                            </Link>
+                            <Link to="/profile" className="block text-gray-700 hover:text-[#8B5CF6] transition-colors">
+                              Profile
+                            </Link>
+                            <Link to="/product-dashboard" className="block text-gray-700 hover:text-[#8B5CF6] transition-colors">
+                              Dashboard
+                            </Link>
+                            <Link to="/settings" className="block text-gray-700 hover:text-[#8B5CF6] transition-colors">
+                              Settings
+                            </Link>
+                            <button onClick={handleSignOut} className="flex items-center text-gray-700 hover:text-red-600 transition-colors w-full">
+                              <LogOut className="mr-2 h-4 w-4" />
+                              Sign Out
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </SheetContent>
+                  </Sheet>
+
                   {/* Profile Menu */}
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
