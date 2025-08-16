@@ -129,14 +129,14 @@ export const NewPasswordForm = ({ onSuccess }: NewPasswordFormProps) => {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <div className="mx-auto w-16 h-16 bg-purple-500/20 rounded-full flex items-center justify-center mb-4">
-          <Lock className="h-8 w-8 text-purple-400" />
+        <div className="mx-auto w-16 h-16 bg-gradient-to-br from-[#D946EE] to-[#8B5CF6] rounded-full flex items-center justify-center mb-4">
+          <Lock className="h-8 w-8 text-white" />
         </div>
         <h2 className="text-2xl font-bold text-white mb-2 font-['Exo_2']">
-          Set New Password
+          Create New Password
         </h2>
-        <p className="text-white/80">
-          Enter your new password below.
+        <p className="text-white/70">
+          Your password reset was successful. Choose a strong new password for your account.
         </p>
       </div>
 
@@ -205,23 +205,25 @@ export const NewPasswordForm = ({ onSuccess }: NewPasswordFormProps) => {
           </div>
         </div>
 
-        <Alert className="bg-blue-500/10 border-blue-500/20">
-          <Lock className="h-4 w-4 text-blue-400" />
-          <AlertDescription className="text-blue-200">
-            <strong>Password Requirements:</strong>
-            <ul className="mt-1 text-sm list-disc list-inside">
-              <li>At least 6 characters long</li>
-              <li>Should be unique and secure</li>
-            </ul>
-          </AlertDescription>
-        </Alert>
+        <div className="bg-white/5 border border-white/10 rounded-lg p-4">
+          <div className="flex items-start gap-3">
+            <Lock className="h-5 w-5 text-white/60 mt-0.5" />
+            <div>
+              <p className="text-white/90 text-sm font-medium mb-1">Password Requirements</p>
+              <ul className="text-white/70 text-sm space-y-1">
+                <li>• At least 6 characters long</li>
+                <li>• Use a unique, secure password</li>
+              </ul>
+            </div>
+          </div>
+        </div>
 
         <Button
           type="submit"
-          className="w-full bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white hover:shadow-lg hover:shadow-purple-500/30"
+          className="w-full bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white hover:shadow-lg hover:shadow-purple-500/30 transition-all duration-200"
           disabled={isLoading || !password || !confirmPassword}
         >
-          {isLoading ? "Updating Password..." : "Update Password"}
+          {isLoading ? "Creating Password..." : "Create New Password"}
         </Button>
       </form>
     </div>
