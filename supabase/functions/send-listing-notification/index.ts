@@ -135,7 +135,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.log(`Sending ${type} email to ${userEmail}`);
     
     const emailResponse = await resend.emails.send({
-      from: "AI Exchange <notifications@aiexchange.pro>",
+      from: "AI Exchange Club <noreply@aiexchange.club>",
       to: [userEmail],
       subject: subject,
       html: htmlContent,

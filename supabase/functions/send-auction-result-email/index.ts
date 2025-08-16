@@ -221,7 +221,7 @@ Deno.serve(async (req) => {
 
       // Send email to winner using Resend
       const winnerResponse = await resend.emails.send({
-        from: 'AI Exchange <notifications@ai-exchange.club>',
+        from: 'AI Exchange Club <noreply@aiexchange.club>',
         to: [winnerEmail],
         subject: reservePriceMet 
           ? `Congratulations! You won the auction for ${product.title}`
@@ -236,7 +236,7 @@ Deno.serve(async (req) => {
 
       // Send email to seller
       const sellerResponse = await resend.emails.send({
-        from: 'AI Exchange <notifications@ai-exchange.club>',
+        from: 'AI Exchange Club <noreply@aiexchange.club>',
         to: [sellerEmail],
         subject: reservePriceMet
           ? `Your auction for ${product.title} has ended successfully!`
@@ -286,7 +286,7 @@ Deno.serve(async (req) => {
       console.log(`No winner for auction ${productId}, sending no-winner email to ${sellerEmail}`);
       
       const response = await resend.emails.send({
-        from: 'AI Exchange <notifications@ai-exchange.club>',
+        from: 'AI Exchange Club <noreply@aiexchange.club>',
         to: [sellerEmail],
         subject: `Your auction for ${product.title} has ended`,
         html: getNoWinnerEmailTemplate(product)
