@@ -64,10 +64,6 @@ export const Navbar = () => {
     navigate('/');
   };
   const navigationItems = [{
-    title: "Marketplace",
-    href: "/marketplace",
-    requiresAuth: true
-  }, {
     title: "Claim Free Valuation",
     href: "https://aiexchange.club/ai-saas-quiz",
     requiresAuth: false
