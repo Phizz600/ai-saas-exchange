@@ -29,6 +29,7 @@ export const CleanSignupForm = ({ onSignupSuccess, onSwitchToSignin }: SignupFor
     confirmPassword: '',
     userType: 'ai_investor' as UserType,
     subscribeNewsletter: false,
+    agreedToTerms: false,
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -60,6 +61,13 @@ export const CleanSignupForm = ({ onSignupSuccess, onSwitchToSignin }: SignupFor
     }));
   };
 
+  const handleTermsChange = (checked: boolean) => {
+    setFormData(prev => ({
+      ...prev,
+      agreedToTerms: checked
+    }));
+  };
+
   const validateForm = () => {
     if (!formData.firstName.trim()) {
       setError('First name is required');
@@ -83,6 +91,10 @@ export const CleanSignupForm = ({ onSignupSuccess, onSwitchToSignin }: SignupFor
     }
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
+      return false;
+    }
+    if (!formData.agreedToTerms) {
+      setError('You must agree to the Terms of Service and Privacy Policy');
       return false;
     }
     return true;
@@ -312,6 +324,22 @@ export const CleanSignupForm = ({ onSignupSuccess, onSwitchToSignin }: SignupFor
           className="text-sm text-gray-300 cursor-pointer leading-relaxed"
         >
           Subscribe to our newsletter for AI industry insights and platform updates
+        </Label>
+      </div>
+
+      <div className="flex items-center space-x-2">
+        <Checkbox
+          id="terms"
+          checked={formData.agreedToTerms}
+          onCheckedChange={handleTermsChange}
+          disabled={loading || isGoogleLoading}
+          className="border-white/30 data-[state=checked]:bg-[#D946EE] data-[state=checked]:border-[#D946EE]"
+        />
+        <Label 
+          htmlFor="terms" 
+          className="text-sm text-gray-300 cursor-pointer leading-relaxed"
+        >
+          I agree to the Terms of Service and Privacy Policy
         </Label>
       </div>
 
