@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Eye, EyeOff, Mail, Lock, Loader2, Chrome, Asterisk } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, Loader2, Chrome, Asterisk, Linkedin } from 'lucide-react';
 import { NewAuthService } from '@/services/newAuthService';
 
 interface SigninFormProps {
@@ -20,6 +20,7 @@ export const CleanSigninForm = ({ onSigninSuccess, onSwitchToSignup, onForgotPas
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [isLinkedInLoading, setIsLinkedInLoading] = useState(false);
   const [error, setError] = useState('');
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -86,6 +87,19 @@ export const CleanSigninForm = ({ onSigninSuccess, onSwitchToSignup, onForgotPas
     }
   };
 
+  const handleLinkedInSignin = async () => {
+    setIsLinkedInLoading(true);
+    setError('');
+
+    try {
+      await NewAuthService.signInWithLinkedIn();
+    } catch (error: any) {
+      console.error('CleanSigninForm: LinkedIn signin error:', error);
+      setError(error.message || 'LinkedIn signin failed');
+      setIsLinkedInLoading(false);
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {error && (
@@ -112,7 +126,7 @@ export const CleanSigninForm = ({ onSigninSuccess, onSwitchToSignup, onForgotPas
             onChange={handleInputChange}
             className="pl-10 bg-black/30 text-white border-white/40 focus:border-[#D946EE] placeholder:text-white/60 shadow-inner"
             placeholder="Enter your email"
-            disabled={loading || isGoogleLoading}
+            disabled={loading || isGoogleLoading || isLinkedInLoading}
           />
         </div>
       </div>
@@ -133,7 +147,7 @@ export const CleanSigninForm = ({ onSigninSuccess, onSwitchToSignup, onForgotPas
             onChange={handleInputChange}
             className="pl-10 pr-10 bg-black/30 text-white border-white/40 focus:border-[#D946EE] placeholder:text-white/60 shadow-inner"
             placeholder="Enter your password"
-            disabled={loading || isGoogleLoading}
+            disabled={loading || isGoogleLoading || isLinkedInLoading}
             minLength={6}
           />
           <button
@@ -151,7 +165,7 @@ export const CleanSigninForm = ({ onSigninSuccess, onSwitchToSignup, onForgotPas
           type="button"
           onClick={onForgotPassword}
           className="text-sm text-gray-300 hover:text-white underline"
-          disabled={loading || isGoogleLoading}
+          disabled={loading || isGoogleLoading || isLinkedInLoading}
         >
           Forgot password?
         </button>
@@ -160,7 +174,7 @@ export const CleanSigninForm = ({ onSigninSuccess, onSwitchToSignup, onForgotPas
       <Button
         type="submit"
         className="w-full bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white hover:shadow-lg hover:shadow-purple-500/30"
-        disabled={loading || isGoogleLoading}
+        disabled={loading || isGoogleLoading || isLinkedInLoading}
       >
         {loading ? (
           <>
@@ -185,7 +199,7 @@ export const CleanSigninForm = ({ onSigninSuccess, onSwitchToSignup, onForgotPas
         type="button"
         variant="outline"
         onClick={handleGoogleSignin}
-        disabled={loading || isGoogleLoading}
+        disabled={loading || isGoogleLoading || isLinkedInLoading}
         className="w-full border-white/20 text-white bg-white/10 hover:bg-white/10 active:bg-white/10"
       >
         {isGoogleLoading ? (
@@ -196,12 +210,27 @@ export const CleanSigninForm = ({ onSigninSuccess, onSwitchToSignup, onForgotPas
         {isGoogleLoading ? 'Signing in...' : 'Sign in with Google'}
       </Button>
 
+      <Button
+        type="button"
+        variant="outline"
+        onClick={handleLinkedInSignin}
+        disabled={loading || isGoogleLoading || isLinkedInLoading}
+        className="w-full border-white/20 text-white bg-white/10 hover:bg-white/10 active:bg-white/10"
+      >
+        {isLinkedInLoading ? (
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+        ) : (
+          <Linkedin className="mr-2 h-4 w-4" />
+        )}
+        {isLinkedInLoading ? 'Signing in...' : 'Sign in with LinkedIn'}
+      </Button>
+
       <div className="text-center">
         <button
           type="button"
           onClick={onSwitchToSignup}
           className="text-sm text-gray-300 hover:text-white underline"
-          disabled={loading || isGoogleLoading}
+          disabled={loading || isGoogleLoading || isLinkedInLoading}
         >
           Don't have an account? Sign up
         </button>

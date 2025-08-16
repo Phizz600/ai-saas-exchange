@@ -146,10 +146,17 @@ export class NewAuthService {
     try {
       console.log('NewAuthService: Starting Google signin');
       
+      const redirectUrl = `${window.location.origin}/auth`;
+      console.log('NewAuthService: Using redirect URL:', redirectUrl);
+      
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/`,
+          redirectTo: redirectUrl,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
         },
       });
 
@@ -158,10 +165,39 @@ export class NewAuthService {
         throw new Error(error.message);
       }
 
+      console.log('NewAuthService: Google signin initiated successfully');
       return data;
     } catch (error: any) {
       console.error('NewAuthService: Google signin failed:', error);
       throw new Error(error.message || 'Google signin failed');
+    }
+  }
+
+  // Sign in with LinkedIn
+  static async signInWithLinkedIn() {
+    try {
+      console.log('NewAuthService: Starting LinkedIn signin');
+      
+      const redirectUrl = `${window.location.origin}/auth`;
+      console.log('NewAuthService: Using redirect URL:', redirectUrl);
+      
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'linkedin_oidc',
+        options: {
+          redirectTo: redirectUrl,
+        },
+      });
+
+      if (error) {
+        console.error('NewAuthService: LinkedIn signin error:', error);
+        throw new Error(error.message);
+      }
+
+      console.log('NewAuthService: LinkedIn signin initiated successfully');
+      return data;
+    } catch (error: any) {
+      console.error('NewAuthService: LinkedIn signin failed:', error);
+      throw new Error(error.message || 'LinkedIn signin failed');
     }
   }
 
