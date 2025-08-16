@@ -296,13 +296,14 @@ export const CleanSignupForm = ({ onSignupSuccess, onSwitchToSignin }: SignupFor
       <div className="space-y-2">
         <Label className="text-white">Account Type</Label>
         <div className="flex items-center space-x-3">
-          <span className="text-gray-300">Investor</span>
+          <span className={`text-sm ${formData.userType === 'ai_investor' ? 'text-[#8B5CF6] font-medium' : 'text-gray-300'}`}>Investor</span>
           <Switch
             checked={formData.userType === 'ai_builder'}
             onCheckedChange={handleUserTypeChange}
             disabled={loading}
+            className="data-[state=checked]:bg-[#0EA4E9] data-[state=unchecked]:bg-[#8B5CF6]"
           />
-          <span className="text-gray-300">Builder</span>
+          <span className={`text-sm ${formData.userType === 'ai_builder' ? 'text-[#0EA4E9] font-medium' : 'text-gray-300'}`}>Builder</span>
         </div>
         <p className="text-xs text-gray-400">
           {formData.userType === 'ai_builder' 
@@ -318,12 +319,13 @@ export const CleanSignupForm = ({ onSignupSuccess, onSwitchToSignin }: SignupFor
           checked={formData.subscribeNewsletter}
           onCheckedChange={handleNewsletterChange}
           disabled={loading || isGoogleLoading}
+          className="border-white/30 data-[state=checked]:bg-[#D946EE] data-[state=checked]:border-[#D946EE]"
         />
         <Label 
           htmlFor="newsletter" 
           className="text-sm text-gray-300 cursor-pointer leading-relaxed"
         >
-          Subscribe to our newsletter for AI industry insights and platform updates
+          Subscribe to our weekly newsletter
         </Label>
       </div>
 

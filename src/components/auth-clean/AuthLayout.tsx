@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 interface AuthLayoutProps {
   title: string;
@@ -11,11 +12,13 @@ export const AuthLayout = ({ title, subtitle, children }: AuthLayoutProps) => {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-blue-900 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="mb-6 text-center">
-          <img 
-            src="/lovable-uploads/ebacde2f-54c1-4944-b6d5-e1557dc47078.png" 
-            alt="AI Exchange Club Logo" 
-            className="h-16 mx-auto mb-4" 
-          />
+          <Link to="/">
+            <img 
+              src="/lovable-uploads/ebacde2f-54c1-4944-b6d5-e1557dc47078.png" 
+              alt="AI Exchange Club Logo" 
+              className="h-16 mx-auto mb-4 cursor-pointer hover:opacity-80 transition-opacity" 
+            />
+          </Link>
         </div>
         <div className="bg-black/20 backdrop-blur-sm border border-white/10 rounded-2xl p-8 shadow-2xl transition-all duration-300 hover:shadow-[0_0_30px_rgba(217,70,238,0.3)] hover:border-white/20">
           <div className="text-center mb-8">
