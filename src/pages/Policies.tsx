@@ -9,7 +9,7 @@ export function Policies() {
       <div className="relative z-10">
         <PromotionalBanner />
         <Navbar />
-        <div className="container mx-auto px-4 py-12 mt-16">
+        <div className="container mx-auto px-4 mt-16 py-0">
         <h1 className="text-3xl font-bold mb-8 exo-2-heading text-slate-50">Policies</h1>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
