@@ -25,7 +25,7 @@ export const FeesPricing = () => {
   return <AnimatedGradientBackground>
       <Navbar />
       
-      <div className="pt-24 pb-16">
+      <div className="pt-24 pb-16 py-0">
         <motion.div initial="hidden" animate="visible" variants={fadeIn} className="container mx-auto px-4 text-center mb-12 my-[50px]">
           <h1 className="exo-2-heading text-5xl font-bold text-white mb-4 bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] inline-block text-transparent bg-clip-text">
             Simple, Transparent Pricing
