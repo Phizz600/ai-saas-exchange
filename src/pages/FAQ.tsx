@@ -8,7 +8,7 @@ export function FAQ() {
       <div className="relative z-10">
         <PromotionalBanner />
         <Navbar />
-        <div className="container mx-auto px-4 py-12 mt-16">
+        <div className="container mx-auto px-4 mt-16 py-0">
         <h1 className="text-3xl font-bold mb-8 exo-2-heading text-slate-50">Frequently Asked Questions</h1>
         
         <div className="space-y-6">
