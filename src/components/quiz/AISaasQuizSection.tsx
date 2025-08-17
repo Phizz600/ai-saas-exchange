@@ -4,9 +4,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { TrendingUp, Users, DollarSign, Target, ArrowRight, Sparkles, Shield, Clock, Zap } from "lucide-react";
+
 interface QuizAnswer {
   [key: number]: number;
 }
+
 interface Question {
   id: number;
   title: string;
@@ -17,9 +19,11 @@ interface Question {
     description?: string;
   }[];
 }
+
 interface AISaasQuizSectionProps {
   isSubmitPage?: boolean;
 }
+
 const questions: Question[] = [{
   id: 1,
   title: "Business Development Stage",
@@ -206,6 +210,7 @@ const questions: Question[] = [{
     label: "Series B+ ($15M+)"
   }]
 }];
+
 export const AISaasQuizSection = ({
   isSubmitPage = false
 }: AISaasQuizSectionProps) => {
@@ -234,6 +239,7 @@ export const AISaasQuizSection = ({
       const savedAnswers = localStorage.getItem('quizAnswers');
       const savedValuation = localStorage.getItem('quizValuation');
       const savedFormData = localStorage.getItem('quizFormData');
+      
       if (savedAnswers && savedValuation && savedFormData) {
         setAnswers(JSON.parse(savedAnswers));
         setValuation(JSON.parse(savedValuation));
@@ -324,6 +330,7 @@ export const AISaasQuizSection = ({
       if (stage === 3) baseMultiplier = 3.5;
       if (stage === 4) baseMultiplier = 5;
       if (stage === 5) baseMultiplier = 6;
+      
       calculatedValuation = mrr * 12 * baseMultiplier;
 
       // Growth rate adjustments (more realistic)
@@ -386,26 +393,48 @@ export const AISaasQuizSection = ({
       return;
     }
     setIsSubmitting(true);
+    
     try {
-      console.log("Starting quiz form submission for Brevo contact list");
+      console.log("Starting quiz form submission for Supabase storage");
 
       // Save form data to localStorage
       localStorage.setItem('quizFormData', JSON.stringify(formData));
 
-      // Store in local database first
-      const {
-        error: dbError
-      } = await supabase.from('valuation_leads').insert([{
-        name: formData.fullName,
-        email: formData.email,
-        company: formData.companyName,
-        quiz_answers: answers
-      }]);
+      // Prepare complete valuation result data
+      const valuationData = {
+        estimatedValue: valuation,
+        calculatedAt: new Date().toISOString(),
+        quizAnswers: answers,
+        // Additional metrics for analysis
+        metrics: {
+          stage: getBusinessStage(answers[0]),
+          mrr: getMRR(answers[1]),
+          customerCount: getUserCount(answers[2]),
+          aiCategory: getAICategory(answers[3]),
+          growthRate: getGrowthRate(answers[4]),
+          marketPosition: getMarketPosition(answers[5]),
+          teamIP: getTeamIP(answers[6]),
+          fundingStatus: getFundingStatus(answers[7])
+        }
+      };
+
+      // Store in local database with complete data
+      const { error: dbError } = await supabase
+        .from('valuation_leads')
+        .insert([{
+          name: formData.fullName,
+          email: formData.email,
+          company: formData.companyName,
+          quiz_answers: answers,
+          valuation_result: valuationData
+        }]);
+
       if (dbError) {
         console.error("Database error:", dbError);
         throw new Error(`Database error: ${dbError.message}`);
       }
-      console.log("Successfully stored in database, now adding contact to Brevo list #7");
+
+      console.log("Successfully stored in database with complete valuation data");
 
       // Prepare contact properties for Brevo
       const contactProperties = {
@@ -424,6 +453,7 @@ export const AISaasQuizSection = ({
         SOURCE: 'ai_saas_valuation_quiz',
         QUIZ_DATE: new Date().toISOString()
       };
+
       console.log("Adding contact to Brevo list #7 with properties:", contactProperties);
 
       // Call simplified Brevo edge function
@@ -433,7 +463,9 @@ export const AISaasQuizSection = ({
           contactProperties
         })
       });
+
       console.log("Brevo edge function response:", brevoResponse);
+      
       if (brevoResponse.error) {
         console.error("Brevo edge function error:", brevoResponse.error);
         toast({

@@ -1166,6 +1166,7 @@ export type Database = {
           id: string
           name: string | null
           quiz_answers: Json | null
+          valuation_result: Json | null
         }
         Insert: {
           company?: string | null
@@ -1174,6 +1175,7 @@ export type Database = {
           id?: string
           name?: string | null
           quiz_answers?: Json | null
+          valuation_result?: Json | null
         }
         Update: {
           company?: string | null
@@ -1182,6 +1184,7 @@ export type Database = {
           id?: string
           name?: string | null
           quiz_answers?: Json | null
+          valuation_result?: Json | null
         }
         Relationships: []
       }

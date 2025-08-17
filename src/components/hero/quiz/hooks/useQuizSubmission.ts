@@ -88,28 +88,49 @@ export const useQuizSubmission = () => {
         sellingInterest: formData.sellingInterest
       });
       
+      // Get stored answers from localStorage
+      const storedAnswers = JSON.parse(localStorage.getItem('quizAnswers') || '{}');
+      console.log("Retrieved quiz answers for submission:", storedAnswers);
+      
       // If we haven't calculated valuation yet, do it now
       if (!valuationResult) {
         console.log("No valuation result yet, calculating now...");
-        // Get stored answers from localStorage
-        const storedAnswers = JSON.parse(localStorage.getItem('quizAnswers') || '{}');
-        console.log("Retrieved quiz answers:", storedAnswers);
-        
-        // Calculate valuation based on quiz answers
         const result = await calculateQuizValuation(storedAnswers);
         console.log("Calculated valuation result:", result);
         setValuationResult(result);
       }
+
+      // Prepare valuation result data to store
+      const valuationData = {
+        estimatedValue: valuationResult?.estimatedValue || { low: 0, high: 0 },
+        insights: valuationResult?.insights || [],
+        recommendations: valuationResult?.recommendations || [],
+        confidenceScore: valuationResult?.confidenceScore || 0,
+        calculatedAt: new Date().toISOString(),
+        quizAnswers: storedAnswers,
+        // Additional metrics for analysis
+        metrics: {
+          stage: getBusinessStage(storedAnswers[0]),
+          mrr: getMRR(storedAnswers[1]),
+          customerCount: getUserCount(storedAnswers[2]),
+          aiCategory: getAICategory(storedAnswers[3]),
+          growthRate: getGrowthRate(storedAnswers[4]),
+          marketPosition: getMarketPosition(storedAnswers[5]),
+          teamIP: getTeamIP(storedAnswers[6]),
+          fundingStatus: getFundingStatus(storedAnswers[7])
+        }
+      };
       
-      // Store in local database first
-      console.log("Storing data in local valuation_leads table");
+      // Store in local database with complete valuation result
+      console.log("Storing data in valuation_leads table with valuation result");
       const { error: dbError } = await supabase
         .from('valuation_leads')
         .insert([{
           name: formData.name,
           email: formData.email,
           company: formData.company,
-          quiz_answers: JSON.parse(localStorage.getItem('quizAnswers') || '{}')
+          quiz_answers: storedAnswers,
+          valuation_result: valuationData
         }]);
 
       if (dbError) {
@@ -117,12 +138,9 @@ export const useQuizSubmission = () => {
         throw new Error(`Database error: ${dbError.message}`);
       }
 
-      console.log("Successfully stored in database, now adding contact to Brevo list");
+      console.log("Successfully stored in database with valuation results");
       
-      // Get stored answers from localStorage for contact properties
-      const storedAnswers = JSON.parse(localStorage.getItem('quizAnswers') || '{}');
-      
-      // Create contact properties with the valuation data
+      // Create contact properties for Brevo
       const contactProperties = {
         NAME: formData.name,
         COMPANY: formData.company || 'Not Provided',
