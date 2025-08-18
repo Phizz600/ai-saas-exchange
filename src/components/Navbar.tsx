@@ -225,10 +225,10 @@ export const Navbar = () => {
                   <Button variant="ghost" onClick={() => navigate("/auth")} className="text-gray-700 hover:text-[#8B5CF6]">
                     Sign In
                   </Button>
-                  <Button disabled className="bg-gray-400 text-gray-600 cursor-not-allowed opacity-60 relative">
+                  <Button disabled className="bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white opacity-60 cursor-not-allowed relative">
                     <UserPlus className="mr-2 h-4 w-4" />
                     Marketplace
-                    <span className="ml-2 text-xs bg-black/20 px-2 py-0.5 rounded-full">Coming Soon</span>
+                    <span className="ml-2 text-xs bg-white/20 px-2 py-0.5 rounded-full">Coming Soon</span>
                 </Button>
                 </>}
             </div>
@@ -240,10 +240,10 @@ export const Navbar = () => {
               {!user && <>
                   <Button variant="ghost" size="sm" onClick={() => navigate('/auth')} className="h-8 px-2 text-sm">Sign In
               </Button>
-                  <Button disabled size="sm" className="h-8 px-3 text-sm bg-gray-400 text-gray-600 cursor-not-allowed opacity-60">
+                  <Button disabled size="sm" className="h-8 px-3 text-sm bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white opacity-60 cursor-not-allowed">
                     <UserPlus className="mr-1 h-3 w-3" />
                     Marketplace
-                    <span className="ml-1 text-xs bg-black/20 px-1 py-0.5 rounded-full">Soon</span>
+                    <span className="ml-1 text-xs bg-white/20 px-1 py-0.5 rounded-full">Soon</span>
                   </Button>
                 </>}
               {user && <Button size="sm" onClick={e => handleNavigationClick(e, '/product-dashboard')} className="h-8 px-3 text-sm bg-gradient-to-r from-[#8B5CF6] to-[#0EA4E9] text-white">
@@ -314,7 +314,7 @@ export const Navbar = () => {
                           <Button variant="ghost" onClick={() => navigate('/auth')} className="w-full justify-start text-gray-700 hover:text-[#8B5CF6]">
                             Sign In
                           </Button>
-                          <Button disabled className="w-full bg-gray-400 text-gray-600 cursor-not-allowed opacity-60">
+                          <Button disabled className="w-full bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white opacity-60 cursor-not-allowed">
                             <UserPlus className="mr-2 h-4 w-4" />
                             Marketplace (Coming Soon)
                           </Button>
