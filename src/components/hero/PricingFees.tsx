@@ -95,8 +95,8 @@ const PricingFees = () => {
                       <div className="flex justify-between items-center text-sm">
                         <span className="text-white">3 Months</span>
                         <div className="text-right">
-                          <div className="text-white font-semibold">$297</div>
-                          <div className="text-xs text-gray-400">$99/mo</div>
+                          <div className="text-white font-semibold">$600</div>
+                          <div className="text-xs text-gray-400">$200/mo</div>
                         </div>
                       </div>
                     </div>
@@ -104,8 +104,8 @@ const PricingFees = () => {
                       <div className="flex justify-between items-center text-sm">
                         <span className="text-white">6 Months</span>
                         <div className="text-right">
-                          <div className="text-white font-semibold">$474</div>
-                          <div className="text-xs text-green-400">$79/mo</div>
+                          <div className="text-white font-semibold">$1,080</div>
+                          <div className="text-xs text-green-400">$180/mo</div>
                         </div>
                       </div>
                     </div>
@@ -113,8 +113,8 @@ const PricingFees = () => {
                       <div className="flex justify-between items-center text-sm">
                         <span className="text-white">12 Months</span>
                         <div className="text-right">
-                          <div className="text-white font-semibold">$828</div>
-                          <div className="text-xs text-green-400">$69/mo</div>
+                          <div className="text-white font-semibold">$1,920</div>
+                          <div className="text-xs text-green-400">$160/mo</div>
                         </div>
                       </div>
                     </div>
