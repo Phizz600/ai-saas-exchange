@@ -1,13 +1,13 @@
 
 import { useState } from 'react';
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { QuizQuestions } from "./quiz/QuizQuestions";
-import { ResultsForm } from "./quiz/ResultsForm";
-import { LoadingScreen } from "./quiz/LoadingScreen";
-import { ConfirmationScreen } from "./quiz/ConfirmationScreen";
-import { ValuationResults } from "./quiz/ValuationResults";
-import { quizQuestions } from "./quiz/quizQuestionsData";
-import { useQuizSubmission } from "./quiz/hooks/useQuizSubmission";
+import { QuizQuestions } from "./QuizQuestions";
+import { ResultsForm } from "./ResultsForm";
+import { LoadingScreen } from "./LoadingScreen";
+import { ConfirmationScreen } from "./ConfirmationScreen";
+import { ValuationResults } from "./ValuationResults";
+import { quizQuestions } from "./quizQuestionsData";
+import { useQuizSubmission } from "./hooks/useQuizSubmission";
 
 interface QuizDialogProps {
   open: boolean;
