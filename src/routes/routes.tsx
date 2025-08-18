@@ -93,10 +93,6 @@ const publicRoutes = [
     path: "/diagnostics",
     element: <Diagnostics />,
   },
-  {
-    path: "/marketplace",
-    element: <Marketplace />,
-  },
 ];
 
 // Protected routes (authentication required)
