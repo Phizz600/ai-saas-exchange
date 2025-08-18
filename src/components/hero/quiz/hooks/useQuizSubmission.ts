@@ -21,28 +21,34 @@ export const useQuizSubmission = () => {
 
   // Email validation function with server-side validation
   const validateEmail = async (email: string): Promise<{ valid: boolean; error?: string }> => {
-    // Basic client-side validation first
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!regex.test(email)) {
-      return { valid: false, error: "Please enter a valid email address" };
-    }
-
     try {
-      // Server-side validation via edge function
+      console.log('Validating email:', email);
+      
+      // Basic client-side validation first
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        return { valid: false, error: "Please enter a valid email address to see your results" };
+      }
+
+      // Call the Supabase edge function for comprehensive server-side validation
       const { data, error } = await supabase.functions.invoke('validate-email', {
         body: { email }
       });
 
       if (error) {
-        console.error('Email validation error:', error);
-        return { valid: false, error: "Email validation failed. Please try again." };
+        console.error('Email validation service error:', error);
+        return { valid: false, error: "Please enter a valid email address to see your results" };
+      }
+
+      // If the service returns invalid, show our standard message
+      if (!data?.valid) {
+        return { valid: false, error: "Please enter a valid email address to see your results" };
       }
 
       return data;
     } catch (error) {
       console.error('Email validation error:', error);
-      // Fall back to basic validation if service is unavailable
-      return { valid: true };
+      return { valid: false, error: "Please enter a valid email address to see your results" };
     }
   };
   
