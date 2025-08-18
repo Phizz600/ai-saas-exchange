@@ -1,7 +1,8 @@
 // import Auth from "@/pages/Auth"; // Deleted - using new AuthPage component
 import { Profile } from "@/pages/Profile";
 import { ProductDashboard } from "@/pages/ProductDashboard";
-import { Marketplace } from "@/pages/Marketplace";
+import { BrowseMarketplace } from "@/pages/BrowseMarketplace";
+import { SellersPage } from "@/pages/SellersPage";
 import ProductPage from "@/pages/ProductPage";
 import { Messages } from "@/pages/Messages";
 import Settings from "@/pages/Settings";
@@ -95,10 +96,10 @@ const publicRoutes = [
 // Protected routes (authentication required)
 const protectedRoutes = [
   {
-    path: "/marketplace",
+    path: "/browse-marketplace",
     element: (
       <CleanProtectedRoute>
-        <Marketplace />
+        <BrowseMarketplace />
       </CleanProtectedRoute>
     ),
   },
@@ -146,7 +147,7 @@ const protectedRoutes = [
     path: "/list-product",
     element: (
       <CleanProtectedRoute>
-        <ListProduct />
+        <SellersPage />
       </CleanProtectedRoute>
     ),
   },
