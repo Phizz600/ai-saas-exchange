@@ -974,6 +974,7 @@ export type Database = {
           id: string
           last_name: string | null
           liked_products: string[] | null
+          onboarding_completed: boolean | null
           saved_products: string[] | null
           updated_at: string | null
           user_type: string | null
@@ -988,6 +989,7 @@ export type Database = {
           id: string
           last_name?: string | null
           liked_products?: string[] | null
+          onboarding_completed?: boolean | null
           saved_products?: string[] | null
           updated_at?: string | null
           user_type?: string | null
@@ -1002,6 +1004,7 @@ export type Database = {
           id?: string
           last_name?: string | null
           liked_products?: string[] | null
+          onboarding_completed?: boolean | null
           saved_products?: string[] | null
           updated_at?: string | null
           user_type?: string | null

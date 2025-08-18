@@ -30,6 +30,12 @@ export function OnboardingRedirect() {
           return;
         }
 
+        // Mark onboarding as completed
+        await supabase
+          .from('profiles')
+          .update({ onboarding_completed: true })
+          .eq('id', user.id);
+
         // Redirect based on user type
         if (profile?.user_type === 'ai_builder') {
           // Sellers go to airtable listing form
