@@ -19,22 +19,44 @@ export const useQuizSubmission = () => {
   });
   const { toast } = useToast();
 
-  // Email validation function
-  const isValidEmail = (email: string): boolean => {
+  // Email validation function with server-side validation
+  const validateEmail = async (email: string): Promise<{ valid: boolean; error?: string }> => {
+    // Basic client-side validation first
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(email);
+    if (!regex.test(email)) {
+      return { valid: false, error: "Please enter a valid email address" };
+    }
+
+    try {
+      // Server-side validation via edge function
+      const { data, error } = await supabase.functions.invoke('validate-email', {
+        body: { email }
+      });
+
+      if (error) {
+        console.error('Email validation error:', error);
+        return { valid: false, error: "Email validation failed. Please try again." };
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Email validation error:', error);
+      // Fall back to basic validation if service is unavailable
+      return { valid: true };
+    }
   };
   
-  // Show the contact form first instead of calculating
+  // Show the contact form first 
   const proceedToContactForm = () => {
     setShowResults(true);
   };
   
-  // Calculate valuation during the loading phase
-  const calculateValuation = async () => {
+  // Calculate valuation and show results
+  const calculateAndShowValuation = async () => {
     try {
       setIsLoading(true);
       console.log("Beginning valuation calculation");
+      
       // Get stored answers from localStorage
       const storedAnswers = JSON.parse(localStorage.getItem('quizAnswers') || '{}');
       console.log("Retrieved quiz answers:", storedAnswers);
@@ -45,6 +67,7 @@ export const useQuizSubmission = () => {
       
       setValuationResult(result);
       setIsLoading(false);
+      setShowResults(false);
       setShowValuationResults(true);
     } catch (error) {
       console.error("Error calculating valuation:", error);
@@ -60,8 +83,8 @@ export const useQuizSubmission = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate email and name
-    if (!formData.name) {
+    // Validate required fields
+    if (!formData.name?.trim()) {
       toast({
         title: "Missing Information",
         description: "Please enter your name.",
@@ -70,10 +93,21 @@ export const useQuizSubmission = () => {
       return;
     }
 
-    if (!formData.email || !isValidEmail(formData.email)) {
+    if (!formData.email?.trim()) {
+      toast({
+        title: "Missing Information",
+        description: "Please enter your email address.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Validate email with server-side validation
+    const emailValidation = await validateEmail(formData.email);
+    if (!emailValidation.valid) {
       toast({
         title: "Invalid Email",
-        description: "Please enter a valid email address.",
+        description: emailValidation.error || "Please enter a valid email address.",
         variant: "destructive"
       });
       return;
@@ -92,20 +126,21 @@ export const useQuizSubmission = () => {
       const storedAnswers = JSON.parse(localStorage.getItem('quizAnswers') || '{}');
       console.log("Retrieved quiz answers for submission:", storedAnswers);
       
-      // If we haven't calculated valuation yet, do it now
-      if (!valuationResult) {
+      // Calculate valuation if we haven't already
+      let calculatedValuation = valuationResult;
+      if (!calculatedValuation) {
         console.log("No valuation result yet, calculating now...");
-        const result = await calculateQuizValuation(storedAnswers);
-        console.log("Calculated valuation result:", result);
-        setValuationResult(result);
+        calculatedValuation = await calculateQuizValuation(storedAnswers);
+        console.log("Calculated valuation result:", calculatedValuation);
+        setValuationResult(calculatedValuation);
       }
 
-      // Prepare valuation result data to store
+      // Prepare comprehensive valuation result data to store
       const valuationData = {
-        estimatedValue: valuationResult?.estimatedValue || { low: 0, high: 0 },
-        insights: valuationResult?.insights || [],
-        recommendations: valuationResult?.recommendations || [],
-        confidenceScore: valuationResult?.confidenceScore || 0,
+        estimatedValue: calculatedValuation?.estimatedValue || { low: 0, high: 0 },
+        insights: calculatedValuation?.insights || [],
+        recommendations: calculatedValuation?.recommendations || [],
+        confidenceScore: calculatedValuation?.confidenceScore || 0,
         calculatedAt: new Date().toISOString(),
         quizAnswers: storedAnswers,
         // Additional metrics for analysis
@@ -121,7 +156,7 @@ export const useQuizSubmission = () => {
         }
       };
       
-      // Store in local database with complete valuation result
+      // Store in database with complete valuation result
       console.log("Storing data in valuation_leads table with valuation result");
       const { error: dbError } = await supabase
         .from('valuation_leads')
@@ -135,7 +170,14 @@ export const useQuizSubmission = () => {
 
       if (dbError) {
         console.error("Database error:", dbError);
-        throw new Error(`Database error: ${dbError.message}`);
+        // Show user-friendly error message
+        toast({
+          title: "Submission Error",
+          description: "There was a problem saving your information. Please check your email address and try again.",
+          variant: "destructive"
+        });
+        setIsLoading(false);
+        return;
       }
 
       console.log("Successfully stored in database with valuation results");
@@ -145,8 +187,8 @@ export const useQuizSubmission = () => {
         NAME: formData.name,
         COMPANY: formData.company || 'Not Provided',
         SELLING_INTEREST: formData.sellingInterest ? 'Yes' : 'No',
-        ESTIMATED_VALUE_LOW: valuationResult?.estimatedValue?.low || 0,
-        ESTIMATED_VALUE_HIGH: valuationResult?.estimatedValue?.high || 0,
+        ESTIMATED_VALUE_LOW: calculatedValuation?.estimatedValue?.low || 0,
+        ESTIMATED_VALUE_HIGH: calculatedValuation?.estimatedValue?.high || 0,
         AI_CATEGORY: getAICategory(storedAnswers[3]),
         USER_COUNT: getUserCount(storedAnswers[2]),
         GROWTH_RATE: getGrowthRate(storedAnswers[4]),
@@ -161,7 +203,7 @@ export const useQuizSubmission = () => {
 
       console.log("Adding contact to Brevo list #7 with properties:", contactProperties);
 
-      // Call simplified Brevo edge function to add contact to list
+      // Call Brevo edge function to add contact to list
       const brevoResponse = await supabase.functions.invoke('send-brevo-email', {
         body: JSON.stringify({
           email: formData.email,
@@ -171,44 +213,22 @@ export const useQuizSubmission = () => {
 
       console.log("Brevo edge function response:", brevoResponse);
       
-      if (brevoResponse.error) {
-        console.error("Brevo edge function error:", brevoResponse.error);
-        toast({
-          title: "Success, your free valuation report is ready!",
-          description: "Note: There was an issue adding you to our contact list.",
-          variant: "default"
-        });
-      } else if (!brevoResponse.data?.success) {
-        console.error("Brevo edge function returned failure:", brevoResponse.data);
-        toast({
-          title: "Success, your free valuation report is ready!",
-          description: brevoResponse.data?.warning || "Note: There was an issue with the contact list.",
-          variant: "default"
-        });
-      } else {
-        console.log("Successfully added contact to Brevo list");
-        toast({
-          title: "Success, your free valuation report is ready!",
-          description: ""
-        });
-      }
+      // Show success message regardless of Brevo status
+      toast({
+        title: "Success! Your valuation is ready",
+        description: "Thank you for providing your information."
+      });
       
-      // Show results regardless of Brevo status
-      if (!showValuationResults) {
-        setShowValuationResults(true);
-        setShowResults(false);
-      } else {
-        setShowConfirmation(true);
-      }
+      // Move to valuation results
+      await calculateAndShowValuation();
       
     } catch (error: any) {
       console.error("Error in form submission:", error);
       toast({
-        title: "Error",
-        description: `There was a problem processing your submission: ${error.message || "Unknown error"}. Please try again.`,
+        title: "Submission Error",
+        description: "There was a problem processing your request. Please try again.",
         variant: "destructive"
       });
-    } finally {
       setIsLoading(false);
     }
   };
@@ -224,7 +244,7 @@ export const useQuizSubmission = () => {
     handleSubmit,
     valuationResult,
     setValuationResult,
-    calculateValuation,
+    calculateValuation: calculateAndShowValuation,
     showValuationResults,
     setShowValuationResults,
     proceedToContactForm

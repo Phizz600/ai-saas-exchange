@@ -251,8 +251,10 @@ export const AISaasQuizSection = ({
       }
     }
   }, [isSubmitPage, navigate]);
+
   const totalQuestions = questions.length;
   const progress = (currentQuestion + 1) / totalQuestions * 100;
+
   const handleOptionSelect = (value: number) => {
     const newAnswers = {
       ...answers,
@@ -263,6 +265,7 @@ export const AISaasQuizSection = ({
     // Store answers in localStorage for the edge function
     localStorage.setItem('quizAnswers', JSON.stringify(newAnswers));
   };
+
   const nextQuestion = () => {
     if (currentQuestion < totalQuestions - 1) {
       setCurrentQuestion(prev => prev + 1);
@@ -273,11 +276,13 @@ export const AISaasQuizSection = ({
       setShowContactForm(true);
     }
   };
+
   const previousQuestion = () => {
     if (currentQuestion > 0) {
       setCurrentQuestion(prev => prev - 1);
     }
   };
+
   const calculateValuation = () => {
     const stage = answers[0] || 1;
     const mrr = answers[1] || 0;
@@ -374,6 +379,7 @@ export const AISaasQuizSection = ({
     // Save valuation to localStorage
     localStorage.setItem('quizValuation', JSON.stringify(newValuation));
   };
+
   const formatNumber = (num: number) => {
     if (num >= 1000000) {
       return '$' + (num / 1000000).toFixed(1) + 'M';
@@ -383,15 +389,55 @@ export const AISaasQuizSection = ({
       return '$' + num.toLocaleString();
     }
   };
+
+  // Email validation with better error handling
+  const validateEmail = async (email: string): Promise<{ valid: boolean; error?: string }> => {
+    // Basic client-side validation first
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!regex.test(email)) {
+      return { valid: false, error: "Please enter a valid email address" };
+    }
+
+    try {
+      // Server-side validation via edge function
+      const { data, error } = await supabase.functions.invoke('validate-email', {
+        body: { email }
+      });
+
+      if (error) {
+        console.error('Email validation error:', error);
+        return { valid: false, error: "Email validation failed. Please try again." };
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Email validation error:', error);
+      // Fall back to basic validation if service is unavailable
+      return { valid: true };
+    }
+  };
+
   const submitForm = async () => {
-    if (!formData.fullName || !formData.email || !formData.companyName) {
+    if (!formData.fullName?.trim() || !formData.email?.trim()) {
       toast({
         title: "Missing Information",
-        description: "Please fill in all fields.",
+        description: "Please fill in your name and email address.",
         variant: "destructive"
       });
       return;
     }
+
+    // Validate email with server-side validation
+    const emailValidation = await validateEmail(formData.email);
+    if (!emailValidation.valid) {
+      toast({
+        title: "Invalid Email",
+        description: emailValidation.error || "Please enter a valid email address.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setIsSubmitting(true);
     
     try {
@@ -418,20 +464,27 @@ export const AISaasQuizSection = ({
         }
       };
 
-      // Store in local database with complete data
+      // Store in database with complete data
       const { error: dbError } = await supabase
         .from('valuation_leads')
         .insert([{
           name: formData.fullName,
           email: formData.email,
-          company: formData.companyName,
+          company: formData.companyName || null,
           quiz_answers: answers,
           valuation_result: valuationData
         }]);
 
       if (dbError) {
         console.error("Database error:", dbError);
-        throw new Error(`Database error: ${dbError.message}`);
+        // Show user-friendly error message
+        toast({
+          title: "Submission Error",
+          description: "There was a problem saving your information. Please check your email address and try again.",
+          variant: "destructive"
+        });
+        setIsSubmitting(false);
+        return;
       }
 
       console.log("Successfully stored in database with complete valuation data");
@@ -439,7 +492,7 @@ export const AISaasQuizSection = ({
       // Prepare contact properties for Brevo
       const contactProperties = {
         NAME: formData.fullName,
-        COMPANY: formData.companyName,
+        COMPANY: formData.companyName || 'Not Provided',
         ESTIMATED_VALUE_LOW: valuation.low,
         ESTIMATED_VALUE_HIGH: valuation.high,
         AI_CATEGORY: getAICategory(answers[3]),
@@ -493,14 +546,15 @@ export const AISaasQuizSection = ({
     } catch (error: any) {
       console.error('Error saving customer information:', error);
       toast({
-        title: "Error",
-        description: `There was a problem processing your submission: ${error.message}. Please try again.`,
+        title: "Submission Error",
+        description: "There was a problem processing your request. Please try again.",
         variant: "destructive"
       });
     } finally {
       setIsSubmitting(false);
     }
   };
+
   const hasAnswer = answers.hasOwnProperty(currentQuestion);
 
   // Show contact form after quiz completion
