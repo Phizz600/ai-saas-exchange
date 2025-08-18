@@ -25,6 +25,7 @@ import { AuthTest } from "@/pages/AuthTest";
 import { OnboardingRedirect } from "@/pages/OnboardingRedirect";
 import { CleanProtectedRoute } from "@/components/auth-clean/CleanProtectedRoute";
 import { CleanAuthPage } from "@/components/auth-clean/CleanAuthPage";
+import { Marketplace } from "@/pages/Marketplace";
 
 // Public routes (no authentication required)
 const publicRoutes = [
@@ -91,6 +92,10 @@ const publicRoutes = [
   {
     path: "/diagnostics",
     element: <Diagnostics />,
+  },
+  {
+    path: "/marketplace",
+    element: <Marketplace />,
   },
 ];
 

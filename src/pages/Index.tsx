@@ -42,21 +42,7 @@ export const Index = () => {
         {/* Cookie Consent Notice */}
         <CookieConsent />
         
-        {/* Floating Marketplace Button */}
-        <motion.div initial={{
-        opacity: 0,
-        scale: 0.8
-      }} animate={{
-        opacity: 1,
-        scale: 1
-      }} transition={{
-        delay: 1,
-        duration: 0.5
-      }} className="fixed bottom-6 right-6 z-50">
-          <Link to="/marketplace">
-            
-          </Link>
-        </motion.div>
+        {/* Floating Marketplace Button - Removed for controlled access */}
         
         {/* Admin link - only visible in development */}
         {import.meta.env.DEV && <div className="fixed bottom-4 left-4 z-50">
