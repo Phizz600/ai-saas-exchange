@@ -58,7 +58,7 @@ export const CleanAuthPage = () => {
   };
 
   const handleNewPasswordSuccess = () => {
-    navigate('/product-dashboard', { replace: true });
+    navigate('/onboarding-redirect', { replace: true });
   };
 
   if (loading) {

@@ -22,7 +22,7 @@ export const UserTypeSelection = () => {
       if (error) throw error;
       
       console.log("User type updated successfully");
-      navigate("/marketplace");
+      navigate("/onboarding-redirect");
     } catch (error) {
       console.error("Error updating user type:", error);
       setErrorMessage("Failed to update user type. Please try again.");

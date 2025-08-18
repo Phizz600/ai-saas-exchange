@@ -11,7 +11,7 @@ export default function ProductPage() {
   useEffect(() => {
     // Redirect if no product ID is provided
     if (!productId) {
-      navigate('/marketplace');
+      navigate('/onboarding-redirect');
     }
   }, [productId, navigate]);
 

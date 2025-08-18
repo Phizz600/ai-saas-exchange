@@ -71,14 +71,14 @@ export const ProfileHeader = ({ profile, onAvatarUpdate }: ProfileHeaderProps) =
             <Button 
               variant="outline" 
               className="w-full"
-              onClick={() => navigate('/marketplace')}
+              onClick={() => navigate('/browse-marketplace')}
             >
-              Preview public profile
+              Browse Products
             </Button>
             {profile.user_type === "ai_builder" && (
               <Button 
                 className="w-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 text-white"
-                onClick={() => navigate('/marketplace')}
+                onClick={() => navigate('/list-product')}
               >
                 Create New Listing
               </Button>

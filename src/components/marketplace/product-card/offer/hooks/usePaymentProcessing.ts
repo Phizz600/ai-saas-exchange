@@ -38,7 +38,7 @@ export function usePaymentProcessing(onConfirm: (paymentMethodId: string) => voi
       const { paymentIntent, error } = await stripe.confirmPayment({
         elements,
         confirmParams: {
-          return_url: window.location.origin + "/marketplace",
+          return_url: window.location.origin + "/browse-marketplace",
           payment_method_data: {
             billing_details: {
               address: {

@@ -71,7 +71,7 @@ export const ProfileContent = ({ profile }: ProfileContentProps) => {
               </p>
               <Button 
                 className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 text-white"
-                onClick={() => navigate('/marketplace')}
+                onClick={() => navigate('/list-product')}
               >
                 Create Your First Listing
               </Button>

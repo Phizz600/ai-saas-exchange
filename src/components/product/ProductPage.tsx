@@ -235,8 +235,8 @@ export default function ProductPageContent() {
         <div className="text-center py-12">
           <h1 className="text-2xl font-bold mb-2">Product Not Found</h1>
           <p className="text-gray-600 mb-8">Sorry, we couldn't find the product you're looking for.</p>
-          <Button onClick={() => navigate('/marketplace')}>
-            Return to Marketplace
+          <Button onClick={() => navigate('/browse-marketplace')}>
+            Return to Browse
           </Button>
         </div>
       </div>
