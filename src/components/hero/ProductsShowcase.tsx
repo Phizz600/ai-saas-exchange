@@ -26,7 +26,7 @@ export const ProductsShowcase = ({
       duration: 0.3
     }} className="flex flex-col sm:flex-row gap-4">
         <Button onClick={handleAuthRedirect} variant="green" className="px-8 py-6 text-lg">
-          Load More AI SaaS Businesses
+          Explore AI SaaS Marketplace
         </Button>
         
         

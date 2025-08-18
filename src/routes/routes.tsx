@@ -22,6 +22,7 @@ import { AISaasQuiz } from "@/pages/AISaasQuiz";
 import { FeesPricing } from "@/pages/FeesPricing";
 import { BuyerMatchingQuiz } from "@/pages/BuyerMatchingQuiz";
 import { AuthTest } from "@/pages/AuthTest";
+import { OnboardingRedirect } from "@/pages/OnboardingRedirect";
 import { CleanProtectedRoute } from "@/components/auth-clean/CleanProtectedRoute";
 import { CleanAuthPage } from "@/components/auth-clean/CleanAuthPage";
 
@@ -95,6 +96,14 @@ const publicRoutes = [
 
 // Protected routes (authentication required)
 const protectedRoutes = [
+  {
+    path: "/onboarding-redirect",
+    element: (
+      <CleanProtectedRoute>
+        <OnboardingRedirect />
+      </CleanProtectedRoute>
+    ),
+  },
   {
     path: "/browse-marketplace",
     element: (

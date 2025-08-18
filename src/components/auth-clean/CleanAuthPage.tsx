@@ -47,13 +47,13 @@ export const CleanAuthPage = () => {
   // Redirect authenticated users
   useEffect(() => {
     if (!loading && user) {
-      const redirectTo = location.state?.redirectTo || '/product-dashboard';
+      const redirectTo = location.state?.redirectTo || '/onboarding-redirect';
       navigate(redirectTo, { replace: true });
     }
   }, [user, loading, navigate, location.state]);
 
   const handleAuthSuccess = () => {
-    const redirectTo = location.state?.redirectTo || '/product-dashboard';
+    const redirectTo = location.state?.redirectTo || '/onboarding-redirect';
     navigate(redirectTo, { replace: true });
   };
 
