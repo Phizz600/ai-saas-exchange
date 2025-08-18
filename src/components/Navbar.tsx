@@ -225,9 +225,10 @@ export const Navbar = () => {
                   <Button variant="ghost" onClick={() => navigate("/auth")} className="text-gray-700 hover:text-[#8B5CF6]">
                     Sign In
                   </Button>
-                  <Button onClick={e => handleNavigationClick(e, "/browse-marketplace")} className="bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white hover:shadow-lg hover:shadow-purple-500/30">
+                  <Button onClick={e => handleNavigationClick(e, "/marketplace")} className="bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white hover:shadow-lg hover:shadow-purple-500/30 relative">
                     <UserPlus className="mr-2 h-4 w-4" />
-                    Browse Marketplace
+                    Marketplace
+                    <span className="ml-2 text-xs bg-white/20 px-2 py-0.5 rounded-full">Coming Soon</span>
                 </Button>
                 </>}
             </div>
@@ -239,9 +240,10 @@ export const Navbar = () => {
               {!user && <>
                   <Button variant="ghost" size="sm" onClick={() => navigate('/auth')} className="h-8 px-2 text-sm">Sign In
               </Button>
-                  <Button size="sm" onClick={e => handleNavigationClick(e, '/browse-marketplace')} className="h-8 px-3 text-sm bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white hover:shadow-lg hover:shadow-purple-500/30">
+                  <Button size="sm" onClick={e => handleNavigationClick(e, '/marketplace')} className="h-8 px-3 text-sm bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white hover:shadow-lg hover:shadow-purple-500/30">
                     <UserPlus className="mr-1 h-3 w-3" />
-                    Browse Marketplace
+                    Marketplace
+                    <span className="ml-1 text-xs bg-white/20 px-1 py-0.5 rounded-full">Soon</span>
                   </Button>
                 </>}
               {user && <Button size="sm" onClick={e => handleNavigationClick(e, '/product-dashboard')} className="h-8 px-3 text-sm bg-gradient-to-r from-[#8B5CF6] to-[#0EA4E9] text-white">
@@ -312,9 +314,9 @@ export const Navbar = () => {
                           <Button variant="ghost" onClick={() => navigate('/auth')} className="w-full justify-start text-gray-700 hover:text-[#8B5CF6]">
                             Sign In
                           </Button>
-                          <Button onClick={e => handleNavigationClick(e, '/browse-marketplace')} className="w-full bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white">
+                          <Button onClick={e => handleNavigationClick(e, '/marketplace')} className="w-full bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white">
                             <UserPlus className="mr-2 h-4 w-4" />
-                            Browse Marketplace
+                            Marketplace (Coming Soon)
                           </Button>
                         </div>}
                     </div>

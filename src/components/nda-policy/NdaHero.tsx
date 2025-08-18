@@ -41,10 +41,11 @@ export function NdaHero() {
             transition={{ duration: 0.5, delay: 0.4 }}
           >
             <div className="rounded-md shadow">
-              <Button className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 md:py-4 md:text-lg md:px-10" asChild>
+              <Button className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 md:py-4 md:text-lg md:px-10 relative" asChild>
                 <Link to="/marketplace">
                   <Shield className="mr-2 h-5 w-5" />
                   Browse Protected Listings
+                  <span className="ml-2 text-xs bg-white/20 px-2 py-0.5 rounded-full">Coming Soon</span>
                 </Link>
               </Button>
             </div>
