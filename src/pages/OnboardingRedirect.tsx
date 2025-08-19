@@ -26,7 +26,7 @@ export function OnboardingRedirect() {
 
         if (error) {
           console.error('Error fetching user profile:', error);
-          navigate('/product-dashboard', { replace: true });
+          navigate('/browse-marketplace', { replace: true });
           return;
         }
 
@@ -41,18 +41,18 @@ export function OnboardingRedirect() {
           // Sellers go to airtable listing form
           const airtableUrl = "https://airtable.com/appWPKhz1fWsY1Fd7/pagS7ZmjO15EYF1a1/form";
           window.open(airtableUrl, '_blank');
-          // Also navigate to dashboard so they have somewhere to go back to
-          navigate('/product-dashboard', { replace: true });
+          // Navigate to browse marketplace
+          navigate('/browse-marketplace', { replace: true });
         } else if (profile?.user_type === 'ai_investor') {
           // Buyers go to browse marketplace
           navigate('/browse-marketplace', { replace: true });
         } else {
-          // Fallback to dashboard
-          navigate('/product-dashboard', { replace: true });
+          // Fallback to browse marketplace
+          navigate('/browse-marketplace', { replace: true });
         }
       } catch (error) {
         console.error('Error during onboarding redirect:', error);
-        navigate('/product-dashboard', { replace: true });
+        navigate('/browse-marketplace', { replace: true });
       }
     };
 
