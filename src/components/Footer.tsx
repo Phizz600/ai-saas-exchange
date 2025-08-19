@@ -71,6 +71,9 @@ export const Footer = () => {
               <li className="text-center md:text-left">
                 <Link to="/contact" className="text-white/80 hover:text-white">Contact</Link>
               </li>
+              <li className="text-center md:text-left">
+                <Link to="/private-partners-program" className="text-white/80 hover:text-white">Private Partners Program</Link>
+              </li>
             </ul>
           </div>
           <div className="col-span-4 md:col-span-1">
