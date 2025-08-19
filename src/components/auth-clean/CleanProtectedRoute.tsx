@@ -1,5 +1,5 @@
 import { ReactNode, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/contexts/CleanAuthContext';
 
 interface CleanProtectedRouteProps {
@@ -11,6 +11,7 @@ export const CleanProtectedRoute = ({ children, requireAuth = true }: CleanProte
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
     if (loading) return; // Wait for auth to initialize
@@ -22,9 +23,15 @@ export const CleanProtectedRoute = ({ children, requireAuth = true }: CleanProte
         replace: true,
       });
     } else if (!requireAuth && user) {
-      // User is authenticated but this is an auth-only route (like login page)
-      const redirectTo = location.state?.redirectTo || '/browse-marketplace';
-      navigate(redirectTo, { replace: true });
+      // Check if this is a password recovery flow - don't redirect in that case
+      const type = searchParams.get('type');
+      const isPasswordRecovery = type === 'recovery';
+      
+      if (!isPasswordRecovery) {
+        // User is authenticated but this is an auth-only route (like login page)
+        const redirectTo = location.state?.redirectTo || '/browse-marketplace';
+        navigate(redirectTo, { replace: true });
+      }
     }
   }, [user, loading, requireAuth, navigate, location.pathname]);
 
@@ -36,9 +43,11 @@ export const CleanProtectedRoute = ({ children, requireAuth = true }: CleanProte
     );
   }
 
-  // For auth pages, show content if user is not authenticated
+  // For auth pages, show content if user is not authenticated OR if it's a password recovery flow
   if (!requireAuth) {
-    return user ? null : <>{children}</>;
+    const type = searchParams.get('type');
+    const isPasswordRecovery = type === 'recovery';
+    return (user && !isPasswordRecovery) ? null : <>{children}</>;
   }
 
   // For protected pages, show content if user is authenticated
