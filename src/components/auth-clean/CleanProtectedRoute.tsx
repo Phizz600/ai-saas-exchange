@@ -23,7 +23,7 @@ export const CleanProtectedRoute = ({ children, requireAuth = true }: CleanProte
       });
     } else if (!requireAuth && user) {
       // User is authenticated but this is an auth-only route (like login page)
-      const redirectTo = location.state?.redirectTo || '/product-dashboard';
+      const redirectTo = location.state?.redirectTo || '/browse-marketplace';
       navigate(redirectTo, { replace: true });
     }
   }, [user, loading, requireAuth, navigate, location.pathname]);

@@ -146,9 +146,9 @@ export const NewPasswordForm = ({ onSuccess }: NewPasswordFormProps) => {
         if (onSuccess) {
           onSuccess();
         } else {
-          // Navigate to dashboard after successful password reset
+          // Navigate to browse marketplace after successful password reset
           setTimeout(() => {
-            navigate('/product-dashboard');
+            navigate('/browse-marketplace');
           }, 2000);
         }
       }
@@ -182,7 +182,7 @@ export const NewPasswordForm = ({ onSuccess }: NewPasswordFormProps) => {
         <Alert className="bg-green-500/10 border-green-500/20">
           <CheckCircle className="h-4 w-4 text-green-400" />
           <AlertDescription className="text-green-200">
-            Redirecting you to your dashboard...
+            Redirecting you to the marketplace...
           </AlertDescription>
         </Alert>
       </div>
