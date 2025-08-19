@@ -53,8 +53,8 @@ export function RouteProvider() {
           path="*" 
           element={
             <div className="min-h-screen flex flex-col items-center justify-center p-4">
-              <h1 className="text-3xl font-bold mb-4 exo-2-heading">Page Not Found</h1>
-              <p className="text-gray-600 mb-6">The page you're looking for doesn't exist or has been moved.</p>
+              <h1 className="text-3xl font-bold mb-4 exo-2-heading">Coming Soon</h1>
+              <p className="text-gray-600 mb-6">This feature is coming soon. Stay tuned for updates!</p>
               <Button onClick={() => window.location.href = '/'} className="bg-gradient-to-r from-[#D946EE] to-[#8B5CF6]">
                 Return to Home
               </Button>
