@@ -26,6 +26,7 @@ import { OnboardingRedirect } from "@/pages/OnboardingRedirect";
 import { CleanProtectedRoute } from "@/components/auth-clean/CleanProtectedRoute";
 import { CleanAuthPage } from "@/components/auth-clean/CleanAuthPage";
 import { Marketplace } from "@/pages/Marketplace";
+import PrivatePartnersProgram from "@/pages/PrivatePartnersProgram";
 
 // Public routes (no authentication required)
 const publicRoutes = [
@@ -92,6 +93,10 @@ const publicRoutes = [
   {
     path: "/diagnostics",
     element: <Diagnostics />,
+  },
+  {
+    path: "/private-partners-program",
+    element: <PrivatePartnersProgram />,
   },
 ];
 
