@@ -144,7 +144,7 @@ const handler = async (req: Request): Promise<Response> => {
           <p style="${paragraphStyle}">We're currently preparing an exclusive investor experience tailored just for you. Get ready to explore cutting-edge AI innovations!</p>
           
           <div style="text-align: center; margin: 32px 0;">
-            <a href="https://aiexchange.club/browse" style="${buttonStyle}">💎 Browse AI Marketplace</a>
+            <a href="https://aiexchange.club/browse-marketplace" style="${buttonStyle}">💎 Browse AI Marketplace</a>
           </div>
           
           <div style="background-color: #DBEAFE; border: 1px solid #3B82F6; border-radius: 8px; padding: 16px; margin: 24px 0;">
