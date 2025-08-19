@@ -50,22 +50,22 @@ const PrivatePartnersProgram = () => {
           </Badge>
           
           <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 exo-2-heading">
-            Earn Recurring Revenue as an
+            Monetize Your Network with the
             <span className="bg-gradient-to-r from-[#D946EE] to-[#0EA4E9] bg-clip-text text-transparent block">
-              AI Exchange Club Private Partner
+              World's First DFaaS Partner Program
             </span>
           </h1>
           
           <p className="text-xl text-white/80 mb-8 max-w-3xl mx-auto leading-relaxed">
-            Exclusive invite-only affiliate program for AI SaaS buyers & sellers. 
-            Build recurring passive income with high-ticket commissions.
+            Earn from recurring buyer subscriptions + one-time seller listings. 
+            Two income streams, one invite-only AI SaaS marketplace partner program.
           </p>
           
           <Button 
             size="xl" 
-            className="bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] hover:from-[#c935dd] hover:to-[#7c4def] text-white shadow-2xl hover:shadow-purple-500/20 transform hover:scale-105 transition-all duration-300"
+            className="bg-[#D946EE] hover:bg-[#c935dd] text-white shadow-2xl hover:shadow-purple-500/20 transform hover:scale-105 transition-all duration-300"
           >
-            Apply to Join
+            Apply Now - Limited Spots Available
             <ArrowRight className="ml-2 w-5 h-5" />
           </Button>
         </div>
@@ -101,7 +101,7 @@ const PrivatePartnersProgram = () => {
             ].map((item, index) => (
               <Card key={index} className="bg-white/10 backdrop-blur-lg border-white/20 text-white hover:bg-white/15 transition-all duration-300 transform hover:scale-105">
                 <CardHeader className="text-center">
-                  <div className="w-16 h-16 bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 bg-[#D946EE] rounded-full flex items-center justify-center mx-auto mb-4">
                     {item.icon}
                   </div>
                   <div className="text-3xl font-bold mb-2 text-[#D946EE]">{item.step}</div>
@@ -120,28 +120,80 @@ const PrivatePartnersProgram = () => {
       <section className="py-16 px-6">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl font-bold text-white text-center mb-12 exo-2-heading">
-            Buyer Referral Commissions
-            <span className="block text-lg font-normal text-white/70 mt-2">Recurring Revenue That Compounds</span>
+            Commission Tiers & Earnings
+            <span className="block text-lg font-normal text-white/70 mt-2">Unlock Higher Commissions as You Grow</span>
           </h2>
 
           {/* Performance Tiers */}
           <div className="grid md:grid-cols-3 gap-6 mb-12">
             {[
-              { tier: "Base", referrals: "1-4", rate: "10%", color: "from-gray-500 to-gray-600" },
-              { tier: "Tier 1", referrals: "5-9", rate: "12%", color: "from-[#8B5CF6] to-[#D946EE]" },
-              { tier: "Tier 2", referrals: "10+", rate: "15%", color: "from-[#D946EE] to-[#0EA4E9]" }
+              { tier: "Base", referrals: "1-4", rate: "10%", color: "bg-white/10", desc: "Start earning immediately" },
+              { tier: "Tier 1", referrals: "5-9", rate: "12%", color: "bg-[#8B5CF6]", desc: "Unlock higher rewards" },
+              { tier: "Tier 2", referrals: "10+", rate: "15%", color: "bg-[#D946EE]", desc: "Maximum earning potential" }
             ].map((tier, index) => (
-              <Card key={index} className={`bg-gradient-to-r ${tier.color} text-white border-0 transform hover:scale-105 transition-all duration-300`}>
+              <Card key={index} className={`${tier.color} text-white border-0 transform hover:scale-105 transition-all duration-300`}>
                 <CardHeader className="text-center">
                   <CardTitle className="text-2xl">{tier.tier}</CardTitle>
                   <p className="text-white/90">{tier.referrals} active referrals</p>
                 </CardHeader>
                 <CardContent className="text-center">
                   <div className="text-4xl font-bold mb-2">{tier.rate}</div>
-                  <p className="text-white/90">Recurring Commission</p>
+                  <p className="text-white/90 mb-2">Recurring Commission</p>
+                  <p className="text-sm text-white/70">{tier.desc}</p>
                 </CardContent>
               </Card>
             ))}
+          </div>
+
+          {/* Social Proof */}
+          <div className="max-w-4xl mx-auto mb-16">
+            <h3 className="text-2xl font-bold text-white text-center mb-8">Trusted by AI Investment Partners</h3>
+            <div className="grid md:grid-cols-2 gap-6">
+              <Card className="bg-white/5 border-white/10 text-white">
+                <CardContent className="p-6">
+                  <p className="text-white/80 mb-4">"This DFaaS partner program is unlike anything else in the AI space — the recurring revenue is a game-changer for my investment advisory practice."</p>
+                  <div className="flex items-center">
+                    <div className="w-12 h-12 bg-[#D946EE] rounded-full flex items-center justify-center mr-3">
+                      <span className="text-white font-bold">JS</span>
+                    </div>
+                    <div>
+                      <p className="font-semibold">John Smith</p>
+                      <p className="text-white/60 text-sm">AI Investment Advisor</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card className="bg-white/5 border-white/10 text-white">
+                <CardContent className="p-6">
+                  <p className="text-white/80 mb-4">"Finally, an affiliate program that treats partners like actual business partners. The seller fee splits are incredible bonus income."</p>
+                  <div className="flex items-center">
+                    <div className="w-12 h-12 bg-[#0EA4E9] rounded-full flex items-center justify-center mr-3">
+                      <span className="text-white font-bold">MR</span>
+                    </div>
+                    <div>
+                      <p className="font-semibold">Maria Rodriguez</p>
+                      <p className="text-white/60 text-sm">SaaS Broker</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+            <div className="text-center mt-8">
+              <div className="grid grid-cols-3 gap-8 max-w-2xl mx-auto">
+                <div>
+                  <div className="text-3xl font-bold text-[#D946EE]">200+</div>
+                  <p className="text-white/70">Active Buyers</p>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-[#8B5CF6]">150+</div>
+                  <p className="text-white/70">SaaS Listings</p>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-[#0EA4E9]">$2M+</div>
+                  <p className="text-white/70">Partner Payouts</p>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Real-World Earnings Examples */}
@@ -302,6 +354,95 @@ const PrivatePartnersProgram = () => {
         </div>
       </section>
 
+      {/* Partner Resources */}
+      <section className="py-16 px-6">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-4xl font-bold text-white text-center mb-12 exo-2-heading">
+            Partner Resources & Support
+          </h2>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              {
+                icon: <Star className="w-8 h-8" />,
+                title: "Marketing Materials",
+                description: "Professionally designed banners, email templates, and landing pages"
+              },
+              {
+                icon: <Users className="w-8 h-8" />,
+                title: "Dedicated Support",
+                description: "Priority partner success manager for all your questions and needs"
+              },
+              {
+                icon: <TrendingUp className="w-8 h-8" />,
+                title: "Performance Dashboard",
+                description: "Real-time tracking of clicks, conversions, and commission earnings"
+              },
+              {
+                icon: <DollarSign className="w-8 h-8" />,
+                title: "Flexible Payouts",
+                description: "Multiple payout options: PayPal, ACH, Wire, or USDC crypto payments"
+              }
+            ].map((resource, index) => (
+              <Card key={index} className="bg-white/5 border-white/10 text-white text-center">
+                <CardHeader>
+                  <div className="w-16 h-16 bg-[#D946EE] rounded-full flex items-center justify-center mx-auto mb-4">
+                    {resource.icon}
+                  </div>
+                  <CardTitle className="text-lg">{resource.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-white/70 text-sm">{resource.description}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-16 px-6">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-4xl font-bold text-white text-center mb-12 exo-2-heading">
+            Frequently Asked Questions
+          </h2>
+          
+          <div className="space-y-6">
+            {[
+              {
+                question: "How does the recurring commission work?",
+                answer: "You earn 10-15% commission every time your referral renews their subscription. This continues for the lifetime of their account, creating true passive income."
+              },
+              {
+                question: "Do I earn on renewals?",
+                answer: "Yes! Your commission continues with every renewal payment. If someone stays subscribed for 2 years, you get paid for 2 years."
+              },
+              {
+                question: "What's the payout structure?",
+                answer: "Commissions are paid monthly via PayPal, ACH, or USDC. Minimum payout is $100. Seller listing fees are paid immediately upon listing approval."
+              },
+              {
+                question: "How are seller listing fees split?",
+                answer: "It's a simple 50/50 split. If a seller pays $500 to list their SaaS, you earn $250 immediately. This is separate from and in addition to any buyer commissions."
+              },
+              {
+                question: "What's the application process?",
+                answer: "Submit your application with your network details and experience. We review within 48 hours and approve partners who demonstrate quality deal flow potential."
+              }
+            ].map((faq, index) => (
+              <Card key={index} className="bg-white/5 border-white/10 text-white">
+                <CardHeader>
+                  <CardTitle className="text-lg text-[#D946EE]">{faq.question}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-white/80">{faq.answer}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Earnings Calculator */}
       <section className="py-16 px-6">
         <div className="max-w-6xl mx-auto">
@@ -436,7 +577,11 @@ const PrivatePartnersProgram = () => {
             </Button>
             
             <p className="text-white/60 text-sm">
-              Applications reviewed within 48 hours • Invitation required
+              Applications reviewed within 48 hours • Partners must be approved to ensure quality
+            </p>
+            
+            <p className="text-white/40 text-xs mt-4">
+              Terms & Conditions Apply • AI SaaS Affiliate Program • Deal Flow Partnership
             </p>
           </div>
         </div>
