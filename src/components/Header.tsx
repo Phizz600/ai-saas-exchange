@@ -84,12 +84,13 @@ export const Header = () => {
   };
 
   const navigationTabs: TabItem[] = [
-    {
-      title: "Marketplace",
-      icon: Store,
-      description: "Browse AI products",
-      path: "/marketplace"
-    },
+    // Marketplace tab temporarily hidden
+    // {
+    //   title: "Marketplace",
+    //   icon: Store,
+    //   description: "Browse AI products",
+    //   path: "/marketplace"
+    // },
     {
       title: "Dashboard",
       icon: LayoutDashboard,

@@ -82,10 +82,11 @@ const HeroSection = ({
               <MousePointerClick className="mr-2" />
               Sell My AI SaaS
             </Button>
-            <Button className="w-full max-w-xs py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl hover:shadow-[#8B5CF6]/30 transition-all duration-300 transform hover:-translate-y-1 bg-gradient-to-r from-[#8B5CF6] to-[#0EA4E9] hover:from-[#7A4CE5] hover:to-[#0D93D8]" onClick={() => window.open('https://aiexchangeclub.carrd.co/', '_blank')}>
+            {/* Browse Marketplace button temporarily hidden */}
+            {/* <Button className="w-full max-w-xs py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl hover:shadow-[#8B5CF6]/30 transition-all duration-300 transform hover:-translate-y-1 bg-gradient-to-r from-[#8B5CF6] to-[#0EA4E9] hover:from-[#7A4CE5] hover:to-[#0D93D8]" onClick={() => window.open('https://aiexchangeclub.carrd.co/', '_blank')}>
               <ShoppingCart className="mr-2" />
               Browse Marketplace
-            </Button>
+            </Button> */}
           </div>
           
           {/* Newsletter Subscription - above Security Features */}
