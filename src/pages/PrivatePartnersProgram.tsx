@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -41,8 +42,21 @@ const PrivatePartnersProgram = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#13293D] via-[#16324F] to-[#0EA4E9]">
+      {/* Logo Header */}
+      <div className="pt-8 pb-4 px-6">
+        <div className="max-w-6xl mx-auto text-center">
+          <Link to="/">
+            <img 
+              src="/lovable-uploads/5678c900-f5a3-4336-93da-062cb1e759c4.png" 
+              alt="AI Exchange Club Logo" 
+              className="h-16 mx-auto cursor-pointer hover:opacity-80 transition-opacity"
+            />
+          </Link>
+        </div>
+      </div>
+
       {/* Hero Section */}
-      <section className="pt-20 pb-16 px-6">
+      <section className="pt-12 pb-16 px-6">
         <div className="max-w-6xl mx-auto text-center">
           <Badge className="mb-6 bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white border-0 px-4 py-2">
             <Crown className="w-4 h-4 mr-2" />
