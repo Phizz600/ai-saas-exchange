@@ -106,23 +106,9 @@ export class NewAuthService {
         // Don't block signup if email fails
       }
 
-      // Only send confirmation email if user needs to confirm email (no session created)
-      if (!authData.session) {
-        try {
-          const { data: functions } = await supabase.functions.invoke('send-auth-email', {
-            body: {
-              email: data.email,
-              firstName: data.firstName,
-              type: 'signup',
-              confirmationUrl: `${window.location.origin}/auth?type=signup`
-            }
-          });
-          console.log('NewAuthService: Confirmation email sent:', functions);
-        } catch (emailError) {
-          console.error('NewAuthService: Confirmation email failed:', emailError);
-          // Don't block signup if email fails
-        }
-      }
+      // Note: Supabase handles email confirmation automatically
+      // We only send the personalized welcome email after 10 minutes
+      console.log('NewAuthService: Email confirmation will be handled by Supabase');
 
       return {
         user: authData.user,
