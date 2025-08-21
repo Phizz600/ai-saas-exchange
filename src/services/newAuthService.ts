@@ -106,7 +106,7 @@ export class NewAuthService {
         // Don't block signup if email fails
       }
 
-      // Send confirmation email if user needs to confirm email
+      // Only send confirmation email if user needs to confirm email (no session created)
       if (!authData.session) {
         try {
           const { data: functions } = await supabase.functions.invoke('send-auth-email', {
