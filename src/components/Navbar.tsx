@@ -12,8 +12,27 @@ import { useAuth } from "@/contexts/CleanAuthContext";
 export const Navbar = () => {
   const {
     user,
+    loading,
     signOut
   } = useAuth();
+
+  // Show loading state while auth is initializing
+  if (loading) {
+    return (
+      <nav className="relative bg-white/80 backdrop-blur-md border-b border-gray-200/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex-shrink-0">
+              <Link to="/" className="flex items-center space-x-2">
+                <img src="/lovable-uploads/f1d82e78-2a24-4c2b-b93c-d1a196c1065b.png" alt="AI Exchange Club" className="h-14 w-auto" />
+              </Link>
+            </div>
+            <div className="animate-pulse bg-gray-200 h-8 w-24 rounded"></div>
+          </div>
+        </div>
+      </nav>
+    );
+  }
   const [unreadCount, setUnreadCount] = useState(0);
   const location = useLocation();
   const navigate = useNavigate();
