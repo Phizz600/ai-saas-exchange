@@ -25,38 +25,52 @@ export interface ValuationResult {
   }[];
 }
 
-// AI category multipliers
+// ========== TUNABLE VALUATION CONSTANTS ==========
+// Adjust these values to calibrate valuation aggressiveness
+
+// AI category multipliers (reduced from aggressive levels)
 const AI_CATEGORY_MULTIPLIERS: Record<string, number> = {
-  nlp: 1.4,    // Natural Language Processing / Generative AI (highest demand)
-  cv: 1.3,     // Computer Vision
-  ml: 1.2,     // Machine Learning
-  automation: 1.15, // AI Automation
-  other: 1.0   // Other AI categories
+  nlp: 1.15,    // Natural Language Processing / Generative AI (reduced from 1.4)
+  cv: 1.10,     // Computer Vision (reduced from 1.3)
+  ml: 1.05,     // Machine Learning (reduced from 1.2)
+  automation: 1.05, // AI Automation (reduced from 1.15)
+  other: 1.0    // Other AI categories
 };
 
-// User base value factors
+// User base value factors (reduced impact)
 const USER_BASE_MULTIPLIERS: Record<string, number> = {
-  '500000': 1.3,  // 100k+ users
-  '50000': 1.2,   // 10k-100k users
-  '5000': 1.1,    // 1k-10k users
-  '500': 1.0,     // 100-1k users
-  '50': 0.9       // Under 100 users
+  '500000': 1.15,  // 100k+ users (reduced from 1.3)
+  '50000': 1.10,   // 10k-100k users (reduced from 1.2)
+  '5000': 1.05,    // 1k-10k users (reduced from 1.1)
+  '500': 1.0,      // 100-1k users
+  '50': 0.95       // Under 100 users (reduced from 0.9)
 };
 
-// Growth rate multipliers
+// Growth rate multipliers (neutralized to avoid double counting)
 const GROWTH_RATE_MULTIPLIERS: Record<string, number> = {
-  '150': 1.5,   // 100%+ growth
-  '75': 1.3,    // 50-100% growth
-  '35': 1.2,    // 20-50% growth
-  '10': 1.0     // 0-20% growth
+  '150': 1.0,   // Growth already counted in base calculation
+  '75': 1.0,    // Growth already counted in base calculation
+  '35': 1.0,    // Growth already counted in base calculation
+  '10': 1.0     // Growth already counted in base calculation
 };
 
-// Market trend factors
+// Market trend factors (reduced impact)
 const MARKET_TREND_MULTIPLIERS: Record<string, number> = {
-  'emerging': 1.4,  // Emerging/high growth market
-  'growing': 1.2,   // Growing market
-  'stable': 1.0,    // Stable market
-  'declining': 0.8  // Declining market
+  'emerging': 1.15,  // Emerging/high growth market (reduced from 1.4)
+  'growing': 1.05,   // Growing market (reduced from 1.2)
+  'stable': 1.0,     // Stable market
+  'declining': 0.9   // Declining market (reduced penalty from 0.8)
+};
+
+// Global multiplier constraints
+const MAX_COMBINED_MULTIPLIER = 1.5;  // Cap total multiplier effect
+const MIN_COMBINED_MULTIPLIER = 0.85; // Floor for multiplier effect
+
+// MRR-based valuation ceilings (conservative caps)
+const MRR_VALUATION_CAPS = {
+  low: { threshold: 1000, maxMultiple: 18 },    // < $1k MRR: max 18x MRR
+  medium: { threshold: 5000, maxMultiple: 25 }, // $1k-$5k MRR: max 25x MRR  
+  high: { threshold: Infinity, maxMultiple: 32 } // > $5k MRR: max 32x MRR
 };
 
 export const calculateQuizValuation = async (answers: Record<number, string>): Promise<ValuationResult> => {
@@ -90,18 +104,31 @@ export const calculateQuizValuation = async (answers: Record<number, string>): P
     hasPatents
   );
 
-  // Apply multipliers to the base valuation
+  // Apply conservative multipliers to the base valuation
   const categoryMultiplier = AI_CATEGORY_MULTIPLIERS[aiCategory] || 1.0;
   const userBaseMultiplier = USER_BASE_MULTIPLIERS[activeUsers] || 1.0;
   const growthMultiplier = GROWTH_RATE_MULTIPLIERS[growthRate] || 1.0;
   const marketTrendMultiplier = MARKET_TREND_MULTIPLIERS[marketTrend] || 1.0;
 
-  // Calculate enhanced valuation with all multipliers
-  const combinedMultiplier = categoryMultiplier * userBaseMultiplier * growthMultiplier * marketTrendMultiplier;
+  // Calculate combined multiplier with constraints
+  let combinedMultiplier = categoryMultiplier * userBaseMultiplier * growthMultiplier * marketTrendMultiplier;
+  combinedMultiplier = Math.min(Math.max(combinedMultiplier, MIN_COMBINED_MULTIPLIER), MAX_COMBINED_MULTIPLIER);
   
-  const enhancedValuation = {
+  let enhancedValuation = {
     low: Math.round(baseValuation.low * combinedMultiplier),
     high: Math.round(baseValuation.high * combinedMultiplier)
+  };
+
+  // Apply MRR-based caps to prevent unrealistic valuations
+  const mrrCap = monthlyRevenue < MRR_VALUATION_CAPS.low.threshold 
+    ? MRR_VALUATION_CAPS.low.maxMultiple * monthlyRevenue
+    : monthlyRevenue < MRR_VALUATION_CAPS.medium.threshold
+    ? MRR_VALUATION_CAPS.medium.maxMultiple * monthlyRevenue  
+    : MRR_VALUATION_CAPS.high.maxMultiple * monthlyRevenue;
+
+  enhancedValuation = {
+    low: Math.min(enhancedValuation.low, mrrCap),
+    high: Math.min(enhancedValuation.high, mrrCap)
   };
 
   // Calculate confidence score based on completeness of answers (0-100)

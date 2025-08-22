@@ -5,6 +5,24 @@ import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { TrendingUp, Users, DollarSign, Target, ArrowRight, Sparkles, Shield, Clock, Zap } from "lucide-react";
 
+// ========== TUNABLE VALUATION CONSTANTS ==========
+// Adjust these values to calibrate early-stage valuation conservativeness
+
+const EARLY_STAGE_MULTIPLIERS = {
+  IDEA_STAGE: 1.2,     // Idea/concept: 1.2x ARR
+  MVP_STAGE: 1.5,      // MVP/Beta: 1.5x ARR  
+  EARLY_REVENUE: 1.8,  // Early revenue: 1.8x ARR
+  BASE_LOW_MRR: 2.0    // Base for MRR ≤ $1k: 2x ARR
+};
+
+const GROWTH_ADJUSTMENTS = {
+  DECLINING_PENALTY: 0.85,  // 15% penalty for declining growth
+  STRONG_GROWTH_BONUS: 1.1  // 10% bonus for strong growth (reduced from 30%)
+};
+
+const MARKET_IMPACT_FACTOR = 0.05; // Reduced from 0.1 (market position impact)
+const LOW_MRR_CAP = 15000;         // Conservative cap for businesses ≤ $1k MRR
+
 interface QuizAnswer {
   [key: number]: number;
 }
@@ -309,21 +327,22 @@ export const AISaasQuizSection = ({
     }
     // Reality Check #3: Minimal revenue = conservative valuation
     else if (mrr <= 1000) {
-      let baseMultiplier = 8; // 8x annual revenue (conservative)
-      if (stage === 1) baseMultiplier = 6; // Even more conservative for idea stage
-      if (stage === 2) baseMultiplier = 7; // Slightly better for MVP
+      let baseMultiplier = EARLY_STAGE_MULTIPLIERS.BASE_LOW_MRR;
+      if (stage === 1) baseMultiplier = EARLY_STAGE_MULTIPLIERS.IDEA_STAGE;
+      if (stage === 2) baseMultiplier = EARLY_STAGE_MULTIPLIERS.MVP_STAGE;
+      if (stage === 3) baseMultiplier = EARLY_STAGE_MULTIPLIERS.EARLY_REVENUE;
 
       calculatedValuation = mrr * 12 * baseMultiplier;
 
-      // Apply growth penalty/bonus
-      if (growth <= 1) calculatedValuation *= 0.6; // Declining growth penalty
-      if (growth >= 4) calculatedValuation *= 1.3; // Strong growth bonus
+      // Apply conservative growth adjustments
+      if (growth <= 1) calculatedValuation *= GROWTH_ADJUSTMENTS.DECLINING_PENALTY;
+      if (growth >= 4) calculatedValuation *= GROWTH_ADJUSTMENTS.STRONG_GROWTH_BONUS;
 
-      // Apply market position factor
-      calculatedValuation *= 1 + (market - 2) * 0.1;
+      // Apply conservative market position factor
+      calculatedValuation *= 1 + (market - 2) * MARKET_IMPACT_FACTOR;
 
-      // Cap low revenue businesses
-      calculatedValuation = Math.min(calculatedValuation, 25000);
+      // Conservative cap for low revenue businesses
+      calculatedValuation = Math.min(calculatedValuation, LOW_MRR_CAP);
     }
     // Established businesses with real revenue
     else {
@@ -597,22 +616,22 @@ export const AISaasQuizSection = ({
     // More realistic descriptions and disclaimers
     if (mrr === 0 && customers === 0) {
       description = 'Your AI SaaS is in the earliest conceptual stage.';
-      disclaimer = '⚠️ Pre-revenue businesses typically have minimal market value until they demonstrate customer traction and revenue generation.';
+      disclaimer = '⚠️ Conservative estimate: Pre-revenue businesses typically have minimal market value until they demonstrate customer traction and revenue generation.';
       insights = ['Your business currently represents potential rather than proven value', 'Most buyers look for businesses with established revenue and customer base', 'Focus on achieving product-market fit before considering valuation'];
       recommendations = ['Develop a minimum viable product (MVP) to test market demand', 'Acquire your first paying customers to validate your business model', 'Document user feedback and iterate based on real customer needs', 'Consider this valuation as aspirational rather than current market value'];
     } else if (mrr === 0) {
       description = 'Your business shows early user interest but lacks revenue validation.';
-      disclaimer = '⚠️ While user engagement is positive, buyers typically require proven revenue streams for meaningful valuations.';
+      disclaimer = '⚠️ Conservative estimate: While user engagement is positive, buyers typically require proven revenue streams for meaningful valuations.';
       insights = ['User base indicates market interest in your solution', 'Revenue generation is critical for establishing market value', 'Converting users to paying customers should be your top priority'];
       recommendations = ['Implement monetization strategies to convert users to paying customers', 'Survey users to understand willingness to pay and optimal pricing', 'Develop premium features that justify subscription fees', 'Focus on retention metrics and user engagement quality'];
     } else if (mrr <= 1000) {
       description = 'Your business demonstrates early revenue traction with room for growth.';
-      disclaimer = '💡 Early-stage revenues show promise, but buyers often seek businesses with $5K+ MRR for serious consideration.';
+      disclaimer = '💡 Conservative estimate (based on limited inputs): Early-stage revenues show promise, but buyers often seek businesses with $5K+ MRR for serious consideration.';
       insights = ['You have successfully validated initial product-market fit', 'Early revenue indicates customers find value in your solution', 'Growth trajectory will significantly impact future valuation'];
       recommendations = ['Focus aggressively on growing monthly recurring revenue', 'Optimize customer acquisition and retention strategies', 'Document all revenue metrics for future buyer verification', 'Consider this estimate preliminary - actual valuations require due diligence'];
     } else {
       description = 'Your AI SaaS shows strong fundamentals with meaningful revenue generation.';
-      disclaimer = '📊 This estimate is based on limited data. Actual market value depends on verified metrics, competitive position, and buyer due diligence.';
+      disclaimer = '📊 Conservative estimate: This is based on limited survey data. Actual market value depends on verified metrics, competitive position, and comprehensive buyer due diligence.';
       insights = ['Your business demonstrates proven market demand and revenue generation', 'Strong MRR indicates sustainable business model potential', 'Growth rate and market position are key value drivers'];
       recommendations = ['Maintain detailed financial records and metrics for buyer verification', 'Focus on sustainable growth and customer retention', 'Consider professional business valuation for precise market assessment', 'Prepare comprehensive documentation for potential buyer due diligence'];
     }
@@ -728,7 +747,7 @@ export const AISaasQuizSection = ({
         <div className="glass p-8 rounded-xl">
           <h3 className="text-2xl font-semibold text-white mb-4">Important Disclaimer</h3>
           <p className="text-white/90 mb-6 text-lg">
-            This valuation is a rough estimate based on limited survey data and general market trends.
+            This valuation is a conservative estimate based on limited survey data and general market trends.
           </p>
           
           <div className="bg-white/5 rounded-lg p-4 mb-4">
@@ -740,7 +759,7 @@ export const AISaasQuizSection = ({
           </div>
           
           <p className="text-white/70 text-sm">
-            💡 <strong>For serious buyers:</strong> Businesses with verified metrics, strong growth, and proven revenue typically command premium valuations
+            💡 <strong>For serious buyers:</strong> Businesses with verified metrics, strong growth, and proven revenue typically command premium valuations above these conservative estimates
           </p>
         </div>
       </div>;
