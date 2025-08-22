@@ -34,7 +34,16 @@ export const ValuationResults = ({ valuation, onContinue }: ValuationResultsProp
     <div className="space-y-6">
       <div className="text-center">
         <Link to="/" className="inline-block mb-6">
-          <img src="/lovable-uploads/8f58f067-4427-4557-9a81-869fb3493e23.png" alt="AI Exchange Club" className="h-16 w-auto mx-auto" />
+          <img 
+            src="/lovable-uploads/8f58f067-4427-4557-9a81-869fb3493e23.png" 
+            alt="AI Exchange Club" 
+            className="h-16 w-auto mx-auto"
+            onError={(e) => {
+              console.error('Logo failed to load:', e);
+              e.currentTarget.style.display = 'none';
+            }}
+            onLoad={() => console.log('Logo loaded successfully')}
+          />
         </Link>
         <h3 className="text-xl font-bold mb-2">Your AI SaaS Valuation Results</h3>
         <div className="bg-[#6366f1]/10 rounded-lg p-6 mb-4">
