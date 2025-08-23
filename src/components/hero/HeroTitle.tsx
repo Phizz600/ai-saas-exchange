@@ -24,10 +24,11 @@ const HeroTitle = ({
       {/* 5 Star Badge */}
       <div className="mb-4">
         <div className="relative inline-flex items-center gap-0.5 bg-gray-800/90 backdrop-blur-sm rounded-full px-3 py-1.5 border border-gray-700/50 overflow-hidden">
-          <div className="absolute inset-0 rounded-full animate-spin" style={{
+          <div className="absolute inset-0 rounded-full" style={{
             background: 'conic-gradient(from 0deg, rgba(217,70,238,0.6), rgba(139,92,246,0.6), rgba(14,165,233,0.6), rgba(217,70,238,0.6))',
             mask: 'radial-gradient(ellipse at center, transparent 70%, black 72%)',
-            WebkitMask: 'radial-gradient(ellipse at center, transparent 70%, black 72%)'
+            WebkitMask: 'radial-gradient(ellipse at center, transparent 70%, black 72%)',
+            animation: 'spin 4s linear infinite'
           }}></div>
           {[...Array(5)].map((_, i) => (
             <span key={i} className="text-yellow-400 text-sm">★</span>
