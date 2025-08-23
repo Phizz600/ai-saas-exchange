@@ -8,33 +8,9 @@ const toAbsolute = (p) => path.resolve(__dirname, p)
 const template = fs.readFileSync(toAbsolute('dist/index.html'), 'utf-8')
 const { render } = await import('./dist/server/entry-server.js')
 
-// Define static routes that can be prerendered (excluding dynamic routes with params)
-const routesToPrerender = [
-  '/',
-  '/ai-saas-quiz',
-  '/ai-saas-quiz/submit',
-  '/buyer-matching-quiz',
-  '/auth',
-  '/nda-policy',
-  '/faq',
-  '/about',
-  '/terms',
-  '/policies',
-  '/contact',
-  '/fees-pricing',
-  '/auth-test',
-  '/diagnostics',
-  '/private-partners-program',
-  // Protected routes that can be prerendered (they'll show loading/redirect for unauthenticated users)
-  '/onboarding-redirect',
-  '/product-dashboard',
-  '/profile',
-  '/messages',
-  '/settings',
-  '/list-product',
-  '/admin',
-  '/listing-thank-you'
-]
+// Import centralized route configuration
+const { getStaticRoutes } = await import('./src/config/routes.ts')
+const routesToPrerender = getStaticRoutes().map(route => route.path)
 
 ;(async () => {
   for (const url of routesToPrerender) {
