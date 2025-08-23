@@ -21,6 +21,15 @@ const HeroTitle = ({
         </a>
       </div>
 
+      {/* 5 Star Badge */}
+      <div className="mb-4">
+        <div className="inline-flex items-center gap-1 bg-gray-800/90 backdrop-blur-sm rounded-full px-4 py-2 border border-gray-700/50">
+          {[...Array(5)].map((_, i) => (
+            <span key={i} className="text-yellow-400 text-lg">★</span>
+          ))}
+        </div>
+      </div>
+
       <h1 className="exo-2-heading font-bold leading-tight text-white text-center sm:text-3xl md:text-4xl lg:text-5xl my-0 mx-0 py-0 max-w-5xl px-0 text-3xl">
         Helping AI SaaS Founders Exit
         <br />
