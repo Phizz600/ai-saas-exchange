@@ -1,5 +1,6 @@
 
-import { createRoot } from 'react-dom/client'
+import { createRoot, hydrateRoot } from 'react-dom/client'
+import { BrowserRouter } from 'react-router-dom'
 import { StrictMode } from 'react'
 import App from './App.tsx'
 import './index.css'
@@ -24,8 +25,17 @@ if (!rootElement) {
 
 const root = createRoot(rootElement)
 
-root.render(
+const app = (
   <StrictMode>
-    <App />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </StrictMode>
 );
+
+// Use hydration for SSR in production
+if (import.meta.env.PROD) {
+  hydrateRoot(rootElement, app);
+} else {
+  createRoot(rootElement).render(app);
+}
