@@ -23,9 +23,9 @@ const HeroTitle = ({
 
       {/* 5 Star Badge */}
       <div className="mb-4">
-        <div className="inline-flex items-center gap-1 bg-gray-800/90 backdrop-blur-sm rounded-full px-4 py-2 border border-gray-700/50">
+        <div className="inline-flex items-center gap-0.5 bg-gray-800/90 backdrop-blur-sm rounded-full px-3 py-1.5 border border-gray-700/50 shadow-[0_0_20px_rgba(217,70,238,0.3),0_0_40px_rgba(139,92,246,0.2),0_0_60px_rgba(14,165,233,0.1)] animate-pulse">
           {[...Array(5)].map((_, i) => (
-            <span key={i} className="text-yellow-400 text-lg">★</span>
+            <span key={i} className="text-yellow-400 text-sm">★</span>
           ))}
         </div>
       </div>
