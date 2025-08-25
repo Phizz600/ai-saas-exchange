@@ -8,6 +8,7 @@ import "./App.css";
 
 function App() {
   // Create a new QueryClient instance inside the component
+  // Fresh build after database schema update
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
