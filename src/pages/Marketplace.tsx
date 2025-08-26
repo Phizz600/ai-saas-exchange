@@ -35,7 +35,7 @@ export function Marketplace() {
 
         // If user has completed onboarding, redirect based on user type
         if (profile?.user_type === 'ai_investor') {
-          navigate('/browse-marketplace', { replace: true });
+          navigate('/product-dashboard', { replace: true });
         } else if (profile?.user_type === 'ai_builder') {
           navigate('/product-dashboard', { replace: true });
         }

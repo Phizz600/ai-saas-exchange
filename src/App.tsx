@@ -8,7 +8,7 @@ import "./App.css";
 
 function App() {
   // Create a new QueryClient instance inside the component
-  // Fresh build after database schema update
+  // Fixed routing issues - removed references to non-existent /browse-marketplace route
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {

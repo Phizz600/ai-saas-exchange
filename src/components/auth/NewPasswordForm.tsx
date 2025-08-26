@@ -146,9 +146,9 @@ export const NewPasswordForm = ({ onSuccess }: NewPasswordFormProps) => {
         if (onSuccess) {
           onSuccess();
         } else {
-          // Navigate to browse marketplace after successful password reset
+          // Navigate to dashboard after successful password reset
           setTimeout(() => {
-            navigate('/browse-marketplace');
+            navigate('/product-dashboard');
           }, 2000);
         }
       }

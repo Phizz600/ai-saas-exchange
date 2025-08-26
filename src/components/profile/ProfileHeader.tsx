@@ -71,9 +71,9 @@ export const ProfileHeader = ({ profile, onAvatarUpdate }: ProfileHeaderProps) =
             <Button 
               variant="outline" 
               className="w-full"
-              onClick={() => navigate('/browse-marketplace')}
+              onClick={() => navigate('/product-dashboard')}
             >
-              Browse Products
+              Dashboard
             </Button>
             {profile.user_type === "ai_builder" && (
               <Button 

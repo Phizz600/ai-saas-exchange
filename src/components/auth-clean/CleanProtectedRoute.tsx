@@ -29,7 +29,7 @@ export const CleanProtectedRoute = ({ children, requireAuth = true }: CleanProte
       
       if (!isPasswordRecovery) {
         // User is authenticated but this is an auth-only route (like login page)
-        const redirectTo = location.state?.redirectTo || '/browse-marketplace';
+        const redirectTo = location.state?.redirectTo || '/product-dashboard';
         navigate(redirectTo, { replace: true });
       }
     }
