@@ -1,14 +1,6 @@
 // Centralized route configuration for consistency across prerendering and sitemap generation
 
-export interface RouteConfig {
-  path: string;
-  priority: number;
-  changefreq: 'daily' | 'weekly' | 'monthly' | 'yearly';
-  includeInSitemap: boolean;
-  prerenderStatic: boolean;
-}
-
-export const ROUTE_CONFIGS: RouteConfig[] = [
+export const ROUTE_CONFIGS = [
   // Public routes
   { path: '/', priority: 1.0, changefreq: 'weekly', includeInSitemap: true, prerenderStatic: true },
   { path: '/ai-saas-quiz', priority: 0.8, changefreq: 'weekly', includeInSitemap: true, prerenderStatic: true },

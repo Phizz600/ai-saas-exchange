@@ -9,7 +9,7 @@ const template = fs.readFileSync(toAbsolute('dist/index.html'), 'utf-8')
 const { render } = await import('./dist/server/entry-server.js')
 
 // Import centralized route configuration
-const { getStaticRoutes } = await import('./src/config/routes.ts')
+const { getStaticRoutes } = await import('./src/config/routes.js')
 const routesToPrerender = getStaticRoutes().map(route => route.path)
 
 ;(async () => {
