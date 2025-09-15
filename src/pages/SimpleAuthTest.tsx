@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export const SimpleAuthTest = () => {
   const { toast } = useToast();
-  const [email, setEmail] = useState("testuser123@gmail.com");
+  const [email, setEmail] = useState("testuser1757920783862@gmail.com");
   const [password, setPassword] = useState("testpassword123");
   const [loading, setLoading] = useState(false);
 
@@ -100,7 +100,7 @@ export const SimpleAuthTest = () => {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="testuser123@gmail.com"
+              placeholder="testuser1757920783862@gmail.com"
             />
           </div>
           <div>

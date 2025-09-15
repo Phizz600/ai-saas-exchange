@@ -6,7 +6,7 @@ import { Navbar } from "@/components/Navbar";
 import { RealProfileHeader } from "@/components/profile/RealProfileHeader";
 import { ProfileCompletion } from "@/components/profile/ProfileCompletion";
 import { RealProfileBio } from "@/components/profile/RealProfileBio";
-import { MockActivityOverview } from "@/components/profile/MockActivityOverview";
+import { ActivityOverview } from "@/components/profile/ActivityOverview";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Upload, Edit3, BarChart3, Database as DatabaseIcon, User } from "lucide-react";
@@ -283,7 +283,7 @@ export const ProfileDynamicTest = () => {
             />
 
             {/* Activity Overview */}
-            <MockActivityOverview profile={profile} />
+            <ActivityOverview profile={profile} />
           </div>
         </div>
       </div>

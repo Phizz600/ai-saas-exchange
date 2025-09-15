@@ -35,7 +35,7 @@ export const ProfileRealTest = () => {
   const [showAuthForm, setShowAuthForm] = useState(false);
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
   const [authData, setAuthData] = useState({
-    email: 'testuser123@gmail.com',
+    email: 'testuser1757920783862@gmail.com',
     password: 'testpassword123'
   });
 
@@ -317,7 +317,7 @@ export const ProfileRealTest = () => {
                   type="email"
                   value={authData.email}
                   onChange={(e) => setAuthData(prev => ({ ...prev, email: e.target.value }))}
-                  placeholder="testuser123@gmail.com"
+                  placeholder="testuser1757920783862@gmail.com"
                 />
               </div>
               <div className="space-y-2">

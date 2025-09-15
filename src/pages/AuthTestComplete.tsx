@@ -21,7 +21,7 @@ import {
 export const AuthTestComplete = () => {
   const { toast } = useToast();
   const [authState, setAuthState] = useState({
-    email: 'testuser123@gmail.com',
+    email: 'testuser1757920783862@gmail.com',
     password: 'testpassword123',
     loading: false,
     user: null as any,
