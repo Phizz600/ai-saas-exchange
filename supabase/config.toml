@@ -51,5 +51,8 @@ verify_jwt = true
 [functions.create-admin-user]
 verify_jwt = false
 
+[functions.update-user-profile]
+verify_jwt = true
+
 [realtime]
 enabled = true

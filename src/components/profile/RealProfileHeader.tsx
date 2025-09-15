@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ProfileAvatar } from "./ProfileAvatar";
+import { RealProfileAvatar } from "./RealProfileAvatar";
 import { MapPin, Calendar, Globe2, AlertCircle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { VerificationBadges } from "./VerificationBadges";
@@ -9,26 +9,32 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
-import type { Database } from "@/integrations/supabase/types";
 
-type Profile = Database["public"]["Tables"]["profiles"]["Row"];
-
-interface ProfileHeaderProps {
-  profile: Profile;
+interface RealProfileHeaderProps {
+  profile: {
+    id: string;
+    full_name: string | null;
+    username: string | null;
+    avatar_url: string | null;
+    user_type: string | null;
+    created_at: string;
+  };
   onAvatarUpdate: (url: string | null) => void;
+  isAuthenticated: boolean;
 }
 
-export const ProfileHeader = ({ profile, onAvatarUpdate }: ProfileHeaderProps) => {
+export const RealProfileHeader = ({ profile, onAvatarUpdate, isAuthenticated }: RealProfileHeaderProps) => {
   const navigate = useNavigate();
 
   return (
     <Card className="sticky top-8">
       <CardContent className="pt-6">
         <div className="flex flex-col items-center text-center">
-          <ProfileAvatar
+          <RealProfileAvatar
             avatarUrl={profile.avatar_url}
             userId={profile.id}
             onAvatarUpdate={onAvatarUpdate}
+            isAuthenticated={isAuthenticated}
           />
           <h2 className="text-2xl font-semibold mb-1 mt-4 font-exo">
             {profile.full_name || "Anonymous User"}
@@ -89,3 +95,6 @@ export const ProfileHeader = ({ profile, onAvatarUpdate }: ProfileHeaderProps) =
     </Card>
   );
 };
+
+
+

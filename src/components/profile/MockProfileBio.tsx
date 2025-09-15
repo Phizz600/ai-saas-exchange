@@ -4,15 +4,15 @@ import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 import { Pencil } from "lucide-react";
 
-interface ProfileBioProps {
+interface MockProfileBioProps {
   bio: string | null;
   userId: string;
+  onBioUpdate?: (newBio: string) => void;
 }
 
-export const ProfileBio = ({ bio, userId }: ProfileBioProps) => {
+export const MockProfileBio = ({ bio, userId, onBioUpdate }: MockProfileBioProps) => {
   const [editing, setEditing] = useState(false);
   const [newBio, setNewBio] = useState(bio || "");
   const [isLoading, setIsLoading] = useState(false);
@@ -23,12 +23,13 @@ export const ProfileBio = ({ bio, userId }: ProfileBioProps) => {
   const handleSave = async () => {
     setIsLoading(true);
     try {
-      const { error } = await supabase
-        .from("profiles")
-        .update({ bio: newBio })
-        .eq("id", userId);
-
-      if (error) throw error;
+      // Simulate save delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Call the update callback if provided
+      if (onBioUpdate) {
+        onBioUpdate(newBio);
+      }
 
       toast({
         title: "Success",
@@ -78,7 +79,7 @@ export const ProfileBio = ({ bio, userId }: ProfileBioProps) => {
                 Cancel
               </Button>
               <Button onClick={handleSave} disabled={isLoading}>
-                Save Changes
+                {isLoading ? "Saving..." : "Save Changes"}
               </Button>
             </div>
           </>
@@ -98,3 +99,6 @@ export const ProfileBio = ({ bio, userId }: ProfileBioProps) => {
     </Card>
   );
 };
+
+
+

@@ -1,76 +1,62 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Camera, Loader2, X } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 
-interface ProfileAvatarProps {
+interface MockProfileAvatarProps {
   avatarUrl: string | null;
   userId: string;
   onAvatarUpdate: (url: string | null) => void;
 }
 
-export const ProfileAvatar = ({ avatarUrl, userId, onAvatarUpdate }: ProfileAvatarProps) => {
+export const MockProfileAvatar = ({ avatarUrl, userId, onAvatarUpdate }: MockProfileAvatarProps) => {
   const [isUploading, setIsUploading] = useState(false);
   const { toast } = useToast();
+
+  // Cleanup blob URLs when component unmounts
+  useEffect(() => {
+    return () => {
+      if (avatarUrl && avatarUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(avatarUrl);
+      }
+    };
+  }, [avatarUrl]);
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     try {
       const file = event.target.files?.[0];
       if (!file) return;
 
-      setIsUploading(true);
-      
-      // Upload file to Supabase Storage
-      const fileExt = file.name.split('.').pop();
-      const fileName = `avatar-${Date.now()}.${fileExt}`;
-      const filePath = `${userId}/${fileName}`;
-
-      const { error: uploadError, data } = await supabase.storage
-        .from('avatars')
-        .upload(filePath, file, {
-          upsert: true // Replace existing file
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        toast({
+          variant: "destructive",
+          title: "Invalid file type",
+          description: "Please select an image file (PNG, JPEG, GIF, etc.)",
         });
-
-      if (uploadError) throw uploadError;
-
-      // Clean up old avatar files for this user
-      try {
-        const { data: oldFiles } = await supabase.storage
-          .from('avatars')
-          .list(userId);
-        
-        if (oldFiles && oldFiles.length > 0) {
-          const filesToDelete = oldFiles
-            .filter(file => file.name !== fileName)
-            .map(file => `${userId}/${file.name}`);
-          
-          if (filesToDelete.length > 0) {
-            await supabase.storage
-              .from('avatars')
-              .remove(filesToDelete);
-          }
-        }
-      } catch (cleanupError) {
-        console.warn('Failed to clean up old avatar files:', cleanupError);
-        // Don't throw here, as the upload was successful
+        return;
       }
 
-      // Get public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from('avatars')
-        .getPublicUrl(filePath);
+      // Validate file size (5MB limit)
+      if (file.size > 5 * 1024 * 1024) {
+        toast({
+          variant: "destructive",
+          title: "File too large",
+          description: "Please select an image smaller than 5MB",
+        });
+        return;
+      }
 
-      // Update profile
-      const { error: updateError } = await supabase
-        .from('profiles')
-        .update({ avatar_url: publicUrl })
-        .eq('id', userId);
-
-      if (updateError) throw updateError;
-
-      onAvatarUpdate(publicUrl);
+      setIsUploading(true);
+      
+      // Simulate upload delay
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Create a local URL for the selected image file
+      const localUrl = URL.createObjectURL(file);
+      
+      onAvatarUpdate(localUrl);
       toast({
         title: "Success",
         description: "Profile photo updated successfully",
@@ -91,31 +77,14 @@ export const ProfileAvatar = ({ avatarUrl, userId, onAvatarUpdate }: ProfileAvat
     try {
       setIsUploading(true);
       
-      // Clean up avatar files from storage
-      try {
-        const { data: oldFiles } = await supabase.storage
-          .from('avatars')
-          .list(userId);
-        
-        if (oldFiles && oldFiles.length > 0) {
-          const filesToDelete = oldFiles.map(file => `${userId}/${file.name}`);
-          await supabase.storage
-            .from('avatars')
-            .remove(filesToDelete);
-        }
-      } catch (cleanupError) {
-        console.warn('Failed to clean up avatar files from storage:', cleanupError);
-        // Continue with profile update even if storage cleanup fails
+      // Simulate removal delay
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      // Clean up the local URL if it exists
+      if (avatarUrl && avatarUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(avatarUrl);
       }
       
-      // Update profile to remove avatar_url
-      const { error: updateError } = await supabase
-        .from('profiles')
-        .update({ avatar_url: null })
-        .eq('id', userId);
-
-      if (updateError) throw updateError;
-
       onAvatarUpdate(null);
       toast({
         title: "Success",
@@ -152,7 +121,7 @@ export const ProfileAvatar = ({ avatarUrl, userId, onAvatarUpdate }: ProfileAvat
             variant="secondary"
             size="sm"
             className="bg-white/90 hover:bg-white"
-            onClick={() => document.getElementById('avatar-upload')?.click()}
+            onClick={() => document.getElementById('mock-avatar-upload')?.click()}
             disabled={isUploading}
           >
             <Camera className="w-4 h-4" />
@@ -173,7 +142,7 @@ export const ProfileAvatar = ({ avatarUrl, userId, onAvatarUpdate }: ProfileAvat
       
       <input
         type="file"
-        id="avatar-upload"
+        id="mock-avatar-upload"
         className="hidden"
         accept="image/*"
         onChange={handleFileUpload}
