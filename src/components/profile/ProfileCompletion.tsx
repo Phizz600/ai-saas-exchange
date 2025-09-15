@@ -18,10 +18,22 @@ export const ProfileCompletion = ({ progress, userType }: ProfileCompletionProps
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          <Progress 
-            value={progress} 
-            className="h-2 bg-gradient-to-r from-[#D946EE]/20 via-[#8B5CF6]/20 to-[#0EA4E9]/20"
-          />
+          <div className="relative">
+            <Progress 
+              value={progress} 
+              className="h-3 bg-gray-200"
+            />
+            <div 
+              className="absolute top-0 left-0 h-3 bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] rounded-full transition-all duration-500 ease-out"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-sm font-medium text-gray-700">{progress}% Complete</span>
+            <span className="text-xs text-muted-foreground">
+              {progress === 100 ? '🎉 Perfect!' : `${100 - progress}% to go`}
+            </span>
+          </div>
           <p className="text-sm text-muted-foreground">
             Complete your profile to increase visibility and trust with potential {userType === "ai_builder" ? "buyers" : "sellers"}.
             {progress < 100 && (

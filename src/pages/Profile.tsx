@@ -2,13 +2,19 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
-import { Header } from "@/components/Header";
+import { Navbar } from "@/components/Navbar";
+import { PromotionalBanner } from "@/components/PromotionalBanner";
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
 import { ProfileCompletion } from "@/components/profile/ProfileCompletion";
 import { ProfileBio } from "@/components/profile/ProfileBio";
-import { ProfileContent } from "@/components/profile/ProfileContent";
-import { LikedProducts } from "@/components/profile/LikedProducts";
+import { AccountSettings } from "@/components/profile/AccountSettings";
+import { ActivityOverview } from "@/components/profile/ActivityOverview";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { 
+  User, 
+  TrendingUp
+} from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
@@ -107,7 +113,8 @@ export const Profile = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      <Header />
+      <PromotionalBanner />
+      <Navbar />
       <div className="container mx-auto px-3 py-8 mt-20">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
           {/* Left Sidebar */}
@@ -120,10 +127,36 @@ export const Profile = () => {
 
           {/* Main Content */}
           <div className="md:col-span-8 space-y-6">
+            {/* Profile Completion */}
             <ProfileCompletion progress={completionProgress} userType={profile.user_type} />
+            
+            {/* Bio Section */}
             <ProfileBio bio={profile.bio} userId={profile.id} />
-            <LikedProducts likedProductIds={profile.liked_products || []} />
-            <ProfileContent profile={profile} />
+
+            {/* Main Tabs */}
+            <Tabs defaultValue="activity" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="activity" className="flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4" />
+                  <span className="hidden sm:inline">Activity</span>
+                </TabsTrigger>
+                <TabsTrigger value="account" className="flex items-center gap-2">
+                  <User className="h-4 w-4" />
+                  <span className="hidden sm:inline">Account</span>
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="activity" className="space-y-6">
+                <ActivityOverview profile={profile} />
+              </TabsContent>
+
+              <TabsContent value="account" className="space-y-6">
+                <AccountSettings 
+                  profile={profile} 
+                  onProfileUpdate={(updatedProfile) => setProfile(updatedProfile)}
+                />
+              </TabsContent>
+            </Tabs>
           </div>
         </div>
       </div>

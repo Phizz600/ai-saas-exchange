@@ -7,12 +7,14 @@ import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Pencil } from "lucide-react";
 
-interface ProfileBioProps {
+interface RealProfileBioProps {
   bio: string | null;
   userId: string;
+  onBioUpdate?: (newBio: string) => void;
+  isAuthenticated: boolean;
 }
 
-export const ProfileBio = ({ bio, userId }: ProfileBioProps) => {
+export const RealProfileBio = ({ bio, userId, onBioUpdate, isAuthenticated }: RealProfileBioProps) => {
   const [editing, setEditing] = useState(false);
   const [newBio, setNewBio] = useState(bio || "");
   const [isLoading, setIsLoading] = useState(false);
@@ -23,17 +25,41 @@ export const ProfileBio = ({ bio, userId }: ProfileBioProps) => {
   const handleSave = async () => {
     setIsLoading(true);
     try {
-      const { error } = await supabase
-        .from("profiles")
-        .update({ bio: newBio })
-        .eq("id", userId);
+      if (isAuthenticated) {
+        // Real save to database
+        const { error } = await supabase
+          .from("profiles")
+          .update({ bio: newBio })
+          .eq("id", userId);
 
-      if (error) throw error;
+        if (error) {
+          console.error("Database error:", error);
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: "Failed to save bio to database. Please try again.",
+          });
+          return;
+        }
 
-      toast({
-        title: "Success",
-        description: "Your bio has been updated.",
-      });
+        toast({
+          title: "Success",
+          description: "Your bio has been saved to the database!",
+        });
+      } else {
+        // Mock save for non-authenticated users
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        toast({
+          title: "Success (Mock)",
+          description: "Your bio has been updated (mock mode - not saved).",
+        });
+      }
+      
+      // Call the update callback if provided
+      if (onBioUpdate) {
+        onBioUpdate(newBio);
+      }
+      
       setEditing(false);
     } catch (error) {
       console.error("Error updating bio:", error);
@@ -77,8 +103,8 @@ export const ProfileBio = ({ bio, userId }: ProfileBioProps) => {
               >
                 Cancel
               </Button>
-              <Button onClick={handleSave} disabled={isLoading}>
-                Save Changes
+              <Button onClick={handleSave} disabled={isLoading} className="bg-black hover:bg-gray-800 text-white">
+                {isLoading ? "Saving..." : "Save Changes"}
               </Button>
             </div>
           </>
@@ -98,3 +124,6 @@ export const ProfileBio = ({ bio, userId }: ProfileBioProps) => {
     </Card>
   );
 };
+
+
+

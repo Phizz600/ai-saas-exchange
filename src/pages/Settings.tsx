@@ -7,9 +7,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { EditProfileForm } from "@/components/profile/EditProfileForm";
+import { EmailVerificationBanner } from "@/components/profile/EmailVerificationBanner";
+import type { Database } from "@/integrations/supabase/types";
+
+type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 
 export default function Settings() {
-  const [profile, setProfile] = useState<any>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState("");
   const [fullName, setFullName] = useState("");
@@ -127,21 +132,29 @@ export default function Settings() {
   return (
     <div className="min-h-screen bg-white px-4 py-10 flex justify-center">
       <div className="w-full max-w-2xl space-y-6">
+        {/* Email Verification Banner */}
+        <EmailVerificationBanner />
+
+        {/* Enhanced Profile Edit Form */}
+        {profile && (
+          <EditProfileForm 
+            profile={profile} 
+            onProfileUpdate={(updatedProfile) => setProfile(updatedProfile)}
+          />
+        )}
+
+        {/* Legacy Username Section (keeping for backward compatibility) */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg font-exo">Edit Profile</CardTitle>
+            <CardTitle className="text-lg font-exo">Username Settings</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
               <label className="block mb-1 font-medium">Username</label>
               <Input value={username} onChange={e => setUsername(e.target.value)} />
             </div>
-            <div>
-              <label className="block mb-1 font-medium">Full Name</label>
-              <Input value={fullName} onChange={e => setFullName(e.target.value)} />
-            </div>
             <Button className="mt-2" onClick={handleSaveProfile} disabled={saving}>
-              {saving ? "Saving..." : "Save Changes"}
+              {saving ? "Saving..." : "Save Username"}
             </Button>
           </CardContent>
         </Card>
