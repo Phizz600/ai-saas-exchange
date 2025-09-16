@@ -271,3 +271,4 @@ export const MockActivityOverview = ({ profile }: MockActivityOverviewProps) => 
   );
 };
 
+so

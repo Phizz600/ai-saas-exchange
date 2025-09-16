@@ -73,6 +73,9 @@ export const Index = () => {
             <Link to="/auth-test-complete" className="block bg-emerald-600 text-white px-4 py-2 rounded-md text-sm hover:bg-emerald-700 transition-colors">
               Complete Auth Test
             </Link>
+            <Link to="/profile-demo" className="block bg-cyan-600 text-white px-4 py-2 rounded-md text-sm hover:bg-cyan-700 transition-colors">
+              Profile Demo (Real Data)
+            </Link>
           </div>}
       </div>
     </div>;

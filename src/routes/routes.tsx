@@ -35,6 +35,7 @@ import { ProfileRealTest } from "@/pages/ProfileRealTest";
 import { AuthDebug } from "@/pages/AuthDebug";
 import { SimpleAuthTest } from "@/pages/SimpleAuthTest";
 import { AuthTestComplete } from "@/pages/AuthTestComplete";
+import { ProfileDemo } from "@/pages/ProfileDemo";
 
 // Public routes (no authentication required)
 const publicRoutes = [
@@ -137,6 +138,10 @@ const publicRoutes = [
   {
     path: "/auth-test-complete",
     element: <AuthTestComplete />,
+  },
+  {
+    path: "/profile-demo",
+    element: <ProfileDemo />,
   },
 ];
 
