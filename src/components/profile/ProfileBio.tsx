@@ -10,9 +10,10 @@ import { Pencil } from "lucide-react";
 interface ProfileBioProps {
   bio: string | null;
   userId: string;
+  onBioUpdate?: (newBio: string) => void;
 }
 
-export const ProfileBio = ({ bio, userId }: ProfileBioProps) => {
+export const ProfileBio = ({ bio, userId, onBioUpdate }: ProfileBioProps) => {
   const [editing, setEditing] = useState(false);
   const [newBio, setNewBio] = useState(bio || "");
   const [isLoading, setIsLoading] = useState(false);
@@ -30,17 +31,32 @@ export const ProfileBio = ({ bio, userId }: ProfileBioProps) => {
 
       if (error) throw error;
 
+      // Call the callback to update parent component
+      if (onBioUpdate) {
+        onBioUpdate(newBio);
+      }
+
       toast({
         title: "Success",
         description: "Your bio has been updated.",
       });
       setEditing(false);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error updating bio:", error);
+      let errorMessage = "Failed to update bio. Please try again.";
+      
+      if (error.message?.includes('network')) {
+        errorMessage = "Network error. Please check your connection and try again.";
+      } else if (error.message?.includes('permission')) {
+        errorMessage = "Permission denied. Please refresh the page and try again.";
+      } else if (error.message?.includes('validation')) {
+        errorMessage = "Invalid bio content. Please check your input and try again.";
+      }
+      
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Failed to update bio. Please try again.",
+        title: "Update Failed",
+        description: errorMessage,
       });
     } finally {
       setIsLoading(false);

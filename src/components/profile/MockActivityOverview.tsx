@@ -270,4 +270,3 @@ export const MockActivityOverview = ({ profile }: MockActivityOverviewProps) => 
     </Card>
   );
 };
-

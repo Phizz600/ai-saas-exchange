@@ -7,9 +7,11 @@ import { RealProfileHeader } from "@/components/profile/RealProfileHeader";
 import { ProfileCompletion } from "@/components/profile/ProfileCompletion";
 import { RealProfileBio } from "@/components/profile/RealProfileBio";
 import { ActivityOverview } from "@/components/profile/ActivityOverview";
+import { AccountSettings } from "@/components/profile/AccountSettings";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Upload, Edit3, BarChart3, Database as DatabaseIcon, User } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { CheckCircle, Upload, Edit3, BarChart3, Database as DatabaseIcon, User, TrendingUp } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
@@ -149,6 +151,11 @@ export const ProfileDynamicTest = () => {
     }
   };
 
+  const handleProfileUpdate = (updatedProfile: Profile) => {
+    setProfile(updatedProfile);
+    setCompletionProgress(calculateCompletionProgress(updatedProfile));
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-white">
@@ -282,8 +289,30 @@ export const ProfileDynamicTest = () => {
               isAuthenticated={isAuthenticated}
             />
 
-            {/* Activity Overview */}
-            <ActivityOverview profile={profile} />
+            {/* Main Tabs */}
+            <Tabs defaultValue="activity" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="activity" className="flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4" />
+                  <span className="hidden sm:inline">Activity</span>
+                </TabsTrigger>
+                <TabsTrigger value="account" className="flex items-center gap-2">
+                  <User className="h-4 w-4" />
+                  <span className="hidden sm:inline">Account</span>
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="activity" className="space-y-6">
+                <ActivityOverview profile={profile} />
+              </TabsContent>
+
+              <TabsContent value="account" className="space-y-6">
+                <AccountSettings 
+                  profile={profile} 
+                  onProfileUpdate={handleProfileUpdate}
+                />
+              </TabsContent>
+            </Tabs>
           </div>
         </div>
       </div>

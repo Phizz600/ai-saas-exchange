@@ -20,6 +20,28 @@ export const ProfileAvatar = ({ avatarUrl, userId, onAvatarUpdate }: ProfileAvat
       const file = event.target.files?.[0];
       if (!file) return;
 
+      // Validate file size (5MB limit)
+      const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+      if (file.size > maxSize) {
+        toast({
+          variant: "destructive",
+          title: "File Too Large",
+          description: "Please choose an image under 5MB.",
+        });
+        return;
+      }
+
+      // Validate file type
+      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+      if (!allowedTypes.includes(file.type)) {
+        toast({
+          variant: "destructive",
+          title: "Invalid File Type",
+          description: "Please choose a JPG, PNG, GIF, or WebP image.",
+        });
+        return;
+      }
+
       setIsUploading(true);
       
       // Upload file to Supabase Storage
@@ -75,12 +97,24 @@ export const ProfileAvatar = ({ avatarUrl, userId, onAvatarUpdate }: ProfileAvat
         title: "Success",
         description: "Profile photo updated successfully",
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error uploading avatar:', error);
+      let errorMessage = "Failed to update profile photo. Please try again.";
+      
+      if (error.message?.includes('File size')) {
+        errorMessage = "File is too large. Please choose an image under 5MB.";
+      } else if (error.message?.includes('Invalid file type')) {
+        errorMessage = "Invalid file type. Please choose a JPG, PNG, or GIF image.";
+      } else if (error.message?.includes('storage')) {
+        errorMessage = "Storage error. Please try again in a moment.";
+      } else if (error.message?.includes('network')) {
+        errorMessage = "Network error. Please check your connection and try again.";
+      }
+      
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Failed to update profile photo. Please try again.",
+        title: "Upload Failed",
+        description: errorMessage,
       });
     } finally {
       setIsUploading(false);
@@ -121,12 +155,20 @@ export const ProfileAvatar = ({ avatarUrl, userId, onAvatarUpdate }: ProfileAvat
         title: "Success",
         description: "Profile photo removed successfully",
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error removing avatar:', error);
+      let errorMessage = "Failed to remove profile photo. Please try again.";
+      
+      if (error.message?.includes('network')) {
+        errorMessage = "Network error. Please check your connection and try again.";
+      } else if (error.message?.includes('permission')) {
+        errorMessage = "Permission denied. Please refresh the page and try again.";
+      }
+      
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Failed to remove profile photo. Please try again.",
+        title: "Remove Failed",
+        description: errorMessage,
       });
     } finally {
       setIsUploading(false);

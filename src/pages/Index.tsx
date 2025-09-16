@@ -49,30 +49,6 @@ export const Index = () => {
             <Link to="/admin" className="block bg-gray-800 text-white px-4 py-2 rounded-md text-sm hover:bg-gray-700 transition-colors">
               Admin Panel
             </Link>
-            <Link to="/profile-edit-demo" className="block bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700 transition-colors">
-              Profile Edit Demo
-            </Link>
-            <Link to="/profile-design-preview" className="block bg-purple-600 text-white px-4 py-2 rounded-md text-sm hover:bg-purple-700 transition-colors">
-              Profile Design Preview
-            </Link>
-            <Link to="/profile-test" className="block bg-green-600 text-white px-4 py-2 rounded-md text-sm hover:bg-green-700 transition-colors">
-              Profile Test (No Login)
-            </Link>
-            <Link to="/profile-dynamic-test" className="block bg-orange-600 text-white px-4 py-2 rounded-md text-sm hover:bg-orange-700 transition-colors">
-              Profile Dynamic Test
-            </Link>
-            <Link to="/profile-real-test" className="block bg-red-600 text-white px-4 py-2 rounded-md text-sm hover:bg-red-700 transition-colors">
-              Profile Real Test (DB)
-            </Link>
-            <Link to="/auth-debug" className="block bg-yellow-600 text-white px-4 py-2 rounded-md text-sm hover:bg-yellow-700 transition-colors">
-              Auth Debug
-            </Link>
-            <Link to="/simple-auth-test" className="block bg-indigo-600 text-white px-4 py-2 rounded-md text-sm hover:bg-indigo-700 transition-colors">
-              Simple Auth Test
-            </Link>
-            <Link to="/auth-test-complete" className="block bg-emerald-600 text-white px-4 py-2 rounded-md text-sm hover:bg-emerald-700 transition-colors">
-              Complete Auth Test
-            </Link>
           </div>}
       </div>
     </div>;

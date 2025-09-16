@@ -26,6 +26,22 @@ export const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [completionProgress, setCompletionProgress] = useState(0);
 
+  const calculateCompletion = (profileData: Profile) => {
+    let completion = 0;
+    if (profileData.full_name) completion += 20;
+    if (profileData.avatar_url) completion += 20;
+    if (profileData.bio) completion += 20;
+    if (profileData.username) completion += 20;
+    if (profileData.user_type) completion += 20;
+    return completion;
+  };
+
+  const handleProfileUpdate = (updatedProfile: Profile) => {
+    setProfile(updatedProfile);
+    const newCompletion = calculateCompletion(updatedProfile);
+    setCompletionProgress(newCompletion);
+  };
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -69,20 +85,25 @@ export const Profile = () => {
         setProfile(profileData);
         
         // Calculate profile completion
-        let completion = 0;
-        if (profileData.full_name) completion += 20;
-        if (profileData.avatar_url) completion += 20;
-        if (profileData.bio) completion += 20;
-        if (profileData.username) completion += 20;
-        if (profileData.user_type) completion += 20;
+        const completion = calculateCompletion(profileData);
         setCompletionProgress(completion);
         
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error in profile fetch:", error);
+        let errorMessage = "Failed to load profile data. Please try again.";
+        
+        if (error.message?.includes('network')) {
+          errorMessage = "Network error. Please check your connection and try again.";
+        } else if (error.message?.includes('permission')) {
+          errorMessage = "Permission denied. Please sign in again.";
+        } else if (error.message?.includes('not found')) {
+          errorMessage = "Profile not found. Please contact support.";
+        }
+        
         toast({
           variant: "destructive",
-          title: "Error",
-          description: "Failed to load profile data. Please try again.",
+          title: "Load Failed",
+          description: errorMessage,
         });
       } finally {
         setLoading(false);
@@ -121,7 +142,12 @@ export const Profile = () => {
           <div className="md:col-span-4">
             <ProfileHeader 
               profile={profile} 
-              onAvatarUpdate={(url) => setProfile(prev => prev ? { ...prev, avatar_url: url } : null)}
+              onAvatarUpdate={(url) => {
+                const updatedProfile = profile ? { ...profile, avatar_url: url } : null;
+                if (updatedProfile) {
+                  handleProfileUpdate(updatedProfile);
+                }
+              }}
             />
           </div>
 
@@ -131,7 +157,14 @@ export const Profile = () => {
             <ProfileCompletion progress={completionProgress} userType={profile.user_type} />
             
             {/* Bio Section */}
-            <ProfileBio bio={profile.bio} userId={profile.id} />
+            <ProfileBio 
+              bio={profile.bio} 
+              userId={profile.id}
+              onBioUpdate={(newBio) => {
+                const updatedProfile = { ...profile, bio: newBio };
+                handleProfileUpdate(updatedProfile);
+              }}
+            />
 
             {/* Main Tabs */}
             <Tabs defaultValue="activity" className="w-full">
@@ -153,7 +186,7 @@ export const Profile = () => {
               <TabsContent value="account" className="space-y-6">
                 <AccountSettings 
                   profile={profile} 
-                  onProfileUpdate={(updatedProfile) => setProfile(updatedProfile)}
+                  onProfileUpdate={handleProfileUpdate}
                 />
               </TabsContent>
             </Tabs>
