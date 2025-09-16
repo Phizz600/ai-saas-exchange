@@ -27,15 +27,6 @@ import { CleanProtectedRoute } from "@/components/auth-clean/CleanProtectedRoute
 import { CleanAuthPage } from "@/components/auth-clean/CleanAuthPage";
 import { Marketplace } from "@/pages/Marketplace";
 import PrivatePartnersProgram from "@/pages/PrivatePartnersProgram";
-import { ProfileEditDemo } from "@/pages/ProfileEditDemo";
-import { ProfileDesignPreview } from "@/pages/ProfileDesignPreview";
-import { ProfileTest } from "@/pages/ProfileTest";
-import { ProfileDynamicTest } from "@/pages/ProfileDynamicTest";
-import { ProfileRealTest } from "@/pages/ProfileRealTest";
-import { AuthDebug } from "@/pages/AuthDebug";
-import { SimpleAuthTest } from "@/pages/SimpleAuthTest";
-import { AuthTestComplete } from "@/pages/AuthTestComplete";
-import { ProfileDemo } from "@/pages/ProfileDemo";
 
 // Public routes (no authentication required)
 const publicRoutes = [
@@ -106,42 +97,6 @@ const publicRoutes = [
   {
     path: "/private-partners-program",
     element: <PrivatePartnersProgram />,
-  },
-  {
-    path: "/profile-edit-demo",
-    element: <ProfileEditDemo />,
-  },
-  {
-    path: "/profile-design-preview",
-    element: <ProfileDesignPreview />,
-  },
-  {
-    path: "/profile-test",
-    element: <ProfileTest />,
-  },
-  {
-    path: "/profile-dynamic-test",
-    element: <ProfileDynamicTest />,
-  },
-  {
-    path: "/profile-real-test",
-    element: <ProfileRealTest />,
-  },
-  {
-    path: "/auth-debug",
-    element: <AuthDebug />,
-  },
-  {
-    path: "/simple-auth-test",
-    element: <SimpleAuthTest />,
-  },
-  {
-    path: "/auth-test-complete",
-    element: <AuthTestComplete />,
-  },
-  {
-    path: "/profile-demo",
-    element: <ProfileDemo />,
   },
 ];
 

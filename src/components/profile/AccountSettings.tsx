@@ -163,10 +163,24 @@ export const AccountSettings = ({ profile, onProfileUpdate }: AccountSettingsPro
       setEditing(false);
     } catch (error: any) {
       console.error("Error updating profile:", error);
+      let errorMessage = "Failed to update profile. Please try again.";
+      
+      if (error.message?.includes('network')) {
+        errorMessage = "Network error. Please check your connection and try again.";
+      } else if (error.message?.includes('permission')) {
+        errorMessage = "Permission denied. Please refresh the page and try again.";
+      } else if (error.message?.includes('validation')) {
+        errorMessage = "Invalid input. Please check your data and try again.";
+      } else if (error.message?.includes('username')) {
+        errorMessage = "Username is already taken. Please choose a different username.";
+      } else if (error.message?.includes('duplicate')) {
+        errorMessage = "This information is already in use. Please choose different values.";
+      }
+      
       toast({
         variant: "destructive",
         title: "Update Failed",
-        description: error.message || "Failed to update profile. Please try again.",
+        description: errorMessage,
       });
     } finally {
       setLoading(false);
