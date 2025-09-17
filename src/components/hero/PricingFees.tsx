@@ -53,15 +53,17 @@ const PricingFees = () => {
                     </ul>
                     <p className="text-amber-300 text-xs mt-2 font-medium">💡 Risk-free entry for early-stage founders</p>
                     
-                    <Button 
-                      className="w-full mt-4 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        window.open('https://airtable.com/appqbmIOXXLNFhZyj/pagutIK7nf0unyJm3/form', '_blank');
-                      }}
-                    >
-                      Sell My AI SaaS
-                    </Button>
+                    <div className="flex justify-center">
+                      <Button 
+                        className="mt-4 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white font-bold py-2 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          window.open('https://airtable.com/appqbmIOXXLNFhZyj/pagutIK7nf0unyJm3/form', '_blank');
+                        }}
+                      >
+                        Sell My AI SaaS
+                      </Button>
+                    </div>
                   </div>
 
                   {/* Growth Package */}
