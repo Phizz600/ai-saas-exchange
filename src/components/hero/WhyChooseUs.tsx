@@ -140,7 +140,7 @@ const WhyChooseUs = () => {
                     <div className="flex items-center">
                       <div className="relative w-8 h-8 mr-2">
                         
-                        <img src="/images/testimonials/michael.jpg" alt="Michael T., AI SaaS Founder testimonial photo" className="w-8 h-8 rounded-full object-cover" loading="lazy" onError={e => {
+                        <img src="/images/testimonials/profile.jpg" alt="Michael T., AI SaaS Founder testimonial photo" className="w-8 h-8 rounded-full object-cover" loading="lazy" onError={e => {
                         (e.currentTarget as HTMLImageElement).style.display = 'none';
                       }} />
                       </div>
