@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 const PricingFees = () => {
   return <section className="py-0">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-12">
+        <div className="max-w-3xl mx-auto mb-12">
           {/* Card 1 - For Sellers (Free) */}
           <motion.div initial={{
           opacity: 0,
