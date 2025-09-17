@@ -2,7 +2,6 @@ import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { DollarSign, Users, CheckCircle, MessageSquare, BadgeCheck, Crown, User2, Tag, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
 const PricingFees = () => {
   return <section className="py-0">
       <div className="container mx-auto px-4">
@@ -46,7 +45,7 @@ const PricingFees = () => {
                       </li>
                       <li className="flex items-center text-gray-300">
                         <CheckCircle className="h-4 w-4 text-[#D946EE] mr-2 flex-shrink-0" />
-                        <span>Beginner's Guide + contract templates</span>
+                        <span>Get The Free Beginner's Guide to Selling AI SaaS + contract templates</span>
                       </li>
                     </ul>
                     <p className="text-amber-300 text-xs mt-2 font-medium">💡 Risk-free entry for early-stage founders</p>
@@ -231,5 +230,4 @@ const PricingFees = () => {
       </div>
     </section>;
 };
-
 export default PricingFees;
