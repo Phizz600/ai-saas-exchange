@@ -25,45 +25,102 @@ const PricingFees = () => {
                     <Tag className="h-8 w-8 text-[#D946EE]" />
                   </div>
                 </div>
-                <h3 className="text-center text-2xl font-bold text-white mb-4">$0 Listing Fee</h3>
+                <h3 className="text-center text-2xl font-bold text-white mb-6">AI Exchange Club Seller Packages</h3>
                 
-                <div className="relative mb-6">
-                  <p className="text-center text-lg font-bold text-white">FREE</p>
-                  <div className="absolute -top-3 -right-2 bg-[#0EA4E9] text-white text-xs font-bold px-2 py-1 rounded-full transform rotate-12">
-                    Offer Ends Soon
+                <div className="space-y-6 flex-grow">
+                  {/* Starter Package */}
+                  <div className="bg-white/5 p-4 rounded-lg border border-white/10">
+                    <div className="flex items-center justify-between mb-3">
+                      <h4 className="text-lg font-bold text-white">Starter</h4>
+                      <span className="text-lg font-bold text-[#D946EE]">FREE</span>
+                    </div>
+                    <p className="text-gray-300 text-sm mb-3">For pre-revenue or idea-stage founders who want to test the waters.</p>
+                    <ul className="space-y-2 text-sm">
+                      <li className="flex items-center text-gray-300">
+                        <CheckCircle className="h-4 w-4 text-[#D946EE] mr-2 flex-shrink-0" />
+                        <span>List your AI SaaS on the marketplace</span>
+                      </li>
+                      <li className="flex items-center text-gray-300">
+                        <CheckCircle className="h-4 w-4 text-[#D946EE] mr-2 flex-shrink-0" />
+                        <span>Commission-based only (no upfront fee)</span>
+                      </li>
+                      <li className="flex items-center text-gray-300">
+                        <CheckCircle className="h-4 w-4 text-[#D946EE] mr-2 flex-shrink-0" />
+                        <span>Beginner's Guide + contract templates</span>
+                      </li>
+                    </ul>
+                    <p className="text-amber-300 text-xs mt-2 font-medium">💡 Risk-free entry for early-stage founders</p>
+                  </div>
+
+                  {/* Growth Package */}
+                  <div className="bg-white/5 p-4 rounded-lg border border-[#8B5CF6]/30 relative">
+                    <div className="absolute -top-2 -right-2 bg-[#8B5CF6] text-white text-xs font-bold px-2 py-1 rounded-full">
+                      POPULAR
+                    </div>
+                    <div className="flex items-center justify-between mb-3">
+                      <h4 className="text-lg font-bold text-white">Growth</h4>
+                      <div className="text-right">
+                        <span className="text-lg font-bold text-[#8B5CF6]">$199</span>
+                        <p className="text-xs text-gray-400">+ 2% success fee</p>
+                      </div>
+                    </div>
+                    <p className="text-gray-300 text-sm mb-3">For bootstrapped founders who want exposure + resources.</p>
+                    <ul className="space-y-2 text-sm">
+                      <li className="flex items-center text-gray-300">
+                        <CheckCircle className="h-4 w-4 text-[#8B5CF6] mr-2 flex-shrink-0" />
+                        <span>$0 Success Fees (keep all proceeds)</span>
+                      </li>
+                      <li className="flex items-center text-gray-300">
+                        <CheckCircle className="h-4 w-4 text-[#8B5CF6] mr-2 flex-shrink-0" />
+                        <span>Featured in newsletter & YouTube</span>
+                      </li>
+                      <li className="flex items-center text-gray-300">
+                        <CheckCircle className="h-4 w-4 text-[#8B5CF6] mr-2 flex-shrink-0" />
+                        <span>Advanced Playbook + Exit Checklist</span>
+                      </li>
+                      <li className="flex items-center text-gray-300">
+                        <CheckCircle className="h-4 w-4 text-[#8B5CF6] mr-2 flex-shrink-0" />
+                        <span>24/7 Support + 30-day guarantee</span>
+                      </li>
+                    </ul>
+                    <p className="text-green-400 text-xs mt-2 font-medium">💸 Risk-Free Listing Guarantee</p>
+                  </div>
+
+                  {/* Scale Package */}
+                  <div className="bg-white/5 p-4 rounded-lg border border-[#0EA4E9]/30">
+                    <div className="flex items-center justify-between mb-3">
+                      <h4 className="text-lg font-bold text-white">Scale</h4>
+                      <div className="text-right">
+                        <span className="text-lg font-bold text-[#0EA4E9]">$2,500</span>
+                        <p className="text-xs text-green-400">$0 success fees</p>
+                      </div>
+                    </div>
+                    <p className="text-gray-300 text-sm mb-3">For serious founders who want premium positioning.</p>
+                    <ul className="space-y-2 text-sm">
+                      <li className="flex items-center text-gray-300">
+                        <Crown className="h-4 w-4 text-amber-400 mr-2 flex-shrink-0" />
+                        <span>Everything in Growth</span>
+                      </li>
+                      <li className="flex items-center text-gray-300">
+                        <CheckCircle className="h-4 w-4 text-[#0EA4E9] mr-2 flex-shrink-0" />
+                        <span>Dedicated Sales Rep</span>
+                      </li>
+                      <li className="flex items-center text-gray-300">
+                        <CheckCircle className="h-4 w-4 text-[#0EA4E9] mr-2 flex-shrink-0" />
+                        <span>Slack AMA Hot Spot pitch</span>
+                      </li>
+                      <li className="flex items-center text-gray-300">
+                        <CheckCircle className="h-4 w-4 text-[#0EA4E9] mr-2 flex-shrink-0" />
+                        <span>30-min Exit Strategy Call</span>
+                      </li>
+                      <li className="flex items-center text-gray-300">
+                        <BadgeCheck className="h-4 w-4 text-amber-400 mr-2 flex-shrink-0" />
+                        <span>Priority Placement</span>
+                      </li>
+                    </ul>
+                    <p className="text-amber-300 text-xs mt-2 font-medium">💡 Maximum exposure + white-glove pitching</p>
                   </div>
                 </div>
-                
-                <div className="bg-white/5 p-3 rounded-md mb-6">
-                  <div className="flex items-center justify-center gap-2 text-amber-300 mb-2">
-                    <User2 className="h-4 w-4" />
-                    <p className="text-sm font-medium">Early Adopter Benefit</p>
-                  </div>
-                  <p className="text-gray-300 text-sm text-center">List your AI SaaS completely free - no upfront costs, no commissions, no broker fees.</p>
-                </div>
-                
-                <p className="text-gray-300 text-center mb-6 flex-grow">
-                  Get your AI business in front of qualified buyers through our private buyer network.
-                </p>
-                
-                <ul className="space-y-3 text-gray-300">
-                  <li className="flex items-center">
-                    <CheckCircle className="h-5 w-5 text-[#D946EE] mr-2" />
-                    <span>Free listing submission</span>
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-5 w-5 text-[#D946EE] mr-2" />
-                    <span>Direct buyer connections</span>
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-5 w-5 text-[#D946EE] mr-2" />
-                    <span>No commission on deals</span>
-                  </li>
-                  <li className="flex items-center">
-                    <BadgeCheck className="h-5 w-5 text-amber-400 mr-2" />
-                    <span className="text-amber-300">You handle your own negotiations</span>
-                  </li>
-                </ul>
               </div>
             </Card>
           </motion.div>
