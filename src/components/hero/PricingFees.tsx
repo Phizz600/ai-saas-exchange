@@ -28,7 +28,7 @@ const PricingFees = () => {
                 
                 <div className="space-y-6 flex-grow">
                   {/* Starter Package */}
-                  <div className="bg-white/5 p-4 rounded-lg border border-white/10">
+                  <div className="bg-white/5 p-4 rounded-lg border border-white/10 hover:shadow-[0_0_30px_rgba(217,70,238,0.3)] transition-all duration-300">
                     <div className="flex items-center justify-between mb-3">
                       <h4 className="text-lg font-bold text-white">Starter</h4>
                       <span className="text-lg font-bold text-[#D946EE]">FREE</span>
@@ -52,7 +52,7 @@ const PricingFees = () => {
                   </div>
 
                   {/* Growth Package */}
-                  <div className="bg-white/5 p-4 rounded-lg border border-[#8B5CF6]/30 relative">
+                  <div className="bg-white/5 p-4 rounded-lg border border-[#8B5CF6]/30 relative hover:shadow-[0_0_30px_rgba(139,92,246,0.4)] transition-all duration-300">
                     <div className="absolute -top-2 -right-2 bg-[#8B5CF6] text-white text-xs font-bold px-2 py-1 rounded-full">
                       POPULAR
                     </div>
@@ -86,7 +86,7 @@ const PricingFees = () => {
                   </div>
 
                   {/* Scale Package */}
-                  <div className="bg-white/5 p-4 rounded-lg border border-[#0EA4E9]/30">
+                  <div className="bg-white/5 p-4 rounded-lg border border-[#0EA4E9]/30 hover:shadow-[0_0_30px_rgba(14,164,233,0.4)] transition-all duration-300">
                     <div className="flex items-center justify-between mb-3">
                       <h4 className="text-lg font-bold text-white">Scale</h4>
                       <div className="text-right">
