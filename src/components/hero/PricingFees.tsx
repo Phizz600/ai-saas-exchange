@@ -24,7 +24,7 @@ const PricingFees = () => {
                     <Tag className="h-8 w-8 text-[#D946EE]" />
                   </div>
                 </div>
-                <h3 className="text-center text-2xl font-bold text-white mb-6">AI Exchange Club Seller Packages</h3>
+                <h3 className="text-center text-2xl font-bold text-white mb-6">Seller Listing Packages</h3>
                 
                 <div className="space-y-6 flex-grow">
                   {/* Starter Package */}
