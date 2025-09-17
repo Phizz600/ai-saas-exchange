@@ -33,7 +33,7 @@ const PricingFees = () => {
                       <h4 className="text-lg font-bold text-white">Starter</h4>
                       <span className="text-lg font-bold text-[#D946EE]">FREE</span>
                     </div>
-                    <p className="text-gray-300 text-sm mb-3">For pre-revenue or idea-stage founders who want to test the waters.</p>
+                    <p className="text-gray-300 text-sm mb-3">For pre-revenue or idea-stage founders who want to test the waters. No account creation needed.</p>
                     <ul className="space-y-2 text-sm">
                       <li className="flex items-center text-gray-300">
                         <CheckCircle className="h-4 w-4 text-[#D946EE] mr-2 flex-shrink-0" />
