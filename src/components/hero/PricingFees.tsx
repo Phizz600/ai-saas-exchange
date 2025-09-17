@@ -75,7 +75,7 @@ const PricingFees = () => {
                       </li>
                       <li className="flex items-center text-gray-300">
                         <CheckCircle className="h-4 w-4 text-[#8B5CF6] mr-2 flex-shrink-0" />
-                        <span>Advanced Playbook + Exit Checklist</span>
+                        <span>Get The Advanced Strategy Playbook + Exit Checklist</span>
                       </li>
                       <li className="flex items-center text-gray-300">
                         <CheckCircle className="h-4 w-4 text-[#8B5CF6] mr-2 flex-shrink-0" />
