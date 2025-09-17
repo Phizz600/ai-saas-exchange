@@ -139,16 +139,10 @@ const WhyChooseUs = () => {
                     <p className="text-gray-200 italic mb-3">&quot;The listing process was wayyy smoother than I expected it to be. Answered some questions about my AI Chrome extension and got approved about a day and a half later. &quot;</p>
                     <div className="flex items-center">
                       <div className="relative w-8 h-8 mr-2">
-                        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-[#D946EE] to-[#8B5CF6]"></div>
-                        <img
-                          src="/images/testimonials/michael.jpg"
-                          alt="Michael T., AI SaaS Founder testimonial photo"
-                          className="w-8 h-8 rounded-full object-cover"
-                          loading="lazy"
-                          onError={(e) => {
-                            (e.currentTarget as HTMLImageElement).style.display = 'none';
-                          }}
-                        />
+                        
+                        <img src="/images/testimonials/michael.jpg" alt="Michael T., AI SaaS Founder testimonial photo" className="w-8 h-8 rounded-full object-cover" loading="lazy" onError={e => {
+                        (e.currentTarget as HTMLImageElement).style.display = 'none';
+                      }} />
                       </div>
                       <div>
                         <p className="text-white font-medium">Michael T.</p>
@@ -161,16 +155,10 @@ const WhyChooseUs = () => {
                     <p className="text-gray-200 italic mb-3">&quot;This curated deal flow approach is exactly what I needed. No more sifting through low-quality leads flooding my inbox. 🙌</p>
                     <div className="flex items-center">
                         <div className="relative w-8 h-8 mr-2">
-                          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-[#8B5CF6] to-[#0EA4E9]"></div>
-                          <img
-                            src="/lovable-uploads/63d6bdee-5c90-4062-936a-6919a88af028.png"
-                            alt="Sarah K., AI Startup Investor testimonial photo"
-                            className="w-8 h-8 rounded-full object-cover"
-                            loading="lazy"
-                            onError={(e) => {
-                              (e.currentTarget as HTMLImageElement).style.display = 'none';
-                            }}
-                          />
+                          
+                          <img src="/lovable-uploads/63d6bdee-5c90-4062-936a-6919a88af028.png" alt="Sarah K., AI Startup Investor testimonial photo" className="w-8 h-8 rounded-full object-cover" loading="lazy" onError={e => {
+                        (e.currentTarget as HTMLImageElement).style.display = 'none';
+                      }} />
                         </div>
                       <div>
                         <p className="text-white font-medium">Sarah K.</p>
