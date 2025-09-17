@@ -28,10 +28,7 @@ const PricingFees = () => {
                 
                 <div className="space-y-6 flex-grow">
                   {/* Starter Package */}
-                  <div 
-                    className="bg-white/5 p-4 rounded-lg border border-white/10 hover:shadow-[0_0_30px_rgba(217,70,238,0.3)] transition-all duration-300 cursor-pointer" 
-                    onClick={() => window.open('https://airtable.com/appqbmIOXXLNFhZyj/pagutIK7nf0unyJm3/form', '_blank')}
-                  >
+                  <div className="bg-white/5 p-4 rounded-lg border border-white/10 hover:shadow-[0_0_30px_rgba(217,70,238,0.3)] transition-all duration-300 cursor-pointer" onClick={() => window.open('https://airtable.com/appqbmIOXXLNFhZyj/pagutIK7nf0unyJm3/form', '_blank')}>
                     <div className="flex items-center justify-between mb-3">
                       <h4 className="text-lg font-bold text-white">Starter</h4>
                       <span className="text-lg font-bold text-[#D946EE]">FREE</span>
@@ -54,13 +51,10 @@ const PricingFees = () => {
                     <p className="text-amber-300 text-xs mt-2 font-medium">💡 Risk-free entry for early-stage founders</p>
                     
                     <div className="flex justify-center">
-                      <Button 
-                        className="mt-4 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white font-bold py-2 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          window.open('https://airtable.com/appqbmIOXXLNFhZyj/pagutIK7nf0unyJm3/form', '_blank');
-                        }}
-                      >
+                      <Button onClick={e => {
+                      e.stopPropagation();
+                      window.open('https://airtable.com/appqbmIOXXLNFhZyj/pagutIK7nf0unyJm3/form', '_blank');
+                    }} className="mt-4 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white font-bold py-2 px-20 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
                         Sell My AI SaaS
                       </Button>
                     </div>
