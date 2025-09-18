@@ -76,7 +76,7 @@ const PricingFees = () => {
                     <ul className="space-y-2 text-sm">
                       <li className="flex items-center text-gray-300">
                         <CheckCircle className="h-4 w-4 text-[#8B5CF6] mr-2 flex-shrink-0" />
-                        <span>$0 Success Fees (keep all proceeds)</span>
+                        <span>Reduced Success Fees </span>
                       </li>
                       <li className="flex items-center text-gray-300">
                         <CheckCircle className="h-4 w-4 text-[#8B5CF6] mr-2 flex-shrink-0" />
