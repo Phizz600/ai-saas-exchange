@@ -28,7 +28,7 @@ const CommissionCard = () => {
 
           {/* Heading */}
           <h2 className="text-3xl font-bold text-white mb-8 exo-2-heading">
-            Commission
+            Success fee/ Commission
           </h2>
 
           {/* Commission Table */}
