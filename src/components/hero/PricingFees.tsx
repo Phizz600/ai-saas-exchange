@@ -124,7 +124,7 @@ const PricingFees = () => {
                       </li>
                       <li className="flex items-center text-gray-300">
                         <BadgeCheck className="h-4 w-4 text-amber-400 mr-2 flex-shrink-0" />
-                        <span>Priority Placement</span>
+                        <span>Priority Placement — top exposure across newsletter, Slack, and YouTube features</span>
                       </li>
                     </ul>
                     <p className="text-amber-300 text-xs mt-2 font-medium">💡 Maximum exposure + white-glove pitching</p>
