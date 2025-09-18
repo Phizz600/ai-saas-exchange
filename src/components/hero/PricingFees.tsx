@@ -84,7 +84,7 @@ const PricingFees = () => {
                       </li>
                       <li className="flex items-center text-gray-300">
                         <CheckCircle className="h-4 w-4 text-[#8B5CF6] mr-2 flex-shrink-0" />
-                        <span>Get The Advanced Strategy Playbook + Exit Checklist</span>
+                        <span>Advanced Playbook: Exiting Your AI SaaS Faster — includes customizable contracts</span>
                       </li>
                       <li className="flex items-center text-gray-300">
                         <CheckCircle className="h-4 w-4 text-[#8B5CF6] mr-2 flex-shrink-0" />
