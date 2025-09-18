@@ -97,7 +97,16 @@ const PricingFees = () => {
                     </ul>
                     <p className="text-green-400 text-xs mt-2 font-medium">💸 Risk-Free Listing Guarantee If your listing doesn’t generate buyer interest in 30 days, we’ll refund your fee. Simple as that.
                   </p>
-                  </div>
+                   
+                   <div className="flex justify-center">
+                     <Button onClick={e => {
+                       e.stopPropagation();
+                       window.open('https://airtable.com/appqbmIOXXLNFhZyj/pagutIK7nf0unyJm3/form', '_blank');
+                     }} className="mt-4 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-black font-extrabold py-2 px-20 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 text-shadow-sm">
+                       Sell My AI SaaS
+                     </Button>
+                   </div>
+                   </div>
 
                   {/* Scale Package */}
                   <div className="bg-white/5 p-4 rounded-lg border border-amber-400/30 hover:shadow-[0_0_30px_rgba(245,158,11,0.4)] transition-all duration-300">
@@ -133,8 +142,17 @@ const PricingFees = () => {
                         <span>Priority Placement</span>
                       </li>
                     </ul>
-                    <p className="text-amber-300 text-xs mt-2 font-medium">💡 Maximum exposure + white-glove pitching</p>
-                  </div>
+                     <p className="text-amber-300 text-xs mt-2 font-medium">💡 Maximum exposure + white-glove pitching</p>
+                   
+                   <div className="flex justify-center">
+                     <Button onClick={e => {
+                       e.stopPropagation();
+                       window.open('https://airtable.com/appqbmIOXXLNFhZyj/pagutIK7nf0unyJm3/form', '_blank');
+                     }} className="mt-4 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-extrabold py-2 px-20 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 text-shadow-sm">
+                       Sell My AI SaaS
+                     </Button>
+                   </div>
+                   </div>
                 </div>
               </div>
             </Card>
