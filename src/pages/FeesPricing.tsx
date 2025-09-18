@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { DollarSign, PercentIcon, CheckCircle, User, Crown, BadgeCheck, Users, Tag } from "lucide-react";
 import PricingFees from "@/components/hero/PricingFees";
+import CommissionCard from "@/components/hero/CommissionCard";
 import AnimatedGradientBackground from "@/components/ui/AnimatedGradientBackground";
 export const FeesPricing = () => {
   // Animation variants
@@ -38,6 +39,9 @@ export const FeesPricing = () => {
 
         {/* Main content */}
         <PricingFees />
+        
+        {/* Commission Structure Details */}
+        <CommissionCard />
         
         <motion.div className="container mx-auto px-4 mt-20" initial={{
         opacity: 0,
