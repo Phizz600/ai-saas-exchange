@@ -73,7 +73,7 @@ const EnhancedNdaPolicy = () => {
           </div>
           
           <Link to="/nda-policy">
-            <Button className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] text-white hover:opacity-90 transition-all duration-300">
+            <Button className="bg-black text-white hover:opacity-90 transition-all duration-300">
               Learn More About Our NDA Policy
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
