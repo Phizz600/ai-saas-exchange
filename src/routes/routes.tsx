@@ -27,6 +27,7 @@ import { CleanProtectedRoute } from "@/components/auth-clean/CleanProtectedRoute
 import { CleanAuthPage } from "@/components/auth-clean/CleanAuthPage";
 import { Marketplace } from "@/pages/Marketplace";
 import PrivatePartnersProgram from "@/pages/PrivatePartnersProgram";
+import ListingFormView from "@/pages/ListingFormView";
 
 // Public routes (no authentication required)
 const publicRoutes = [
@@ -97,6 +98,10 @@ const publicRoutes = [
   {
     path: "/private-partners-program",
     element: <PrivatePartnersProgram />,
+  },
+  {
+    path: "/listing-form-view",
+    element: <ListingFormView />,
   },
 ];
 
