@@ -2,8 +2,12 @@ import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Percent, CheckCircle, Calculator, Star } from "lucide-react";
+import { useState } from "react";
+import { QuizDialog } from "./QuizDialog";
 
 const CommissionCard = () => {
+  const [isQuizOpen, setIsQuizOpen] = useState(false);
+  
   const commissionTiers = [
     { range: "$0 - $10,000", rate: "10%", icon: "💼" },
     { range: "$10,001 - $50,000", rate: "8%", icon: "📈" },
@@ -129,12 +133,17 @@ const CommissionCard = () => {
           {/* CTA Button */}
           <Button 
             className="w-full bg-[#8B5CF6] hover:bg-[#8B5CF6]/90 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 hover:scale-105"
-            onClick={() => window.location.href = '/'}
+            onClick={() => setIsQuizOpen(true)}
           >
             🔍 See What Your Business Could Be Worth
           </Button>
         </div>
       </Card>
+      
+      <QuizDialog 
+        open={isQuizOpen} 
+        onOpenChange={setIsQuizOpen} 
+      />
     </motion.div>
   );
 };
