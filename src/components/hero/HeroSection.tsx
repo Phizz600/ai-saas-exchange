@@ -78,7 +78,7 @@ const HeroSection = ({
           {/* Updated Button Row with GTM strategy CTAs */}
           <div className="flex flex-col items-center gap-4 justify-center">
             
-            <Button variant="green" onClick={() => window.open('https://airtable.com/appqbmIOXXLNFhZyj/pagutIK7nf0unyJm3/form', '_blank')} className="w-full max-w-xs py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+            <Button variant="green" onClick={() => document.getElementById('pricing-packages')?.scrollIntoView({ behavior: 'smooth' })} className="w-full max-w-xs py-6 px-12 text-base font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
               <MousePointerClick className="mr-2" />
               Sell My AI SaaS
             </Button>

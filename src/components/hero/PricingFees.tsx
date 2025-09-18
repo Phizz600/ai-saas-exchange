@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { DollarSign, Users, CheckCircle, MessageSquare, BadgeCheck, Crown, User2, Tag, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 const PricingFees = () => {
-  return <section className="py-0">
+  return <section id="pricing-packages" className="py-0">
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto mb-12">
           {/* Card 1 - For Sellers (Free) */}
