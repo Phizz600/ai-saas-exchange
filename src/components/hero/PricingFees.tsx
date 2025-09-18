@@ -69,7 +69,7 @@ const PricingFees = () => {
                       <h4 className="text-lg font-bold text-white">Growth</h4>
                       <div className="text-right">
                         <span className="text-lg font-bold text-[#8B5CF6]">$199</span>
-                        <p className="text-xs text-gray-400">+ 2% success fee</p>
+                        <p className="text-xs text-gray-400">+ 5% success fee</p>
                       </div>
                     </div>
                     <p className="text-gray-300 text-sm mb-3">For bootstrapped founders who want exposure + resources.</p>
