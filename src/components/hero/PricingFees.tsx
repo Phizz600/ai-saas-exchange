@@ -91,7 +91,8 @@ const PricingFees = () => {
                         <span>Personalized Exit Readiness Checklist (maximize valuation before selling)</span>
                       </li>
                     </ul>
-                    <p className="text-green-400 text-xs mt-2 font-medium">💸 Risk-Free Listing Guarantee</p>
+                    <p className="text-green-400 text-xs mt-2 font-medium">💸 Risk-Free Listing Guarantee If your listing doesn’t generate buyer interest in 30 days, we’ll refund your fee. Simple as that.
+                  </p>
                   </div>
 
                   {/* Scale Package */}
