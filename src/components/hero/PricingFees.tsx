@@ -120,7 +120,7 @@ const PricingFees = () => {
                       </li>
                       <li className="flex items-center text-gray-300">
                         <CheckCircle className="h-4 w-4 text-[#0EA4E9] mr-2 flex-shrink-0" />
-                        <span>30-min Exit Strategy Call</span>
+                        <span>30-Minute Exit Strategy Call — tailored guidance to position for higher valuation</span>
                       </li>
                       <li className="flex items-center text-gray-300">
                         <BadgeCheck className="h-4 w-4 text-amber-400 mr-2 flex-shrink-0" />
