@@ -148,7 +148,7 @@ const PricingFees = () => {
         delay: 0.4
       }} className="text-center mt-12">
           <p className="text-gray-300 max-w-2xl mx-auto my-[34px]">
-            No brokering. No fluff. Just vetted deal flow delivered to serious investors who are ready to acquire AI SaaS businesses.
+            Your SaaS deserves real buyers, not tire-kickers. We put your business in front of investors ready to acquire today.
           </p>
         </motion.div>
       </div>
