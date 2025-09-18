@@ -69,7 +69,7 @@ const PricingFees = () => {
                       <h4 className="text-lg font-bold text-white">Growth</h4>
                       <div className="text-right">
                         <span className="text-lg font-bold text-[#8B5CF6]">$199</span>
-                        <p className="text-xs text-gray-400">+ 5% success fee</p>
+                        <p className="text-xs text-gray-400">+ 5% success fee + $199 listing boost</p>
                       </div>
                     </div>
                     <p className="text-gray-300 text-sm mb-3">For bootstrapped founders who want exposure + resources.</p>
@@ -116,15 +116,15 @@ const PricingFees = () => {
                       </li>
                       <li className="flex items-center text-gray-300">
                         <CheckCircle className="h-4 w-4 text-[#0EA4E9] mr-2 flex-shrink-0" />
-                        <span>Slack AMA Hot Spot — live 15-min pitch to buyers in private Slack voice channel</span>
+                        <span>Slack community AMA Hot Spot pitch</span>
                       </li>
                       <li className="flex items-center text-gray-300">
                         <CheckCircle className="h-4 w-4 text-[#0EA4E9] mr-2 flex-shrink-0" />
-                        <span>30-Minute Exit Strategy Call — tailored guidance to position for higher valuation</span>
+                        <span>30-min Exit Strategy Call</span>
                       </li>
                       <li className="flex items-center text-gray-300">
                         <BadgeCheck className="h-4 w-4 text-amber-400 mr-2 flex-shrink-0" />
-                        <span>Priority Placement — top exposure across newsletter, Slack, and YouTube features</span>
+                        <span>Priority Placement</span>
                       </li>
                     </ul>
                     <p className="text-amber-300 text-xs mt-2 font-medium">💡 Maximum exposure + white-glove pitching</p>
@@ -148,7 +148,7 @@ const PricingFees = () => {
         delay: 0.4
       }} className="text-center mt-12">
           <p className="text-gray-300 max-w-2xl mx-auto my-[34px]">
-            Your SaaS deserves real buyers, not tire-kickers. We put your business in front of investors ready to acquire today.
+            No brokering. No fluff. Just vetted deal flow delivered to serious investors who are ready to acquire AI SaaS businesses.
           </p>
         </motion.div>
       </div>
