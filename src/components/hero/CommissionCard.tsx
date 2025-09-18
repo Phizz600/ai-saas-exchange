@@ -43,7 +43,7 @@ const CommissionCard = () => {
 
           {/* Commission Table */}
           <div className="bg-white/5 rounded-lg p-6 mb-6">
-            <div className="grid grid-cols-3 gap-4 mb-4">
+            <div className="grid grid-cols-2 gap-4 mb-4">
               <div className="text-left">
                 <h3 className="text-lg font-semibold text-white/90 pb-2 border-b border-white/20">
                   Deal Size
@@ -54,17 +54,12 @@ const CommissionCard = () => {
                   Rate
                 </h3>
               </div>
-              <div className="text-right">
-                <h3 className="text-lg font-semibold text-white/90 pb-2 border-b border-white/20">
-                  Value
-                </h3>
-              </div>
             </div>
             
             {commissionTiers.map((tier, index) => (
               <div 
                 key={index} 
-                className={`grid grid-cols-3 gap-4 py-4 border-b border-white/10 last:border-b-0 rounded-lg transition-all duration-200 hover:bg-white/5 ${
+                className={`grid grid-cols-2 gap-4 py-4 border-b border-white/10 last:border-b-0 rounded-lg transition-all duration-200 hover:bg-white/5 ${
                   tier.bestValue ? 'bg-[#8B5CF6]/10 border border-[#8B5CF6]/30 relative' : ''
                 }`}
               >
@@ -82,9 +77,6 @@ const CommissionCard = () => {
                 </div>
                 <div className="text-center text-white font-bold text-xl">
                   {tier.rate}
-                </div>
-                <div className="text-right text-white/70 text-sm">
-                  {tier.bestValue ? '⭐ Premium' : 'Standard'}
                 </div>
               </div>
             ))}
