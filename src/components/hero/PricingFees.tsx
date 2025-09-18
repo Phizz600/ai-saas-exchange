@@ -116,7 +116,7 @@ const PricingFees = () => {
                       </li>
                       <li className="flex items-center text-gray-300">
                         <CheckCircle className="h-4 w-4 text-[#0EA4E9] mr-2 flex-shrink-0" />
-                        <span>Slack community AMA Hot Spot pitch</span>
+                        <span>Slack AMA Hot Spot — live 15-min pitch to buyers in private Slack voice channel</span>
                       </li>
                       <li className="flex items-center text-gray-300">
                         <CheckCircle className="h-4 w-4 text-[#0EA4E9] mr-2 flex-shrink-0" />
