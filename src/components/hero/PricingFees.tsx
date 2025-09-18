@@ -53,12 +53,12 @@ const PricingFees = () => {
                     <p className="text-amber-300 text-xs mt-2 font-medium">💡 Risk-free entry for early-stage founders</p>
                     
                     <div className="flex justify-center">
-                      <Button onClick={e => {
-                      e.stopPropagation();
-                      window.open('https://airtable.com/appqbmIOXXLNFhZyj/pagutIK7nf0unyJm3/form', '_blank');
-                    }} className="mt-4 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white font-extrabold py-2 px-20 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 text-shadow-sm">
-                        Sell My AI SaaS
-                      </Button>
+                       <Button onClick={e => {
+                       e.stopPropagation();
+                       window.open('https://airtable.com/appqbmIOXXLNFhZyj/pagutIK7nf0unyJm3/form', '_blank');
+                     }} className="mt-4 bg-emerald-500 hover:bg-emerald-600 text-black font-extrabold py-2 px-20 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 text-shadow-sm">
+                         Sell My AI SaaS
+                       </Button>
                     </div>
                   </div>
 
@@ -102,7 +102,7 @@ const PricingFees = () => {
                      <Button onClick={e => {
                        e.stopPropagation();
                        window.open('https://airtable.com/appqbmIOXXLNFhZyj/pagutIK7nf0unyJm3/form', '_blank');
-                     }} className="mt-4 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-black font-extrabold py-2 px-20 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 text-shadow-sm">
+                     }} className="mt-4 bg-purple-500 hover:bg-purple-600 text-black font-extrabold py-2 px-20 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 text-shadow-sm">
                        Sell My AI SaaS
                      </Button>
                    </div>
@@ -148,7 +148,7 @@ const PricingFees = () => {
                      <Button onClick={e => {
                        e.stopPropagation();
                        window.open('https://airtable.com/appqbmIOXXLNFhZyj/pagutIK7nf0unyJm3/form', '_blank');
-                     }} className="mt-4 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-extrabold py-2 px-20 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 text-shadow-sm">
+                     }} className="mt-4 bg-amber-500 hover:bg-amber-600 text-black font-extrabold py-2 px-20 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 text-shadow-sm">
                        Sell My AI SaaS
                      </Button>
                    </div>
