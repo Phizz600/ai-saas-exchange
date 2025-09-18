@@ -99,12 +99,12 @@ const PricingFees = () => {
                   </p>
                    
                    <div className="flex justify-center">
-                     <Button onClick={e => {
-                       e.stopPropagation();
-                       window.open('https://airtable.com/appqbmIOXXLNFhZyj/pagutIK7nf0unyJm3/form', '_blank');
-                     }} className="mt-4 bg-purple-500 hover:bg-purple-600 text-black font-extrabold py-2 px-20 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 text-shadow-sm">
-                       Sell My AI SaaS
-                     </Button>
+                      <Button onClick={e => {
+                        e.stopPropagation();
+                        window.open('https://airtable.com/appqbmIOXXLNFhZyj/pagutIK7nf0unyJm3/form', '_blank');
+                      }} className="mt-4 bg-[#8236ef] hover:bg-[#6d2bc7] text-black font-extrabold py-2 px-20 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 text-shadow-sm">
+                        Sell My AI SaaS
+                      </Button>
                    </div>
                    </div>
 
