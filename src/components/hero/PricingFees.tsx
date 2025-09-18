@@ -70,7 +70,7 @@ const PricingFees = () => {
                     <div className="flex items-center justify-between mb-3">
                       <h4 className="text-lg font-bold text-white">Growth</h4>
                       <div className="text-right">
-                        <div className="bg-[#7C3AED] px-3 py-1 rounded-full">
+                        <div className="px-3 py-1 rounded-full">
                           <span className="text-sm font-bold text-white">$199</span>
                         </div>
                         <p className="text-xs text-white mt-1">+ 5% success fee + $199 listing boost</p>
