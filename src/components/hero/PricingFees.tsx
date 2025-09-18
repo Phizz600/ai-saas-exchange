@@ -88,7 +88,7 @@ const PricingFees = () => {
                       </li>
                       <li className="flex items-center text-gray-300">
                         <CheckCircle className="h-4 w-4 text-[#8B5CF6] mr-2 flex-shrink-0" />
-                        <span>24/7 Support + 30-day Money back guarantee</span>
+                        <span>Personalized Exit Readiness Checklist (maximize valuation before selling)</span>
                       </li>
                     </ul>
                     <p className="text-green-400 text-xs mt-2 font-medium">💸 Risk-Free Listing Guarantee</p>
