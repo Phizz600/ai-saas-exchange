@@ -27,9 +27,14 @@ const CommissionCard = () => {
           </div>
 
           {/* Heading */}
-          <h2 className="text-3xl font-bold text-white mb-8 exo-2-heading">
+          <h2 className="text-3xl font-bold text-white mb-4 exo-2-heading">
             Success fee/ Commission
           </h2>
+          
+          {/* Subtext */}
+          <p className="text-white/70 text-lg mb-8">
+            Only pay when your business sells — no upfront fees.
+          </p>
 
           {/* Commission Table */}
           <div className="bg-white/5 rounded-lg p-6 mb-6">
