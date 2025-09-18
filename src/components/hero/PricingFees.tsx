@@ -31,7 +31,7 @@ const PricingFees = () => {
                   <div className="bg-white/5 p-4 rounded-lg border border-white/10 hover:shadow-[0_0_30px_rgba(16,185,129,0.3)] transition-all duration-300 cursor-pointer" onClick={() => window.open('https://airtable.com/appqbmIOXXLNFhZyj/pagutIK7nf0unyJm3/form', '_blank')}>
                     <div className="flex items-center justify-between mb-3">
                       <h4 className="text-lg font-bold text-white">Starter</h4>
-                      <div className="bg-[#10B981] px-3 py-1 rounded-full">
+                      <div className="px-3 py-1 rounded-full">
                         <span className="text-sm font-bold text-white">FREE</span>
                       </div>
                     </div>
