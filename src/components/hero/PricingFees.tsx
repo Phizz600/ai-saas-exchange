@@ -80,7 +80,7 @@ const PricingFees = () => {
                       </li>
                       <li className="flex items-center text-gray-300">
                         <CheckCircle className="h-4 w-4 text-[#8B5CF6] mr-2 flex-shrink-0" />
-                        <span>Featured in our weekly newsletter with over 1,000 readers</span>
+                        <span>Featured in weekly newsletter, YouTube channel, and Slack buyer community</span>
                       </li>
                       <li className="flex items-center text-gray-300">
                         <CheckCircle className="h-4 w-4 text-[#8B5CF6] mr-2 flex-shrink-0" />
