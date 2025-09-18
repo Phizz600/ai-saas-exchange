@@ -46,7 +46,7 @@ const CommissionCard = () => {
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div className="text-left">
                 <h3 className="text-lg font-semibold text-white/90 pb-2 border-b border-white/20">
-                  Deal Size
+                  Selling Price
                 </h3>
               </div>
               <div className="text-center">
