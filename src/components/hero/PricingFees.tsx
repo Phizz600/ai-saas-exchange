@@ -104,7 +104,7 @@ const PricingFees = () => {
                     <div className="flex items-center justify-between mb-3">
                       <h4 className="text-lg font-bold text-white">Scale</h4>
                       <div className="text-right">
-                        <div className="bg-amber-500 px-3 py-1 rounded-full">
+                        <div className="px-3 py-1 rounded-full">
                           <span className="text-sm font-bold text-white">$2,500</span>
                         </div>
                         <p className="text-xs text-green-400 mt-1 font-medium">$0 success fees</p>
