@@ -93,7 +93,7 @@ export const Footer = () => {
                 <a href="https://aiexchangeclub.beehiiv.com/" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white">Blog</a>
               </li>
               <li className="text-center md:text-left">
-                <Link to="/fees-pricing" className="text-white/80 hover:text-white">Commissions, Fees &amp; Pricing</Link>
+                <Link to="/fees-pricing" className="text-white/80 hover:text-white">Fees &amp; Pricing</Link>
               </li>
               <li className="text-center md:text-left">
                 <Link to="/nda-policy" className="text-white/80 hover:text-white">Enhanced NDA</Link>
