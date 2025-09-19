@@ -1,22 +1,17 @@
-
 import { Link } from "react-router-dom";
 import { Navbar } from "@/components/Navbar";
 import { Star, Trophy, Lightbulb } from "lucide-react";
 import AnimatedGradientBackground from "@/components/ui/AnimatedGradientBackground";
 import { AISaasQuizSection } from "@/components/quiz/AISaasQuizSection";
 import { useLocation } from "react-router-dom";
-
 export const AISaasQuiz = () => {
   const location = useLocation();
   const isSubmitPage = location.pathname === '/ai-saas-quiz/submit';
-
-  return (
-    <AnimatedGradientBackground>
+  return <AnimatedGradientBackground>
       
-      <main className="container mx-auto px-4 py-6 md:py-8">
+      <main className="container mx-auto md:py-8 px-0 py-0">
         {/* Hero Section - only show on main quiz page */}
-        {!isSubmitPage && (
-          <div className="text-center mb-8 max-w-4xl mx-auto mt-20">
+        {!isSubmitPage && <div className="text-center mb-8 max-w-4xl mx-auto mt-20">
             <div className="space-y-4">
               <Link to="/" className="inline-block mb-6">
                 <img src="/lovable-uploads/8f58f067-4427-4557-9a81-869fb3493e23.png" alt="AI Exchange Club" className="h-16 w-auto mx-auto" />
@@ -24,8 +19,7 @@ export const AISaasQuiz = () => {
               <h1 className="exo-2-heading text-4xl md:text-5xl text-white leading-tight">Take The Quiz!</h1>
               <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto">💸 Stop Guessing - This Free AI Valuation Calculator Will Tell You Exactly What Buyers Will Pay You for Your AI Powered SaaS Business in 60 Seconds or Less.</p>
             </div>
-          </div>
-        )}
+          </div>}
 
         {/* Quiz Section */}
         <div className={`mb-12 ${isSubmitPage ? 'mt-24' : ''}`}>
@@ -33,8 +27,7 @@ export const AISaasQuiz = () => {
         </div>
 
         {/* Trust Indicators - only show on main quiz page */}
-        {!isSubmitPage && (
-          <>
+        {!isSubmitPage && <>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
               <div className="glass p-4 text-center">
                 <Star className="h-6 w-6 text-[#D946EE] mx-auto mb-2" />
@@ -63,11 +56,8 @@ export const AISaasQuiz = () => {
             <div className="text-center mt-6 md:mt-12 mb-12">
               <p className="text-white/80 text-sm md:text-base mb-4">Trusted by 1,000+ AI founders</p>
             </div>
-          </>
-        )}
+          </>}
       </main>
-    </AnimatedGradientBackground>
-  );
+    </AnimatedGradientBackground>;
 };
-
 export default AISaasQuiz;
