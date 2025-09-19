@@ -11,8 +11,7 @@ export const ProfileCompletion = ({ progress, userType }: ProfileCompletionProps
   const steps = [
     "Upload profile picture",
     "Complete bio section", 
-    "Verify email address",
-    "Add professional details"
+    "Verify email address"
   ];
   
   // Calculate how many steps should be completed based on progress
