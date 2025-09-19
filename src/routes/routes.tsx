@@ -182,7 +182,9 @@ const protectedRoutes = [
     path: "/list-product",
     element: (
       <CleanProtectedRoute>
-        <ListProduct />
+        <AdminProtectedRoute>
+          <ListProduct />
+        </AdminProtectedRoute>
       </CleanProtectedRoute>
     ),
   },
