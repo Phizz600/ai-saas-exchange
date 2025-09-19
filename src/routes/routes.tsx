@@ -126,13 +126,21 @@ const protectedRoutes = [
         <div className="min-h-screen flex flex-col items-center justify-center p-4">
           <h1 className="text-3xl font-bold mb-4 exo-2-heading">Dashboard Coming Soon</h1>
           <p className="text-gray-600 mb-6">We're working hard to bring you an amazing dashboard experience. Stay tuned!</p>
-          {/* Browse Marketplace button temporarily hidden */}
-          {/* <button 
-            onClick={() => window.location.href = '/browse'} 
-            className="px-6 py-3 bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white rounded-lg hover:opacity-90 transition-opacity"
-          >
-            Browse Marketplace
-          </button> */}
+          
+          <div className="flex flex-col sm:flex-row gap-4">
+            <button 
+              onClick={() => window.location.href = '/profile'} 
+              className="px-6 py-3 bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white rounded-lg hover:opacity-90 transition-opacity"
+            >
+              Complete Your Profile
+            </button>
+            <button 
+              onClick={() => window.location.href = '/list-product'} 
+              className="px-6 py-3 bg-black text-white rounded-lg hover:opacity-90 transition-opacity"
+            >
+              List a Product
+            </button>
+          </div>
         </div>
       </CleanProtectedRoute>
     ),

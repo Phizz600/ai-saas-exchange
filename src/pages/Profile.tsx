@@ -72,11 +72,48 @@ export const Profile = () => {
         }
 
         if (!profileData) {
-          console.log("No profile found for user:", user.id);
+          console.log("No profile found for user:", user.id, "Creating new profile...");
+          
+          // Create a new profile for the user
+          const { data: newProfile, error: createError } = await supabase
+            .from("profiles")
+            .insert({
+              id: user.id,
+              first_name: user.user_metadata?.first_name || null,
+              last_name: user.user_metadata?.last_name || null,
+              full_name: user.user_metadata?.full_name || null,
+              user_type: user.user_metadata?.user_type || 'ai_investor',
+              bio: null,
+              avatar_url: null,
+              username: null,
+              liked_products: [],
+              saved_products: [],
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString()
+            })
+            .select()
+            .single();
+
+          if (createError) {
+            console.error("Error creating profile:", createError);
+            toast({
+              variant: "destructive",
+              title: "Profile Creation Failed",
+              description: "Unable to create your profile. Please try again.",
+            });
+            return;
+          }
+
+          console.log("Profile created successfully:", newProfile);
+          setProfile(newProfile);
+          
+          // Calculate profile completion for new profile
+          const completion = calculateCompletion(newProfile);
+          setCompletionProgress(completion);
+          
           toast({
-            variant: "destructive",
-            title: "Profile not found",
-            description: "Unable to load your profile. Please try again.",
+            title: "Profile Created",
+            description: "Your profile has been created successfully.",
           });
           return;
         }
@@ -125,8 +162,9 @@ export const Profile = () => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center">
-          <h2 className="text-2xl font-semibold mb-4 text-accent">Profile Not Found</h2>
-          <Button onClick={() => navigate("/")} variant="secondary">Return Home</Button>
+          <h2 className="text-2xl font-semibold mb-4 text-accent">Loading Profile...</h2>
+          <p className="text-muted-foreground mb-4">Setting up your profile...</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary mx-auto"></div>
         </div>
       </div>
     );
