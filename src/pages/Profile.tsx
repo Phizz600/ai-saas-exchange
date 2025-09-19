@@ -149,7 +149,7 @@ export const Profile = () => {
   return <div className="min-h-screen bg-white">
       
       <Navbar />
-      <div className="container mx-auto px-3 mt-20 py-[32px] my-0">
+      <div className="container mx-auto px-3 mt-0 py-[32px] my-0">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
           {/* Left Sidebar */}
           <div className="md:col-span-4">
