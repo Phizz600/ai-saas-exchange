@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Trophy } from "lucide-react";
+import { Trophy, Check, X } from "lucide-react";
 
 interface ProfileCompletionProps {
   progress: number;
@@ -8,6 +8,17 @@ interface ProfileCompletionProps {
 }
 
 export const ProfileCompletion = ({ progress, userType }: ProfileCompletionProps) => {
+  const steps = [
+    "Upload profile picture",
+    "Complete bio section", 
+    "Verify email address",
+    "Add professional details",
+    "Connect social profiles"
+  ];
+  
+  // Calculate how many steps should be completed based on progress
+  const completedSteps = Math.floor((progress / 100) * steps.length);
+
   return (
     <Card className="animate-fade-in bg-gradient-to-r from-[#D946EE]/5 via-[#8B5CF6]/5 to-[#0EA4E9]/5">
       <CardHeader>
@@ -38,33 +49,28 @@ export const ProfileCompletion = ({ progress, userType }: ProfileCompletionProps
             Complete your profile to increase visibility and trust with potential {userType === "ai_builder" ? "buyers" : "sellers"}.
           </p>
           
-          {progress < 100 && (
-            <div className="mt-4">
-              <h4 className="text-sm font-medium text-gray-900 mb-2">Next steps to complete:</h4>
-              <ul className="space-y-1 text-xs text-muted-foreground">
-                <li className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 bg-[#D946EE] rounded-full"></div>
-                  Upload profile picture
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 bg-[#8B5CF6] rounded-full"></div>
-                  Complete bio section
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 bg-[#0EA4E9] rounded-full"></div>
-                  Verify email address
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 bg-[#D946EE] rounded-full"></div>
-                  Add professional details
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 bg-[#8B5CF6] rounded-full"></div>
-                  Connect social profiles
-                </li>
-              </ul>
-            </div>
-          )}
+          <div className="mt-4">
+            <h4 className="text-sm font-medium text-gray-900 mb-2">
+              {progress === 100 ? 'Completed steps:' : 'Steps to complete:'}
+            </h4>
+            <ul className="space-y-1 text-xs">
+              {steps.map((step, index) => {
+                const isCompleted = index < completedSteps;
+                return (
+                  <li key={step} className="flex items-center gap-2">
+                    {isCompleted ? (
+                      <Check className="w-3 h-3 text-green-600" />
+                    ) : (
+                      <X className="w-3 h-3 text-red-500" />
+                    )}
+                    <span className={isCompleted ? "text-green-600" : "text-muted-foreground"}>
+                      {step}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
         </div>
       </CardContent>
     </Card>
