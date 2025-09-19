@@ -17,6 +17,7 @@ import { Policies } from "@/pages/Policies";
 import { MessageChat } from "@/pages/MessageChat";
 import Diagnostics from "@/pages/Diagnostics";
 import { ListingThankYou } from "@/pages/ListingThankYou";
+import { ListProductForm as ListProductFormPage } from "@/pages/ListProductForm";
 import { Contact } from "@/pages/Contact";
 import { AISaasQuiz } from "@/pages/AISaasQuiz";
 import { FeesPricing } from "@/pages/FeesPricing";
@@ -102,6 +103,10 @@ const publicRoutes = [
   {
     path: "/list-product",
     element: <ListProduct />,
+  },
+  {
+    path: "/list-product-form", 
+    element: <ListProductFormPage />,
   },
 ];
 
