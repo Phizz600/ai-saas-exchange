@@ -363,7 +363,7 @@ export const ProfileRealTest = () => {
             {/* Main Content */}
             <div className="md:col-span-8 space-y-6">
               {/* Profile Completion */}
-              <ProfileCompletion progress={completionProgress} userType={profile.user_type} />
+              <ProfileCompletion profile={profile} />
               
               {/* Bio Section */}
               <RealProfileBio 

@@ -1,21 +1,24 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Trophy, Check, X } from "lucide-react";
+import type { Database } from "@/integrations/supabase/types";
+
+type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 
 interface ProfileCompletionProps {
-  progress: number;
-  userType: string | null;
+  profile: Profile;
 }
 
-export const ProfileCompletion = ({ progress, userType }: ProfileCompletionProps) => {
+export const ProfileCompletion = ({ profile }: ProfileCompletionProps) => {
   const steps = [
-    "Upload profile picture",
-    "Complete bio section", 
-    "Verify email address"
+    { name: "Upload profile picture", completed: !!profile.avatar_url },
+    { name: "Complete bio section", completed: !!profile.bio },
+    { name: "Verify email address", completed: true } // Always true if user can access profile
   ];
   
-  // Calculate how many steps should be completed based on progress
-  const completedSteps = Math.floor((progress / 100) * steps.length);
+  // Calculate actual progress based on completed steps
+  const completedCount = steps.filter(step => step.completed).length;
+  const progress = Math.round((completedCount / steps.length) * 100);
 
   return (
     <Card className="animate-fade-in bg-gradient-to-r from-[#D946EE]/5 via-[#8B5CF6]/5 to-[#0EA4E9]/5">
@@ -44,7 +47,7 @@ export const ProfileCompletion = ({ progress, userType }: ProfileCompletionProps
             </span>
           </div>
           <p className="text-sm text-muted-foreground">
-            Complete your profile to increase visibility and trust with potential {userType === "ai_builder" ? "buyers" : "sellers"}.
+            Complete your profile to increase visibility and trust with potential {profile.user_type === "ai_builder" ? "buyers" : "sellers"}.
           </p>
           
           <div className="mt-4">
@@ -52,21 +55,18 @@ export const ProfileCompletion = ({ progress, userType }: ProfileCompletionProps
               {progress === 100 ? 'Completed steps:' : 'Steps to complete:'}
             </h4>
             <ul className="space-y-1 text-xs">
-              {steps.map((step, index) => {
-                const isCompleted = index < completedSteps;
-                return (
-                  <li key={step} className="flex items-center gap-2">
-                    {isCompleted ? (
-                      <Check className="w-3 h-3 text-green-600" />
-                    ) : (
-                      <X className="w-3 h-3 text-red-500" />
-                    )}
-                    <span className={isCompleted ? "text-green-600" : "text-muted-foreground"}>
-                      {step}
-                    </span>
-                  </li>
-                );
-              })}
+              {steps.map((step) => (
+                <li key={step.name} className="flex items-center gap-2">
+                  {step.completed ? (
+                    <Check className="w-3 h-3 text-green-600" />
+                  ) : (
+                    <X className="w-3 h-3 text-red-500" />
+                  )}
+                  <span className={step.completed ? "text-green-600" : "text-muted-foreground"}>
+                    {step.name}
+                  </span>
+                </li>
+              ))}
             </ul>
           </div>
         </div>

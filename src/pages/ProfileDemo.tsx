@@ -241,7 +241,7 @@ export const ProfileDemo = () => {
           {/* Main Content */}
           <div className="md:col-span-8 space-y-6">
             {/* Profile Completion */}
-            <ProfileCompletion progress={completionProgress} userType={profile.user_type} />
+            <ProfileCompletion profile={profile} />
             
             {/* Bio Section */}
             <ProfileBio bio={profile.bio} userId={profile.id} />
