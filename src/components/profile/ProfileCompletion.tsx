@@ -36,12 +36,35 @@ export const ProfileCompletion = ({ progress, userType }: ProfileCompletionProps
           </div>
           <p className="text-sm text-muted-foreground">
             Complete your profile to increase visibility and trust with potential {userType === "ai_builder" ? "buyers" : "sellers"}.
-            {progress < 100 && (
-              <span className="block mt-2 text-xs">
-                Tip: Add more details to your profile to improve your chances of successful transactions.
-              </span>
-            )}
           </p>
+          
+          {progress < 100 && (
+            <div className="mt-4">
+              <h4 className="text-sm font-medium text-gray-900 mb-2">Next steps to complete:</h4>
+              <ul className="space-y-1 text-xs text-muted-foreground">
+                <li className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 bg-[#D946EE] rounded-full"></div>
+                  Upload profile picture
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 bg-[#8B5CF6] rounded-full"></div>
+                  Complete bio section
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 bg-[#0EA4E9] rounded-full"></div>
+                  Verify email address
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 bg-[#D946EE] rounded-full"></div>
+                  Add professional details
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 bg-[#8B5CF6] rounded-full"></div>
+                  Connect social profiles
+                </li>
+              </ul>
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>
