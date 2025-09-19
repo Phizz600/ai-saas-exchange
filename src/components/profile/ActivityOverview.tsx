@@ -211,14 +211,16 @@ export const ActivityOverview = ({ profile }: ActivityOverviewProps) => {
                 <p className="text-muted-foreground mb-4">
                   Start selling by creating your first product listing.
                 </p>
-                <Button
-                  variant="outline"
-                  onClick={() => navigate('/list-product')}
-                  className="flex items-center gap-2"
-                >
-                  <Plus className="h-4 w-4" />
-                  Sell My AI SaaS
-                </Button>
+                <div className="flex justify-center">
+                  <Button
+                    variant="outline"
+                    onClick={() => navigate('/list-product')}
+                    className="flex items-center gap-2"
+                  >
+                    <Plus className="h-4 w-4" />
+                    Sell My AI SaaS
+                  </Button>
+                </div>
               </div>
             )}
           </TabsContent>
