@@ -25,7 +25,7 @@ const PricingFees = () => {
                   </div>
                 </div>
                 <h3 className="text-center text-2xl font-bold text-white mb-4">Choose Your Path to Listing</h3>
-                <p className="text-center text-white/80 text-base mb-6">Whether you're pre-revenue or post-product-market fit, you can list fast — and on your terms.</p>
+                <p className="text-center text-white/80 text-base mb-6">No matter your stage — early, growing, or established — you can list in minutes and set the rules.</p>
                 
                 <div className="space-y-6 flex-grow">
                   {/* Starter Package */}
