@@ -99,6 +99,10 @@ const publicRoutes = [
     path: "/private-partners-program",
     element: <PrivatePartnersProgram />,
   },
+  {
+    path: "/list-product",
+    element: <ListProduct />,
+  },
 ];
 
 // Protected routes (authentication required)
@@ -177,10 +181,6 @@ const protectedRoutes = [
         <Settings />
       </CleanProtectedRoute>
     ),
-  },
-  {
-    path: "/list-product",
-    element: <ListProduct />,
   },
   {
     path: "/admin",
