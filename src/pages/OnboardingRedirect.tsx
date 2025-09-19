@@ -36,20 +36,8 @@ export function OnboardingRedirect() {
           .update({ onboarding_completed: true })
           .eq('id', user.id);
 
-        // Redirect based on user type
-        if (profile?.user_type === 'ai_builder') {
-          // Sellers go to airtable listing form
-          const airtableUrl = "https://airtable.com/appWPKhz1fWsY1Fd7/pagS7ZmjO15EYF1a1/form";
-          window.open(airtableUrl, '_blank');
-          // Navigate to product dashboard
-          navigate('/product-dashboard', { replace: true });
-        } else if (profile?.user_type === 'ai_investor') {
-          // Buyers go to product dashboard for now
-          navigate('/product-dashboard', { replace: true });
-        } else {
-          // Fallback to product dashboard
-          navigate('/product-dashboard', { replace: true });
-        }
+        // Redirect to profile page first to complete profile setup
+        navigate('/profile', { replace: true });
       } catch (error) {
         console.error('Error during onboarding redirect:', error);
         navigate('/product-dashboard', { replace: true });
