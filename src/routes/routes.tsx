@@ -24,6 +24,7 @@ import { BuyerMatchingQuiz } from "@/pages/BuyerMatchingQuiz";
 import { AuthTest } from "@/pages/AuthTest";
 import { OnboardingRedirect } from "@/pages/OnboardingRedirect";
 import { CleanProtectedRoute } from "@/components/auth-clean/CleanProtectedRoute";
+import { AdminProtectedRoute } from "@/components/auth-clean/AdminProtectedRoute";
 import { CleanAuthPage } from "@/components/auth-clean/CleanAuthPage";
 import { Marketplace } from "@/pages/Marketplace";
 import PrivatePartnersProgram from "@/pages/PrivatePartnersProgram";
@@ -181,7 +182,9 @@ const protectedRoutes = [
     path: "/list-product",
     element: (
       <CleanProtectedRoute>
-        <ListProduct />
+        <AdminProtectedRoute>
+          <ListProduct />
+        </AdminProtectedRoute>
       </CleanProtectedRoute>
     ),
   },
