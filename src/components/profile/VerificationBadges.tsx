@@ -31,7 +31,7 @@ export const VerificationBadges = () => {
           }
           
           const verificationStatus = {
-            email: data?.some(v => v.verification_type === 'email' && v.status === 'verified') ?? false,
+            email: true, // Email is verified if user can access profile page
             identity: data?.some(v => v.verification_type === 'identity' && v.status === 'verified') ?? false,
             phone: data?.some(v => v.verification_type === 'phone' && v.status === 'verified') ?? false
           };
