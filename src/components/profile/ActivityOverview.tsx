@@ -175,6 +175,17 @@ export const ActivityOverview = ({ profile }: ActivityOverviewProps) => {
           </TabsContent>
 
           <TabsContent value="listings" className="space-y-4">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-medium">My Listings</h3>
+              <Button
+                variant="outline"
+                onClick={() => navigate('/list-product')}
+                className="flex items-center gap-2"
+              >
+                <Plus className="h-4 w-4" />
+                Sell My AI SaaS
+              </Button>
+            </div>
             {listings.length > 0 ? (
               <div className="space-y-3">
                 {listings.map((listing) => (
