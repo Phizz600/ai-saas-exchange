@@ -180,11 +180,7 @@ const protectedRoutes = [
   },
   {
     path: "/list-product",
-    element: (
-      <CleanProtectedRoute>
-        <ListProduct />
-      </CleanProtectedRoute>
-    ),
+    element: <ListProduct />,
   },
   {
     path: "/admin",
