@@ -18,8 +18,7 @@ export const Navbar = () => {
 
   // Show loading state while auth is initializing
   if (loading) {
-    return (
-      <nav className="relative bg-white/80 backdrop-blur-md border-b border-gray-200/50">
+    return <nav className="relative bg-white/80 backdrop-blur-md border-b border-gray-200/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex-shrink-0">
@@ -30,8 +29,7 @@ export const Navbar = () => {
             <div className="animate-pulse bg-gray-200 h-8 w-24 rounded"></div>
           </div>
         </div>
-      </nav>
-    );
+      </nav>;
   }
   const [unreadCount, setUnreadCount] = useState(0);
   const location = useLocation();
@@ -265,9 +263,7 @@ export const Navbar = () => {
                     <span className="ml-1 text-xs bg-white/20 px-1 py-0.5 rounded-full">Soon</span>
                   </Button>
                 </>}
-              {user && <Button size="sm" onClick={e => handleNavigationClick(e, '/product-dashboard')} className="h-8 px-3 text-sm bg-gradient-to-r from-[#8B5CF6] to-[#0EA4E9] text-white">
-                  Start building
-                </Button>}
+              {user && <Button size="sm" onClick={e => handleNavigationClick(e, '/product-dashboard')} className="h-8 px-3 text-sm bg-gradient-to-r from-[#8B5CF6] to-[#0EA4E9] text-white">Access Marketplace</Button>}
               <Sheet>
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="sm" className="p-2" aria-label="Open menu">
