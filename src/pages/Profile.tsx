@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { Navbar } from "@/components/Navbar";
-import { PromotionalBanner } from "@/components/PromotionalBanner";
+
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
 import { ProfileCompletion } from "@/components/profile/ProfileCompletion";
 import { ProfileBio } from "@/components/profile/ProfileBio";
@@ -148,7 +148,7 @@ export const Profile = () => {
       </div>;
   }
   return <div className="min-h-screen bg-white">
-      <PromotionalBanner />
+      
       <Navbar />
       <div className="container mx-auto px-3 mt-20 py-[32px] my-0">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
