@@ -103,7 +103,7 @@ export const ProfileBio = ({ bio, userId, onBioUpdate }: ProfileBioProps) => {
             <p className="text-muted-foreground">
               {bio || "Tell others about yourself and your expertise..."}
             </p>
-            <Button variant="outline" size="sm" onClick={() => setEditing(true)}>
+            <Button variant="outline" size="sm" className="hover:bg-black hover:text-white" onClick={() => setEditing(true)}>
               <Pencil className="h-4 w-4 mr-2" />
               Edit Bio
             </Button>
