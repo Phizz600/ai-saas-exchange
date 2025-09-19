@@ -60,7 +60,7 @@ export const ProfileHeader = ({ profile, onAvatarUpdate }: ProfileHeaderProps) =
                   <span>Communication Policy</span>
                 </div>
               </HoverCardTrigger>
-              <HoverCardContent className="w-80">
+              <HoverCardContent className="w-80 bg-white">
                 <p className="text-sm">
                   Direct messaging is enabled only after a sale is initiated. This helps maintain 
                   a secure and focused marketplace environment.
