@@ -58,6 +58,17 @@ export const ListProduct = () => {
         opacity: 1,
         y: 0
       }} className="max-w-4xl mx-auto">
+          {/* Logo */}
+          <div className="text-center mb-8">
+            <motion.img 
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              src="/ai-exchange-logo.png"
+              alt="AI Exchange Logo"
+              className="mx-auto h-16 w-auto mb-8"
+            />
+          </div>
+
           {/* Header */}
           <div className="text-center mb-8">
             <motion.h1 initial={{
