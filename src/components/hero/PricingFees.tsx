@@ -8,7 +8,7 @@ const PricingFees = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const handlePackageSelection = (packageType: 'starter' | 'growth' | 'scale') => {
+  const handlePackageSelection = (packageType: 'free-listing' | 'featured-listing' | 'premium-exit') => {
     if (user) {
       navigate(`/list-product?package=${packageType}`);
     } else {
@@ -40,10 +40,10 @@ const PricingFees = () => {
                 <p className="text-center text-white/80 text-base mb-6">No matter your stage — early, growing, or established — you can list in minutes and set the rules.</p>
                 
                 <div className="space-y-6 flex-grow">
-                  {/* Starter Package */}
+                  {/* Free Listing Package */}
                    <div className="bg-white/5 p-4 rounded-lg border border-white/10 hover:shadow-[0_0_30px_rgba(16,185,129,0.3)] transition-all duration-300">
                      <div className="flex items-center justify-between mb-3">
-                       <h4 className="text-lg font-bold text-white">Starter</h4>
+                       <h4 className="text-lg font-bold text-white">Free Listing</h4>
                        <div className="px-3 py-1 rounded-full">
                          <span className="text-sm font-bold text-white">FREE</span>
                        </div>
@@ -66,19 +66,19 @@ const PricingFees = () => {
                      <p className="text-amber-300 text-xs mt-2 font-medium">💡 Risk-free entry for early-stage founders</p>
                      
                      <div className="flex justify-center">
-                        <Button onClick={() => handlePackageSelection('starter')} className="mt-4 bg-emerald-500 hover:bg-emerald-600 text-black font-extrabold py-2 px-20 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 text-shadow-sm">
+                        <Button onClick={() => handlePackageSelection('free-listing')} className="mt-4 bg-emerald-500 hover:bg-emerald-600 text-black font-extrabold py-2 px-20 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 text-shadow-sm">
                          Sell My AI SaaS
                        </Button>
                      </div>
                   </div>
 
-                  {/* Growth Package */}
+                  {/* Featured Listing Package */}
                   <div className="bg-white/5 p-4 rounded-lg border border-[#7C3AED]/30 relative hover:shadow-[0_0_30px_rgba(124,58,237,0.4)] transition-all duration-300">
                     <div className="absolute -top-2 -right-2 bg-[#7C3AED] text-white text-xs font-bold px-2 py-1 rounded-full">
                       POPULAR
                     </div>
                     <div className="flex items-center justify-between mb-3">
-                      <h4 className="text-lg font-bold text-white">Growth</h4>
+                      <h4 className="text-lg font-bold text-white">Featured Listing</h4>
                       <div className="text-right">
                         <div className="px-3 py-1 rounded-full">
                           <span className="text-sm font-bold text-white">$199 - One Time Fee</span>
@@ -109,16 +109,16 @@ const PricingFees = () => {
                   </p>
                    
                    <div className="flex justify-center">
-                     <Button onClick={() => handlePackageSelection('growth')} className="mt-4 bg-purple-500 hover:bg-purple-600 text-black font-extrabold py-2 px-20 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 text-shadow-sm">
+                     <Button onClick={() => handlePackageSelection('featured-listing')} className="mt-4 bg-purple-500 hover:bg-purple-600 text-black font-extrabold py-2 px-20 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 text-shadow-sm">
                        Sell My AI SaaS
                      </Button>
                    </div>
                    </div>
 
-                  {/* Scale Package */}
+                  {/* Premium Exit Package */}
                   <div className="bg-white/5 p-4 rounded-lg border border-amber-400/30 hover:shadow-[0_0_30px_rgba(245,158,11,0.4)] transition-all duration-300">
                     <div className="flex items-center justify-between mb-3">
-                      <h4 className="text-lg font-bold text-white">Scale</h4>
+                      <h4 className="text-lg font-bold text-white">Premium Exit</h4>
                       <div className="text-right">
                         <div className="px-3 py-1 rounded-full">
                           <span className="text-sm font-bold text-white">$2,500 - One Time Fee</span>
@@ -130,7 +130,7 @@ const PricingFees = () => {
                     <ul className="space-y-2 text-sm">
                       <li className="flex items-center text-white">
                         <Crown className="h-4 w-4 text-amber-400 mr-2 flex-shrink-0" />
-                        <span>Everything in Growth</span>
+                        <span>Everything in Featured Listing</span>
                       </li>
                       <li className="flex items-center text-white">
                         <CheckCircle className="h-4 w-4 text-amber-500 mr-2 flex-shrink-0" />
@@ -152,7 +152,7 @@ const PricingFees = () => {
                      <p className="text-amber-300 text-xs mt-2 font-medium">💡 Maximum exposure + white-glove pitching</p>
                    
                    <div className="flex justify-center">
-                     <Button onClick={() => handlePackageSelection('scale')} className="mt-4 bg-amber-500 hover:bg-amber-600 text-black font-extrabold py-2 px-20 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 text-shadow-sm">
+                     <Button onClick={() => handlePackageSelection('premium-exit')} className="mt-4 bg-amber-500 hover:bg-amber-600 text-black font-extrabold py-2 px-20 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 text-shadow-sm">
                        Sell My AI SaaS
                      </Button>
                    </div>

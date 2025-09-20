@@ -9,7 +9,7 @@ import { useAuth } from "@/contexts/CleanAuthContext";
 import { useToast } from "@/hooks/use-toast";
 export const ListProduct = () => {
   const [helpDialogOpen, setHelpDialogOpen] = useState(false);
-  const [selectedPackage, setSelectedPackage] = useState<'starter' | 'growth' | 'scale' | null>(null);
+  const [selectedPackage, setSelectedPackage] = useState<'free-listing' | 'featured-listing' | 'premium-exit' | null>(null);
   const [searchParams] = useSearchParams();
   const {
     user,
@@ -21,20 +21,21 @@ export const ListProduct = () => {
 
   // Check for package selection from URL params
   useEffect(() => {
-    const packageParam = searchParams.get('package') as 'starter' | 'growth' | 'scale';
-    if (packageParam && ['starter', 'growth', 'scale'].includes(packageParam)) {
+    const packageParam = searchParams.get('package') as 'free-listing' | 'featured-listing' | 'premium-exit';
+    if (packageParam && ['free-listing', 'featured-listing', 'premium-exit'].includes(packageParam)) {
       setSelectedPackage(packageParam);
 
       // Store in localStorage for persistence
       localStorage.setItem('selectedPackage', packageParam);
+      const displayName = packageParam.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
       toast({
-        title: `${packageParam.charAt(0).toUpperCase() + packageParam.slice(1)} Package Selected`,
-        description: `You've selected the ${packageParam} package. Complete your listing to proceed.`
+        title: `${displayName} Package Selected`,
+        description: `You've selected the ${displayName.toLowerCase()} package. Complete your listing to proceed.`
       });
     } else {
       // Check localStorage for existing selection
-      const storedPackage = localStorage.getItem('selectedPackage') as 'starter' | 'growth' | 'scale';
-      if (storedPackage) {
+      const storedPackage = localStorage.getItem('selectedPackage') as 'free-listing' | 'featured-listing' | 'premium-exit';
+      if (storedPackage && ['free-listing', 'featured-listing', 'premium-exit'].includes(storedPackage)) {
         setSelectedPackage(storedPackage);
       }
     }
@@ -125,9 +126,9 @@ export const ListProduct = () => {
                 </div>
                 
                 {selectedPackage && <div className="flex items-center space-x-2">
-                    {selectedPackage === 'scale' ? <Crown className="h-4 w-4 text-amber-400" /> : selectedPackage === 'growth' ? <CheckCircle className="h-4 w-4 text-purple-400" /> : <CheckCircle className="h-4 w-4 text-emerald-400" />}
+                    {selectedPackage === 'premium-exit' ? <Crown className="h-4 w-4 text-amber-400" /> : selectedPackage === 'featured-listing' ? <CheckCircle className="h-4 w-4 text-purple-400" /> : <CheckCircle className="h-4 w-4 text-emerald-400" />}
                     <span className="text-white font-medium">
-                      {selectedPackage.charAt(0).toUpperCase() + selectedPackage.slice(1)} Package
+                      {selectedPackage.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())} Package
                     </span>
                   </div>}
               </div>

@@ -16,7 +16,7 @@ import { PackagePaymentDialog } from "@/components/payments/PackagePaymentDialog
 import { toast } from "sonner";
 
 interface ListProductFormProps {
-  selectedPackage?: 'starter' | 'growth' | 'scale' | null;
+  selectedPackage?: 'free-listing' | 'featured-listing' | 'premium-exit' | null;
 }
 
 export function ListProductForm({ selectedPackage }: ListProductFormProps) {
@@ -145,7 +145,7 @@ export function ListProductForm({ selectedPackage }: ListProductFormProps) {
         }
         
         // Check if premium package requires payment
-        if (selectedPackage && (selectedPackage === 'growth' || selectedPackage === 'scale')) {
+        if (selectedPackage && (selectedPackage === 'featured-listing' || selectedPackage === 'premium-exit')) {
           // Store submission data and show payment dialog
           setPendingSubmissionData(data);
           setShowPaymentDialog(true);
@@ -235,7 +235,7 @@ export function ListProductForm({ selectedPackage }: ListProductFormProps) {
       </FormLayout>
 
       {/* Package Payment Dialog */}
-      {showPaymentDialog && selectedPackage && (selectedPackage === 'growth' || selectedPackage === 'scale') && (
+      {showPaymentDialog && selectedPackage && (selectedPackage === 'featured-listing' || selectedPackage === 'premium-exit') && (
         <PackagePaymentDialog
           open={showPaymentDialog}
           onClose={() => {

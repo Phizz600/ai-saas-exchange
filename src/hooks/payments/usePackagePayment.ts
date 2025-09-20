@@ -3,7 +3,7 @@ import { useToast } from "@/hooks/use-toast";
 import { createPackagePayment, recordPackagePurchase } from "@/services/stripe/package-payment.service";
 
 interface UsePackagePaymentProps {
-  packageType: 'growth' | 'scale';
+  packageType: 'featured-listing' | 'premium-exit';
   onSuccess: () => void;
 }
 
@@ -15,8 +15,8 @@ export function usePackagePayment({ packageType, onSuccess }: UsePackagePaymentP
   const { toast } = useToast();
 
   const packageDetails = {
-    growth: { amount: 199, name: 'Growth Package' },
-    scale: { amount: 2500, name: 'Scale Package' }
+    'featured-listing': { amount: 199, name: 'Featured Listing Package' },
+    'premium-exit': { amount: 2500, name: 'Premium Exit Package' }
   };
 
   const initiatePayment = async () => {

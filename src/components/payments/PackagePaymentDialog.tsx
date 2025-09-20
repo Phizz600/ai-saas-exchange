@@ -10,7 +10,7 @@ import { PackagePaymentForm } from "./PackagePaymentForm";
 interface PackagePaymentDialogProps {
   open: boolean;
   onClose: () => void;
-  packageType: 'growth' | 'scale';
+  packageType: 'featured-listing' | 'premium-exit';
   onSuccess: () => void;
 }
 
@@ -58,15 +58,15 @@ export function PackagePaymentDialog({
   };
 
   const packageFeatures = {
-    growth: [
+    'featured-listing': [
       "Reduced Success Fees (5% vs 10%)",
       "Featured in weekly newsletter",
       "Advanced Playbook & Templates",
       "Exit Readiness Checklist",
       "30-day Money-back Guarantee"
     ],
-    scale: [
-      "Everything in Growth Package",
+    'premium-exit': [
+      "Everything in Featured Listing Package",
       "$0 Success Fees",
       "Dedicated Sales Rep",
       "AMA Hot Spot Pitch",
@@ -80,7 +80,7 @@ export function PackagePaymentDialog({
       <DialogContent className="max-w-md bg-slate-900 border-slate-700">
         <DialogHeader>
           <DialogTitle className="text-white flex items-center gap-2">
-            {packageType === 'scale' ? (
+            {packageType === 'premium-exit' ? (
               <Crown className="h-5 w-5 text-amber-400" />
             ) : (
               <CheckCircle className="h-5 w-5 text-purple-400" />
@@ -103,7 +103,7 @@ export function PackagePaymentDialog({
               {packageFeatures[packageType].map((feature, index) => (
                 <li key={index} className="flex items-center text-sm text-gray-300">
                   <CheckCircle className={`h-4 w-4 mr-2 flex-shrink-0 ${
-                    packageType === 'scale' ? 'text-amber-400' : 'text-purple-400'
+                    packageType === 'premium-exit' ? 'text-amber-400' : 'text-purple-400'
                   }`} />
                   {feature}
                 </li>
@@ -129,7 +129,7 @@ export function PackagePaymentDialog({
                 onClick={handleInitiatePayment}
                 disabled={isProcessing || !!stripeError}
                 className={`w-full ${
-                  packageType === 'scale' 
+                  packageType === 'premium-exit' 
                     ? 'bg-amber-500 hover:bg-amber-600' 
                     : 'bg-purple-500 hover:bg-purple-600'
                 } text-black font-semibold`}
@@ -161,7 +161,7 @@ export function PackagePaymentDialog({
                   appearance: {
                     theme: 'night',
                     variables: {
-                      colorPrimary: packageType === 'scale' ? '#f59e0b' : '#8b5cf6',
+                      colorPrimary: packageType === 'premium-exit' ? '#f59e0b' : '#8b5cf6',
                     },
                   },
                 }}

@@ -2,7 +2,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { PaymentAuthorizationResponse } from "./types";
 
 export async function createPackagePayment(
-  packageType: 'growth' | 'scale'
+  packageType: 'featured-listing' | 'premium-exit'
 ): Promise<PaymentAuthorizationResponse> {
   try {
     console.log(`Creating package payment for: ${packageType}`);
@@ -59,7 +59,7 @@ export async function recordPackagePurchase(
 
     // Define package benefits
     const packageBenefits = {
-      starter: {
+      'free-listing': {
         reducedFees: false,
         newsletter: false,
         playbook: false,
@@ -69,7 +69,7 @@ export async function recordPackagePurchase(
         strategyCall: false,
         priority: false
       },
-      growth: {
+      'featured-listing': {
         reducedFees: true,
         newsletter: true,
         playbook: true,
@@ -79,7 +79,7 @@ export async function recordPackagePurchase(
         strategyCall: false,
         priority: false
       },
-      scale: {
+      'premium-exit': {
         reducedFees: true,
         newsletter: true,
         playbook: true,
