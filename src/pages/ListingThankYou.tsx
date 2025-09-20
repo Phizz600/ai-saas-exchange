@@ -166,7 +166,7 @@ export const ListingThankYou = () => {
                       Buyer Outreach
                     </h3>
                     <p className="text-gray-600 mb-2">
-                      If approved, your business will be live on the private marketplace & we'll notify our Premium Buyer Network.
+                      If approved, we'll notify our Premium Buyer Network.
                     </p>
                     <p className="text-gray-600">
                       Buyers will contact you via your email (keep an eye out!).
@@ -188,9 +188,7 @@ export const ListingThankYou = () => {
                       Gather: Revenue proof, traffic proof, tech docs, and demo access.
                     </p>
                     <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                      <p className="text-blue-800 text-sm font-medium">
-                        💡 Pro tip: Record a 2-min Loom walkthrough for serious buyers.
-                      </p>
+                      <p className="text-blue-800 text-sm font-medium">We're excited to help you exit! 🚀</p>
                     </div>
                   </div>
                 </div>
