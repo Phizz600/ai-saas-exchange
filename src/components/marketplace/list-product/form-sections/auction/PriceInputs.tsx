@@ -23,7 +23,7 @@ export function PriceInputs({ form, formatCurrencyInput, parseCurrencyValue }: P
         render={({ field }) => (
           <FormItem>
             <FormLabel className="flex items-center gap-2 my-[16px]">
-              Fixed Price (USD)
+              Asking Price (USD)
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
