@@ -378,7 +378,7 @@ export function FinancialSection({
             </Select>
           </div>
           <div className="md:col-span-1">
-            <Button type="button" onClick={addExpense} className="w-full h-full" variant="secondary">
+            <Button type="button" onClick={addExpense} className="w-full h-full" style={{ backgroundColor: '#8a5cf7' }}>
               <Plus className="h-4 w-4" />
             </Button>
           </div>
