@@ -24,13 +24,12 @@ export const ListProduct = () => {
     const packageParam = searchParams.get('package') as 'starter' | 'growth' | 'scale';
     if (packageParam && ['starter', 'growth', 'scale'].includes(packageParam)) {
       setSelectedPackage(packageParam);
-      
+
       // Store in localStorage for persistence
       localStorage.setItem('selectedPackage', packageParam);
-      
       toast({
         title: `${packageParam.charAt(0).toUpperCase() + packageParam.slice(1)} Package Selected`,
-        description: `You've selected the ${packageParam} package. Complete your listing to proceed.`,
+        description: `You've selected the ${packageParam} package. Complete your listing to proceed.`
       });
     } else {
       // Check localStorage for existing selection
@@ -64,7 +63,7 @@ export const ListProduct = () => {
           y: 0
         }} className="max-w-4xl mx-auto">
             <div className="w-full p-4 bg-amber-900/20 backdrop-blur-md border border-amber-500/20 rounded-md text-amber-200">
-              <p className="font-medium">You need to be signed in to list a product</p>
+              <p className="font-medium">You need to be signed in to list your AI SaaS business.</p>
               <Button variant="outline" className="mt-2 bg-white/10 border-white/20 text-white hover:bg-white/20 transition-colors" onClick={() => window.location.href = "/auth?redirect=/list-product"}>
                 Sign In / Register
               </Button>
@@ -125,20 +124,12 @@ export const ListProduct = () => {
                   <p className="text-white/80">Signed in as: {user.email}</p>
                 </div>
                 
-                {selectedPackage && (
-                  <div className="flex items-center space-x-2">
-                    {selectedPackage === 'scale' ? (
-                      <Crown className="h-4 w-4 text-amber-400" />
-                    ) : selectedPackage === 'growth' ? (
-                      <CheckCircle className="h-4 w-4 text-purple-400" />
-                    ) : (
-                      <CheckCircle className="h-4 w-4 text-emerald-400" />
-                    )}
+                {selectedPackage && <div className="flex items-center space-x-2">
+                    {selectedPackage === 'scale' ? <Crown className="h-4 w-4 text-amber-400" /> : selectedPackage === 'growth' ? <CheckCircle className="h-4 w-4 text-purple-400" /> : <CheckCircle className="h-4 w-4 text-emerald-400" />}
                     <span className="text-white font-medium">
                       {selectedPackage.charAt(0).toUpperCase() + selectedPackage.slice(1)} Package
                     </span>
-                  </div>
-                )}
+                  </div>}
               </div>
             </div>
           </div>
