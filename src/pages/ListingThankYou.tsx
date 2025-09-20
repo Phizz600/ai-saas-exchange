@@ -7,7 +7,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import AnimatedGradientBackground from "@/components/ui/AnimatedGradientBackground";
-
 export const ListingThankYou = () => {
   const [queueNumber, setQueueNumber] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -17,21 +16,19 @@ export const ListingThankYou = () => {
   const [productId, setProductId] = useState<string | null>(null);
   const [paymentNeeded, setPaymentNeeded] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState<string | null>(null);
-
   useEffect(() => {
     // Check for product ID in URL params first, then session storage as fallback
     const params = new URLSearchParams(location.search);
     const urlProductId = params.get('product_id');
     const paymentStatus = params.get('payment_status');
     const paymentNeededParam = params.get('payment_needed');
-    
-    console.log("URL parameters:", { 
-      urlProductId, 
-      paymentStatus, 
+    console.log("URL parameters:", {
+      urlProductId,
+      paymentStatus,
       paymentNeededParam,
       fullUrl: window.location.href
     });
-    
+
     // First try to get product ID from URL params
     if (urlProductId) {
       setProductId(urlProductId);
@@ -47,12 +44,12 @@ export const ListingThankYou = () => {
         // Still show the page even without a product ID
       }
     }
-    
+
     // Check if redirected from payment success
     if (paymentStatus === 'success') {
       setIsPaid(true);
       setLoadingMessage("Verifying payment status...");
-      
+
       // If we have both payment success and a product ID, update the payment status
       const idToUpdate = urlProductId || sessionStorage.getItem('pendingProductId');
       if (idToUpdate) {
@@ -77,11 +74,11 @@ export const ListingThankYou = () => {
     setIsProcessing(true);
     try {
       console.log("Updating payment status for product:", productId);
-      const { error } = await supabase
-        .from('products')
-        .update({ payment_status: 'paid' })
-        .eq('id', productId);
-      
+      const {
+        error
+      } = await supabase.from('products').update({
+        payment_status: 'paid'
+      }).eq('id', productId);
       if (error) {
         console.error("Error updating payment status:", error);
         toast({
@@ -101,7 +98,6 @@ export const ListingThankYou = () => {
       setLoadingMessage(null);
     }
   };
-
   const retryPayment = () => {
     if (productId) {
       // Use origin to ensure proper URL construction
@@ -118,18 +114,12 @@ export const ListingThankYou = () => {
       navigate('/list-product');
     }
   };
-
-  return (
-    <AnimatedGradientBackground>
+  return <AnimatedGradientBackground>
       <div className="container mx-auto px-4 py-4 sm:py-8">
         <div className="max-w-3xl mx-auto space-y-6 sm:space-y-8 bg-white/90 rounded-xl shadow-xl p-4 sm:p-8 backdrop-blur-sm">
           <div className="flex flex-col items-center space-y-4 sm:space-y-6">
             <Link to="/">
-              <img 
-                src="/lovable-uploads/f74b20e6-6798-4aeb-badd-2da6c2dce40b.png"
-                alt="AI Exchange Logo"
-                className="w-16 h-16 sm:w-24 sm:h-24 object-contain animate-float hover:opacity-80 transition-opacity"
-              />
+              <img src="/lovable-uploads/f74b20e6-6798-4aeb-badd-2da6c2dce40b.png" alt="AI Exchange Logo" className="w-16 h-16 sm:w-24 sm:h-24 object-contain animate-float hover:opacity-80 transition-opacity" />
             </Link>
             <h1 className="text-2xl sm:text-4xl exo-2-heading font-bold bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] text-transparent bg-clip-text text-center px-2">
               Thank You for Your Submission!
@@ -214,10 +204,7 @@ export const ListingThankYou = () => {
                 <p className="text-gray-600 flex items-center justify-center">
                   <Mail className="w-4 h-4 mr-2 text-[#8B5CF6]" />
                   Questions? Reach me at{" "}
-                  <a 
-                    href="mailto:support@aiexchange.club" 
-                    className="text-[#8B5CF6] hover:text-[#D946EF] font-medium ml-1"
-                  >
+                  <a href="mailto:support@aiexchange.club" className="text-[#8B5CF6] hover:text-[#D946EF] font-medium ml-1">
                     support@aiexchange.club
                   </a>
                 </p>
@@ -234,16 +221,7 @@ export const ListingThankYou = () => {
             </div>
 
             {/* Queue Position Card */}
-            <div className="w-full max-w-md bg-white rounded-lg shadow-md p-4 sm:p-6 border border-purple-100 mx-4 sm:mx-0">
-              <div className="flex items-center justify-between mb-3 sm:mb-4">
-                <div className="flex items-center space-x-2">
-                  <Timer className="h-4 w-4 sm:h-5 sm:w-5 text-[#8B5CF6]" />
-                  <span className="text-base sm:text-lg font-semibold text-gray-700">Review Queue Status</span>
-                </div>
-                <span className="text-xl sm:text-2xl font-bold text-[#D946EF]">#{queueNumber}</span>
-              </div>
-              <p className="text-xs sm:text-sm text-gray-600 mb-2 sm:mb-3">Estimated review time: 24-48 hours</p>
-            </div>
+            
             
             <a href="https://aiexchangeclub.beehiiv.com/subscribe" target="_blank" rel="noopener noreferrer" className="w-full px-4 sm:px-0">
               <Button className="w-full mt-6 sm:mt-8 bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] hover:opacity-90 text-sm sm:text-base py-4 sm:py-6 flex items-center justify-center gap-2 sm:gap-3">
@@ -280,36 +258,16 @@ export const ListingThankYou = () => {
             <div className="w-full max-w-md text-center mt-6 sm:mt-8">
               <h3 className="text-base sm:text-lg font-semibold text-gray-700 mb-3 sm:mb-4">Follow Us</h3>
               <div className="flex justify-center space-x-4">
-                <a
-                  href="https://youtube.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gray-600 hover:text-[#FF0000] transition-colors"
-                >
+                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-[#FF0000] transition-colors">
                   <Youtube className="h-5 w-5 sm:h-6 sm:w-6" />
                 </a>
-                <a
-                  href="https://twitter.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gray-600 hover:text-[#1DA1F2] transition-colors"
-                >
+                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-[#1DA1F2] transition-colors">
                   <Twitter className="h-5 w-5 sm:h-6 sm:w-6" />
                 </a>
-                <a
-                  href="https://instagram.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gray-600 hover:text-[#E4405F] transition-colors"
-                >
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-[#E4405F] transition-colors">
                   <Instagram className="h-5 w-5 sm:h-6 sm:w-6" />
                 </a>
-                <a
-                  href="https://aiexchangeclub.beehiiv.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gray-600 hover:text-[#FFA500] transition-colors"
-                >
+                <a href="https://aiexchangeclub.beehiiv.com" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-[#FFA500] transition-colors">
                   <Rss className="h-5 w-5 sm:h-6 sm:w-6" />
                 </a>
               </div>
@@ -317,6 +275,5 @@ export const ListingThankYou = () => {
           </div>
         </div>
       </div>
-    </AnimatedGradientBackground>
-  );
-}
+    </AnimatedGradientBackground>;
+};
