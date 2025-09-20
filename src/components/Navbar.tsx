@@ -102,7 +102,7 @@ export const Navbar = () => {
     title: "Fees & Pricing",
     href: "/fees-pricing"
   }];
-  return <nav className="relative bg-white/80 backdrop-blur-md border-b border-gray-200/50">
+  return <nav className="relative bg-[#d0d4da]/80 backdrop-blur-md border-b border-gray-200/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
