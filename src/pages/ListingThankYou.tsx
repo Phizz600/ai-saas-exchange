@@ -209,6 +209,29 @@ export const ListingThankYou = () => {
                 <p className="text-gray-500 text-sm mt-2 font-medium">
                   — The AI Exchange Club
                 </p>
+                
+                {/* Strategic Action Buttons */}
+                <div className="flex flex-col sm:flex-row gap-3 mt-6">
+                  <Button 
+                    asChild
+                    variant="outline"
+                    className="flex-1 border-[#8B5CF6] text-[#8B5CF6] hover:bg-[#8B5CF6] hover:text-white"
+                  >
+                    <Link to="/profile">
+                      <Users className="w-4 h-4 mr-2" />
+                      Profile
+                    </Link>
+                  </Button>
+                  <Button 
+                    asChild
+                    className="flex-1 bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] hover:opacity-90"
+                  >
+                    <Link to="/marketplace">
+                      <Home className="w-4 h-4 mr-2" />
+                      Access Marketplace
+                    </Link>
+                  </Button>
+                </div>
               </div>
             </div>
             
