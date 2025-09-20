@@ -1,14 +1,16 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { ListProductForm } from "@/components/marketplace/list-product/ListProductForm";
 import { Button } from "@/components/ui/button";
-import { HelpCircle } from "lucide-react";
+import { HelpCircle, CheckCircle, Crown } from "lucide-react";
 import { HelpDialog } from "@/components/marketplace/list-product/HelpDialog";
 import { useAuth } from "@/contexts/CleanAuthContext";
 import { useToast } from "@/hooks/use-toast";
 export const ListProduct = () => {
   const [helpDialogOpen, setHelpDialogOpen] = useState(false);
+  const [selectedPackage, setSelectedPackage] = useState<'starter' | 'growth' | 'scale' | null>(null);
+  const [searchParams] = useSearchParams();
   const {
     user,
     loading
@@ -16,6 +18,28 @@ export const ListProduct = () => {
   const {
     toast
   } = useToast();
+
+  // Check for package selection from URL params
+  useEffect(() => {
+    const packageParam = searchParams.get('package') as 'starter' | 'growth' | 'scale';
+    if (packageParam && ['starter', 'growth', 'scale'].includes(packageParam)) {
+      setSelectedPackage(packageParam);
+      
+      // Store in localStorage for persistence
+      localStorage.setItem('selectedPackage', packageParam);
+      
+      toast({
+        title: `${packageParam.charAt(0).toUpperCase() + packageParam.slice(1)} Package Selected`,
+        description: `You've selected the ${packageParam} package. Complete your listing to proceed.`,
+      });
+    } else {
+      // Check localStorage for existing selection
+      const storedPackage = localStorage.getItem('selectedPackage') as 'starter' | 'growth' | 'scale';
+      if (storedPackage) {
+        setSelectedPackage(storedPackage);
+      }
+    }
+  }, [searchParams, toast]);
 
   // Show loading state while checking authentication
   if (loading) {
@@ -95,14 +119,31 @@ export const ListProduct = () => {
           {/* Authentication Status */}
           <div className="mb-6">
             <div className="w-full p-4 bg-white/5 backdrop-blur-md border border-white/10 rounded-md">
+              <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
-                <div className="w-4 h-4 bg-green-500 rounded-full"></div>
-                <p className="text-white/80">Signed in as: {user.email}</p>
-              </div>
+                  <div className="w-4 h-4 bg-green-500 rounded-full"></div>
+                  <p className="text-white/80">Signed in as: {user.email}</p>
                 </div>
+                
+                {selectedPackage && (
+                  <div className="flex items-center space-x-2">
+                    {selectedPackage === 'scale' ? (
+                      <Crown className="h-4 w-4 text-amber-400" />
+                    ) : selectedPackage === 'growth' ? (
+                      <CheckCircle className="h-4 w-4 text-purple-400" />
+                    ) : (
+                      <CheckCircle className="h-4 w-4 text-emerald-400" />
+                    )}
+                    <span className="text-white font-medium">
+                      {selectedPackage.charAt(0).toUpperCase() + selectedPackage.slice(1)} Package
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
 
-          <ListProductForm />
+          <ListProductForm selectedPackage={selectedPackage} />
         </motion.div>
       </div>
 

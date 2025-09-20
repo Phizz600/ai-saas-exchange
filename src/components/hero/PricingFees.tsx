@@ -29,38 +29,35 @@ const PricingFees = () => {
                 
                 <div className="space-y-6 flex-grow">
                   {/* Starter Package */}
-                  <div className="bg-white/5 p-4 rounded-lg border border-white/10 hover:shadow-[0_0_30px_rgba(16,185,129,0.3)] transition-all duration-300 cursor-pointer" onClick={() => window.open('https://airtable.com/appqbmIOXXLNFhZyj/pagutIK7nf0unyJm3/form', '_blank')}>
-                    <div className="flex items-center justify-between mb-3">
-                      <h4 className="text-lg font-bold text-white">Starter</h4>
-                      <div className="px-3 py-1 rounded-full">
-                        <span className="text-sm font-bold text-white">FREE</span>
-                      </div>
-                    </div>
-                    <p className="text-white text-sm mb-3">For pre-revenue or idea-stage founders who want to test the waters. Account creation not required. (Limited analytics)</p>
-                    <ul className="space-y-2 text-sm">
-                      <li className="flex items-center text-white">
-                        <CheckCircle className="h-4 w-4 text-[#10B981] mr-2 flex-shrink-0" />
-                        <span>List your AI SaaS on the marketplace</span>
-                      </li>
-                      <li className="flex items-center text-white">
-                        <CheckCircle className="h-4 w-4 text-[#10B981] mr-2 flex-shrink-0" />
-                        <span>Commission-based only (no upfront fee)</span>
-                      </li>
-                      <li className="flex items-center text-white">
-                        <CheckCircle className="h-4 w-4 text-[#10B981] mr-2 flex-shrink-0" />
-                        <span>Get The Free Beginner's Guide to Selling AI SaaS + contract templates</span>
-                      </li>
-                    </ul>
-                    <p className="text-amber-300 text-xs mt-2 font-medium">💡 Risk-free entry for early-stage founders</p>
-                    
-                    <div className="flex justify-center">
-                       <Button onClick={e => {
-                      e.stopPropagation();
-                      window.open('https://airtable.com/appqbmIOXXLNFhZyj/pagutIK7nf0unyJm3/form', '_blank');
-                    }} className="mt-4 bg-emerald-500 hover:bg-emerald-600 text-black font-extrabold py-2 px-20 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 text-shadow-sm">
+                   <div className="bg-white/5 p-4 rounded-lg border border-white/10 hover:shadow-[0_0_30px_rgba(16,185,129,0.3)] transition-all duration-300">
+                     <div className="flex items-center justify-between mb-3">
+                       <h4 className="text-lg font-bold text-white">Starter</h4>
+                       <div className="px-3 py-1 rounded-full">
+                         <span className="text-sm font-bold text-white">FREE</span>
+                       </div>
+                     </div>
+                     <p className="text-white text-sm mb-3">For pre-revenue or idea-stage founders who want to test the waters. Account creation not required. (Limited analytics)</p>
+                     <ul className="space-y-2 text-sm">
+                       <li className="flex items-center text-white">
+                         <CheckCircle className="h-4 w-4 text-[#10B981] mr-2 flex-shrink-0" />
+                         <span>List your AI SaaS on the marketplace</span>
+                       </li>
+                       <li className="flex items-center text-white">
+                         <CheckCircle className="h-4 w-4 text-[#10B981] mr-2 flex-shrink-0" />
+                         <span>Commission-based only (no upfront fee)</span>
+                       </li>
+                       <li className="flex items-center text-white">
+                         <CheckCircle className="h-4 w-4 text-[#10B981] mr-2 flex-shrink-0" />
+                         <span>Get The Free Beginner's Guide to Selling AI SaaS + contract templates</span>
+                       </li>
+                     </ul>
+                     <p className="text-amber-300 text-xs mt-2 font-medium">💡 Risk-free entry for early-stage founders</p>
+                     
+                     <div className="flex justify-center">
+                        <Button onClick={() => window.location.href = '/list-product?package=starter'} className="mt-4 bg-emerald-500 hover:bg-emerald-600 text-black font-extrabold py-2 px-20 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 text-shadow-sm">
                          Sell My AI SaaS
                        </Button>
-                    </div>
+                     </div>
                   </div>
 
                   {/* Growth Package */}
@@ -100,10 +97,7 @@ const PricingFees = () => {
                   </p>
                    
                    <div className="flex justify-center">
-                     <Button onClick={e => {
-                      e.stopPropagation();
-                      window.open('https://airtable.com/appqbmIOXXLNFhZyj/pagutIK7nf0unyJm3/form', '_blank');
-                    }} className="mt-4 bg-purple-500 hover:bg-purple-600 text-black font-extrabold py-2 px-20 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 text-shadow-sm">
+                     <Button onClick={() => window.location.href = '/list-product?package=growth'} className="mt-4 bg-purple-500 hover:bg-purple-600 text-black font-extrabold py-2 px-20 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 text-shadow-sm">
                        Sell My AI SaaS
                      </Button>
                    </div>
@@ -146,10 +140,7 @@ const PricingFees = () => {
                      <p className="text-amber-300 text-xs mt-2 font-medium">💡 Maximum exposure + white-glove pitching</p>
                    
                    <div className="flex justify-center">
-                     <Button onClick={e => {
-                      e.stopPropagation();
-                      window.open('https://airtable.com/appqbmIOXXLNFhZyj/pagutIK7nf0unyJm3/form', '_blank');
-                    }} className="mt-4 bg-amber-500 hover:bg-amber-600 text-black font-extrabold py-2 px-20 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 text-shadow-sm">
+                     <Button onClick={() => window.location.href = '/list-product?package=scale'} className="mt-4 bg-amber-500 hover:bg-amber-600 text-black font-extrabold py-2 px-20 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 text-shadow-sm">
                        Sell My AI SaaS
                      </Button>
                    </div>
