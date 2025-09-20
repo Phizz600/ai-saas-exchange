@@ -55,7 +55,7 @@ export function SubmissionAgreements({ form }: SubmissionAgreementsProps) {
                   I agree to the
                   <Dialog>
                     <DialogTrigger asChild>
-                      <Button variant="link" className="h-auto p-0 text-[#8B5CF6] whitespace-nowrap">
+                      <Button variant="link" className="h-auto p-0 text-[#8a5cf7] whitespace-nowrap">
                         Terms and Conditions
                       </Button>
                     </DialogTrigger>
