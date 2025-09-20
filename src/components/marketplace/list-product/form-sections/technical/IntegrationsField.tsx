@@ -54,10 +54,14 @@ export function IntegrationsField({
         }) => {
           return <FormItem key={integration.id} className="flex flex-row items-start space-x-3 space-y-0">
                         <FormControl>
-                          <Checkbox checked={field.value?.includes(integration.id)} onCheckedChange={checked => {
+                          <Checkbox 
+                            checked={field.value?.includes(integration.id)} 
+                            onCheckedChange={checked => {
                 const currentValues = field.value || [];
                 return checked ? field.onChange([...currentValues, integration.id]) : field.onChange(currentValues.filter(value => value !== integration.id));
-              }} />
+              }}
+                            className="data-[state=checked]:bg-[#8a5cf7] data-[state=checked]:border-[#8a5cf7]"
+                          />
                         </FormControl>
                         <FormLabel className="font-normal cursor-pointer">
                           {integration.label}
