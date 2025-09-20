@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Header } from "@/components/Header";
+
 import { ListProductForm } from "@/components/marketplace/list-product/ListProductForm";
 import { Button } from "@/components/ui/button";
 import { HelpCircle } from "lucide-react";
@@ -17,8 +17,7 @@ export const ListProduct = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-        <Header />
-        <div className="container mx-auto px-4 py-8 mt-16">
+        <div className="container mx-auto px-4 py-8">
           <div className="flex items-center justify-center min-h-[400px]">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white"></div>
           </div>
@@ -31,8 +30,7 @@ export const ListProduct = () => {
         if (!user) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-        <Header />
-        <div className="container mx-auto px-4 py-8 mt-16">
+        <div className="container mx-auto px-4 py-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -58,8 +56,7 @@ export const ListProduct = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      <Header />
-      <div className="container mx-auto px-4 py-8 mt-16">
+      <div className="container mx-auto px-4 py-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
