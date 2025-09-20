@@ -62,13 +62,13 @@ export const ListProduct = () => {
           {/* Logo */}
           <div className="text-center mb-8">
             <Link to="/">
-              <motion.img 
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                src="/ai-exchange-logo.png"
-                alt="AI Exchange Logo"
-                className="mx-auto h-16 w-auto mb-8 hover:opacity-80 transition-opacity cursor-pointer"
-              />
+              <motion.img initial={{
+              opacity: 0,
+              y: -20
+            }} animate={{
+              opacity: 1,
+              y: 0
+            }} src="/ai-exchange-logo.png" alt="AI Exchange Logo" className="mx-auto h-16 w-auto mb-8 hover:opacity-80 transition-opacity cursor-pointer" />
             </Link>
           </div>
 
@@ -89,7 +89,7 @@ export const ListProduct = () => {
             y: 0
           }} transition={{
             delay: 0.1
-          }} className="text-xl text-white/80 max-w-2xl mx-auto">Showcase your AI-powered SaaS to potential buyers. Get your product in front of the right audience.</motion.p>
+          }} className="text-xl text-white/80 max-w-2xl mx-auto">List your AI SaaS in minutes and get it in front of serious buyers ready to acquire.</motion.p>
           </div>
 
           {/* Authentication Status */}
