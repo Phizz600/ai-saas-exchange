@@ -115,7 +115,7 @@ export const ListingThankYou = () => {
     }
   };
   return <AnimatedGradientBackground>
-      <div className="container mx-auto px-4 py-4 sm:py-8">
+      <div className="container mx-auto px-4 py-4 sm:py-8 text-slate-950">
         <div className="max-w-3xl mx-auto space-y-6 sm:space-y-8 bg-white/90 rounded-xl shadow-xl p-4 sm:p-8 backdrop-blur-sm">
           <div className="flex flex-col items-center space-y-4 sm:space-y-6">
             <Link to="/">
