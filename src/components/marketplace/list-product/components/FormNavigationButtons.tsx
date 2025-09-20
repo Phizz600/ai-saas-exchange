@@ -19,14 +19,14 @@ export function FormNavigationButtons({
 }: FormNavigationButtonsProps) {
   return <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-2 sm:gap-0 pt-6 border-t">
       <div className="flex items-center">
-        {currentSection > 0 && <Button type="button" variant="outline" onClick={onPrevious} className="flex items-center gap-2 w-full sm:w-auto">
+        {currentSection > 0 && <Button type="button" variant="outline" onClick={onPrevious} className="flex items-center gap-2 w-full sm:w-auto hover:bg-black hover:text-white">
             <ArrowLeft className="h-4 w-4" />
             Back
           </Button>}
       </div>
 
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-        <Button type="button" variant="outline" onClick={onSaveForLater} className="flex items-center justify-center gap-2 w-full sm:w-auto">
+        <Button type="button" variant="outline" onClick={onSaveForLater} className="flex items-center justify-center gap-2 w-full sm:w-auto hover:bg-black hover:text-white">
           <Save className="h-4 w-4" />
           Save for later
         </Button>
