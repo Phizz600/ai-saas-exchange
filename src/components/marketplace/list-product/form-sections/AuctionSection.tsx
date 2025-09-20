@@ -1,4 +1,3 @@
-
 import { UseFormReturn } from "react-hook-form";
 import { ListProductFormData } from "../types";
 import { Card } from "@/components/ui/card";
@@ -10,12 +9,12 @@ import { useEffect, useState } from "react";
 import { useAuctionCalculations } from "../hooks/useAuctionCalculations";
 import { PriceInputs } from "./auction/PriceInputs";
 import { AuctionSettings } from "./auction/AuctionSettings";
-
 interface AuctionSectionProps {
   form: UseFormReturn<ListProductFormData>;
 }
-
-export function AuctionSection({ form }: AuctionSectionProps) {
+export function AuctionSection({
+  form
+}: AuctionSectionProps) {
   const {
     valuation,
     setValuation,
@@ -23,14 +22,12 @@ export function AuctionSection({ form }: AuctionSectionProps) {
     isAuction,
     startingPrice
   } = useAuctionCalculations(form);
-  
   const watchMonthlyRevenue = form.watch("monthlyRevenue") || 0;
   const watchMonthlyChurnRate = form.watch("monthlyChurnRate") || 0;
   const watchGrossProfitMargin = (form.watch("grossProfitMargin") || 0) / 100;
   const watchIndustry = form.watch("industry") || "";
   const watchHasPatents = form.watch("hasPatents") || false;
   const watchCustomerAcquisitionCost = form.watch("customerAcquisitionCost");
-  
   const formatCurrencyInput = (value: string) => {
     let numericValue = value.replace(/[^0-9.]/g, '');
     const parts = numericValue.split('.');
@@ -51,25 +48,31 @@ export function AuctionSection({ form }: AuctionSectionProps) {
     }
     return '';
   };
-  
   const parseCurrencyValue = (value: string) => {
     const numericValue = parseFloat(value.replace(/[$,]/g, ''));
     return isNaN(numericValue) || numericValue <= 0 ? 1 : numericValue;
   };
-
   const setAuctionEndDate = (duration: string) => {
     const today = new Date();
     let endDate: Date;
     switch (duration) {
-      case "14days": endDate = new Date(today.getTime() + 14 * 24 * 60 * 60 * 1000); break;
-      case "30days": endDate = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000); break;
-      case "60days": endDate = new Date(today.getTime() + 60 * 24 * 60 * 60 * 1000); break;
-      case "90days": endDate = new Date(today.getTime() + 90 * 24 * 60 * 60 * 1000); break;
-      default: endDate = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000);
+      case "14days":
+        endDate = new Date(today.getTime() + 14 * 24 * 60 * 60 * 1000);
+        break;
+      case "30days":
+        endDate = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000);
+        break;
+      case "60days":
+        endDate = new Date(today.getTime() + 60 * 24 * 60 * 60 * 1000);
+        break;
+      case "90days":
+        endDate = new Date(today.getTime() + 90 * 24 * 60 * 60 * 1000);
+        break;
+      default:
+        endDate = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000);
     }
     form.setValue("auctionEndTime", endDate);
   };
-  
   const handleValuationClick = (e: React.MouseEvent, value: number, isHigh: boolean) => {
     e.preventDefault();
     if (isAuction) {
@@ -82,89 +85,37 @@ export function AuctionSection({ form }: AuctionSectionProps) {
       form.setValue("price", Math.max(1, value));
     }
   };
-
   useEffect(() => {
     const updateValuation = async () => {
-      const newValuation = await calculateValuation(
-        watchMonthlyRevenue,
-        watchMonthlyChurnRate / 100,
-        watchGrossProfitMargin,
-        watchIndustry,
-        watchHasPatents,
-        undefined,
-        undefined,
-        watchCustomerAcquisitionCost
-      );
+      const newValuation = await calculateValuation(watchMonthlyRevenue, watchMonthlyChurnRate / 100, watchGrossProfitMargin, watchIndustry, watchHasPatents, undefined, undefined, watchCustomerAcquisitionCost);
       setValuation(newValuation);
     };
     updateValuation();
   }, [watchMonthlyRevenue, watchMonthlyChurnRate, watchGrossProfitMargin, watchIndustry, watchHasPatents, watchCustomerAcquisitionCost]);
-
-  return (
-    <Card className="p-6 bg-white shadow-sm">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <span className={`text-sm ${!isAuction ? "text-primary" : "text-gray-500"}`}>
-            Fixed Price
-          </span>
-          <FormField
-            control={form.control}
-            name="isAuction"
-            render={({ field }) => (
-              <FormItem className="flex items-center space-x-2">
-                <FormControl>
-                  <Switch checked={field.value} onCheckedChange={field.onChange} />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <span className={`text-sm ${isAuction ? "text-primary" : "text-gray-500"}`}>
-            Dutch Auction
-          </span>
-        </div>
-      </div>
+  return <Card className="p-6 bg-white shadow-sm">
+      
 
       <div className="space-y-4">
-        <PriceInputs
-          form={form}
-          formatCurrencyInput={formatCurrencyInput}
-          parseCurrencyValue={parseCurrencyValue}
-        />
+        <PriceInputs form={form} formatCurrencyInput={formatCurrencyInput} parseCurrencyValue={parseCurrencyValue} />
 
-        {isAuction && (
-          <AuctionSettings
-            form={form}
-            recommendedDecrement={recommendedDecrement}
-            formatCurrencyInput={formatCurrencyInput}
-            parseCurrencyValue={parseCurrencyValue}
-            setAuctionEndDate={setAuctionEndDate}
-          />
-        )}
+        {isAuction && <AuctionSettings form={form} recommendedDecrement={recommendedDecrement} formatCurrencyInput={formatCurrencyInput} parseCurrencyValue={parseCurrencyValue} setAuctionEndDate={setAuctionEndDate} />}
 
         {/* Hidden fields */}
-        <FormField
-          control={form.control}
-          name="auctionEndTime"
-          render={({ field }) => (
-            <FormItem className="hidden">
+        <FormField control={form.control} name="auctionEndTime" render={({
+        field
+      }) => <FormItem className="hidden">
               <FormControl>
                 <input type="hidden" />
               </FormControl>
-            </FormItem>
-          )}
-        />
+            </FormItem>} />
         
-        <FormField
-          control={form.control}
-          name="noReserve"
-          render={({ field }) => (
-            <FormItem className="hidden">
+        <FormField control={form.control} name="noReserve" render={({
+        field
+      }) => <FormItem className="hidden">
               <FormControl>
                 <input type="hidden" />
               </FormControl>
-            </FormItem>
-          )}
-        />
+            </FormItem>} />
       </div>
 
       <Card className="p-6 bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] text-white mt-6">
@@ -173,19 +124,11 @@ export function AuctionSection({ form }: AuctionSectionProps) {
           AI-Powered Valuation Range
         </h3>
         <div className="text-2xl font-bold flex items-center justify-center gap-4">
-          <button
-            type="button"
-            onClick={e => handleValuationClick(e, valuation.low, false)}
-            className="hover:opacity-80 transition-opacity"
-          >
+          <button type="button" onClick={e => handleValuationClick(e, valuation.low, false)} className="hover:opacity-80 transition-opacity">
             {formatCurrency(valuation.low)}
           </button>
           <span>-</span>
-          <button
-            type="button"
-            onClick={e => handleValuationClick(e, valuation.high, true)}
-            className="hover:opacity-80 transition-opacity"
-          >
+          <button type="button" onClick={e => handleValuationClick(e, valuation.high, true)} className="hover:opacity-80 transition-opacity">
             {formatCurrency(valuation.high)}
           </button>
         </div>
@@ -196,6 +139,5 @@ export function AuctionSection({ form }: AuctionSectionProps) {
           range. Click on either value to use it as your {isAuction ? "auction prices" : "fixed price"}.
         </p>
       </Card>
-    </Card>
-  );
+    </Card>;
 }
