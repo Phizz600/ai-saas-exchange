@@ -138,7 +138,7 @@ export const ListingThankYou = () => {
               <div className="space-y-6">
                 {/* Step 1: Review Process */}
                 <div className="flex items-start space-x-4">
-                  <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] rounded-full flex items-center justify-center text-white font-bold">
+                  <div className="flex-shrink-0 w-8 h-8 bg-[#8a5cf7] rounded-full flex items-center justify-center text-white font-bold">
                     1
                   </div>
                   <div className="flex-1">
@@ -157,7 +157,7 @@ export const ListingThankYou = () => {
 
                 {/* Step 2: Buyer Outreach */}
                 <div className="flex items-start space-x-4">
-                  <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] rounded-full flex items-center justify-center text-white font-bold">
+                  <div className="flex-shrink-0 w-8 h-8 bg-[#8a5cf7] rounded-full flex items-center justify-center text-white font-bold">
                     2
                   </div>
                   <div className="flex-1">
@@ -176,7 +176,7 @@ export const ListingThankYou = () => {
 
                 {/* Step 3: Prepare for Due Diligence */}
                 <div className="flex items-start space-x-4">
-                  <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] rounded-full flex items-center justify-center text-white font-bold">
+                  <div className="flex-shrink-0 w-8 h-8 bg-[#8a5cf7] rounded-full flex items-center justify-center text-white font-bold">
                     3
                   </div>
                   <div className="flex-1">
@@ -209,6 +209,29 @@ export const ListingThankYou = () => {
                 <p className="text-gray-500 text-sm mt-2 font-medium">
                   — The AI Exchange Club
                 </p>
+                
+                {/* Strategic Action Buttons */}
+                <div className="flex flex-col sm:flex-row gap-3 mt-6">
+                  <Button 
+                    asChild
+                    variant="outline"
+                    className="flex-1 border-[#8B5CF6] text-[#8B5CF6] hover:bg-[#8B5CF6] hover:text-white"
+                  >
+                    <Link to="/profile">
+                      <Users className="w-4 h-4 mr-2" />
+                      Profile
+                    </Link>
+                  </Button>
+                  <Button 
+                    asChild
+                    className="flex-1 bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] hover:opacity-90"
+                  >
+                    <Link to="/marketplace">
+                      <Home className="w-4 h-4 mr-2" />
+                      Access Marketplace
+                    </Link>
+                  </Button>
+                </div>
               </div>
             </div>
             
@@ -221,7 +244,7 @@ export const ListingThankYou = () => {
             {/* Queue Position Card */}
             
             
-            <a href="https://aiexchangeclub.beehiiv.com/subscribe" target="_blank" rel="noopener noreferrer" className="w-full px-4 my-0 mx-0 sm:px-0 py-0">
+            <a href="https://aiexchangeclub.beehiiv.com/subscribe" target="_blank" rel="noopener noreferrer" className="w-full px-4 sm:px-0">
               <Button className="w-full mt-6 sm:mt-8 bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] hover:opacity-90 text-sm sm:text-base py-4 sm:py-6 flex items-center justify-center gap-2 sm:gap-3">
                 <MousePointerClick className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
                 <span className="whitespace-nowrap">Join the AI Exchange Club Newsletter</span>
