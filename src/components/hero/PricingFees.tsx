@@ -2,7 +2,19 @@ import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { DollarSign, Users, CheckCircle, MessageSquare, BadgeCheck, Crown, User2, Tag, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/CleanAuthContext";
+import { useNavigate } from "react-router-dom";
 const PricingFees = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const handlePackageSelection = (packageType: 'starter' | 'growth' | 'scale') => {
+    if (user) {
+      navigate(`/list-product?package=${packageType}`);
+    } else {
+      navigate(`/auth?redirect=/list-product?package=${packageType}`);
+    }
+  };
   return <section id="pricing-packages" className="py-0">
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto mb-12">
@@ -54,7 +66,7 @@ const PricingFees = () => {
                      <p className="text-amber-300 text-xs mt-2 font-medium">💡 Risk-free entry for early-stage founders</p>
                      
                      <div className="flex justify-center">
-                        <Button onClick={() => window.location.href = '/list-product?package=starter'} className="mt-4 bg-emerald-500 hover:bg-emerald-600 text-black font-extrabold py-2 px-20 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 text-shadow-sm">
+                        <Button onClick={() => handlePackageSelection('starter')} className="mt-4 bg-emerald-500 hover:bg-emerald-600 text-black font-extrabold py-2 px-20 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 text-shadow-sm">
                          Sell My AI SaaS
                        </Button>
                      </div>
@@ -97,7 +109,7 @@ const PricingFees = () => {
                   </p>
                    
                    <div className="flex justify-center">
-                     <Button onClick={() => window.location.href = '/list-product?package=growth'} className="mt-4 bg-purple-500 hover:bg-purple-600 text-black font-extrabold py-2 px-20 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 text-shadow-sm">
+                     <Button onClick={() => handlePackageSelection('growth')} className="mt-4 bg-purple-500 hover:bg-purple-600 text-black font-extrabold py-2 px-20 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 text-shadow-sm">
                        Sell My AI SaaS
                      </Button>
                    </div>
@@ -140,7 +152,7 @@ const PricingFees = () => {
                      <p className="text-amber-300 text-xs mt-2 font-medium">💡 Maximum exposure + white-glove pitching</p>
                    
                    <div className="flex justify-center">
-                     <Button onClick={() => window.location.href = '/list-product?package=scale'} className="mt-4 bg-amber-500 hover:bg-amber-600 text-black font-extrabold py-2 px-20 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 text-shadow-sm">
+                     <Button onClick={() => handlePackageSelection('scale')} className="mt-4 bg-amber-500 hover:bg-amber-600 text-black font-extrabold py-2 px-20 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 text-shadow-sm">
                        Sell My AI SaaS
                      </Button>
                    </div>
