@@ -166,7 +166,7 @@ export const ListingThankYou = () => {
                       Buyer Outreach
                     </h3>
                     <p className="text-gray-600 mb-2">
-                      If approved, we'll notify our Premium Buyer Network.
+                      If approved, your business will be live on the private marketplace & we'll notify our Premium Buyer Network.
                     </p>
                     <p className="text-gray-600">
                       Buyers will contact you via your email (keep an eye out!).
