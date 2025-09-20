@@ -138,7 +138,7 @@ export const ListingThankYou = () => {
               <div className="space-y-6">
                 {/* Step 1: Review Process */}
                 <div className="flex items-start space-x-4">
-                  <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] rounded-full flex items-center justify-center text-white font-bold">
+                  <div className="flex-shrink-0 w-8 h-8 bg-[#8a5cf7] rounded-full flex items-center justify-center text-white font-bold">
                     1
                   </div>
                   <div className="flex-1">
@@ -157,7 +157,7 @@ export const ListingThankYou = () => {
 
                 {/* Step 2: Buyer Outreach */}
                 <div className="flex items-start space-x-4">
-                  <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] rounded-full flex items-center justify-center text-white font-bold">
+                  <div className="flex-shrink-0 w-8 h-8 bg-[#8a5cf7] rounded-full flex items-center justify-center text-white font-bold">
                     2
                   </div>
                   <div className="flex-1">
@@ -176,7 +176,7 @@ export const ListingThankYou = () => {
 
                 {/* Step 3: Prepare for Due Diligence */}
                 <div className="flex items-start space-x-4">
-                  <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] rounded-full flex items-center justify-center text-white font-bold">
+                  <div className="flex-shrink-0 w-8 h-8 bg-[#8a5cf7] rounded-full flex items-center justify-center text-white font-bold">
                     3
                   </div>
                   <div className="flex-1">
