@@ -2,7 +2,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { PaymentAuthorizationResponse } from "./types";
 
 export async function createPackagePayment(
-  packageType: 'featured-listing' | 'premium-exit'
+  packageType: 'featured-listing' | 'premium-exit' | 'featured-listing-downsell' | 'premium-exit-downsell'
 ): Promise<PaymentAuthorizationResponse> {
   try {
     console.log(`Creating package payment for: ${packageType}`);
@@ -79,7 +79,27 @@ export async function recordPackagePurchase(
         strategyCall: false,
         priority: false
       },
+      'featured-listing-downsell': {
+        reducedFees: true,
+        newsletter: true,
+        playbook: true,
+        checklist: true,
+        salesRep: false,
+        ama: false,
+        strategyCall: false,
+        priority: false
+      },
       'premium-exit': {
+        reducedFees: true,
+        newsletter: true,
+        playbook: true,
+        checklist: true,
+        salesRep: true,
+        ama: true,
+        strategyCall: true,
+        priority: true
+      },
+      'premium-exit-downsell': {
         reducedFees: true,
         newsletter: true,
         playbook: true,

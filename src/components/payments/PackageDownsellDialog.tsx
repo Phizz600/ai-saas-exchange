@@ -1,29 +1,30 @@
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Loader2, CheckCircle, Crown } from "lucide-react";
+import { Loader2, CheckCircle, Crown, Clock } from "lucide-react";
 import { Elements } from "@stripe/react-stripe-js";
 import { useStripeInitialization } from "@/hooks/payments/useStripeInitialization";
 import { usePackagePayment } from "@/hooks/payments/usePackagePayment";
 import { PackagePaymentForm } from "./PackagePaymentForm";
-import { PackageDownsellDialog } from "./PackageDownsellDialog";
 
-interface PackagePaymentDialogProps {
+interface PackageDownsellDialogProps {
   open: boolean;
   onClose: () => void;
-  packageType: 'featured-listing' | 'premium-exit';
+  originalPackageType: 'featured-listing' | 'premium-exit';
   onSuccess: () => void;
 }
 
-export function PackagePaymentDialog({ 
+export function PackageDownsellDialog({ 
   open, 
   onClose, 
-  packageType, 
+  originalPackageType, 
   onSuccess 
-}: PackagePaymentDialogProps) {
+}: PackageDownsellDialogProps) {
   const [showPaymentForm, setShowPaymentForm] = useState(false);
-  const [showDownsell, setShowDownsell] = useState(false);
   const { stripePromise, error: stripeError } = useStripeInitialization();
+  
+  // Convert to downsell package type
+  const downsellPackageType = `${originalPackageType}-downsell` as 'featured-listing-downsell' | 'premium-exit-downsell';
   
   const {
     paymentClientSecret,
@@ -34,7 +35,7 @@ export function PackagePaymentDialog({
     handlePaymentSuccess,
     resetPayment
   } = usePackagePayment({ 
-    packageType, 
+    packageType: downsellPackageType, 
     onSuccess: () => {
       onSuccess();
       onClose();
@@ -48,30 +49,20 @@ export function PackagePaymentDialog({
   useEffect(() => {
     if (!open) {
       setShowPaymentForm(false);
-      setShowDownsell(false);
       resetPayment();
     }
   }, [open]);
-
-  const handleCancel = () => {
-    // Only show downsell for paid packages
-    if (packageType === 'featured-listing' || packageType === 'premium-exit') {
-      setShowDownsell(true);
-    } else {
-      onClose();
-    }
-  };
-
-  const handleDownsellClose = () => {
-    setShowDownsell(false);
-    onClose();
-  };
 
   const handleInitiatePayment = async () => {
     const success = await initiatePayment();
     if (success) {
       setShowPaymentForm(true);
     }
+  };
+
+  const originalPricing = {
+    'featured-listing': { amount: 199, name: 'Featured Listing Package' },
+    'premium-exit': { amount: 2500, name: 'Premium Exit Package' }
   };
 
   const packageFeatures = {
@@ -92,35 +83,49 @@ export function PackagePaymentDialog({
     ]
   };
 
+  const originalPrice = originalPricing[originalPackageType].amount;
+  const downsellPrice = packageDetails.amount;
+  const savings = originalPrice - downsellPrice;
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-md bg-slate-900 border-slate-700">
         <DialogHeader>
           <DialogTitle className="text-white flex items-center gap-2">
-            {packageType === 'premium-exit' ? (
-              <Crown className="h-5 w-5 text-amber-400" />
-            ) : (
-              <CheckCircle className="h-5 w-5 text-purple-400" />
-            )}
-            {packageDetails.name}
+            <Clock className="h-5 w-5 text-amber-400" />
+            Wait! Special Offer
           </DialogTitle>
         </DialogHeader>
         
         <div className="space-y-4">
+          <div className="text-center bg-gradient-to-r from-amber-500/20 to-purple-500/20 p-4 rounded-lg border border-amber-500/30">
+            <div className="text-sm text-amber-400 font-semibold mb-1">LIMITED TIME OFFER</div>
+            <div className="text-2xl font-bold text-white mb-1">
+              Get 50% Off Now!
+            </div>
+            <div className="text-sm text-gray-300">
+              Same great features, half the price
+            </div>
+          </div>
+
           <div className="text-center">
-            <div className="text-3xl font-bold text-white">
-              ${packageDetails.amount}
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <span className="text-lg text-gray-400 line-through">${originalPrice}</span>
+              <span className="text-3xl font-bold text-white">${downsellPrice}</span>
+            </div>
+            <div className="text-sm text-amber-400 font-semibold">
+              You Save ${savings}!
             </div>
             <p className="text-sm text-gray-400">One-time payment</p>
           </div>
 
           <div className="space-y-2">
-            <h4 className="font-semibold text-white">Package includes:</h4>
+            <h4 className="font-semibold text-white">You still get everything:</h4>
             <ul className="space-y-1">
-              {packageFeatures[packageType].map((feature, index) => (
+              {packageFeatures[originalPackageType].map((feature, index) => (
                 <li key={index} className="flex items-center text-sm text-gray-300">
                   <CheckCircle className={`h-4 w-4 mr-2 flex-shrink-0 ${
-                    packageType === 'premium-exit' ? 'text-amber-400' : 'text-purple-400'
+                    originalPackageType === 'premium-exit' ? 'text-amber-400' : 'text-purple-400'
                   }`} />
                   {feature}
                 </li>
@@ -145,11 +150,7 @@ export function PackagePaymentDialog({
               <Button
                 onClick={handleInitiatePayment}
                 disabled={isProcessing || !!stripeError}
-                className={`w-full ${
-                  packageType === 'premium-exit' 
-                    ? 'bg-amber-500 hover:bg-amber-600' 
-                    : 'bg-purple-500 hover:bg-purple-600'
-                } text-black font-semibold`}
+                className="w-full bg-gradient-to-r from-amber-500 to-purple-500 hover:from-amber-600 hover:to-purple-600 text-black font-semibold"
               >
                 {isProcessing ? (
                   <>
@@ -157,16 +158,16 @@ export function PackagePaymentDialog({
                     Setting up payment...
                   </>
                 ) : (
-                  `Purchase ${packageDetails.name}`
+                  `Get 50% Off - Pay $${downsellPrice}`
                 )}
               </Button>
               
               <Button
                 variant="outline"
-                onClick={handleCancel}
+                onClick={onClose}
                 className="w-full border-gray-600 text-gray-300 hover:bg-gray-800"
               >
-                Cancel
+                No Thanks, I'll Pass
               </Button>
             </div>
           ) : (
@@ -178,7 +179,7 @@ export function PackagePaymentDialog({
                   appearance: {
                     theme: 'night',
                     variables: {
-                      colorPrimary: packageType === 'premium-exit' ? '#f59e0b' : '#8b5cf6',
+                      colorPrimary: '#f59e0b',
                     },
                   },
                 }}
@@ -186,7 +187,7 @@ export function PackagePaymentDialog({
                 <PackagePaymentForm
                   onSuccess={handlePaymentSuccess}
                   onCancel={onClose}
-                  packageName={packageDetails.name}
+                  packageName={`${packageDetails.name} (50% Off)`}
                   amount={packageDetails.amount}
                 />
               </Elements>
@@ -194,13 +195,6 @@ export function PackagePaymentDialog({
           )}
         </div>
       </DialogContent>
-      
-      <PackageDownsellDialog
-        open={showDownsell}
-        onClose={handleDownsellClose}
-        originalPackageType={packageType}
-        onSuccess={onSuccess}
-      />
     </Dialog>
   );
 }

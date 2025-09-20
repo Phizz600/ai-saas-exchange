@@ -31,8 +31,10 @@ serve(async (req) => {
 
     // Define package pricing
     const packagePricing = {
-      growth: { amount: 19900, name: 'Growth Package' }, // $199.00
-      scale: { amount: 250000, name: 'Scale Package' }   // $2,500.00
+      'featured-listing': { amount: 19900, name: 'Featured Listing Package' }, // $199.00
+      'premium-exit': { amount: 250000, name: 'Premium Exit Package' },   // $2,500.00
+      'featured-listing-downsell': { amount: 9950, name: 'Featured Listing Package (50% Off)' }, // $99.50
+      'premium-exit-downsell': { amount: 125000, name: 'Premium Exit Package (50% Off)' }   // $1,250.00
     };
 
     const selectedPackage = packagePricing[packageType as keyof typeof packagePricing];
