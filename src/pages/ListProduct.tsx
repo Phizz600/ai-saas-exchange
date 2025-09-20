@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { ListProductForm } from "@/components/marketplace/list-product/ListProductForm";
 import { Button } from "@/components/ui/button";
 import { HelpCircle } from "lucide-react";
@@ -60,13 +61,15 @@ export const ListProduct = () => {
       }} className="max-w-4xl mx-auto">
           {/* Logo */}
           <div className="text-center mb-8">
-            <motion.img 
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              src="/ai-exchange-logo.png"
-              alt="AI Exchange Logo"
-              className="mx-auto h-16 w-auto mb-8"
-            />
+            <Link to="/">
+              <motion.img 
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                src="/ai-exchange-logo.png"
+                alt="AI Exchange Logo"
+                className="mx-auto h-16 w-auto mb-8 hover:opacity-80 transition-opacity cursor-pointer"
+              />
+            </Link>
           </div>
 
           {/* Header */}
