@@ -244,36 +244,6 @@ export const ListingThankYou = () => {
             {/* Queue Position Card */}
             
             
-            <a href="https://aiexchangeclub.beehiiv.com/subscribe" target="_blank" rel="noopener noreferrer" className="w-full px-4 sm:px-0">
-              <Button className="w-full mt-6 sm:mt-8 bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] hover:opacity-90 text-sm sm:text-base py-4 sm:py-6 flex items-center justify-center gap-2 sm:gap-3">
-                <MousePointerClick className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
-                <span className="whitespace-nowrap">Join the AI Exchange Club Newsletter</span>
-              </Button>
-            </a>
-
-            {/* Social Proof Section */}
-            <div className="w-full max-w-md p-4 bg-purple-50 rounded-lg mx-4 sm:mx-0">
-              <div className="flex items-center justify-center space-x-2 mb-3">
-                <Users className="h-4 w-4 sm:h-5 sm:w-5 text-[#8B5CF6]" />
-                <span className="font-semibold text-gray-700 text-sm sm:text-base">Join 1,000+ AI Founders</span>
-              </div>
-              <div className="space-y-2">
-                <Progress value={80} className="h-2 bg-purple-100" />
-                <p className="text-xs sm:text-sm text-gray-600">
-                  <span className="font-semibold text-[#D946EF]">Only 200 spots left!</span> Be part of the first wave of AI innovators.
-                </p>
-              </div>
-            </div>
-
-            <div className="text-xs sm:text-sm text-gray-600 max-w-md px-4 sm:px-0">
-              Join our exclusive AI Exchange Club newsletter and unlock:
-              <ul className="mt-2 space-y-1 pl-0">
-                <li className="text-left">✨ Early access to marketplace features</li>
-                <li className="text-left">💎 Exclusive AI industry insights</li>
-                <li className="text-left">🚀 Priority listing opportunities</li>
-                <li className="text-left">🤝 Network with fellow AI innovators</li>
-              </ul>
-            </div>
 
             {/* Social Links */}
             <div className="w-full max-w-md text-center mt-6 sm:mt-8">
