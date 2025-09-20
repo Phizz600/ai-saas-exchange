@@ -237,7 +237,7 @@ export const ListingThankYou = () => {
             
             <div className="space-y-4 text-center max-w-xl px-2">
               <p className="text-sm sm:text-base text-gray-600 italic">
-                Keep an eye on your email for updates about your listing and our launch.
+                Keep an eye on your email for updates about your listing.
               </p>
             </div>
 
