@@ -44,7 +44,8 @@ export function NdaSection() {
                   onCheckedChange={(checked) => {
                     field.onChange(checked);
                     setNdaEnabled(checked);
-                  }} 
+                  }}
+                  className="data-[state=checked]:bg-[#8a5cf7]"
                 />
               </FormControl>
             </FormItem>

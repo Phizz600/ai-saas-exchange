@@ -13,11 +13,6 @@ export interface ListProductFormData {
   activeUsers: string;
   grossProfitMargin?: number;
   image: File | null;
-  isAuction: boolean;
-  startingPrice?: number;
-  reservePrice?: number;  
-  priceDecrement?: number;
-  priceDecrementInterval: string;
   techStack: string;  // Changed from array to string for simplicity
   techStackOther?: string;
   teamSize: string;
@@ -40,8 +35,6 @@ export interface ListProductFormData {
   monetizationOther?: string;
   businessModel?: string;
   investmentTimeline?: string;
-  auctionEndTime?: Date;
-  auctionDuration?: string;
   llmType?: string;
   llmTypeOther?: string;
   integrations?: string[];
@@ -55,7 +48,7 @@ export interface ListProductFormData {
   numberOfEmployees?: string;
   requires_nda?: boolean;
   nda_content?: string;
-  noReserve?: boolean;
+  
   monthlyExpenses?: ExpenseItem[];
 }
 

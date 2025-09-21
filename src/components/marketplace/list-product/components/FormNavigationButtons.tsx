@@ -19,14 +19,14 @@ export function FormNavigationButtons({
 }: FormNavigationButtonsProps) {
   return <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-2 sm:gap-0 pt-6 border-t">
       <div className="flex items-center">
-        {currentSection > 0 && <Button type="button" variant="outline" onClick={onPrevious} className="flex items-center gap-2 w-full sm:w-auto">
+        {currentSection > 0 && <Button type="button" variant="outline" onClick={onPrevious} className="flex items-center gap-2 w-full sm:w-auto hover:bg-black hover:text-white">
             <ArrowLeft className="h-4 w-4" />
             Back
           </Button>}
       </div>
 
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-        <Button type="button" variant="outline" onClick={onSaveForLater} className="flex items-center justify-center gap-2 w-full sm:w-auto">
+        <Button type="button" variant="outline" onClick={onSaveForLater} className="flex items-center justify-center gap-2 w-full sm:w-auto hover:bg-black hover:text-white">
           <Save className="h-4 w-4" />
           Save for later
         </Button>
@@ -37,7 +37,7 @@ export function FormNavigationButtons({
       }} className="flex items-center justify-center gap-2 w-full sm:w-auto bg-[#8B5CF6] hover:bg-violet-400 text-neutral-50">
             Next
             <ArrowRight className="h-4 w-4" />
-          </Button> : <Button type="submit" className="w-full sm:w-auto bg-gradient-to-r from-[#8B5CF6] via-[#D946EE] to-[#0EA4E9] text-white font-semibold py-3 px-6 rounded-lg hover:opacity-90" disabled={isSubmitting}>
+          </Button> : <Button type="submit" className="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg" disabled={isSubmitting}>
             {isSubmitting ? "Submitting Product..." : "Submit Product"}
           </Button>}
       </div>

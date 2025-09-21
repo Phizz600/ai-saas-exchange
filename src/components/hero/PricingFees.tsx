@@ -2,7 +2,19 @@ import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { DollarSign, Users, CheckCircle, MessageSquare, BadgeCheck, Crown, User2, Tag, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/CleanAuthContext";
+import { useNavigate } from "react-router-dom";
 const PricingFees = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const handlePackageSelection = (packageType: 'free-listing' | 'featured-listing' | 'premium-exit') => {
+    if (user) {
+      navigate(`/list-product?package=${packageType}`);
+    } else {
+      navigate(`/auth?redirect=/list-product?package=${packageType}`);
+    }
+  };
   return <section id="pricing-packages" className="py-0">
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto mb-12">
@@ -25,51 +37,48 @@ const PricingFees = () => {
                   </div>
                 </div>
                 <h3 className="text-center text-2xl font-bold text-white mb-4">Choose Your Path to Listing</h3>
-                <p className="text-center text-white/80 text-base mb-6">Whether you're pre-revenue or post-product-market fit, you can list fast — and on your terms.</p>
+                <p className="text-center text-white/80 text-base mb-6">No matter your stage — early, growing, or established — you can list in minutes and set the rules.</p>
                 
                 <div className="space-y-6 flex-grow">
-                  {/* Starter Package */}
-                  <div className="bg-white/5 p-4 rounded-lg border border-white/10 hover:shadow-[0_0_30px_rgba(16,185,129,0.3)] transition-all duration-300 cursor-pointer" onClick={() => window.open('https://airtable.com/appqbmIOXXLNFhZyj/pagutIK7nf0unyJm3/form', '_blank')}>
-                    <div className="flex items-center justify-between mb-3">
-                      <h4 className="text-lg font-bold text-white">Starter</h4>
-                      <div className="px-3 py-1 rounded-full">
-                        <span className="text-sm font-bold text-white">FREE</span>
-                      </div>
-                    </div>
-                    <p className="text-white text-sm mb-3">For pre-revenue or idea-stage founders who want to test the waters. Account creation not required. (Limited analytics)</p>
-                    <ul className="space-y-2 text-sm">
-                      <li className="flex items-center text-white">
-                        <CheckCircle className="h-4 w-4 text-[#10B981] mr-2 flex-shrink-0" />
-                        <span>List your AI SaaS on the marketplace</span>
-                      </li>
-                      <li className="flex items-center text-white">
-                        <CheckCircle className="h-4 w-4 text-[#10B981] mr-2 flex-shrink-0" />
-                        <span>Commission-based only (no upfront fee)</span>
-                      </li>
-                      <li className="flex items-center text-white">
-                        <CheckCircle className="h-4 w-4 text-[#10B981] mr-2 flex-shrink-0" />
-                        <span>Get The Free Beginner's Guide to Selling AI SaaS + contract templates</span>
-                      </li>
-                    </ul>
-                    <p className="text-amber-300 text-xs mt-2 font-medium">💡 Risk-free entry for early-stage founders</p>
-                    
-                    <div className="flex justify-center">
-                       <Button onClick={e => {
-                      e.stopPropagation();
-                      window.open('https://airtable.com/appqbmIOXXLNFhZyj/pagutIK7nf0unyJm3/form', '_blank');
-                    }} className="mt-4 bg-emerald-500 hover:bg-emerald-600 text-black font-extrabold py-2 px-20 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 text-shadow-sm">
+                  {/* Free Listing Package */}
+                   <div className="bg-white/5 p-4 rounded-lg border border-white/10 hover:shadow-[0_0_30px_rgba(16,185,129,0.3)] transition-all duration-300">
+                     <div className="flex items-center justify-between mb-3">
+                       <h4 className="text-lg font-bold text-white">Free Listing</h4>
+                       <div className="px-3 py-1 rounded-full">
+                         <span className="text-sm font-bold text-white">FREE</span>
+                       </div>
+                     </div>
+                     <p className="text-white text-sm mb-3">For pre-revenue or idea-stage founders who want to test the waters. Account creation not required. (Limited analytics)</p>
+                     <ul className="space-y-2 text-sm">
+                       <li className="flex items-center text-white">
+                         <CheckCircle className="h-4 w-4 text-[#10B981] mr-2 flex-shrink-0" />
+                         <span>List your AI SaaS on the marketplace</span>
+                       </li>
+                       <li className="flex items-center text-white">
+                         <CheckCircle className="h-4 w-4 text-[#10B981] mr-2 flex-shrink-0" />
+                         <span>Commission-based only (no upfront fee)</span>
+                       </li>
+                       <li className="flex items-center text-white">
+                         <CheckCircle className="h-4 w-4 text-[#10B981] mr-2 flex-shrink-0" />
+                         <span>Get The Free Beginner's Guide to Selling AI SaaS + contract templates</span>
+                       </li>
+                     </ul>
+                     <p className="text-amber-300 text-xs mt-2 font-medium">💡 Risk-free entry for early-stage founders</p>
+                     
+                     <div className="flex justify-center">
+                        <Button onClick={() => handlePackageSelection('free-listing')} className="mt-4 bg-emerald-500 hover:bg-emerald-600 text-black font-extrabold py-2 px-20 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 text-shadow-sm">
                          Sell My AI SaaS
                        </Button>
-                    </div>
+                     </div>
                   </div>
 
-                  {/* Growth Package */}
+                  {/* Featured Listing Package */}
                   <div className="bg-white/5 p-4 rounded-lg border border-[#7C3AED]/30 relative hover:shadow-[0_0_30px_rgba(124,58,237,0.4)] transition-all duration-300">
                     <div className="absolute -top-2 -right-2 bg-[#7C3AED] text-white text-xs font-bold px-2 py-1 rounded-full">
                       POPULAR
                     </div>
                     <div className="flex items-center justify-between mb-3">
-                      <h4 className="text-lg font-bold text-white">Growth</h4>
+                      <h4 className="text-lg font-bold text-white">Featured Listing</h4>
                       <div className="text-right">
                         <div className="px-3 py-1 rounded-full">
                           <span className="text-sm font-bold text-white">$199 - One Time Fee</span>
@@ -100,19 +109,16 @@ const PricingFees = () => {
                   </p>
                    
                    <div className="flex justify-center">
-                     <Button onClick={e => {
-                      e.stopPropagation();
-                      window.open('https://airtable.com/appqbmIOXXLNFhZyj/pagutIK7nf0unyJm3/form', '_blank');
-                    }} className="mt-4 bg-purple-500 hover:bg-purple-600 text-black font-extrabold py-2 px-20 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 text-shadow-sm">
+                     <Button onClick={() => handlePackageSelection('featured-listing')} className="mt-4 bg-purple-500 hover:bg-purple-600 text-black font-extrabold py-2 px-20 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 text-shadow-sm">
                        Sell My AI SaaS
                      </Button>
                    </div>
                    </div>
 
-                  {/* Scale Package */}
+                  {/* Premium Exit Package */}
                   <div className="bg-white/5 p-4 rounded-lg border border-amber-400/30 hover:shadow-[0_0_30px_rgba(245,158,11,0.4)] transition-all duration-300">
                     <div className="flex items-center justify-between mb-3">
-                      <h4 className="text-lg font-bold text-white">Scale</h4>
+                      <h4 className="text-lg font-bold text-white">Premium Exit</h4>
                       <div className="text-right">
                         <div className="px-3 py-1 rounded-full">
                           <span className="text-sm font-bold text-white">$2,500 - One Time Fee</span>
@@ -124,7 +130,7 @@ const PricingFees = () => {
                     <ul className="space-y-2 text-sm">
                       <li className="flex items-center text-white">
                         <Crown className="h-4 w-4 text-amber-400 mr-2 flex-shrink-0" />
-                        <span>Everything in Growth</span>
+                        <span>Everything in Featured Listing</span>
                       </li>
                       <li className="flex items-center text-white">
                         <CheckCircle className="h-4 w-4 text-amber-500 mr-2 flex-shrink-0" />
@@ -146,10 +152,7 @@ const PricingFees = () => {
                      <p className="text-amber-300 text-xs mt-2 font-medium">💡 Maximum exposure + white-glove pitching</p>
                    
                    <div className="flex justify-center">
-                     <Button onClick={e => {
-                      e.stopPropagation();
-                      window.open('https://airtable.com/appqbmIOXXLNFhZyj/pagutIK7nf0unyJm3/form', '_blank');
-                    }} className="mt-4 bg-amber-500 hover:bg-amber-600 text-black font-extrabold py-2 px-20 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 text-shadow-sm">
+                     <Button onClick={() => handlePackageSelection('premium-exit')} className="mt-4 bg-amber-500 hover:bg-amber-600 text-black font-extrabold py-2 px-20 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 text-shadow-sm">
                        Sell My AI SaaS
                      </Button>
                    </div>

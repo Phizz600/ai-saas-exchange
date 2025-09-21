@@ -26,11 +26,6 @@ export const useListProductForm = () => {
       activeUsers: "",
       grossProfitMargin: undefined,
       image: null,
-      isAuction: false,
-      startingPrice: undefined,
-      reservePrice: undefined,
-      priceDecrement: undefined,
-      priceDecrementInterval: "day",
       techStack: "",
       techStackOther: "",
       teamSize: "",
@@ -43,21 +38,10 @@ export const useListProductForm = () => {
       termsAgreement: false,
       deliverables: [],
       productLink: "",
-      auctionDuration: "30days",
-      noReserve: false,
       monthlyExpenses: [],
     },
   });
 
-  // Watch reserve price and update noReserve field accordingly
-  const reservePrice = form.watch("reservePrice");
-  useEffect(() => {
-    if (reservePrice === 0) {
-      form.setValue("noReserve", true);
-    } else if (reservePrice !== undefined) {
-      form.setValue("noReserve", false);
-    }
-  }, [reservePrice, form]);
 
   // Function to clear all errors
   const clearErrors = () => {

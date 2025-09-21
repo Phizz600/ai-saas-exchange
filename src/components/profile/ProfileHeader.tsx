@@ -4,32 +4,22 @@ import { ProfileAvatar } from "./ProfileAvatar";
 import { MapPin, Calendar, Globe2, AlertCircle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { VerificationBadges } from "./VerificationBadges";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import type { Database } from "@/integrations/supabase/types";
-
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
-
 interface ProfileHeaderProps {
   profile: Profile;
   onAvatarUpdate: (url: string | null) => void;
 }
-
-export const ProfileHeader = ({ profile, onAvatarUpdate }: ProfileHeaderProps) => {
+export const ProfileHeader = ({
+  profile,
+  onAvatarUpdate
+}: ProfileHeaderProps) => {
   const navigate = useNavigate();
-
-  return (
-    <Card className="sticky top-8">
+  return <Card className="sticky top-8">
       <CardContent className="pt-6">
         <div className="flex flex-col items-center text-center">
-          <ProfileAvatar
-            avatarUrl={profile.avatar_url}
-            userId={profile.id}
-            onAvatarUpdate={onAvatarUpdate}
-          />
+          <ProfileAvatar avatarUrl={profile.avatar_url} userId={profile.id} onAvatarUpdate={onAvatarUpdate} />
           <h2 className="text-2xl font-semibold mb-1 mt-4 font-exo">
             {profile.full_name || "Anonymous User"}
           </h2>
@@ -44,10 +34,7 @@ export const ProfileHeader = ({ profile, onAvatarUpdate }: ProfileHeaderProps) =
               <Calendar className="w-4 h-4 mr-2" />
               <span>Member since {new Date(profile.created_at).toLocaleDateString()}</span>
             </div>
-            <div className="flex items-center text-sm text-muted-foreground">
-              <Globe2 className="w-4 h-4 mr-2" />
-              <span>English</span>
-            </div>
+            
           </div>
 
           <VerificationBadges />
@@ -60,7 +47,7 @@ export const ProfileHeader = ({ profile, onAvatarUpdate }: ProfileHeaderProps) =
                   <span>Communication Policy</span>
                 </div>
               </HoverCardTrigger>
-              <HoverCardContent className="w-80">
+              <HoverCardContent className="w-80 bg-white">
                 <p className="text-sm">
                   Direct messaging is enabled only after a sale is initiated. This helps maintain 
                   a secure and focused marketplace environment.
@@ -68,24 +55,14 @@ export const ProfileHeader = ({ profile, onAvatarUpdate }: ProfileHeaderProps) =
               </HoverCardContent>
             </HoverCard>
 
-            <Button 
-              variant="outline" 
-              className="w-full"
-              onClick={() => navigate('/product-dashboard')}
-            >
+            <Button variant="outline" className="w-full hover:bg-black hover:text-white" onClick={() => navigate('/product-dashboard')}>
               Dashboard
             </Button>
-            {profile.user_type === "ai_builder" && (
-              <Button 
-                className="w-full bg-black hover:bg-gray-800 text-white"
-                onClick={() => navigate('/list-product')}
-              >
+            {profile.user_type === "ai_builder" && <Button className="w-full bg-black hover:bg-gray-800 text-white" onClick={() => navigate('/list-product')}>
                 Create New Listing
-              </Button>
-            )}
+              </Button>}
           </div>
         </div>
       </CardContent>
-    </Card>
-  );
+    </Card>;
 };

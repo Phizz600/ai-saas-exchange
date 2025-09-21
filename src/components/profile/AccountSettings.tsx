@@ -377,6 +377,7 @@ export const AccountSettings = ({ profile, onProfileUpdate }: AccountSettingsPro
             </>
           ) : (
             <Button
+              variant="black"
               onClick={() => setEditing(true)}
               className="flex-1"
             >

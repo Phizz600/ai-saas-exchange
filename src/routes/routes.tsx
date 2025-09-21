@@ -17,6 +17,7 @@ import { Policies } from "@/pages/Policies";
 import { MessageChat } from "@/pages/MessageChat";
 import Diagnostics from "@/pages/Diagnostics";
 import { ListingThankYou } from "@/pages/ListingThankYou";
+import { ListProductForm } from "@/pages/ListProductForm";
 import { Contact } from "@/pages/Contact";
 import { AISaasQuiz } from "@/pages/AISaasQuiz";
 import { FeesPricing } from "@/pages/FeesPricing";
@@ -24,6 +25,7 @@ import { BuyerMatchingQuiz } from "@/pages/BuyerMatchingQuiz";
 import { AuthTest } from "@/pages/AuthTest";
 import { OnboardingRedirect } from "@/pages/OnboardingRedirect";
 import { CleanProtectedRoute } from "@/components/auth-clean/CleanProtectedRoute";
+import { AdminProtectedRoute } from "@/components/auth-clean/AdminProtectedRoute";
 import { CleanAuthPage } from "@/components/auth-clean/CleanAuthPage";
 import { Marketplace } from "@/pages/Marketplace";
 import PrivatePartnersProgram from "@/pages/PrivatePartnersProgram";
@@ -98,6 +100,14 @@ const publicRoutes = [
     path: "/private-partners-program",
     element: <PrivatePartnersProgram />,
   },
+  {
+    path: "/list-product",
+    element: <ListProduct />,
+  },
+  {
+    path: "/list-product-form", 
+    element: <ListProductForm />,
+  },
 ];
 
 // Protected routes (authentication required)
@@ -163,14 +173,6 @@ const protectedRoutes = [
     element: (
       <CleanProtectedRoute>
         <Settings />
-      </CleanProtectedRoute>
-    ),
-  },
-  {
-    path: "/list-product",
-    element: (
-      <CleanProtectedRoute>
-        <SellersPage />
       </CleanProtectedRoute>
     ),
   },

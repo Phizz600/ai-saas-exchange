@@ -4,7 +4,7 @@ import { BasicInfoSection } from "../form-sections/BasicInfoSection";
 import { FinancialSection } from "../form-sections/FinancialSection";
 import { TechnicalSection } from "../form-sections/TechnicalSection";
 import { TrafficSection } from "../form-sections/TrafficSection";
-import { AuctionSection } from "../form-sections/AuctionSection";
+import { PricingSection } from "../form-sections/PricingSection";
 import { SpecialNotesSection } from "../form-sections/SpecialNotesSection";
 
 export const useFormSections = () => {
@@ -14,7 +14,7 @@ export const useFormSections = () => {
     { id: 2, title: "Technical", component: TechnicalSection },
     { id: 3, title: "Traffic", component: TrafficSection },
     { id: 4, title: "Special Notes", component: SpecialNotesSection },
-    { id: 5, title: "Selling Method", component: AuctionSection },
+    { id: 5, title: "Pricing", component: PricingSection },
   ];
 
   const [currentSection, setCurrentSection] = useState(0);

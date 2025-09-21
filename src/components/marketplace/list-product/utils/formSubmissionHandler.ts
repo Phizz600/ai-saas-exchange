@@ -53,12 +53,8 @@ export const handleProductSubmission = async (
       ? [data.techStack] 
       : (Array.isArray(data.techStack) ? data.techStack : []);
 
-    // CRITICAL FIX: Ensure price is always set for database constraints
-    // For auction listings, use starting_price as price, and ensure it's greater than 0
-    // For fixed price listings, use the user-provided price
-    const productPrice = data.isAuction 
-      ? (data.startingPrice && data.startingPrice > 0 ? data.startingPrice : 1) 
-      : (data.price && data.price > 0 ? data.price : 1);
+    // Ensure price is always set for database constraints
+    const productPrice = data.price && data.price > 0 ? data.price : 1;
     
     // Prepare the product data
     const productData = {
@@ -81,18 +77,8 @@ export const handleProductSubmission = async (
       demo_url: data.demoUrl,
       is_verified: data.isVerified,
       special_notes: data.specialNotes,
-      listing_type: data.isAuction ? 'dutch_auction' : 'fixed_price',
-      // Auction fields
-      auction_end_time: data.isAuction 
-        ? calculateAuctionEndTime(data.auctionDuration)
-        : null,
-      starting_price: data.isAuction ? data.startingPrice : null,
-      reserve_price: data.isAuction ? data.reservePrice : null, 
-      price_decrement: data.isAuction ? data.priceDecrement : null,
-      price_decrement_interval: data.isAuction ? data.priceDecrementInterval : null,
-      no_reserve: data.isAuction ? data.noReserve : null,
-      // FIXED: For auctions, use starting_price as current_price
-      current_price: data.isAuction ? data.startingPrice : data.price,
+      listing_type: 'fixed_price',
+      current_price: data.price,
       // Status and user fields
       status: "pending",
       seller_id: user.id, // Using the correct seller_id field
@@ -195,31 +181,6 @@ export const handleProductSubmission = async (
   }
 };
 
-// Helper function to calculate auction end time based on duration
-function calculateAuctionEndTime(duration: string): string {
-  const now = new Date();
-  
-  switch (duration) {
-    case '24hours':
-      now.setHours(now.getHours() + 24);
-      break;
-    case '3days':
-      now.setDate(now.getDate() + 3);
-      break;
-    case '7days':
-      now.setDate(now.getDate() + 7);
-      break;
-    case '14days':
-      now.setDate(now.getDate() + 14);
-      break;
-    case '30days':
-    default:
-      now.setDate(now.getDate() + 30);
-      break;
-  }
-  
-  return now.toISOString();
-}
 
 // Helper function to handle product update
 export const handleProductUpdate = async (
@@ -247,14 +208,8 @@ export const handleProductUpdate = async (
       ? [data.techStack]
       : (Array.isArray(data.techStack) ? data.techStack : undefined);
 
-    // FIXED: Handle price consistently for fixed price and auction listings
-    // Ensure we always have a positive price value
-    let productPrice: number;
-    if (data.isAuction) {
-      productPrice = (data.startingPrice && data.startingPrice > 0) ? data.startingPrice : 1;
-    } else {
-      productPrice = (data.price && data.price > 0) ? data.price : 1;
-    }
+    // Handle price consistently
+    const productPrice = (data.price && data.price > 0) ? data.price : 1;
     
     // Prepare the product data for update
     const productData: Record<string, any> = {};
@@ -279,25 +234,11 @@ export const handleProductUpdate = async (
     if (data.specialNotes) productData.special_notes = data.specialNotes;
     if (data.productLink) productData.product_link = data.productLink;
     
-    // Handle auction parameters using reserve_price instead of min_price
-    if (data.isAuction) {
-      if (data.reservePrice !== undefined) productData.reserve_price = data.reservePrice;
-      if (data.startingPrice !== undefined) {
-        productData.starting_price = data.startingPrice;
-        // FIXED: For auctions, update current_price with starting_price
-        productData.current_price = data.startingPrice;
-      }
-      if (data.priceDecrement !== undefined) productData.price_decrement = data.priceDecrement;
-      if (data.priceDecrementInterval) productData.price_decrement_interval = data.priceDecrementInterval;
-      if (data.noReserve !== undefined) productData.no_reserve = data.noReserve;
-      
-      // Set the listing_type for auction
-      productData.listing_type = 'dutch_auction';
-    } else if (data.price !== undefined) {
-      // FIXED: For fixed price listings, update current_price with price
+    // For fixed price listings, update current_price with price
+    if (data.price !== undefined) {
       productData.current_price = data.price;
-      productData.listing_type = 'fixed_price';
     }
+    productData.listing_type = 'fixed_price';
     
     // Update the product
     const { error: updateError } = await supabase

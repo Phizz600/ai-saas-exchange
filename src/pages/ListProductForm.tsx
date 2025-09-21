@@ -5,7 +5,7 @@ import { BasicInfoSection } from "@/components/marketplace/list-product/form-sec
 import { FinancialSection } from "@/components/marketplace/list-product/form-sections/FinancialSection";
 import { TechnicalSection } from "@/components/marketplace/list-product/form-sections/TechnicalSection";
 import { TrafficSection } from "@/components/marketplace/list-product/form-sections/TrafficSection";
-import { AuctionSection } from "@/components/marketplace/list-product/form-sections/AuctionSection";
+import { PricingSection } from "@/components/marketplace/list-product/form-sections/PricingSection";
 import { SpecialNotesSection } from "@/components/marketplace/list-product/form-sections/SpecialNotesSection";
 import { SubmissionAgreements } from "@/components/marketplace/list-product/form-sections/SubmissionAgreements";
 import { FormProgressBar } from "@/components/marketplace/list-product/form-sections/FormProgressBar";
@@ -38,7 +38,7 @@ export function ListProductForm() {
     { id: 2, title: "Technical", component: TechnicalSection },
     { id: 3, title: "Traffic", component: TrafficSection },
     { id: 4, title: "Special Notes", component: SpecialNotesSection },
-    { id: 5, title: "Selling Method", component: AuctionSection },
+    { id: 5, title: "Pricing", component: PricingSection },
   ];
 
   const form = useForm<ListProductFormData>({
@@ -54,11 +54,6 @@ export function ListProductForm() {
       activeUsers: "",
       grossProfitMargin: undefined,
       image: null,
-      isAuction: false, // Keep this for form state
-      startingPrice: undefined,
-      reservePrice: undefined, // Changed from minPrice to reservePrice
-      priceDecrement: undefined,
-      priceDecrementInterval: "day", // Changed default to daily
       techStack: "",
       techStackOther: "",
       teamSize: "",
@@ -71,21 +66,10 @@ export function ListProductForm() {
       termsAgreement: false,
       deliverables: [],
       productLink: "",
-      auctionDuration: "30days", // Updated default auction duration
-      noReserve: false, // Initialize noReserve field
-      monthlyExpenses: [], // Initialize empty array for monthly expenses
+      monthlyExpenses: [],
     },
   });
 
-  const reservePrice = form.watch("reservePrice");
-  useEffect(() => {
-    // If reservePrice is 0 or undefined, set noReserve to true
-    if (reservePrice === 0) {
-      form.setValue("noReserve", true);
-    } else if (reservePrice !== undefined) {
-      form.setValue("noReserve", false);
-    }
-  }, [reservePrice, form]);
 
   const { currentSection, handleSectionClick, nextSection, previousSection } = 
     useFormNavigation(sections.length);
@@ -148,13 +132,12 @@ export function ListProductForm() {
         handleSectionClick(1); // Financials
         toast.error("Please fix the errors in the Financials section");
       }
-      else if (errorFields.includes('startingPrice') || errorFields.includes('reservePrice') || 
-              errorFields.includes('priceDecrement') || errorFields.includes('auctionDuration')) {
-        handleSectionClick(5); // Selling Method
-        toast.error("Please fix the errors in the Selling Method section");
+      else if (errorFields.includes('price')) {
+        handleSectionClick(5); // Pricing
+        toast.error("Please fix the errors in the Pricing section");
       }
       else if (errorFields.includes('accuracyAgreement') || errorFields.includes('termsAgreement')) {
-        handleSectionClick(5); // Selling Method (where agreements are)
+        handleSectionClick(5); // Pricing (where agreements are)
         toast.error("You must accept the agreements before submitting");
       }
       
@@ -192,11 +175,6 @@ export function ListProductForm() {
           return;
         }
         
-        // Make sure noReserve is set correctly based on reservePrice
-        if (data.isAuction) {
-          data.noReserve = data.reservePrice === 0;
-          console.log("Setting noReserve flag:", data.noReserve, "based on reservePrice:", data.reservePrice);
-        }
         
         // Submit product data and handle response
         const { success, productId, error } = await handleProductSubmission(data, setIsSubmitting);
@@ -321,7 +299,7 @@ export function ListProductForm() {
   }
 
   const CurrentSectionComponent = sections[currentSection].component;
-  const showAgreements = currentSection === 5; // Only show agreements in Selling Method section
+  const showAgreements = currentSection === 5; // Only show agreements in Pricing section
 
   // Display field-level errors if any exist
   const hasErrors = Object.keys(formErrors).length > 0;

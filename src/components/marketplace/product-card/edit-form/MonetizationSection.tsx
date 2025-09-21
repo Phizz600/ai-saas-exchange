@@ -3,7 +3,7 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/comp
 import { Input } from "@/components/ui/input";
 import { UseFormReturn } from "react-hook-form";
 import { ListProductFormData } from "../../list-product/types";
-import { useState, useEffect } from "react";
+
 
 interface MonetizationSectionProps {
   form: UseFormReturn<Partial<ListProductFormData>>;
@@ -37,40 +37,26 @@ export const MonetizationSection = ({ form }: MonetizationSectionProps) => {
     return !isNaN(parsed) && parsed > 0 ? parsed : 1;
   };
 
-  // Track auction state to conditionally render price field
-  const isAuction = form.watch("isAuction");
-  
-  // If switching to auction, ensure price is cleared
-  useEffect(() => {
-    if (isAuction) {
-      // When editing and switching to auction mode, clear the price field
-      form.setValue("price", undefined);
-    }
-  }, [isAuction, form]);
-
   return (
     <>
-      {/* Only show price field for fixed price listings */}
-      {!isAuction && (
-        <FormField
-          control={form.control}
-          name="price"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Asking Price</FormLabel>
-              <FormControl>
-                <Input
-                  type="text"
-                  value={formatCurrencyInput(field.value?.toString() || '')}
-                  onChange={(e) => field.onChange(parseCurrencyValue(e.target.value))}
-                  className="font-mono"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      )}
+      <FormField
+        control={form.control}
+        name="price"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Asking Price</FormLabel>
+            <FormControl>
+              <Input
+                type="text"
+                value={formatCurrencyInput(field.value?.toString() || '')}
+                onChange={(e) => field.onChange(parseCurrencyValue(e.target.value))}
+                className="font-mono"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
 
       <FormField
         control={form.control}

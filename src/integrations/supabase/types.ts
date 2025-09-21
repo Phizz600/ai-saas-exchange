@@ -634,6 +634,45 @@ export type Database = {
           },
         ]
       }
+      package_purchases: {
+        Row: {
+          amount: number
+          benefits: Json | null
+          created_at: string
+          expires_at: string | null
+          id: string
+          package_type: string
+          payment_intent_id: string | null
+          payment_status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          benefits?: Json | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          package_type: string
+          payment_intent_id?: string | null
+          payment_status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          benefits?: Json | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          package_type?: string
+          payment_intent_id?: string | null
+          payment_status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       price_history: {
         Row: {
           created_at: string

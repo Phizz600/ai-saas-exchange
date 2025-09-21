@@ -1,4 +1,5 @@
 
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useListProductForm } from "./hooks/useListProductForm";
 import { useFormSections } from "./hooks/useFormSections";
@@ -11,10 +12,17 @@ import { FormSubmissionError } from "./components/alerts/FormSubmissionError";
 import { FormSubmissionSuccess } from "./components/alerts/FormSubmissionSuccess";
 import { FormLayout } from "./components/layout/FormLayout";
 import { ListProductFormData } from "./types";
+import { PackagePaymentDialog } from "@/components/payments/PackagePaymentDialog";
 import { toast } from "sonner";
 
-export function ListProductForm() {
+interface ListProductFormProps {
+  selectedPackage?: 'free-listing' | 'featured-listing' | 'premium-exit' | null;
+}
+
+export function ListProductForm({ selectedPackage }: ListProductFormProps) {
   const navigate = useNavigate();
+  const [showPaymentDialog, setShowPaymentDialog] = useState(false);
+  const [pendingSubmissionData, setPendingSubmissionData] = useState<ListProductFormData | null>(null);
   
   // Custom hooks
   const {
@@ -53,6 +61,41 @@ export function ListProductForm() {
   } = useProductSubmission();
 
   const { isLoading, saveForLater } = useAutosave(form, currentSection);
+
+  const handlePaymentSuccess = async () => {
+    if (!pendingSubmissionData) return;
+    
+    setIsSubmitting(true);
+    
+    try {
+      // Submit product data after successful payment
+      const { success, productId, error } = await submitProduct(pendingSubmissionData);
+      
+      if (success && productId) {
+        // Clear package selection and pending data
+        localStorage.removeItem('selectedPackage');
+        setPendingSubmissionData(null);
+        setShowPaymentDialog(false);
+        
+        // Trigger the success redirect
+        handleRedirectToSuccess(productId);
+      } else {
+        // Handle submission failure
+        setSubmissionError(error || "Failed to submit your product after payment. Please contact support.");
+        setIsSubmitting(false);
+        setShowPaymentDialog(false);
+        
+        toast.error("Submission Failed", {
+          description: "Payment was successful but product submission failed. Please contact support.",
+        });
+      }
+    } catch (error) {
+      console.error("Error submitting after payment:", error);
+      setSubmissionError("An unexpected error occurred after payment. Please contact support.");
+      setIsSubmitting(false);
+      setShowPaymentDialog(false);
+    }
+  };
 
   const onSubmit = async (data: ListProductFormData) => {
     // Reset states
@@ -101,10 +144,21 @@ export function ListProductForm() {
           return;
         }
         
-        // Submit product data and handle response
+        // Check if premium package requires payment
+        if (selectedPackage && (selectedPackage === 'featured-listing' || selectedPackage === 'premium-exit')) {
+          // Store submission data and show payment dialog
+          setPendingSubmissionData(data);
+          setShowPaymentDialog(true);
+          setIsSubmitting(false);
+          return;
+        }
+        
+        // For starter package or no package selected, proceed with normal submission
         const { success, productId, error } = await submitProduct(data);
         
         if (success && productId) {
+          // Clear package selection from localStorage
+          localStorage.removeItem('selectedPackage');
           // Trigger the success redirect
           handleRedirectToSuccess(productId);
         } else {
@@ -160,23 +214,39 @@ export function ListProductForm() {
   const hasErrors = Object.keys(formErrors).length > 0;
 
   return (
-    <FormLayout
-      form={form}
-      currentSection={currentSection}
-      totalSections={sections.length}
-      onSubmit={onSubmit}
-      onPrevious={previousSection}
-      onNext={nextSection}
-      onSaveForLater={saveForLater}
-      onSectionClick={handleSectionClick}
-      isSubmitting={isSubmitting}
-      redirecting={redirecting}
-      formErrors={formErrors}
-      submissionAttempted={submissionAttempted}
-      hasErrors={hasErrors}
-      showAgreements={showAgreements}
-    >
-      <CurrentSectionComponent form={form} />
-    </FormLayout>
+    <>
+      <FormLayout
+        form={form}
+        currentSection={currentSection}
+        totalSections={sections.length}
+        onSubmit={onSubmit}
+        onPrevious={previousSection}
+        onNext={nextSection}
+        onSaveForLater={saveForLater}
+        onSectionClick={handleSectionClick}
+        isSubmitting={isSubmitting}
+        redirecting={redirecting}
+        formErrors={formErrors}
+        submissionAttempted={submissionAttempted}
+        hasErrors={hasErrors}
+        showAgreements={showAgreements}
+      >
+        <CurrentSectionComponent form={form} />
+      </FormLayout>
+
+      {/* Package Payment Dialog */}
+      {showPaymentDialog && selectedPackage && (selectedPackage === 'featured-listing' || selectedPackage === 'premium-exit') && (
+        <PackagePaymentDialog
+          open={showPaymentDialog}
+          onClose={() => {
+            setShowPaymentDialog(false);
+            setPendingSubmissionData(null);
+            setIsSubmitting(false);
+          }}
+          packageType={selectedPackage}
+          onSuccess={handlePaymentSuccess}
+        />
+      )}
+    </>
   );
 }

@@ -11,10 +11,13 @@ import {
   TrendingUp, 
   Calendar,
   ExternalLink,
-  Plus
+  Plus,
+  Trash
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import type { Database } from "@/integrations/supabase/types";
+import { DeleteListingConfirmationDialog } from "./DeleteListingConfirmationDialog";
+import { useToast } from "@/hooks/use-toast";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 
@@ -38,6 +41,7 @@ interface UserListing {
 
 export const ActivityOverview = ({ profile }: ActivityOverviewProps) => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [stats, setStats] = useState<UserStats>({
     totalListings: 0,
     totalLikes: 0,
@@ -46,6 +50,16 @@ export const ActivityOverview = ({ profile }: ActivityOverviewProps) => {
   const [listings, setListings] = useState<UserListing[]>([]);
   const [likedProducts, setLikedProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deleteDialog, setDeleteDialog] = useState<{
+    isOpen: boolean;
+    listingId: string | null;
+    listingTitle: string;
+  }>({
+    isOpen: false,
+    listingId: null,
+    listingTitle: "",
+  });
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     fetchActivityData();
@@ -114,6 +128,86 @@ export const ActivityOverview = ({ profile }: ActivityOverviewProps) => {
       month: 'short',
       day: 'numeric',
       year: 'numeric',
+    });
+  };
+
+  const handleDeleteClick = (listing: UserListing) => {
+    setDeleteDialog({
+      isOpen: true,
+      listingId: listing.id,
+      listingTitle: listing.title,
+    });
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteDialog.listingId) return;
+
+    setIsDeleting(true);
+    try {
+      // Delete related data in sequence (cascading deletion)
+      // 1. Delete notifications
+      await supabase
+        .from('notifications')
+        .delete()
+        .eq('related_product_id', deleteDialog.listingId);
+
+      // 2. Delete bids
+      await supabase
+        .from('bids')
+        .delete()
+        .eq('product_id', deleteDialog.listingId);
+
+      // 3. Delete offers
+      await supabase
+        .from('offers')
+        .delete()
+        .eq('product_id', deleteDialog.listingId);
+
+      // 4. Delete analytics
+      await supabase
+        .from('product_analytics')
+        .delete()
+        .eq('product_id', deleteDialog.listingId);
+
+      // 5. Finally delete the product
+      const { error } = await supabase
+        .from('products')
+        .delete()
+        .eq('id', deleteDialog.listingId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Listing deleted",
+        description: "Your listing has been permanently deleted.",
+      });
+
+      // Refresh data
+      await fetchActivityData();
+      
+      // Close dialog
+      setDeleteDialog({
+        isOpen: false,
+        listingId: null,
+        listingTitle: "",
+      });
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete listing. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteDialog({
+      isOpen: false,
+      listingId: null,
+      listingTitle: "",
     });
   };
 
@@ -193,14 +287,24 @@ export const ActivityOverview = ({ profile }: ActivityOverviewProps) => {
                         </span>
                       </div>
                     </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => navigate(`/product/${listing.id}`)}
-                    >
-                      <ExternalLink className="h-4 w-4 mr-1" />
-                      View
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => navigate(`/product/${listing.id}`)}
+                      >
+                        <ExternalLink className="h-4 w-4 mr-1" />
+                        View
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => handleDeleteClick(listing)}
+                      >
+                        <Trash className="h-4 w-4 mr-1" />
+                        Delete
+                      </Button>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -211,15 +315,16 @@ export const ActivityOverview = ({ profile }: ActivityOverviewProps) => {
                 <p className="text-muted-foreground mb-4">
                   Start selling by creating your first product listing.
                 </p>
-                {profile.user_type === "ai_builder" && (
+                <div className="flex justify-center">
                   <Button
+                    variant="outline"
                     onClick={() => navigate('/list-product')}
-                    className="bg-black hover:bg-gray-800 text-white"
+                    className="flex items-center gap-2"
                   >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Create New Listing
+                    <Plus className="h-4 w-4" />
+                    Sell My AI SaaS
                   </Button>
-                )}
+                </div>
               </div>
             )}
           </TabsContent>
@@ -268,6 +373,14 @@ export const ActivityOverview = ({ profile }: ActivityOverviewProps) => {
             )}
           </TabsContent>
         </Tabs>
+
+        <DeleteListingConfirmationDialog
+          isOpen={deleteDialog.isOpen}
+          isDeleting={isDeleting}
+          listingTitle={deleteDialog.listingTitle}
+          onClose={handleDeleteCancel}
+          onConfirm={handleDeleteConfirm}
+        />
       </CardContent>
     </Card>
   );

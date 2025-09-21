@@ -32,7 +32,8 @@ export const HelpDialog = ({ open, onOpenChange }: HelpDialogProps) => {
             Close
           </Button>
           <Button 
-            className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 text-white" 
+            className="hover:opacity-90 text-white" 
+            style={{ backgroundColor: '#8a5cf7' }}
             asChild
           >
             <a 

@@ -71,11 +71,6 @@ export const useProductSubmission = () => {
     try {
       console.log("Starting product submission process...");
       
-      // Make sure noReserve is set correctly based on reservePrice
-      if (data.isAuction) {
-        data.noReserve = data.reservePrice === 0;
-        console.log("Setting noReserve flag:", data.noReserve, "based on reservePrice:", data.reservePrice);
-      }
       
       const result = await handleProductSubmission(data, setIsSubmitting);
       

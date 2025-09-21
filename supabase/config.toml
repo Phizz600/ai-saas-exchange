@@ -39,6 +39,9 @@ verify_jwt = true
 [functions.verify-payment-intent]
 verify_jwt = true
 
+[functions.create-package-payment]
+verify_jwt = true
+
 [functions.update-highest-bid]
 verify_jwt = true
 

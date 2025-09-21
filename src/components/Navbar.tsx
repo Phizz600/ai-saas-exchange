@@ -18,8 +18,7 @@ export const Navbar = () => {
 
   // Show loading state while auth is initializing
   if (loading) {
-    return (
-      <nav className="relative bg-white/80 backdrop-blur-md border-b border-gray-200/50">
+    return <nav className="relative bg-white/80 backdrop-blur-md border-b border-gray-200/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex-shrink-0">
@@ -30,8 +29,7 @@ export const Navbar = () => {
             <div className="animate-pulse bg-gray-200 h-8 w-24 rounded"></div>
           </div>
         </div>
-      </nav>
-    );
+      </nav>;
   }
   const [unreadCount, setUnreadCount] = useState(0);
   const location = useLocation();
@@ -104,7 +102,7 @@ export const Navbar = () => {
     title: "Fees & Pricing",
     href: "/fees-pricing"
   }];
-  return <nav className="relative bg-white/80 backdrop-blur-md border-b border-gray-200/50">
+  return <nav className="relative bg-[#d0d4da]/80 backdrop-blur-md border-b border-gray-200/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -138,11 +136,11 @@ export const Navbar = () => {
                   {/* Hamburger Menu */}
                   <Sheet>
                     <SheetTrigger asChild>
-                      <Button variant="ghost" size="sm" className="p-2" aria-label="Open menu">
+                      <Button variant="ghost" size="sm" className="p-2 hover:bg-[#8a5cf7] group" aria-label="Open menu">
                         <div className="flex flex-col items-center justify-center gap-1.5">
-                          <span className="block h-0.5 w-6 rounded-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9]" />
-                          <span className="block h-0.5 w-6 rounded-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9]" />
-                          <span className="block h-0.5 w-6 rounded-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9]" />
+                          <span className="block h-0.5 w-6 rounded-full bg-[#454c5b] group-hover:bg-white transition-colors" />
+                          <span className="block h-0.5 w-6 rounded-full bg-[#454c5b] group-hover:bg-white transition-colors" />
+                          <span className="block h-0.5 w-6 rounded-full bg-[#454c5b] group-hover:bg-white transition-colors" />
                         </div>
                       </Button>
                     </SheetTrigger>
@@ -209,7 +207,7 @@ export const Navbar = () => {
                   {/* Profile Menu */}
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="flex items-center space-x-2">
+                      <Button variant="ghost" className="flex items-center space-x-2 hover:bg-[#8a5cf7]">
                         <div className="w-8 h-8 bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] rounded-full flex items-center justify-center text-white text-sm font-medium">
                           {user.email?.charAt(0).toUpperCase()}
                         </div>
@@ -273,17 +271,15 @@ export const Navbar = () => {
                     <span className="ml-1 text-xs bg-white/20 px-1 py-0.5 rounded-full">Soon</span>
                   </Button>
                 </>}
-              {user && <Button size="sm" onClick={e => handleNavigationClick(e, '/product-dashboard')} className="h-8 px-3 text-sm bg-gradient-to-r from-[#8B5CF6] to-[#0EA4E9] text-white">
-                  Start building
-                </Button>}
+              {user && <Button size="sm" onClick={e => handleNavigationClick(e, '/product-dashboard')} className="h-8 px-3 text-sm bg-gradient-to-r from-[#8B5CF6] to-[#0EA4E9] text-white">Access Marketplace</Button>}
               <Sheet>
                 <SheetTrigger asChild>
-                  <Button variant="ghost" size="sm" className="p-2" aria-label="Open menu">
-                    <div className="flex flex-col items-center justify-center gap-1.5">
-                      <span className="block h-0.5 w-6 rounded-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9]" />
-                      <span className="block h-0.5 w-6 rounded-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9]" />
-                      <span className="block h-0.5 w-6 rounded-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9]" />
-                    </div>
+                  <Button variant="ghost" size="sm" className="p-2 hover:bg-[#8a5cf7] group" aria-label="Open menu">
+                  <div className="flex flex-col items-center justify-center gap-1.5">
+                    <span className="block h-0.5 w-6 rounded-full bg-[#454c5b] group-hover:bg-white transition-colors" />
+                    <span className="block h-0.5 w-6 rounded-full bg-[#454c5b] group-hover:bg-white transition-colors" />
+                    <span className="block h-0.5 w-6 rounded-full bg-[#454c5b] group-hover:bg-white transition-colors" />
+                  </div>
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="right" className="w-80">
