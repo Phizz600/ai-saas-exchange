@@ -138,9 +138,9 @@ export const Navbar = () => {
                     <SheetTrigger asChild>
                       <Button variant="ghost" size="sm" className="p-2" aria-label="Open menu">
                         <div className="flex flex-col items-center justify-center gap-1.5">
-                          <span className="block h-0.5 w-6 rounded-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9]" />
-                          <span className="block h-0.5 w-6 rounded-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9]" />
-                          <span className="block h-0.5 w-6 rounded-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9]" />
+                          <span className="block h-0.5 w-6 rounded-full bg-[#454c5b]" />
+                          <span className="block h-0.5 w-6 rounded-full bg-[#454c5b]" />
+                          <span className="block h-0.5 w-6 rounded-full bg-[#454c5b]" />
                         </div>
                       </Button>
                     </SheetTrigger>
@@ -267,11 +267,11 @@ export const Navbar = () => {
               <Sheet>
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="sm" className="p-2" aria-label="Open menu">
-                    <div className="flex flex-col items-center justify-center gap-1.5">
-                      <span className="block h-0.5 w-6 rounded-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9]" />
-                      <span className="block h-0.5 w-6 rounded-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9]" />
-                      <span className="block h-0.5 w-6 rounded-full bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9]" />
-                    </div>
+                  <div className="flex flex-col items-center justify-center gap-1.5">
+                    <span className="block h-0.5 w-6 rounded-full bg-[#454c5b]" />
+                    <span className="block h-0.5 w-6 rounded-full bg-[#454c5b]" />
+                    <span className="block h-0.5 w-6 rounded-full bg-[#454c5b]" />
+                  </div>
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="right" className="w-80">
