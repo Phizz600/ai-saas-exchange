@@ -36,7 +36,7 @@ export const ProfileCompletion = ({ profile }: ProfileCompletionProps) => {
               className="h-3 bg-gray-200"
             />
             <div 
-              className="absolute top-0 left-0 h-3 bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] rounded-full transition-all duration-500 ease-out"
+              className="absolute top-0 left-0 h-3 bg-[#8236ef] rounded-full transition-all duration-500 ease-out"
               style={{ width: `${progress}%` }}
             />
           </div>
