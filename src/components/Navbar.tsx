@@ -136,7 +136,7 @@ export const Navbar = () => {
                   {/* Hamburger Menu */}
                   <Sheet>
                     <SheetTrigger asChild>
-                      <Button variant="ghost" size="sm" className="p-2" aria-label="Open menu">
+                      <Button variant="ghost" size="sm" className="p-2 hover:bg-[#8a5cf7]" aria-label="Open menu">
                         <div className="flex flex-col items-center justify-center gap-1.5">
                           <span className="block h-0.5 w-6 rounded-full bg-[#454c5b]" />
                           <span className="block h-0.5 w-6 rounded-full bg-[#454c5b]" />
@@ -266,7 +266,7 @@ export const Navbar = () => {
               {user && <Button size="sm" onClick={e => handleNavigationClick(e, '/product-dashboard')} className="h-8 px-3 text-sm bg-gradient-to-r from-[#8B5CF6] to-[#0EA4E9] text-white">Access Marketplace</Button>}
               <Sheet>
                 <SheetTrigger asChild>
-                  <Button variant="ghost" size="sm" className="p-2" aria-label="Open menu">
+                  <Button variant="ghost" size="sm" className="p-2 hover:bg-[#8a5cf7]" aria-label="Open menu">
                   <div className="flex flex-col items-center justify-center gap-1.5">
                     <span className="block h-0.5 w-6 rounded-full bg-[#454c5b]" />
                     <span className="block h-0.5 w-6 rounded-full bg-[#454c5b]" />
