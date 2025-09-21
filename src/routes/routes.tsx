@@ -110,38 +110,27 @@ const protectedRoutes = [
       </CleanProtectedRoute>
     ),
   },
-  // Browse marketplace route temporarily disabled
-  // {
-  //   path: "/browse-marketplace",
-  //   element: (
-  //     <CleanProtectedRoute>
-  //       <BrowseMarketplace />
-  //     </CleanProtectedRoute>
-  //   ),
-  // },
+  {
+    path: "/marketplace",
+    element: (
+      <CleanProtectedRoute>
+        <Marketplace />
+      </CleanProtectedRoute>
+    ),
+  },
+  {
+    path: "/browse-marketplace",
+    element: (
+      <CleanProtectedRoute>
+        <BrowseMarketplace />
+      </CleanProtectedRoute>
+    ),
+  },
   {
     path: "/product-dashboard", 
     element: (
       <CleanProtectedRoute>
-        <div className="min-h-screen flex flex-col items-center justify-center p-4">
-          <h1 className="text-3xl font-bold mb-4 exo-2-heading">Dashboard Coming Soon</h1>
-          <p className="text-gray-600 mb-6">We're working hard to bring you an amazing dashboard experience. Stay tuned!</p>
-          
-          <div className="flex flex-col sm:flex-row gap-4">
-            <button 
-              onClick={() => window.location.href = '/profile'} 
-              className="px-6 py-3 bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white rounded-lg hover:opacity-90 transition-opacity"
-            >
-              Complete Your Profile
-            </button>
-            <button 
-              onClick={() => window.location.href = '/list-product'} 
-              className="px-6 py-3 bg-black text-white rounded-lg hover:opacity-90 transition-opacity"
-            >
-              List a Product
-            </button>
-          </div>
-        </div>
+        <ProductDashboard />
       </CleanProtectedRoute>
     ),
   },

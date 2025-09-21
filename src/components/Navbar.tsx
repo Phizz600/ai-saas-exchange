@@ -181,6 +181,9 @@ export const Navbar = () => {
                                   {unreadCount > 9 ? '9+' : unreadCount}
                                 </Badge>}
                             </Link>
+                            <Link to="/marketplace" className="block text-gray-700 hover:text-[#8B5CF6] transition-colors">
+                              Marketplace
+                            </Link>
                             <Link to="/profile" className="block text-gray-700 hover:text-[#8B5CF6] transition-colors">
                               Profile
                             </Link>
@@ -214,6 +217,11 @@ export const Navbar = () => {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-56 bg-white border border-gray-200 shadow-lg">
+                      <DropdownMenuItem className="text-gray-700 hover:text-[#8B5CF6] hover:bg-gray-50">
+                        <Link to="/marketplace" className="w-full py-2 px-3">
+                          Marketplace
+                        </Link>
+                      </DropdownMenuItem>
                       <DropdownMenuItem className="text-gray-700 hover:text-[#8B5CF6] hover:bg-gray-50">
                         <Link to="/profile" className="w-full py-2 px-3">
                           Profile
@@ -312,6 +320,9 @@ export const Navbar = () => {
                             {unreadCount > 0 && <Badge className="h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
                                 {unreadCount > 9 ? '9+' : unreadCount}
                               </Badge>}
+                          </Link>
+                          <Link to="/marketplace" className="block text-gray-700 hover:text-[#8B5CF6] transition-colors">
+                            Marketplace
                           </Link>
                           <Link to="/profile" className="block text-gray-700 hover:text-[#8B5CF6] transition-colors">
                             Profile
