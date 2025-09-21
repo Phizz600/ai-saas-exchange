@@ -204,7 +204,7 @@ export const Navbar = () => {
                   {/* Profile Menu */}
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="flex items-center space-x-2">
+                      <Button variant="ghost" className="flex items-center space-x-2 hover:bg-[#8a5cf7]">
                         <div className="w-8 h-8 bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] rounded-full flex items-center justify-center text-white text-sm font-medium">
                           {user.email?.charAt(0).toUpperCase()}
                         </div>
