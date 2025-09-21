@@ -69,7 +69,7 @@ export function FeaturedListingDownsellDialog({
         <DialogHeader>
           <DialogTitle className="text-white flex items-center justify-center gap-2">
             <Star className="h-6 w-6 text-purple-400" />
-            One Final Offer
+            Final Offer
           </DialogTitle>
         </DialogHeader>
         
