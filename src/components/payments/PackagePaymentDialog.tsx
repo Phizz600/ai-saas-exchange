@@ -7,6 +7,7 @@ import { useStripeInitialization } from "@/hooks/payments/useStripeInitializatio
 import { usePackagePayment } from "@/hooks/payments/usePackagePayment";
 import { PackagePaymentForm } from "./PackagePaymentForm";
 import { PackageDownsellDialog } from "./PackageDownsellDialog";
+import { FeaturedListingDownsellDialog } from "./FeaturedListingDownsellDialog";
 
 interface PackagePaymentDialogProps {
   open: boolean;
@@ -23,6 +24,7 @@ export function PackagePaymentDialog({
 }: PackagePaymentDialogProps) {
   const [showPaymentForm, setShowPaymentForm] = useState(false);
   const [showDownsell, setShowDownsell] = useState(false);
+  const [showSecondaryDownsell, setShowSecondaryDownsell] = useState(false);
   const { stripePromise, error: stripeError } = useStripeInitialization();
   
   const {
@@ -49,6 +51,7 @@ export function PackagePaymentDialog({
     if (!open) {
       setShowPaymentForm(false);
       setShowDownsell(false);
+      setShowSecondaryDownsell(false);
       resetPayment();
     }
   }, [open]);
@@ -64,6 +67,16 @@ export function PackagePaymentDialog({
 
   const handleDownsellClose = () => {
     setShowDownsell(false);
+    onClose();
+  };
+
+  const handleSecondaryDownsell = () => {
+    setShowDownsell(false);
+    setShowSecondaryDownsell(true);
+  };
+
+  const handleSecondaryDownsellClose = () => {
+    setShowSecondaryDownsell(false);
     onClose();
   };
 
@@ -199,6 +212,13 @@ export function PackagePaymentDialog({
         open={showDownsell}
         onClose={handleDownsellClose}
         originalPackageType={packageType}
+        onSuccess={onSuccess}
+        onSecondaryDownsell={handleSecondaryDownsell}
+      />
+      
+      <FeaturedListingDownsellDialog
+        open={showSecondaryDownsell}
+        onClose={handleSecondaryDownsellClose}
         onSuccess={onSuccess}
       />
     </Dialog>

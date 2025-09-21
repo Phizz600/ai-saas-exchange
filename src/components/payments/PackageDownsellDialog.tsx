@@ -12,13 +12,15 @@ interface PackageDownsellDialogProps {
   onClose: () => void;
   originalPackageType: 'featured-listing' | 'premium-exit';
   onSuccess: () => void;
+  onSecondaryDownsell?: () => void;
 }
 
 export function PackageDownsellDialog({ 
   open, 
   onClose, 
   originalPackageType, 
-  onSuccess 
+  onSuccess,
+  onSecondaryDownsell 
 }: PackageDownsellDialogProps) {
   const [showPaymentForm, setShowPaymentForm] = useState(false);
   const { stripePromise, error: stripeError } = useStripeInitialization();
@@ -164,7 +166,13 @@ export function PackageDownsellDialog({
               
               <Button
                 variant="outline"
-                onClick={onClose}
+                onClick={() => {
+                  if (originalPackageType === 'premium-exit' && onSecondaryDownsell) {
+                    onSecondaryDownsell();
+                  } else {
+                    onClose();
+                  }
+                }}
                 className="w-full border-gray-600 text-gray-300 hover:bg-gray-800"
               >
                 No Thanks, I'll Pass
