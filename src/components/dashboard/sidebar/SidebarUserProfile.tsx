@@ -26,15 +26,15 @@ export const SidebarUserProfile = () => {
           </AvatarFallback>
         </Avatar>
         <div className="flex flex-col">
-          <span className="text-sm font-medium">
+          <span className="text-sm font-medium text-white">
             {profile?.full_name || user?.email?.split('@')[0]}
           </span>
-          <span className="text-xs text-gray-500">{user?.email}</span>
+          <span className="text-xs text-white/60">{user?.email}</span>
         </div>
       </div>
       <button 
         onClick={handleSignOut} 
-        className="text-gray-400 hover:text-gray-600"
+        className="text-white/60 hover:text-white transition-colors"
       >
         <LogOut className="h-5 w-5" />
       </button>
