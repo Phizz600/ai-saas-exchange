@@ -6,9 +6,7 @@
  * @returns {string} The full URL origin with /auth path
  */
 export const getRedirectUrl = () => {
-  // Always use the production domain for OAuth redirects
-  // This ensures consistent branding in OAuth consent screens
-  const isProd = window.location.hostname === 'aiexchange.club';
-  const baseUrl = isProd ? 'https://aiexchange.club' : window.location.origin;
-  return `${baseUrl}/auth?type=recovery`;
+  // Use the current origin for OAuth redirects to avoid SSL certificate issues
+  // This ensures the redirect works regardless of domain configuration
+  return `${window.location.origin}/auth?type=recovery`;
 };
