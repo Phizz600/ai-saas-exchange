@@ -67,6 +67,18 @@ export const CleanAuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
+  // Helper function to check if welcome toast was shown today
+  const shouldShowWelcomeToast = () => {
+    const lastToastDate = localStorage.getItem('lastWelcomeToastDate');
+    const today = new Date().toDateString();
+    
+    if (!lastToastDate || lastToastDate !== today) {
+      localStorage.setItem('lastWelcomeToastDate', today);
+      return true;
+    }
+    return false;
+  };
+
   const signOut = async () => {
     try {
       await NewAuthService.signOut();
@@ -111,7 +123,7 @@ export const CleanAuthProvider = ({ children }: AuthProviderProps) => {
           setProfile(null);
         }
 
-        if (event === 'SIGNED_IN') {
+        if (event === 'SIGNED_IN' && shouldShowWelcomeToast()) {
           toast({
             title: "Welcome back!",
             description: "You have been signed in successfully.",
