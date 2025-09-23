@@ -1,7 +1,4 @@
 import { useEffect, useState } from "react";
-import { Header } from "@/components/Header";
-import { Search } from "lucide-react";
-import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -13,7 +10,6 @@ export const DashboardLayout = ({
   children: React.ReactNode;
 }) => {
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
   const isMobile = useIsMobile();
   useEffect(() => {
     const fetchProfile = async () => {
@@ -41,11 +37,9 @@ export const DashboardLayout = ({
     };
     fetchProfile();
   }, []);
-  const firstName = profile?.first_name || profile?.full_name?.split(' ')[0] || 'there';
   return <AnimatedGradientBackground>
       <div className="min-h-screen w-full">
-        <Header />
-        <main className="container mx-auto px-3 sm:px-4 py-3 sm:py-6 md:py-8 mt-16">
+        <main className="container mx-auto px-3 sm:px-4 py-3 sm:py-6 md:py-8">
           <div className="flex flex-col space-y-4 md:space-y-8">
             {children}
           </div>
