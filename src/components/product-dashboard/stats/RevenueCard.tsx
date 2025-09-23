@@ -3,15 +3,16 @@ import { formatCurrency } from "@/lib/utils";
 
 interface RevenueCardProps {
   value: number;
+  change?: { value: number; type: 'increase' | 'decrease' };
 }
 
-export const RevenueCard = ({ value }: RevenueCardProps) => {
+export const RevenueCard = ({ value, change }: RevenueCardProps) => {
   return (
     <StatsCard
       title="Total Revenue"
       value={formatCurrency(value)}
-      change={{ value: 4, type: 'increase' }}
-      subtitle="vs last month"
+      change={change}
+      subtitle={change ? "vs last month" : undefined}
     />
   );
 };

@@ -2,15 +2,16 @@ import { StatsCard } from "../StatsCard";
 
 interface ViewsCardProps {
   value: number;
+  change?: { value: number; type: 'increase' | 'decrease' };
 }
 
-export const ViewsCard = ({ value }: ViewsCardProps) => {
+export const ViewsCard = ({ value, change }: ViewsCardProps) => {
   return (
     <StatsCard
       title="Total Views"
       value={value}
-      change={{ value: 12, type: 'increase' }}
-      subtitle="vs last month"
+      change={change}
+      subtitle={change ? "vs last month" : undefined}
     />
   );
 };

@@ -2,15 +2,16 @@ import { StatsCard } from "../StatsCard";
 
 interface BidsCardProps {
   value: number;
+  change?: { value: number; type: 'increase' | 'decrease' };
 }
 
-export const BidsCard = ({ value }: BidsCardProps) => {
+export const BidsCard = ({ value, change }: BidsCardProps) => {
   return (
     <StatsCard
       title="Total Bids"
       value={value}
-      change={{ value: 15, type: 'increase' }}
-      subtitle="vs last month"
+      change={change}
+      subtitle={change ? "vs last month" : undefined}
     />
   );
 };
