@@ -64,9 +64,7 @@ export const ProductOffers = () => {
           <StoreIcon className="h-12 w-12 text-gray-400" />
           <div>
             <h3 className="text-lg font-semibold mb-2">No Offers Yet</h3>
-            <p className="text-gray-600 mb-4">
-              When you receive offers from buyers, they'll appear here.
-            </p>
+            <p className="text-gray-600 mb-4">When you receive offers from potential buyers, they'll appear here.</p>
             <Button asChild variant="green">
               <Link to="/list-product">Sell My AI SaaS</Link>
             </Button>
