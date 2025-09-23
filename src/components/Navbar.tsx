@@ -220,27 +220,27 @@ export const Navbar = () => {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-56 bg-white border border-gray-200 shadow-lg">
-                      <DropdownMenuItem className="text-gray-700 hover:text-white hover:bg-[#8a5cf7]">
+                      <DropdownMenuItem className="text-gray-700 focus:text-white focus:bg-[#8a5cf7]">
                         <Link to="/marketplace" className="w-full py-2 px-3">
                           Marketplace
                         </Link>
                       </DropdownMenuItem>
-                      <DropdownMenuItem className="text-gray-700 hover:text-white hover:bg-[#8a5cf7]">
+                      <DropdownMenuItem className="text-gray-700 focus:text-white focus:bg-[#8a5cf7]">
                         <Link to="/profile" className="w-full py-2 px-3">
                           Profile
                         </Link>
                       </DropdownMenuItem>
-                      <DropdownMenuItem className="text-gray-700 hover:text-white hover:bg-[#8a5cf7]">
+                      <DropdownMenuItem className="text-gray-700 focus:text-white focus:bg-[#8a5cf7]">
                         <Link to="/product-dashboard" className="w-full py-2 px-3">
                           Dashboard
                         </Link>
                       </DropdownMenuItem>
-                      <DropdownMenuItem className="text-gray-700 hover:text-white hover:bg-[#8a5cf7]">
+                      <DropdownMenuItem className="text-gray-700 focus:text-white focus:bg-[#8a5cf7]">
                         <Link to="/list-product" className="w-full py-2 px-3">
                           List Product
                         </Link>
                       </DropdownMenuItem>
-                      <DropdownMenuItem className="text-gray-700 hover:text-white hover:bg-[#8a5cf7]">
+                      <DropdownMenuItem className="text-gray-700 focus:text-white focus:bg-[#8a5cf7]">
                         <Link to="/settings" className="w-full py-2 px-3">
                           Settings
                         </Link>
