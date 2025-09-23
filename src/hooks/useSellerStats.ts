@@ -5,12 +5,17 @@ import { supabase } from "@/integrations/supabase/client";
 interface SellerStats {
   totalRevenue: number;
   productCount: number;
+  activeProductCount: number;
   views: number;
   totalBids: number;
+  totalOffers: number;
+  conversionRate: number;
+  averageRevenuePerProduct: number;
   revenueChange?: { value: number; type: 'increase' | 'decrease' };
   productCountChange?: { value: number; type: 'increase' | 'decrease' };
   viewsChange?: { value: number; type: 'increase' | 'decrease' };
   bidsChange?: { value: number; type: 'increase' | 'decrease' };
+  conversionRateChange?: { value: number; type: 'increase' | 'decrease' };
 }
 
 export const useSellerStats = () => {
@@ -36,6 +41,12 @@ export const useSellerStats = () => {
           )
         `)
         .eq('seller_id', user.id);
+
+      // Get offers data
+      const { data: offers } = await supabase
+        .from('offers')
+        .select('id, product_id')
+        .in('product_id', products?.map(p => p.id) || []);
 
       // Get last month's data for comparison
       const lastMonthStart = new Date();
@@ -68,6 +79,8 @@ export const useSellerStats = () => {
       // Calculate current month's metrics
       const totalRevenue = products.reduce((sum, product) => sum + (product.price || 0), 0);
       const productCount = products.length;
+      const activeProductCount = products.filter(p => p.status === 'active').length;
+      const totalOffers = offers?.length || 0;
       
       // Calculate current month's analytics
       const currentMonth = new Date().getMonth();
@@ -88,6 +101,10 @@ export const useSellerStats = () => {
           totalBids: acc.totalBids + monthlyBids,
         };
       }, { views: 0, totalBids: 0 });
+
+      // Calculate derived metrics
+      const conversionRate = analytics.views > 0 ? (totalOffers / analytics.views) * 100 : 0;
+      const averageRevenuePerProduct = productCount > 0 ? totalRevenue / productCount : 0;
 
       // Calculate last month's metrics for comparison
       let lastMonthRevenue = 0;
@@ -125,12 +142,17 @@ export const useSellerStats = () => {
       return {
         totalRevenue,
         productCount,
+        activeProductCount,
         views: analytics.views,
         totalBids: analytics.totalBids,
+        totalOffers,
+        conversionRate,
+        averageRevenuePerProduct,
         revenueChange: calculateChange(totalRevenue, lastMonthRevenue),
         productCountChange: calculateChange(productCount, lastMonthProductCount),
         viewsChange: calculateChange(analytics.views, lastMonthAnalytics.views),
         bidsChange: calculateChange(analytics.totalBids, lastMonthAnalytics.totalBids),
+        conversionRateChange: calculateChange(conversionRate, 0), // Simplified for MVP
       };
     },
     retry: 1,

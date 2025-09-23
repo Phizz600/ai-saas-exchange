@@ -1,4 +1,5 @@
 import { StatsCard } from "../StatsCard";
+import { Eye } from "lucide-react";
 
 interface ViewsCardProps {
   value: number;
@@ -9,9 +10,10 @@ export const ViewsCard = ({ value, change }: ViewsCardProps) => {
   return (
     <StatsCard
       title="Total Views"
-      value={value}
+      value={value.toLocaleString()}
       change={change}
-      subtitle={change ? "vs last month" : undefined}
+      subtitle={change ? "vs last month" : "product impressions"}
+      icon={<Eye className="w-4 h-4 text-primary" />}
     />
   );
 };

@@ -10,14 +10,18 @@ interface StatsCardProps {
     type: 'increase' | 'decrease';
   };
   subtitle?: string;
+  icon?: React.ReactNode;
 }
 
-export const StatsCard = ({ title, value, change, subtitle }: StatsCardProps) => {
+export const StatsCard = ({ title, value, change, subtitle, icon }: StatsCardProps) => {
   return (
-    <Card className="p-4 md:p-6">
+    <Card className="p-4 md:p-6 hover:shadow-md transition-shadow">
       <div className="flex flex-col">
-        <h3 className="text-sm font-medium text-gray-500">{title}</h3>
-        <p className="text-xl md:text-2xl font-bold mt-1">{value}</p>
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-medium text-muted-foreground">{title}</h3>
+          {icon}
+        </div>
+        <p className="text-xl md:text-2xl font-bold mt-2">{value}</p>
         {change && (
           <div className="flex items-center mt-2 space-x-1">
             {change.type === 'increase' ? (
