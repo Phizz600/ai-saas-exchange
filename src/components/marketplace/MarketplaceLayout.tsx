@@ -132,10 +132,10 @@ export const MarketplaceLayout = () => {
                   <div className="p-3 rounded-full bg-[#0EA4E9]/10">
                     <Clock className="h-5 w-5 text-[#0EA4E9]" />
                   </div>
-                  <h3 className="font-semibold text-lg">Dutch Auction Model</h3>
+                  <h3 className="font-semibold text-lg">Fixed Price Marketplace</h3>
                 </div>
                 <p className="mt-3 text-gray-600 pl-11">
-                  Prices decrease over time until someone makes a purchase
+                  Purchase AI tools and platforms at transparent fixed prices
                 </p>
               </div>
             </motion.div>

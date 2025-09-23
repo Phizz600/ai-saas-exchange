@@ -34,12 +34,12 @@ export const faqCategories: FAQCategory[] = [
       {
         id: "what-is",
         question: "What is AI Exchange Club?",
-        answer: "AI Exchange Club is a specialized marketplace designed specifically for buying and selling AI tools, SaaS platforms, and applications. We use innovative Dutch auctions and smart matching technology to connect buyers with the perfect AI solutions for their needs. Think of us as the bridge between AI creators and those looking to leverage AI power in their business or personal projects."
+        answer: "AI Exchange Club is a specialized marketplace designed specifically for buying and selling AI tools, SaaS platforms, and applications. We use smart matching technology to connect buyers with the perfect AI solutions for their needs. Think of us as the bridge between AI creators and those looking to leverage AI power in their business or personal projects."
       },
       {
-        id: "dutch-auction",
-        question: "How does the Dutch auction model work?",
-        answer: "Our Dutch auction model is pretty straightforward! Unlike traditional auctions where prices go up, our listings start at a higher price and gradually decrease over time until someone makes a purchase. It's a bit like a game of chicken - wait too long for a lower price and someone else might grab it before you! This ensures both sellers get fair market value and buyers don't overpay. You can set alerts to notify you when a listing reaches your desired price point."
+        id: "pricing-model",
+        question: "How does pricing work on the platform?",
+        answer: "Our platform uses a transparent fixed-price model. Sellers set their asking prices for AI tools and platforms, and buyers can make offers or purchase at the listed price. This ensures fair and transparent transactions for everyone involved."
       },
       {
         id: "fees",
@@ -72,7 +72,7 @@ export const faqCategories: FAQCategory[] = [
       {
         id: "negotiate",
         question: "Can I negotiate prices outside auctions?",
-        answer: "To keep our marketplace fair and secure for everyone, all transactions must go through our platform. This policy exists to protect both buyers and sellers from fraud and ensure all parties are protected by our escrow system. However, our Dutch auction model naturally finds the fair market price, and you can always set price alerts to be notified when a listing hits your target price point. This approach has proven to be more effective than traditional negotiation!"
+        answer: "To keep our marketplace fair and secure for everyone, all transactions must go through our platform. This policy exists to protect both buyers and sellers from fraud and ensure all parties are protected by our escrow system. You can always make offers on listings or set price alerts to be notified when a listing hits your target price point. This approach has proven to be more effective than traditional negotiation!"
       },
       {
         id: "payment-methods",
@@ -110,7 +110,7 @@ export const faqCategories: FAQCategory[] = [
       {
         id: "reserve-price",
         question: "Can I set a reserve price?",
-        answer: "Yes! We understand you have a minimum price in mind. For Dutch auctions, you can set a reserve price - this is the lowest amount the auction will reach before ending. This gives you complete control over your minimum acceptable price while still leveraging the benefits of the Dutch auction model. Your reserve price isn't visible to buyers, creating a natural market dynamic while protecting your interests."
+        answer: "Yes! We understand you have a minimum price in mind. You can set a reserve price - this is the lowest amount you're willing to accept for your listing. This gives you complete control over your minimum acceptable price while still allowing buyers to make offers. Your reserve price isn't visible to buyers, creating natural market dynamics while protecting your interests."
       },
       {
         id: "sell-time",

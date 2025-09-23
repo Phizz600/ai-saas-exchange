@@ -48,14 +48,6 @@ export const ProductCard = ({
             alt={product.title} 
             className="w-full h-full object-cover" 
           />
-          {product.isAuction && (
-            <div className="absolute top-2 right-2">
-              <Badge variant="secondary" className="bg-amber-100 text-amber-700">
-                <TrendingDown className="w-4 h-4 mr-1" />
-                Dutch Auction
-              </Badge>
-            </div>
-          )}
         </div>
         
         <div className="p-6 space-y-4">

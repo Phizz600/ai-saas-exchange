@@ -115,14 +115,6 @@ export function ProductImage({
         </Button>
       </div>
       
-      {isAuction && (
-        <div className="absolute bottom-2 left-2 z-30">
-          <Badge variant="secondary" className="bg-amber-500/90 text-white border-0 flex items-center">
-            <TrendingDown className="w-3.5 h-3.5 mr-1" />
-            Dutch Auction
-          </Badge>
-        </div>
-      )}
       
       {isAuction && timeLeft && (
         <div className="absolute bottom-2 right-2 z-30">

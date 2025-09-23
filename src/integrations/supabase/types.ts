@@ -797,8 +797,6 @@ export type Database = {
         Row: {
           active_users: string | null
           admin_feedback: string | null
-          auction_end_time: string | null
-          auction_status: string | null
           business_location: string | null
           business_model: string | null
           business_type: string | null
@@ -806,15 +804,12 @@ export type Database = {
           category_other: string | null
           competitors: string | null
           created_at: string
-          current_price: number | null
           customer_acquisition_cost: number | null
           deliverables: string[] | null
           demo_url: string | null
           description: string | null
           gross_profit_margin: number | null
           has_patents: boolean | null
-          highest_bid: number | null
-          highest_bidder_id: string | null
           id: string
           image_url: string | null
           industry: string | null
@@ -829,7 +824,6 @@ export type Database = {
           listing_type: string
           llm_type: string | null
           llm_type_other: string | null
-          min_price: number | null
           monetization: string | null
           monetization_other: string | null
           monthly_churn_rate: number | null
@@ -838,23 +832,18 @@ export type Database = {
           monthly_revenue: number | null
           monthly_traffic: number | null
           nda_content: string | null
-          no_reserve: boolean | null
           number_of_employees: string | null
           payment_status: string | null
           payment_verified_at: string | null
           price: number
-          price_decrement: number | null
-          price_decrement_interval: string | null
           product_age: string | null
           product_link: string | null
           requires_nda: boolean | null
-          reserve_price: number | null
           reviewed_at: string | null
           reviewed_by: string | null
           seller_id: string
           special_notes: string | null
           stage: string
-          starting_price: number | null
           status: string | null
           submission_completed_at: string | null
           team_size: string | null
@@ -866,8 +855,6 @@ export type Database = {
         Insert: {
           active_users?: string | null
           admin_feedback?: string | null
-          auction_end_time?: string | null
-          auction_status?: string | null
           business_location?: string | null
           business_model?: string | null
           business_type?: string | null
@@ -875,15 +862,12 @@ export type Database = {
           category_other?: string | null
           competitors?: string | null
           created_at?: string
-          current_price?: number | null
           customer_acquisition_cost?: number | null
           deliverables?: string[] | null
           demo_url?: string | null
           description?: string | null
           gross_profit_margin?: number | null
           has_patents?: boolean | null
-          highest_bid?: number | null
-          highest_bidder_id?: string | null
           id?: string
           image_url?: string | null
           industry?: string | null
@@ -898,7 +882,6 @@ export type Database = {
           listing_type?: string
           llm_type?: string | null
           llm_type_other?: string | null
-          min_price?: number | null
           monetization?: string | null
           monetization_other?: string | null
           monthly_churn_rate?: number | null
@@ -907,23 +890,18 @@ export type Database = {
           monthly_revenue?: number | null
           monthly_traffic?: number | null
           nda_content?: string | null
-          no_reserve?: boolean | null
           number_of_employees?: string | null
           payment_status?: string | null
           payment_verified_at?: string | null
           price: number
-          price_decrement?: number | null
-          price_decrement_interval?: string | null
           product_age?: string | null
           product_link?: string | null
           requires_nda?: boolean | null
-          reserve_price?: number | null
           reviewed_at?: string | null
           reviewed_by?: string | null
           seller_id: string
           special_notes?: string | null
           stage: string
-          starting_price?: number | null
           status?: string | null
           submission_completed_at?: string | null
           team_size?: string | null
@@ -935,8 +913,6 @@ export type Database = {
         Update: {
           active_users?: string | null
           admin_feedback?: string | null
-          auction_end_time?: string | null
-          auction_status?: string | null
           business_location?: string | null
           business_model?: string | null
           business_type?: string | null
@@ -944,15 +920,12 @@ export type Database = {
           category_other?: string | null
           competitors?: string | null
           created_at?: string
-          current_price?: number | null
           customer_acquisition_cost?: number | null
           deliverables?: string[] | null
           demo_url?: string | null
           description?: string | null
           gross_profit_margin?: number | null
           has_patents?: boolean | null
-          highest_bid?: number | null
-          highest_bidder_id?: string | null
           id?: string
           image_url?: string | null
           industry?: string | null
@@ -967,7 +940,6 @@ export type Database = {
           listing_type?: string
           llm_type?: string | null
           llm_type_other?: string | null
-          min_price?: number | null
           monetization?: string | null
           monetization_other?: string | null
           monthly_churn_rate?: number | null
@@ -976,23 +948,18 @@ export type Database = {
           monthly_revenue?: number | null
           monthly_traffic?: number | null
           nda_content?: string | null
-          no_reserve?: boolean | null
           number_of_employees?: string | null
           payment_status?: string | null
           payment_verified_at?: string | null
           price?: number
-          price_decrement?: number | null
-          price_decrement_interval?: string | null
           product_age?: string | null
           product_link?: string | null
           requires_nda?: boolean | null
-          reserve_price?: number | null
           reviewed_at?: string | null
           reviewed_by?: string | null
           seller_id?: string
           special_notes?: string | null
           stage?: string
-          starting_price?: number | null
           status?: string | null
           submission_completed_at?: string | null
           team_size?: string | null
@@ -1247,10 +1214,6 @@ export type Database = {
         Args: { amount: number }
         Returns: number
       }
-      check_auctions_ending_soon: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
       check_high_traffic: {
         Args: Record<PropertyKey, never>
         Returns: undefined
@@ -1292,10 +1255,6 @@ export type Database = {
       truncate_to_date: {
         Args: { ts: string }
         Returns: string
-      }
-      update_dutch_auction_prices: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
       }
     }
     Enums: {

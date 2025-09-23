@@ -27,7 +27,6 @@ export function ProductCard({ product }: ProductCardProps) {
   const { hasSigned, isCheckingStatus, setHasSigned } = useNdaStatus(product.id);
   const navigate = useNavigate();
   
-  const isAuction = product.listing_type === 'dutch_auction' || !!product.auction_end_time;
   const isVerified = product.is_revenue_verified || product.is_code_audited || product.is_traffic_verified;
   
   const requiresNda = product.requires_nda === true;
@@ -58,12 +57,12 @@ export function ProductCard({ product }: ProductCardProps) {
     <div onClick={handleCardClick} className="cursor-pointer">
       <Card className="overflow-hidden transition-all duration-300 group hover:shadow-md">
         <CardHeader className="p-0">
-          <ProductImage
+           <ProductImage
             image={product.image_url || "/placeholder.svg"}
             title={product.title}
             isImageLoaded={isImageLoaded}
             setIsImageLoaded={setIsImageLoaded}
-            isAuction={isAuction}
+            isAuction={false}
             timeLeft={timeLeft}
             isFavorited={isFavorited}
             isVerified={isVerified}
@@ -78,7 +77,6 @@ export function ProductCard({ product }: ProductCardProps) {
           title={product.title}
           description={showLimitedInfo ? undefined : product.description}
           price={product.price}
-          current_price={product.current_price}
           category={product.category}
           stage={product.stage}
           monthlyRevenue={product.monthly_revenue}
@@ -89,13 +87,6 @@ export function ProductCard({ product }: ProductCardProps) {
           is_code_audited={product.is_code_audited}
           is_traffic_verified={product.is_traffic_verified}
           requires_nda={showLimitedInfo}
-          auction_end_time={product.auction_end_time}
-          reserve_price={product.reserve_price}
-          price_decrement={product.price_decrement}
-          price_decrement_interval={product.price_decrement_interval}
-          no_reserve={product.no_reserve}
-          listing_type={product.listing_type}
-          updated_at={product.updated_at}
         />
         
         <CardFooter className="p-5 pt-0 space-y-3 flex flex-col">
@@ -107,7 +98,7 @@ export function ProductCard({ product }: ProductCardProps) {
               onSignSuccess={handleNdaSuccess}
             />
           ) : (
-            <ProductActions productId={product.id} isAuction={isAuction} />
+            <ProductActions productId={product.id} isAuction={false} />
           )}
         </CardFooter>
       </Card>

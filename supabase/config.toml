@@ -42,11 +42,6 @@ verify_jwt = true
 [functions.create-package-payment]
 verify_jwt = true
 
-[functions.update-highest-bid]
-verify_jwt = true
-
-[functions.update-dutch-auction-prices]
-verify_jwt = false
 
 [functions.get-stripe-publishable-key]
 verify_jwt = true
