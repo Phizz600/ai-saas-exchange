@@ -67,7 +67,7 @@ export const ProductOffers = () => {
             <p className="text-gray-600 mb-4">
               When you receive offers from buyers, they'll appear here.
             </p>
-            <Button asChild>
+            <Button asChild variant="green">
               <Link to="/list-product">Sell My AI SaaS</Link>
             </Button>
           </div>
