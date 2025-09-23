@@ -4,7 +4,6 @@ import { RevenueCard } from "./stats/RevenueCard";
 import { ProductsCard } from "./stats/ProductsCard";
 import { ViewsCard } from "./stats/ViewsCard";
 import { BidsCard } from "./stats/BidsCard";
-import { ConversionRateCard } from "./stats/ConversionRateCard";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 export const MarketplaceStats = () => {
@@ -12,7 +11,7 @@ export const MarketplaceStats = () => {
   const isMobile = useIsMobile();
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 md:gap-6">
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
       {/* Revenue spans 2 columns on larger screens */}
       <div className="col-span-2 lg:col-span-1">
         <RevenueCard 
@@ -33,9 +32,6 @@ export const MarketplaceStats = () => {
       </div>
       <div className="col-span-1">
         <BidsCard value={stats?.totalOffers || 0} change={stats?.bidsChange} />
-      </div>
-      <div className="col-span-1">
-        <ConversionRateCard value={stats?.conversionRate || 0} change={stats?.conversionRateChange} />
       </div>
     </div>
   );
