@@ -59,7 +59,7 @@ export const DashboardLayout = ({ children }: { children: React.ReactNode }) => 
               <div className="flex flex-col space-y-4 md:space-y-8">
                 <div className="flex flex-col space-y-4 md:flex-row md:justify-between md:items-center">
                   <div>
-                    <h1 className="text-2xl md:text-3xl font-bold text-white font-exo">Hey {firstName} 👋</h1>
+                    <h1 className="text-2xl md:text-3xl font-bold text-white font-exo">🌊 Hey {firstName} 👋</h1>
                     <p className="text-sm md:text-base text-white/80 mt-1 md:mt-2">Track, manage and analyze your AI products performance.</p>
                   </div>
                   <div className="w-full md:w-auto mt-2 md:mt-0">
