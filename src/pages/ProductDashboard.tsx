@@ -97,7 +97,7 @@ function ProductDashboard() {
           </div>
           
           <div>
-            <h2 className="text-xl font-semibold mb-4 exo-2-header text-neutral-50">Your Products</h2>
+            <h2 className="text-xl font-semibold mb-4 exo-2-header text-neutral-50">Your Listings</h2>
             <ProductDashboardContent showVerifiedOnly={showVerifiedOnly} />
           </div>
         </TabsContent>
