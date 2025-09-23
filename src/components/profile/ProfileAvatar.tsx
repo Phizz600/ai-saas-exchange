@@ -193,7 +193,7 @@ export const ProfileAvatar = ({ avatarUrl, userId, onAvatarUpdate }: ProfileAvat
           <Button
             variant="secondary"
             size="sm"
-            className="bg-white/90 hover:bg-white"
+            className="bg-[#8B5CF6]/90 hover:bg-[#8B5CF6] text-white"
             onClick={() => document.getElementById('avatar-upload')?.click()}
             disabled={isUploading}
           >
@@ -203,7 +203,7 @@ export const ProfileAvatar = ({ avatarUrl, userId, onAvatarUpdate }: ProfileAvat
             <Button
               variant="destructive"
               size="sm"
-              className="bg-white/90 hover:bg-white"
+              className="bg-[#D946EE]/90 hover:bg-[#D946EE] text-white"
               onClick={handleRemoveAvatar}
               disabled={isUploading}
             >
