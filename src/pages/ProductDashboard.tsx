@@ -127,7 +127,7 @@ function ProductDashboard() {
               <ActiveBidsProducts />
             </div>
             <div>
-              <h2 className="text-xl font-semibold mb-4 exo-2-header">Products You've Saved</h2>
+              <h2 className="text-xl font-semibold mb-4 exo-2-header">Saved Listings</h2>
               <WatchedProducts />
             </div>
           </div>
