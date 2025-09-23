@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/contexts/CleanAuthContext";
 export const Navbar = () => {
+  // ALL HOOKS MUST BE CALLED FIRST - BEFORE ANY EARLY RETURNS
   const {
     user,
     loading,
@@ -23,22 +24,6 @@ export const Navbar = () => {
   const isProfilePage = location.pathname === '/profile';
   const isHomePage = location.pathname === '/';
   const isPolicyPage = location.pathname === '/policies' || location.pathname === '/terms' || location.pathname === '/nda-policy' || location.pathname === '/fees-pricing';
-
-  // Show loading state while auth is initializing
-  if (loading) {
-    return <nav className="relative bg-white/80 backdrop-blur-md border-b border-gray-200/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex-shrink-0">
-              <Link to="/" className="flex items-center space-x-2">
-                <img src="/lovable-uploads/f1d82e78-2a24-4c2b-b93c-d1a196c1065b.png" alt="AI Exchange Club" className="h-14 w-auto" />
-              </Link>
-            </div>
-            <div className="animate-pulse bg-gray-200 h-8 w-24 rounded"></div>
-          </div>
-        </div>
-      </nav>;
-  }
 
   // Subscribe to new messages to update unread count
   useEffect(() => {
@@ -60,6 +45,7 @@ export const Navbar = () => {
       supabase.removeChannel(channel);
     };
   }, [user]);
+
   const handleNavigationClick = (e: React.MouseEvent, path: string) => {
     e.preventDefault();
     if (!user) {
@@ -75,10 +61,12 @@ export const Navbar = () => {
       navigate(path);
     }
   };
+
   const handleSignOut = async () => {
     await signOut();
     navigate('/');
   };
+
   const navigationItems = [{
     title: "Claim Free Valuation",
     href: "https://aiexchange.club/ai-saas-quiz",
@@ -88,6 +76,7 @@ export const Navbar = () => {
     href: "/contact",
     requiresAuth: false
   }];
+
   const policyPages = [{
     title: "Platform Policies",
     href: "/policies"
@@ -101,6 +90,23 @@ export const Navbar = () => {
     title: "Fees & Pricing",
     href: "/fees-pricing"
   }];
+
+  // Show loading state while auth is initializing - AFTER ALL HOOKS
+  if (loading) {
+    return <nav className="relative bg-white/80 backdrop-blur-md border-b border-gray-200/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex-shrink-0">
+              <Link to="/" className="flex items-center space-x-2">
+                <img src="/lovable-uploads/f1d82e78-2a24-4c2b-b93c-d1a196c1065b.png" alt="AI Exchange Club" className="h-14 w-auto" />
+              </Link>
+            </div>
+            <div className="animate-pulse bg-gray-200 h-8 w-24 rounded"></div>
+          </div>
+        </div>
+      </nav>;
+  }
+
   return <nav className="relative bg-[#d0d4da]/80 backdrop-blur-md border-b border-gray-200/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
