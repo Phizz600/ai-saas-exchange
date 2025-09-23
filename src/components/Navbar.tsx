@@ -15,6 +15,14 @@ export const Navbar = () => {
     loading,
     signOut
   } = useAuth();
+  
+  const [unreadCount, setUnreadCount] = useState(0);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const isProfilePage = location.pathname === '/profile';
+  const isHomePage = location.pathname === '/';
+  const isPolicyPage = location.pathname === '/policies' || location.pathname === '/terms' || location.pathname === '/nda-policy' || location.pathname === '/fees-pricing';
 
   // Show loading state while auth is initializing
   if (loading) {
@@ -31,15 +39,6 @@ export const Navbar = () => {
         </div>
       </nav>;
   }
-  const [unreadCount, setUnreadCount] = useState(0);
-  const location = useLocation();
-  const navigate = useNavigate();
-  const {
-    toast
-  } = useToast();
-  const isProfilePage = location.pathname === '/profile';
-  const isHomePage = location.pathname === '/';
-  const isPolicyPage = location.pathname === '/policies' || location.pathname === '/terms' || location.pathname === '/nda-policy' || location.pathname === '/fees-pricing';
 
   // Subscribe to new messages to update unread count
   useEffect(() => {
