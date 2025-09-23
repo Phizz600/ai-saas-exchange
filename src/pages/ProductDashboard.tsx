@@ -13,34 +13,35 @@ import { AuctionAnalytics } from "@/components/product-dashboard/AuctionAnalytic
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { EditListingForm } from "@/components/product-dashboard/EditListingForm";
-
 function ProductDashboard() {
   const [showVerifiedOnly, setShowVerifiedOnly] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<string | undefined>(undefined);
 
   // Fetch user's auction products
-  const { data: auctionProducts } = useQuery({
+  const {
+    data: auctionProducts
+  } = useQuery({
     queryKey: ['user-auction-products'],
     queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: {
+          user
+        }
+      } = await supabase.auth.getUser();
       if (!user) return [];
-
-      const { data, error } = await supabase
-        .from('products')
-        .select('id, title, auction_end_time')
-        .eq('seller_id', user.id)
-        .not('auction_end_time', 'is', null)
-        .order('created_at', { ascending: false });
-
+      const {
+        data,
+        error
+      } = await supabase.from('products').select('id, title, auction_end_time').eq('seller_id', user.id).not('auction_end_time', 'is', null).order('created_at', {
+        ascending: false
+      });
       if (error) {
         console.error('Error fetching auction products:', error);
         return [];
       }
-
       return data;
-    },
+    }
   });
-
   return <DashboardLayout>
       <Tabs defaultValue="seller" className="space-y-8">
         <TabsList className="grid w-full grid-cols-2 max-w-[400px]">
@@ -57,45 +58,36 @@ function ProductDashboard() {
         <TabsContent value="seller" className="space-y-8">
           <MarketplaceStats />
           
-          {auctionProducts && auctionProducts.length > 0 && (
-            <div>
+          {auctionProducts && auctionProducts.length > 0 && <div>
               <h2 className="text-xl font-semibold mb-4 exo-2-header">Auction Analytics</h2>
               <div className="mb-4">
                 <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
                   <label htmlFor="auction-select" className="text-sm font-medium">
                     Select auction to view:
                   </label>
-                  <select 
-                    id="auction-select"
-                    value={selectedProductId || ''}
-                    onChange={(e) => setSelectedProductId(e.target.value || undefined)}
-                    className="border rounded p-2 bg-background"
-                  >
+                  <select id="auction-select" value={selectedProductId || ''} onChange={e => setSelectedProductId(e.target.value || undefined)} className="border rounded p-2 bg-background">
                     <option value="">Select an auction</option>
-                    {auctionProducts.map(product => (
-                      <option key={product.id} value={product.id}>
+                    {auctionProducts.map(product => <option key={product.id} value={product.id}>
                         {product.title}
-                      </option>
-                    ))}
+                      </option>)}
                   </select>
                 </div>
               </div>
               <AuctionAnalytics productId={selectedProductId} />
-            </div>
-          )}
+            </div>}
           
           <div>
-            <h2 className="text-xl font-semibold mb-4 exo-2-header">Offers on Your Products</h2>
+            <h2 className="text-xl font-semibold mb-4 exo-2-header text-neutral-50">Offers on Your Products</h2>
             <ProductOffers />
           </div>
           
           <div>
-            <h2 className="text-xl font-semibold mb-4 exo-2-header">Edit Your Listings</h2>
+            <h2 className="text-xl font-semibold mb-4 exo-2-header text-neutral-50">Edit Your Listings</h2>
             <EditListingForm />
           </div>
           
           <div>
-            <h2 className="text-xl font-semibold mb-4 exo-2-header">Your Products</h2>
+            <h2 className="text-xl font-semibold mb-4 exo-2-header text-neutral-50">Your Products</h2>
             <ProductDashboardContent showVerifiedOnly={showVerifiedOnly} />
           </div>
         </TabsContent>
@@ -133,6 +125,5 @@ function ProductDashboard() {
       </Tabs>
     </DashboardLayout>;
 }
-
 export default ProductDashboard;
 export { ProductDashboard };
