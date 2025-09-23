@@ -21,7 +21,7 @@ const AnimatedGradientBackground = ({
   const particles = renderParticles();
   return <div className="min-h-screen relative overflow-hidden">
       {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#13293D] via-[#16324F] to-[#0EA4E9] z-0">
+      <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-purple-900 to-blue-900 z-0">
         {/* Floating particles */}
         <div className="absolute inset-0 overflow-hidden">
           {particles.map(particle => <motion.div key={particle.id} className="absolute rounded-full bg-white/10 backdrop-blur-sm" style={{
