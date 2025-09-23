@@ -20,6 +20,11 @@ export const ProfileCompletion = ({ profile }: ProfileCompletionProps) => {
   const completedCount = steps.filter(step => step.completed).length;
   const progress = Math.round((completedCount / steps.length) * 100);
 
+  // Hide the card when profile is 100% complete
+  if (progress === 100) {
+    return null;
+  }
+
   return (
     <Card className="animate-fade-in bg-gradient-to-r from-[#D946EE]/5 via-[#8B5CF6]/5 to-[#0EA4E9]/5">
       <CardHeader>
