@@ -1,4 +1,3 @@
-
 import { Card } from "@/components/ui/card";
 import { StoreIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -7,24 +6,32 @@ import { getProductOffers, updateOfferStatus } from "@/integrations/supabase/pro
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { OfferCard } from "./offer-cards/OfferCard";
-
 export const ProductOffers = () => {
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
   const queryClient = useQueryClient();
-
   const {
     data: offers = [],
-    isLoading,
+    isLoading
   } = useQuery({
     queryKey: ['product-offers'],
-    queryFn: getProductOffers,
+    queryFn: getProductOffers
   });
-
-  const { mutate: updateStatus } = useMutation({
-    mutationFn: ({ offerId, status }: { offerId: string; status: 'accepted' | 'declined' }) => 
-      updateOfferStatus(offerId, status),
+  const {
+    mutate: updateStatus
+  } = useMutation({
+    mutationFn: ({
+      offerId,
+      status
+    }: {
+      offerId: string;
+      status: 'accepted' | 'declined';
+    }) => updateOfferStatus(offerId, status),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['product-offers'] });
+      queryClient.invalidateQueries({
+        queryKey: ['product-offers']
+      });
       toast({
         title: "Offer updated",
         description: "The offer status has been updated successfully."
@@ -38,12 +45,9 @@ export const ProductOffers = () => {
       });
     }
   });
-
   if (isLoading) {
-    return (
-      <div className="space-y-4">
-        {[1, 2, 3].map(i => (
-          <Card key={i} className="p-6">
+    return <div className="space-y-4">
+        {[1, 2, 3].map(i => <Card key={i} className="p-6">
             <div className="animate-pulse flex items-center gap-4">
               <div className="w-16 h-16 bg-gray-200 rounded-lg" />
               <div className="flex-1 space-y-2">
@@ -51,15 +55,11 @@ export const ProductOffers = () => {
                 <div className="h-4 bg-gray-200 rounded w-1/2" />
               </div>
             </div>
-          </Card>
-        ))}
-      </div>
-    );
+          </Card>)}
+      </div>;
   }
-
   if (!offers.length) {
-    return (
-      <Card className="p-6 text-center">
+    return <Card className="p-6 text-center">
         <div className="flex flex-col items-center gap-4">
           <StoreIcon className="h-12 w-12 text-gray-400" />
           <div>
@@ -68,23 +68,16 @@ export const ProductOffers = () => {
               When you receive offers from buyers, they'll appear here.
             </p>
             <Button asChild>
-              <Link to="/list-product">List a Product</Link>
+              <Link to="/list-product">Sell My AI SaaS</Link>
             </Button>
           </div>
         </div>
-      </Card>
-    );
+      </Card>;
   }
-
-  return (
-    <div className="space-y-4">
-      {offers.map(offer => (
-        <OfferCard
-          key={offer.id}
-          offer={offer}
-          onUpdateStatus={(offerId, status) => updateStatus({ offerId, status })}
-        />
-      ))}
-    </div>
-  );
+  return <div className="space-y-4">
+      {offers.map(offer => <OfferCard key={offer.id} offer={offer} onUpdateStatus={(offerId, status) => updateStatus({
+      offerId,
+      status
+    })} />)}
+    </div>;
 };
