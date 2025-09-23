@@ -47,7 +47,7 @@ export const DashboardLayout = ({
   return <AnimatedGradientBackground>
       <SidebarProvider>
         <div className="min-h-screen flex w-full">
-          <DashboardSidebar />
+          
           <SidebarInset>
             <Header />
             <main className="container mx-auto px-3 sm:px-4 py-3 sm:py-6 md:py-8 mt-16">
