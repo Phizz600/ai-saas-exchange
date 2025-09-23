@@ -47,15 +47,6 @@ export const DashboardLayout = ({
         <Header />
         <main className="container mx-auto px-3 sm:px-4 py-3 sm:py-6 md:py-8 mt-16">
           <div className="flex flex-col space-y-4 md:space-y-8">
-            <div className="flex flex-col space-y-4 md:flex-row md:justify-between md:items-center">
-              
-              <div className="w-full md:w-auto mt-2 md:mt-0">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/60 h-4 w-4" />
-                  <Input placeholder="Search products..." className="pl-10 w-full md:w-[250px] bg-white/10 backdrop-blur-md border-white/20 text-white placeholder-white/60" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
-                </div>
-              </div>
-            </div>
             {children}
           </div>
         </main>

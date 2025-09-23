@@ -2,7 +2,8 @@ import { DashboardLayout } from "@/components/product-dashboard/DashboardLayout"
 import { MarketplaceStats } from "@/components/product-dashboard/MarketplaceStats";
 import { ProductDashboardContent } from "@/components/product-dashboard/ProductDashboardContent";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Store, ShoppingBag, ToggleLeft, ToggleRight, Edit } from "lucide-react";
+import { Store, ShoppingBag, ToggleLeft, ToggleRight, Edit, Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { StatsCard } from "@/components/product-dashboard/StatsCard";
 import { ActiveBidsProducts } from "@/components/product-dashboard/ActiveBidsProducts";
 import { WatchedProducts } from "@/components/product-dashboard/WatchedProducts";
@@ -44,16 +45,25 @@ function ProductDashboard() {
   });
   return <DashboardLayout>
       <Tabs defaultValue="seller" className="space-y-8">
-        <TabsList className="grid w-full grid-cols-2 max-w-[400px]">
-          <TabsTrigger value="seller" className="flex items-center gap-2">
-            <Store className="h-4 w-4" />
-            Seller Dashboard
-          </TabsTrigger>
-          <TabsTrigger value="buyer" className="flex items-center gap-2">
-            <ShoppingBag className="h-4 w-4" />
-            Buyer Dashboard
-          </TabsTrigger>
-        </TabsList>
+        <div className="flex flex-col space-y-4 md:flex-row md:justify-between md:items-center">
+          <TabsList className="grid w-full grid-cols-2 max-w-[400px]">
+            <TabsTrigger value="seller" className="flex items-center gap-2">
+              <Store className="h-4 w-4" />
+              Seller Dashboard
+            </TabsTrigger>
+            <TabsTrigger value="buyer" className="flex items-center gap-2">
+              <ShoppingBag className="h-4 w-4" />
+              Buyer Dashboard
+            </TabsTrigger>
+          </TabsList>
+          
+          <div className="w-full md:w-auto mt-2 md:mt-0">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/60 h-4 w-4" />
+              <Input placeholder="Search products..." className="pl-10 w-full md:w-[250px] bg-white/10 backdrop-blur-md border-white/20 text-white placeholder-white/60" />
+            </div>
+          </div>
+        </div>
         
         <TabsContent value="seller" className="space-y-8">
           <MarketplaceStats />
