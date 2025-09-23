@@ -245,7 +245,7 @@ export const Navbar = () => {
                           Settings
                         </Link>
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={handleSignOut} className="text-gray-700 hover:text-red-600 hover:bg-red-50">
+                      <DropdownMenuItem onClick={handleSignOut} className="text-gray-700 focus:text-white focus:bg-[#8a5cf7]">
                         <LogOut className="mr-2 h-4 w-4" />
                         Sign Out
                       </DropdownMenuItem>
