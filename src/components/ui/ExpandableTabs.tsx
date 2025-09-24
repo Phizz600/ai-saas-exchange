@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { LayoutDashboard, User, Store, MessageCircle, Bell } from "lucide-react";
+import { LayoutDashboard, User, Store, MessageCircle, Bell, Plus } from "lucide-react";
 
 // Custom hook for outside click
 const useOnClickOutside = (ref: React.RefObject<HTMLElement>, handler: (event: Event) => void) => {
@@ -110,6 +110,7 @@ export default function ExpandableTabs() {
     { title: "Dashboard", icon: LayoutDashboard, path: "/product-dashboard" },
     { title: "Profile", icon: User, path: "/profile" },
     { title: "Marketplace", icon: Store, path: "/marketplace" },
+    { title: "List Business", icon: Plus, path: "/list-business" },
     { title: "Messages", icon: MessageCircle, path: "/messages" },
     { title: "Notifications", icon: Bell, onClick: () => console.log("Notifications clicked") },
   ];
