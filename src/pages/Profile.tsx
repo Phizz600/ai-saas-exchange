@@ -134,20 +134,20 @@ export const Profile = () => {
     fetchProfile();
   }, [navigate, toast]);
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center bg-white">
+    return <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-purple-900 to-blue-900">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
       </div>;
   }
   if (!profile) {
-    return <div className="min-h-screen flex items-center justify-center bg-white">
+    return <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-purple-900 to-blue-900">
         <div className="text-center">
-          <h2 className="text-2xl font-semibold mb-4 text-accent">Loading Profile...</h2>
-          <p className="text-muted-foreground mb-4">Setting up your profile...</p>
+          <h2 className="text-2xl font-semibold mb-4 text-white">Loading Profile...</h2>
+          <p className="text-white/70 mb-4">Setting up your profile...</p>
           <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary mx-auto"></div>
         </div>
       </div>;
   }
-  return <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+  return <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-blue-900">
       <div className="container mx-auto px-3 py-6">
         <ExpandableTabs />
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
