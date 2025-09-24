@@ -97,6 +97,47 @@ export function ListProductForm({ selectedPackage }: ListProductFormProps) {
     }
   };
 
+  const handleContinueWithFree = async () => {
+    if (!pendingSubmissionData) return;
+    
+    setIsSubmitting(true);
+    
+    try {
+      // Modify the submission data to use free-listing package
+      const freeSubmissionData = {
+        ...pendingSubmissionData,
+        selectedPackage: 'free-listing' as const
+      };
+      
+      // Submit product data with free package
+      const { success, productId, error } = await submitProduct(freeSubmissionData);
+      
+      if (success && productId) {
+        // Update package selection and clear pending data
+        localStorage.setItem('selectedPackage', 'free-listing');
+        setPendingSubmissionData(null);
+        setShowPaymentDialog(false);
+        
+        toast.success('Your product has been listed with the free package!');
+        
+        // Trigger the success redirect
+        handleRedirectToSuccess(productId);
+      } else {
+        // Handle submission failure
+        setSubmissionError(error || "Failed to submit your product. Please try again.");
+        setIsSubmitting(false);
+        setShowPaymentDialog(false);
+        setPendingSubmissionData(null);
+      }
+    } catch (error) {
+      console.error("Error in free submission:", error);
+      setSubmissionError("An error occurred while submitting. Please try again.");
+      setIsSubmitting(false);
+      setShowPaymentDialog(false);
+      setPendingSubmissionData(null);
+    }
+  };
+
   const onSubmit = async (data: ListProductFormData) => {
     // Reset states
     clearErrors();
@@ -245,6 +286,7 @@ export function ListProductForm({ selectedPackage }: ListProductFormProps) {
           }}
           packageType={selectedPackage}
           onSuccess={handlePaymentSuccess}
+          onContinueWithFree={handleContinueWithFree}
         />
       )}
     </>

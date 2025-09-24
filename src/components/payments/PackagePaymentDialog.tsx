@@ -14,13 +14,15 @@ interface PackagePaymentDialogProps {
   onClose: () => void;
   packageType: 'featured-listing' | 'premium-exit';
   onSuccess: () => void;
+  onContinueWithFree?: () => void;
 }
 
 export function PackagePaymentDialog({ 
   open, 
   onClose, 
   packageType, 
-  onSuccess 
+  onSuccess,
+  onContinueWithFree
 }: PackagePaymentDialogProps) {
   const [showPaymentForm, setShowPaymentForm] = useState(false);
   const [showDownsell, setShowDownsell] = useState(false);
@@ -220,6 +222,7 @@ export function PackagePaymentDialog({
         open={showSecondaryDownsell}
         onClose={handleSecondaryDownsellClose}
         onSuccess={onSuccess}
+        onContinueWithFree={onContinueWithFree}
       />
     </Dialog>
   );

@@ -11,12 +11,14 @@ interface FeaturedListingDownsellDialogProps {
   open: boolean;
   onClose: () => void;
   onSuccess: () => void;
+  onContinueWithFree?: () => void;
 }
 
 export function FeaturedListingDownsellDialog({ 
   open, 
   onClose, 
-  onSuccess 
+  onSuccess,
+  onContinueWithFree
 }: FeaturedListingDownsellDialogProps) {
   const [showPaymentForm, setShowPaymentForm] = useState(false);
   const { stripePromise, error: stripeError } = useStripeInitialization();
@@ -143,7 +145,7 @@ export function FeaturedListingDownsellDialog({
               
               <Button
                 variant="ghost"
-                onClick={onClose}
+                onClick={onContinueWithFree || onClose}
                 className="w-full text-gray-400 hover:text-white hover:bg-gray-800"
               >
                 No Thanks, Continue with Free Listing
