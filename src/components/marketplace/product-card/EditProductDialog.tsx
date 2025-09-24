@@ -7,9 +7,13 @@ import { handleProductUpdate } from "../list-product/utils/formSubmissionHandler
 import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { ListProductFormData } from "../list-product/types";
-import { BasicInfoSection } from "./edit-form/BasicInfoSection";
-import { MonetizationSection } from "./edit-form/MonetizationSection";
-import { FinancialSection } from "./edit-form/FinancialSection";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { BasicInfoSection } from "../list-product/form-sections/BasicInfoSection";
+import { FinancialSection } from "../list-product/form-sections/FinancialSection";
+import { TechnicalSection } from "../list-product/form-sections/TechnicalSection";
+import { TrafficSection } from "../list-product/form-sections/TrafficSection";
+import { SpecialNotesSection } from "../list-product/form-sections/SpecialNotesSection";
+import { PricingSection } from "../list-product/form-sections/PricingSection";
 
 interface EditProductDialogProps {
   product: any;
@@ -21,37 +25,49 @@ export const EditProductDialog = ({ product, isOpen, onClose }: EditProductDialo
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
-  const form = useForm<Partial<ListProductFormData>>({
+  const form = useForm<ListProductFormData>({
     defaultValues: {
-      title: product.title,
-      description: product.description,
+      title: product.title || '',
+      description: product.description || '',
       price: product.price,
-      category: product.category,
-      stage: product.stage,
-      industry: product.industry,
+      category: product.category || '',
+      stage: product.stage || '',
+      industry: product.industry || '',
       monthlyRevenue: product.monthly_revenue,
       monthlyProfit: product.monthly_profit,
       grossProfitMargin: product.gross_profit_margin,
       monthlyChurnRate: product.monthly_churn_rate,
-      monthlyTraffic: product.monthly_traffic?.toString(),
-      activeUsers: product.active_users,
-      techStack: Array.isArray(product.tech_stack) ? product.tech_stack[0] : null,
-      techStackOther: product.tech_stack_other,
-      teamSize: product.team_size,
-      hasPatents: product.has_patents,
-      competitors: product.competitors,
-      demoUrl: product.demo_url,
-      productAge: product.product_age,
-      businessLocation: product.business_location,
-      specialNotes: product.special_notes,
-      numberOfEmployees: product.number_of_employees,
+      monthlyTraffic: product.monthly_traffic?.toString() || '',
+      activeUsers: product.active_users || '',
+      techStack: Array.isArray(product.tech_stack) ? product.tech_stack[0] || '' : product.tech_stack || '',
+      techStackOther: product.tech_stack_other || '',
+      teamSize: product.team_size || '',
+      hasPatents: product.has_patents || false,
+      competitors: product.competitors || '',
+      demoUrl: product.demo_url || '',
+      productAge: product.product_age || '',
+      businessLocation: product.business_location || '',
+      specialNotes: product.special_notes || '',
+      numberOfEmployees: product.number_of_employees || '',
       customerAcquisitionCost: product.customer_acquisition_cost,
-      monetization: product.monetization_other ? 'other' : product.monetization,
-      monetizationOther: product.monetization_other,
+      monetization: product.monetization_other ? 'other' : product.monetization || '',
+      monetizationOther: product.monetization_other || '',
+      llmType: product.llm_type || '',
+      llmTypeOther: product.llm_type_other || '',
+      integrations: product.integrations || [],
+      integrations_other: product.integrations_other || '',
+      deliverables: product.deliverables || [],
+      monthlyExpenses: product.monthly_expenses || [],
+      businessType: product.business_type || 'B2B',
+      productLink: product.product_link || '',
+      image: null, // File input will handle this differently
+      isVerified: false,
+      accuracyAgreement: false,
+      termsAgreement: false,
     },
   });
 
-  const onSubmit = async (data: Partial<ListProductFormData>) => {
+  const onSubmit = async (data: ListProductFormData) => {
     const success = await handleProductUpdate(product.id, data, setIsSubmitting);
     if (success) {
       onClose();
@@ -66,13 +82,63 @@ export const EditProductDialog = ({ product, isOpen, onClose }: EditProductDialo
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <BasicInfoSection form={form} />
-              <MonetizationSection form={form} />
-              <FinancialSection form={form} />
-            </div>
+            <Accordion type="multiple" defaultValue={["basics", "financials", "technical"]} className="w-full">
+              <AccordionItem value="basics">
+                <AccordionTrigger className="text-lg font-semibold">
+                  Basics
+                </AccordionTrigger>
+                <AccordionContent>
+                  <BasicInfoSection form={form} />
+                </AccordionContent>
+              </AccordionItem>
 
-            <div className="flex justify-end gap-2">
+              <AccordionItem value="financials">
+                <AccordionTrigger className="text-lg font-semibold">
+                  Financials
+                </AccordionTrigger>
+                <AccordionContent>
+                  <FinancialSection form={form} />
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="technical">
+                <AccordionTrigger className="text-lg font-semibold">
+                  Technical Details
+                </AccordionTrigger>
+                <AccordionContent>
+                  <TechnicalSection form={form} />
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="traffic">
+                <AccordionTrigger className="text-lg font-semibold">
+                  Traffic & Users
+                </AccordionTrigger>
+                <AccordionContent>
+                  <TrafficSection form={form} />
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="special-notes">
+                <AccordionTrigger className="text-lg font-semibold">
+                  Special Notes
+                </AccordionTrigger>
+                <AccordionContent>
+                  <SpecialNotesSection form={form} />
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="selling-method">
+                <AccordionTrigger className="text-lg font-semibold">
+                  Selling Method
+                </AccordionTrigger>
+                <AccordionContent>
+                  <PricingSection form={form} />
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+
+            <div className="flex justify-end gap-2 pt-4 border-t">
               <Button variant="outline" onClick={onClose} type="button">
                 Cancel
               </Button>
