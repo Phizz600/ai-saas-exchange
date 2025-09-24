@@ -10,12 +10,12 @@ export function Toaster() {
       toastOptions={{
         classNames: {
           toast:
-            "group toast group-[.toaster]:bg-white/10 group-[.toaster]:backdrop-blur-lg group-[.toaster]:border group-[.toaster]:border-white/20 group-[.toaster]:text-white group-[.toaster]:shadow-xl group-[.toaster]:shadow-black/10",
-          description: "group-[.toast]:text-white/80",
+            "group toast group-[.toaster]:bg-white group-[.toaster]:border group-[.toaster]:border-gray-200 group-[.toaster]:text-black group-[.toaster]:shadow-lg",
+          description: "group-[.toast]:text-gray-600",
           actionButton:
-            "group-[.toast]:bg-white/20 group-[.toast]:text-white group-[.toast]:border group-[.toast]:border-white/30 group-[.toast]:hover:bg-white/30",
+            "group-[.toast]:bg-gray-100 group-[.toast]:text-black group-[.toast]:border group-[.toast]:border-gray-200 group-[.toast]:hover:bg-gray-200",
           cancelButton:
-            "group-[.toast]:bg-white/10 group-[.toast]:text-white/70 group-[.toast]:border group-[.toast]:border-white/20 group-[.toast]:hover:bg-white/20",
+            "group-[.toast]:bg-gray-50 group-[.toast]:text-gray-600 group-[.toast]:border group-[.toast]:border-gray-200 group-[.toast]:hover:bg-gray-100",
         },
       }}
     />
