@@ -96,7 +96,7 @@ export const DealCard = ({ deal, isExample = false }: DealCardProps) => {
 
   return (
     <TooltipProvider>
-      <Card className="border border-border/50 bg-white backdrop-blur-sm">
+      <Card className="border border-border/50 bg-white">
       <CardHeader className="pb-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="space-y-1">
