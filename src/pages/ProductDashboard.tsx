@@ -16,6 +16,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { EditListingForm } from "@/components/product-dashboard/EditListingForm";
 import { DealTrackerPipeline } from "@/components/deal-tracker/DealTrackerPipeline";
+import ExpandableTabs from "@/components/ui/ExpandableTabs";
 
 function ProductDashboard() {
   const [showVerifiedOnly, setShowVerifiedOnly] = useState(false);
@@ -47,6 +48,7 @@ function ProductDashboard() {
     }
   });
   return <DashboardLayout>
+      <ExpandableTabs />
       <Tabs defaultValue="seller" className="space-y-8">
         <div className="flex flex-col space-y-4 md:flex-row md:justify-between md:items-center">
           <TabsList className="grid w-full grid-cols-2 max-w-[400px]">
