@@ -79,10 +79,22 @@ export const DealCard = ({ deal }: DealCardProps) => {
             </div>
             <div className="flex flex-wrap items-center gap-4 text-xs text-foreground/70 mt-1">
               <span>
-                <strong>Buyer:</strong> {deal.buyer_name}
+                <strong>Buyer:</strong>{" "}
+                <Link 
+                  to={`/profile/${deal.buyer_id}`} 
+                  className="text-primary hover:text-primary/80 transition-colors underline"
+                >
+                  {deal.buyer_name}
+                </Link>
               </span>
               <span>
-                <strong>Seller:</strong> {deal.seller_name}
+                <strong>Seller:</strong>{" "}
+                <Link 
+                  to={`/profile/${deal.seller_id}`} 
+                  className="text-primary hover:text-primary/80 transition-colors underline"
+                >
+                  {deal.seller_name}
+                </Link>
               </span>
             </div>
           </div>
