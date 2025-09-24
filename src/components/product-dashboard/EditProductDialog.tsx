@@ -8,6 +8,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
+import { Trash } from "lucide-react";
 import { ListProductFormData } from "../marketplace/list-product/types";
 import { BasicInfoSection } from "../marketplace/list-product/form-sections/BasicInfoSection";
 import { FinancialSection } from "../marketplace/list-product/form-sections/FinancialSection";
@@ -133,6 +134,40 @@ export function EditProductDialog({ product, isOpen, onClose }: EditProductDialo
     }
   };
 
+  const onDelete = async () => {
+    if (!product?.id) return;
+    
+    const confirmed = window.confirm("Are you sure you want to delete this product? This action cannot be undone.");
+    if (!confirmed) return;
+    
+    setIsSubmitting(true);
+    try {
+      const { error } = await supabase
+        .from('products')
+        .delete()
+        .eq('id', product.id);
+
+      if (error) throw error;
+
+      toast.success({
+        title: "Product deleted",
+        description: "Your product has been successfully deleted.",
+      });
+
+      queryClient.invalidateQueries({ queryKey: ['user-products'] });
+      onClose();
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to delete product. Please try again.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
@@ -197,7 +232,17 @@ export function EditProductDialog({ product, isOpen, onClose }: EditProductDialo
               </AccordionItem>
             </Accordion>
 
-            <DialogFooter>
+            <DialogFooter className="flex gap-2">
+              <Button 
+                type="button" 
+                variant="destructive" 
+                onClick={onDelete}
+                disabled={isSubmitting}
+                className="bg-red-600 hover:bg-red-700"
+              >
+                <Trash className="h-4 w-4 mr-2" />
+                Delete
+              </Button>
               <Button type="button" variant="outline" onClick={onClose}>
                 Cancel
               </Button>
