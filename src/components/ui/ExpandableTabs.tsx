@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { LayoutDashboard, User, Store, MessageCircle, Bell, Plus } from "lucide-react";
+import { LayoutDashboard, User, Store, MessageCircle, Bell, Plus, LogOut } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 // Custom hook for outside click
 const useOnClickOutside = (ref: React.RefObject<HTMLElement>, handler: (event: Event) => void) => {
@@ -104,6 +106,7 @@ export default function ExpandableTabs() {
   const outsideClickRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const { toast } = useToast();
 
   // Sample tabs data
   const tabs: Tab[] = [
@@ -114,6 +117,32 @@ export default function ExpandableTabs() {
     { title: "Messages", icon: MessageCircle, path: "/messages" },
     { title: "Notifications", icon: Bell, onClick: () => console.log("Notifications clicked") },
   ];
+
+  // Handle sign out
+  const handleSignOut = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        toast({
+          title: "Error signing out",
+          description: error.message,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Signed out successfully",
+          description: "You have been signed out of your account.",
+        });
+        navigate('/');
+      }
+    } catch (error) {
+      toast({
+        title: "Error signing out",
+        description: "An unexpected error occurred.",
+        variant: "destructive",
+      });
+    }
+  };
 
   // Set selected tab based on current route
   useEffect(() => {
@@ -170,6 +199,20 @@ export default function ExpandableTabs() {
             </MotionButton>
           );
         })}
+        
+        {/* Sign out button - positioned at far right */}
+        <div className="ml-auto">
+          <button
+            onClick={handleSignOut}
+            className="
+              relative flex items-center rounded-xl py-2.5 sm:py-2 px-2 sm:px-3 text-xs sm:text-sm font-medium transition-colors duration-300 min-h-[44px] touch-manipulation
+              text-white/70 hover:bg-red-500/20 hover:text-red-300 active:bg-red-500/30
+            "
+            title="Sign Out"
+          >
+            <LogOut size={18} className="sm:w-5 sm:h-5" />
+          </button>
+        </div>
       </div>
     </div>
   );
