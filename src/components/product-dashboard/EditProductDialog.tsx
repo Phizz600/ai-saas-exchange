@@ -246,7 +246,7 @@ export function EditProductDialog({ product, isOpen, onClose }: EditProductDialo
               <Button type="button" variant="outline" onClick={onClose}>
                 Cancel
               </Button>
-              <Button type="submit" disabled={isSubmitting}>
+              <Button type="submit" disabled={isSubmitting} className="bg-[#2052f0] hover:bg-[#1a47d4] text-white">
                 {isSubmitting ? "Updating..." : "Update"}
               </Button>
             </DialogFooter>
