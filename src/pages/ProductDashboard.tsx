@@ -15,6 +15,8 @@ import { AuctionAnalytics } from "@/components/product-dashboard/AuctionAnalytic
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { EditListingForm } from "@/components/product-dashboard/EditListingForm";
+import { DealTrackerPipeline } from "@/components/deal-tracker/DealTrackerPipeline";
+
 function ProductDashboard() {
   const [showVerifiedOnly, setShowVerifiedOnly] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<string | undefined>(undefined);
@@ -69,6 +71,8 @@ function ProductDashboard() {
         <TabsContent value="seller" className="space-y-8">
           <MarketplaceStats />
           
+          <DealTrackerPipeline userRole="seller" />
+          
           {auctionProducts && auctionProducts.length > 0 && <div>
               <h2 className="text-xl font-semibold mb-4 exo-2-header">Auction Analytics</h2>
               <div className="mb-4">
@@ -101,6 +105,8 @@ function ProductDashboard() {
 
         <TabsContent value="buyer" className="space-y-8">
           <BuyerStats />
+          
+          <DealTrackerPipeline userRole="buyer" />
           
           <div className="space-y-8">
             <div className="text-neutral-50">
