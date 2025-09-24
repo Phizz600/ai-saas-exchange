@@ -273,7 +273,7 @@ export const EditListingForm = () => {
               </div>
             </div>
             
-            <Button onClick={handleEditProduct} className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 transition-opacity w-full sm:w-auto flex-shrink-0">
+            <Button onClick={handleEditProduct} className="bg-[#2052f0] hover:bg-[#1a47d4] transition-colors w-full sm:w-auto flex-shrink-0">
               <Edit className="h-4 w-4 mr-2" />
               <span className="whitespace-nowrap">Edit Listing</span>
             </Button>
