@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { HelpCircle, CheckCircle, Crown, ChevronDown } from "lucide-react";
 import { HelpDialog } from "@/components/marketplace/list-product/HelpDialog";
 import { useAuth } from "@/contexts/CleanAuthContext";
+import ExpandableTabs from "@/components/ui/ExpandableTabs";
 import { useToast } from "@/hooks/use-toast";
 import {
   Select,
@@ -101,18 +102,8 @@ export const ListProduct = () => {
         opacity: 1,
         y: 0
       }} className="max-w-4xl mx-auto">
-          {/* Logo */}
-          <div className="text-center mb-8">
-            <Link to="/">
-              <motion.img initial={{
-              opacity: 0,
-              y: -20
-            }} animate={{
-              opacity: 1,
-              y: 0
-            }} src="/ai-exchange-logo.png" alt="AI Exchange Logo" className="mx-auto h-16 w-auto mb-8 hover:opacity-80 transition-opacity cursor-pointer" />
-            </Link>
-          </div>
+          {/* Navigation */}
+          <ExpandableTabs />
 
           {/* Header */}
           <div className="text-center mb-8">
