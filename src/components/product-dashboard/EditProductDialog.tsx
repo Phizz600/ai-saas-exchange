@@ -238,7 +238,7 @@ export function EditProductDialog({ product, isOpen, onClose }: EditProductDialo
                 variant="destructive" 
                 onClick={onDelete}
                 disabled={isSubmitting}
-                className="bg-red-600 hover:bg-red-700"
+                className="bg-red-900 hover:bg-red-800 text-white"
               >
                 <Trash className="h-4 w-4 mr-2" />
                 Delete
