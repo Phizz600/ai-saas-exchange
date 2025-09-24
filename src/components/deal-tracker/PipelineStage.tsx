@@ -65,7 +65,7 @@ export const PipelineStage = ({ stage, isLast }: PipelineStageProps) => {
       <div className="flex-1 pb-8">
         <h3 className={cn(
           "font-semibold text-sm transition-colors duration-300",
-          stage.status === 'completed' && 'text-emerald-600',
+          stage.status === 'completed' && 'text-[#17bd75]',
           stage.status === 'current' && 'text-primary',
           stage.status === 'pending' && 'text-foreground/80'
         )}>
