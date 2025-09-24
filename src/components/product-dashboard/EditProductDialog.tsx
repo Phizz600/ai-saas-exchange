@@ -37,10 +37,6 @@ interface EditProductDialogProps {
     price: number;
     monthly_revenue?: number;
     monthly_traffic?: number;
-    starting_price?: number;
-    min_price?: number;
-    price_decrement?: number;
-    price_decrement_interval?: string;
     auction_end_time?: string;
     monthly_expenses?: ExpenseItem[];
   } | null;
@@ -54,10 +50,6 @@ interface EditProductFormData {
   price: number;
   monthly_revenue: number;
   monthly_traffic: number;
-  starting_price?: number;
-  min_price?: number;
-  price_decrement?: number;
-  price_decrement_interval?: 'minute' | 'hour' | 'day' | 'week' | 'month';
   auction_end_time?: Date;
   monthly_expenses?: ExpenseItem[];
 }
@@ -92,10 +84,6 @@ export function EditProductDialog({ product, isOpen, onClose }: EditProductDialo
       price: product?.price || 0,
       monthly_revenue: product?.monthly_revenue || 0,
       monthly_traffic: product?.monthly_traffic || 0,
-      starting_price: product?.starting_price || 0,
-      min_price: product?.min_price || 0,
-      price_decrement: product?.price_decrement || 0,
-      price_decrement_interval: (product?.price_decrement_interval as EditProductFormData['price_decrement_interval']) || 'hour',
       auction_end_time: product?.auction_end_time ? new Date(product.auction_end_time) : undefined,
       monthly_expenses: product?.monthly_expenses || [],
     },
@@ -186,12 +174,7 @@ export function EditProductDialog({ product, isOpen, onClose }: EditProductDialo
           price: data.price,
           monthly_revenue: data.monthly_revenue,
           monthly_traffic: data.monthly_traffic,
-          starting_price: data.starting_price,
-          min_price: data.min_price,
-          price_decrement: data.price_decrement,
-          price_decrement_interval: data.price_decrement_interval,
           auction_end_time: data.auction_end_time?.toISOString(),
-          current_price: data.starting_price, // Reset current price to starting price when edited
           monthly_expenses: data.monthly_expenses,
         })
         .eq('id', product.id);
