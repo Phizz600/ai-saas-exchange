@@ -15,7 +15,7 @@ interface StatsCardProps {
 
 export const StatsCard = ({ title, value, change, subtitle, icon }: StatsCardProps) => {
   return (
-    <Card className="p-4 md:p-6 hover:shadow-md transition-shadow h-full">
+    <Card className="p-4 md:p-6 hover:shadow-xl hover:shadow-primary/20 hover:-translate-y-1 hover:scale-[1.02] transition-all duration-300 ease-out h-full group">
       <div className="flex flex-col h-full justify-between">
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-sm font-medium text-muted-foreground truncate pr-2">{title}</h3>
