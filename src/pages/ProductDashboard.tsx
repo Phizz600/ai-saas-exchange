@@ -1,6 +1,7 @@
 import { DashboardLayout } from "@/components/product-dashboard/DashboardLayout";
 import { MarketplaceStats } from "@/components/product-dashboard/MarketplaceStats";
 import { ProductDashboardContent } from "@/components/product-dashboard/ProductDashboardContent";
+import { BuyerStats } from "@/components/buyer-dashboard/BuyerStats";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Store, ShoppingBag, ToggleLeft, ToggleRight, Edit, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -103,24 +104,8 @@ function ProductDashboard() {
         </TabsContent>
 
         <TabsContent value="buyer" className="space-y-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <StatsCard title="Active Bids" value="0" change={{
-            value: 0,
-            type: 'increase'
-          }} subtitle="vs last month" />
-            <StatsCard title="Won Auctions" value="0" change={{
-            value: 0,
-            type: 'increase'
-          }} subtitle="vs last month" />
-            <StatsCard title="Total Spent" value="$0" change={{
-            value: 0,
-            type: 'increase'
-          }} subtitle="vs last month" />
-            <StatsCard title="Watched Products" value="0" change={{
-            value: 0,
-            type: 'increase'
-          }} subtitle="vs last month" />
-          </div>
+          <BuyerStats />
+          
           <div className="space-y-8">
             <div className="text-neutral-50">
               <h2 className="text-xl font-semibold mb-4 exo-2-header">Your Active Bids</h2>
