@@ -1,5 +1,6 @@
 import { DashboardLayout } from "@/components/product-dashboard/DashboardLayout";
 import { MarketplaceStats } from "@/components/product-dashboard/MarketplaceStats";
+import { ProductDashboardContent } from "@/components/product-dashboard/ProductDashboardContent";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Store, ShoppingBag, ToggleLeft, ToggleRight, Edit, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -95,6 +96,10 @@ function ProductDashboard() {
             <EditListingForm />
           </div>
           
+          <div>
+            <h2 className="text-xl font-semibold mb-4 exo-2-header text-neutral-50">Your Listings</h2>
+            <ProductDashboardContent showVerifiedOnly={showVerifiedOnly} />
+          </div>
         </TabsContent>
 
         <TabsContent value="buyer" className="space-y-8">
@@ -117,7 +122,7 @@ function ProductDashboard() {
           }} subtitle="vs last month" />
           </div>
           <div className="space-y-8">
-            <div>
+            <div className="text-neutral-50">
               <h2 className="text-xl font-semibold mb-4 exo-2-header">Your Active Bids</h2>
               <ActiveBidsProducts />
             </div>
