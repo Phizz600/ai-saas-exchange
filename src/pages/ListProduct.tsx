@@ -113,7 +113,7 @@ export const ListProduct = () => {
           }} animate={{
             opacity: 1,
             y: 0
-          }} className="text-4xl md:text-5xl font-bold text-white mb-4 exo-2-heading">List Your AI SaaS Business</motion.h1>
+          }} className="text-4xl md:text-5xl font-bold mb-4 exo-2-heading bg-gradient-to-r from-[#D946EE] to-[#0EA4E9] bg-clip-text text-transparent">List Your AI SaaS Business</motion.h1>
             <motion.p initial={{
             opacity: 0,
             y: -20
