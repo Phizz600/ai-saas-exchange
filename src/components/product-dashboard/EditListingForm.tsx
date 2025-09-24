@@ -325,9 +325,7 @@ export const EditListingForm = () => {
               </TabsContent>)}
           </Tabs>
         </Card> : <Card className="p-6 bg-gray-50 border-dashed text-center">
-          <p className="text-gray-600">
-            Select a product from the dropdown to view and edit its details
-          </p>
+          <p className="text-gray-600">Select a listing from the dropdown to view and edit its details</p>
         </Card>}
       
       {selectedProduct && <EditProductDialog product={selectedProduct} isOpen={isEditDialogOpen} onClose={() => {
