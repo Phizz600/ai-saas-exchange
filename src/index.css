@@ -174,3 +174,28 @@
   animation: fadeInUp 0.6s ease-out forwards;
   opacity: 0;
 }
+
+/* Success toast styling for better contrast */
+[data-sonner-toast].success {
+  @apply bg-green-50 border-green-500 text-green-900;
+}
+
+[data-theme="dark"] [data-sonner-toast].success {
+  @apply bg-green-900/20 border-green-400 text-green-100;
+}
+
+[data-sonner-toast].success [data-title] {
+  @apply text-green-900 font-semibold;
+}
+
+[data-theme="dark"] [data-sonner-toast].success [data-title] {
+  @apply text-green-100;
+}
+
+[data-sonner-toast].success [data-description] {
+  @apply text-green-800;
+}
+
+[data-theme="dark"] [data-sonner-toast].success [data-description] {
+  @apply text-green-200;
+}

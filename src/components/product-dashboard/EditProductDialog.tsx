@@ -181,7 +181,7 @@ export function EditProductDialog({ product, isOpen, onClose }: EditProductDialo
 
       if (error) throw error;
 
-      toast({
+      toast.success({
         title: "Product updated",
         description: "Your product has been successfully updated.",
       });

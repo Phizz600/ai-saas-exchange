@@ -11,7 +11,7 @@ export const toast = Object.assign(
   (props: {
     title?: React.ReactNode
     description?: React.ReactNode
-    variant?: "default" | "destructive" | "warning"
+    variant?: "default" | "destructive" | "warning" | "success"
     duration?: number
     action?: {
       label: string
@@ -28,7 +28,7 @@ export const toast = Object.assign(
     const { title, description, variant, action, cancel, ...restProps } = props
 
     const options = {
-      className: variant === "destructive" ? "destructive" : "",
+      className: variant === "destructive" ? "destructive" : variant === "success" ? "success" : "",
       duration: restProps.duration,
       ...restProps,
     }
@@ -66,7 +66,7 @@ export const toast = Object.assign(
   },
   {
     success: (props: { title?: React.ReactNode, description?: React.ReactNode, duration?: number }) => {
-      return toast({ ...props, variant: "default" })
+      return toast({ ...props, variant: "success" })
     },
     error: (props: { title?: React.ReactNode, description?: React.ReactNode, duration?: number }) => {
       return toast({ ...props, variant: "destructive" })
@@ -77,7 +77,7 @@ export const toast = Object.assign(
     info: (props: { title?: React.ReactNode, description?: React.ReactNode, duration?: number }) => {
       return toast({ ...props })
     },
-    message: (props: { title?: React.ReactNode, description?: React.ReactNode, variant?: "default" | "destructive" | "warning", duration?: number }) => {
+    message: (props: { title?: React.ReactNode, description?: React.ReactNode, variant?: "default" | "destructive" | "warning" | "success", duration?: number }) => {
       return toast(props)
     },
     promise: sonnerToast.promise,
@@ -97,7 +97,7 @@ export type Toast = {
     onClick: () => void
     altText: string
   }
-  variant?: "default" | "destructive" | "warning"
+  variant?: "default" | "destructive" | "warning" | "success"
 }
 
 // This is the provider we need to wrap the app with
