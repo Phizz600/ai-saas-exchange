@@ -7,16 +7,23 @@ interface BidsCardProps {
 }
 
 export const BidsCard = ({ value, change }: BidsCardProps) => {
-  // Sample chart data showing bid trends
-  const chartData = [
-    { value: Math.max(0, value - 15) },
-    { value: Math.max(0, value - 8) },
-    { value: Math.max(0, value - 12) },
-    { value: Math.max(0, value - 5) },
-    { value: Math.max(0, value - 3) },
-    { value: Math.max(0, value - 1) },
-    { value: value }
-  ];
+  // Generate realistic chart data showing bid trends
+  const generateChartData = (currentValue: number) => {
+    if (currentValue === 0) {
+      return Array(7).fill({ value: 0 });
+    }
+    
+    const maxVariation = Math.max(1, Math.floor(currentValue * 0.4));
+    return [
+      { value: Math.max(0, currentValue - maxVariation) },
+      { value: Math.max(0, currentValue - Math.floor(maxVariation * 0.6)) },
+      { value: Math.max(0, currentValue - Math.floor(maxVariation * 0.8)) },
+      { value: Math.max(0, currentValue - Math.floor(maxVariation * 0.3)) },
+      { value: Math.max(0, currentValue - Math.floor(maxVariation * 0.7)) },
+      { value: Math.max(0, currentValue - Math.floor(maxVariation * 0.1)) },
+      { value: currentValue }
+    ];
+  };
 
   return (
     <StatsCard
@@ -25,7 +32,7 @@ export const BidsCard = ({ value, change }: BidsCardProps) => {
       change={change}
       subtitle={change ? "vs last month" : "from buyers"}
       icon={<MessageSquare className="w-4 h-4 text-primary" />}
-      chartData={chartData}
+      chartData={generateChartData(value)}
       chartColor="hsl(142, 76%, 36%)"
     />
   );

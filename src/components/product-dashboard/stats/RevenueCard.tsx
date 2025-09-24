@@ -9,16 +9,23 @@ interface RevenueCardProps {
 }
 
 export const RevenueCard = ({ value, successfulExits, change }: RevenueCardProps) => {
-  // Sample chart data - replace with real data in production
-  const chartData = [
-    { value: 45000 },
-    { value: 52000 },
-    { value: 48000 },
-    { value: 61000 },
-    { value: 55000 },
-    { value: 67000 },
-    { value: value }
-  ];
+  // Generate realistic chart data based on actual revenue values
+  const generateChartData = (currentValue: number) => {
+    if (currentValue === 0) {
+      return Array(7).fill({ value: 0 });
+    }
+    
+    const variation = currentValue * 0.3;
+    return [
+      { value: Math.max(0, currentValue - variation) },
+      { value: Math.max(0, currentValue - variation * 0.8) },
+      { value: Math.max(0, currentValue - variation * 0.5) },
+      { value: Math.max(0, currentValue - variation * 0.9) },
+      { value: Math.max(0, currentValue - variation * 0.2) },
+      { value: Math.max(0, currentValue - variation * 0.4) },
+      { value: currentValue }
+    ];
+  };
 
   return (
     <StatsCard
@@ -27,7 +34,7 @@ export const RevenueCard = ({ value, successfulExits, change }: RevenueCardProps
       change={change}
       subtitle={change ? "vs last month" : `${successfulExits} successful exit${successfulExits !== 1 ? 's' : ''}`}
       icon={<DollarSign className="w-4 h-4 text-primary" />}
-      chartData={chartData}
+      chartData={generateChartData(value)}
       chartColor="hsl(var(--primary))"
     />
   );

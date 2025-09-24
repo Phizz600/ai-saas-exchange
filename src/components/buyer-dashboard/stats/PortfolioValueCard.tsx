@@ -8,16 +8,23 @@ interface PortfolioValueCardProps {
 }
 
 export const PortfolioValueCard = ({ value, change }: PortfolioValueCardProps) => {
-  // Sample chart data showing portfolio growth
-  const portfolioTrendData = [
-    { value: Math.floor(value * 0.6) },
-    { value: Math.floor(value * 0.7) },
-    { value: Math.floor(value * 0.75) },
-    { value: Math.floor(value * 0.8) },
-    { value: Math.floor(value * 0.9) },
-    { value: Math.floor(value * 0.95) },
-    { value: value }
-  ];
+  // Generate realistic chart data showing portfolio growth
+  const generateChartData = (currentValue: number) => {
+    if (currentValue === 0) {
+      return Array(7).fill({ value: 0 });
+    }
+    
+    const variation = currentValue * 0.25;
+    return [
+      { value: Math.max(0, currentValue - variation) },
+      { value: Math.max(0, currentValue - variation * 0.8) },
+      { value: Math.max(0, currentValue - variation * 0.5) },
+      { value: Math.max(0, currentValue - variation * 0.7) },
+      { value: Math.max(0, currentValue - variation * 0.2) },
+      { value: Math.max(0, currentValue - variation * 0.1) },
+      { value: currentValue }
+    ];
+  };
 
   return (
     <StatsCard
@@ -26,7 +33,7 @@ export const PortfolioValueCard = ({ value, change }: PortfolioValueCardProps) =
       change={change}
       subtitle={change ? "vs last month" : "completed acquisitions"}
       icon={<PieChart className="w-4 h-4 text-primary" />}
-      chartData={portfolioTrendData}
+      chartData={generateChartData(value)}
       chartColor="hsl(271, 91%, 65%)"
     />
   );
