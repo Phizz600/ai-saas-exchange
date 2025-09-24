@@ -6,6 +6,7 @@ import { OfferSuccessRateCard } from "./stats/OfferSuccessRateCard";
 import { AverageDealSizeCard } from "./stats/AverageDealSizeCard";
 import { CompaniesUnderReviewCard } from "./stats/CompaniesUnderReviewCard";
 import { DealVelocityCard } from "./stats/DealVelocityCard";
+import { ActiveOffersCard } from "./stats/ActiveOffersCard";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 export const BuyerStats = () => {
@@ -42,6 +43,10 @@ export const BuyerStats = () => {
       <DealVelocityCard 
         value={stats?.dealVelocity || 0}
         change={stats?.dealVelocityChange} 
+      />
+      <ActiveOffersCard 
+        value={stats?.activeOffers || 0}
+        change={stats?.acceptedOffersChange} 
       />
     </div>
   );
