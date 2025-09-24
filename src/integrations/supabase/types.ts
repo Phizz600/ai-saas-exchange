@@ -1228,6 +1228,10 @@ export type Database = {
         Args: { check_product_id: string; check_user_id: string }
         Returns: boolean
       }
+      get_current_user_role: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
       get_daily_views_count: {
         Args: { user_uuid: string }
         Returns: number
@@ -1244,6 +1248,10 @@ export type Database = {
         Returns: undefined
       }
       is_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      is_current_user_admin: {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }
