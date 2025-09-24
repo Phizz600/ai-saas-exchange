@@ -3,15 +3,18 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
 interface SellerStats {
-  totalRevenue: number;
+  totalExitValue: number;
+  successfulExits: number;
+  totalTransactionValue: number;
+  averageExitValue: number;
   productCount: number;
   activeProductCount: number;
   views: number;
   totalBids: number;
   totalOffers: number;
   conversionRate: number;
-  averageRevenuePerProduct: number;
-  revenueChange?: { value: number; type: 'increase' | 'decrease' };
+  exitValueChange?: { value: number; type: 'increase' | 'decrease' };
+  successfulExitsChange?: { value: number; type: 'increase' | 'decrease' };
   productCountChange?: { value: number; type: 'increase' | 'decrease' };
   viewsChange?: { value: number; type: 'increase' | 'decrease' };
   bidsChange?: { value: number; type: 'increase' | 'decrease' };
@@ -42,7 +45,21 @@ export const useSellerStats = () => {
         `)
         .eq('seller_id', user.id);
 
-      // Get offers data
+      // Get escrow transactions (completed exits)
+      const { data: completedEscrows } = await supabase
+        .from('escrow_transactions')
+        .select('amount, created_at')
+        .eq('seller_id', user.id)
+        .eq('status', 'completed');
+
+      // Get all accepted offers (total transaction value)
+      const { data: acceptedOffers } = await supabase
+        .from('offers')
+        .select('amount, product_id')
+        .eq('status', 'accepted')
+        .in('product_id', products?.map(p => p.id) || []);
+
+      // Get offers data for conversion rate
       const { data: offers } = await supabase
         .from('offers')
         .select('id, product_id')
@@ -69,6 +86,15 @@ export const useSellerStats = () => {
         .gte('product_analytics.date', lastMonthStart.toISOString().split('T')[0])
         .lte('product_analytics.date', lastMonthEnd.toISOString().split('T')[0]);
 
+      // Get last month's completed escrows
+      const { data: lastMonthEscrows } = await supabase
+        .from('escrow_transactions')
+        .select('amount')
+        .eq('seller_id', user.id)
+        .eq('status', 'completed')
+        .gte('created_at', lastMonthStart.toISOString())
+        .lte('created_at', lastMonthEnd.toISOString());
+
       if (error) {
         console.error('Error fetching seller stats:', error);
         throw error;
@@ -77,7 +103,10 @@ export const useSellerStats = () => {
       if (!products) return null;
 
       // Calculate current month's metrics
-      const totalRevenue = products.reduce((sum, product) => sum + (product.price || 0), 0);
+      const totalExitValue = completedEscrows?.reduce((sum, escrow) => sum + (escrow.amount || 0), 0) || 0;
+      const successfulExits = completedEscrows?.length || 0;
+      const totalTransactionValue = acceptedOffers?.reduce((sum, offer) => sum + (offer.amount || 0), 0) || 0;
+      const averageExitValue = successfulExits > 0 ? totalExitValue / successfulExits : 0;
       const productCount = products.length;
       const activeProductCount = products.filter(p => p.status === 'active').length;
       const totalOffers = offers?.length || 0;
@@ -104,15 +133,19 @@ export const useSellerStats = () => {
 
       // Calculate derived metrics
       const conversionRate = analytics.views > 0 ? (totalOffers / analytics.views) * 100 : 0;
-      const averageRevenuePerProduct = productCount > 0 ? totalRevenue / productCount : 0;
 
       // Calculate last month's metrics for comparison
-      let lastMonthRevenue = 0;
+      let lastMonthExitValue = 0;
+      let lastMonthSuccessfulExits = 0;
       let lastMonthProductCount = 0;
       let lastMonthAnalytics = { views: 0, totalBids: 0 };
 
+      if (lastMonthEscrows) {
+        lastMonthExitValue = lastMonthEscrows.reduce((sum, escrow) => sum + (escrow.amount || 0), 0);
+        lastMonthSuccessfulExits = lastMonthEscrows.length;
+      }
+
       if (lastMonthProducts) {
-        lastMonthRevenue = lastMonthProducts.reduce((sum, product) => sum + (product.price || 0), 0);
         lastMonthProductCount = lastMonthProducts.filter(p => {
           const createdDate = new Date(p.created_at);
           return createdDate <= lastMonthEnd;
@@ -140,15 +173,18 @@ export const useSellerStats = () => {
       };
 
       return {
-        totalRevenue,
+        totalExitValue,
+        successfulExits,
+        totalTransactionValue,
+        averageExitValue,
         productCount,
         activeProductCount,
         views: analytics.views,
         totalBids: analytics.totalBids,
         totalOffers,
         conversionRate,
-        averageRevenuePerProduct,
-        revenueChange: calculateChange(totalRevenue, lastMonthRevenue),
+        exitValueChange: calculateChange(totalExitValue, lastMonthExitValue),
+        successfulExitsChange: calculateChange(successfulExits, lastMonthSuccessfulExits),
         productCountChange: calculateChange(productCount, lastMonthProductCount),
         viewsChange: calculateChange(analytics.views, lastMonthAnalytics.views),
         bidsChange: calculateChange(analytics.totalBids, lastMonthAnalytics.totalBids),

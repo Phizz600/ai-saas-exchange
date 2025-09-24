@@ -15,9 +15,9 @@ export const MarketplaceStats = () => {
       {/* Revenue spans 2 columns on larger screens */}
       <div className="col-span-2 lg:col-span-1">
         <RevenueCard 
-          value={stats?.totalRevenue || 0} 
-          averagePerProduct={stats?.averageRevenuePerProduct || 0}
-          change={stats?.revenueChange} 
+          value={stats?.totalExitValue || 0} 
+          successfulExits={stats?.successfulExits || 0}
+          change={stats?.exitValueChange} 
         />
       </div>
       <div className="col-span-1">
