@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams, Routes, Route, Navigate } from "react-router-dom";
-import { Header } from "@/components/Header";
 import { ConversationList } from "@/components/messaging/ConversationList";
 import { ChatWindow } from "@/components/messaging/ChatWindow";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -37,8 +36,7 @@ export const Messages = () => {
   }, [navigate]);
   if (loading) {
     return <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-blue-900">
-        <Header />
-        <div className="container mx-auto px-4 pt-20 pb-10">
+        <div className="container mx-auto px-4 py-10">
           <div className="animate-pulse flex flex-col items-center justify-center mt-20">
             <div className="h-10 bg-gray-200 rounded w-1/3 mb-4"></div>
             <div className="h-64 bg-gray-100 rounded w-full max-w-2xl"></div>
@@ -50,8 +48,7 @@ export const Messages = () => {
     return null; // Will redirect in useEffect
   }
   return <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-blue-900">
-      <Header />
-      <div className="container mx-auto px-4 pt-20 pb-10">
+      <div className="container mx-auto px-4 py-10">
         <ExpandableTabs />
         <h1 className="text-3xl font-bold mb-6 exo-2-heading bg-gradient-to-r from-[#D946EE] to-[#0EA4E9] bg-clip-text text-zinc-950">
           Messages
