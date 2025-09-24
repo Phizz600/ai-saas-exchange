@@ -151,7 +151,7 @@ export const DealTrackerPipeline = ({ userRole }: DealTrackerPipelineProps) => {
               Example Deal
             </div>
             <div className="opacity-75">
-              <DealCard deal={exampleDeal} />
+              <DealCard deal={exampleDeal} isExample={true} />
             </div>
           </div>
         </div>

@@ -25,9 +25,10 @@ interface Deal {
 
 interface DealCardProps {
   deal: Deal;
+  isExample?: boolean;
 }
 
-export const DealCard = ({ deal }: DealCardProps) => {
+export const DealCard = ({ deal, isExample = false }: DealCardProps) => {
   const userRole = deal.is_buyer ? 'buyer' : 'seller';
   const stages = createPipelineStages(deal.escrow_status, deal.nda_signed, userRole);
   const completedStages = stages.filter(stage => stage.status === 'completed').length;
@@ -80,21 +81,29 @@ export const DealCard = ({ deal }: DealCardProps) => {
             <div className="flex flex-wrap items-center gap-4 text-xs text-foreground/70 mt-1">
               <span>
                 <strong>Buyer:</strong>{" "}
-                <Link 
-                  to={`/profile/${deal.buyer_id}`} 
-                  className="text-primary hover:text-primary/80 transition-colors underline"
-                >
-                  {deal.buyer_name}
-                </Link>
+                {isExample ? (
+                  <span className="text-primary">{deal.buyer_name}</span>
+                ) : (
+                  <Link 
+                    to={`/profile/${deal.buyer_id}`} 
+                    className="text-primary hover:text-primary/80 transition-colors underline"
+                  >
+                    {deal.buyer_name}
+                  </Link>
+                )}
               </span>
               <span>
                 <strong>Seller:</strong>{" "}
-                <Link 
-                  to={`/profile/${deal.seller_id}`} 
-                  className="text-primary hover:text-primary/80 transition-colors underline"
-                >
-                  {deal.seller_name}
-                </Link>
+                {isExample ? (
+                  <span className="text-primary">{deal.seller_name}</span>
+                ) : (
+                  <Link 
+                    to={`/profile/${deal.seller_id}`} 
+                    className="text-primary hover:text-primary/80 transition-colors underline"
+                  >
+                    {deal.seller_name}
+                  </Link>
+                )}
               </span>
             </div>
           </div>
@@ -106,12 +115,19 @@ export const DealCard = ({ deal }: DealCardProps) => {
             >
               {currentStage?.title || 'Initial Interest'}
             </Badge>
-            <Link to={`/chat/${deal.conversation_id}`}>
-              <Button variant="outline" size="sm" className="flex items-center gap-1">
+            {isExample ? (
+              <Button variant="outline" size="sm" className="flex items-center gap-1" disabled>
                 <MessageSquare className="h-3 w-3" />
                 Chat
               </Button>
-            </Link>
+            ) : (
+              <Link to={`/chat/${deal.conversation_id}`}>
+                <Button variant="outline" size="sm" className="flex items-center gap-1">
+                  <MessageSquare className="h-3 w-3" />
+                  Chat
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
 
