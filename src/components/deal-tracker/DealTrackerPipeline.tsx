@@ -101,35 +101,32 @@ export const DealTrackerPipeline = ({ userRole }: DealTrackerPipelineProps) => {
 
   if (deals.length === 0) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-xl font-bold">Deal Pipeline</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground">
-            {userRole === 'buyer' 
-              ? "You haven't initiated any deals yet. Start by making an offer on a listing!"
-              : "No active deals in your pipeline. Your deals will appear here once buyers start the acquisition process."
-            }
-          </p>
-        </CardContent>
-      </Card>
+      <div>
+        <h2 className="text-xl font-semibold mb-4 exo-2-header text-neutral-50">Deal Pipeline</h2>
+        <Card>
+          <CardContent>
+            <p className="text-muted-foreground">
+              {userRole === 'buyer' 
+                ? "You haven't initiated any deals yet. Start by making an offer on a listing!"
+                : "No active deals in your pipeline. Your deals will appear here once buyers start the acquisition process."
+              }
+            </p>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-xl font-bold">Deal Pipeline</CardTitle>
-        <p className="text-sm text-muted-foreground">
-          Track your {userRole === 'buyer' ? 'acquisition' : 'sale'} progress
-        </p>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {deals.map((deal) => (
-          <DealCard key={deal.id} deal={deal} />
-        ))}
-      </CardContent>
-    </Card>
+    <div>
+      <h2 className="text-xl font-semibold mb-4 exo-2-header text-neutral-50">Deal Pipeline</h2>
+      <Card>
+        <CardContent className="space-y-6">
+          {deals.map((deal) => (
+            <DealCard key={deal.id} deal={deal} />
+          ))}
+        </CardContent>
+      </Card>
+    </div>
   );
 };
