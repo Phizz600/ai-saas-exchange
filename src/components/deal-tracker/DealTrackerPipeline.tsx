@@ -129,7 +129,7 @@ export const DealTrackerPipeline = ({ userRole }: DealTrackerPipelineProps) => {
   if (deals.length === 0) {
     return (
       <div>
-        <h2 className="text-xl font-semibold mb-4 exo-2-header text-neutral-50">Deal Pipeline</h2>
+        <h2 className="text-xl font-semibold mb-4 exo-2-header text-neutral-50">Deal Flow Pipeline</h2>
         <div className="space-y-4">
           <Card className="border-dashed border-2 border-muted-foreground/30">
             <CardContent className="text-center py-8">
@@ -161,7 +161,7 @@ export const DealTrackerPipeline = ({ userRole }: DealTrackerPipelineProps) => {
 
   return (
     <div>
-      <h2 className="text-xl font-semibold mb-4 exo-2-header text-neutral-50">Deal Pipeline</h2>
+      <h2 className="text-xl font-semibold mb-4 exo-2-header text-neutral-50">Deal Flow Pipeline</h2>
       <Card>
         <CardContent className="space-y-6">
           {deals.map((deal) => (
