@@ -148,8 +148,6 @@ export const Profile = () => {
       </div>;
   }
   return <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
-      
-      <Navbar />
       <div className="container mx-auto px-3 py-6">
         <ExpandableTabs />
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
