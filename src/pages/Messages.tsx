@@ -50,21 +50,21 @@ export const Messages = () => {
   return <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-blue-900">
       <div className="container mx-auto px-4 py-10">
         <ExpandableTabs />
-        <h1 className="text-3xl font-bold mb-6 exo-2-heading bg-gradient-to-r from-[#D946EE] to-[#0EA4E9] bg-clip-text text-zinc-950">
+        <h1 className="text-3xl font-bold mb-6 exo-2-heading bg-gradient-to-r from-[#D946EE] to-[#0EA4E9] bg-clip-text text-transparent">
           Messages
         </h1>
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className={`${conversationId ? 'hidden lg:block' : ''} lg:col-span-1`}>
-            <h2 className="text-xl font-semibold mb-4">Conversations</h2>
+            <h2 className="text-xl font-semibold mb-4 text-white">Conversations</h2>
             <ConversationList />
           </div>
           
           <div className={`${!conversationId ? 'hidden lg:block' : ''} lg:col-span-2`}>
             {conversationId ? <ChatWindow /> : <div className="h-[calc(100vh-14rem)] flex items-center justify-center bg-accent/10 rounded-lg p-6 text-center">
                 <div>
-                  <h3 className="text-xl font-medium mb-2">Select a conversation</h3>
-                  <p className="text-muted-foreground">
+                  <h3 className="text-xl font-medium mb-2 text-white">Select a conversation</h3>
+                  <p className="text-white/70">
                     Choose a conversation from the list to start messaging
                   </p>
                 </div>
