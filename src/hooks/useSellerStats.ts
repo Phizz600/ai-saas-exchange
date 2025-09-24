@@ -32,8 +32,10 @@ export const useSellerStats = () => {
         return null;
       }
 
+      console.log('Authenticated user ID:', user.id);
+
       // Get current month's data
-      const { data: products, error } = await supabase
+      const { data: products, error: productsError } = await supabase
         .from('products')
         .select(`
           *,
@@ -45,25 +47,59 @@ export const useSellerStats = () => {
         `)
         .eq('seller_id', user.id);
 
+      if (productsError) {
+        console.error('Error fetching products:', productsError);
+        throw productsError;
+      }
+
+      console.log('Products found:', products?.length || 0);
+
       // Get escrow transactions (completed exits)
-      const { data: completedEscrows } = await supabase
+      const { data: completedEscrows, error: escrowError } = await supabase
         .from('escrow_transactions')
         .select('amount, created_at')
         .eq('seller_id', user.id)
         .eq('status', 'completed');
 
-      // Get all accepted offers (total transaction value)
-      const { data: acceptedOffers } = await supabase
-        .from('offers')
-        .select('amount, product_id')
-        .eq('status', 'accepted')
-        .in('product_id', products?.map(p => p.id) || []);
+      if (escrowError) {
+        console.error('Error fetching escrow transactions:', escrowError);
+      }
 
-      // Get offers data for conversion rate
-      const { data: offers } = await supabase
-        .from('offers')
-        .select('id, product_id')
-        .in('product_id', products?.map(p => p.id) || []);
+      console.log('Completed escrows found:', completedEscrows?.length || 0);
+
+      // Get all accepted offers (total transaction value)
+      const productIds = products?.map(p => p.id) || [];
+      let acceptedOffers: any[] = [];
+      let offers: any[] = [];
+
+      if (productIds.length > 0) {
+        const { data: acceptedOffersData, error: acceptedOffersError } = await supabase
+          .from('offers')
+          .select('amount, product_id')
+          .eq('status', 'accepted')
+          .in('product_id', productIds);
+
+        if (acceptedOffersError) {
+          console.error('Error fetching accepted offers:', acceptedOffersError);
+        } else {
+          acceptedOffers = acceptedOffersData || [];
+        }
+
+        // Get offers data for conversion rate
+        const { data: offersData, error: offersError } = await supabase
+          .from('offers')
+          .select('id, product_id')
+          .in('product_id', productIds);
+
+        if (offersError) {
+          console.error('Error fetching offers:', offersError);
+        } else {
+          offers = offersData || [];
+        }
+      }
+
+      console.log('Accepted offers found:', acceptedOffers?.length || 0);
+      console.log('Total offers found:', offers?.length || 0);
 
       // Get last month's data for comparison
       const lastMonthStart = new Date();
@@ -94,11 +130,6 @@ export const useSellerStats = () => {
         .eq('status', 'completed')
         .gte('created_at', lastMonthStart.toISOString())
         .lte('created_at', lastMonthEnd.toISOString());
-
-      if (error) {
-        console.error('Error fetching seller stats:', error);
-        throw error;
-      }
 
       if (!products) return null;
 
@@ -172,7 +203,7 @@ export const useSellerStats = () => {
         };
       };
 
-      return {
+      const stats = {
         totalExitValue,
         successfulExits,
         totalTransactionValue,
@@ -190,6 +221,9 @@ export const useSellerStats = () => {
         bidsChange: calculateChange(analytics.totalBids, lastMonthAnalytics.totalBids),
         conversionRateChange: calculateChange(conversionRate, 0), // Simplified for MVP
       };
+
+      console.log('Final stats:', stats);
+      return stats;
     },
     retry: 1,
   });
