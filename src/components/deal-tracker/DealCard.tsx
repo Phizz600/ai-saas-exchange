@@ -3,6 +3,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PipelineStage, createPipelineStages } from "./PipelineStage";
 import { Progress } from "@/components/ui/progress";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MessageSquare, ExternalLink, DollarSign } from "lucide-react";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
@@ -65,8 +67,36 @@ export const DealCard = ({ deal, isExample = false }: DealCardProps) => {
     }).format(amount);
   };
 
+  const getTooltipContent = (stageTitle: string) => {
+    switch (stageTitle) {
+      case 'NDA Signed':
+        return 'Non-disclosure agreement has been signed by the buyer';
+      case 'Escrow Created':
+        return 'Buyer has signed and initiated funds into escrow';
+      case 'Payment Secured':
+        return 'Buyer payment is secured and held in escrow';
+      case 'Delivery':
+        return 'Seller is delivering the agreed-upon assets';
+      case 'Inspection':
+        return 'Buyer is reviewing and inspecting delivered assets';
+      case 'Completed':
+        return 'Transaction completed successfully and funds released';
+      default:
+        return stageTitle;
+    }
+  };
+
+  const getInitials = (name: string) => {
+    return name.split(' ')
+      .map(word => word.charAt(0))
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
   return (
-    <Card className="border border-border/50 bg-white backdrop-blur-sm">
+    <TooltipProvider>
+      <Card className="border border-border/50 bg-white backdrop-blur-sm">
       <CardHeader className="pb-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="space-y-1">
@@ -79,8 +109,14 @@ export const DealCard = ({ deal, isExample = false }: DealCardProps) => {
               <span>Started {format(new Date(deal.created_at), 'MMM d, yyyy')}</span>
             </div>
             <div className="flex flex-wrap items-center gap-4 text-xs text-foreground/70 mt-1">
-              <span>
-                <strong>Buyer:</strong>{" "}
+              <span className="flex items-center gap-2">
+                <strong>Buyer:</strong>
+                <Avatar className="h-4 w-4">
+                  <AvatarImage src="" alt={deal.buyer_name} />
+                  <AvatarFallback className="text-xs bg-primary/10 text-primary">
+                    {getInitials(deal.buyer_name)}
+                  </AvatarFallback>
+                </Avatar>
                 {isExample ? (
                   <span className="text-primary">{deal.buyer_name}</span>
                 ) : (
@@ -92,8 +128,14 @@ export const DealCard = ({ deal, isExample = false }: DealCardProps) => {
                   </Link>
                 )}
               </span>
-              <span>
-                <strong>Seller:</strong>{" "}
+              <span className="flex items-center gap-2">
+                <strong>Seller:</strong>
+                <Avatar className="h-4 w-4">
+                  <AvatarImage src="" alt={deal.seller_name} />
+                  <AvatarFallback className="text-xs bg-primary/10 text-primary">
+                    {getInitials(deal.seller_name)}
+                  </AvatarFallback>
+                </Avatar>
                 {isExample ? (
                   <span className="text-primary">{deal.seller_name}</span>
                 ) : (
@@ -171,25 +213,32 @@ export const DealCard = ({ deal, isExample = false }: DealCardProps) => {
             <div className="flex items-center justify-between">
               {stages.map((stage, index) => (
                 <div key={stage.id} className="flex flex-col items-center space-y-2 flex-1">
-                  <div className="flex items-center w-full">
-                    <div className={`
-                      w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all duration-300
-                      ${stage.status === 'completed' 
-                        ? 'bg-emerald-500 border-emerald-400' 
-                        : stage.status === 'current'
-                          ? 'bg-primary border-primary'
-                          : 'bg-muted border-muted-foreground/20'
-                      }
-                    `}>
-                      {stage.icon}
-                    </div>
-                    {index < stages.length - 1 && (
-                      <div className={`
-                        flex-1 h-px mx-2 transition-colors duration-300
-                        ${stage.status === 'completed' ? 'bg-emerald-500' : 'bg-muted-foreground/20'}
-                      `} />
-                    )}
-                  </div>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="flex items-center w-full cursor-help">
+                        <div className={`
+                          w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all duration-300
+                          ${stage.status === 'completed' 
+                            ? 'bg-emerald-500 border-emerald-400' 
+                            : stage.status === 'current'
+                              ? 'bg-primary border-primary'
+                              : 'bg-muted border-muted-foreground/20'
+                          }
+                        `}>
+                          {stage.icon}
+                        </div>
+                        {index < stages.length - 1 && (
+                          <div className={`
+                            flex-1 h-px mx-2 transition-colors duration-300
+                            ${stage.status === 'completed' ? 'bg-emerald-500' : 'bg-muted-foreground/20'}
+                          `} />
+                        )}
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{getTooltipContent(stage.title)}</p>
+                    </TooltipContent>
+                  </Tooltip>
                   <span className={`
                     text-xs text-center px-1 transition-colors duration-300
                     ${stage.status === 'completed' && 'text-emerald-600'}
@@ -216,5 +265,6 @@ export const DealCard = ({ deal, isExample = false }: DealCardProps) => {
         </div>
       </CardContent>
     </Card>
+    </TooltipProvider>
   );
 };
