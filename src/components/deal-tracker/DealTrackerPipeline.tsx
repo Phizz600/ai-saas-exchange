@@ -150,7 +150,7 @@ export const DealTrackerPipeline = ({ userRole }: DealTrackerPipelineProps) => {
             <div className="absolute -top-2 left-4 bg-background px-2 py-1 text-xs text-foreground border rounded">
               Example Deal
             </div>
-            <div className="opacity-75">
+            <div>
               <DealCard deal={exampleDeal} isExample={true} />
             </div>
           </div>
