@@ -797,6 +797,7 @@ export type Database = {
         Row: {
           active_users: string | null
           admin_feedback: string | null
+          auction_end_time: string | null
           business_location: string | null
           business_model: string | null
           business_type: string | null
@@ -804,6 +805,7 @@ export type Database = {
           category_other: string | null
           competitors: string | null
           created_at: string
+          current_price: number | null
           customer_acquisition_cost: number | null
           deliverables: string[] | null
           demo_url: string | null
@@ -855,6 +857,7 @@ export type Database = {
         Insert: {
           active_users?: string | null
           admin_feedback?: string | null
+          auction_end_time?: string | null
           business_location?: string | null
           business_model?: string | null
           business_type?: string | null
@@ -862,6 +865,7 @@ export type Database = {
           category_other?: string | null
           competitors?: string | null
           created_at?: string
+          current_price?: number | null
           customer_acquisition_cost?: number | null
           deliverables?: string[] | null
           demo_url?: string | null
@@ -913,6 +917,7 @@ export type Database = {
         Update: {
           active_users?: string | null
           admin_feedback?: string | null
+          auction_end_time?: string | null
           business_location?: string | null
           business_model?: string | null
           business_type?: string | null
@@ -920,6 +925,7 @@ export type Database = {
           category_other?: string | null
           competitors?: string | null
           created_at?: string
+          current_price?: number | null
           customer_acquisition_cost?: number | null
           deliverables?: string[] | null
           demo_url?: string | null
