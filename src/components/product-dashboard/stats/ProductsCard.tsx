@@ -10,7 +10,7 @@ interface ProductsCardProps {
 export const ProductsCard = ({ value, activeCount, change }: ProductsCardProps) => {
   return (
     <StatsCard
-      title="Total Products"
+      title="Total Listings"
       value={value}
       change={change}
       subtitle={change ? "vs last month" : `${activeCount} active`}
