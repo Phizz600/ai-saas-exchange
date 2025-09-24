@@ -31,8 +31,8 @@ const buttonVariants = {
   },
   animate: (isSelected: boolean) => ({
     gap: isSelected ? "0.5rem" : 0,
-    paddingLeft: isSelected ? "1rem" : "0.5rem",
-    paddingRight: isSelected ? "1rem" : "0.5rem",
+    paddingLeft: isSelected ? "0.75rem" : "0.5rem",
+    paddingRight: isSelected ? "0.75rem" : "0.5rem",
   }),
 };
 
@@ -139,10 +139,10 @@ export default function ExpandableTabs() {
   };
 
   return (
-    <div className="flex justify-center mb-8">
+    <div className="flex justify-center mb-4 sm:mb-6 md:mb-8 px-2 sm:px-0">
       <div
         ref={outsideClickRef}
-        className="flex flex-wrap items-center gap-2 rounded-2xl border border-white/20 bg-white/10 backdrop-blur-md p-1 shadow-lg"
+        className="flex flex-wrap items-center gap-1 sm:gap-2 rounded-2xl border border-white/20 bg-white/10 backdrop-blur-md p-1 sm:p-1.5 shadow-lg max-w-full overflow-hidden"
       >
         {tabs.map((tab, index) => {
           const Icon = tab.icon;
@@ -155,15 +155,15 @@ export default function ExpandableTabs() {
               custom={isSelected}
               onClick={() => handleSelect(index)}
               className={`
-                relative flex items-center rounded-xl py-2 text-sm font-medium transition-colors duration-300
+                relative flex items-center rounded-xl py-2.5 sm:py-2 text-xs sm:text-sm font-medium transition-colors duration-300 min-h-[44px] touch-manipulation
                 ${
                   isSelected
                     ? "bg-white/20 text-white"
-                    : "text-white/70 hover:bg-white/10 hover:text-white"
+                    : "text-white/70 hover:bg-white/10 hover:text-white active:bg-white/15"
                 }
               `}
             >
-              <Icon size={20} />
+              <Icon size={18} className="sm:w-5 sm:h-5" />
               <MotionSpan isVisible={isSelected}>
                 {tab.title}
               </MotionSpan>
