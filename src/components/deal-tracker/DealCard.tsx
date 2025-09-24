@@ -13,6 +13,8 @@ interface Deal {
   product_title: string;
   buyer_id: string;
   seller_id: string;
+  buyer_name: string;
+  seller_name: string;
   amount: number;
   escrow_status: string | null;
   conversation_id: string;
@@ -68,12 +70,20 @@ export const DealCard = ({ deal }: DealCardProps) => {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="space-y-1">
             <h3 className="font-semibold text-lg">{deal.product_title}</h3>
-            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+            <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
               <span className="flex items-center gap-1">
                 <DollarSign className="h-3 w-3" />
                 {formatCurrency(deal.amount)}
               </span>
               <span>Started {format(new Date(deal.created_at), 'MMM d, yyyy')}</span>
+            </div>
+            <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground mt-1">
+              <span>
+                <strong>Buyer:</strong> {deal.buyer_name}
+              </span>
+              <span>
+                <strong>Seller:</strong> {deal.seller_name}
+              </span>
             </div>
           </div>
           
