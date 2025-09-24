@@ -3,179 +3,112 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage, Form } from "@/components/ui/form";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon, Info, Plus, X } from "lucide-react";
-import { format } from "date-fns";
-import { cn, generateUniqueId } from "@/lib/utils";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { ExpenseItem } from "../marketplace/list-product/types";
+import { ListProductFormData } from "../marketplace/list-product/types";
+import { BasicInfoSection } from "../marketplace/list-product/form-sections/BasicInfoSection";
+import { FinancialSection } from "../marketplace/list-product/form-sections/FinancialSection";
+import { TechnicalSection } from "../marketplace/list-product/form-sections/TechnicalSection";
+import { TrafficSection } from "../marketplace/list-product/form-sections/TrafficSection";
+import { SpecialNotesSection } from "../marketplace/list-product/form-sections/SpecialNotesSection";
+import { PricingSection } from "../marketplace/list-product/form-sections/PricingSection";
 
 interface EditProductDialogProps {
-  product: {
-    id: string;
-    title: string;
-    description?: string;
-    price: number;
-    monthly_revenue?: number;
-    monthly_traffic?: number;
-    auction_end_time?: string;
-    monthly_expenses?: ExpenseItem[];
-  } | null;
+  product: any;
   isOpen: boolean;
   onClose: () => void;
 }
 
-interface EditProductFormData {
-  title: string;
-  description: string;
-  price: number;
-  monthly_revenue: number;
-  monthly_traffic: number;
-  auction_end_time?: Date;
-  monthly_expenses?: ExpenseItem[];
-}
-
-const EXPENSE_CATEGORIES = [
-  'hosting',
-  'apis',
-  'personnel',
-  'marketing',
-  'software',
-  'subscription',
-  'office',
-  'other'
-] as const;
-
-const COMMON_EXPENSES = [
-  { name: 'Hosting', category: 'hosting' },
-  { name: 'Domain', category: 'hosting' },
-  { name: 'OpenAI API', category: 'apis' },
-  { name: 'External APIs', category: 'apis' },
-  { name: 'Marketing', category: 'marketing' },
-  { name: 'Software Subscriptions', category: 'subscription' },
-  { name: 'Freelancers', category: 'personnel' },
-];
-
 export function EditProductDialog({ product, isOpen, onClose }: EditProductDialogProps) {
   const queryClient = useQueryClient();
-  const form = useForm<EditProductFormData>({
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const form = useForm<ListProductFormData>({
     defaultValues: {
-      title: product?.title || "",
-      description: product?.description || "",
-      price: product?.price || 0,
-      monthly_revenue: product?.monthly_revenue || 0,
-      monthly_traffic: product?.monthly_traffic || 0,
-      auction_end_time: product?.auction_end_time ? new Date(product.auction_end_time) : undefined,
-      monthly_expenses: product?.monthly_expenses || [],
+      title: product?.title || '',
+      description: product?.description || '',
+      price: product?.price,
+      category: product?.category || '',
+      stage: product?.stage || '',
+      industry: product?.industry || '',
+      monthlyRevenue: product?.monthly_revenue,
+      monthlyProfit: product?.monthly_profit,
+      grossProfitMargin: product?.gross_profit_margin,
+      monthlyChurnRate: product?.monthly_churn_rate,
+      monthlyTraffic: product?.monthly_traffic?.toString() || '',
+      activeUsers: product?.active_users || '',
+      techStack: Array.isArray(product?.tech_stack) ? product.tech_stack[0] || '' : product?.tech_stack || '',
+      techStackOther: product?.tech_stack_other || '',
+      teamSize: product?.team_size || '',
+      hasPatents: product?.has_patents || false,
+      competitors: product?.competitors || '',
+      demoUrl: product?.demo_url || '',
+      productAge: product?.product_age || '',
+      businessLocation: product?.business_location || '',
+      specialNotes: product?.special_notes || '',
+      numberOfEmployees: product?.number_of_employees || '',
+      customerAcquisitionCost: product?.customer_acquisition_cost,
+      monetization: product?.monetization_other ? 'other' : product?.monetization || '',
+      monetizationOther: product?.monetization_other || '',
+      llmType: product?.llm_type || '',
+      llmTypeOther: product?.llm_type_other || '',
+      integrations: product?.integrations || [],
+      integrations_other: product?.integrations_other || '',
+      deliverables: product?.deliverables || [],
+      monthlyExpenses: product?.monthly_expenses || [],
+      businessType: product?.business_type || 'B2B',
+      productLink: product?.product_link || '',
+      image: null,
+      isVerified: false,
+      accuracyAgreement: false,
+      termsAgreement: false,
     },
   });
 
-  const [newExpenseName, setNewExpenseName] = useState('');
-  const [newExpenseAmount, setNewExpenseAmount] = useState('');
-  const [newExpenseCategory, setNewExpenseCategory] = useState<string>('other');
-  const monthlyExpenses = form.watch('monthly_expenses') || [];
-
-  const formatValue = (value: string | number) => {
-    if (typeof value === 'number') value = value.toString();
-    // Remove any existing formatting first (but keep decimal part)
-    const parts = value.replace(/[,$]/g, '').split('.');
-    const plainNumber = parts[0];
-    const decimals = parts[1];
+  const onSubmit = async (data: ListProductFormData) => {
+    if (!product?.id) return;
     
-    // Format with commas and dollar sign, preserving decimals if they exist
-    let formattedNumber = plainNumber ? `$${Number(plainNumber).toLocaleString()}` : '';
-    if (decimals !== undefined) {
-      formattedNumber += `.${decimals}`;
-    }
-    return formattedNumber;
-  };
-
-  const parseValue = (value: string) => {
-    // Extract just the number from the formatted string, preserving decimals
-    const numericValue = Number(value.replace(/[,$]/g, ''));
-    return isNaN(numericValue) ? 0 : numericValue;
-  };
-
-  const addExpense = () => {
-    if (!newExpenseName.trim() || parseValue(newExpenseAmount) <= 0) return;
-    
-    const newExpense: ExpenseItem = {
-      id: generateUniqueId(),
-      name: newExpenseName.trim(),
-      amount: parseValue(newExpenseAmount),
-      category: newExpenseCategory
-    };
-    
-    const updatedExpenses = [...monthlyExpenses, newExpense];
-    form.setValue('monthly_expenses', updatedExpenses);
-    
-    // Reset form
-    setNewExpenseName('');
-    setNewExpenseAmount('');
-    setNewExpenseCategory('other');
-  };
-
-  const removeExpense = (id: string) => {
-    const updatedExpenses = monthlyExpenses.filter(expense => expense.id !== id);
-    form.setValue('monthly_expenses', updatedExpenses);
-  };
-
-  const addCommonExpense = (expenseName: string, category: string) => {
-    // Check if this expense already exists
-    const exists = monthlyExpenses.some(
-      expense => expense.name.toLowerCase() === expenseName.toLowerCase()
-    );
-    
-    if (!exists) {
-      const newExpense: ExpenseItem = {
-        id: generateUniqueId(),
-        name: expenseName,
-        amount: 0, // Default to 0, user can update later
-        category
-      };
-      
-      const updatedExpenses = [...monthlyExpenses, newExpense];
-      form.setValue('monthly_expenses', updatedExpenses);
-    }
-  };
-
-  const calculateTotalExpenses = () => {
-    return monthlyExpenses.reduce((total, expense) => total + expense.amount, 0);
-  };
-
-  const onSubmit = async (data: EditProductFormData) => {
+    setIsSubmitting(true);
     try {
-      if (!product?.id) return;
-
       const { error } = await supabase
         .from('products')
         .update({
           title: data.title,
           description: data.description,
           price: data.price,
-          monthly_revenue: data.monthly_revenue,
-          monthly_traffic: data.monthly_traffic,
-          auction_end_time: data.auction_end_time?.toISOString(),
-          monthly_expenses: data.monthly_expenses,
+          category: data.category,
+          stage: data.stage,
+          industry: data.industry,
+          monthly_revenue: data.monthlyRevenue,
+          monthly_profit: data.monthlyProfit,
+          gross_profit_margin: data.grossProfitMargin,
+          monthly_churn_rate: data.monthlyChurnRate,
+          monthly_traffic: data.monthlyTraffic ? parseInt(data.monthlyTraffic) : null,
+          active_users: data.activeUsers,
+          tech_stack: data.techStack ? [data.techStack] : [],
+          tech_stack_other: data.techStackOther,
+          team_size: data.teamSize,
+          has_patents: data.hasPatents,
+          competitors: data.competitors,
+          demo_url: data.demoUrl,
+          product_age: data.productAge,
+          business_location: data.businessLocation,
+          special_notes: data.specialNotes,
+          number_of_employees: data.numberOfEmployees,
+          customer_acquisition_cost: data.customerAcquisitionCost,
+          monetization: data.monetization === 'other' ? null : data.monetization,
+          monetization_other: data.monetization === 'other' ? data.monetizationOther : null,
+          llm_type: data.llmType === 'other' ? null : data.llmType,
+          llm_type_other: data.llmType === 'other' ? data.llmTypeOther : null,
+          integrations: data.integrations,
+          integrations_other: data.integrations_other,
+          deliverables: data.deliverables,
+          monthly_expenses: data.monthlyExpenses,
+          business_type: data.businessType,
+          product_link: data.productLink,
         })
         .eq('id', product.id);
 
@@ -186,8 +119,7 @@ export function EditProductDialog({ product, isOpen, onClose }: EditProductDialo
         description: "Your product has been successfully updated.",
       });
 
-      // Invalidate and refetch products
-      queryClient.invalidateQueries({ queryKey: ['seller-products'] });
+      queryClient.invalidateQueries({ queryKey: ['user-products'] });
       onClose();
     } catch (error) {
       console.error('Error updating product:', error);
@@ -196,259 +128,82 @@ export function EditProductDialog({ product, isOpen, onClose }: EditProductDialo
         title: "Error",
         description: "Failed to update product. Please try again.",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Edit Product</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Title</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Textarea {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <Accordion type="multiple" defaultValue={["basics", "financials"]} className="w-full">
+              <AccordionItem value="basics">
+                <AccordionTrigger className="text-lg font-semibold">
+                  Basics
+                </AccordionTrigger>
+                <AccordionContent>
+                  <BasicInfoSection form={form} />
+                </AccordionContent>
+              </AccordionItem>
 
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="price"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Price ($)</FormLabel>
-                    <FormControl>
-                      <Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="monthly_revenue"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Monthly Revenue ($)</FormLabel>
-                    <FormControl>
-                      <Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+              <AccordionItem value="financials">
+                <AccordionTrigger className="text-lg font-semibold">
+                  Financials
+                </AccordionTrigger>
+                <AccordionContent>
+                  <FinancialSection form={form} />
+                </AccordionContent>
+              </AccordionItem>
 
-            <FormField
-              control={form.control}
-              name="monthly_traffic"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Monthly Traffic</FormLabel>
-                  <FormControl>
-                    <Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <AccordionItem value="technical">
+                <AccordionTrigger className="text-lg font-semibold">
+                  Technical Details
+                </AccordionTrigger>
+                <AccordionContent>
+                  <TechnicalSection form={form} />
+                </AccordionContent>
+              </AccordionItem>
 
+              <AccordionItem value="traffic">
+                <AccordionTrigger className="text-lg font-semibold">
+                  Traffic & Users
+                </AccordionTrigger>
+                <AccordionContent>
+                  <TrafficSection form={form} />
+                </AccordionContent>
+              </AccordionItem>
 
-            {/* Monthly Expenses Section */}
-            <div className="border-t pt-4 mt-4">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-medium">Monthly Expenses</h3>
-                <div className="text-sm text-gray-600 flex items-center gap-2">
-                  Total: <span className="font-semibold">${calculateTotalExpenses().toLocaleString()}</span>
-                </div>
-              </div>
-              
-              {/* Quick Add Buttons */}
-              <div className="mb-4">
-                <p className="text-sm text-gray-600 mb-2">Common expenses:</p>
-                <div className="flex flex-wrap gap-2">
-                  {COMMON_EXPENSES.map((expense) => (
-                    <Button 
-                      key={expense.name}
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => addCommonExpense(expense.name, expense.category)}
-                      className="text-xs"
-                    >
-                      + {expense.name}
-                    </Button>
-                  ))}
-                </div>
-              </div>
+              <AccordionItem value="special-notes">
+                <AccordionTrigger className="text-lg font-semibold">
+                  Special Notes
+                </AccordionTrigger>
+                <AccordionContent>
+                  <SpecialNotesSection form={form} />
+                </AccordionContent>
+              </AccordionItem>
 
-              {/* Add New Expense Form */}
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-3 mb-4">
-                <div className="md:col-span-5">
-                  <Input
-                    placeholder="Expense name"
-                    value={newExpenseName}
-                    onChange={(e) => setNewExpenseName(e.target.value)}
-                  />
-                </div>
-                <div className="md:col-span-3">
-                  <Input
-                    placeholder="Amount ($)"
-                    value={newExpenseAmount}
-                    onChange={(e) => setNewExpenseAmount(e.target.value)}
-                  />
-                </div>
-                <div className="md:col-span-3">
-                  <Select value={newExpenseCategory} onValueChange={setNewExpenseCategory}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Category" />
-                    </SelectTrigger>
-                    <SelectContent position="item-aligned" className="bg-white">
-                      {EXPENSE_CATEGORIES.map((category) => (
-                        <SelectItem key={category} value={category}>
-                          {category.charAt(0).toUpperCase() + category.slice(1)}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="md:col-span-1">
-                  <Button 
-                    type="button" 
-                    onClick={addExpense}
-                    className="w-full h-full"
-                    variant="secondary"
-                  >
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-
-              {/* Expenses List */}
-              {monthlyExpenses.length > 0 ? (
-                <div className="border rounded-md overflow-hidden">
-                  <table className="w-full text-sm">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className="px-4 py-2 text-left">Expense</th>
-                        <th className="px-4 py-2 text-left">Category</th>
-                        <th className="px-4 py-2 text-right">Amount</th>
-                        <th className="px-4 py-2 w-10"></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {monthlyExpenses.map((expense, index) => (
-                        <tr key={expense.id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                          <td className="px-4 py-2 border-t">
-                            <Input
-                              value={expense.name}
-                              onChange={(e) => {
-                                const updatedExpenses = [...monthlyExpenses];
-                                updatedExpenses[index].name = e.target.value;
-                                form.setValue('monthly_expenses', updatedExpenses);
-                              }}
-                              className="h-8 min-h-8"
-                            />
-                          </td>
-                          <td className="px-4 py-2 border-t">
-                            <Select 
-                              value={expense.category} 
-                              onValueChange={(value) => {
-                                const updatedExpenses = [...monthlyExpenses];
-                                updatedExpenses[index].category = value;
-                                form.setValue('monthly_expenses', updatedExpenses);
-                              }}
-                            >
-                              <SelectTrigger className="h-8">
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent position="item-aligned" className="bg-white">
-                                {EXPENSE_CATEGORIES.map((category) => (
-                                  <SelectItem key={category} value={category}>
-                                    {category.charAt(0).toUpperCase() + category.slice(1)}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </td>
-                          <td className="px-4 py-2 border-t">
-                            <Input
-                              value={expense.amount ? formatValue(expense.amount) : ''}
-                              onChange={(e) => {
-                                const value = parseValue(e.target.value);
-                                if (!isNaN(value)) {
-                                  const updatedExpenses = [...monthlyExpenses];
-                                  updatedExpenses[index].amount = value;
-                                  form.setValue('monthly_expenses', updatedExpenses);
-                                }
-                              }}
-                              className="h-8 min-h-8 text-right"
-                            />
-                          </td>
-                          <td className="px-4 py-2 border-t text-right">
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => removeExpense(expense.id)}
-                              className="h-8 w-8"
-                            >
-                              <X className="h-4 w-4 text-gray-500" />
-                            </Button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                    <tfoot className="bg-gray-50 font-medium">
-                      <tr>
-                        <td className="px-4 py-2 border-t" colSpan={2}>
-                          Total Monthly Expenses
-                        </td>
-                        <td className="px-4 py-2 border-t text-right">
-                          ${calculateTotalExpenses().toLocaleString()}
-                        </td>
-                        <td className="px-4 py-2 border-t"></td>
-                      </tr>
-                    </tfoot>
-                  </table>
-                </div>
-              ) : (
-                <div className="text-center py-6 border rounded-md bg-gray-50">
-                  <p className="text-gray-500">No expenses added yet</p>
-                  <p className="text-sm text-gray-400 mt-1">Add your monthly expenses to help buyers understand your business costs</p>
-                </div>
-              )}
-            </div>
+              <AccordionItem value="selling-method">
+                <AccordionTrigger className="text-lg font-semibold">
+                  Selling Method
+                </AccordionTrigger>
+                <AccordionContent>
+                  <PricingSection form={form} />
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
 
             <DialogFooter>
               <Button type="button" variant="outline" onClick={onClose}>
                 Cancel
               </Button>
-              <Button type="submit">Save changes</Button>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Updating..." : "Update"}
+              </Button>
             </DialogFooter>
           </form>
         </Form>
