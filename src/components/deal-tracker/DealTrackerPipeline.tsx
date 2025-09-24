@@ -108,7 +108,7 @@ export const DealTrackerPipeline = ({ userRole }: DealTrackerPipelineProps) => {
         <CardContent>
           <p className="text-muted-foreground">
             {userRole === 'buyer' 
-              ? "You haven't initiated any deals yet. Start by making an offer on a product!"
+              ? "You haven't initiated any deals yet. Start by making an offer on a listing!"
               : "No active deals in your pipeline. Your deals will appear here once buyers start the acquisition process."
             }
           </p>
