@@ -147,10 +147,7 @@ export const ListProduct = () => {
                   <span className="text-white/80 text-sm">Package:</span>
                   <Select value={selectedPackage || undefined} onValueChange={handlePackageChange}>
                     <SelectTrigger className="w-[200px] bg-white/10 border-white/20 text-white">
-                      <div className="flex items-center space-x-2">
-                        {selectedPackage === 'premium-exit' ? <Crown className="h-4 w-4 text-amber-400" /> : selectedPackage === 'featured-listing' ? <CheckCircle className="h-4 w-4 text-purple-400" /> : selectedPackage ? <CheckCircle className="h-4 w-4 text-emerald-400" /> : null}
-                        <SelectValue placeholder="Select a package" />
-                      </div>
+                      <SelectValue placeholder="Select a package" />
                     </SelectTrigger>
                     <SelectContent className="bg-slate-800 border-white/20">
                       <SelectItem value="free-listing" className="text-white hover:bg-white/10">
