@@ -65,7 +65,7 @@ export const DealCard = ({ deal }: DealCardProps) => {
   };
 
   return (
-    <Card className="border border-border/50 bg-card/50 backdrop-blur-sm">
+    <Card className="border border-border/50 bg-white backdrop-blur-sm">
       <CardHeader className="pb-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="space-y-1">
