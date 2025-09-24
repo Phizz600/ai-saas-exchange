@@ -69,15 +69,15 @@ export const DealCard = ({ deal }: DealCardProps) => {
       <CardHeader className="pb-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="space-y-1">
-            <h3 className="font-semibold text-lg">{deal.product_title}</h3>
-            <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+            <h3 className="font-semibold text-lg text-foreground">{deal.product_title}</h3>
+            <div className="flex flex-wrap items-center gap-4 text-sm text-foreground/80">
               <span className="flex items-center gap-1">
                 <DollarSign className="h-3 w-3" />
                 {formatCurrency(deal.amount)}
               </span>
               <span>Started {format(new Date(deal.created_at), 'MMM d, yyyy')}</span>
             </div>
-            <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground mt-1">
+            <div className="flex flex-wrap items-center gap-4 text-xs text-foreground/70 mt-1">
               <span>
                 <strong>Buyer:</strong> {deal.buyer_name}
               </span>
