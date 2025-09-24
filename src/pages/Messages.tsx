@@ -36,7 +36,7 @@ export const Messages = () => {
     checkAuth();
   }, [navigate]);
   if (loading) {
-    return <div className="min-h-screen bg-background">
+    return <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-blue-900">
         <Header />
         <div className="container mx-auto px-4 pt-20 pb-10">
           <div className="animate-pulse flex flex-col items-center justify-center mt-20">
@@ -49,7 +49,7 @@ export const Messages = () => {
   if (!isAuthenticated) {
     return null; // Will redirect in useEffect
   }
-  return <div className="min-h-screen bg-background">
+  return <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-blue-900">
       <Header />
       <div className="container mx-auto px-4 pt-20 pb-10">
         <ExpandableTabs />
