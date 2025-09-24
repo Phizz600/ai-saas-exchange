@@ -5,6 +5,7 @@ import { ConversationList } from "@/components/messaging/ConversationList";
 import { ChatWindow } from "@/components/messaging/ChatWindow";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
+import ExpandableTabs from "@/components/ui/ExpandableTabs";
 export const Messages = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -51,6 +52,7 @@ export const Messages = () => {
   return <div className="min-h-screen bg-background">
       <Header />
       <div className="container mx-auto px-4 pt-20 pb-10">
+        <ExpandableTabs />
         <h1 className="text-3xl font-bold mb-6 exo-2-heading bg-gradient-to-r from-[#D946EE] to-[#0EA4E9] bg-clip-text text-zinc-950">
           Messages
         </h1>
