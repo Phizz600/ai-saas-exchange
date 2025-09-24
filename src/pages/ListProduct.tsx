@@ -127,20 +127,20 @@ export const ListProduct = () => {
 
           {/* Authentication Status */}
           <div className="mb-6">
-            <div className="w-full p-4 bg-white/5 backdrop-blur-md border border-white/10 rounded-md">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <div className="w-4 h-4 bg-green-500 rounded-full"></div>
-                  <p className="text-white/80">Signed in as: {user.email}</p>
+            <div className="w-full p-3 sm:p-4 bg-white/5 backdrop-blur-md border border-white/10 rounded-md">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+                <div className="flex items-center space-x-2 min-w-0">
+                  <div className="w-4 h-4 bg-green-500 rounded-full flex-shrink-0"></div>
+                  <p className="text-white/80 text-sm truncate">Signed in as: {user.email}</p>
                 </div>
                 
-                <div className="flex items-center space-x-2">
-                  <span className="text-white/80 text-sm">Package:</span>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-2">
+                  <span className="text-white/80 text-sm flex-shrink-0">Package:</span>
                   <Select value={selectedPackage || undefined} onValueChange={handlePackageChange}>
-                    <SelectTrigger className="w-[200px] bg-white/10 border-white/20 text-white">
+                    <SelectTrigger className="w-full sm:w-[180px] bg-white/10 border-white/20 text-white">
                       <SelectValue placeholder="Select a package" />
                     </SelectTrigger>
-                    <SelectContent className="bg-slate-800 border-white/20">
+                    <SelectContent className="bg-slate-800 border-white/20 z-50">
                       <SelectItem value="free-listing" className="text-white hover:bg-white/10">
                         <div className="flex items-center space-x-2">
                           <CheckCircle className="h-4 w-4 text-emerald-400" />
