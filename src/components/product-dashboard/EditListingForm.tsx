@@ -295,9 +295,9 @@ export const EditListingForm = () => {
             </div>}
           
           <Tabs defaultValue={fieldGroups[0].name.toLowerCase().replace(/\s/g, '-')}>
-            <div className="overflow-x-auto">
-              <TabsList className="mb-4 w-full sm:w-auto">
-                {fieldGroups.map(group => <TabsTrigger key={group.name} value={group.name.toLowerCase().replace(/\s/g, '-')} className="text-xs sm:text-sm whitespace-nowrap">
+            <div className="overflow-x-auto px-1">
+              <TabsList className="mb-4 w-full sm:w-auto min-w-fit">
+                {fieldGroups.map(group => <TabsTrigger key={group.name} value={group.name.toLowerCase().replace(/\s/g, '-')} className="text-xs sm:text-sm whitespace-nowrap px-3 py-2">
                     {group.name}
                   </TabsTrigger>)}
               </TabsList>
