@@ -67,11 +67,11 @@ export const PipelineStage = ({ stage, isLast }: PipelineStageProps) => {
           "font-semibold text-sm transition-colors duration-300",
           stage.status === 'completed' && 'text-emerald-600',
           stage.status === 'current' && 'text-primary',
-          stage.status === 'pending' && 'text-muted-foreground'
+          stage.status === 'pending' && 'text-foreground/80'
         )}>
           {stage.title}
         </h3>
-        <p className="text-xs text-muted-foreground mt-1">
+        <p className="text-xs text-foreground/70 mt-1">
           {stage.description}
         </p>
       </div>
