@@ -216,6 +216,7 @@ export function PackagePaymentDialog({
         originalPackageType={packageType}
         onSuccess={onSuccess}
         onSecondaryDownsell={handleSecondaryDownsell}
+        onContinueWithFree={onContinueWithFree}
       />
       
       <FeaturedListingDownsellDialog

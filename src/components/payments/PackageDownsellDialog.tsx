@@ -13,6 +13,7 @@ interface PackageDownsellDialogProps {
   originalPackageType: 'featured-listing' | 'premium-exit';
   onSuccess: () => void;
   onSecondaryDownsell?: () => void;
+  onContinueWithFree?: () => void;
 }
 
 export function PackageDownsellDialog({ 
@@ -20,7 +21,8 @@ export function PackageDownsellDialog({
   onClose, 
   originalPackageType, 
   onSuccess,
-  onSecondaryDownsell 
+  onSecondaryDownsell,
+  onContinueWithFree
 }: PackageDownsellDialogProps) {
   const [showPaymentForm, setShowPaymentForm] = useState(false);
   const { stripePromise, error: stripeError } = useStripeInitialization();
@@ -169,13 +171,15 @@ export function PackageDownsellDialog({
                 onClick={() => {
                   if (originalPackageType === 'premium-exit' && onSecondaryDownsell) {
                     onSecondaryDownsell();
+                  } else if (onContinueWithFree) {
+                    onContinueWithFree();
                   } else {
                     onClose();
                   }
                 }}
                 className="w-full border-gray-600 text-gray-300 hover:bg-gray-800"
               >
-                No Thanks, I'll Pass
+                No Thanks, Continue with Free Listing
               </Button>
             </div>
           ) : (
