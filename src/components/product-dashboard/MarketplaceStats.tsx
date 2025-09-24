@@ -7,6 +7,7 @@ import { BidsCard } from "./stats/BidsCard";
 import { SuccessfulExitsCard } from "./stats/SuccessfulExitsCard";
 import { TransactionValueCard } from "./stats/TransactionValueCard";
 import { AverageExitCard } from "./stats/AverageExitCard";
+import { InterestedBuyersCard } from "./stats/InterestedBuyersCard";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 export const MarketplaceStats = () => {
@@ -39,6 +40,10 @@ export const MarketplaceStats = () => {
       />
       <ViewsCard value={stats?.views || 0} change={stats?.viewsChange} />
       <BidsCard value={stats?.totalOffers || 0} change={stats?.bidsChange} />
+      <InterestedBuyersCard 
+        value={stats?.interestedBuyers || 0}
+        change={stats?.interestedBuyersChange} 
+      />
     </div>
   );
 };

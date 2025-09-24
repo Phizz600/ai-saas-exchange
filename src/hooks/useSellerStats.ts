@@ -13,12 +13,14 @@ interface SellerStats {
   totalBids: number;
   totalOffers: number;
   conversionRate: number;
+  interestedBuyers: number;
   exitValueChange?: { value: number; type: 'increase' | 'decrease' };
   successfulExitsChange?: { value: number; type: 'increase' | 'decrease' };
   productCountChange?: { value: number; type: 'increase' | 'decrease' };
   viewsChange?: { value: number; type: 'increase' | 'decrease' };
   bidsChange?: { value: number; type: 'increase' | 'decrease' };
   conversionRateChange?: { value: number; type: 'increase' | 'decrease' };
+  interestedBuyersChange?: { value: number; type: 'increase' | 'decrease' };
 }
 
 export const useSellerStats = () => {
@@ -71,6 +73,7 @@ export const useSellerStats = () => {
       const productIds = products?.map(p => p.id) || [];
       let acceptedOffers: any[] = [];
       let offers: any[] = [];
+      let interestedBuyers = 0;
 
       if (productIds.length > 0) {
         const { data: acceptedOffersData, error: acceptedOffersError } = await supabase
@@ -95,6 +98,18 @@ export const useSellerStats = () => {
           console.error('Error fetching offers:', offersError);
         } else {
           offers = offersData || [];
+        }
+
+        // Get count of users who have saved these products
+        const { data: profilesData, error: profilesError } = await supabase
+          .from('profiles')
+          .select('saved_products');
+
+        if (!profilesError && profilesData) {
+          interestedBuyers = profilesData.filter(profile => 
+            profile.saved_products && 
+            profile.saved_products.some((savedId: string) => productIds.includes(savedId))
+          ).length;
         }
       }
 
@@ -214,12 +229,14 @@ export const useSellerStats = () => {
         totalBids: analytics.totalBids,
         totalOffers,
         conversionRate,
+        interestedBuyers,
         exitValueChange: calculateChange(totalExitValue, lastMonthExitValue),
         successfulExitsChange: calculateChange(successfulExits, lastMonthSuccessfulExits),
         productCountChange: calculateChange(productCount, lastMonthProductCount),
         viewsChange: calculateChange(analytics.views, lastMonthAnalytics.views),
         bidsChange: calculateChange(analytics.totalBids, lastMonthAnalytics.totalBids),
         conversionRateChange: calculateChange(conversionRate, 0), // Simplified for MVP
+        interestedBuyersChange: calculateChange(interestedBuyers, 0), // Simplified for MVP
       };
 
       console.log('Final stats:', stats);
