@@ -1,7 +1,5 @@
-
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { formatCurrency } from "@/lib/utils";
-
 interface Product {
   id: string;
   title: string;
@@ -10,21 +8,21 @@ interface Product {
   stage: string;
   status?: string;
 }
-
 interface ViewProductDialogProps {
   product: Product | null;
   isOpen: boolean;
   onClose: () => void;
 }
-
-export function ViewProductDialog({ product, isOpen, onClose }: ViewProductDialogProps) {
+export function ViewProductDialog({
+  product,
+  isOpen,
+  onClose
+}: ViewProductDialogProps) {
   if (!product) return null;
-
-  return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+  return <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Product Details</DialogTitle>
+          <DialogTitle>Listing Details</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
           <div>
@@ -49,6 +47,5 @@ export function ViewProductDialog({ product, isOpen, onClose }: ViewProductDialo
           </div>
         </div>
       </DialogContent>
-    </Dialog>
-  );
+    </Dialog>;
 }
