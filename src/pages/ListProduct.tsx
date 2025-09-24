@@ -3,10 +3,17 @@ import { motion } from "framer-motion";
 import { Link, useSearchParams } from "react-router-dom";
 import { ListProductForm } from "@/components/marketplace/list-product/ListProductForm";
 import { Button } from "@/components/ui/button";
-import { HelpCircle, CheckCircle, Crown } from "lucide-react";
+import { HelpCircle, CheckCircle, Crown, ChevronDown } from "lucide-react";
 import { HelpDialog } from "@/components/marketplace/list-product/HelpDialog";
 import { useAuth } from "@/contexts/CleanAuthContext";
 import { useToast } from "@/hooks/use-toast";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 export const ListProduct = () => {
   const [helpDialogOpen, setHelpDialogOpen] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState<'free-listing' | 'featured-listing' | 'premium-exit' | null>(null);
@@ -40,6 +47,17 @@ export const ListProduct = () => {
       }
     }
   }, [searchParams, toast]);
+
+  // Handle package selection change
+  const handlePackageChange = (newPackage: 'free-listing' | 'featured-listing' | 'premium-exit') => {
+    setSelectedPackage(newPackage);
+    localStorage.setItem('selectedPackage', newPackage);
+    const displayName = newPackage.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    toast({
+      title: `${displayName} Package Selected`,
+      description: `You've switched to the ${displayName.toLowerCase()} package.`
+    });
+  };
 
   // Show loading state while checking authentication
   if (loading) {
@@ -125,12 +143,37 @@ export const ListProduct = () => {
                   <p className="text-white/80">Signed in as: {user.email}</p>
                 </div>
                 
-                {selectedPackage && <div className="flex items-center space-x-2">
-                    {selectedPackage === 'premium-exit' ? <Crown className="h-4 w-4 text-amber-400" /> : selectedPackage === 'featured-listing' ? <CheckCircle className="h-4 w-4 text-purple-400" /> : <CheckCircle className="h-4 w-4 text-emerald-400" />}
-                    <span className="text-white font-medium">
-                      {selectedPackage.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())} Package
-                    </span>
-                  </div>}
+                <div className="flex items-center space-x-2">
+                  <span className="text-white/80 text-sm">Package:</span>
+                  <Select value={selectedPackage || undefined} onValueChange={handlePackageChange}>
+                    <SelectTrigger className="w-[200px] bg-white/10 border-white/20 text-white">
+                      <div className="flex items-center space-x-2">
+                        {selectedPackage === 'premium-exit' ? <Crown className="h-4 w-4 text-amber-400" /> : selectedPackage === 'featured-listing' ? <CheckCircle className="h-4 w-4 text-purple-400" /> : selectedPackage ? <CheckCircle className="h-4 w-4 text-emerald-400" /> : null}
+                        <SelectValue placeholder="Select a package" />
+                      </div>
+                    </SelectTrigger>
+                    <SelectContent className="bg-slate-800 border-white/20">
+                      <SelectItem value="free-listing" className="text-white hover:bg-white/10">
+                        <div className="flex items-center space-x-2">
+                          <CheckCircle className="h-4 w-4 text-emerald-400" />
+                          <span>Free Listing</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="featured-listing" className="text-white hover:bg-white/10">
+                        <div className="flex items-center space-x-2">
+                          <CheckCircle className="h-4 w-4 text-purple-400" />
+                          <span>Featured Listing</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="premium-exit" className="text-white hover:bg-white/10">
+                        <div className="flex items-center space-x-2">
+                          <Crown className="h-4 w-4 text-amber-400" />
+                          <span>Premium Exit</span>
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             </div>
           </div>
