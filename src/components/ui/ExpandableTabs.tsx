@@ -110,7 +110,7 @@ export default function ExpandableTabs() {
     { title: "Dashboard", icon: LayoutDashboard, path: "/product-dashboard" },
     { title: "Profile", icon: User, path: "/profile" },
     { title: "Marketplace", icon: Store, path: "/marketplace" },
-    { title: "List Business", icon: Plus, path: "/list-business" },
+    { title: "List Business", icon: Plus, path: "/list-product" },
     { title: "Messages", icon: MessageCircle, path: "/messages" },
     { title: "Notifications", icon: Bell, onClick: () => console.log("Notifications clicked") },
   ];
