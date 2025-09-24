@@ -11,6 +11,7 @@ import { ActivityOverview } from "@/components/profile/ActivityOverview";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { User, TrendingUp } from "lucide-react";
+import ExpandableTabs from "@/components/ui/ExpandableTabs";
 import type { Database } from "@/integrations/supabase/types";
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 export const Profile = () => {
@@ -146,10 +147,11 @@ export const Profile = () => {
         </div>
       </div>;
   }
-  return <div className="min-h-screen bg-white">
+  return <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
       
       <Navbar />
-      <div className="container mx-auto px-3 mt-0 py-[32px] my-0">
+      <div className="container mx-auto px-3 py-6">
+        <ExpandableTabs />
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
           {/* Left Sidebar */}
           <div className="md:col-span-4">
