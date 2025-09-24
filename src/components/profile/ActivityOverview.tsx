@@ -271,41 +271,43 @@ export const ActivityOverview = ({ profile }: ActivityOverviewProps) => {
           <TabsContent value="listings" className="space-y-4">
             {listings.length > 0 ? (
               <div className="space-y-3">
-                {listings.map((listing) => (
-                  <div key={listing.id} className="flex items-center justify-between p-4 border rounded-lg">
-                    <div className="flex-1">
-                      <h4 className="font-medium">{listing.title}</h4>
-                      <div className="flex items-center gap-2 mt-1">
-                        <Badge variant={listing.status === 'active' ? 'default' : 'secondary'}>
-                          {listing.status}
-                        </Badge>
-                        <span className="text-sm text-muted-foreground">
-                          {formatPrice(listing.price)}
-                        </span>
-                        <span className="text-sm text-muted-foreground">
-                          • Updated {formatDate(listing.updated_at)}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => navigate(`/product/${listing.id}`)}
-                      >
-                        <ExternalLink className="h-4 w-4 mr-1" />
-                        View
-                      </Button>
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => handleDeleteClick(listing)}
-                      >
-                        <Trash className="h-4 w-4 mr-1" />
-                        Delete
-                      </Button>
-                    </div>
-                  </div>
+                 {listings.map((listing) => (
+                   <div key={listing.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border rounded-lg space-y-3 sm:space-y-0">
+                     <div className="flex-1 min-w-0">
+                       <h4 className="font-medium truncate">{listing.title}</h4>
+                       <div className="flex flex-wrap items-center gap-2 mt-1">
+                         <Badge variant={listing.status === 'active' ? 'default' : 'secondary'}>
+                           {listing.status}
+                         </Badge>
+                         <span className="text-sm text-muted-foreground">
+                           {formatPrice(listing.price)}
+                         </span>
+                         <span className="text-sm text-muted-foreground">
+                           • Updated {formatDate(listing.updated_at)}
+                         </span>
+                       </div>
+                     </div>
+                     <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                       <Button
+                         variant="outline"
+                         size="sm"
+                         onClick={() => navigate(`/product/${listing.id}`)}
+                         className="w-full sm:w-auto"
+                       >
+                         <ExternalLink className="h-4 w-4 mr-1" />
+                         View
+                       </Button>
+                       <Button
+                         variant="destructive"
+                         size="sm"
+                         onClick={() => handleDeleteClick(listing)}
+                         className="w-full sm:w-auto"
+                       >
+                         <Trash className="h-4 w-4 mr-1" />
+                         Delete
+                       </Button>
+                     </div>
+                   </div>
                 ))}
               </div>
             ) : (
@@ -332,28 +334,29 @@ export const ActivityOverview = ({ profile }: ActivityOverviewProps) => {
           <TabsContent value="likes" className="space-y-4">
             {likedProducts.length > 0 ? (
               <div className="space-y-3">
-                {likedProducts.map((product) => (
-                  <div key={product.id} className="flex items-center justify-between p-4 border rounded-lg">
-                    <div className="flex-1">
-                      <h4 className="font-medium">{product.title}</h4>
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="text-sm text-muted-foreground">
-                          {formatPrice(product.price)}
-                        </span>
-                        <span className="text-sm text-muted-foreground">
-                          • Liked {formatDate(product.updated_at)}
-                        </span>
-                      </div>
-                    </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => navigate(`/product/${product.id}`)}
-                    >
-                      <ExternalLink className="h-4 w-4 mr-1" />
-                      View
-                    </Button>
-                  </div>
+                 {likedProducts.map((product) => (
+                   <div key={product.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border rounded-lg space-y-3 sm:space-y-0">
+                     <div className="flex-1 min-w-0">
+                       <h4 className="font-medium truncate">{product.title}</h4>
+                       <div className="flex flex-wrap items-center gap-2 mt-1">
+                         <span className="text-sm text-muted-foreground">
+                           {formatPrice(product.price)}
+                         </span>
+                         <span className="text-sm text-muted-foreground">
+                           • Liked {formatDate(product.updated_at)}
+                         </span>
+                       </div>
+                     </div>
+                     <Button
+                       variant="outline"
+                       size="sm"
+                       onClick={() => navigate(`/product/${product.id}`)}
+                       className="w-full sm:w-auto"
+                     >
+                       <ExternalLink className="h-4 w-4 mr-1" />
+                       View
+                     </Button>
+                   </div>
                 ))}
               </div>
             ) : (
