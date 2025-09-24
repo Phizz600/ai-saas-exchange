@@ -220,7 +220,7 @@ export const EditListingForm = () => {
         </div>
       </Card>;
   }
-  return <div className="space-y-6">
+  return <div className="space-y-6 max-w-full overflow-hidden">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         
         
@@ -241,21 +241,21 @@ export const EditListingForm = () => {
         </div>
       </div>
 
-      {selectedProduct ? <Card className="p-6">
-          <div className="flex justify-between items-center mb-6">
-            <div>
-              <h3 className="text-lg font-semibold">{selectedProduct.title}</h3>
-              <div className="flex items-center mt-1 gap-3">
+      {selectedProduct ? <Card className="p-4 sm:p-6 max-w-full overflow-hidden">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+            <div className="min-w-0 flex-1">
+              <h3 className="text-lg font-semibold break-words">{selectedProduct.title}</h3>
+              <div className="flex flex-col sm:flex-row sm:items-center mt-1 gap-3">
                 <Badge variant={selectedProduct.status === 'approved' ? 'default' : selectedProduct.status === 'pending' ? 'secondary' : 'destructive'} className={selectedProduct.status === 'approved' ? 'bg-green-500 hover:bg-green-600' : selectedProduct.status === 'pending' ? 'bg-amber-500 hover:bg-amber-600' : ''}>
                   {selectedProduct.status.charAt(0).toUpperCase() + selectedProduct.status.slice(1)}
                 </Badge>
                 
-                <div className="flex items-center">
+                <div className="flex items-center min-w-0">
                   <TooltipProvider>
                     <Tooltip>
-                      <TooltipTrigger className="flex items-center">
-                        <span className="text-sm text-gray-500 mr-2">Listing Completion:</span>
-                        <div className="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+                      <TooltipTrigger className="flex items-center min-w-0">
+                        <span className="text-sm text-gray-500 mr-2 whitespace-nowrap">Completion:</span>
+                        <div className="w-24 sm:w-32 h-2 bg-gray-200 rounded-full overflow-hidden flex-shrink-0">
                           <div className={`h-full ${getCompletionScore(selectedProduct) >= 80 ? 'bg-green-500' : getCompletionScore(selectedProduct) >= 50 ? 'bg-amber-500' : 'bg-red-500'}`} style={{
                         width: `${getCompletionScore(selectedProduct)}%`
                       }}></div>
@@ -273,9 +273,9 @@ export const EditListingForm = () => {
               </div>
             </div>
             
-            <Button onClick={handleEditProduct} className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 transition-opacity">
+            <Button onClick={handleEditProduct} className="bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:opacity-90 transition-opacity w-full sm:w-auto flex-shrink-0">
               <Edit className="h-4 w-4 mr-2" />
-              Edit Listing
+              <span className="whitespace-nowrap">Edit Listing</span>
             </Button>
           </div>
           
@@ -295,15 +295,17 @@ export const EditListingForm = () => {
             </div>}
           
           <Tabs defaultValue={fieldGroups[0].name.toLowerCase().replace(/\s/g, '-')}>
-            <TabsList className="mb-4">
-              {fieldGroups.map(group => <TabsTrigger key={group.name} value={group.name.toLowerCase().replace(/\s/g, '-')}>
-                  {group.name}
-                </TabsTrigger>)}
-            </TabsList>
+            <div className="overflow-x-auto">
+              <TabsList className="mb-4 w-full sm:w-auto">
+                {fieldGroups.map(group => <TabsTrigger key={group.name} value={group.name.toLowerCase().replace(/\s/g, '-')} className="text-xs sm:text-sm whitespace-nowrap">
+                    {group.name}
+                  </TabsTrigger>)}
+              </TabsList>
+            </div>
             
             {fieldGroups.map(group => <TabsContent key={group.name} value={group.name.toLowerCase().replace(/\s/g, '-')}>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {group.fields.map(field => <div key={field.key} className="space-y-1">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+                  {group.fields.map(field => <div key={field.key} className="space-y-1 min-w-0">
                       <div className="flex items-center">
                         <p className="text-sm font-medium text-gray-500">{field.label}</p>
                         {selectedProduct[field.key] && <CheckCircle2 className="h-4 w-4 text-green-500 ml-2" />}
@@ -315,9 +317,9 @@ export const EditListingForm = () => {
                           {selectedProduct[field.key].length > 0 ? selectedProduct[field.key].join(', ') : <span className="text-gray-400 italic">Not provided</span>}
                         </p> : field.type === 'boolean' ? <p className="font-medium">
                           {selectedProduct[field.key] ? 'Yes' : 'No'}
-                        </p> : field.type === 'url' && selectedProduct[field.key] ? <a href={selectedProduct[field.key]} target="_blank" rel="noopener noreferrer" className="font-medium text-blue-600 hover:underline">
+                        </p> : field.type === 'url' && selectedProduct[field.key] ? <a href={selectedProduct[field.key]} target="_blank" rel="noopener noreferrer" className="font-medium text-blue-600 hover:underline break-all">
                           {selectedProduct[field.key]}
-                        </a> : <p className="font-medium">
+                        </a> : <p className="font-medium break-words">
                           {field.format ? field.format(selectedProduct[field.key]) : selectedProduct[field.key] || <span className="text-gray-400 italic">Not provided</span>}
                         </p>}
                     </div>)}
