@@ -133,14 +133,14 @@ const PricingFees = () => {
                         <Crown className="h-4 w-4 text-amber-400 mr-2 flex-shrink-0" />
                         <span>Everything in Featured Listing</span>
                       </li>
-                      <li className="flex items-center text-white">
-                        <CheckCircle className="h-4 w-4 text-amber-500 mr-2 flex-shrink-0" />
-                        <span>Dedicated Sales Rep</span>
-                      </li>
-                      <li className="flex items-center text-white">
-                        <CheckCircle className="h-4 w-4 text-amber-500 mr-2 flex-shrink-0" />
-                        <span>Marketplace Access - 1 Year</span>
-                      </li>
+                       <li className="flex items-center text-white">
+                         <CheckCircle className="h-4 w-4 text-amber-500 mr-2 flex-shrink-0" />
+                         <span>Marketplace Access - 1 Year</span>
+                       </li>
+                       <li className="flex items-center text-white">
+                         <CheckCircle className="h-4 w-4 text-amber-500 mr-2 flex-shrink-0" />
+                         <span>Dedicated Sales Rep</span>
+                       </li>
                       <li className="flex items-center text-white">
                         <CheckCircle className="h-4 w-4 text-amber-500 mr-2 flex-shrink-0" />
                         <span>30-min Exit Strategy Call</span>
