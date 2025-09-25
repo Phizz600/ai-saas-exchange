@@ -109,7 +109,7 @@ export function TrustBoosters() {
           <div className="p-3 bg-amber-100 rounded-full w-fit mb-4">
             <CheckCircle className="h-6 w-6 text-amber-600" />
           </div>
-          <h3 className="text-xl font-semibold text-gray-900 mb-3">Verified Products</h3>
+          <h3 className="text-xl font-semibold text-gray-900 mb-3">Verified Listings</h3>
           <p className="text-gray-600 mb-4">
             Our team thoroughly verifies all products, ensuring accurate descriptions, revenue claims, and technical details.
           </p>
