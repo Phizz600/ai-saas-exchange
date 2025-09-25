@@ -5,6 +5,8 @@ import { useAuth } from "@/contexts/CleanAuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { MarketplaceLayout } from "@/components/marketplace/MarketplaceLayout";
 import { Footer } from "@/components/Footer";
+import AnimatedGradientBackground from "@/components/ui/AnimatedGradientBackground";
+import ExpandableTabs from "@/components/ui/ExpandableTabs";
 
 export function Marketplace() {
   const navigate = useNavigate();
@@ -44,10 +46,11 @@ export function Marketplace() {
   }, [user, loading, navigate]);
 
   return (
-    <div className="bg-gray-50 min-h-screen flex flex-col">
+    <AnimatedGradientBackground>
+      <ExpandableTabs />
       <MarketplaceLayout />
       <Footer />
-    </div>
+    </AnimatedGradientBackground>
   );
 }
 

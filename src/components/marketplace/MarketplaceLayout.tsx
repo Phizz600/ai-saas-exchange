@@ -1,4 +1,3 @@
-import { Header } from "@/components/Header";
 import { FeaturedCompaniesSlideshow } from "@/components/FeaturedCompaniesSlideshow";
 import { MarketplaceContent } from "@/components/marketplace/MarketplaceContent";
 import { MarketplaceFAQ } from "@/components/MarketplaceFAQ";
@@ -15,7 +14,6 @@ export const MarketplaceLayout = () => {
   useEffect(() => {
     console.log('MarketplaceLayout mounted');
     console.log('Checking component imports:', {
-      Header: !!Header,
       FeaturedCompaniesSlideshow: !!FeaturedCompaniesSlideshow,
       MarketplaceContent: !!MarketplaceContent,
       MarketplaceFAQ: !!MarketplaceFAQ,
@@ -35,9 +33,8 @@ export const MarketplaceLayout = () => {
       }
     }
   };
-  return <div className="min-h-screen bg-gray-50 flex flex-col">
-      <Header />
-      <main className="flex-grow w-full mt-16">
+  return <div className="min-h-screen flex flex-col">
+      <main className="flex-grow w-full">
         {/* Hero Section with Background Gradient */}
         <div className="relative bg-gradient-to-r from-[#D946EE]/10 via-[#8B5CF6]/10 to-[#0EA4E9]/10 py-12 overflow-hidden">
           <div className="absolute inset-0 overflow-hidden">
