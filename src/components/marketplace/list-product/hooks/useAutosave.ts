@@ -121,9 +121,9 @@ export const useAutosave = (form: UseFormReturn<ListProductFormData>, currentSec
   const saveForLater = async () => {
     await saveDraft(true); // Save with toast notification
     
-    // Navigate to dashboard after saving
+    // Navigate to product dashboard after saving
     setTimeout(() => {
-      navigate('/dashboard');
+      navigate('/product-dashboard');
     }, 500); // Small delay to ensure toast is visible
   };
 
