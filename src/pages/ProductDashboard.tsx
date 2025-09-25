@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Store, ShoppingBag, ToggleLeft, ToggleRight, Edit, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { StatsCard } from "@/components/product-dashboard/StatsCard";
-import { ActiveBidsProducts } from "@/components/product-dashboard/ActiveBidsProducts";
+import { ActiveOffersProducts } from "@/components/product-dashboard/ActiveOffersProducts";
 import { WatchedProducts } from "@/components/product-dashboard/WatchedProducts";
 import { ProductOffers } from "@/components/product-dashboard/ProductOffers";
 import { useState } from "react";
@@ -118,8 +118,8 @@ function ProductDashboard() {
           
           <div className="space-y-8">
             <div className="text-neutral-50">
-              <h2 className="text-xl font-semibold mb-4 exo-2-header">Your Active Bids</h2>
-              <ActiveBidsProducts />
+              <h2 className="text-xl font-semibold mb-4 exo-2-header">Your Active Offers</h2>
+              <ActiveOffersProducts />
             </div>
             <div>
               <h2 className="text-xl font-semibold mb-4 exo-2-header text-neutral-50">Saved Listings</h2>
