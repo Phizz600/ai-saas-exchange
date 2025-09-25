@@ -252,7 +252,7 @@ export const Navbar = () => {
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </> : <>
-                  <Button variant="ghost" onClick={() => navigate("/auth")} className="text-gray-700 hover:text-[#8B5CF6]">
+                  <Button variant="outline" onClick={() => navigate("/auth")} className="text-gray-700 hover:text-[#8B5CF6] border-gray-300 hover:border-[#8B5CF6] font-medium">
                     Sign In
                   </Button>
                   <Button disabled className="bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white opacity-60 cursor-not-allowed relative">
@@ -268,7 +268,7 @@ export const Navbar = () => {
           <div className="md:hidden">
             <div className="flex items-center gap-2">
               {!user && <>
-                  <Button variant="ghost" size="sm" onClick={() => navigate('/auth')} className="h-8 px-2 text-sm">Sign In
+                  <Button variant="outline" size="sm" onClick={() => navigate('/auth')} className="h-8 px-2 text-sm text-gray-700 hover:text-[#8B5CF6] border-gray-300 hover:border-[#8B5CF6] font-medium">Sign In
               </Button>
                   <Button disabled size="sm" className="h-8 px-3 text-sm bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white opacity-60 cursor-not-allowed">
                     <UserPlus className="mr-1 h-3 w-3" />
