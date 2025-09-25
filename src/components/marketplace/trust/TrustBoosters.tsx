@@ -43,7 +43,7 @@ export function TrustBoosters() {
       {/* Recent Sales Ticker with enhanced styling */}
       <div className="relative overflow-hidden rounded-lg">
         <div className="absolute inset-0 bg-gradient-to-r from-[#D946EE]/20 via-[#8B5CF6]/20 to-[#0EA4E9]/20 blur-xl"></div>
-        <Card className="bg-white/70 backdrop-blur-md px-6 py-5 border-0 shadow-md">
+        <Card className="backdrop-blur-md px-6 py-5 border-0 shadow-md bg-zinc-50">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <DollarSign className="h-6 w-6 text-green-500 mr-3" />
