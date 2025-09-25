@@ -16,6 +16,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { EditListingForm } from "@/components/product-dashboard/EditListingForm";
 import { DealTrackerPipeline } from "@/components/deal-tracker/DealTrackerPipeline";
+import { DraftListings } from "@/components/product-dashboard/DraftListings";
 import ExpandableTabs from "@/components/ui/ExpandableTabs";
 
 function ProductDashboard() {
@@ -98,6 +99,11 @@ function ProductDashboard() {
             <ProductOffers />
           </div>
           
+          <div>
+            <h2 className="text-xl font-semibold mb-4 exo-2-header text-neutral-50">Draft Listings</h2>
+            <DraftListings />
+          </div>
+
           <div>
             <h2 className="text-xl font-semibold mb-4 exo-2-header text-neutral-50">Edit Your Listings</h2>
             <EditListingForm />

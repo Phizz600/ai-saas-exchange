@@ -5,7 +5,7 @@ import { ListProductFormData } from "../types";
 import { UseFormReturn } from "react-hook-form";
 import { toast } from "@/hooks/use-toast";
 
-export const useAutosave = (form: UseFormReturn<ListProductFormData>, currentSection: number) => {
+export const useAutosave = (form: UseFormReturn<ListProductFormData>, currentSection: number, draftIdParam?: string) => {
   const [isLoading, setIsLoading] = useState(true);
   const [draftId, setDraftId] = useState<string | null>(null);
 
@@ -19,12 +19,33 @@ export const useAutosave = (form: UseFormReturn<ListProductFormData>, currentSec
           return;
         }
 
-        const { data: drafts, error } = await supabase
-          .from('draft_products')
-          .select('*')
-          .eq('user_id', user.id)
-          .limit(1)
-          .maybeSingle(); // Changed from .single() to .maybeSingle()
+        let drafts = null;
+        let error = null;
+
+        if (draftIdParam) {
+          // Load specific draft by ID
+          const result = await supabase
+            .from('draft_products')
+            .select('*')
+            .eq('user_id', user.id)
+            .eq('id', draftIdParam)
+            .single();
+          
+          drafts = result.data;
+          error = result.error;
+        } else {
+          // Load latest draft
+          const result = await supabase
+            .from('draft_products')
+            .select('*')
+            .eq('user_id', user.id)
+            .order('updated_at', { ascending: false })
+            .limit(1)
+            .maybeSingle();
+          
+          drafts = result.data;
+          error = result.error;
+        }
 
         if (error) {
           console.error('Error loading draft:', error);
@@ -43,7 +64,7 @@ export const useAutosave = (form: UseFormReturn<ListProductFormData>, currentSec
     };
 
     loadDraft();
-  }, [form]);
+  }, [form, draftIdParam]);
 
   const saveDraft = async (showToast = false) => {
     try {

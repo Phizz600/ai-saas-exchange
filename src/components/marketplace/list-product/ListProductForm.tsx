@@ -1,6 +1,7 @@
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import { useListProductForm } from "./hooks/useListProductForm";
 import { useFormSections } from "./hooks/useFormSections";
 import { useAuthenticationCheck } from "./hooks/useAuthenticationCheck";
@@ -23,6 +24,10 @@ export function ListProductForm({ selectedPackage }: ListProductFormProps) {
   const navigate = useNavigate();
   const [showPaymentDialog, setShowPaymentDialog] = useState(false);
   const [pendingSubmissionData, setPendingSubmissionData] = useState<ListProductFormData | null>(null);
+  
+  // Get draft ID from URL parameters
+  const searchParams = new URLSearchParams(window.location.search);
+  const draftId = searchParams.get('draft');
   
   // Custom hooks
   const {
@@ -60,7 +65,7 @@ export function ListProductForm({ selectedPackage }: ListProductFormProps) {
     submitProduct
   } = useProductSubmission();
 
-  const { isLoading, saveForLater } = useAutosave(form, currentSection);
+  const { isLoading, saveForLater } = useAutosave(form, currentSection, draftId || undefined);
 
   const handlePaymentSuccess = async () => {
     if (!pendingSubmissionData) return;
@@ -117,6 +122,30 @@ export function ListProductForm({ selectedPackage }: ListProductFormProps) {
         localStorage.setItem('selectedPackage', 'free-listing');
         setPendingSubmissionData(null);
         setShowPaymentDialog(false);
+        
+        // Clean up draft after successful submission
+        try {
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user) {
+            // If we're editing a specific draft, only delete that draft
+            // Otherwise delete all drafts for the user
+            let deleteQuery = supabase
+              .from('draft_products')
+              .delete()
+              .eq('user_id', user.id);
+            
+            if (draftId) {
+              deleteQuery = deleteQuery.eq('id', draftId);
+            }
+            
+            await deleteQuery;
+            
+            console.log("Cleaned up draft products");
+          }
+        } catch (cleanupError) {
+          console.error("Error cleaning up draft:", cleanupError);
+          // Non-critical error, don't block the flow
+        }
         
         toast.success('Your product has been listed with the free package!');
         
@@ -200,6 +229,31 @@ export function ListProductForm({ selectedPackage }: ListProductFormProps) {
         if (success && productId) {
           // Clear package selection from localStorage
           localStorage.removeItem('selectedPackage');
+          
+          // Clean up draft after successful submission
+          try {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+              // If we're editing a specific draft, only delete that draft
+              // Otherwise delete all drafts for the user
+              let deleteQuery = supabase
+                .from('draft_products')
+                .delete()
+                .eq('user_id', user.id);
+              
+              if (draftId) {
+                deleteQuery = deleteQuery.eq('id', draftId);
+              }
+              
+              await deleteQuery;
+              
+              console.log("Cleaned up draft products");
+            }
+          } catch (cleanupError) {
+            console.error("Error cleaning up draft:", cleanupError);
+            // Non-critical error, don't block the flow
+          }
+          
           // Trigger the success redirect
           handleRedirectToSuccess(productId);
         } else {
