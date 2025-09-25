@@ -37,15 +37,6 @@ export const MarketplaceLayout = () => {
       <main className="flex-grow w-full">
         {/* Hero Section with Background Gradient */}
         <div className="relative bg-gradient-to-r from-[#D946EE]/10 via-[#8B5CF6]/10 to-[#0EA4E9]/10 py-12 overflow-hidden">
-          <div className="absolute inset-0 overflow-hidden">
-            <div className="absolute -top-40 -left-40 w-80 h-80 bg-[#D946EE]/20 rounded-full filter blur-3xl animate-float" />
-            <div className="absolute top-20 right-20 w-60 h-60 bg-[#8B5CF6]/20 rounded-full filter blur-3xl animate-float" style={{
-            animationDelay: '2s'
-          }} />
-            <div className="absolute bottom-10 left-1/3 w-40 h-40 bg-[#0EA4E9]/20 rounded-full filter blur-3xl animate-float" style={{
-            animationDelay: '4s'
-          }} />
-          </div>
           
           <div className="container mx-auto px-4 md:px-8 relative z-10">
             <MarketplaceBreadcrumb />
