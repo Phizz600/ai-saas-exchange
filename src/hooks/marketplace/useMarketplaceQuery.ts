@@ -54,23 +54,20 @@ export const useMarketplaceQuery = ({
 
         // Apply sorting
         switch (filters.sortBy) {
-          case 'price_asc':
-            query = query.order('price', { ascending: true });
-            break;
-          case 'price_desc':
-            query = query.order('price', { ascending: false });
-            break;
-          case 'recent':
+          case 'newest':
             query = query.order('created_at', { ascending: false });
             break;
-          case 'ending_soon':
-            query = query
-              .gt('auction_end_time', new Date().toISOString())
-              .not('auction_end_time', 'is', null)
-              .order('auction_end_time', { ascending: true });
+          case 'fastest_growing':
+            query = query.order('monthly_revenue', { ascending: false, nullsFirst: false });
             break;
-          case 'popular':
-            query = query.order('views', { ascending: false, nullsFirst: false });
+          case 'most_interest':
+            query = query.order('monthly_traffic', { ascending: false, nullsFirst: false });
+            break;
+          case 'highest_revenue':
+            query = query.order('monthly_revenue', { ascending: false, nullsFirst: false });
+            break;
+          case 'lowest_churn':
+            query = query.order('monthly_churn_rate', { ascending: true, nullsFirst: false });
             break;
           default:
             query = query.order('created_at', { ascending: false });

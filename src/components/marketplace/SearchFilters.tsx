@@ -1,4 +1,4 @@
-import { Search, SlidersHorizontal, X, Loader2, Timer, Tag, ArrowDownUp, Clock, TrendingUp } from "lucide-react";
+import { Search, SlidersHorizontal, X, Loader2, Timer, Tag, ArrowDownUp, Clock, TrendingUp, Eye, DollarSign, Users } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -83,25 +83,25 @@ const sortOptions = [{
   label: "Most Relevant",
   icon: <ArrowDownUp className="h-4 w-4 mr-2" />
 }, {
-  value: "price_asc",
-  label: "Lowest Price",
-  icon: <ArrowDownUp className="h-4 w-4 mr-2" />
+  value: "newest",
+  label: "Newest Listings",
+  icon: <Clock className="h-4 w-4 mr-2" />
 }, {
-  value: "price_desc",
-  label: "Highest Price",
-  icon: <ArrowDownUp className="h-4 w-4 mr-2" />
-}, {
-  value: "recent",
-  label: "Newly Listed",
-  icon: <ArrowDownUp className="h-4 w-4 mr-2" />
-}, {
-  value: "popular",
-  label: "Most Popular",
+  value: "fastest_growing",
+  label: "Fastest Growing",
   icon: <TrendingUp className="h-4 w-4 mr-2" />
 }, {
-  value: "ending_soon",
-  label: "Auctions Ending Soon",
-  icon: <Clock className="h-4 w-4 mr-2" />
+  value: "most_interest",
+  label: "Most Buyer Interest",
+  icon: <Eye className="h-4 w-4 mr-2" />
+}, {
+  value: "highest_revenue",
+  label: "Highest Revenue",
+  icon: <DollarSign className="h-4 w-4 mr-2" />
+}, {
+  value: "lowest_churn",
+  label: "Lowest Churn",
+  icon: <Users className="h-4 w-4 mr-2" />
 }];
 
 export interface SearchFiltersProps {
