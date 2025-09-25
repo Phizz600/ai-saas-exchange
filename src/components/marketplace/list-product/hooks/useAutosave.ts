@@ -1,11 +1,13 @@
 
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { ListProductFormData } from "../types";
 import { UseFormReturn } from "react-hook-form";
 import { toast } from "@/hooks/use-toast";
 
 export const useAutosave = (form: UseFormReturn<ListProductFormData>, currentSection: number, draftIdParam?: string) => {
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [draftId, setDraftId] = useState<string | null>(null);
 
@@ -118,6 +120,11 @@ export const useAutosave = (form: UseFormReturn<ListProductFormData>, currentSec
 
   const saveForLater = async () => {
     await saveDraft(true); // Save with toast notification
+    
+    // Navigate to dashboard after saving
+    setTimeout(() => {
+      navigate('/dashboard');
+    }, 500); // Small delay to ensure toast is visible
   };
 
   return { isLoading, saveForLater };
