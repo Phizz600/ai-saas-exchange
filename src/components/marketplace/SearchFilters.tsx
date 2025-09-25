@@ -108,6 +108,16 @@ const sortOptions = [
     value: "lowest_churn",
     label: "Lowest Churn",
     icon: <Users className="h-4 w-4 mr-2" />
+  },
+  {
+    value: "price_desc",
+    label: "Highest Price",
+    icon: <ArrowDownUp className="h-4 w-4 mr-2" />
+  },
+  {
+    value: "price_asc",
+    label: "Lowest Price",
+    icon: <ArrowDownUp className="h-4 w-4 mr-2" />
   }
 ];
 

@@ -69,6 +69,12 @@ export const useMarketplaceQuery = ({
           case 'lowest_churn':
             query = query.order('monthly_churn_rate', { ascending: true, nullsFirst: false });
             break;
+          case 'price_asc':
+            query = query.order('price', { ascending: true });
+            break;
+          case 'price_desc':
+            query = query.order('price', { ascending: false });
+            break;
           default:
             query = query.order('created_at', { ascending: false });
         }
