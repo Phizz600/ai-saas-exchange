@@ -188,7 +188,7 @@ export const Profile = () => {
                 </TabsTrigger>
                 <TabsTrigger value="listings" className="flex items-center gap-2">
                   <FileText className="h-4 w-4" />
-                  <span className="hidden sm:inline">Listings</span>
+                  <span className="hidden sm:inline">Draft Listings</span>
                 </TabsTrigger>
                 <TabsTrigger value="account" className="flex items-center gap-2">
                   <User className="h-4 w-4" />
