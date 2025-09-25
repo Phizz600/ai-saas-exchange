@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/CleanAuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { MarketplaceLayout } from "@/components/marketplace/MarketplaceLayout";
-import { Footer } from "@/components/Footer";
 import AnimatedGradientBackground from "@/components/ui/AnimatedGradientBackground";
 import ExpandableTabs from "@/components/ui/ExpandableTabs";
 
@@ -49,7 +48,6 @@ export function Marketplace() {
     <AnimatedGradientBackground>
       <ExpandableTabs />
       <MarketplaceLayout />
-      <Footer />
     </AnimatedGradientBackground>
   );
 }
