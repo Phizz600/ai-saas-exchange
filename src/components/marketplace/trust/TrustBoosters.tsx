@@ -32,12 +32,10 @@ export function TrustBoosters() {
   return <div className="space-y-10 mb-12">
       {/* Section Header */}
       <div className="text-center">
-        <h2 className="exo-2-heading text-2xl md:text-3xl font-bold mb-3 text-gray-900">
-          Why Buyers & Sellers <span className="text-[#8B5CF6]">Trust Us</span>
+        <h2 className="exo-2-heading md:text-3xl font-bold mb-3 text-neutral-50 text-3xl">
+          Why Buyers & Sellers <span className="text-[#8B5CF6] text-3xl">Trust Us</span>
         </h2>
-        <p className="text-gray-600 max-w-2xl mx-auto">
-          Join thousands of AI founders and investors making successful transactions on our marketplace
-        </p>
+        <p className="max-w-2xl mx-auto text-neutral-50">Verified AI SaaS deals, delivered straight to you — founders list, buyers acquire, we handle the flow.</p>
       </div>
     
       {/* Recent Sales Ticker with enhanced styling */}
