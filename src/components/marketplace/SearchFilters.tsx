@@ -78,31 +78,38 @@ const priceRanges = [{
   label: "$50,000+"
 }];
 
-const sortOptions = [{
-  value: "relevant",
-  label: "Most Relevant",
-  icon: <ArrowDownUp className="h-4 w-4 mr-2" />
-}, {
-  value: "newest",
-  label: "Newest Listings",
-  icon: <Clock className="h-4 w-4 mr-2" />
-}, {
-  value: "fastest_growing",
-  label: "Fastest Growing",
-  icon: <TrendingUp className="h-4 w-4 mr-2" />
-}, {
-  value: "most_interest",
-  label: "Most Buyer Interest",
-  icon: <Eye className="h-4 w-4 mr-2" />
-}, {
-  value: "highest_revenue",
-  label: "Highest Revenue",
-  icon: <DollarSign className="h-4 w-4 mr-2" />
-}, {
-  value: "lowest_churn",
-  label: "Lowest Churn",
-  icon: <Users className="h-4 w-4 mr-2" />
-}];
+const sortOptions = [
+  {
+    value: "relevant",
+    label: "Most Relevant", 
+    icon: <ArrowDownUp className="h-4 w-4 mr-2" />
+  },
+  {
+    value: "newest",
+    label: "Newest Listings",
+    icon: <Clock className="h-4 w-4 mr-2" />
+  },
+  {
+    value: "fastest_growing", 
+    label: "Fastest Growing",
+    icon: <TrendingUp className="h-4 w-4 mr-2" />
+  },
+  {
+    value: "most_interest",
+    label: "Most Buyer Interest", 
+    icon: <Eye className="h-4 w-4 mr-2" />
+  },
+  {
+    value: "highest_revenue",
+    label: "Highest Revenue",
+    icon: <DollarSign className="h-4 w-4 mr-2" />
+  },
+  {
+    value: "lowest_churn",
+    label: "Lowest Churn",
+    icon: <Users className="h-4 w-4 mr-2" />
+  }
+];
 
 export interface SearchFiltersProps {
   filters: FilterState;
