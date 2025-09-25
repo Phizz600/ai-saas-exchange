@@ -50,51 +50,6 @@ export const MarketplaceLayout = () => {
               <FeaturedCompaniesSlideshow />
             </motion.div>
             
-            {/* Trust Indicators */}
-            <motion.div className="grid grid-cols-1 md:grid-cols-3 gap-4" initial={{
-            opacity: 0,
-            y: 20
-          }} animate={{
-            opacity: 1,
-            y: 0
-          }} transition={{
-            duration: 0.5,
-            delay: 0.3
-          }}>
-              <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100">
-                <div className="flex items-center gap-3">
-                  <div className="p-3 rounded-full bg-[#D946EE]/10">
-                    <Shield className="h-5 w-5 text-[#D946EE]" />
-                  </div>
-                  <h3 className="font-semibold text-lg">Escrow Protected</h3>
-                </div>
-                <p className="mt-3 text-gray-600 pl-11">
-                  Your payment is held securely until the transfer is complete
-                </p>
-              </div>
-              <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100">
-                <div className="flex items-center gap-3">
-                  <div className="p-3 rounded-full bg-[#8B5CF6]/10">
-                    <CheckCircle className="h-5 w-5 text-[#8B5CF6]" />
-                  </div>
-                  <h3 className="font-semibold text-lg">100% Verified Listings</h3>
-                </div>
-                <p className="mt-3 text-gray-600 pl-11">
-                  Every product undergoes thorough verification before listing
-                </p>
-              </div>
-              <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100">
-                <div className="flex items-center gap-3">
-                  <div className="p-3 rounded-full bg-[#0EA4E9]/10">
-                    <Clock className="h-5 w-5 text-[#0EA4E9]" />
-                  </div>
-                  <h3 className="font-semibold text-lg">Fixed Price Marketplace</h3>
-                </div>
-                <p className="mt-3 text-gray-600 pl-11">
-                  Purchase AI tools and platforms at transparent fixed prices
-                </p>
-              </div>
-            </motion.div>
             
             {/* Stats Counter */}
             
