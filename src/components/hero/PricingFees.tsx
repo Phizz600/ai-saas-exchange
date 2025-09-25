@@ -5,9 +5,10 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/CleanAuthContext";
 import { useNavigate } from "react-router-dom";
 const PricingFees = () => {
-  const { user } = useAuth();
+  const {
+    user
+  } = useAuth();
   const navigate = useNavigate();
-
   const handlePackageSelection = (packageType: 'free-listing' | 'featured-listing' | 'premium-exit') => {
     if (user) {
       navigate(`/list-product?package=${packageType}`);
@@ -90,7 +91,7 @@ const PricingFees = () => {
                     <ul className="space-y-2 text-sm">
                       <li className="flex items-center text-white">
                         <CheckCircle className="h-4 w-4 text-[#7C3AED] mr-2 flex-shrink-0" />
-                        <span>Reduced Success Fees </span>
+                        <span>Marketplace Access - 6 Months</span>
                       </li>
                        <li className="flex items-center text-white">
                          <CheckCircle className="h-4 w-4 text-[#7C3AED] mr-2 flex-shrink-0" />
