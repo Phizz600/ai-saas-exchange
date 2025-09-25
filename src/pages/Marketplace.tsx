@@ -33,12 +33,8 @@ export function Marketplace() {
           return;
         }
 
-        // If user has completed onboarding, redirect based on user type
-        if (profile?.user_type === 'ai_investor') {
-          navigate('/product-dashboard', { replace: true });
-        } else if (profile?.user_type === 'ai_builder') {
-          navigate('/product-dashboard', { replace: true });
-        }
+        // Allow users to stay on marketplace - no redirect needed
+        // Marketplace is accessible to all authenticated users
       } catch (error) {
         console.error('Error during authenticated redirect:', error);
       }
