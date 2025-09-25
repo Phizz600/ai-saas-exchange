@@ -8,7 +8,7 @@ interface TrafficSectionProps {
 export function TrafficSection({
   form
 }: TrafficSectionProps) {
-  return <Card className="bg-white/10 backdrop-blur-lg rounded-xl shadow-2xl p-8 border border-white/20">
+  return <Card className="p-6 bg-white shadow-sm py-[24px] px-[25px]">
       <h2 className="exo-2-header bg-gradient-to-r from-[#8B5CF6] to-[#D946EE] bg-clip-text mb-6 text-violet-500 font-semibold text-2xl">Traffic & Users</h2>
       
       <TrafficMetrics form={form} />
