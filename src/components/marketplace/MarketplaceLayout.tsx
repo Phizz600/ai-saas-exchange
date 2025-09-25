@@ -35,38 +35,6 @@ export const MarketplaceLayout = () => {
   };
   return <div className="min-h-screen flex flex-col">
       <main className="flex-grow w-full">
-        {/* Hero Section with Background Gradient */}
-        <div className="relative bg-gradient-to-r from-[#D946EE]/10 via-[#8B5CF6]/10 to-[#0EA4E9]/10 py-12 overflow-hidden">
-          
-          <div className="container mx-auto px-4 md:px-8 relative z-10">
-            <MarketplaceBreadcrumb />
-            <motion.div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8" initial="hidden" animate="visible" variants={fadeIn}>
-              <div className="space-y-3">
-                <h1 className="exo-2-heading text-3xl sm:text-4xl font-bold bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] inline-block text-transparent bg-clip-text">
-                  AI Products Marketplace
-                </h1>
-                <p className="text-lg text-gray-600 max-w-xl">Welcome! You're now logged in and can browse, bid, and buy verified AI SaaS businesses</p>
-              </div>
-              <div className="flex gap-2">
-                <Link to="/product-dashboard" className="hidden sm:block">
-                  <Button variant="outline" className="shadow-sm hover:shadow-md transition-shadow">
-                    <LayoutDashboard className="mr-2 h-4 w-4" />
-                    Dashboard
-                  </Button>
-                </Link>
-                <Link to="/list-product">
-                  <Button className="hidden sm:flex bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:shadow-lg transition-all hover:opacity-90 border-0">
-                    <Plus className="mr-2 h-4 w-4" />
-                    List Your Product
-                  </Button>
-                  <Button className="sm:hidden bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:shadow-lg transition-all hover:opacity-90 border-0">
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </Link>
-              </div>
-            </motion.div>
-          </div>
-        </div>
         
         <div className="container mx-auto px-4 md:px-8 py-8">
           <div className="max-w-none space-y-12">
@@ -164,7 +132,5 @@ export const MarketplaceLayout = () => {
           </div>
         </div>
       </main>
-      <MarketplaceFooter />
-      <LiveChatButton />
     </div>;
 };
