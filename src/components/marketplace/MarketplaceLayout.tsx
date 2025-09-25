@@ -1,4 +1,3 @@
-import { Header } from "@/components/Header";
 import { FeaturedCompaniesSlideshow } from "@/components/FeaturedCompaniesSlideshow";
 import { MarketplaceContent } from "@/components/marketplace/MarketplaceContent";
 import { MarketplaceFAQ } from "@/components/MarketplaceFAQ";
@@ -15,7 +14,6 @@ export const MarketplaceLayout = () => {
   useEffect(() => {
     console.log('MarketplaceLayout mounted');
     console.log('Checking component imports:', {
-      Header: !!Header,
       FeaturedCompaniesSlideshow: !!FeaturedCompaniesSlideshow,
       MarketplaceContent: !!MarketplaceContent,
       MarketplaceFAQ: !!MarketplaceFAQ,
@@ -35,50 +33,8 @@ export const MarketplaceLayout = () => {
       }
     }
   };
-  return <div className="min-h-screen bg-gray-50 flex flex-col">
-      <Header className="mx-0 my-[6px] py-[3px] px-0" />
-      <main className="flex-grow w-full mt-16">
-        {/* Hero Section with Background Gradient */}
-        <div className="relative bg-gradient-to-r from-[#D946EE]/10 via-[#8B5CF6]/10 to-[#0EA4E9]/10 py-12 overflow-hidden">
-          <div className="absolute inset-0 overflow-hidden">
-            <div className="absolute -top-40 -left-40 w-80 h-80 bg-[#D946EE]/20 rounded-full filter blur-3xl animate-float" />
-            <div className="absolute top-20 right-20 w-60 h-60 bg-[#8B5CF6]/20 rounded-full filter blur-3xl animate-float" style={{
-            animationDelay: '2s'
-          }} />
-            <div className="absolute bottom-10 left-1/3 w-40 h-40 bg-[#0EA4E9]/20 rounded-full filter blur-3xl animate-float" style={{
-            animationDelay: '4s'
-          }} />
-          </div>
-          
-          <div className="container mx-auto px-4 md:px-8 relative z-10">
-            <MarketplaceBreadcrumb />
-            <motion.div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8" initial="hidden" animate="visible" variants={fadeIn}>
-              <div className="space-y-3">
-                <h1 className="exo-2-heading text-3xl sm:text-4xl font-bold bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] inline-block text-transparent bg-clip-text">
-                  AI Products Marketplace
-                </h1>
-                <p className="text-lg text-gray-600 max-w-xl">Welcome! You're now logged in and can browse, bid, and buy verified AI SaaS businesses</p>
-              </div>
-              <div className="flex gap-2">
-                <Link to="/product-dashboard" className="hidden sm:block">
-                  <Button variant="outline" className="shadow-sm hover:shadow-md transition-shadow">
-                    <LayoutDashboard className="mr-2 h-4 w-4" />
-                    Dashboard
-                  </Button>
-                </Link>
-                <Link to="/list-product">
-                  <Button className="hidden sm:flex bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:shadow-lg transition-all hover:opacity-90 border-0">
-                    <Plus className="mr-2 h-4 w-4" />
-                    List Your Product
-                  </Button>
-                  <Button className="sm:hidden bg-gradient-to-r from-[#D946EE] via-[#8B5CF6] to-[#0EA4E9] hover:shadow-lg transition-all hover:opacity-90 border-0">
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </Link>
-              </div>
-            </motion.div>
-          </div>
-        </div>
+  return <div className="min-h-screen flex flex-col">
+      <main className="flex-grow w-full">
         
         <div className="container mx-auto px-4 md:px-8 py-8">
           <div className="max-w-none space-y-12">
@@ -176,7 +132,5 @@ export const MarketplaceLayout = () => {
           </div>
         </div>
       </main>
-      <MarketplaceFooter />
-      <LiveChatButton />
     </div>;
 };
