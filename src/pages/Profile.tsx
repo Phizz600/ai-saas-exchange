@@ -10,7 +10,8 @@ import { AccountSettings } from "@/components/profile/AccountSettings";
 import { ActivityOverview } from "@/components/profile/ActivityOverview";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { User, TrendingUp } from "lucide-react";
+import { User, TrendingUp, FileText } from "lucide-react";
+import { DraftListings } from "@/components/product-dashboard/DraftListings";
 import ExpandableTabs from "@/components/ui/ExpandableTabs";
 import type { Database } from "@/integrations/supabase/types";
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
@@ -180,10 +181,14 @@ export const Profile = () => {
 
             {/* Main Tabs */}
             <Tabs defaultValue="activity" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
+              <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="activity" className="flex items-center gap-2">
                   <TrendingUp className="h-4 w-4" />
                   <span className="hidden sm:inline">Activity</span>
+                </TabsTrigger>
+                <TabsTrigger value="listings" className="flex items-center gap-2">
+                  <FileText className="h-4 w-4" />
+                  <span className="hidden sm:inline">Listings</span>
                 </TabsTrigger>
                 <TabsTrigger value="account" className="flex items-center gap-2">
                   <User className="h-4 w-4" />
@@ -193,6 +198,15 @@ export const Profile = () => {
 
               <TabsContent value="activity" className="space-y-6">
                 <ActivityOverview profile={profile} />
+              </TabsContent>
+
+              <TabsContent value="listings" className="space-y-6">
+                <div className="space-y-6">
+                  <div>
+                    <h3 className="text-xl font-semibold mb-4 exo-2-header text-neutral-50">Draft Listings</h3>
+                    <DraftListings />
+                  </div>
+                </div>
               </TabsContent>
 
               <TabsContent value="account" className="space-y-6">
