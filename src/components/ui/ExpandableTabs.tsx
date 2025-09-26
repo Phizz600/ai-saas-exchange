@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { LayoutDashboard, User, Store, MessageCircle, Bell, Plus, LogOut } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import logoImage from "@/assets/fulllogo_transparent_nobuffer.png";
 
 // Custom hook for outside click
 const useOnClickOutside = (ref: React.RefObject<HTMLElement>, handler: (event: Event) => void) => {
@@ -172,8 +173,23 @@ export default function ExpandableTabs() {
       navigate(tab.path);
     }
   };
-  return <div className="flex justify-center mb-4 sm:mb-6 md:mb-8 px-2 sm:px-4">
-      <div ref={outsideClickRef} className="flex items-center justify-between w-full max-w-4xl gap-1 sm:gap-2 rounded-2xl border border-white/20 bg-white/10 backdrop-blur-md p-1 sm:p-1.5 shadow-lg overflow-hidden py-[7px] my-[30px]">
+  return <div className="flex flex-col items-center mb-4 sm:mb-6 md:mb-8 px-2 sm:px-4">
+      {/* Logo at the top, centered and clickable */}
+      <div className="mb-4">
+        <button
+          onClick={() => navigate('/')}
+          className="transition-transform duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-white/30 rounded-lg p-1"
+          aria-label="Go to homepage"
+        >
+          <img 
+            src={logoImage} 
+            alt="AI Exchange Club Logo" 
+            className="h-12 sm:h-16 md:h-20 w-auto"
+          />
+        </button>
+      </div>
+      
+      <div ref={outsideClickRef} className="flex items-center justify-between w-full max-w-4xl gap-1 sm:gap-2 rounded-2xl border border-white/20 bg-white/10 backdrop-blur-md p-1 sm:p-1.5 shadow-lg overflow-hidden py-[7px]">
         {/* Main navigation tabs - scrollable on mobile */}
         <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto scrollbar-hide flex-1 min-w-0">
           {tabs.map((tab, index) => {
