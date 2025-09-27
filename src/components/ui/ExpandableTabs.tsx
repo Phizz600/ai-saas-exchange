@@ -173,19 +173,11 @@ export default function ExpandableTabs() {
       navigate(tab.path);
     }
   };
-  return <div className="flex flex-col items-center mb-4 sm:mb-6 md:mb-8 px-2 sm:px-4">
+  return <div className="flex flex-col items-center mb-4 sm:mb-6 md:mb-8 px-2 sm:px-4 py-[16px]">
       {/* Logo at the top, centered and clickable */}
       <div className="mb-4">
-        <button
-          onClick={() => navigate('/')}
-          className="transition-transform duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-white/30 rounded-lg p-1"
-          aria-label="Go to homepage"
-        >
-          <img 
-            src={logoImage} 
-            alt="AI Exchange Club Logo" 
-            className="h-12 sm:h-16 md:h-20 w-auto"
-          />
+        <button onClick={() => navigate('/')} className="transition-transform duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-white/30 rounded-lg p-1" aria-label="Go to homepage">
+          <img src={logoImage} alt="AI Exchange Club Logo" className="h-12 sm:h-16 md:h-20 w-auto" />
         </button>
       </div>
       
