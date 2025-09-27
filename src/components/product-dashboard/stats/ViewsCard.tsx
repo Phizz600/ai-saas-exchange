@@ -27,7 +27,7 @@ export const ViewsCard = ({ value, change }: ViewsCardProps) => {
 
   return (
     <StatsCard
-      title="Total Views"
+      title="Total Listing Views"
       value={value.toLocaleString()}
       change={change}
       subtitle={change ? "vs last month" : "product impressions"}
