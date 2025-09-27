@@ -20,6 +20,9 @@ import {
   Save,
   X
 } from "lucide-react";
+import { PasswordSettings } from "./PasswordSettings";
+import { EmailPreferences } from "./EmailPreferences";
+import { DangerZone } from "./DangerZone";
 import type { Database } from "@/integrations/supabase/types";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
@@ -198,14 +201,15 @@ export const AccountSettings = ({ profile, onProfileUpdate }: AccountSettingsPro
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Shield className="h-5 w-5" />
-          Account Settings
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Shield className="h-5 w-5" />
+            Account Settings
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
         {/* Full Name Field */}
         <div className="space-y-2">
           <Label htmlFor="fullName" className="flex items-center gap-2">
@@ -385,8 +389,18 @@ export const AccountSettings = ({ profile, onProfileUpdate }: AccountSettingsPro
               Edit Settings
             </Button>
           )}
-        </div>
-      </CardContent>
-    </Card>
+          </div>
+        </CardContent>
+      </Card>
+      
+      {/* Password Settings */}
+      <PasswordSettings />
+      
+      {/* Email Preferences */}
+      <EmailPreferences />
+      
+      {/* Danger Zone */}
+      <DangerZone />
+    </div>
   );
 };

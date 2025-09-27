@@ -5,7 +5,6 @@ import { BrowseMarketplace } from "@/pages/BrowseMarketplace";
 import { SellersPage } from "@/pages/SellersPage";
 import ProductPage from "@/pages/ProductPage";
 import { Messages } from "@/pages/Messages";
-import Settings from "@/pages/Settings";
 import Index from "@/pages/Index";
 import { Admin } from "@/pages/Admin";
 import { ListProduct } from "@/pages/ListProduct";
@@ -165,14 +164,6 @@ const protectedRoutes = [
     element: (
       <CleanProtectedRoute>
         <MessageChat />
-      </CleanProtectedRoute>
-    ),
-  },
-  {
-    path: "/settings",
-    element: (
-      <CleanProtectedRoute>
-        <Settings />
       </CleanProtectedRoute>
     ),
   },

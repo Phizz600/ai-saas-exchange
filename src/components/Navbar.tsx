@@ -196,8 +196,8 @@ export const Navbar = () => {
                             <Link to="/list-product" className="block text-gray-700 hover:text-[#8B5CF6] transition-colors">
                               List Product
                             </Link>
-                            <Link to="/settings" className="block text-gray-700 hover:text-[#8B5CF6] transition-colors">
-                              Settings
+                            <Link to="/profile" className="block text-gray-700 hover:text-[#8B5CF6] transition-colors">
+                              Profile & Settings
                             </Link>
                             <button onClick={handleSignOut} className="flex items-center text-gray-700 hover:text-red-600 transition-colors w-full">
                               <LogOut className="mr-2 h-4 w-4" />
@@ -241,8 +241,8 @@ export const Navbar = () => {
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem className="text-gray-700 focus:text-white focus:bg-[#8a5cf7]">
-                        <Link to="/settings" className="w-full py-2 px-3">
-                          Settings
+                        <Link to="/profile" className="w-full py-2 px-3">
+                          Profile & Settings
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={handleSignOut} className="text-gray-700 focus:text-white focus:bg-[#8a5cf7]">
@@ -334,8 +334,8 @@ export const Navbar = () => {
                           <Link to="/list-product" className="block text-gray-700 hover:text-[#8B5CF6] transition-colors">
                             List Product
                           </Link>
-                          <Link to="/settings" className="block text-gray-700 hover:text-[#8B5CF6] transition-colors">
-                            Settings
+                          <Link to="/profile" className="block text-gray-700 hover:text-[#8B5CF6] transition-colors">
+                            Profile & Settings
                           </Link>
                           <button onClick={handleSignOut} className="flex items-center text-gray-700 hover:text-red-600 transition-colors w-full">
                             <LogOut className="mr-2 h-4 w-4" />

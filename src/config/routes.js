@@ -23,7 +23,6 @@ export const ROUTE_CONFIGS = [
   { path: '/product-dashboard', priority: 0.6, changefreq: 'weekly', includeInSitemap: false, prerenderStatic: true },
   { path: '/profile', priority: 0.5, changefreq: 'monthly', includeInSitemap: false, prerenderStatic: true },
   { path: '/messages', priority: 0.5, changefreq: 'monthly', includeInSitemap: false, prerenderStatic: true },
-  { path: '/settings', priority: 0.4, changefreq: 'monthly', includeInSitemap: false, prerenderStatic: true },
   { path: '/list-product', priority: 0.6, changefreq: 'monthly', includeInSitemap: false, prerenderStatic: true },
   { path: '/admin', priority: 0.3, changefreq: 'monthly', includeInSitemap: false, prerenderStatic: true },
   { path: '/listing-thank-you', priority: 0.4, changefreq: 'monthly', includeInSitemap: false, prerenderStatic: true },

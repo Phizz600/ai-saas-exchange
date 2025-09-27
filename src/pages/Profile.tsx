@@ -8,6 +8,7 @@ import { ProfileCompletion } from "@/components/profile/ProfileCompletion";
 import { ProfileBio } from "@/components/profile/ProfileBio";
 import { AccountSettings } from "@/components/profile/AccountSettings";
 import { ActivityOverview } from "@/components/profile/ActivityOverview";
+import { EmailVerificationBanner } from "@/components/profile/EmailVerificationBanner";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { User, TrendingUp, FileText } from "lucide-react";
@@ -151,6 +152,10 @@ export const Profile = () => {
   return <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-blue-900">
       <div className="container mx-auto px-3 py-6">
         <ExpandableTabs />
+        
+        {/* Email Verification Banner */}
+        <EmailVerificationBanner />
+        
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
           {/* Left Sidebar */}
           <div className="md:col-span-4">

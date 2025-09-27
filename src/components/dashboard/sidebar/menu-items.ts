@@ -31,8 +31,8 @@ export const generalItems = [
     path: "/help",
   },
   {
-    title: "Settings",
+    title: "Profile & Settings",
     icon: Settings,
-    path: "/settings",
+    path: "/profile",
   },
 ];
