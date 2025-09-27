@@ -176,7 +176,7 @@ export default function ExpandableTabs() {
   return <div className="flex flex-col items-center mb-4 sm:mb-6 md:mb-8 px-2 sm:px-4 py-0">
       {/* Logo at the top, centered and clickable */}
       <div className="mb-4">
-        <button onClick={() => navigate('/')} className="transition-transform duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-white/30 rounded-lg p-1" aria-label="Go to homepage">
+        <button onClick={() => navigate('/')} aria-label="Go to homepage" className="transition-transform duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-white/30 rounded-lg p-1 my-0 py-[16px]">
           <img src={logoImage} alt="AI Exchange Club Logo" className="h-12 sm:h-16 md:h-20 w-auto" />
         </button>
       </div>
