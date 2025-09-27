@@ -181,7 +181,7 @@ export default function ExpandableTabs() {
         </button>
       </div>
       
-      <div ref={outsideClickRef} className="flex items-center justify-between w-full max-w-4xl gap-1 sm:gap-2 rounded-2xl border border-white/20 bg-white/10 backdrop-blur-md p-1 sm:p-1.5 shadow-lg overflow-hidden py-[7px]">
+      <div ref={outsideClickRef} className="sticky top-0 z-50 flex items-center justify-between w-full max-w-4xl gap-1 sm:gap-2 rounded-2xl border border-white/20 bg-white/10 backdrop-blur-md p-1 sm:p-1.5 shadow-lg overflow-hidden py-[7px] md:relative md:top-auto md:z-auto">
         {/* Main navigation tabs - scrollable on mobile */}
         <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto scrollbar-hide flex-1 min-w-0">
           {tabs.map((tab, index) => {
