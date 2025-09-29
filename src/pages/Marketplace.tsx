@@ -34,8 +34,8 @@ export function Marketplace() {
           return;
         }
 
-        // Allow users to stay on marketplace - no redirect needed
-        // Marketplace is accessible to all authenticated users
+        // User has completed onboarding - allow them to stay on marketplace
+        // No automatic redirect to dashboard - let users choose where to go
       } catch (error) {
         console.error('Error during authenticated redirect:', error);
       }
