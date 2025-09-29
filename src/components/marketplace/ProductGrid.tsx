@@ -8,9 +8,10 @@ interface ProductGridProps {
   products: any[];
   isLoading?: boolean;
   onProductView?: (productId: string) => void;
+  showInteractionLimits?: boolean;
 }
 
-export const ProductGrid = ({ products, isLoading = false, onProductView }: ProductGridProps) => {
+export const ProductGrid = ({ products, isLoading = false, onProductView, showInteractionLimits = false }: ProductGridProps) => {
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 p-4">
@@ -47,7 +48,7 @@ export const ProductGrid = ({ products, isLoading = false, onProductView }: Prod
           transition={{ duration: 0.4, delay: index * 0.05 }}
           className="h-full"
         >
-          <ProductCard product={product} />
+          <ProductCard product={product} showInteractionLimits={showInteractionLimits} />
         </motion.div>
       ))}
     </div>

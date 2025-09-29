@@ -13,9 +13,10 @@ import { Product } from "@/types/product";
 
 interface ProductCardProps {
   product: Product;
+  showInteractionLimits?: boolean;
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({ product, showInteractionLimits = false }: ProductCardProps) {
   const { 
     isImageLoaded, 
     setIsImageLoaded, 
@@ -98,7 +99,11 @@ export function ProductCard({ product }: ProductCardProps) {
               onSignSuccess={handleNdaSuccess}
             />
           ) : (
-            <ProductActions productId={product.id} isAuction={false} />
+            <ProductActions 
+              productId={product.id} 
+              isAuction={false} 
+              showInteractionLimits={showInteractionLimits}
+            />
           )}
         </CardFooter>
       </Card>

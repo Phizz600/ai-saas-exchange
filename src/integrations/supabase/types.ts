@@ -638,36 +638,51 @@ export type Database = {
         Row: {
           amount: number
           benefits: Json | null
+          billing_cycle: string | null
           created_at: string
           expires_at: string | null
           id: string
+          next_billing_date: string | null
           package_type: string
           payment_intent_id: string | null
           payment_status: string
+          stripe_subscription_id: string | null
+          subscription_status: string | null
+          subscription_type: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
           amount: number
           benefits?: Json | null
+          billing_cycle?: string | null
           created_at?: string
           expires_at?: string | null
           id?: string
+          next_billing_date?: string | null
           package_type: string
           payment_intent_id?: string | null
           payment_status?: string
+          stripe_subscription_id?: string | null
+          subscription_status?: string | null
+          subscription_type?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
           amount?: number
           benefits?: Json | null
+          billing_cycle?: string | null
           created_at?: string
           expires_at?: string | null
           id?: string
+          next_billing_date?: string | null
           package_type?: string
           payment_intent_id?: string | null
           payment_status?: string
+          stripe_subscription_id?: string | null
+          subscription_status?: string | null
+          subscription_type?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -1145,6 +1160,54 @@ export type Database = {
         }
         Relationships: []
       }
+      user_subscriptions: {
+        Row: {
+          amount: number
+          billing_cycle: string | null
+          created_at: string | null
+          current_period_end: string | null
+          current_period_start: string | null
+          id: string
+          next_billing_date: string | null
+          status: string | null
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          subscription_type: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          billing_cycle?: string | null
+          created_at?: string | null
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          next_billing_date?: string | null
+          status?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          subscription_type: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          billing_cycle?: string | null
+          created_at?: string | null
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          next_billing_date?: string | null
+          status?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          subscription_type?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_verifications: {
         Row: {
           created_at: string
@@ -1243,6 +1306,10 @@ export type Database = {
       get_daily_views_count: {
         Args: { user_uuid: string }
         Returns: number
+      }
+      has_marketplace_access: {
+        Args: { check_user_id: string }
+        Returns: boolean
       }
       has_role: {
         Args: {

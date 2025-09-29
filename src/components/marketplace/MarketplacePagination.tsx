@@ -13,12 +13,14 @@ interface MarketplacePaginationProps {
   currentPage: number;
   totalPages: number;
   setCurrentPage: (page: number) => void;
+  maxFreePages?: number;
 }
 
 export const MarketplacePagination = ({
   currentPage,
   totalPages,
   setCurrentPage,
+  maxFreePages,
 }: MarketplacePaginationProps) => {
   const isMobile = useIsMobile();
 
@@ -50,17 +52,23 @@ export const MarketplacePagination = ({
             </PaginationLink>
           </PaginationItem>
           
-          {getPageNumbers().map((page) => (
-            <PaginationItem key={page}>
-              <PaginationLink
-                onClick={() => setCurrentPage(page)}
-                isActive={currentPage === page}
-                className="min-w-[40px] h-10 sm:h-9"
-              >
-                {page}
-              </PaginationLink>
-            </PaginationItem>
-          ))}
+          {getPageNumbers().map((page) => {
+            const isLocked = maxFreePages && page > maxFreePages;
+            return (
+              <PaginationItem key={page}>
+                <PaginationLink
+                  onClick={() => setCurrentPage(page)}
+                  isActive={currentPage === page}
+                  className={`min-w-[40px] h-10 sm:h-9 relative ${isLocked ? 'opacity-50 cursor-not-allowed' : ''}`}
+                >
+                  {page}
+                  {isLocked && (
+                    <span className="absolute -top-1 -right-1 text-xs">🔒</span>
+                  )}
+                </PaginationLink>
+              </PaginationItem>
+            );
+          })}
           
           <PaginationItem>
             <PaginationNext

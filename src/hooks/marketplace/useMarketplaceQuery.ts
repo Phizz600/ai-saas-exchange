@@ -1,18 +1,22 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { FilterState, MarketplaceProduct } from "@/types/marketplace";
+import { useAuth } from "@/contexts/CleanAuthContext";
 
 interface UseMarketplaceQueryProps {
   filters: FilterState;
   currentPage: number;
   itemsPerPage?: number;
+  respectAccessLimits?: boolean;
 }
 
 export const useMarketplaceQuery = ({ 
   filters, 
   currentPage, 
-  itemsPerPage = 6 
+  itemsPerPage = 6,
+  respectAccessLimits = true 
 }: UseMarketplaceQueryProps) => {
+  const { user } = useAuth();
   return useQuery({
     queryKey: ['marketplaceProducts', filters, currentPage],
     queryFn: async () => {
@@ -79,7 +83,19 @@ export const useMarketplaceQuery = ({
             query = query.order('created_at', { ascending: false });
         }
 
-        // Apply pagination
+        // Apply pagination with access limits
+        if (respectAccessLimits && currentPage > 2) {
+          // Check if user has premium access
+          const { data: hasAccess } = await supabase.rpc('has_marketplace_access', {
+            check_user_id: user?.id
+          });
+          
+          if (!hasAccess) {
+            // Return empty result for pages beyond 2 for free users
+            return { products: [], count: 0 };
+          }
+        }
+        
         const start = (currentPage - 1) * itemsPerPage;
         query = query.range(start, start + itemsPerPage - 1);
 
