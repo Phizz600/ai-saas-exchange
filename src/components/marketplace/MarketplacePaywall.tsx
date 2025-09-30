@@ -70,7 +70,7 @@ export function MarketplacePaywall({
                 <span className="text-6xl font-bold">$49.95</span>
               </div>
               <p className="text-[#F59E0B] text-xl font-semibold">You Save $50!</p>
-              <p className="text-gray-400">per month • Cancel anytime</p>
+              <p className="text-gray-400">No Thanks, prefer not to access AI SaaS Businesses for sale.</p>
             </div>
 
             {/* Benefits */}
