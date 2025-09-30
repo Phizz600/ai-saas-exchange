@@ -1,7 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Check, Zap, Shield, Star, Sparkles, TrendingUp } from "lucide-react";
+import { Check, Clock, ArrowLeft, Sparkles } from "lucide-react";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { SubscriptionPaymentForm } from "./SubscriptionPaymentForm";
@@ -19,15 +20,16 @@ const stripePromise = loadStripe(process.env.NODE_ENV === 'production'
 );
 
 export function MarketplacePaywall({ isOpen, onClose, onSuccess }: MarketplacePaywallProps) {
+  const navigate = useNavigate();
   const [showPaymentForm, setShowPaymentForm] = useState(false);
 
   const benefits = [
-    { icon: Sparkles, text: "Access 100+ exclusive AI business listings", highlight: true },
-    { icon: TrendingUp, text: "Advanced analytics on all marketplace products" },
-    { icon: Shield, text: "Verified seller badges and trust signals" },
-    { icon: Zap, text: "Direct messaging with sellers & priority support" },
-    { icon: Check, text: "Save unlimited products to your watchlist" },
-    { icon: Check, text: "Early access to new premium listings" },
+    "Access 100+ exclusive AI business listings",
+    "Advanced analytics on all marketplace products",
+    "Verified seller badges and trust signals",
+    "Direct messaging with sellers & priority support",
+    "Save unlimited products to your watchlist",
+    "Early access to new premium listings",
   ];
 
   const handleUpgrade = () => {
@@ -44,110 +46,94 @@ export function MarketplacePaywall({ isOpen, onClose, onSuccess }: MarketplacePa
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="text-3xl font-bold text-center exo-2-heading bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
-            Unlock the Full Marketplace
-          </DialogTitle>
-          <DialogDescription className="text-center text-base mt-2">
-            Join 1,000+ investors discovering exclusive AI business opportunities
-          </DialogDescription>
-        </DialogHeader>
+    <Dialog open={isOpen} onOpenChange={() => {}}>
+      <DialogContent 
+        className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto bg-[#0A0F1E] border-[#1E293B] text-white [&>button]:hidden"
+        onInteractOutside={(e) => e.preventDefault()}
+        onEscapeKeyDown={(e) => e.preventDefault()}
+      >
 
         {!showPaymentForm ? (
-          <div className="space-y-8 py-4">
-            {/* Pricing Card */}
-            <div className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10 rounded-2xl p-8 border-2 border-primary/20">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl" />
-              <div className="absolute bottom-0 left-0 w-32 h-32 bg-secondary/10 rounded-full blur-3xl" />
-              
-              <div className="relative text-center">
-                <div className="inline-block mb-3 px-4 py-1 bg-primary/20 rounded-full">
-                  <p className="text-sm font-semibold text-primary">LIMITED TIME OFFER</p>
-                </div>
-                <div className="flex items-baseline justify-center gap-2 mb-2">
-                  <span className="text-2xl text-muted-foreground line-through">$99.95</span>
-                  <span className="text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">$49.95</span>
-                </div>
-                <p className="text-lg text-muted-foreground">per month • Cancel anytime</p>
-                <p className="text-sm text-primary font-semibold mt-2">🔥 50% OFF - First 100 subscribers only!</p>
-              </div>
-            </div>
-
-            {/* Benefits Grid */}
-            <div className="grid gap-4">
-              {benefits.map((benefit, index) => {
-                const Icon = benefit.icon;
-                return (
-                  <div 
-                    key={index} 
-                    className={`flex items-start gap-4 p-4 rounded-xl border transition-all hover:scale-[1.02] ${
-                      benefit.highlight 
-                        ? 'bg-gradient-to-r from-primary/10 to-secondary/10 border-primary/30' 
-                        : 'bg-card/50 border-border/50'
-                    }`}
-                  >
-                    <div className={`mt-0.5 rounded-lg p-2 ${
-                      benefit.highlight ? 'bg-primary/20' : 'bg-primary/10'
-                    }`}>
-                      <Icon className={`h-5 w-5 ${
-                        benefit.highlight ? 'text-primary' : 'text-primary/70'
-                      }`} />
-                    </div>
-                    <div>
-                      <p className={`font-medium ${benefit.highlight ? 'text-foreground' : 'text-foreground/90'}`}>
-                        {benefit.text}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Social Proof */}
-            <div className="bg-muted/50 rounded-xl p-4 border">
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex -space-x-2">
-                  {[1, 2, 3, 4].map((i) => (
-                    <div key={i} className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-secondary border-2 border-background" />
-                  ))}
-                </div>
-                <div className="flex items-center gap-1">
-                  <span className="text-yellow-500">★★★★★</span>
-                </div>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                "Found my perfect AI acquisition in just 2 days. Worth every penny!" - Sarah K.
-              </p>
-            </div>
-
-            {/* CTA Button */}
-            <Button 
-              onClick={handleUpgrade}
-              className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-primary via-secondary to-accent hover:opacity-90 transition-all"
-              size="lg"
+          <div className="space-y-6 py-2">
+            {/* Back Button */}
+            <button
+              onClick={() => navigate(-1)}
+              className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
             >
-              Get Instant Access Now →
-            </Button>
+              <ArrowLeft className="h-4 w-4" />
+              <span className="text-sm">Back</span>
+            </button>
 
-            <div className="flex items-center justify-center gap-6 text-xs text-muted-foreground">
-              <div className="flex items-center gap-1">
-                <Shield className="h-3 w-3" />
-                <span>Secure Payment</span>
+            {/* Header with Clock Icon */}
+            <div className="flex items-center gap-3 mb-4">
+              <div className="bg-[#F59E0B]/20 p-2 rounded-full">
+                <Clock className="h-6 w-6 text-[#F59E0B]" />
               </div>
-              <div className="flex items-center gap-1">
-                <Check className="h-3 w-3" />
-                <span>Cancel Anytime</span>
+              <h2 className="text-2xl font-bold exo-2-heading">Wait! Special Offer</h2>
+            </div>
+
+            {/* Gradient Pricing Card */}
+            <div className="relative overflow-hidden bg-gradient-to-br from-[#7C3AED]/30 via-[#A855F7]/20 to-[#D946EF]/30 rounded-2xl p-8 border border-[#7C3AED]/50">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#7C3AED]/10 to-transparent" />
+              
+              <div className="relative text-center space-y-3">
+                <p className="text-[#F59E0B] text-sm font-bold tracking-wider">LIMITED TIME OFFER</p>
+                <h3 className="text-4xl font-bold">Get 50% Off Now!</h3>
+                <p className="text-gray-300 text-lg">Same great features, half the price</p>
               </div>
-              <div className="flex items-center gap-1">
-                <Zap className="h-3 w-3" />
-                <span>Instant Access</span>
+            </div>
+
+            {/* Pricing */}
+            <div className="text-center space-y-2">
+              <div className="flex items-center justify-center gap-4">
+                <span className="text-3xl text-gray-500 line-through">$99.95</span>
+                <span className="text-6xl font-bold">$49.95</span>
               </div>
+              <p className="text-[#F59E0B] text-xl font-semibold">You Save $50!</p>
+              <p className="text-gray-400">per month • Cancel anytime</p>
+            </div>
+
+            {/* Benefits */}
+            <div className="space-y-3">
+              <h4 className="text-xl font-semibold mb-4">You still get everything:</h4>
+              {benefits.map((benefit, index) => (
+                <div key={index} className="flex items-center gap-3">
+                  <div className="bg-[#F59E0B]/20 p-1 rounded-full">
+                    <Check className="h-5 w-5 text-[#F59E0B]" />
+                  </div>
+                  <p className="text-gray-300">{benefit}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* CTA Buttons */}
+            <div className="space-y-3">
+              <Button 
+                onClick={handleUpgrade}
+                className="w-full h-14 text-lg font-bold bg-gradient-to-r from-[#F59E0B] via-[#EC4899] to-[#A855F7] hover:opacity-90 transition-all text-white"
+                size="lg"
+              >
+                Get 50% Off - Pay $49.95
+              </Button>
+
+              <Button 
+                onClick={() => navigate(-1)}
+                variant="outline"
+                className="w-full h-12 text-base bg-white/10 border-white/20 text-white hover:bg-white/20"
+              >
+                No Thanks, Continue with Free Listing
+              </Button>
             </div>
           </div>
         ) : (
           <div className="space-y-6 py-4">
+            <button
+              onClick={() => setShowPaymentForm(false)}
+              className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              <span className="text-sm">Back</span>
+            </button>
             <div className="text-center mb-4">
               <h3 className="text-xl font-semibold mb-2">Complete Your Subscription</h3>
               <p className="text-sm text-muted-foreground">Secure payment powered by Stripe</p>
