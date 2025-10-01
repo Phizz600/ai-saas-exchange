@@ -59,7 +59,7 @@ export function MarketplacePaywall({
               <div className="relative text-center space-y-3">
                 <p className="text-[#F59E0B] text-sm font-bold tracking-wider">LIMITED TIME EARLY INSIDER OFFER</p>
                 <h3 className="text-4xl font-bold">Get 50% Off Now!</h3>
-                <p className="text-gray-300 text-lg">Join today and lock in exclusive early access to the fastest-growing AI SaaS deal flow network.</p>
+                <p className="text-gray-300 text-lg">Gain an edge in AI acquisitions with early access to founder-submitted deals.</p>
               </div>
             </div>
 
@@ -91,7 +91,7 @@ export function MarketplacePaywall({
               </Button>
 
               <Button onClick={() => navigate(-1)} variant="outline" className="w-full h-12 text-base bg-white/10 border-white/20 text-white hover:bg-white/20">
-                No Thanks, Continue with Free Listing
+                No thanks, I'll go back.
               </Button>
             </div>
           </div> : <div className="space-y-6 py-4">
