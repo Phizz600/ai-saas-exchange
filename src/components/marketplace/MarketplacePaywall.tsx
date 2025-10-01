@@ -66,7 +66,7 @@ export function MarketplacePaywall({
             {/* Pricing */}
             <div className="text-center space-y-2">
               <div className="flex items-center justify-center gap-4">
-                <span className="text-3xl text-gray-500 line-through">Regular Price - $99.95</span>
+                
                 <div className="flex flex-col items-center">
                   <span className="text-6xl font-bold">$49.95</span>
                   <span className="text-lg text-gray-400">per month</span>
