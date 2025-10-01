@@ -41,7 +41,7 @@ export const EmailPreferences = () => {
             <Switch checked={emailPrefs.newsletter} onCheckedChange={checked => setEmailPrefs(p => ({
             ...p,
             newsletter: checked
-          }))} />
+          }))} className="bg-[#8a5cf7]" />
           </div>
           
           <div className="flex items-center justify-between space-x-2">
@@ -54,7 +54,7 @@ export const EmailPreferences = () => {
             <Switch checked={emailPrefs.updates} onCheckedChange={checked => setEmailPrefs(p => ({
             ...p,
             updates: checked
-          }))} />
+          }))} className="bg-violet-600 hover:bg-violet-500" />
           </div>
           
           <div className="flex items-center justify-between space-x-2">
@@ -67,7 +67,7 @@ export const EmailPreferences = () => {
             <Switch checked={emailPrefs.marketing} onCheckedChange={checked => setEmailPrefs(p => ({
             ...p,
             marketing: checked
-          }))} />
+          }))} className="bg-violet-600 hover:bg-violet-500" />
           </div>
           
           <div className="flex items-center justify-between space-x-2">
@@ -80,7 +80,7 @@ export const EmailPreferences = () => {
             <Switch checked={emailPrefs.security} onCheckedChange={checked => setEmailPrefs(p => ({
             ...p,
             security: checked
-          }))} />
+          }))} className="bg-violet-600 hover:bg-violet-500" />
           </div>
         </div>
         
