@@ -40,9 +40,9 @@ export function MarketplacePaywall({
         {!showPaymentForm ? <div className="space-y-6 py-2">
             {/* Back Button */}
             <button onClick={() => {
-              onClose();
-              navigate(-1);
-            }} className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
+          onClose();
+          navigate(-1);
+        }} className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
               <ArrowLeft className="h-4 w-4" />
               <span className="text-sm">Back</span>
             </button>
@@ -60,8 +60,8 @@ export function MarketplacePaywall({
               <div className="absolute inset-0 bg-gradient-to-br from-[#7C3AED]/10 to-transparent" />
               
               <div className="relative text-center space-y-3">
-                <p className="text-[#F59E0B] text-sm font-bold tracking-wider">LIMITED TIME EARLY INSIDER OFFER</p>
-                <h3 className="text-4xl font-bold">Get 50% Off Now!</h3>
+                <p className="text-[#F59E0B] text-sm font-bold tracking-wider">LIMITED TIME </p>
+                <h3 className="text-4xl font-bold">EARLY INSIDER OFFER</h3>
                 <p className="text-gray-300 text-lg">Access a private deal flow network of verified, cash-flowing AI SaaS businesses for sale — all founder-submitted, no brokers.</p>
               </div>
             </div>
@@ -96,9 +96,9 @@ export function MarketplacePaywall({
               </Button>
 
               <Button onClick={() => {
-                onClose();
-                navigate(-1);
-              }} variant="outline" className="w-full h-12 text-base bg-white/10 border-white/20 text-white hover:bg-white/20">
+            onClose();
+            navigate(-1);
+          }} variant="outline" className="w-full h-12 text-base bg-white/10 border-white/20 text-white hover:bg-white/20">
                 No Thanks, I'll go back.
               </Button>
             </div>
