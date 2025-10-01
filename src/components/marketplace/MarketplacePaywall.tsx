@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Check, Clock, ArrowLeft, Sparkles } from "lucide-react";
+import { Check, Lock, ArrowLeft, Sparkles } from "lucide-react";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { SubscriptionPaymentForm } from "./SubscriptionPaymentForm";
@@ -47,7 +47,7 @@ export function MarketplacePaywall({
             {/* Header with Clock Icon */}
             <div className="flex items-center gap-3 mb-4">
               <div className="bg-[#F59E0B]/20 p-2 rounded-full">
-                <Clock className="h-6 w-6 text-[#F59E0B]" />
+                <Lock className="h-6 w-6 text-[#F59E0B]" />
               </div>
               <h2 className="text-2xl font-bold exo-2-heading">Marketplace Unlock </h2>
             </div>
