@@ -59,14 +59,14 @@ export function MarketplacePaywall({
               <div className="relative text-center space-y-3">
                 <p className="text-[#F59E0B] text-sm font-bold tracking-wider">LIMITED TIME EARLY INSIDER OFFER</p>
                 <h3 className="text-4xl font-bold">Get 50% Off Now!</h3>
-                <p className="text-gray-300 text-lg">Gain an edge in AI acquisitions with early access to founder-submitted deals.</p>
+                <p className="text-gray-300 text-lg">Join today and lock in exclusive early access to the fastest-growing AI SaaS deal flow network.</p>
               </div>
             </div>
 
             {/* Pricing */}
             <div className="text-center space-y-2">
               <div className="flex items-center justify-center gap-4">
-                <span className="text-3xl text-gray-500 line-through">$99.95</span>
+                <span className="text-3xl text-gray-500 line-through">Access Marketplace - $49.95</span>
                 <span className="text-6xl font-bold">$49.95</span>
               </div>
               <p className="text-[#F59E0B] text-xl font-semibold">You Save $50!</p>
@@ -91,7 +91,7 @@ export function MarketplacePaywall({
               </Button>
 
               <Button onClick={() => navigate(-1)} variant="outline" className="w-full h-12 text-base bg-white/10 border-white/20 text-white hover:bg-white/20">
-                No thanks, I'll go back.
+                No Thanks, Continue with Free Listing
               </Button>
             </div>
           </div> : <div className="space-y-6 py-4">
