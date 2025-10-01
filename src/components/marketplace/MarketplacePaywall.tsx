@@ -93,7 +93,7 @@ export function MarketplacePaywall({
               </Button>
 
               <Button onClick={() => navigate(-1)} variant="outline" className="w-full h-12 text-base bg-white/10 border-white/20 text-white hover:bg-white/20">
-                No Thanks, Continue with Free Listing
+                No Thanks, I'll go back.
               </Button>
             </div>
           </div> : <div className="space-y-6 py-4">
