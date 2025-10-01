@@ -14,6 +14,7 @@ import { FormSubmissionSuccess } from "./components/alerts/FormSubmissionSuccess
 import { FormLayout } from "./components/layout/FormLayout";
 import { ListProductFormData } from "./types";
 import { PackagePaymentDialog } from "@/components/payments/PackagePaymentDialog";
+import { FeaturedListingDownsellDialog } from "@/components/payments/FeaturedListingDownsellDialog";
 import { toast } from "sonner";
 
 interface ListProductFormProps {
@@ -23,6 +24,7 @@ interface ListProductFormProps {
 export function ListProductForm({ selectedPackage }: ListProductFormProps) {
   const navigate = useNavigate();
   const [showPaymentDialog, setShowPaymentDialog] = useState(false);
+  const [showFeaturedUpsell, setShowFeaturedUpsell] = useState(false);
   const [pendingSubmissionData, setPendingSubmissionData] = useState<ListProductFormData | null>(null);
   
   // Get draft ID from URL parameters
@@ -102,6 +104,13 @@ export function ListProductForm({ selectedPackage }: ListProductFormProps) {
     }
   };
 
+  const handleFeaturedUpsellAccept = () => {
+    // User accepted the Featured Listing upsell
+    setShowFeaturedUpsell(false);
+    setShowPaymentDialog(true);
+    // The payment dialog will handle the submission after successful payment
+  };
+
   const handleContinueWithFree = async () => {
     if (!pendingSubmissionData) return;
     
@@ -122,6 +131,7 @@ export function ListProductForm({ selectedPackage }: ListProductFormProps) {
         localStorage.setItem('selectedPackage', 'free-listing');
         setPendingSubmissionData(null);
         setShowPaymentDialog(false);
+        setShowFeaturedUpsell(false);
         
         // Clean up draft after successful submission
         try {
@@ -156,6 +166,7 @@ export function ListProductForm({ selectedPackage }: ListProductFormProps) {
         setSubmissionError(error || "Failed to submit your product. Please try again.");
         setIsSubmitting(false);
         setShowPaymentDialog(false);
+        setShowFeaturedUpsell(false);
         setPendingSubmissionData(null);
       }
     } catch (error) {
@@ -163,6 +174,7 @@ export function ListProductForm({ selectedPackage }: ListProductFormProps) {
       setSubmissionError("An error occurred while submitting. Please try again.");
       setIsSubmitting(false);
       setShowPaymentDialog(false);
+      setShowFeaturedUpsell(false);
       setPendingSubmissionData(null);
     }
   };
@@ -223,7 +235,16 @@ export function ListProductForm({ selectedPackage }: ListProductFormProps) {
           return;
         }
         
-        // For starter package or no package selected, proceed with normal submission
+        // For free listing or no package selected, show Featured Listing upsell
+        if (!selectedPackage || selectedPackage === 'free-listing') {
+          // Store submission data and show upsell dialog
+          setPendingSubmissionData(data);
+          setShowFeaturedUpsell(true);
+          setIsSubmitting(false);
+          return;
+        }
+        
+        // Fallback: proceed with normal submission
         const { success, productId, error } = await submitProduct(data);
         
         if (success && productId) {
@@ -329,8 +350,20 @@ export function ListProductForm({ selectedPackage }: ListProductFormProps) {
         <CurrentSectionComponent form={form} />
       </FormLayout>
 
+      {/* Featured Listing Upsell Dialog */}
+      <FeaturedListingDownsellDialog
+        open={showFeaturedUpsell}
+        onClose={() => {
+          setShowFeaturedUpsell(false);
+          setPendingSubmissionData(null);
+          setIsSubmitting(false);
+        }}
+        onSuccess={handleFeaturedUpsellAccept}
+        onContinueWithFree={handleContinueWithFree}
+      />
+
       {/* Package Payment Dialog */}
-      {showPaymentDialog && selectedPackage && (selectedPackage === 'featured-listing' || selectedPackage === 'premium-exit') && (
+      {showPaymentDialog && (
         <PackagePaymentDialog
           open={showPaymentDialog}
           onClose={() => {
@@ -338,7 +371,7 @@ export function ListProductForm({ selectedPackage }: ListProductFormProps) {
             setPendingSubmissionData(null);
             setIsSubmitting(false);
           }}
-          packageType={selectedPackage}
+          packageType="featured-listing"
           onSuccess={handlePaymentSuccess}
           onContinueWithFree={handleContinueWithFree}
         />
