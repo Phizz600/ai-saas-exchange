@@ -39,7 +39,10 @@ export function MarketplacePaywall({
 
         {!showPaymentForm ? <div className="space-y-6 py-2">
             {/* Back Button */}
-            <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
+            <button onClick={() => {
+              onClose();
+              navigate(-1);
+            }} className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
               <ArrowLeft className="h-4 w-4" />
               <span className="text-sm">Back</span>
             </button>
@@ -92,7 +95,10 @@ export function MarketplacePaywall({
                 Get 50% Off - Pay $49.95
               </Button>
 
-              <Button onClick={() => navigate(-1)} variant="outline" className="w-full h-12 text-base bg-white/10 border-white/20 text-white hover:bg-white/20">
+              <Button onClick={() => {
+                onClose();
+                navigate(-1);
+              }} variant="outline" className="w-full h-12 text-base bg-white/10 border-white/20 text-white hover:bg-white/20">
                 No Thanks, I'll go back.
               </Button>
             </div>
