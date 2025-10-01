@@ -59,18 +59,20 @@ export function MarketplacePaywall({
               <div className="relative text-center space-y-3">
                 <p className="text-[#F59E0B] text-sm font-bold tracking-wider">LIMITED TIME EARLY INSIDER OFFER</p>
                 <h3 className="text-4xl font-bold">Get 50% Off Now!</h3>
-                <p className="text-gray-300 text-lg">Join today and lock in exclusive early access to the fastest-growing AI SaaS deal flow network.</p>
+                <p className="text-gray-300 text-lg">Access a private deal flow network of verified, cash-flowing AI SaaS businesses for sale — all founder-submitted, no brokers.</p>
               </div>
             </div>
 
             {/* Pricing */}
             <div className="text-center space-y-2">
               <div className="flex items-center justify-center gap-4">
-                <span className="text-3xl text-gray-500 line-through">Access Marketplace - $49.95</span>
-                <span className="text-6xl font-bold">$49.95</span>
+                <span className="text-3xl text-gray-500 line-through">Regular Price - $99.95</span>
+                <div className="flex flex-col items-center">
+                  <span className="text-6xl font-bold">$49.95</span>
+                  <span className="text-lg text-gray-400">per month</span>
+                </div>
               </div>
               <p className="text-[#F59E0B] text-xl font-semibold">You Save $50!</p>
-              <p className="text-gray-400">No thanks, I'll go back.</p>
             </div>
 
             {/* Benefits */}
