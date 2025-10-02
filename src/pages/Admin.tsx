@@ -49,10 +49,10 @@ export const Admin = () => {
           <h1 className="exo-2-heading text-3xl font-bold mb-2">Admin Tools</h1>
           <p className="text-gray-600 mb-6">Manage your application settings and monitor site performance</p>
           
-          <Alert className="mb-6 border-blue-200 bg-blue-50">
-            <Info className="h-4 w-4 text-blue-500" />
-            <AlertDescription className="text-blue-700">
-              This admin panel is only visible in development mode. Use these tools to test, debug, and analyze your application.
+          <Alert className="mb-6 border-green-200 bg-green-50">
+            <Info className="h-4 w-4 text-green-500" />
+            <AlertDescription className="text-green-700">
+              Welcome to the admin panel! Use these tools to manage your site, approve listings, and monitor performance.
             </AlertDescription>
           </Alert>
           
@@ -127,6 +127,7 @@ export const Admin = () => {
             <CardContent>
               <div className="text-sm text-gray-600 space-y-2">
                 <p>Environment: {import.meta.env.DEV ? "Development" : "Production"}</p>
+                <p>Admin Access: Role-based (admin users only)</p>
                 <p>Supabase Project ID: pxadbwlidclnfoodjtpd</p>
                 <p>Edge Functions: send-welcome-email, send-test-email, send-auction-result-email</p>
               </div>

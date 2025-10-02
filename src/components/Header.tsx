@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { ExpandableTabs } from "./header/ExpandableTabs";
-import { Store, LayoutDashboard, Bell, HelpCircle, User, LogOut, MessageSquare } from "lucide-react";
+import { Store, LayoutDashboard, Bell, HelpCircle, User, LogOut, MessageSquare, Settings } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { NotificationSheet } from "./marketplace/notifications/NotificationSheet";
@@ -9,6 +9,7 @@ import { useNotifications } from "./marketplace/notifications/useNotifications";
 import { useState, useEffect } from "react";
 import { getUnreadMessagesCount } from "@/integrations/supabase/messages";
 import { Badge } from "@/components/ui/badge";
+import { useAdminCheck } from "@/hooks/useAdminCheck";
 interface Tab {
   title: string;
   icon: any;
@@ -35,6 +36,7 @@ export const Header = () => {
     markAsRead
   } = useNotifications();
   const [unreadMessages, setUnreadMessages] = useState(0);
+  const { isAdmin } = useAdminCheck();
   useEffect(() => {
     const loadUnreadCount = async () => {
       const count = await getUnreadMessagesCount();
@@ -88,7 +90,12 @@ export const Header = () => {
     description: "View messages",
     path: "/messages",
     badge: unreadMessages > 0 ? unreadMessages : undefined
-  }, {
+  }, ...(isAdmin ? [{
+    title: "Admin Panel",
+    icon: Settings,
+    description: "Manage site and listings",
+    path: "/admin"
+  }] : []), {
     type: "separator"
   }, {
     title: "Notifications",
@@ -117,6 +124,17 @@ export const Header = () => {
     onClick: handleSignOut
   }];
   return <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200">
+      <div className="container mx-auto px-4 py-4">
+        <div className="flex items-center justify-between">
+          <Link to="/" className="flex items-center space-x-2">
+            <img src="/lovable-uploads/f1d82e78-2a24-4c2b-b93c-d1a196c1065b.png" alt="AI Exchange Club" className="h-8 w-auto" />
+          </Link>
+          
+          <div className="flex items-center space-x-4">
+            <ExpandableTabs tabs={navigationTabs} />
+          </div>
+        </div>
+      </div>
       
       <NotificationSheet notifications={notifications} unreadCount={unreadCount} onMarkAsRead={markAsRead} open={notificationsOpen} onOpenChange={setNotificationsOpen} />
     </header>;
