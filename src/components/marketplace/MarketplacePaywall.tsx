@@ -21,8 +21,10 @@ export function MarketplacePaywall({
 }: MarketplacePaywallProps) {
   const navigate = useNavigate();
   const [showPaymentForm, setShowPaymentForm] = useState(false);
-  const { stripePromise, error: stripeError } = useStripeInitialization();
-  
+  const {
+    stripePromise,
+    error: stripeError
+  } = useStripeInitialization();
   const {
     paymentClientSecret,
     subscriptionId,
@@ -39,26 +41,15 @@ export function MarketplacePaywall({
       onClose();
     }
   });
-
-  const benefits = [
-    "Access 100+ exclusive AI business listings", 
-    "Advanced analytics on all marketplace products", 
-    "Verified seller badges and trust signals", 
-    "Direct messaging with sellers & priority support", 
-    "Save unlimited products to your watchlist", 
-    "Early access to new premium listings"
-  ];
-
+  const benefits = ["Access 100+ exclusive AI business listings", "Advanced analytics on all marketplace products", "Verified seller badges and trust signals", "Direct messaging with sellers & priority support", "Save unlimited products to your watchlist", "Early access to new premium listings"];
   useEffect(() => {
     if (paymentClientSecret) {
       setShowPaymentForm(true);
     }
   }, [paymentClientSecret]);
-
   const handleUpgrade = async () => {
     await initiatePayment();
   };
-
   const handleCancel = () => {
     setShowPaymentForm(false);
     resetPayment();
@@ -81,7 +72,7 @@ export function MarketplacePaywall({
               <div className="bg-[#F59E0B]/20 p-2 rounded-full">
                 <Lock className="h-6 w-6 text-[#F59E0B]" />
               </div>
-              <h2 className="text-2xl font-bold exo-2-heading">Marketplace Unlock </h2>
+              <h2 className="text-2xl font-bold exo-2-heading">Marketplace Premium Access</h2>
             </div>
 
             {/* Gradient Pricing Card */}
@@ -120,20 +111,11 @@ export function MarketplacePaywall({
 
             {/* CTA Buttons */}
             <div className="space-y-3">
-              <Button 
-                onClick={handleUpgrade} 
-                disabled={isProcessing}
-                className="w-full h-14 text-lg font-bold bg-gradient-to-r from-[#F59E0B] via-[#EC4899] to-[#A855F7] hover:opacity-90 transition-all text-white" 
-                size="lg"
-              >
-                {isProcessing ? (
-                  <>
+              <Button onClick={handleUpgrade} disabled={isProcessing} className="w-full h-14 text-lg font-bold bg-gradient-to-r from-[#F59E0B] via-[#EC4899] to-[#A855F7] hover:opacity-90 transition-all text-white" size="lg">
+                {isProcessing ? <>
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
                     Setting up payment...
-                  </>
-                ) : (
-                  "Get 50% Off - Pay $49.95"
-                )}
+                  </> : "Get 50% Off - Pay $49.95"}
               </Button>
 
               <Button onClick={() => {
@@ -149,43 +131,31 @@ export function MarketplacePaywall({
               <span className="text-sm">Back</span>
             </button>
 
-            {(paymentError || stripeError) && (
-              <Alert variant="destructive">
+            {(paymentError || stripeError) && <Alert variant="destructive">
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription>
                   {paymentError || stripeError}
                 </AlertDescription>
-              </Alert>
-            )}
+              </Alert>}
 
             <div className="text-center mb-4">
               <h3 className="text-xl font-semibold mb-2">Complete Your Subscription</h3>
               <p className="text-sm text-muted-foreground">Secure payment powered by Stripe</p>
             </div>
 
-            {paymentClientSecret && stripePromise ? (
-              <Elements 
-                stripe={stripePromise}
-                options={{
-                  clientSecret: paymentClientSecret,
-                  appearance: {
-                    theme: 'stripe',
-                    variables: {
-                      colorPrimary: '#8B5CF6',
-                    }
-                  }
-                }}
-              >
-                <MarketplaceSubscriptionForm 
-                  onSuccess={handlePaymentSuccess} 
-                  onCancel={handleCancel} 
-                />
-              </Elements>
-            ) : (
-              <div className="flex justify-center py-8">
+            {paymentClientSecret && stripePromise ? <Elements stripe={stripePromise} options={{
+          clientSecret: paymentClientSecret,
+          appearance: {
+            theme: 'stripe',
+            variables: {
+              colorPrimary: '#8B5CF6'
+            }
+          }
+        }}>
+                <MarketplaceSubscriptionForm onSuccess={handlePaymentSuccess} onCancel={handleCancel} />
+              </Elements> : <div className="flex justify-center py-8">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-              </div>
-            )}
+              </div>}
           </div>}
       </DialogContent>
     </Dialog>;
