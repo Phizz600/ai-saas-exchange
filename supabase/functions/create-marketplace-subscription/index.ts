@@ -31,30 +31,41 @@ serve(async (req) => {
     
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
     
-    const { userId, amount } = await req.json();
-    
-    if (!userId || !amount) {
-      throw new Error("Missing required parameters");
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) {
+      throw new Error("Missing authorization header");
+    }
+
+    const token = authHeader.replace("Bearer ", "");
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+
+    if (authError || !user) {
+      throw new Error("Unauthorized");
     }
     
-    // Create a setup intent for future payments (subscription)
-    const setupIntent = await stripe.setupIntents.create({
-      customer: undefined, // You might want to create/retrieve a customer here
-      payment_method_types: ['card'],
-      usage: 'off_session',
+    // Fixed price for marketplace subscription: $49.95/month
+    const amount = 4995; // in cents
+    
+    // Create a payment intent with automatic payment methods
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount,
+      currency: 'usd',
+      automatic_payment_methods: {
+        enabled: true,
+      },
       metadata: {
-        userId,
-        subscriptionType: 'marketplace-subscription',
-        amount: amount.toString(),
+        userId: user.id,
+        subscriptionType: 'marketplace-premium',
+        type: 'subscription',
       },
     });
     
-    console.log("Created setup intent:", setupIntent.id);
+    console.log("Created payment intent for subscription:", paymentIntent.id);
     
     return new Response(
       JSON.stringify({ 
-        clientSecret: setupIntent.client_secret,
-        setupIntentId: setupIntent.id
+        clientSecret: paymentIntent.client_secret,
+        subscriptionId: paymentIntent.id
       }),
       { 
         status: 200, 
