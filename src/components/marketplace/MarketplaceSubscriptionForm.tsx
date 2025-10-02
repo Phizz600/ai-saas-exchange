@@ -69,7 +69,7 @@ export function MarketplaceSubscriptionForm({
       </div>
 
       <div className="flex gap-3">
-        <Button type="button" variant="outline" onClick={onCancel} disabled={isProcessing} className="flex-1 bg-sky-950 hover:bg-sky-800">
+        <Button type="button" variant="outline" onClick={onCancel} disabled={isProcessing} className="flex-1 bg-black">
           Cancel
         </Button>
         <Button type="submit" disabled={!stripe || !elements || !elementReady || isProcessing} className="flex-1 bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] hover:opacity-90">
