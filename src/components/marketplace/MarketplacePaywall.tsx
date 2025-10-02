@@ -81,7 +81,7 @@ export function MarketplacePaywall({
               
               <div className="relative text-center space-y-3">
                 <p className="text-[#F59E0B] text-sm font-bold tracking-wider">LIMITED TIME </p>
-                <h3 className="text-4xl font-bold">EARLY INSIDER OFFER</h3>
+                <h3 className="text-4xl font-bold">EARLY BIRD SPECIAL</h3>
                 <p className="text-gray-300 text-lg">Access a private deal flow network of verified, cash-flowing AI SaaS businesses for sale — all founder-submitted, no brokers.</p>
               </div>
             </div>
