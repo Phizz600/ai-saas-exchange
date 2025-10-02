@@ -1,22 +1,25 @@
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/CleanAuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { MarketplaceLayout } from "@/components/marketplace/MarketplaceLayout";
 import AnimatedGradientBackground from "@/components/ui/AnimatedGradientBackground";
 import ExpandableTabs from "@/components/ui/ExpandableTabs";
+import { MarketplacePaywall } from "@/components/marketplace/MarketplacePaywall";
+import { useSubscriptionStatus } from "@/hooks/useSubscriptionStatus";
 
 export function Marketplace() {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
+  const { hasMarketplaceAccess, isLoading: subscriptionLoading } = useSubscriptionStatus();
+  const [showPaywall, setShowPaywall] = useState(false);
 
   useEffect(() => {
     const handleAuthenticatedRedirect = async () => {
       if (loading || !user) return;
 
       try {
-        // Check if user has completed onboarding
         const { data: profile, error } = await supabase
           .from('profiles')
           .select('onboarding_completed, user_type')
@@ -28,7 +31,6 @@ export function Marketplace() {
           return;
         }
 
-        // If user hasn't completed onboarding, redirect to onboarding
         if (!profile?.onboarding_completed) {
           navigate('/onboarding-redirect', { replace: true });
           return;
@@ -44,10 +46,28 @@ export function Marketplace() {
     handleAuthenticatedRedirect();
   }, [user, loading, navigate]);
 
+  // Show paywall if user doesn't have marketplace access
+  useEffect(() => {
+    if (!loading && !subscriptionLoading && user && !hasMarketplaceAccess) {
+      setShowPaywall(true);
+    }
+  }, [loading, subscriptionLoading, user, hasMarketplaceAccess]);
+
   return (
     <AnimatedGradientBackground>
       <ExpandableTabs />
-      <MarketplaceLayout />
+      {hasMarketplaceAccess ? (
+        <MarketplaceLayout />
+      ) : (
+        <MarketplacePaywall 
+          isOpen={showPaywall} 
+          onClose={() => setShowPaywall(false)}
+          onSuccess={() => {
+            setShowPaywall(false);
+            window.location.reload();
+          }}
+        />
+      )}
     </AnimatedGradientBackground>
   );
 }

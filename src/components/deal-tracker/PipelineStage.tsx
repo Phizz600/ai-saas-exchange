@@ -1,4 +1,4 @@
-import { Check, Clock, AlertCircle, FileText, DollarSign, Shield, Eye, Handshake, Trophy } from "lucide-react";
+import { Check, Clock, Eye, Bookmark, UserPlus, Handshake, Phone, FileSearch, FileSignature, Trophy } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export interface Stage {
@@ -80,90 +80,90 @@ export const PipelineStage = ({ stage, isLast }: PipelineStageProps) => {
 };
 
 export const createPipelineStages = (
-  escrowStatus: string | null,
-  ndaSigned: boolean,
+  dealStatus: string | null,
   userRole: 'buyer' | 'seller'
 ): Stage[] => {
   const stages = [
     {
-      id: 'interest',
-      title: 'Initial Interest',
-      description: userRole === 'buyer' ? 'You expressed interest' : 'Buyer showed interest',
+      id: 'viewed',
+      title: 'Viewed',
+      description: userRole === 'buyer' ? 'You viewed this listing' : 'Buyer viewed your listing',
       icon: <Eye className="h-4 w-4 text-white" />,
     },
     {
-      id: 'nda',
-      title: 'NDA Signed',
-      description: 'Non-disclosure agreement executed',
-      icon: <FileText className="h-4 w-4 text-white" />,
+      id: 'saved',
+      title: 'Saved',
+      description: userRole === 'buyer' ? 'You saved this listing' : 'Buyer saved your listing',
+      icon: <Bookmark className="h-4 w-4 text-white" />,
     },
     {
-      id: 'agreement',
-      title: 'Agreement Reached',
-      description: 'Initial terms agreed upon',
+      id: 'intro_requested',
+      title: 'Intro Requested',
+      description: userRole === 'buyer' ? 'You requested an introduction' : 'Buyer requested introduction',
+      icon: <UserPlus className="h-4 w-4 text-white" />,
+    },
+    {
+      id: 'intro_completed',
+      title: 'Intro Completed',
+      description: 'Contact details exchanged',
       icon: <Handshake className="h-4 w-4 text-white" />,
     },
     {
-      id: 'escrow',
-      title: 'Escrow Created',
-      description: 'Payment protection established',
-      icon: <Shield className="h-4 w-4 text-white" />,
+      id: 'call_scheduled',
+      title: 'Call Scheduled',
+      description: 'First call confirmed between parties',
+      icon: <Phone className="h-4 w-4 text-white" />,
     },
     {
-      id: 'payment',
-      title: 'Payment Secured',
-      description: 'Funds deposited in escrow',
-      icon: <DollarSign className="h-4 w-4 text-white" />,
+      id: 'due_diligence',
+      title: 'Due Diligence Started',
+      description: userRole === 'buyer' ? 'Reviewing business data' : 'Buyer reviewing data',
+      icon: <FileSearch className="h-4 w-4 text-white" />,
     },
     {
-      id: 'delivery',
-      title: 'Asset Transfer',
-      description: 'Business assets being transferred',
-      icon: <AlertCircle className="h-4 w-4 text-white" />,
+      id: 'loi_sent',
+      title: 'LOI Sent',
+      description: 'Letter of Intent submitted',
+      icon: <FileSignature className="h-4 w-4 text-white" />,
     },
     {
-      id: 'inspection',
-      title: 'Inspection Period',
-      description: userRole === 'buyer' ? 'Review delivered assets' : 'Buyer reviewing assets',
-      icon: <Eye className="h-4 w-4 text-white" />,
-    },
-    {
-      id: 'completed',
-      title: 'Successful Exit',
-      description: 'Deal completed successfully',
+      id: 'deal_closed',
+      title: 'Deal Reported Closed',
+      description: 'Successful acquisition reported',
       icon: <Trophy className="h-4 w-4 text-white" />,
     },
   ];
 
-  // Determine current stage based on escrow status and NDA
+  // Determine current stage based on deal status
   let currentStageIndex = 0;
 
-  // Always mark initial interest as completed
-  currentStageIndex = Math.max(currentStageIndex, 0);
-
-  if (ndaSigned) {
-    currentStageIndex = Math.max(currentStageIndex, 1);
-  }
-
-  switch (escrowStatus) {
-    case 'agreement_reached':
-      currentStageIndex = Math.max(currentStageIndex, 2);
+  switch (dealStatus) {
+    case 'viewed':
+      currentStageIndex = 0;
       break;
-    case 'escrow_created':
-      currentStageIndex = Math.max(currentStageIndex, 3);
+    case 'saved':
+      currentStageIndex = 1;
       break;
-    case 'payment_secured':
-      currentStageIndex = Math.max(currentStageIndex, 4);
+    case 'intro_requested':
+      currentStageIndex = 2;
       break;
-    case 'delivery_in_progress':
-      currentStageIndex = Math.max(currentStageIndex, 5);
+    case 'intro_completed':
+      currentStageIndex = 3;
       break;
-    case 'inspection_period':
-      currentStageIndex = Math.max(currentStageIndex, 6);
+    case 'call_scheduled':
+      currentStageIndex = 4;
       break;
-    case 'completed':
+    case 'due_diligence':
+      currentStageIndex = 5;
+      break;
+    case 'loi_sent':
+      currentStageIndex = 6;
+      break;
+    case 'deal_closed':
       currentStageIndex = 7;
       break;
+    default:
+      currentStageIndex = 0;
   }
 
   return stages.map((stage, index) => ({

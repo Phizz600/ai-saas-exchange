@@ -8,13 +8,7 @@ import { HelpDialog } from "@/components/marketplace/list-product/HelpDialog";
 import { useAuth } from "@/contexts/CleanAuthContext";
 import ExpandableTabs from "@/components/ui/ExpandableTabs";
 import { useToast } from "@/hooks/use-toast";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 export const ListProduct = () => {
   const [helpDialogOpen, setHelpDialogOpen] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState<'free-listing' | 'featured-listing' | 'premium-exit' | null>(null);
@@ -113,7 +107,7 @@ export const ListProduct = () => {
           }} animate={{
             opacity: 1,
             y: 0
-          }} className="text-4xl md:text-5xl font-bold mb-4 exo-2-heading bg-gradient-to-r from-[#D946EE] to-[#0EA4E9] bg-clip-text text-transparent">List Your AI SaaS Business</motion.h1>
+          }} className="text-4xl md:text-5xl font-bold mb-4 exo-2-heading bg-gradient-to-r from-[#D946EE] to-[#0EA4E9] bg-clip-text text-transparent">List Your AI SaaS Business for Sale</motion.h1>
             <motion.p initial={{
             opacity: 0,
             y: -20

@@ -18,9 +18,8 @@ interface Deal {
   buyer_name: string;
   seller_name: string;
   amount: number;
-  escrow_status: string | null;
+  deal_status: string | null;
   conversation_id: string;
-  nda_signed: boolean;
   created_at: string;
   is_buyer: boolean;
 }
@@ -32,7 +31,7 @@ interface DealCardProps {
 
 export const DealCard = ({ deal, isExample = false }: DealCardProps) => {
   const userRole = deal.is_buyer ? 'buyer' : 'seller';
-  const stages = createPipelineStages(deal.escrow_status, deal.nda_signed, userRole);
+  const stages = createPipelineStages(deal.deal_status, userRole);
   const completedStages = stages.filter(stage => stage.status === 'completed').length;
   const progressPercentage = (completedStages / stages.length) * 100;
   
@@ -41,18 +40,19 @@ export const DealCard = ({ deal, isExample = false }: DealCardProps) => {
 
   const getStatusColor = (status: string | null) => {
     switch (status) {
-      case 'completed':
+      case 'loi_sent':
+      case 'deal_closed':
         return 'bg-emerald-500';
-      case 'payment_secured':
-        return 'bg-blue-500';
-      case 'delivery_in_progress':
+      case 'due_diligence':
         return 'bg-amber-500';
-      case 'inspection_period':
+      case 'call_scheduled':
+        return 'bg-blue-500';
+      case 'intro_completed':
         return 'bg-purple-500';
-      case 'disputed':
-        return 'bg-red-500';
-      case 'cancelled':
-        return 'bg-gray-500';
+      case 'intro_requested':
+        return 'bg-[#D946EE]';
+      case 'saved':
+        return 'bg-[#8B5CF6]';
       default:
         return 'bg-primary';
     }
@@ -69,18 +69,22 @@ export const DealCard = ({ deal, isExample = false }: DealCardProps) => {
 
   const getTooltipContent = (stageTitle: string) => {
     switch (stageTitle) {
-      case 'NDA Signed':
-        return 'Non-disclosure agreement has been signed by the buyer';
-      case 'Escrow Created':
-        return 'Buyer has signed and initiated funds into escrow';
-      case 'Payment Secured':
-        return 'Buyer payment is secured and held in escrow';
-      case 'Delivery':
-        return 'Seller is delivering the agreed-upon assets';
-      case 'Inspection':
-        return 'Buyer is reviewing and inspecting delivered assets';
-      case 'Completed':
-        return 'Transaction completed successfully and funds released';
+      case 'Viewed':
+        return 'Buyer viewed the listing on the platform';
+      case 'Saved':
+        return 'Buyer bookmarked/favorited the listing';
+      case 'Intro Requested':
+        return 'Buyer requested an introduction to the seller';
+      case 'Intro Completed':
+        return 'Seller accepted - contact details have been exchanged';
+      case 'Call Scheduled':
+        return 'First call/meeting confirmed between buyer and seller';
+      case 'Due Diligence Started':
+        return 'Buyer is reviewing business data (tracked outside platform)';
+      case 'LOI Sent':
+        return 'Letter of Intent has been submitted (tracked outside platform)';
+      case 'Deal Reported Closed':
+        return 'Seller reported successful acquisition (optional tracking)';
       default:
         return stageTitle;
     }
@@ -153,9 +157,9 @@ export const DealCard = ({ deal, isExample = false }: DealCardProps) => {
           <div className="flex items-center gap-2">
             <Badge 
               variant="secondary" 
-              className={`${getStatusColor(deal.escrow_status)} text-white`}
+              className={`${getStatusColor(deal.deal_status)} text-white`}
             >
-              {currentStage?.title || 'Initial Interest'}
+              {currentStage?.title || 'Viewed'}
             </Badge>
             {isExample ? (
               <Button variant="outline" size="sm" className="flex items-center gap-1" disabled>

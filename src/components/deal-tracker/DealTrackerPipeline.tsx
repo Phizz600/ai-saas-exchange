@@ -14,9 +14,8 @@ interface Deal {
   buyer_name: string;
   seller_name: string;
   amount: number;
-  escrow_status: string | null;
+  deal_status: string | null;
   conversation_id: string;
-  nda_signed: boolean;
   created_at: string;
   is_buyer: boolean;
 }
@@ -46,12 +45,6 @@ export const DealTrackerPipeline = ({ userRole }: DealTrackerPipelineProps) => {
             title,
             price
           ),
-          escrow_transactions (
-            id,
-            amount,
-            status,
-            created_at
-          ),
           buyer_profile:profiles!conversations_buyer_id_fkey (
             full_name
           ),
@@ -64,37 +57,39 @@ export const DealTrackerPipeline = ({ userRole }: DealTrackerPipelineProps) => {
 
       if (error) throw error;
 
-      // Check for NDAs for each conversation
-      const dealsWithNDA = await Promise.all(
-        (conversations || []).map(async (conv: any) => {
-          const { data: nda } = await supabase
-            .from('product_ndas')
-            .select('id')
-            .eq('product_id', conv.product_id)
-            .eq('user_id', userRole === 'buyer' ? conv.buyer_id : conv.seller_id)
-            .single();
+      // Map conversations to deals with engagement status
+      const deals = (conversations || []).map((conv: any) => {
+        // Map old escrow_status to new deal_status for backward compatibility
+        let dealStatus = 'viewed'; // Default status
+        
+        if (conv.escrow_status) {
+          // If there's an escrow status, map it to engagement stages
+          if (conv.escrow_status === 'payment_secured' || conv.escrow_status === 'delivery_in_progress') {
+            dealStatus = 'call_scheduled';
+          } else if (conv.escrow_status === 'inspection_period') {
+            dealStatus = 'due_diligence';
+          } else if (conv.escrow_status === 'completed') {
+            dealStatus = 'deal_closed';
+          }
+        }
 
-          const escrowTransaction = conv.escrow_transactions?.[0];
+        return {
+          id: conv.id,
+          product_id: conv.product_id,
+          product_title: conv.products?.title || 'Unknown Product',
+          buyer_id: conv.buyer_id,
+          seller_id: conv.seller_id,
+          buyer_name: conv.buyer_profile?.full_name || 'Unknown Buyer',
+          seller_name: conv.seller_profile?.full_name || 'Unknown Seller',
+          amount: conv.products?.price || 0,
+          deal_status: dealStatus,
+          conversation_id: conv.id,
+          created_at: conv.created_at,
+          is_buyer: userRole === 'buyer'
+        };
+      });
 
-          return {
-            id: conv.id,
-            product_id: conv.product_id,
-            product_title: conv.products?.title || 'Unknown Product',
-            buyer_id: conv.buyer_id,
-            seller_id: conv.seller_id,
-            buyer_name: conv.buyer_profile?.full_name || 'Unknown Buyer',
-            seller_name: conv.seller_profile?.full_name || 'Unknown Seller',
-            amount: escrowTransaction?.amount || conv.products?.price || 0,
-            escrow_status: escrowTransaction?.status || conv.escrow_status,
-            conversation_id: conv.id,
-            nda_signed: !!nda,
-            created_at: conv.created_at,
-            is_buyer: userRole === 'buyer'
-          };
-        })
-      );
-
-      return dealsWithNDA;
+      return deals;
     }
   });
 
@@ -119,9 +114,8 @@ export const DealTrackerPipeline = ({ userRole }: DealTrackerPipelineProps) => {
     buyer_name: userRole === 'buyer' ? 'You' : 'Sarah Wilson',
     seller_name: userRole === 'seller' ? 'You' : 'John Smith',
     amount: 125000,
-    escrow_status: 'payment_secured',
+    deal_status: 'call_scheduled',
     conversation_id: 'example-conversation',
-    nda_signed: true,
     created_at: new Date().toISOString(),
     is_buyer: userRole === 'buyer'
   };
@@ -135,12 +129,12 @@ export const DealTrackerPipeline = ({ userRole }: DealTrackerPipelineProps) => {
             <CardContent className="text-center py-8">
               <p className="text-muted-foreground mb-4">
                 {userRole === 'buyer' 
-                  ? "You haven't initiated any deals yet. Start by making an offer on a listing!"
-                  : "No active deals in your pipeline. Your deals will appear here once buyers start the acquisition process."
+                  ? "You haven't requested any introductions yet. Browse listings and connect with sellers!"
+                  : "No active buyer engagements in your pipeline. Buyers interested in your listings will appear here."
                 }
               </p>
               <p className="text-sm text-muted-foreground/80 mb-6">
-                Here's what a deal in progress would look like:
+                Here's what buyer engagement tracking looks like:
               </p>
             </CardContent>
           </Card>
