@@ -18,7 +18,7 @@ export function SubmissionAgreements({
     }) => <FormItem className="space-y-2">
             <FormControl>
               <div className="flex items-start gap-2">
-                <Checkbox checked={field.value} onCheckedChange={field.onChange} id="accuracyAgreement" className="mt-1 bg-violet-600 hover:bg-violet-500" />
+                <Checkbox checked={field.value} onCheckedChange={field.onChange} id="accuracyAgreement" className="mt-1 bg-slate-800 hover:bg-slate-700" />
                 <FormLabel htmlFor="accuracyAgreement" className="text-sm leading-relaxed text-gray-600 text-left">
                   I confirm that I will complete this form thoroughly and accurately to the best of my ability. I understand that comprehensive and precise information significantly enhances my listing's credibility and increases the likelihood of attracting serious buyers and investors.
                 </FormLabel>
@@ -32,7 +32,7 @@ export function SubmissionAgreements({
     }) => <FormItem className="space-y-2">
             <FormControl>
               <div className="flex items-start gap-2">
-                <Checkbox checked={field.value} onCheckedChange={field.onChange} id="termsAgreement" className="mt-1 bg-violet-600 hover:bg-violet-500" />
+                <Checkbox checked={field.value} onCheckedChange={field.onChange} id="termsAgreement" className="mt-1 bg-slate-800 hover:bg-slate-700" />
                 <FormLabel htmlFor="termsAgreement" className="text-sm leading-relaxed text-gray-600 text-left flex items-center gap-1">
                   I agree to the
                   <Dialog>
