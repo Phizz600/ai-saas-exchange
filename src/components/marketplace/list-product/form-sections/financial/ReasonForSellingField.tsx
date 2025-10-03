@@ -4,19 +4,16 @@ import { UseFormReturn } from "react-hook-form";
 import { ListProductFormData } from "../../types";
 import { Info } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-
 interface ReasonForSellingFieldProps {
   form: UseFormReturn<ListProductFormData>;
 }
-
-export function ReasonForSellingField({ form }: ReasonForSellingFieldProps) {
-  return (
-    <FormField
-      control={form.control}
-      name="reasonForSelling"
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel className="flex items-center gap-2">
+export function ReasonForSellingField({
+  form
+}: ReasonForSellingFieldProps) {
+  return <FormField control={form.control} name="reasonForSelling" render={({
+    field
+  }) => <FormItem>
+          <FormLabel className="flex items-center gap-2 my-[6px]">
             Reason for Selling
             <TooltipProvider>
               <Tooltip>
@@ -30,15 +27,8 @@ export function ReasonForSellingField({ form }: ReasonForSellingFieldProps) {
             </TooltipProvider>
           </FormLabel>
           <FormControl>
-            <Textarea
-              placeholder="e.g., Moving to a new project, focusing on other ventures, retirement..."
-              className="resize-none min-h-[100px]"
-              {...field}
-            />
+            <Textarea placeholder="e.g., Moving to a new project, focusing on other ventures, retirement..." className="resize-none min-h-[100px]" {...field} />
           </FormControl>
           <FormMessage />
-        </FormItem>
-      )}
-    />
-  );
+        </FormItem>} />;
 }
