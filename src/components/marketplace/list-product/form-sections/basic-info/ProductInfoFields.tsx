@@ -1,4 +1,3 @@
-
 import { UseFormReturn } from "react-hook-form";
 import { ListProductFormData } from "../../types";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
@@ -6,29 +5,12 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useEffect } from "react";
-
 interface ProductInfoFieldsProps {
   form: UseFormReturn<ListProductFormData>;
 }
 
 // Define all allowed categories (matching our database constraint)
-const ALLOWED_CATEGORIES = [
-  'Natural Language Processing',
-  'Machine Learning',
-  'Content Generation',
-  'Computer Vision',
-  'Voice & Speech',
-  'Data Analytics',
-  'Automation',
-  'Recommendation Systems',
-  'AI Applications',
-  'AI Tools',
-  'LLM',
-  'Chatbots',
-  'Training Data',
-  'Other'
-];
-
+const ALLOWED_CATEGORIES = ['Natural Language Processing', 'Machine Learning', 'Content Generation', 'Computer Vision', 'Voice & Speech', 'Data Analytics', 'Automation', 'Recommendation Systems', 'AI Applications', 'AI Tools', 'LLM', 'Chatbots', 'Training Data', 'Other'];
 export function ProductInfoFields({
   form
 }: ProductInfoFieldsProps) {
@@ -40,65 +22,41 @@ export function ProductInfoFields({
       form.setValue("categoryOther", "");
     }
   }, [categoryValue, form]);
-  
-  return (
-    <div className="space-y-4 text-left">
+  return <div className="space-y-4 text-left">
       
-      <FormField 
-        control={form.control} 
-        name="title" 
-        render={({ field }) => (
-          <FormItem className="text-left">
+      <FormField control={form.control} name="title" render={({
+      field
+    }) => <FormItem className="text-left">
             <FormLabel className="text-left">Product Name <span className="text-red-500">*</span></FormLabel>
             <FormControl>
               <Input placeholder="Enter your product name" {...field} />
             </FormControl>
             <FormMessage />
-          </FormItem>
-        )} 
-      />
+          </FormItem>} />
       
-      <FormField 
-        control={form.control} 
-        name="description" 
-        render={({ field }) => (
-          <FormItem className="text-left">
+      <FormField control={form.control} name="description" render={({
+      field
+    }) => <FormItem className="text-left">
             <FormLabel className="text-left">Description <span className="text-red-500">*</span></FormLabel>
             <FormControl>
-              <Textarea 
-                placeholder="Describe your product in detail" 
-                className="resize-none min-h-[100px]" 
-                {...field}
-              />
+              <Textarea placeholder="Describe your product in detail" className="resize-none min-h-[100px]" {...field} />
             </FormControl>
             <FormMessage />
-          </FormItem>
-        )} 
-      />
+          </FormItem>} />
       
-      <FormField 
-        control={form.control} 
-        name="productLink" 
-        render={({ field }) => (
-          <FormItem className="text-left">
-            <FormLabel className="text-left">Product Link</FormLabel>
+      <FormField control={form.control} name="productLink" render={({
+      field
+    }) => <FormItem className="text-left">
+            <FormLabel className="text-left">Website Link</FormLabel>
             <FormControl>
-              <Input 
-                placeholder="https://your-product-website.com" 
-                type="url" 
-                {...field} 
-              />
+              <Input placeholder="https://your-product-website.com" type="url" {...field} />
             </FormControl>
             <FormMessage />
-          </FormItem>
-        )} 
-      />
+          </FormItem>} />
       
-      <FormField 
-        control={form.control} 
-        name="category" 
-        render={({ field }) => (
-          <FormItem className="text-left">
+      <FormField control={form.control} name="category" render={({
+      field
+    }) => <FormItem className="text-left">
             <FormLabel className="text-left">Category <span className="text-red-500">*</span></FormLabel>
             <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
               <FormControl>
@@ -107,34 +65,23 @@ export function ProductInfoFields({
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                {ALLOWED_CATEGORIES.map((category) => (
-                  <SelectItem key={category} value={category}>
+                {ALLOWED_CATEGORIES.map(category => <SelectItem key={category} value={category}>
                     {category}
-                  </SelectItem>
-                ))}
+                  </SelectItem>)}
               </SelectContent>
             </Select>
             <FormMessage />
-          </FormItem>
-        )} 
-      />
+          </FormItem>} />
       
       {/* Show "Other Category" input field when "Other" is selected */}
-      {categoryValue === "Other" && (
-        <FormField 
-          control={form.control} 
-          name="categoryOther" 
-          render={({ field }) => (
-            <FormItem className="text-left">
+      {categoryValue === "Other" && <FormField control={form.control} name="categoryOther" render={({
+      field
+    }) => <FormItem className="text-left">
               <FormLabel className="text-left">Other Category <span className="text-red-500">*</span></FormLabel>
               <FormControl>
                 <Input placeholder="Please specify your category" {...field} />
               </FormControl>
               <FormMessage />
-            </FormItem>
-          )} 
-        />
-      )}
-    </div>
-  );
+            </FormItem>} />}
+    </div>;
 }
