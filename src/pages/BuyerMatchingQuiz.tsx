@@ -9,7 +9,7 @@ export const BuyerMatchingQuiz = () => {
       <main className="container mx-auto md:py-8 px-0 py-0">
         {/* Hero Section */}
         <div className="text-center mb-8 max-w-4xl mx-auto mt-20">
-          <div className="space-y-4">
+          <div className="space-y-4 my-0 py-0">
             <Link to="/" className="inline-block mb-6">
               <img src="/lovable-uploads/f1d82e78-2a24-4c2b-b93c-d1a196c1065b.png" alt="AI Exchange Club" className="h-16 w-auto mx-auto" />
             </Link>
