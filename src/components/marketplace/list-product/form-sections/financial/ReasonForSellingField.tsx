@@ -13,7 +13,7 @@ export function ReasonForSellingField({
   return <FormField control={form.control} name="reasonForSelling" render={({
     field
   }) => <FormItem>
-          <FormLabel className="flex items-center gap-2 my-[6px]">
+          <FormLabel className="flex items-center gap-2 my-[10px]">
             Reason for Selling
             <TooltipProvider>
               <Tooltip>
