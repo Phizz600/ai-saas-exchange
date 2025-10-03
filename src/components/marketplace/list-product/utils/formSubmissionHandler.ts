@@ -67,7 +67,7 @@ export const handleProductSubmission = async (
       monthly_revenue: data.monthlyRevenue,
       monthly_traffic: monthlyTrafficValue, // Use the converted numeric value
       active_users: data.activeUsers, // Keep as string for this field
-      gross_profit_margin: data.grossProfitMargin, // Using the correct column name 'gross_profit_margin'
+      gross_profit_margin: data.grossProfitMargin,
       monthly_churn_rate: data.monthlyChurnRate,
       tech_stack: techStackArray,
       tech_stack_other: data.techStackOther,
@@ -81,9 +81,43 @@ export const handleProductSubmission = async (
       current_price: data.price,
       // Status and user fields
       status: "pending",
-      seller_id: user.id, // Using the correct seller_id field
+      seller_id: user.id,
       payment_status: "pending",
       product_link: data.productLink,
+      
+      // New DFaaS fields
+      long_description: data.longDescription,
+      contact_number: data.contactNumber,
+      built_by: data.builtBy,
+      traffic_sources: data.trafficSources || [],
+      reason_for_selling: data.reasonForSelling,
+      review_link: data.reviewLink,
+      tos_agreed: data.tosAgreed || false,
+      tos_agreed_at: data.tosAgreed ? new Date().toISOString() : null,
+      source_updated_at: new Date().toISOString(),
+      submission_completed_at: new Date().toISOString(),
+      
+      // Extended fields
+      monthly_profit: data.monthlyProfit,
+      customer_acquisition_cost: data.customerAcquisitionCost,
+      monetization: data.monetization,
+      monetization_other: data.monetizationOther,
+      business_model: data.businessModel,
+      investment_timeline: data.investmentTimeline,
+      llm_type: data.llmType,
+      llm_type_other: data.llmTypeOther,
+      integrations: data.integrations || [],
+      integrations_other: data.integrations_other,
+      is_revenue_verified: data.isRevenueVerified,
+      is_code_audited: data.isCodeAudited,
+      is_traffic_verified: data.isTrafficVerified,
+      product_age: data.productAge,
+      business_location: data.businessLocation,
+      number_of_employees: data.numberOfEmployees,
+      business_type: data.businessType,
+      deliverables: data.deliverables || [],
+      category_other: data.categoryOther,
+      industry_other: data.industryOther,
     };
 
     // Insert the product data
@@ -233,6 +267,41 @@ export const handleProductUpdate = async (
     if (data.demoUrl) productData.demo_url = data.demoUrl;
     if (data.specialNotes) productData.special_notes = data.specialNotes;
     if (data.productLink) productData.product_link = data.productLink;
+    
+    // New DFaaS fields
+    if (data.longDescription) productData.long_description = data.longDescription;
+    if (data.contactNumber) productData.contact_number = data.contactNumber;
+    if (data.builtBy) productData.built_by = data.builtBy;
+    if (data.trafficSources) productData.traffic_sources = data.trafficSources;
+    if (data.reasonForSelling) productData.reason_for_selling = data.reasonForSelling;
+    if (data.reviewLink) productData.review_link = data.reviewLink;
+    if (data.tosAgreed !== undefined) {
+      productData.tos_agreed = data.tosAgreed;
+      if (data.tosAgreed) productData.tos_agreed_at = new Date().toISOString();
+    }
+    productData.source_updated_at = new Date().toISOString();
+    
+    // Extended fields
+    if (data.monthlyProfit !== undefined) productData.monthly_profit = data.monthlyProfit;
+    if (data.customerAcquisitionCost !== undefined) productData.customer_acquisition_cost = data.customerAcquisitionCost;
+    if (data.monetization) productData.monetization = data.monetization;
+    if (data.monetizationOther) productData.monetization_other = data.monetizationOther;
+    if (data.businessModel) productData.business_model = data.businessModel;
+    if (data.investmentTimeline) productData.investment_timeline = data.investmentTimeline;
+    if (data.llmType) productData.llm_type = data.llmType;
+    if (data.llmTypeOther) productData.llm_type_other = data.llmTypeOther;
+    if (data.integrations) productData.integrations = data.integrations;
+    if (data.integrations_other) productData.integrations_other = data.integrations_other;
+    if (data.isRevenueVerified !== undefined) productData.is_revenue_verified = data.isRevenueVerified;
+    if (data.isCodeAudited !== undefined) productData.is_code_audited = data.isCodeAudited;
+    if (data.isTrafficVerified !== undefined) productData.is_traffic_verified = data.isTrafficVerified;
+    if (data.productAge) productData.product_age = data.productAge;
+    if (data.businessLocation) productData.business_location = data.businessLocation;
+    if (data.numberOfEmployees) productData.number_of_employees = data.numberOfEmployees;
+    if (data.businessType) productData.business_type = data.businessType;
+    if (data.deliverables) productData.deliverables = data.deliverables;
+    if (data.categoryOther) productData.category_other = data.categoryOther;
+    if (data.industryOther) productData.industry_other = data.industryOther;
     
     // For fixed price listings, update current_price with price
     if (data.price !== undefined) {

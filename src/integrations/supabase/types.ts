@@ -812,13 +812,14 @@ export type Database = {
         Row: {
           active_users: string | null
           admin_feedback: string | null
-          auction_end_time: string | null
+          built_by: string | null
           business_location: string | null
           business_model: string | null
           business_type: string | null
           category: string
           category_other: string | null
           competitors: string | null
+          contact_number: string | null
           created_at: string
           current_price: number | null
           customer_acquisition_cost: number | null
@@ -839,8 +840,10 @@ export type Database = {
           is_traffic_verified: boolean | null
           is_verified: boolean | null
           listing_type: string
+          listing_url: string | null
           llm_type: string | null
           llm_type_other: string | null
+          long_description: string | null
           monetization: string | null
           monetization_other: string | null
           monthly_churn_rate: number | null
@@ -855,10 +858,14 @@ export type Database = {
           price: number
           product_age: string | null
           product_link: string | null
+          reason_for_selling: string | null
           requires_nda: boolean | null
+          revenue_trend_3m: Json | null
+          review_link: string | null
           reviewed_at: string | null
           reviewed_by: string | null
           seller_id: string
+          source_updated_at: string | null
           special_notes: string | null
           stage: string
           status: string | null
@@ -867,18 +874,22 @@ export type Database = {
           tech_stack: string[]
           tech_stack_other: string | null
           title: string
+          tos_agreed: boolean | null
+          tos_agreed_at: string | null
+          traffic_sources: string[] | null
           updated_at: string
         }
         Insert: {
           active_users?: string | null
           admin_feedback?: string | null
-          auction_end_time?: string | null
+          built_by?: string | null
           business_location?: string | null
           business_model?: string | null
           business_type?: string | null
           category: string
           category_other?: string | null
           competitors?: string | null
+          contact_number?: string | null
           created_at?: string
           current_price?: number | null
           customer_acquisition_cost?: number | null
@@ -899,8 +910,10 @@ export type Database = {
           is_traffic_verified?: boolean | null
           is_verified?: boolean | null
           listing_type?: string
+          listing_url?: string | null
           llm_type?: string | null
           llm_type_other?: string | null
+          long_description?: string | null
           monetization?: string | null
           monetization_other?: string | null
           monthly_churn_rate?: number | null
@@ -915,10 +928,14 @@ export type Database = {
           price: number
           product_age?: string | null
           product_link?: string | null
+          reason_for_selling?: string | null
           requires_nda?: boolean | null
+          revenue_trend_3m?: Json | null
+          review_link?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
           seller_id: string
+          source_updated_at?: string | null
           special_notes?: string | null
           stage: string
           status?: string | null
@@ -927,18 +944,22 @@ export type Database = {
           tech_stack?: string[]
           tech_stack_other?: string | null
           title: string
+          tos_agreed?: boolean | null
+          tos_agreed_at?: string | null
+          traffic_sources?: string[] | null
           updated_at?: string
         }
         Update: {
           active_users?: string | null
           admin_feedback?: string | null
-          auction_end_time?: string | null
+          built_by?: string | null
           business_location?: string | null
           business_model?: string | null
           business_type?: string | null
           category?: string
           category_other?: string | null
           competitors?: string | null
+          contact_number?: string | null
           created_at?: string
           current_price?: number | null
           customer_acquisition_cost?: number | null
@@ -959,8 +980,10 @@ export type Database = {
           is_traffic_verified?: boolean | null
           is_verified?: boolean | null
           listing_type?: string
+          listing_url?: string | null
           llm_type?: string | null
           llm_type_other?: string | null
+          long_description?: string | null
           monetization?: string | null
           monetization_other?: string | null
           monthly_churn_rate?: number | null
@@ -975,10 +998,14 @@ export type Database = {
           price?: number
           product_age?: string | null
           product_link?: string | null
+          reason_for_selling?: string | null
           requires_nda?: boolean | null
+          revenue_trend_3m?: Json | null
+          review_link?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
           seller_id?: string
+          source_updated_at?: string | null
           special_notes?: string | null
           stage?: string
           status?: string | null
@@ -987,6 +1014,9 @@ export type Database = {
           tech_stack?: string[]
           tech_stack_other?: string | null
           title?: string
+          tos_agreed?: boolean | null
+          tos_agreed_at?: string | null
+          traffic_sources?: string[] | null
           updated_at?: string
         }
         Relationships: [

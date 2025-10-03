@@ -39,6 +39,14 @@ export const useListProductForm = () => {
       deliverables: [],
       productLink: "",
       monthlyExpenses: [],
+      // New DFaaS fields
+      longDescription: "",
+      contactNumber: "",
+      builtBy: "",
+      trafficSources: [],
+      reasonForSelling: "",
+      reviewLink: "",
+      tosAgreed: false,
     },
   });
 

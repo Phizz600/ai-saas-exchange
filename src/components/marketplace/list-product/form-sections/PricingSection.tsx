@@ -1,10 +1,11 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { FormField, FormItem, FormControl } from "@/components/ui/form";
+import { FormField, FormItem, FormControl, FormLabel, FormMessage } from "@/components/ui/form";
 import { PriceInputs } from "./auction/PriceInputs";
 import { calculateValuation, formatCurrency } from "../utils/valuationCalculator";
 import { UseFormReturn } from "react-hook-form";
 import { ListProductFormData } from "../types";
 import { useState, useEffect } from "react";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface PricingSectionProps {
   form: UseFormReturn<ListProductFormData>;
@@ -101,6 +102,31 @@ export function PricingSection({ form }: PricingSectionProps) {
               </p>
             </div>
           )}
+          
+          {/* TOS Agreement */}
+          <FormField
+            control={form.control}
+            name="tosAgreed"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <div className="space-y-1 leading-none">
+                  <FormLabel>
+                    I agree to the Terms & Conditions <span className="text-red-500">*</span>
+                  </FormLabel>
+                  <p className="text-sm text-muted-foreground">
+                    By checking this box, you confirm that all information provided is accurate and agree to our marketplace terms.
+                  </p>
+                  <FormMessage />
+                </div>
+              </FormItem>
+            )}
+          />
         </div>
       </CardContent>
     </Card>

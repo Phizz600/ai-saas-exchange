@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { toast } from "sonner";
+import { ReviewLinkField } from "./special-notes/ReviewLinkField";
 
 const COMMON_DELIVERABLES = [
   { label: "Source Code & Repository", value: "source_code", icon: Code },
@@ -156,6 +157,9 @@ export function SpecialNotesSection({
             </FormItem>
           )}
         />
+        
+        {/* Review/Loom Link */}
+        <ReviewLinkField form={form} />
       </div>
     </Card>
   );

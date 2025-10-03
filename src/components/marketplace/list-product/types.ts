@@ -50,6 +50,17 @@ export interface ListProductFormData {
   nda_content?: string;
   
   monthlyExpenses?: ExpenseItem[];
+  
+  // New DFaaS fields
+  longDescription?: string;
+  listingUrl?: string;
+  reviewLink?: string;
+  reasonForSelling?: string;
+  builtBy?: string;
+  trafficSources?: string[];
+  revenueTrend3m?: Record<string, number>; // e.g., { "Jul": 3000, "Aug": 3100 }
+  tosAgreed?: boolean;
+  contactNumber?: string;
 }
 
 // Define the expense item interface

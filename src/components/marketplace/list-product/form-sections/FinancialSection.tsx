@@ -10,6 +10,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { generateUniqueId } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
+import { ReasonForSellingField } from "./financial/ReasonForSellingField";
 
 interface FinancialSectionProps {
   form: UseFormReturn<ListProductFormData>;
@@ -479,6 +480,9 @@ export function FinancialSection({
           </div>
         )}
       </div>
+      
+      {/* Reason for Selling */}
+      <ReasonForSellingField form={form} />
     </Card>
   );
 }
