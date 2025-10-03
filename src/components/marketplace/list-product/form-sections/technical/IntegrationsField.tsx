@@ -45,7 +45,7 @@ export function IntegrationsField({
   return <>
       <FormField control={form.control} name="integrations" render={() => <FormItem>
             <FormLabel>Integrations</FormLabel>
-            <FormDescription className="text-slate-50">
+            <FormDescription className="text-inherit">
               Select all the integrations your product supports
             </FormDescription>
             <div className="grid grid-cols-2 gap-2 mt-2">
@@ -54,14 +54,10 @@ export function IntegrationsField({
         }) => {
           return <FormItem key={integration.id} className="flex flex-row items-start space-x-3 space-y-0">
                         <FormControl>
-                          <Checkbox 
-                            checked={field.value?.includes(integration.id)} 
-                            onCheckedChange={checked => {
+                          <Checkbox checked={field.value?.includes(integration.id)} onCheckedChange={checked => {
                 const currentValues = field.value || [];
                 return checked ? field.onChange([...currentValues, integration.id]) : field.onChange(currentValues.filter(value => value !== integration.id));
-              }}
-                            className="data-[state=checked]:bg-[#8a5cf7] data-[state=checked]:border-[#8a5cf7]"
-                          />
+              }} className="data-[state=checked]:bg-[#8a5cf7] data-[state=checked]:border-[#8a5cf7]" />
                         </FormControl>
                         <FormLabel className="font-normal cursor-pointer">
                           {integration.label}
