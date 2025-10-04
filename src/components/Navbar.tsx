@@ -255,10 +255,10 @@ export const Navbar = () => {
                   <button onClick={() => navigate("/auth")} className="text-gray-700 hover:text-[#8B5CF6] transition-colors font-medium">
                     Sign In
                   </button>
-                  <Button disabled className="bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white opacity-60 cursor-not-allowed relative">
+                  <Button onClick={() => navigate("/auth")} className="bg-gradient-to-r from-[#D946EE] to-[#8B5CF6] text-white hover:opacity-90 transition-opacity relative">
                     <UserPlus className="mr-2 h-4 w-4" />
-                    Marketplace
-                    <span className="ml-2 text-xs bg-white/20 px-2 py-0.5 rounded-full">Coming Soon</span>
+                    Access Marketplace
+                    <span className="ml-2 text-xs bg-white/20 px-2 py-0.5 rounded-full">Early Access</span>
                 </Button>
                 </>}
             </div>

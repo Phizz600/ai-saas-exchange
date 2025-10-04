@@ -4,6 +4,7 @@ import { ExpandableTabs } from "./header/ExpandableTabs";
 import { Store, LayoutDashboard, Bell, HelpCircle, User, LogOut, MessageSquare, Settings } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/CleanAuthContext";
 import { NotificationSheet } from "./marketplace/notifications/NotificationSheet";
 import { useNotifications } from "./marketplace/notifications/useNotifications";
 import { useState, useEffect } from "react";
@@ -57,21 +58,14 @@ export const Header = () => {
       supabase.removeChannel(channel);
     };
   }, []);
+  const { signOut } = useAuth();
+  
   const handleSignOut = async () => {
     try {
-      await supabase.auth.signOut();
-      toast({
-        title: "Signed out successfully",
-        description: "You have been signed out of your account"
-      });
+      await signOut();
       navigate('/');
     } catch (error) {
       console.error('Error signing out:', error);
-      toast({
-        title: "Error signing out",
-        description: "There was a problem signing out of your account",
-        variant: "destructive"
-      });
     }
   };
   const navigationTabs: TabItem[] = [{

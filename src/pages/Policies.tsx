@@ -35,38 +35,6 @@ export function Policies() {
             </Link>
           </div>
           
-          <div className="bg-white rounded-lg shadow-sm p-6">
-            <h3 className="text-xl font-semibold mb-2">Terms of Service</h3>
-            <p className="text-gray-700 mb-4">
-              Our Terms of Service outline the rules and guidelines for using our platform and
-              the services we provide.
-            </p>
-            <Link to="/terms" className="text-[#8B5CF6] hover:text-[#D946EE] font-medium transition-colors">
-              Read Terms of Service →
-            </Link>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow-sm p-6">
-            <h3 className="text-xl font-semibold mb-2">Listing Guidelines</h3>
-            <p className="text-gray-700 mb-4">
-              Our Listing Guidelines provide instructions on how to create effective, accurate,
-              and compliant product listings.
-            </p>
-            <Link to="/listing-guidelines" className="text-[#8B5CF6] hover:text-[#D946EE] font-medium transition-colors">
-              Read Listing Guidelines →
-            </Link>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow-sm p-6">
-            <h3 className="text-xl font-semibold mb-2">Refund Policy</h3>
-            <p className="text-gray-700 mb-4">
-              Our Refund Policy explains the circumstances under which refunds may be issued and
-              the process for requesting a refund.
-            </p>
-            <Link to="/refund-policy" className="text-[#8B5CF6] hover:text-[#D946EE] font-medium transition-colors">
-              Read Refund Policy →
-            </Link>
-          </div>
           
           <div className="bg-white rounded-lg shadow-sm p-6">
             <h3 className="text-xl font-semibold mb-2">Code of Conduct</h3>
