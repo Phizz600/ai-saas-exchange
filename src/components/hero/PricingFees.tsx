@@ -103,7 +103,7 @@ const PricingFees = () => {
                        </li>
                        <li className="flex items-center text-white">
                          <CheckCircle className="h-4 w-4 text-[#7C3AED] mr-2 flex-shrink-0" />
-                         <span>Personalized Exit Readiness Checklist (maximize valuation before selling)</span>
+                         <span>Dedicated Outreach Specialist Who Personally Introduces Your Business to Qualified Buyers</span>
                        </li>
                     </ul>
                     <p className="text-green-400 text-xs mt-2 font-medium">💸 Risk-Free Listing Guarantee If your listing doesn’t generate buyer interest in 30 days, we’ll refund your fee. Simple as that.
