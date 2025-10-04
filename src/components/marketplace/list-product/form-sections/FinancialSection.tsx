@@ -10,7 +10,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { generateUniqueId } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
-import { ReasonForSellingField } from "./financial/ReasonForSellingField";
+import { RevenueTrendField } from "./financial/RevenueTrendField";
 
 interface FinancialSectionProps {
   form: UseFormReturn<ListProductFormData>;
@@ -119,6 +119,7 @@ export function FinancialSection({
     <Card className="p-6 bg-white shadow-sm">
       <h2 className="text-2xl font-semibold exo-2-header bg-gradient-to-r from-[#8B5CF6] to-[#D946EE] bg-clip-text text-transparent mb-6">Financials</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <RevenueTrendField form={form} />
         <FormField control={form.control} name="monthlyRevenue" render={({ field }) => (
           <FormItem>
             <FormLabel className="flex items-center gap-2">
@@ -480,9 +481,6 @@ export function FinancialSection({
           </div>
         )}
       </div>
-      
-      {/* Reason for Selling */}
-      <ReasonForSellingField form={form} />
     </Card>
   );
 }

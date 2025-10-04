@@ -4,33 +4,35 @@ import { UseFormReturn } from "react-hook-form";
 import { ListProductFormData } from "../../types";
 import { Info } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-interface ContactNumberFieldProps {
+
+interface DemoLinkFieldProps {
   form: UseFormReturn<ListProductFormData>;
 }
-export function ContactNumberField({ form }: ContactNumberFieldProps) {
+
+export function DemoLinkField({ form }: DemoLinkFieldProps) {
   return (
     <FormField
       control={form.control}
-      name="contactNumber"
+      name="demoUrl"
       render={({ field }) => (
         <FormItem>
           <FormLabel className="flex items-center gap-2">
-            Contact Number
+            Demo Link
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Info className="h-4 w-4 text-muted-foreground cursor-help" />
                 </TooltipTrigger>
                 <TooltipContent className="bg-popover">
-                  <p>A phone number where buyers can reach you</p>
+                  <p>Link to a demo video or live demo of your product</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
           </FormLabel>
           <FormControl>
             <Input
-              type="tel"
-              placeholder="+1 (555) 123-4567"
+              type="url"
+              placeholder="https://youtube.com/your-demo or https://demo.yourproduct.com"
               {...field}
             />
           </FormControl>

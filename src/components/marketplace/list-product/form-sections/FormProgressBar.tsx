@@ -18,8 +18,8 @@ const sections: Section[] = [
   { id: 1, title: "Financials", icon: DollarSign },
   { id: 2, title: "Technical", icon: Settings },
   { id: 3, title: "Traffic & Users", icon: LineChart },
-  { id: 4, title: "Special Notes", icon: Archive },
-  { id: 5, title: "Selling Method", icon: Receipt },
+  { id: 4, title: "Deliverables", icon: Archive },
+  { id: 5, title: "Price", icon: Receipt },
 ];
 
 export function FormProgressBar({ currentSection, onSectionClick }: FormProgressBarProps) {

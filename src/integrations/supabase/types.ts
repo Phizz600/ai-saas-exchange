@@ -839,6 +839,7 @@ export type Database = {
           is_revenue_verified: boolean | null
           is_traffic_verified: boolean | null
           is_verified: boolean | null
+          key_features: string | null
           listing_type: string
           listing_url: string | null
           llm_type: string | null
@@ -860,6 +861,7 @@ export type Database = {
           product_link: string | null
           reason_for_selling: string | null
           requires_nda: boolean | null
+          revenue_trend: string | null
           revenue_trend_3m: Json | null
           review_link: string | null
           reviewed_at: string | null
@@ -909,6 +911,7 @@ export type Database = {
           is_revenue_verified?: boolean | null
           is_traffic_verified?: boolean | null
           is_verified?: boolean | null
+          key_features?: string | null
           listing_type?: string
           listing_url?: string | null
           llm_type?: string | null
@@ -930,6 +933,7 @@ export type Database = {
           product_link?: string | null
           reason_for_selling?: string | null
           requires_nda?: boolean | null
+          revenue_trend?: string | null
           revenue_trend_3m?: Json | null
           review_link?: string | null
           reviewed_at?: string | null
@@ -979,6 +983,7 @@ export type Database = {
           is_revenue_verified?: boolean | null
           is_traffic_verified?: boolean | null
           is_verified?: boolean | null
+          key_features?: string | null
           listing_type?: string
           listing_url?: string | null
           llm_type?: string | null
@@ -1000,6 +1005,7 @@ export type Database = {
           product_link?: string | null
           reason_for_selling?: string | null
           requires_nda?: boolean | null
+          revenue_trend?: string | null
           revenue_trend_3m?: Json | null
           review_link?: string | null
           reviewed_at?: string | null

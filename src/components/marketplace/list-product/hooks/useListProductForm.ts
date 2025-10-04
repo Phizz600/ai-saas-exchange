@@ -39,7 +39,6 @@ export const useListProductForm = () => {
       deliverables: [],
       productLink: "",
       monthlyExpenses: [],
-      // New DFaaS fields
       longDescription: "",
       contactNumber: "",
       builtBy: "",
@@ -47,6 +46,8 @@ export const useListProductForm = () => {
       reasonForSelling: "",
       reviewLink: "",
       tosAgreed: false,
+      keyFeatures: "",
+      revenueTrend: undefined,
     },
   });
 

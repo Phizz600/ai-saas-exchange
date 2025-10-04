@@ -96,6 +96,8 @@ export const handleProductSubmission = async (
       tos_agreed_at: data.tosAgreed ? new Date().toISOString() : null,
       source_updated_at: new Date().toISOString(),
       submission_completed_at: new Date().toISOString(),
+      key_features: data.keyFeatures,
+      revenue_trend: data.revenueTrend,
       
       // Extended fields
       monthly_profit: data.monthlyProfit,
@@ -275,6 +277,8 @@ export const handleProductUpdate = async (
     if (data.trafficSources) productData.traffic_sources = data.trafficSources;
     if (data.reasonForSelling) productData.reason_for_selling = data.reasonForSelling;
     if (data.reviewLink) productData.review_link = data.reviewLink;
+    if (data.keyFeatures) productData.key_features = data.keyFeatures;
+    if (data.revenueTrend) productData.revenue_trend = data.revenueTrend;
     if (data.tosAgreed !== undefined) {
       productData.tos_agreed = data.tosAgreed;
       if (data.tosAgreed) productData.tos_agreed_at = new Date().toISOString();

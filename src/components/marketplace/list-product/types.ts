@@ -61,6 +61,10 @@ export interface ListProductFormData {
   revenueTrend3m?: Record<string, number>; // e.g., { "Jul": 3000, "Aug": 3100 }
   tosAgreed?: boolean;
   contactNumber?: string;
+  
+  // Form reorganization fields
+  keyFeatures?: string;
+  revenueTrend?: 'growing' | 'stable' | 'declining';
 }
 
 // Define the expense item interface

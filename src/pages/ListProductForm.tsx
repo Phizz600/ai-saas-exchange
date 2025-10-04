@@ -37,8 +37,8 @@ export function ListProductForm() {
     { id: 1, title: "Financials", component: FinancialSection },
     { id: 2, title: "Technical", component: TechnicalSection },
     { id: 3, title: "Traffic", component: TrafficSection },
-    { id: 4, title: "Special Notes", component: SpecialNotesSection },
-    { id: 5, title: "Pricing", component: PricingSection },
+    { id: 4, title: "Deliverables", component: SpecialNotesSection },
+    { id: 5, title: "Price", component: PricingSection },
   ];
 
   const form = useForm<ListProductFormData>({
@@ -64,8 +64,15 @@ export function ListProductForm() {
       specialNotes: "",
       accuracyAgreement: false,
       termsAgreement: false,
-      deliverables: [],
-      productLink: "",
+      longDescription: "",
+      contactNumber: "",
+      builtBy: "",
+      trafficSources: [],
+      reasonForSelling: "",
+      reviewLink: "",
+      tosAgreed: false,
+      keyFeatures: "",
+      revenueTrend: undefined,
       monthlyExpenses: [],
     },
   });

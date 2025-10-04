@@ -71,9 +71,28 @@ export function PricingSection({
             </div>}
           
           {/* TOS Agreement */}
-          <FormField control={form.control} name="tosAgreed" render={({
-          field
-        }) => {}} />
+          <FormField 
+            control={form.control} 
+            name="tosAgreed" 
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <div className="space-y-1 leading-none">
+                  <FormLabel>
+                    I agree to the Terms & Conditions
+                  </FormLabel>
+                  <p className="text-sm text-muted-foreground">
+                    By checking this box, you confirm that all information provided is accurate.
+                  </p>
+                </div>
+              </FormItem>
+            )}
+          />
         </div>
       </CardContent>
     </Card>;
