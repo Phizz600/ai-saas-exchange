@@ -14,10 +14,11 @@ export function BriefPitchField({ form }: BriefPitchFieldProps) {
     <FormField
       control={form.control}
       name="description"
+      rules={{ required: "Brief elevator pitch is required" }}
       render={({ field }) => (
         <FormItem>
           <FormLabel className="flex items-center gap-2">
-            Brief Elevator Pitch* 
+            Brief Elevator Pitch (1-2 sentences) <span className="text-red-500">*</span>
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>

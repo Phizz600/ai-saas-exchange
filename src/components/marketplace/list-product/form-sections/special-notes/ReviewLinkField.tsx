@@ -10,7 +10,35 @@ interface ReviewLinkFieldProps {
 export function ReviewLinkField({
   form
 }: ReviewLinkFieldProps) {
-  return <FormField control={form.control} name="reviewLink" render={({
-    field
-  }) => {}} />;
+  return (
+    <FormField
+      control={form.control}
+      name="reviewLink"
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel className="flex items-center gap-2">
+            Review / Loom Link
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Info className="h-4 w-4 text-muted-foreground cursor-help" />
+                </TooltipTrigger>
+                <TooltipContent className="bg-popover">
+                  <p>Link to a video walkthrough or product review</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </FormLabel>
+          <FormControl>
+            <Input
+              placeholder="https://loom.com/..."
+              type="url"
+              {...field}
+            />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
 }

@@ -10,7 +10,36 @@ interface WebsiteLinkFieldProps {
 export function WebsiteLinkField({
   form
 }: WebsiteLinkFieldProps) {
-  return <FormField control={form.control} name="productLink" render={({
-    field
-  }) => {}} />;
+  return (
+    <FormField
+      control={form.control}
+      name="productLink"
+      rules={{ required: "Website link is required" }}
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel className="flex items-center gap-2">
+            Website Link <span className="text-red-500">*</span>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Info className="h-4 w-4 text-muted-foreground cursor-help" />
+                </TooltipTrigger>
+                <TooltipContent className="bg-popover">
+                  <p>Your product's main website URL</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </FormLabel>
+          <FormControl>
+            <Input
+              placeholder="https://your-product.com"
+              type="url"
+              {...field}
+            />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
 }

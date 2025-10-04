@@ -28,10 +28,11 @@ export function StageField({ form }: StageFieldProps) {
     <FormField
       control={form.control}
       name="stage"
+      rules={{ required: "Development stage is required" }}
       render={({ field }) => (
         <FormItem>
           <FormLabel className="flex items-center gap-2">
-            Development Stage
+            Development Stage <span className="text-red-500">*</span>
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>

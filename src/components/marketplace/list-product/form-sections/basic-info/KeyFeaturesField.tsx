@@ -14,10 +14,11 @@ export function KeyFeaturesField({ form }: KeyFeaturesFieldProps) {
     <FormField
       control={form.control}
       name="keyFeatures"
+      rules={{ required: "Key features are required" }}
       render={({ field }) => (
         <FormItem>
           <FormLabel className="flex items-center gap-2">
-            List Key Features*
+            List Key Features <span className="text-red-500">*</span>
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>

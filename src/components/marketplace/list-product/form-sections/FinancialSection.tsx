@@ -213,10 +213,14 @@ export function FinancialSection({
           </FormItem>
         )} />
 
-        <FormField control={form.control} name="monetization" render={({ field }) => (
+        <FormField 
+          control={form.control} 
+          name="monetization"
+          rules={{ required: "Monetization strategy is required" }}
+          render={({ field }) => (
           <FormItem>
             <FormLabel className="flex items-center gap-2">
-              Monetization Strategy
+              Monetization Strategy <span className="text-red-500">*</span>
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>

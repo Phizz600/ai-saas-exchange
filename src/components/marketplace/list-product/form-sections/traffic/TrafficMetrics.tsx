@@ -45,10 +45,11 @@ export function TrafficMetrics({ form }: TrafficMetricsProps) {
       <FormField
         control={form.control}
         name="monthlyTraffic"
+        rules={{ required: "Monthly traffic is required" }}
         render={({ field }) => (
           <FormItem>
             <FormLabel className="flex items-center gap-2">
-              Monthly Traffic
+              Monthly Traffic <span className="text-red-500">*</span>
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -82,10 +83,11 @@ export function TrafficMetrics({ form }: TrafficMetricsProps) {
       <FormField
         control={form.control}
         name="activeUsers"
+        rules={{ required: "Monthly active users is required" }}
         render={({ field }) => (
           <FormItem>
             <FormLabel className="flex items-center gap-2">
-              Active Users
+              Monthly Active Users <span className="text-red-500">*</span>
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>

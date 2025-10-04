@@ -24,7 +24,11 @@ export function ProductInfoFields({
   }, [categoryValue, form]);
   return <div className="space-y-4 text-left">
       
-      <FormField control={form.control} name="title" render={({
+      <FormField 
+        control={form.control} 
+        name="title"
+        rules={{ required: "Product name is required" }}
+        render={({
       field
     }) => <FormItem className="text-left">
             <FormLabel className="text-left">Product Name <span className="text-red-500">*</span></FormLabel>
@@ -54,7 +58,11 @@ export function ProductInfoFields({
             <FormMessage />
           </FormItem>} />
       
-      <FormField control={form.control} name="category" render={({
+      <FormField 
+        control={form.control} 
+        name="category"
+        rules={{ required: "Category is required" }}
+        render={({
       field
     }) => <FormItem className="text-left">
             <FormLabel className="text-left">Category <span className="text-red-500">*</span></FormLabel>

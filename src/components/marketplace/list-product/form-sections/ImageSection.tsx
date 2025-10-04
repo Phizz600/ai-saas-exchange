@@ -20,10 +20,11 @@ export function ImageSection({ form }: ImageSectionProps) {
     <FormField
       control={form.control}
       name="image"
+      rules={{ required: "Business logo is required" }}
       render={({ field }) => (
         <FormItem>
           <FormLabel className="flex items-center gap-2">
-            Product Logo
+            Business Logo <span className="text-red-500">*</span>
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>

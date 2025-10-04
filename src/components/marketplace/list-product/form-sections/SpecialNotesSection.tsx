@@ -65,7 +65,7 @@ export function SpecialNotesSection({
           render={({ field }) => (
             <FormItem>
               <FormLabel className="text-base font-semibold mb-2">
-                Select all assets and deliverables included in the sale
+                Select all assets and deliverables included in the sale <span className="text-red-500">*</span>
               </FormLabel>
               <div className="mb-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">

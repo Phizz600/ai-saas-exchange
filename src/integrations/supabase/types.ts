@@ -829,7 +829,7 @@ export type Database = {
           gross_profit_margin: number | null
           has_patents: boolean | null
           id: string
-          image_url: string | null
+          image_url: string
           industry: string | null
           industry_other: string | null
           integrations: string[] | null
@@ -839,13 +839,13 @@ export type Database = {
           is_revenue_verified: boolean | null
           is_traffic_verified: boolean | null
           is_verified: boolean | null
-          key_features: string | null
+          key_features: string
           listing_type: string
           listing_url: string | null
           llm_type: string | null
           llm_type_other: string | null
           long_description: string | null
-          monetization: string | null
+          monetization: string
           monetization_other: string | null
           monthly_churn_rate: number | null
           monthly_expenses: Json | null
@@ -858,7 +858,7 @@ export type Database = {
           payment_verified_at: string | null
           price: number
           product_age: string | null
-          product_link: string | null
+          product_link: string
           reason_for_selling: string | null
           requires_nda: boolean | null
           revenue_trend: string | null
@@ -901,7 +901,7 @@ export type Database = {
           gross_profit_margin?: number | null
           has_patents?: boolean | null
           id?: string
-          image_url?: string | null
+          image_url: string
           industry?: string | null
           industry_other?: string | null
           integrations?: string[] | null
@@ -911,13 +911,13 @@ export type Database = {
           is_revenue_verified?: boolean | null
           is_traffic_verified?: boolean | null
           is_verified?: boolean | null
-          key_features?: string | null
+          key_features: string
           listing_type?: string
           listing_url?: string | null
           llm_type?: string | null
           llm_type_other?: string | null
           long_description?: string | null
-          monetization?: string | null
+          monetization: string
           monetization_other?: string | null
           monthly_churn_rate?: number | null
           monthly_expenses?: Json | null
@@ -930,7 +930,7 @@ export type Database = {
           payment_verified_at?: string | null
           price: number
           product_age?: string | null
-          product_link?: string | null
+          product_link: string
           reason_for_selling?: string | null
           requires_nda?: boolean | null
           revenue_trend?: string | null
@@ -973,7 +973,7 @@ export type Database = {
           gross_profit_margin?: number | null
           has_patents?: boolean | null
           id?: string
-          image_url?: string | null
+          image_url?: string
           industry?: string | null
           industry_other?: string | null
           integrations?: string[] | null
@@ -983,13 +983,13 @@ export type Database = {
           is_revenue_verified?: boolean | null
           is_traffic_verified?: boolean | null
           is_verified?: boolean | null
-          key_features?: string | null
+          key_features?: string
           listing_type?: string
           listing_url?: string | null
           llm_type?: string | null
           llm_type_other?: string | null
           long_description?: string | null
-          monetization?: string | null
+          monetization?: string
           monetization_other?: string | null
           monthly_churn_rate?: number | null
           monthly_expenses?: Json | null
@@ -1002,7 +1002,7 @@ export type Database = {
           payment_verified_at?: string | null
           price?: number
           product_age?: string | null
-          product_link?: string | null
+          product_link?: string
           reason_for_selling?: string | null
           requires_nda?: boolean | null
           revenue_trend?: string | null

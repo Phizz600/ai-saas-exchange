@@ -17,10 +17,11 @@ export function PriceInputs({ form, formatCurrencyInput, parseCurrencyValue }: P
       <FormField
         control={form.control}
         name="price"
+        rules={{ required: "Asking price is required" }}
         render={({ field }) => (
           <FormItem>
             <FormLabel className="flex items-center gap-2">
-              Asking Price
+              Asking Price <span className="text-red-500">*</span>
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
