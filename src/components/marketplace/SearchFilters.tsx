@@ -332,7 +332,7 @@ export const SearchFilters = ({
       <div className="flex flex-col gap-3 md:gap-4 w-full">
         <div className="relative w-full">
           <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-            <Search className="h-4 w-4 text-gray-400" />
+            
           </div>
           <Input type="text" placeholder="Search AI products..." value={localSearchQuery} onChange={e => setLocalSearchQuery(e.target.value)} className="pl-10 border-gray-200 focus:border-[#8B5CF6] transition-colors bg-white h-10 md:h-11 shadow-sm hover:shadow-md w-full min-h-[40px]" />
           {localSearchQuery && <button className="absolute inset-y-0 right-3 flex items-center" onClick={() => {
