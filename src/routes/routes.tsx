@@ -13,6 +13,8 @@ import { FAQ } from "@/pages/FAQ";
 import { About } from "@/pages/About";
 import { Terms } from "@/pages/Terms";
 import { Policies } from "@/pages/Policies";
+import { PrivacyPolicy } from "@/pages/PrivacyPolicy";
+import { CodeOfConduct } from "@/pages/CodeOfConduct";
 import { MessageChat } from "@/pages/MessageChat";
 import Diagnostics from "@/pages/Diagnostics";
 import { ListingThankYou } from "@/pages/ListingThankYou";
@@ -78,6 +80,14 @@ const publicRoutes = [
   {
     path: "/policies",
     element: <Policies />,
+  },
+  {
+    path: "/privacy-policy",
+    element: <PrivacyPolicy />,
+  },
+  {
+    path: "/code-of-conduct",
+    element: <CodeOfConduct />,
   },
   {
     path: "/contact",

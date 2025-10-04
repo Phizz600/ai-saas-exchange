@@ -128,12 +128,8 @@ export const CleanAuthProvider = ({ children }: AuthProviderProps) => {
             title: "Welcome back!",
             description: "You have been signed in successfully.",
           });
-        } else if (event === 'SIGNED_OUT') {
-          toast({
-            title: "Signed out",
-            description: "You have been signed out successfully.",
-          });
         }
+        // Note: SIGNED_OUT toast is handled in the signOut function to avoid duplication
       }
     );
 

@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/CleanAuthContext";
+import { useAdminStatus } from "./useAdminStatus";
 
 interface SubscriptionData {
   id: string;
@@ -20,6 +21,7 @@ interface UseSubscriptionStatusReturn {
 
 export function useSubscriptionStatus(): UseSubscriptionStatusReturn {
   const { user } = useAuth();
+  const { isAdmin, loading: adminLoading } = useAdminStatus();
 
   const { data: subscription, isLoading, error } = useQuery({
     queryKey: ['subscription-status', user?.id],
@@ -49,16 +51,19 @@ export function useSubscriptionStatus(): UseSubscriptionStatusReturn {
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
+  // Admins get automatic marketplace access
   const hasMarketplaceAccess = Boolean(
-    subscription && 
-    subscription.status === 'active' && 
-    (!subscription.current_period_end || new Date(subscription.current_period_end) > new Date())
+    isAdmin || (
+      subscription && 
+      subscription.status === 'active' && 
+      (!subscription.current_period_end || new Date(subscription.current_period_end) > new Date())
+    )
   );
 
   return {
     hasMarketplaceAccess,
     subscription,
-    isLoading,
+    isLoading: isLoading || adminLoading,
     error: error as Error | null,
   };
 }

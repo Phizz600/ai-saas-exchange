@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { LayoutDashboard, User, Store, MessageCircle, Bell, Plus, LogOut } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/CleanAuthContext";
 import logoImage from "@/assets/fulllogo_transparent_nobuffer.png";
 
 // Custom hook for outside click
@@ -126,31 +127,15 @@ export default function ExpandableTabs() {
     onClick: () => console.log("Notifications clicked")
   }];
 
+  const { signOut } = useAuth();
+  
   // Handle sign out
   const handleSignOut = async () => {
     try {
-      const {
-        error
-      } = await supabase.auth.signOut();
-      if (error) {
-        toast({
-          title: "Error signing out",
-          description: error.message,
-          variant: "destructive"
-        });
-      } else {
-        toast({
-          title: "Signed out successfully",
-          description: "You have been signed out of your account."
-        });
-        navigate('/');
-      }
+      await signOut();
+      navigate('/');
     } catch (error) {
-      toast({
-        title: "Error signing out",
-        description: "An unexpected error occurred.",
-        variant: "destructive"
-      });
+      console.error('Error signing out:', error);
     }
   };
 
