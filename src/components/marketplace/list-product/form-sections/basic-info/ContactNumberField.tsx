@@ -7,36 +7,10 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 interface ContactNumberFieldProps {
   form: UseFormReturn<ListProductFormData>;
 }
-export function ContactNumberField({ form }: ContactNumberFieldProps) {
-  return (
-    <FormField
-      control={form.control}
-      name="contactNumber"
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel className="flex items-center gap-2">
-            Contact Number
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Info className="h-4 w-4 text-muted-foreground cursor-help" />
-                </TooltipTrigger>
-                <TooltipContent className="bg-popover">
-                  <p>A phone number where buyers can reach you</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </FormLabel>
-          <FormControl>
-            <Input
-              type="tel"
-              placeholder="+1 (555) 123-4567"
-              {...field}
-            />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-  );
+export function ContactNumberField({
+  form
+}: ContactNumberFieldProps) {
+  return <FormField control={form.control} name="contactNumber" render={({
+    field
+  }) => {}} />;
 }
